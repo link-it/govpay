@@ -17,6 +17,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Nota;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
@@ -50,6 +51,7 @@ import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.PagamentoPortaleUtils;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Acl.Diritti;
@@ -250,6 +252,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						idVersamento.add(idV);
 					}
 				}
+				PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, e, false);
+				
 				pagamentoPortale.setIdVersamento(idVersamento); 
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 				pagamentoPortale.setStato(STATO.FALLITO);
@@ -267,6 +271,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						idVersamento.add(idV);
 					}
 				}
+				PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, transazioneResponse.getDescrizioneEsito(), TipoNota.SISTEMA_FATAL, transazioneResponse.getDettaglioEsito(), false); 
 				pagamentoPortale.setIdVersamento(idVersamento); 
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 				pagamentoPortale.setStato(STATO.FALLITO);

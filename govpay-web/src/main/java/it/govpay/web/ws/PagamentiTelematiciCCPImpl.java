@@ -56,6 +56,7 @@ import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematiciccp.PagamentiTe
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -64,6 +65,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -82,6 +84,7 @@ import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.PagamentoPortaleUtils;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -353,6 +356,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					bd.rollback();
 					bd.disableSelectForUpdate();
 					// update della entry pagamento portale
+					PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, "Creazione RPT non completata.", TipoNota.SISTEMA_FATAL, e.getMessage(), false);
 					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 					pagamentoPortale.setStato(STATO.FALLITO);
 					pagamentoPortale.setDescrizioneStato(e.getMessage());

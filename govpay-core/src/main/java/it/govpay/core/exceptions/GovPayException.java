@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.servizi.v2_3.commons.GpResponse;
 import it.govpay.servizi.v2_3.commons.Mittente;
@@ -36,7 +37,7 @@ public class GovPayException extends Exception {
 	private String causa;
 	private FaultBean faultBean;
 	private Object param;
-	
+		
 	
 	public GovPayException(FaultBean faultBean) {
 		super();
@@ -355,6 +356,22 @@ public class GovPayException extends Exception {
 		case NDP_001: return CategoriaEnum.PAGOPA; 
 		case VER_014: return CategoriaEnum.OPERAZIONE;
 		default: return CategoriaEnum.RICHIESTA;
+		}
+	}
+	
+	public TipoNota getTipoNota() {
+		switch (this.codEsito) {
+		case OK: return TipoNota.SISTEMA_INFO;
+		default: return TipoNota.SISTEMA_FATAL;
+		}
+	}
+	
+	public String getMessageNota() {
+		switch (this.codEsito) {
+		case NDP_001: 
+			return "[" + this.faultBean.getFaultCode() + "] " + this.faultBean.getFaultString() + (this.faultBean.getDescription() != null ? ": " + this.faultBean.getDescription() : "");
+		default:
+			return this.getMessageV3();
 		}
 	}
 
