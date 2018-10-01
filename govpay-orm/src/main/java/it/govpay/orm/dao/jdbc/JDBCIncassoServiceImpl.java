@@ -23,7 +23,7 @@ import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdIncasso;
@@ -87,6 +87,23 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 			}
 		}
 
+		// Object _operatore
+		Long id_operatore = null;
+		it.govpay.orm.IdOperatore idLogic_operatore = null;
+		idLogic_operatore = incasso.getIdOperatore();
+		if(idLogic_operatore!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findTableId(idLogic_operatore, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_operatore = idLogic_operatore.getId();
+				if(id_operatore==null || id_operatore<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object incasso
 		sqlQueryObjectInsert.addInsertTable(this.getIncassoFieldConverter().toTable(Incasso.model()));
@@ -98,7 +115,9 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().DATA_CONTABILE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().DATA_ORA_INCASSO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_DISPOSITIVO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().IBAN_ACCREDITO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
+		sqlQueryObjectInsert.addInsertField("id_operatore","?");
 
 		// Insert incasso
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getIncassoFetch().getKeyGeneratorObject(Incasso.model());
@@ -111,7 +130,9 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getDataContabile(),Incasso.model().DATA_CONTABILE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getDataOraIncasso(),Incasso.model().DATA_ORA_INCASSO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getNomeDispositivo(),Incasso.model().NOME_DISPOSITIVO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getIbanAccredito(),Incasso.model().IBAN_ACCREDITO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class)
 		);
 		incasso.setId(id);
 
@@ -176,12 +197,29 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 			}
 		}
 
+		// Object _incasso_operatore
+		Long id_incasso_operatore = null;
+		it.govpay.orm.IdOperatore idLogic_incasso_operatore = null;
+		idLogic_incasso_operatore = incasso.getIdOperatore();
+		if(idLogic_incasso_operatore!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_incasso_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findTableId(idLogic_incasso_operatore, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_incasso_operatore = idLogic_incasso_operatore.getId();
+				if(id_incasso_operatore==null || id_incasso_operatore<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object incasso
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getIncassoFieldConverter().toTable(Incasso.model()));
 		boolean isUpdate_incasso = true;
-		java.util.List<JDBCObject> lstObjects_incasso = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_incasso = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().TRN,false), "?");
 		lstObjects_incasso.add(new JDBCObject(incasso.getTrn(), Incasso.model().TRN.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().COD_DOMINIO,false), "?");
@@ -198,11 +236,19 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 		lstObjects_incasso.add(new JDBCObject(incasso.getDataOraIncasso(), Incasso.model().DATA_ORA_INCASSO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_DISPOSITIVO,false), "?");
 		lstObjects_incasso.add(new JDBCObject(incasso.getNomeDispositivo(), Incasso.model().NOME_DISPOSITIVO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().IBAN_ACCREDITO,false), "?");
+		lstObjects_incasso.add(new JDBCObject(incasso.getIbanAccredito(), Incasso.model().IBAN_ACCREDITO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_incasso.add(new JDBCObject(id_incasso_applicazione, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_incasso.add(new JDBCObject(id_incasso_operatore, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_incasso.add(new JDBCObject(tableId, Long.class));
@@ -248,7 +294,7 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIncassoFieldConverter().toTable(Incasso.model()), 
@@ -259,7 +305,7 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIncassoFieldConverter().toTable(Incasso.model()), 
@@ -270,7 +316,7 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIncassoFieldConverter().toTable(Incasso.model()), 

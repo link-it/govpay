@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.stampe.pdf.TemplateBase;
@@ -20,15 +20,16 @@ import net.sf.dynamicreports.report.constant.PageType;
 
 public class RicevutaPagamentoPdf implements IRicevutaPagamento{
 
+	@Override
 	public String getPdfRicevutaPagamento(RicevutaPagamento ricevuta, Properties prop, OutputStream os ,Logger log) throws Exception {
 		String msg = null;
-		List<String> errList = new ArrayList<String>();
+		List<String> errList = new ArrayList<>();
 
 		try{
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 			JasperReportBuilder report = report();
 
-			List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
+			List<ComponentBuilder<?, ?>> cl = new ArrayList<>();
 
 			ComponentBuilder<?, ?> createTitleComponent = TemplateRt.createTitleComponent(ricevuta,errList,log);
 			if(createTitleComponent != null) {

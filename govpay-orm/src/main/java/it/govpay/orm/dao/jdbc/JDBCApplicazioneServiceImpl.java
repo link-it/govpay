@@ -24,7 +24,7 @@ import it.govpay.orm.IdApplicazione;
 
 import java.sql.Connection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
@@ -65,31 +65,48 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
+		// Object _utenza
+		Long id_utenza = null;
+		it.govpay.orm.IdUtenza idLogic_utenza = null;
+		idLogic_utenza = applicazione.getIdUtenza();
+		if(idLogic_utenza!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findTableId(idLogic_utenza, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_utenza = idLogic_utenza.getId();
+				if(id_utenza==null || id_utenza<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object applicazione
 		sqlQueryObjectInsert.addInsertTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model()));
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().ABILITATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().PRINCIPAL,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().AUTO_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().FIRMA_RICEVUTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_ESITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_VERIFICA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().VERSIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().TRUSTED,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE_IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().REG_EXP,false),"?");
+		sqlQueryObjectInsert.addInsertField("id_utenza","?");
 
 		// Insert applicazione
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getApplicazioneFetch().getKeyGeneratorObject(Applicazione.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodApplicazione(),Applicazione.model().COD_APPLICAZIONE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getAbilitato(),Applicazione.model().ABILITATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getPrincipal(),Applicazione.model().PRINCIPAL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getAutoIUV(),Applicazione.model().AUTO_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getFirmaRicevuta(),Applicazione.model().FIRMA_RICEVUTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreEsito(),Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreVerifica(),Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getVersione(),Applicazione.model().VERSIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getTrusted(),Applicazione.model().TRUSTED.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodApplicazioneIuv(),Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodApplicazioneIuv(),Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getRegExp(),Applicazione.model().REG_EXP.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_utenza,Long.class)
 		);
 		applicazione.setId(id);
 
@@ -131,36 +148,57 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-//		boolean setIdMappingResolutionBehaviour = 
-//			(idMappingResolutionBehaviour==null) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+		boolean setIdMappingResolutionBehaviour = 
+			(idMappingResolutionBehaviour==null) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
+
+		// Object _applicazione_utenza
+		Long id_applicazione_utenza = null;
+		it.govpay.orm.IdUtenza idLogic_applicazione_utenza = null;
+		idLogic_applicazione_utenza = applicazione.getIdUtenza();
+		if(idLogic_applicazione_utenza!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_applicazione_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findTableId(idLogic_applicazione_utenza, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_applicazione_utenza = idLogic_applicazione_utenza.getId();
+				if(id_applicazione_utenza==null || id_applicazione_utenza<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 
 
 		// Object applicazione
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model()));
 		boolean isUpdate_applicazione = true;
-		java.util.List<JDBCObject> lstObjects_applicazione = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_applicazione = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodApplicazione(), Applicazione.model().COD_APPLICAZIONE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().ABILITATO,false), "?");
-		lstObjects_applicazione.add(new JDBCObject(applicazione.getAbilitato(), Applicazione.model().ABILITATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().PRINCIPAL,false), "?");
-		lstObjects_applicazione.add(new JDBCObject(applicazione.getPrincipal(), Applicazione.model().PRINCIPAL.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().AUTO_IUV,false), "?");
+		lstObjects_applicazione.add(new JDBCObject(applicazione.getAutoIUV(), Applicazione.model().AUTO_IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().FIRMA_RICEVUTA,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getFirmaRicevuta(), Applicazione.model().FIRMA_RICEVUTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_ESITO,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodConnettoreEsito(), Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_VERIFICA,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodConnettoreVerifica(), Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().VERSIONE,false), "?");
-		lstObjects_applicazione.add(new JDBCObject(applicazione.getVersione(), Applicazione.model().VERSIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().TRUSTED,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getTrusted(), Applicazione.model().TRUSTED.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE_IUV,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodApplicazioneIuv(), Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().REG_EXP,false), "?");
+		lstObjects_applicazione.add(new JDBCObject(applicazione.getRegExp(), Applicazione.model().REG_EXP.getFieldType()));
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_utenza","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_applicazione.add(new JDBCObject(id_applicazione_utenza, Long.class));
+		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_applicazione.add(new JDBCObject(tableId, Long.class));
 
@@ -205,7 +243,7 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getApplicazioneFieldConverter().toTable(Applicazione.model()), 
@@ -216,7 +254,7 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getApplicazioneFieldConverter().toTable(Applicazione.model()), 
@@ -227,7 +265,7 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getApplicazioneFieldConverter().toTable(Applicazione.model()), 

@@ -1,55 +1,55 @@
 # GovPay - Porta di accesso al sistema pagoPA
-GovPay implementa il protocollo di colloquio con l'infrastruttura tecnologia Nodo dei Pagamenti SPC del progetto PagoPa per l'integrazione degli enti pubblici con la rete interbancaria.
+Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Partner tecnologici alle componenti centrali del progetto pagoPA.
 
-## Documentazione
-
-* [Introduzione a GovPay](./resources/doc/pdf/GovPay-pagoPA.pdf)
-* [Manuale Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazioneSOAP.pdf)
-* [Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf)
+| Versione | Documentazione&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Novità principali  |
+|:--------:|:-----------------------------------------|:-------------------|
+| [3.0-RC1](https://github.com/link-it/GovPay/releases/latest) | [Manuale di Installazione](./resources/doc/pdf/GovPay-ManualeInstallazione.pdf)<br/>[Manuale di Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)<br/>[Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf) | Nuove API REST di integrazione, revisione completo dei cruscotti di gestione e monitoraggio, supporto per il servizio di Avvisatura Digitale di tipo push.<br>Per maggiori informazioni, consulta le [note di rilascio](https://github.com/link-it/GovPay/releases/tag/3.0.0)
+| [2.5.7](https://github.com/link-it/GovPay/releases/tag/2.5.7) | [Manuale di Installazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeInstallazione.pdf)<br/>[Manuale di Integrazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)<br/>[Manuale Utente](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeUtente.pdf) | Supporto WISP 2.0.<br><br>Per maggiori informazioni, consulta le [note di rilascio](https://github.com/link-it/GovPay/releases/tag/2.5.7)
 
 ## Contatti
 
-- Mailing list: [Utenti GovPay](http://www.gov4j.it/mailman/listinfo/utenti-govpay)
 - Segnalazioni: [GitHub Issues](https://github.com/link-it/GovPay/issues)
+- Mailing list: [Utenti GovPay](http://www.gov4j.it/mailman/listinfo/utenti-govpay)
 
-## Conformità con la specifica pagoPA
+## Principali funzionalità
 
-* Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3 
-* Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v1.7.1  
+### Conformità alle specifiche PagoPA
+
+* Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3.1 
+* Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.1  
 * Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
 * Avviso di pagamento analogico nel sistema pagoPA, v1.2.3
-* Transazioni MyBank attraverso il Nodo dei Pagamenti-SPC, v1.2.1
 
-## Configurabilità
+### Configurabilità
 
 * Supporto per tutte le modalità di adesione: diretta, intermediario tecnologico e partner tecnologico
-* Multitenant: possibilità di ospitare più domini, intermediari e partner sulla stessa installazione
-* Supporto alla generazione di IUV conformi alla specifica, in accordo a politiche configurabili da utente
+* Possibilità di ospitare più domini, intermediari e partner sulla stessa installazione
+* Servizi di integrazione per la realizzazione di un archivio di pagamenti in attesa distribuiti
 * Integrazione utenze e ruoli da Sistemi esterni di Identity Management
 
-## API per l'integrazione applicativa
+### API per l'integrazione applicativa
 
 * API orientata ai portali per l'attivazione dei pagamenti
 * API orientata ai Gestionali per la gestione delle posizioni debitorie
 * API orientata agli Uffici contabili per le operazioni di riconciliazione
 * Profilazione degli applicativi interni al dominio, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
 
-## Cruscotto di gestione e monitoraggio dei pagamenti
+### Cruscotto di gestione e monitoraggio dei pagamenti
 
 * Implementazione delle funzionalita di Tavolo Operativo richieste dalla specifica AgID
 * Profilazione degli utenti console, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
 * Gestione archivio pagamenti in attesa (APA)
-* Consultazione dei pagamenti effettuati
-* Consultazione dati di riconciliazione
+* Consultazione delle pendenze e dei pagamenti eseguiti
+* Gestione della riconciliazione
 * Reportistica nei formati PDF e CSV
-* Giornale degli Eventi
+* Registrazione e consultazione del Giornale degli Eventi
 
 ## Licenza
 
 GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
 http://www.gov4j.it/govpay
 
-Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

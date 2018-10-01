@@ -20,50 +20,31 @@
 
 package it.govpay.model;
 
-import java.util.List;
-
 public class Operatore extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public static final String RUOLO_SYSTEM = "SYSTEM";
-	public static final String SEPARATORE_RUOLO = ";";
-	
+	private long idUtenza;
 	private Long id;
-	private String principal;
 	private String nome;
-	private boolean abilitato;
-	private List<String> ruoli;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getPrincipal() {
-		return principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
 	public String getNome() {
-		return nome;
+		return this.nome;
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public List<String> getRuoli() {
-		return ruoli;
+	public long getIdUtenza() {
+		return this.idUtenza;
 	}
-	public void setRuoli(List<String> ruoli) {
-		this.ruoli = ruoli;
+	public void setIdUtenza(long idUtenza) {
+		this.idUtenza = idUtenza;
 	}
-
 }

@@ -1,4 +1,4 @@
-VERSION=2.5.7
+VERSION=3.0
 
 mvn -f ../../pom.xml -Denv=installer_template clean install
 
@@ -8,7 +8,6 @@ SQL=../../resources/db/sql/
 DATASOURCE=../../resources/db/datasource/
 DOC=../../resources/doc/pdf
 GOVPAY=../../govpay-ear/target/govpay.ear
-GOVPAY_CONSOLE=../../govpay-web-console/target/govpayConsole.war
 
 # Template
 rm -rf core.template
@@ -64,12 +63,6 @@ then
         exit 5
 fi 
 cp ${DOC}/GovPay-ManualeUtente.pdf core.template/doc/
-if [ ! -e "${DOC}/GovPay-PagoPA.pdf" ]
-then
-        echo "Manuale di Introduzione a GovPay non esistente"
-        exit 5
-fi
-cp ${DOC}/GovPay-PagoPA.pdf core.template/doc/
 if [ ! -e "${COPYING_FILE}" ]
 then
         echo "Copying file non esistente"
@@ -89,13 +82,6 @@ then
 fi
 #unzip -q ${GOVPAY} -d core.template/installer/archivi/govpay.ear
 cp ${GOVPAY} core.template/installer/archivi/
-if [ ! -e "${GOVPAY_CONSOLE}" ]
-then
-	echo "Software GovPay console non trovato"
-	exit 7
-fi
-#unzip -q ${GOVPAY_CONSOLE} -d core.template/installer/archivi/govpayConsole.war
-cp ${GOVPAY_CONSOLE} core.template/installer/archivi/
 echo "Prepare archivi [completed]"
 
 echo "Creazione archivio compresso ..."

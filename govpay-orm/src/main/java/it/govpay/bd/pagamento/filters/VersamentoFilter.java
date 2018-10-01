@@ -46,12 +46,19 @@ public class VersamentoFilter extends AbstractFilter {
 	private List<StatoVersamento> statiVersamento =  null;
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
-	private Date datainizio;
-	private Date dataFine;
 	private List<Long> idVersamento= null;
 	private String codVersamento = null;
 	private List<String> codVersamentoEnte = null;
 	private List<Long> idApplicazione = null;
+	private Long idPagamentoPortale = null;
+	private String codPagamentoPortale = null;
+	private Date dataInizio;
+	private Date dataFine;
+	private String codApplicazione = null;
+	private String codDominio = null;
+	private Long idTracciato; 
+	private Boolean tracciatoNull; 
+	private Boolean daAvvisare; 
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -76,7 +83,7 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.idDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
 
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
 				newExpressionDomini.in(cf, this.idDomini);
@@ -84,7 +91,11 @@ public class VersamentoFilter extends AbstractFilter {
 				
 				newExpressionOr.and(newExpressionDomini);
 			}
-
+			
+			if(this.codPagamentoPortale != null) {
+				newExpressionOr.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
+			}
+			
 //			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
 //				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
 //					IExpression orExpr = this.newExpression();
@@ -124,17 +135,20 @@ public class VersamentoFilter extends AbstractFilter {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
+			
+			VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+
 			// Filtro sullo stato pagamenti
-			if(this.statiVersamento != null){
-				newExpression.in(Versamento.model().STATO_VERSAMENTO, toString(this.statiVersamento));
+			if(this.statiVersamento != null && this.statiVersamento.size() > 0){
+				newExpression.in(Versamento.model().STATO_VERSAMENTO, this.toString(this.statiVersamento));
 				addAnd = true;
 			}
 
-			if(this.datainizio != null && this.dataFine != null) {
+			if(this.dataInizio != null && this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.datainizio,this.dataFine);
+				newExpression.between(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.dataInizio,this.dataFine);
 				addAnd = true;
 			}
 
@@ -148,22 +162,31 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
 				if(addAnd)
 					newExpression.and();
-				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()));
 				newExpression.in(cf, this.idVersamento);
 				addAnd = true;
 			}
 
+//			if(this.idDomini != null){
+//				idDomini.removeAll(Collections.singleton(null));
+//				if(addAnd)
+//					newExpression.and();
+//				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+//				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
+//				newExpression.in(cf, this.idDomini);
+//				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
+//				addAnd = true;
+//			}
+			
 			if(this.idDomini != null){
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
-				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
+				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
 				newExpression.in(cf, this.idDomini);
-				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
 				addAnd = true;
 			}
+
 
 			if(this.codVersamento != null){
 				if(addAnd)
@@ -180,9 +203,8 @@ public class VersamentoFilter extends AbstractFilter {
 						newExpression.and();
 
 					IExpression orExpr = this.newExpression();
-					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
+					List<IExpression> lstOrExpr = new ArrayList<>();
 					
-					VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 					CustomField cf = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(Versamento.model()));
 					
 					for (int i = 0; i < this.codVersamentoEnte.size(); i++) {
@@ -203,6 +225,43 @@ public class VersamentoFilter extends AbstractFilter {
 				}
 			}
 			
+			if(this.codApplicazione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Versamento.model().ID_DOMINIO.COD_DOMINIO, this.codDominio);
+				addAnd = true;
+			}
+			
+			if(this.codPagamentoPortale != null) {
+				newExpression.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
+			}
+
+			if(this.idTracciato != null) {
+				CustomField cf = new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(Versamento.model()));
+				newExpression.equals(cf, this.idTracciato);
+			}
+			
+			if(this.tracciatoNull!=null) {
+				CustomField cf = new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(Versamento.model()));
+				if(this.tracciatoNull) {
+					newExpression.isNull(cf);
+				} else {
+					newExpression.isNotNull(cf);	
+				}
+			}
+			
+			if(this.daAvvisare!=null) {
+				newExpression.equals(Versamento.model().DA_AVVISARE, this.daAvvisare);
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -215,7 +274,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	private List<String> toString(List<StatoVersamento> statiVersamento) {
-		List<String> stati = new ArrayList<String>();
+		List<String> stati = new ArrayList<>();
 		for(StatoVersamento stato : statiVersamento)
 			stati.add(stato.toString());
 		return stati;
@@ -270,7 +329,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<StatoVersamento> getStatiVersamento() {
-		return statiVersamento;
+		return this.statiVersamento;
 	}
 
 	public void setStatiPagamento(List<StatoVersamento> statiVersamento) {
@@ -278,7 +337,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodUnivocoDebitore() {
-		return codUnivocoDebitore;
+		return this.codUnivocoDebitore;
 	}
 
 	public void setCodUnivocoDebitore(String codUnivocoDebitore) {
@@ -286,7 +345,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdVersamento() {
-		return idVersamento;
+		return this.idVersamento;
 	}
 
 	public void setIdVersamento(List<Long> idVersamento) {
@@ -294,7 +353,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public String getCodVersamento() {
-		return codVersamento;
+		return this.codVersamento;
 	}
 
 	public void setCodVersamento(String codVersamento) {
@@ -302,7 +361,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(List<Long> idDomini) {
@@ -310,12 +369,14 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public void setStatoVersamento(StatoVersamento stato) {
-		this.statiVersamento = new ArrayList<StatoVersamento>();
-		this.statiVersamento.add(stato);
+		this.statiVersamento = new ArrayList<>();
+		if(stato != null) {
+			this.statiVersamento.add(stato);
+		}
 	}
 
 	public List<String> getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 
 	public void setCodVersamentoEnte(List<String> codVersamentoEnte) {
@@ -323,13 +384,82 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 
 	public void setIdApplicazione(List<Long> idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
-	
-	
 
+	public Long getIdPagamentoPortale() {
+		return this.idPagamentoPortale;
+	}
+
+	public void setIdPagamentoPortale(Long idPagamentoPortale) {
+		this.idPagamentoPortale = idPagamentoPortale;
+	}
+
+	public String getCodPagamentoPortale() {
+		return this.codPagamentoPortale;
+	}
+
+	public void setCodPagamentoPortale(String codPagamentoPortale) {
+		this.codPagamentoPortale = codPagamentoPortale;
+	}
+
+	public Date getDataInizio() {
+		return this.dataInizio;
+	}
+
+	public void setDataInizio(Date dataInizio) {
+		this.dataInizio = dataInizio;
+	}
+
+	public Date getDataFine() {
+		return this.dataFine;
+	}
+
+	public void setDataFine(Date dataFine) {
+		this.dataFine = dataFine;
+	}
+
+	public String getCodApplicazione() {
+		return this.codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public String getCodDominio() {
+		return this.codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
+	public Long getIdTracciato() {
+		return this.idTracciato;
+	}
+
+	public void setIdTracciato(Long idTracciato) {
+		this.idTracciato = idTracciato;
+	}
+
+	public Boolean getTracciatoNull() {
+		return this.tracciatoNull;
+	}
+
+	public void setTracciatoNull(Boolean tracciatoNull) {
+		this.tracciatoNull = tracciatoNull;
+	}
+
+	public Boolean getDaAvvisare() {
+		return this.daAvvisare;
+	}
+
+	public void setDaAvvisare(Boolean daAvvisare) {
+		this.daAvvisare = daAvvisare;
+	}
 }

@@ -19,20 +19,15 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.IdTracciato;
-import it.govpay.orm.Tracciato;
-import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.TracciatoFetch;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.beans.InUse;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.Union;
@@ -51,6 +46,12 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
+
+import it.govpay.orm.IdTracciato;
+import it.govpay.orm.Tracciato;
+import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.TracciatoFetch;
 
 /**     
  * JDBCTracciatoServiceSearchImpl
@@ -80,7 +81,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getTracciatoFetch();
+		return this.getTracciatoFetch();
 	}
 	
 	
@@ -101,6 +102,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	public IdTracciato convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Tracciato tracciato) throws NotImplementedException, ServiceException, Exception{
 	
 		IdTracciato idTracciato = new IdTracciato();
+		idTracciato.setId(tracciato.getId());
 		idTracciato.setIdTracciato(tracciato.getId());
 	
 		return idTracciato;
@@ -125,103 +127,74 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	@Override
 	public List<IdTracciato> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-
-		// default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
-
-		List<IdTracciato> list = new ArrayList<IdTracciato>();
+		List<IdTracciato> list = new ArrayList<>();
 
 		try{
-			List<IField> fields = new ArrayList<IField>();
-            fields.add(new CustomField("id", Long.class, "id", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
+			List<IField> fields = new ArrayList<>();
+			fields.add(new CustomField("id", Long.class, "id", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-                IdTracciato idTracciato = this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Tracciato)this.getTracciatoFetch().fetch(jdbcProperties.getDatabase(), Tracciato.model(), map));
-                list.add(idTracciato);
-
+				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Tracciato)this.getTracciatoFetch().fetch(jdbcProperties.getDatabase(), Tracciato.model(), map)));
 			}
 		} catch(NotFoundException e) {}
 
-        return list;  
+
+        return list;
 		
 	}
 	
 	@Override
 	public List<Tracciato> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
-
-		List<Tracciato> list = new ArrayList<Tracciato>();
+        List<Tracciato> list = new ArrayList<>();
+        
 
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
+			fields.add(new CustomField("id", Long.class, "id", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
+			fields.add(Tracciato.model().COD_DOMINIO);
+			fields.add(Tracciato.model().TIPO);
+			fields.add(Tracciato.model().STATO);
+			fields.add(Tracciato.model().DESCRIZIONE_STATO);
+			fields.add(Tracciato.model().DATA_CARICAMENTO);
+			fields.add(Tracciato.model().DATA_COMPLETAMENTO);
+			fields.add(Tracciato.model().BEAN_DATI);
+			fields.add(Tracciato.model().FILE_NAME_RICHIESTA);
+			fields.add(Tracciato.model().RAW_RICHIESTA);
+			fields.add(Tracciato.model().FILE_NAME_ESITO);
+			fields.add(Tracciato.model().RAW_ESITO);
 			fields.add(new CustomField("id_operatore", Long.class, "id_operatore", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
-			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
-            fields.add(new CustomField("id", Long.class, "id", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
-    		fields.add(Tracciato.model().DATA_CARICAMENTO);
-    		fields.add(Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO);
-    		fields.add(Tracciato.model().STATO);
-    		fields.add(Tracciato.model().LINEA_ELABORAZIONE);
-    		fields.add(Tracciato.model().DESCRIZIONE_STATO);
-    		fields.add(Tracciato.model().NUM_LINEE_TOTALI);
-    		fields.add(Tracciato.model().NUM_OPERAZIONI_OK);
-    		fields.add(Tracciato.model().NUM_OPERAZIONI_KO);
-    		fields.add(Tracciato.model().NOME_FILE);
-    		fields.add(Tracciato.model().RAW_DATA_RICHIESTA);
-    		fields.add(Tracciato.model().RAW_DATA_RISPOSTA);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-                Object idOperatoreObject = map.remove("id_operatore");
-                Object idApplicazioneObject = map.remove("id_applicazione");
+				Object idOperatoreObj = map.remove("id_operatore");
 
-                Tracciato tracciato = (Tracciato)this.getTracciatoFetch().fetch(jdbcProperties.getDatabase(), Tracciato.model(), map);
+				Tracciato tracciato = (Tracciato)this.getTracciatoFetch().fetch(jdbcProperties.getDatabase(), Tracciato.model(), map);
+				
+				
+				if(idOperatoreObj instanceof Long) {
 
-        		if(idMappingResolutionBehaviour==null ||
-        				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-        			){
+					Long idOperatore = (Long) idOperatoreObj;
+					it.govpay.orm.IdOperatore id_tracciato_operatore = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_tracciato_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findId(idOperatore, false);
+					}else{
+						id_tracciato_operatore = new it.govpay.orm.IdOperatore();
+					}
+					id_tracciato_operatore.setId(idOperatore);
+					tracciato.setIdOperatore(id_tracciato_operatore);
+					
+				}
 
-    				if(idOperatoreObject instanceof Long) {
-        				Long idFK_tracciato_operatore = (Long) idOperatoreObject;
-        				
-        				it.govpay.orm.IdOperatore id_tracciato_operatore = null;
-        				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-        					id_tracciato_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findId(idFK_tracciato_operatore, false);
-        				}else{
-        					id_tracciato_operatore = new it.govpay.orm.IdOperatore();
-        				}
-        				id_tracciato_operatore.setId(idFK_tracciato_operatore);
-        				tracciato.setIdOperatore(id_tracciato_operatore);
-    				}
-
-    				if(idApplicazioneObject instanceof Long) {
-        				Long idFK_tracciato_applicazione = (Long) idApplicazioneObject;
-        				
-        				it.govpay.orm.IdApplicazione id_tracciato_applicazione = null;
-        				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-        					id_tracciato_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_tracciato_applicazione, false);
-        				}else{
-        					id_tracciato_applicazione = new it.govpay.orm.IdApplicazione();
-        				}
-        				id_tracciato_applicazione.setId(idFK_tracciato_applicazione);
-        				tracciato.setIdApplicazione(id_tracciato_applicazione);
-    				}
-        			}
-
-                list.add(tracciato);
-
+				
+				list.add(tracciato);
 			}
 		} catch(NotFoundException e) {}
 
-        return list;  
+        return list;      
 		
 	}
 	
@@ -246,7 +219,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		
 		sqlQueryObject.addSelectCountField(this.getTracciatoFieldConverter().toTable(Tracciato.model())+".id","tot",true);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 																			this.getTracciatoFieldConverter(), Tracciato.model(),listaQuery);
@@ -293,7 +266,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 												this.getTracciatoFieldConverter(), field);
 
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
@@ -314,7 +287,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
@@ -331,7 +304,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
@@ -348,7 +321,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
@@ -356,18 +329,18 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
+		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
-		List<Object> listaQuery = new ArrayList<Object>();
-		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
+		List<Object> listaQuery = new ArrayList<>();
+		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getTracciatoFieldConverter(), Tracciato.model(), 
         						listaQuery,listaParams);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
@@ -385,8 +358,8 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getTracciatoFieldConverter(), Tracciato.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -395,7 +368,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -414,8 +387,8 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getTracciatoFieldConverter(), Tracciato.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -424,7 +397,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -486,13 +459,13 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciato id, Tracciato obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Tracciato obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
 	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Tracciato obj, Tracciato imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
@@ -500,10 +473,6 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdOperatore()!=null && 
-				imgSaved.getIdOperatore()!=null){
-			obj.getIdOperatore().setId(imgSaved.getIdOperatore().getId());
-		}
 
 	}
 	
@@ -514,15 +483,14 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	
 	private Tracciato _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		IField idField = new CustomField("id", Long.class, "id", this.getTracciatoFieldConverter().toTable(Tracciato.model()));
+		IModel<?> model = Tracciato.model();
+		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(model));
+
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
-		
+
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
-				
 		List<Tracciato> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
-		
+
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
 
@@ -550,7 +518,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getTracciatoFieldConverter().toTable(Tracciato.model()));
-		sqlQueryObject.addSelectField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DATA_CARICAMENTO,true));
+		sqlQueryObject.addSelectField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
@@ -564,18 +532,11 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
-		if(expression.inUseModel(Tracciato.model().ID_OPERATORE,false)){
-			String tableName1 = this.getTracciatoFieldConverter().toAliasTable(Tracciato.model());
-			String tableName2 = this.getTracciatoFieldConverter().toAliasTable(Tracciato.model().ID_OPERATORE);
-			sqlQueryObject.addWhereCondition(tableName1+".ID_OPERATORE="+tableName2+".id");
-		}
-        
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTracciato id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
-        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
+        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
 		Long longId = this.findIdTracciato(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
         
@@ -585,28 +546,22 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		TracciatoFieldConverter converter = this.getTracciatoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
-		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		// Tracciato.model()
 		mapTableToPKColumn.put(converter.toTable(Tracciato.model()),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Tracciato.model()))
 			));
-
-		// Tracciato.model().ID_OPERATORE
-		mapTableToPKColumn.put(converter.toTable(Tracciato.model().ID_OPERATORE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Tracciato.model().ID_OPERATORE))
-			));
-
+        
         return mapTableToPKColumn;		
 	}
 	
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 		
-		List<Long> list = new ArrayList<Long>();
+		List<Long> list = new ArrayList<>();
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
@@ -616,7 +571,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getTracciatoFieldConverter(), Tracciato.model());
 		
-		_join(paginatedExpression,sqlQueryObject);
+		this._join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 																			this.getTracciatoFieldConverter(), Tracciato.model(), objectIdClass, listaQuery);
@@ -639,7 +594,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getTracciatoFieldConverter(), Tracciato.model());
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 														this.getTracciatoFieldConverter(), Tracciato.model(), objectIdClass, listaQuery);
@@ -661,7 +616,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
-		
+
         return inUse;
 
 	}
@@ -686,7 +641,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tracciato = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_tracciato = new ArrayList<Class<?>>();
+		List<Class<?>> listaFieldIdReturnType_tracciato = new ArrayList<>();
 		listaFieldIdReturnType_tracciato.add(Long.class);
 
 		it.govpay.orm.IdTracciato id_tracciato = null;
@@ -700,7 +655,8 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		else{
 			// set _tracciato
 			id_tracciato = new it.govpay.orm.IdTracciato();
-			id_tracciato.setIdTracciato((Long)listaFieldId_tracciato.get(0));
+			id_tracciato.setId((Long) listaFieldId_tracciato.get(0));
+			id_tracciato.setIdTracciato((Long) listaFieldId_tracciato.get(0));
 		}
 		
 		return id_tracciato;
@@ -740,7 +696,7 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		// Recupero _tracciato
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tracciato = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdTracciato(),Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getId(),Long.class),
 		};
 		Long id_tracciato = null;
 		try{

@@ -19,17 +19,11 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.IdOperatore;
-import it.govpay.orm.Operatore;
-import it.govpay.orm.dao.jdbc.converter.OperatoreFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.OperatoreFetch;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -51,6 +45,12 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
+
+import it.govpay.orm.IdOperatore;
+import it.govpay.orm.Operatore;
+import it.govpay.orm.dao.jdbc.converter.OperatoreFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.OperatoreFetch;
 
 /**     
  * JDBCOperatoreServiceSearchImpl
@@ -80,7 +80,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getOperatoreFetch();
+		return this.getOperatoreFetch();
 	}
 	
 	
@@ -101,7 +101,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	public IdOperatore convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Operatore operatore) throws NotImplementedException, ServiceException, Exception{
 	
 		IdOperatore idOperatore = new IdOperatore();
-		idOperatore.setPrincipal(operatore.getPrincipal());
+		idOperatore.setPrincipal(operatore.getIdUtenza().getPrincipal());
 	
 		return idOperatore;
 	}
@@ -129,11 +129,11 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-		List<IdOperatore> list = new ArrayList<IdOperatore>();
+		List<IdOperatore> list = new ArrayList<>();
 
 		try{
-			List<IField> fields = new ArrayList<IField>();
-			fields.add(Operatore.model().PRINCIPAL);
+			List<IField> fields = new ArrayList<>();
+			fields.add(Operatore.model().ID_UTENZA.PRINCIPAL);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -153,22 +153,34 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-		List<Operatore> list = new ArrayList<Operatore>();
+		List<Operatore> list = new ArrayList<>();
 
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getOperatoreFieldConverter().toTable(Operatore.model())));
-
-			fields.add(Operatore.model().PRINCIPAL);
+			fields.add(new CustomField("id_utenza", Long.class, "id_utenza", this.getOperatoreFieldConverter().toTable(Operatore.model())));
 			fields.add(Operatore.model().NOME);
-			fields.add(Operatore.model().PROFILO);
-			fields.add(Operatore.model().ABILITATO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
 			for(Map<String, Object> map: returnMap) {
 				
 				Operatore operatore = (Operatore)this.getOperatoreFetch().fetch(jdbcProperties.getDatabase(), Operatore.model(), map);
+				if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+					){
+						// Object _operatore_utenza (recupero id)
+						Long idFK_operatore_utenza = (Long) map.get("id_utenza");
+						
+						it.govpay.orm.IdUtenza id_operatore_utenza = null;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_operatore_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findId(idFK_operatore_utenza, false);
+						}else{
+							id_operatore_utenza = new it.govpay.orm.IdUtenza();
+						}
+						id_operatore_utenza.setId(idFK_operatore_utenza);
+						operatore.setIdUtenza(id_operatore_utenza);
+					}
 				
 				list.add(operatore);
 	        }
@@ -199,7 +211,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		
 		sqlQueryObject.addSelectCountField(this.getOperatoreFieldConverter().toTable(Operatore.model())+".id","tot",true);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 																			this.getOperatoreFieldConverter(), Operatore.model(),listaQuery);
@@ -246,7 +258,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 												this.getOperatoreFieldConverter(), field);
 
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
@@ -267,7 +279,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
@@ -284,7 +296,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
@@ -301,7 +313,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
@@ -309,18 +321,18 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
+		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
-		List<Object> listaQuery = new ArrayList<Object>();
-		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
+		List<Object> listaQuery = new ArrayList<>();
+		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getOperatoreFieldConverter(), Operatore.model(), 
         						listaQuery,listaParams);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
@@ -338,8 +350,8 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getOperatoreFieldConverter(), Operatore.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -348,7 +360,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -367,8 +379,8 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getOperatoreFieldConverter(), Operatore.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -377,7 +389,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -439,13 +451,13 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdOperatore id, Operatore obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Operatore obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
 	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Operatore obj, Operatore imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
@@ -462,36 +474,20 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	
 	private Operatore _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Operatore.model()));
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
+		expression.equals(idField, tableId);
+		List<Operatore> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
 				
-		Operatore operatore = new Operatore();
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 		
 
-		// Object operatore
-		ISQLQueryObject sqlQueryObjectGet_operatore = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_operatore.setANDLogicOperator(true);
-		sqlQueryObjectGet_operatore.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
-		sqlQueryObjectGet_operatore.addSelectField("id");
-		sqlQueryObjectGet_operatore.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,true));
-		sqlQueryObjectGet_operatore.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().NOME,true));
-		sqlQueryObjectGet_operatore.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PROFILO,true));
-		sqlQueryObjectGet_operatore.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().ABILITATO,true));
-		sqlQueryObjectGet_operatore.addWhereCondition("id=?");
-
-		// Get operatore
-		operatore = (Operatore) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_operatore.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model(), this.getOperatoreFetch(),
-			new JDBCObject(tableId,Long.class));
-
-
-        return operatore;  
+		return lst.get(0);
 	
 	} 
 	
@@ -511,7 +507,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
-		sqlQueryObject.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,true));
+		sqlQueryObject.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().NOME,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
@@ -525,12 +521,18 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
+		
+		if(expression.inUseModel(Operatore.model().ID_UTENZA,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(Operatore.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(Operatore.model().ID_UTENZA);
+			sqlQueryObject.addWhereCondition(tableName1+".id_utenza="+tableName2+".id");
+		}
+
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdOperatore id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
-        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
+        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
 		Long longId = this.findIdOperatore(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
         
@@ -540,8 +542,8 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		OperatoreFieldConverter converter = this.getOperatoreFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
-		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map
 
@@ -558,7 +560,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 		
-		List<Long> list = new ArrayList<Long>();
+		List<Long> list = new ArrayList<>();
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
@@ -568,7 +570,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getOperatoreFieldConverter(), Operatore.model());
 		
-		_join(paginatedExpression,sqlQueryObject);
+		this._join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 																			this.getOperatoreFieldConverter(), Operatore.model(), objectIdClass, listaQuery);
@@ -591,7 +593,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getOperatoreFieldConverter(), Operatore.model());
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 														this.getOperatoreFieldConverter(), Operatore.model(), objectIdClass, listaQuery);
@@ -636,17 +638,19 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		// Object _operatore
 		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
-		sqlQueryObjectGet.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,true));
+		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA));
+		sqlQueryObjectGet.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().ID_UTENZA.PRINCIPAL,true));
 
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.addWhereCondition("id=?");
+		sqlQueryObjectGet.addWhereCondition(this.getOperatoreFieldConverter().toTable(Operatore.model())+".id=?");
+		sqlQueryObjectGet.addWhereCondition(this.getOperatoreFieldConverter().toTable(Operatore.model())+".id_utenza="+this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA) + ".id");
 
 		// Recupero _operatore
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_operatore = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_operatore = new ArrayList<Class<?>>();
-		listaFieldIdReturnType_operatore.add(Operatore.model().PRINCIPAL.getFieldType());
+		List<Class<?>> listaFieldIdReturnType_operatore = new ArrayList<>();
+		listaFieldIdReturnType_operatore.add(Operatore.model().ID_UTENZA.PRINCIPAL.getFieldType());
 
 		it.govpay.orm.IdOperatore id_operatore = null;
 		List<Object> listaFieldId_operatore = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
@@ -691,14 +695,16 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		// Object _operatore
 		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
-		sqlQueryObjectGet.addSelectField("id");
+		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA));
+		sqlQueryObjectGet.addSelectField(this.getOperatoreFieldConverter().toTable(Operatore.model())+".id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
-		sqlQueryObjectGet.addWhereCondition(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,true)+"=?");
+//		sqlQueryObjectGet.setSelectDistinct(true);
+		sqlQueryObjectGet.addWhereCondition(this.getOperatoreFieldConverter().toTable(Operatore.model())+".id_utenza="+this.getOperatoreFieldConverter().toTable(Operatore.model().ID_UTENZA) + ".id");
+		sqlQueryObjectGet.addWhereCondition(this.getOperatoreFieldConverter().toColumn(Operatore.model().ID_UTENZA.PRINCIPAL,true)+"=?");
 
 		// Recupero _operatore
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_operatore = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getPrincipal(),Operatore.model().PRINCIPAL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getPrincipal(),Operatore.model().ID_UTENZA.PRINCIPAL.getFieldType()),
 		};
 		Long id_operatore = null;
 		try{

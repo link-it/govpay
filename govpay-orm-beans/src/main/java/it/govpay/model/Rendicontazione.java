@@ -41,7 +41,7 @@ public class Rendicontazione extends BasicModel {
 		}
 
 		public int getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 
 		public static EsitoRendicontazione toEnum(String codifica) throws ServiceException {
@@ -72,56 +72,59 @@ public class Rendicontazione extends BasicModel {
 	private List<Anomalia> anomalie;
 	private long idFr;
 	private Long idPagamento;
+	private Long idSingoloVersamento;
+	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public String getIur() {
-		return iur;
+		return this.iur;
 	}
 	public void setIur(String iur) {
 		this.iur = iur;
 	}
 	public BigDecimal getImporto() {
-		return importo;
+		return this.importo;
 	}
 	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
 	public EsitoRendicontazione getEsito() {
-		return esito;
+		return this.esito;
 	}
 	public void setEsito(EsitoRendicontazione esito) {
 		this.esito = esito;
 	}
 	public StatoRendicontazione getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(StatoRendicontazione stato) {
 		this.stato = stato;
 	}
 	public long getIdFr() {
-		return idFr;
+		return this.idFr;
 	}
 	public void setIdFr(long idFr) {
 		this.idFr = idFr;
 	}
 	public Long getIdPagamento() {
-		return idPagamento;
+		return this.idPagamento;
 	}
 	public void setIdPagamento(Long idPagamento) {
 		this.idPagamento = idPagamento;
 	}
 	public Date getData() {
-		return data;
+		return this.data;
 	}
 	public void setData(Date data) {
 		this.data = data;
@@ -132,22 +135,22 @@ public class Rendicontazione extends BasicModel {
 		String descrizione;
 		
 		public String getCodice(){
-			return codAnomalia;
+			return this.codAnomalia;
 		}
 		
 		public String getDescrizione(){
-			return descrizione;
+			return this.descrizione;
 		}
 	}
 	
 	public List<Anomalia> getAnomalie() {
-		if(anomalie == null)
-			anomalie = new ArrayList<Anomalia>();
-		return anomalie;
+		if(this.anomalie == null)
+			this.anomalie = new ArrayList<>();
+		return this.anomalie;
 	}
 	
 	public String getAnomalieString() {
-		return marshall(getAnomalie());
+		return this.marshall(this.getAnomalie());
 	}
 	
 	public void setAnomalie(List<Anomalia> anomalie) {
@@ -155,14 +158,14 @@ public class Rendicontazione extends BasicModel {
 	}
 	
 	public void setAnomalie(String anomalie) {
-		this.anomalie = unmarshall(anomalie);
+		this.anomalie = this.unmarshall(anomalie);
 	}
 	
 	public void addAnomalia(String codAnomalia, String descrizione) {
 		Anomalia a = new Anomalia();
 		a.codAnomalia = codAnomalia;
 		a.descrizione = descrizione;
-		getAnomalie().add(a);
+		this.getAnomalie().add(a);
 	}
 	
 	private String marshall(List<Anomalia> anomalie) {
@@ -182,7 +185,7 @@ public class Rendicontazione extends BasicModel {
 	}
 	
 	private List<Anomalia> unmarshall(String anomalie) {
-		List<Anomalia> list = new ArrayList<Anomalia>();
+		List<Anomalia> list = new ArrayList<>();
 		
 		if(anomalie == null || anomalie.isEmpty()) return list;
 		
@@ -197,10 +200,16 @@ public class Rendicontazione extends BasicModel {
 		return list;
 	}
 	public Integer getIndiceDati() {
-		return indiceDati;
+		return this.indiceDati;
 	}
 	public void setIndiceDati(Integer indiceDati) {
 		this.indiceDati = indiceDati;
+	}
+	public Long getIdSingoloVersamento() {
+		return idSingoloVersamento;
+	}
+	public void setIdSingoloVersamento(Long idSingoloVersamento) {
+		this.idSingoloVersamento = idSingoloVersamento;
 	}
 	
 }

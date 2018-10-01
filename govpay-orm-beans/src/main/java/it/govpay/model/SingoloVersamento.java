@@ -41,7 +41,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 			this.codifica = codifica;
 		}
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		public static TipoBollo toEnum(String codifica) throws ServiceException {
 			for(TipoBollo p : TipoBollo.values()){
@@ -62,13 +62,17 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private String hashDocumento;
 	private String provinciaResidenza;
 	private Long idIbanAccredito;
-	private Tributo.TipoContabilta tipoContabilita;
+	private Long idIbanAppoggio;
+	private Tributo.TipoContabilita tipoContabilita;
 	private String codContabilita;
-	private String note;
+	private String datiAllegati;
+	private String descrizione;
+	private Integer indiceDati;
 	
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {
@@ -76,7 +80,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public Long getIdTributo() {
-		return idTributo;
+		return this.idTributo;
 	}
 
 	public void setIdTributo(Long idTributo) {
@@ -84,7 +88,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public Long getIdVersamento() {
-		return idVersamento;
+		return this.idVersamento;
 	}
 
 	public void setIdVersamento(long idVersamento) {
@@ -92,7 +96,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public String getCodSingoloVersamentoEnte() {
-		return codSingoloVersamentoEnte;
+		return this.codSingoloVersamentoEnte;
 	}
 
 	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
@@ -100,7 +104,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public StatoSingoloVersamento getStatoSingoloVersamento() {
-		return statoSingoloVersamento;
+		return this.statoSingoloVersamento;
 	}
 
 	public void setStatoSingoloVersamento(
@@ -109,7 +113,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public BigDecimal getImportoSingoloVersamento() {
-		return importoSingoloVersamento;
+		return this.importoSingoloVersamento;
 	}
 
 	public void setImportoSingoloVersamento(BigDecimal importoSingoloVersamento) {
@@ -117,7 +121,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public TipoBollo getTipoBollo() {
-		return tipoBollo;
+		return this.tipoBollo;
 	}
 
 	public void setTipoBollo(TipoBollo tipoBollo) {
@@ -125,7 +129,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public String getHashDocumento() {
-		return hashDocumento;
+		return this.hashDocumento;
 	}
 
 	public void setHashDocumento(String hashDocumento) {
@@ -133,7 +137,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 
 	public String getProvinciaResidenza() {
-		return provinciaResidenza;
+		return this.provinciaResidenza;
 	}
 
 	public void setProvinciaResidenza(String provinciaResidenza) {
@@ -141,39 +145,65 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 	
 	public Long getIdIbanAccredito() {
-		return idIbanAccredito;
+		return this.idIbanAccredito;
 	}
 
 	public void setIdIbanAccredito(Long idIbanAccredito) {
 		this.idIbanAccredito = idIbanAccredito;
 	}
 
-	public Tributo.TipoContabilta getTipoContabilita() {
-		return tipoContabilita;
+	public Tributo.TipoContabilita getTipoContabilita() {
+		return this.tipoContabilita;
 	}
 
-	public void setTipoContabilita(Tributo.TipoContabilta tipoContabilita) {
+	public void setTipoContabilita(Tributo.TipoContabilita tipoContabilita) {
 		this.tipoContabilita = tipoContabilita;
 	}
 
 	public String getCodContabilita() {
-		return codContabilita;
+		return this.codContabilita;
 	}
 
 	public void setCodContabilita(String codContabilita) {
 		this.codContabilita = codContabilita;
 	}
 	
-	public String getNote() {
-		return note;
+	public String getDatiAllegati() {
+		return this.datiAllegati;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
+	public void setDatiAllegati(String datiAllegati) {
+		this.datiAllegati = datiAllegati;
 	}
+
+	public String getDescrizione() {
+		return this.descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
+	}
+
 	@Override
 	public int compareTo(SingoloVersamento sv) {
-		return codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
+		return this.codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
 	}
+
+	public Long getIdIbanAppoggio() {
+		return this.idIbanAppoggio;
+	}
+
+	public void setIdIbanAppoggio(Long idIbanAppoggio) {
+		this.idIbanAppoggio = idIbanAppoggio;
+	}
+
+	public Integer getIndiceDati() {
+		return indiceDati;
+	}
+
+	public void setIndiceDati(Integer indiceDati) {
+		this.indiceDati = indiceDati;
+	}
+	
 }
 

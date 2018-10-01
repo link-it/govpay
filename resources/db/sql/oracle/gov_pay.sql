@@ -1,78 +1,10 @@
-CREATE SEQUENCE seq_psp MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE psp
-(
-	cod_psp VARCHAR2(35 CHAR) NOT NULL,
-	ragione_sociale VARCHAR2(70 CHAR) NOT NULL,
-	url_info VARCHAR2(255 CHAR),
-	abilitato NUMBER NOT NULL,
-	storno NUMBER NOT NULL,
-	marca_bollo NUMBER NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_psp_1 UNIQUE (cod_psp),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_psp PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_psp
-BEFORE
-insert on psp
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_psp.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_canali MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE canali
-(
-	cod_canale VARCHAR2(35 CHAR) NOT NULL,
-	cod_intermediario VARCHAR2(35 CHAR) NOT NULL,
-	tipo_versamento VARCHAR2(4 CHAR) NOT NULL,
-	modello_pagamento NUMBER NOT NULL,
-	disponibilita CLOB,
-	descrizione CLOB,
-	condizioni VARCHAR2(35 CHAR),
-	url_info VARCHAR2(255 CHAR),
-	abilitato NUMBER NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_psp NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_canali_1 UNIQUE (id_psp,cod_canale,tipo_versamento),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_can_id_psp FOREIGN KEY (id_psp) REFERENCES psp(id),
-	CONSTRAINT pk_canali PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_canali
-BEFORE
-insert on canali
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_canali.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_intermediari MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR2(35 CHAR) NOT NULL,
 	cod_connettore_pdd VARCHAR2(35 CHAR) NOT NULL,
+	cod_connettore_ftp VARCHAR2(35 CHAR),
 	denominazione VARCHAR2(255 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
@@ -106,8 +38,8 @@ CREATE TABLE stazioni
 	abilitato NUMBER NOT NULL,
 	application_code NUMBER NOT NULL,
 	ndp_stato NUMBER,
-	ndp_operazione VARCHAR(256),
-	ndp_descrizione VARCHAR(1024),
+	ndp_operazione VARCHAR2(256 CHAR),
+	ndp_descrizione VARCHAR2(1024 CHAR),
 	ndp_data TIMESTAMP,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -133,30 +65,60 @@ end;
 
 
 
+CREATE SEQUENCE seq_utenze MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE utenze
+(
+	principal VARCHAR2(4000 CHAR) NOT NULL,
+	principal_originale VARCHAR2(4000 CHAR) NOT NULL,
+	abilitato NUMBER NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_utenze_1 UNIQUE (principal),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_utenze PRIMARY KEY (id)
+);
+
+
+ALTER TABLE utenze MODIFY abilitato DEFAULT 1;
+
+CREATE TRIGGER trg_utenze
+BEFORE
+insert on utenze
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_utenze.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_applicazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE applicazioni
 (
 	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
-	abilitato NUMBER NOT NULL,
-	principal VARCHAR2(255 CHAR) NOT NULL,
+	auto_iuv NUMBER NOT NULL,
 	firma_ricevuta VARCHAR2(1 CHAR) NOT NULL,
 	cod_connettore_esito VARCHAR2(255 CHAR),
 	cod_connettore_verifica VARCHAR2(255 CHAR),
-	versione VARCHAR2(10 CHAR) NOT NULL,
 	trusted NUMBER NOT NULL,
 	cod_applicazione_iuv VARCHAR2(3 CHAR),
+	reg_exp VARCHAR2(1024 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_utenza NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_applicazioni_1 UNIQUE (cod_applicazione),
-	CONSTRAINT unique_applicazioni_2 UNIQUE (principal),
+	CONSTRAINT unique_applicazioni_2 UNIQUE (id_utenza),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_app_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
 );
-
-
-ALTER TABLE applicazioni MODIFY versione DEFAULT '2.1';
 
 CREATE TRIGGER trg_applicazioni
 BEFORE
@@ -180,19 +142,15 @@ CREATE TABLE domini
 	gln VARCHAR2(35 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	ragione_sociale VARCHAR2(70 CHAR) NOT NULL,
-	xml_conti_accredito BLOB NOT NULL,
-	xml_tabella_controparti BLOB NOT NULL,
-	riuso_iuv NUMBER NOT NULL,
-	custom_iuv NUMBER NOT NULL,
 	aux_digit NUMBER NOT NULL,
 	iuv_prefix VARCHAR2(255 CHAR),
-	iuv_prefix_strict NUMBER NOT NULL,
 	segregation_code NUMBER,
 	ndp_stato NUMBER,
-	ndp_operazione VARCHAR(256),
-	ndp_descrizione VARCHAR(1024),
+	ndp_operazione VARCHAR2(256 CHAR),
+	ndp_descrizione VARCHAR2(1024 CHAR),
 	ndp_data TIMESTAMP,
 	logo BLOB,
+	cbill VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,
@@ -207,7 +165,6 @@ CREATE TABLE domini
 
 
 ALTER TABLE domini MODIFY aux_digit DEFAULT 0;
-ALTER TABLE domini MODIFY iuv_prefix_strict DEFAULT 0;
 
 CREATE TRIGGER trg_domini
 BEFORE
@@ -223,152 +180,12 @@ end;
 
 
 
-CREATE SEQUENCE seq_uo MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE uo
-(
-	cod_uo VARCHAR2(35 CHAR) NOT NULL,
-	abilitato NUMBER NOT NULL,
-	uo_codice_identificativo VARCHAR2(35 CHAR),
-	uo_denominazione VARCHAR2(70 CHAR),
-	uo_indirizzo VARCHAR2(70 CHAR),
-	uo_civico VARCHAR2(16 CHAR),
-	uo_cap VARCHAR2(16 CHAR),
-	uo_localita VARCHAR2(35 CHAR),
-	uo_provincia VARCHAR2(35 CHAR),
-	uo_nazione VARCHAR2(2 CHAR),
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_dominio NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_uo PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_uo
-BEFORE
-insert on uo
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_uo.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_operatori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE operatori
-(
-	principal VARCHAR2(255 CHAR) NOT NULL,
-	nome VARCHAR2(35 CHAR) NOT NULL,
-	profilo VARCHAR2(1024 CHAR) NOT NULL,
-	abilitato NUMBER NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_operatori_1 UNIQUE (principal),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_operatori PRIMARY KEY (id)
-);
-
-
-ALTER TABLE operatori MODIFY abilitato DEFAULT 1;
-
-CREATE TRIGGER trg_operatori
-BEFORE
-insert on operatori
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_operatori.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_connettori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE connettori
-(
-	cod_connettore VARCHAR2(255 CHAR) NOT NULL,
-	cod_proprieta VARCHAR2(255 CHAR) NOT NULL,
-	valore VARCHAR2(255 CHAR) NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_connettori PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_connettori
-BEFORE
-insert on connettori
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_connettori.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_portali MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE portali
-(
-	cod_portale VARCHAR2(35 CHAR) NOT NULL,
-	default_callback_url VARCHAR2(512 CHAR) NOT NULL,
-	principal VARCHAR2(255 CHAR) NOT NULL,
-	versione VARCHAR2(10 CHAR) NOT NULL,
-	trusted NUMBER NOT NULL,
-	abilitato NUMBER NOT NULL,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_portali_1 UNIQUE (cod_portale),
-	CONSTRAINT unique_portali_2 UNIQUE (principal),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_portali PRIMARY KEY (id)
-);
-
-
-ALTER TABLE portali MODIFY versione DEFAULT '2.1';
-
-CREATE TRIGGER trg_portali
-BEFORE
-insert on portali
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_portali.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_iban_accredito MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE iban_accredito
 (
 	cod_iban VARCHAR2(255 CHAR) NOT NULL,
-	id_seller_bank VARCHAR2(255 CHAR),
-	id_negozio VARCHAR2(255 CHAR),
 	bic_accredito VARCHAR2(255 CHAR),
-	iban_appoggio VARCHAR2(255 CHAR),
-	bic_appoggio VARCHAR2(255 CHAR),
 	postale NUMBER NOT NULL,
 	attivato NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
@@ -439,12 +256,14 @@ CREATE TABLE tributi
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
 	id_iban_accredito NUMBER,
+	id_iban_appoggio NUMBER,
 	id_tipo_tributo NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trb_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_trb_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_trb_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
 	CONSTRAINT fk_trb_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
 );
@@ -463,27 +282,155 @@ end;
 
 
 
-CREATE SEQUENCE seq_ruoli MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+CREATE SEQUENCE seq_utenze_domini MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
-CREATE TABLE ruoli
+CREATE TABLE utenze_domini
 (
-	cod_ruolo VARCHAR(35) NOT NULL,
-	descrizione VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
+	id_utenza NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT pk_ruoli PRIMARY KEY (id)
+	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
 );
 
-CREATE TRIGGER trg_ruoli
+CREATE TRIGGER trg_utenze_domini
 BEFORE
-insert on ruoli
+insert on utenze_domini
 for each row
 begin
    IF (:new.id IS NULL) THEN
-      SELECT seq_ruoli.nextval INTO :new.id
+      SELECT seq_utenze_domini.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_utenze_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE utenze_tributi
+(
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_utenza NUMBER NOT NULL,
+	id_tributo NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzt_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_utenze_tributi
+BEFORE
+insert on utenze_tributi
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_utenze_tributi.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_uo MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE uo
+(
+	cod_uo VARCHAR2(35 CHAR) NOT NULL,
+	abilitato NUMBER NOT NULL,
+	uo_codice_identificativo VARCHAR2(35 CHAR),
+	uo_denominazione VARCHAR2(70 CHAR),
+	uo_indirizzo VARCHAR2(70 CHAR),
+	uo_civico VARCHAR2(16 CHAR),
+	uo_cap VARCHAR2(16 CHAR),
+	uo_localita VARCHAR2(35 CHAR),
+	uo_provincia VARCHAR2(35 CHAR),
+	uo_nazione VARCHAR2(2 CHAR),
+	uo_area VARCHAR2(255 CHAR),
+	uo_url_sito_web VARCHAR2(255 CHAR),
+	uo_email VARCHAR2(255 CHAR),
+	uo_pec VARCHAR2(255 CHAR),
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_uo PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_uo
+BEFORE
+insert on uo
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_uo.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_operatori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE operatori
+(
+	nome VARCHAR2(35 CHAR) NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_utenza NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_operatori_1 UNIQUE (id_utenza),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_opr_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT pk_operatori PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_operatori
+BEFORE
+insert on operatori
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_operatori.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_connettori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE connettori
+(
+	cod_connettore VARCHAR2(255 CHAR) NOT NULL,
+	cod_proprieta VARCHAR2(255 CHAR) NOT NULL,
+	valore VARCHAR2(255 CHAR) NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_connettori PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_connettori
+BEFORE
+insert on connettori
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_connettori.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -495,30 +442,15 @@ CREATE SEQUENCE seq_acl MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INC
 
 CREATE TABLE acl
 (
-	cod_tipo VARCHAR2(1 CHAR) NOT NULL,
-	diritti NUMBER,
-	cod_servizio VARCHAR2(35 CHAR) NOT NULL,
-	amministratore NUMBER NOT NULL,
+	ruolo VARCHAR2(255 CHAR),
+	principal VARCHAR2(255 CHAR),
+	servizio VARCHAR2(255 CHAR) NOT NULL,
+	diritti VARCHAR2(255 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_applicazione NUMBER,
-	id_portale NUMBER,
-	id_operatore NUMBER,
-	id_ruolo NUMBER,
-	id_dominio NUMBER,
-	id_tipo_tributo NUMBER,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_acl_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
-	CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
-	CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_acl_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
-
-
-ALTER TABLE acl MODIFY amministratore DEFAULT 0;
 
 CREATE TRIGGER trg_acl
 BEFORE
@@ -534,20 +466,60 @@ end;
 
 
 
+CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE tracciati
+(
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	tipo VARCHAR2(10 CHAR) NOT NULL,
+	stato VARCHAR2(12 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(256 CHAR),
+	data_caricamento TIMESTAMP NOT NULL,
+	data_completamento TIMESTAMP,
+	bean_dati CLOB,
+	file_name_richiesta VARCHAR2(256 CHAR),
+	raw_richiesta BLOB,
+	file_name_esito VARCHAR2(256 CHAR),
+	raw_esito BLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_operatore NUMBER,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_tracciati
+BEFORE
+insert on tracciati
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_tracciati.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR2(35 CHAR) NOT NULL,
+	nome VARCHAR2(35 CHAR),
 	importo_totale BINARY_DOUBLE NOT NULL,
 	stato_versamento VARCHAR2(35 CHAR) NOT NULL,
 	descrizione_stato VARCHAR2(255 CHAR),
 	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto
 	aggiornabile NUMBER NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
+	data_validita TIMESTAMP,
 	data_scadenza TIMESTAMP,
 	data_ora_ultimo_aggiornamento TIMESTAMP NOT NULL,
 	causale_versamento VARCHAR2(1024 CHAR),
+	debitore_tipo VARCHAR2(1 CHAR),
 	debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
 	debitore_anagrafica VARCHAR2(70 CHAR) NOT NULL,
 	debitore_indirizzo VARCHAR2(70 CHAR),
@@ -560,19 +532,37 @@ CREATE TABLE versamenti
 	debitore_telefono VARCHAR2(35 CHAR),
 	debitore_cellulare VARCHAR2(35 CHAR),
 	debitore_fax VARCHAR2(35 CHAR),
+	tassonomia_avviso VARCHAR2(35 CHAR),
+	tassonomia VARCHAR2(35 CHAR),
 	cod_lotto VARCHAR2(35 CHAR),
 	cod_versamento_lotto VARCHAR2(35 CHAR),
 	cod_anno_tributario VARCHAR2(35 CHAR),
 	cod_bundlekey VARCHAR2(256 CHAR),
+	dati_allegati CLOB,
+	incasso VARCHAR2(1 CHAR),
+	anomalie CLOB,
+	iuv_versamento VARCHAR2(35 CHAR),
+	numero_avviso VARCHAR2(35 CHAR),
+	avvisatura VARCHAR2(1 CHAR),
+	tipo_pagamento NUMBER,
+	da_avvisare NUMBER NOT NULL,
+	cod_avvisatura VARCHAR2(20 CHAR),
+	ack NUMBER NOT NULL,
+	note CLOB,
+	anomalo NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_uo NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	id_uo NUMBER,
 	id_applicazione NUMBER NOT NULL,
+	id_tracciato NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
@@ -606,18 +596,22 @@ CREATE TABLE singoli_versamenti
 	provincia_residenza VARCHAR2(2 CHAR),
 	tipo_contabilita VARCHAR2(1 CHAR),
 	codice_contabilita VARCHAR2(255 CHAR),
-	note VARCHAR2(512 CHAR),
+	descrizione VARCHAR2(256 CHAR),
+	dati_allegati CLOB,
+	indice_dati NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
 	id_tributo NUMBER,
 	id_iban_accredito NUMBER,
+	id_iban_appoggio NUMBER,
 	-- unique constraints
-	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
+	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
 	CONSTRAINT fk_sng_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_sng_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 );
 
@@ -628,6 +622,86 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_singoli_versamenti.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_pagamenti_portale MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE pagamenti_portale
+(
+	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
+	cod_canale VARCHAR2(35 CHAR),
+	nome VARCHAR2(255 CHAR) NOT NULL,
+	importo BINARY_DOUBLE NOT NULL,
+	versante_identificativo VARCHAR2(35 CHAR),
+	id_sessione VARCHAR2(35 CHAR) NOT NULL,
+	id_sessione_portale VARCHAR2(35 CHAR),
+	id_sessione_psp VARCHAR2(35 CHAR),
+	stato VARCHAR2(35 CHAR) NOT NULL,
+	codice_stato VARCHAR2(35 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(1024 CHAR),
+	psp_redirect_url VARCHAR2(1024 CHAR),
+	psp_esito VARCHAR2(255 CHAR),
+	json_request CLOB,
+	wisp_id_dominio VARCHAR2(255 CHAR),
+	wisp_key_pa VARCHAR2(255 CHAR),
+	wisp_key_wisp VARCHAR2(255 CHAR),
+	wisp_html CLOB,
+	data_richiesta TIMESTAMP,
+	url_ritorno VARCHAR2(1024 CHAR),
+	cod_psp VARCHAR2(35 CHAR),
+	tipo_versamento VARCHAR2(4 CHAR),
+	multi_beneficiario VARCHAR2(35 CHAR),
+	ack NUMBER NOT NULL,
+	note CLOB,
+	tipo NUMBER NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_pagamenti_portale
+BEFORE
+insert on pagamenti_portale
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_pagamenti_portale.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_pag_port_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE pag_port_versamenti
+(
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_pagamento_portale NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_ppv_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_ppv_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_pag_port_versamenti PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_pag_port_versamenti
+BEFORE
+insert on pag_port_versamenti
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_pag_port_versamenti.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -681,13 +755,15 @@ CREATE TABLE rpt
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
-	id_portale NUMBER,
+	id_pagamento_portale NUMBER,
+	id_applicazione NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 
@@ -813,6 +889,9 @@ CREATE TABLE iuv
 
 -- index
 CREATE INDEX index_iuv_1 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
+
+ALTER TABLE iuv MODIFY aux_digit DEFAULT 0;
+
 CREATE TRIGGER trg_iuv
 BEFORE
 insert on iuv
@@ -878,11 +957,16 @@ CREATE TABLE incassi
 	data_contabile DATE,
 	data_ora_incasso TIMESTAMP NOT NULL,
 	nome_dispositivo VARCHAR2(512 CHAR),
+	iban_accredito VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
+	id_operatore NUMBER,
+	-- unique constraints
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_incassi PRIMARY KEY (id)
 );
 
@@ -911,7 +995,6 @@ CREATE TABLE pagamenti
 	data_acquisizione TIMESTAMP NOT NULL,
 	iur VARCHAR2(35 CHAR) NOT NULL,
 	data_pagamento TIMESTAMP NOT NULL,
-	iban_accredito VARCHAR2(255 CHAR),
 	commissioni_psp BINARY_DOUBLE,
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
 	tipo_allegato VARCHAR2(2 CHAR),
@@ -923,6 +1006,7 @@ CREATE TABLE pagamenti
 	esito_revoca VARCHAR2(140 CHAR),
 	dati_esito_revoca VARCHAR2(140 CHAR),
 	stato VARCHAR2(35 CHAR),
+	tipo VARCHAR2(35 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_rpt NUMBER,
@@ -971,9 +1055,11 @@ CREATE TABLE rendicontazioni
 	id NUMBER NOT NULL,
 	id_fr NUMBER NOT NULL,
 	id_pagamento NUMBER,
+	id_singolo_versamento NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rnd_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
 	CONSTRAINT fk_rnd_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
+	CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 );
 
@@ -995,22 +1081,22 @@ CREATE SEQUENCE seq_eventi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 
 CREATE TABLE eventi
 (
-	cod_dominio VARCHAR2(35),
-	iuv VARCHAR2(35),
-	ccp VARCHAR2(35),
-	cod_psp VARCHAR2(35),
-	tipo_versamento VARCHAR2(10),
-	componente VARCHAR2(4),
-	categoria_evento VARCHAR2(1),
-	tipo_evento VARCHAR2(35),
-	sottotipo_evento VARCHAR2(35),
-	erogatore VARCHAR2(35),
-	fruitore VARCHAR2(35),
-	cod_stazione VARCHAR2(35),
-	cod_canale VARCHAR2(35),
-	parametri_1 VARCHAR2(512),
-	parametri_2 VARCHAR2(512),
-	esito VARCHAR2(35),
+	cod_dominio VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR),
+	ccp VARCHAR2(35 CHAR),
+	cod_psp VARCHAR2(35 CHAR),
+	tipo_versamento VARCHAR2(10 CHAR),
+	componente VARCHAR2(4 CHAR),
+	categoria_evento VARCHAR2(1 CHAR),
+	tipo_evento VARCHAR2(35 CHAR),
+	sottotipo_evento VARCHAR2(35 CHAR),
+	erogatore VARCHAR2(35 CHAR),
+	fruitore VARCHAR2(35 CHAR),
+	cod_stazione VARCHAR2(35 CHAR),
+	cod_canale VARCHAR2(35 CHAR),
+	parametri_1 VARCHAR2(512 CHAR),
+	parametri_2 VARCHAR2(512 CHAR),
+	esito VARCHAR2(35 CHAR),
 	data_1 TIMESTAMP,
 	data_2 TIMESTAMP,
 	-- fk/pk columns
@@ -1063,40 +1149,32 @@ end;
 
 
 
-CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+CREATE SEQUENCE seq_esiti_avvisatura MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
-CREATE TABLE tracciati
+CREATE TABLE esiti_avvisatura
 (
-	data_caricamento TIMESTAMP NOT NULL,
-	data_ultimo_aggiornamento TIMESTAMP NOT NULL,
-	stato VARCHAR2(255 CHAR) NOT NULL,
-	linea_elaborazione NUMBER NOT NULL,
-	descrizione_stato VARCHAR2(1024) CHAR,
-	num_linee_totali NUMBER NOT NULL,
-	num_operazioni_ok NUMBER NOT NULL,
-	num_operazioni_ko NUMBER NOT NULL,
-	nome_file VARCHAR2(255 CHAR) NOT NULL,
-	raw_data_richiesta BLOB NOT NULL,
-	raw_data_risposta BLOB,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	identificativo_avvisatura VARCHAR2(20 CHAR) NOT NULL,
+	tipo_canale NUMBER NOT NULL,
+	cod_canale VARCHAR2(35 CHAR),
+	data TIMESTAMP NOT NULL,
+	cod_esito NUMBER NOT NULL,
+	descrizione_esito VARCHAR2(140 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_operatore NUMBER,
-	id_applicazione NUMBER,
-	-- check constraints
-	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
+	id_tracciato NUMBER NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
 );
 
-CREATE TRIGGER trg_tracciati
+CREATE TRIGGER trg_esiti_avvisatura
 BEFORE
-insert on tracciati
+insert on esiti_avvisatura
 for each row
 begin
    IF (:new.id IS NULL) THEN
-      SELECT seq_tracciati.nextval INTO :new.id
+      SELECT seq_esiti_avvisatura.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -1108,19 +1186,20 @@ CREATE SEQUENCE seq_operazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WIT
 
 CREATE TABLE operazioni
 (
-	tipo_operazione VARCHAR2(255 CHAR) NOT NULL,
+	tipo_operazione VARCHAR2(16 CHAR) NOT NULL,
 	linea_elaborazione NUMBER NOT NULL,
-	stato VARCHAR2(255 CHAR) NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
 	dati_richiesta BLOB NOT NULL,
 	dati_risposta BLOB,
 	dettaglio_esito VARCHAR2(255 CHAR),
 	cod_versamento_ente VARCHAR2(255 CHAR),
+	cod_dominio VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR),
+	trn VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tracciato NUMBER NOT NULL,
 	id_applicazione NUMBER,
-	-- check constraints
-	CONSTRAINT chk_operazioni_1 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -1171,6 +1250,38 @@ end;
 
 
 
+CREATE SEQUENCE seq_avvisi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE avvisi
+(
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	iuv VARCHAR2(35 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
+	pdf BLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_avvisi PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
+CREATE INDEX index_avvisi_2 ON avvisi (stato);
+CREATE TRIGGER trg_avvisi
+BEFORE
+insert on avvisi
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_avvisi.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE TABLE ID_MESSAGGIO_RELATIVO
 (
 	COUNTER NUMBER NOT NULL,
@@ -1201,3 +1312,61 @@ CREATE TABLE sonde
 	-- fk/pk keys constraints
 	CONSTRAINT pk_sonde PRIMARY KEY (nome)
 );
+
+-- Sezione Viste
+
+CREATE VIEW versamenti_incassi AS SELECT
+versamenti.id as id,
+MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,          
+MAX(versamenti.nome) as nome,                         
+MAX(versamenti.importo_totale) as importo_totale,               
+MAX(versamenti.stato_versamento) as stato_versamento,             
+MAX(versamenti.descrizione_stato) as descrizione_stato,           
+MAX(CASE WHEN versamenti.aggiornabile = 1 THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
+MAX(versamenti.data_creazione) as data_creazione,               
+MAX(versamenti.data_validita) as data_validita,                
+MAX(versamenti.data_scadenza) as data_scadenza,                
+MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
+MAX(versamenti.causale_versamento) as causale_versamento,           
+MAX(versamenti.debitore_tipo) as debitore_tipo,                
+MAX(versamenti.debitore_identificativo) as debitore_identificativo,      
+MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,          
+MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,           
+MAX(versamenti.debitore_civico) as debitore_civico,              
+MAX(versamenti.debitore_cap) as debitore_cap,                 
+MAX(versamenti.debitore_localita) as debitore_localita,            
+MAX(versamenti.debitore_provincia) as debitore_provincia,           
+MAX(versamenti.debitore_nazione) as debitore_nazione,             
+MAX(versamenti.debitore_email) as debitore_email,               
+MAX(versamenti.debitore_telefono) as debitore_telefono,            
+MAX(versamenti.debitore_cellulare) as debitore_cellulare,           
+MAX(versamenti.debitore_fax) as debitore_fax,                 
+MAX(versamenti.tassonomia_avviso) as tassonomia_avviso,            
+MAX(versamenti.tassonomia) as tassonomia,                   
+MAX(versamenti.cod_lotto) as cod_lotto,                    
+MAX(versamenti.cod_versamento_lotto) as cod_versamento_lotto,         
+MAX(versamenti.cod_anno_tributario) as cod_anno_tributario,          
+MAX(versamenti.cod_bundlekey) as cod_bundlekey,                
+MAX(versamenti.dati_allegati) as dati_allegati,                
+MAX(versamenti.incasso) as incasso,                      
+MAX(versamenti.anomalie) as anomalie,                     
+MAX(versamenti.iuv_versamento) as iuv_versamento,               
+MAX(versamenti.numero_avviso) as numero_avviso,                
+MAX(versamenti.avvisatura) as avvisatura,                   
+MAX(versamenti.tipo_pagamento) as tipo_pagamento,               
+MAX(versamenti.id_dominio) as id_dominio,                   
+MAX(versamenti.id_uo) as id_uo,                        
+MAX(versamenti.id_applicazione) as id_applicazione,             
+MAX(CASE WHEN versamenti.da_avvisare = 1 THEN 'TRUE' ELSE 'FALSE' END) AS da_avvisare,
+MAX(versamenti.cod_avvisatura) as cod_avvisatura,               
+MAX(versamenti.id_tracciato) as id_tracciato,      
+MAX(CASE WHEN versamenti.ack = 1 THEN 'TRUE' ELSE 'FALSE' END) AS ack,
+MAX(versamenti.note) as note,
+MAX(CASE WHEN versamenti.anomalo = 1 THEN 'TRUE' ELSE 'FALSE' END) AS anomalo,
+MAX(pagamenti.data_pagamento) as data_pagamento,            
+SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) AS importo_pagato,
+SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
+MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento
+FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
+GROUP BY versamenti.id;
+

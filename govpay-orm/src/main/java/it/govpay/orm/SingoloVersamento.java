@@ -45,9 +45,12 @@ import java.io.Serializable;
  * 			&lt;element name="hashDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="provinciaResidenza" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idIbanAppoggio" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="datiAllegati" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -72,9 +75,13 @@ import java.io.Serializable;
   	"hashDocumento",
   	"provinciaResidenza",
   	"idIbanAccredito",
+  	"idIbanAppoggio",
   	"tipoContabilita",
   	"codiceContabilita",
-  	"note"
+  	"descrizione",
+  	"datiAllegati",
+  	"indiceDati",
+  	"idRendicontazione"
   }
 )
 
@@ -178,6 +185,14 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.idIbanAccredito = idIbanAccredito;
   }
 
+  public IdIbanAccredito getIdIbanAppoggio() {
+    return this.idIbanAppoggio;
+  }
+
+  public void setIdIbanAppoggio(IdIbanAccredito idIbanAppoggio) {
+    this.idIbanAppoggio = idIbanAppoggio;
+  }
+
   public java.lang.String getTipoContabilita() {
     return this.tipoContabilita;
   }
@@ -194,12 +209,28 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.codiceContabilita = codiceContabilita;
   }
 
-  public java.lang.String getNote() {
-    return this.note;
+  public java.lang.String getDescrizione() {
+    return this.descrizione;
   }
 
-  public void setNote(java.lang.String note) {
-    this.note = note;
+  public void setDescrizione(java.lang.String descrizione) {
+    this.descrizione = descrizione;
+  }
+
+  public java.lang.String getDatiAllegati() {
+    return this.datiAllegati;
+  }
+
+  public void setDatiAllegati(java.lang.String datiAllegati) {
+    this.datiAllegati = datiAllegati;
+  }
+
+  public java.lang.Integer getIndiceDati() {
+    return this.indiceDati;
+  }
+
+  public void setIndiceDati(java.lang.Integer indiceDati) {
+    this.indiceDati = indiceDati;
   }
 
   private static final long serialVersionUID = 1L;
@@ -258,6 +289,9 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="idIbanAccredito",required=false,nillable=false)
   protected IdIbanAccredito idIbanAccredito;
 
+  @XmlElement(name="idIbanAppoggio",required=false,nillable=false)
+  protected IdIbanAccredito idIbanAppoggio;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoContabilita",required=false,nillable=false)
   protected java.lang.String tipoContabilita;
@@ -267,7 +301,15 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   protected java.lang.String codiceContabilita;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="note",required=false,nillable=false)
-  protected java.lang.String note;
+  @XmlElement(name="descrizione",required=false,nillable=false)
+  protected java.lang.String descrizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="datiAllegati",required=false,nillable=false)
+  protected java.lang.String datiAllegati;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @XmlElement(name="indiceDati",required=true,nillable=false)
+  protected java.lang.Integer indiceDati;
 
 }

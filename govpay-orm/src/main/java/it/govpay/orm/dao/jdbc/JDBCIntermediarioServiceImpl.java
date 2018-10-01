@@ -23,7 +23,7 @@ import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdIntermediario;
@@ -75,6 +75,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		sqlQueryObjectInsert.addInsertTable(this.getIntermediarioFieldConverter().toTable(Intermediario.model()));
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_INTERMEDIARIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_PDD,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FTP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().DENOMINAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().ABILITATO,false),"?");
 
@@ -83,6 +84,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodIntermediario(),Intermediario.model().COD_INTERMEDIARIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettorePdd(),Intermediario.model().COD_CONNETTORE_PDD.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettoreFtp(),Intermediario.model().COD_CONNETTORE_FTP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getDenominazione(),Intermediario.model().DENOMINAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getAbilitato(),Intermediario.model().ABILITATO.getFieldType())
 		);
@@ -137,11 +139,13 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getIntermediarioFieldConverter().toTable(Intermediario.model()));
 		boolean isUpdate_intermediario = true;
-		java.util.List<JDBCObject> lstObjects_intermediario = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_intermediario = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_INTERMEDIARIO,false), "?");
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodIntermediario(), Intermediario.model().COD_INTERMEDIARIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_PDD,false), "?");
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettorePdd(), Intermediario.model().COD_CONNETTORE_PDD.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_FTP,false), "?");
+		lstObjects_intermediario.add(new JDBCObject(intermediario.getCodConnettoreFtp(), Intermediario.model().COD_CONNETTORE_FTP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().DENOMINAZIONE,false), "?");
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getDenominazione(), Intermediario.model().DENOMINAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().ABILITATO,false), "?");
@@ -190,7 +194,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
@@ -201,7 +205,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 
@@ -212,7 +216,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIntermediarioFieldConverter().toTable(Intermediario.model()), 

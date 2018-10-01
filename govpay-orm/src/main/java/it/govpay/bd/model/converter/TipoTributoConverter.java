@@ -25,12 +25,12 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.TipoTributo;
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 
 public class TipoTributoConverter {
 
 	public static List<TipoTributo> toDTOList(List<it.govpay.orm.TipoTributo> lstVO) throws ServiceException {
-		List<TipoTributo> lst = new ArrayList<TipoTributo>();
+		List<TipoTributo> lst = new ArrayList<>();
 		if(lstVO != null && !lstVO.isEmpty()) {
 			for(it.govpay.orm.TipoTributo vo: lstVO) {
 				lst.add(toDTO(vo));
@@ -45,7 +45,7 @@ public class TipoTributoConverter {
 		dto.setCodTributo(vo.getCodTributo());
 		dto.setDescrizione(vo.getDescrizione());
 		if(vo.getTipoContabilita() != null)
-			dto.setTipoContabilitaDefault(TipoContabilta.toEnum(vo.getTipoContabilita()));
+			dto.setTipoContabilitaDefault(TipoContabilita.toEnum(vo.getTipoContabilita()));
 		dto.setCodContabilitaDefault(vo.getCodContabilita());
 		dto.setCodTributoIuvDefault(vo.getCodTributoIuv());
 		return dto;

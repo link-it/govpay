@@ -1,0 +1,6 @@
+<form class="shadow no-border-radius p-4" [formGroup]="basicForm" novalidate (ngSubmit)="onSubmit(basicForm)">
+  <ng-container #fec></ng-container>
+  <button mat-raised-button class="mt-4" color="accent" type="submit" [disabled]="!basicForm.valid" *ngIf="!modalForm">{{submitLabel}}</button>
+  <!--<button type="reset" (click)="resetForm()">Annulla</button>-->
+</form>
+<button mat-fab class="fab-action" type="submit" [disabled]="!basicForm.valid" *ngIf="modalForm" (click)="onSubmit(basicForm)"><i class="material-icons">save</i></button>

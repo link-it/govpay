@@ -34,8 +34,10 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
+import it.govpay.bd.model.converter.ConnettoreSftpConverter;
 import it.govpay.bd.model.converter.IntermediarioConverter;
 import it.govpay.model.Connettore;
+import it.govpay.model.ConnettoreSftp;
 import it.govpay.model.Intermediario;
 import it.govpay.orm.IdIntermediario;
 import it.govpay.orm.dao.jdbc.JDBCIntermediarioServiceSearch;
@@ -64,7 +66,7 @@ public class IntermediariBD extends BasicBD {
 
 		try {
 			it.govpay.orm.Intermediario intermediarioVO = ((JDBCIntermediarioServiceSearch)this.getIntermediarioService()).get(id);
-			return getIntermediario(intermediarioVO);
+			return this.getIntermediario(intermediarioVO);
 
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -90,7 +92,7 @@ public class IntermediariBD extends BasicBD {
 			id.setCodIntermediario(codIntermediario);
 			it.govpay.orm.Intermediario intermediarioVO = this.getIntermediarioService().get(id);
 
-			return getIntermediario(intermediarioVO);
+			return this.getIntermediario(intermediarioVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -110,6 +112,14 @@ public class IntermediariBD extends BasicBD {
 			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
 			Connettore connettorePdd = ConnettoreConverter.toDTO(connettori);
 			intermediario.setConnettorePdd(connettorePdd);
+		}
+		if(intermediarioVO.getCodConnettoreFtp() != null) {
+			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
+			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettoreFtp());
+
+			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
+			ConnettoreSftp connettoreSftp = ConnettoreSftpConverter.toDTO(connettori);
+			intermediario.setConnettoreSftp(connettoreSftp);
 		}
 		return intermediario;
 
@@ -158,7 +168,21 @@ public class IntermediariBD extends BasicBD {
 				}
 			}
 
-			emitAudit(intermediario);
+			if(intermediario.getConnettoreSftp() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
+
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettoreSftp().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
+
+			this.emitAudit(intermediario);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -196,7 +220,22 @@ public class IntermediariBD extends BasicBD {
 					this.getConnettoreService().create(connettore);
 				}
 			}
-			emitAudit(intermediario);
+			
+			if(intermediario.getConnettoreSftp() != null) {
+
+				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreSftpConverter.toVOList(intermediario.getConnettoreSftp());
+
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettoreSftp().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
+
+			this.emitAudit(intermediario);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -226,10 +265,10 @@ public class IntermediariBD extends BasicBD {
 
 	public List<Intermediario> findAll(IntermediarioFilter filter) throws ServiceException {
 		try {
-			List<Intermediario> lst = new ArrayList<Intermediario>();
+			List<Intermediario> lst = new ArrayList<>();
 			List<it.govpay.orm.Intermediario> lstIntermediarioVO = this.getIntermediarioService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Intermediario intermediarioVO: lstIntermediarioVO) {
-				lst.add(getIntermediario(intermediarioVO));
+				lst.add(this.getIntermediario(intermediarioVO));
 			}
 			return lst;
 		} catch (NotImplementedException e) {

@@ -51,6 +51,7 @@ public class RendicontazioneModel extends AbstractModel<Rendicontazione> {
 		this.ANOMALIE = new Field("anomalie",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
 		this.ID_FR = new it.govpay.orm.model.IdFrModel(new Field("idFR",it.govpay.orm.IdFr.class,"Rendicontazione",Rendicontazione.class));
 		this.ID_PAGAMENTO = new it.govpay.orm.model.IdPagamentoModel(new Field("idPagamento",it.govpay.orm.IdPagamento.class,"Rendicontazione",Rendicontazione.class));
+		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Rendicontazione",Rendicontazione.class));
 	
 	}
 	
@@ -68,6 +69,7 @@ public class RendicontazioneModel extends AbstractModel<Rendicontazione> {
 		this.ANOMALIE = new ComplexField(father,"anomalie",java.lang.String.class,"Rendicontazione",Rendicontazione.class);
 		this.ID_FR = new it.govpay.orm.model.IdFrModel(new ComplexField(father,"idFR",it.govpay.orm.IdFr.class,"Rendicontazione",Rendicontazione.class));
 		this.ID_PAGAMENTO = new it.govpay.orm.model.IdPagamentoModel(new ComplexField(father,"idPagamento",it.govpay.orm.IdPagamento.class,"Rendicontazione",Rendicontazione.class));
+		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Rendicontazione",Rendicontazione.class));
 	
 	}
 	
@@ -92,6 +94,8 @@ public class RendicontazioneModel extends AbstractModel<Rendicontazione> {
 	public it.govpay.orm.model.IdFrModel ID_FR = null;
 	 
 	public it.govpay.orm.model.IdPagamentoModel ID_PAGAMENTO = null;
+	 
+	public it.govpay.orm.model.IdSingoloVersamentoModel ID_SINGOLO_VERSAMENTO = null;
 	 
 
 	@Override

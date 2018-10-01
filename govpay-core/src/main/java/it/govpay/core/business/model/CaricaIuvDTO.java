@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 
 public class CaricaIuvDTO {
 	
@@ -34,7 +34,7 @@ public class CaricaIuvDTO {
     protected List<Iuv> iuvDaCaricare;
 
     public String getCodApplicazione() {
-        return codApplicazione;
+        return this.codApplicazione;
     }
 
     public void setCodApplicazione(String value) {
@@ -42,7 +42,7 @@ public class CaricaIuvDTO {
     }
 
     public String getCodDominio() {
-        return codDominio;
+        return this.codDominio;
     }
 
     public void setCodDominio(String value) {
@@ -50,14 +50,14 @@ public class CaricaIuvDTO {
     }
 
     public List<Iuv> getIuvDaCaricare() {
-        if (iuvDaCaricare == null) {
-        	iuvDaCaricare = new ArrayList<Iuv>();
+        if (this.iuvDaCaricare == null) {
+        	this.iuvDaCaricare = new ArrayList<>();
         }
         return this.iuvDaCaricare;
     }
 
     public Applicazione getApplicazioneAutenticata() {
-		return applicazioneAutenticata;
+		return this.applicazioneAutenticata;
 	}
 
 	public void setApplicazioneAutenticata(Applicazione applicazioneAutenticata) {
@@ -72,7 +72,7 @@ public class CaricaIuvDTO {
         protected BigDecimal importoTotale;
 
         public String getIuv() {
-            return iuv;
+            return this.iuv;
         }
 
         public void setIuv(String value) {
@@ -80,7 +80,7 @@ public class CaricaIuvDTO {
         }
 
         public String getCodVersamentoEnte() {
-            return codVersamentoEnte;
+            return this.codVersamentoEnte;
         }
 
         public void setCodVersamentoEnte(String value) {
@@ -88,7 +88,7 @@ public class CaricaIuvDTO {
         }
 
         public BigDecimal getImportoTotale() {
-            return importoTotale;
+            return this.importoTotale;
         }
 
         public void setImportoTotale(BigDecimal value) {

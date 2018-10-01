@@ -1,0 +1,13 @@
+.b64-icon {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 5px;
+  box-sizing: content-box;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.b64-icon:hover {
+  background: rgba(0, 0, 0, .1);
+}

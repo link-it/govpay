@@ -1,90 +1,159 @@
 package it.govpay.stampe.pdf.avvisoPagamento;
 
-import static net.sf.dynamicreports.report.builder.DynamicReports.export;
-import static net.sf.dynamicreports.report.builder.DynamicReports.report;
-
-import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.beans.WriteToSerializerType;
+import org.slf4j.Logger;
 
-import it.govpay.model.AvvisoPagamento;
-import it.govpay.stampe.pdf.TemplateBase;
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
-import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
-import net.sf.dynamicreports.report.constant.PageOrientation;
-import net.sf.dynamicreports.report.constant.PageType;
+import it.govpay.model.avvisi.AvvisoPagamento;
+import it.govpay.model.avvisi.AvvisoPagamentoInput;
+import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRXmlDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 
-public class AvvisoPagamentoPdf implements IAvvisoPagamento{
+public class AvvisoPagamentoPdf {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L; 
-	
-	public String getPdfAvvisoPagamento(String pathLoghi, AvvisoPagamento avviso, Properties properties, OutputStream os, Logger log) throws Exception {
-		String msg = null;
-		List<String> errList = new ArrayList<String>();
-		try{
-			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
-			JasperReportBuilder report = report();
+	private static AvvisoPagamentoPdf _instance = null;
 
-			List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
+	public static AvvisoPagamentoPdf getInstance() {
+		if(_instance == null)
+			init();
 
-			ComponentBuilder<?, ?> createTitleComponent = TemplateAvvisoPagamento.createTitleComponent(pathLoghi,avviso,errList,log);
-			if(createTitleComponent != null) {
-				cl.add(createTitleComponent);
+		return _instance;
+	}
+
+	public static synchronized void init() {
+		if(_instance == null)
+			_instance = new AvvisoPagamentoPdf();
+	}
+
+	public AvvisoPagamentoPdf() {
+
+	}
 
 
-				ComponentBuilder<?,?> createSezioneDebitore = TemplateAvvisoPagamento.createSezioneDebitore(avviso, errList, log);
-				cl.add(createSezioneDebitore);
+	public JasperPrint creaJasperPrintAvviso(Logger log, AvvisoPagamentoInput input, AvvisoPagamento avvisoPagamento, 
+			Properties propertiesAvvisoPerDominio, InputStream jasperTemplateInputStream,JRDataSource dataSource,Map<String, Object> parameters) throws Exception {
+		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperTemplateInputStream);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters, dataSource);
+		return jasperPrint;
+	}
 
-				ComponentBuilder<?,?> createSezioneTitoloAvviso = TemplateAvvisoPagamento.createSezioneTitoloAvviso(avviso, errList, log);
-				cl.add(createSezioneTitoloAvviso);
+	public AvvisoPagamento creaAvviso(Logger log, AvvisoPagamentoInput input, AvvisoPagamento avvisoPagamento, AvvisoPagamentoProperties avProperties) throws Exception {
+		// cerco file di properties esterni per configurazioni specifiche per dominio
+		String codDominio = avvisoPagamento.getCodDominio();
+		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
-				ComponentBuilder<?,?> createSezionePagamento = TemplateAvvisoPagamento.createSezionePagamento(avviso, errList, log); 
+		this.caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
 
-				if(createSezionePagamento != null)
-					cl.add(createSezionePagamento);
-			}
+		// leggo il template file jasper da inizializzare
+		String jasperTemplateFilename = propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER);
 
-			// se ho generato almeno il titolo allora produco il pdf.
-			if(cl.size() > 0){
+		if(!jasperTemplateFilename.startsWith("/"))
+			jasperTemplateFilename = "/" + jasperTemplateFilename; 
 
-				ComponentBuilder<?, ?>[] ca = new ComponentBuilder<?, ?>[cl.size()];
+		InputStream is = AvvisoPagamentoPdf.class.getResourceAsStream(jasperTemplateFilename);
+		Map<String, Object> parameters = new HashMap<>();
+		JRDataSource dataSource = this.creaXmlDataSource(log,input);
+		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, avvisoPagamento, propertiesAvvisoPerDominio, is, dataSource,parameters);
 
-				//configure report
-				ComponentBuilder<?, ?> createSezioneCodici = TemplateAvvisoPagamento.createSezioneCodici(avviso,errList,log);
-				if(createSezioneCodici!= null){
-					report.setPageFormat(PageType.A4, PageOrientation.PORTRAIT)
-					.setTemplate(TemplateBase.reportTemplate)
-					.title(cl.toArray(ca))
-					.pageFooter(createSezioneCodici)
-					.toPdf(pdfExporter);  
-				}
-			}
+		byte[] reportToPdf = JasperExportManager.exportReportToPdf(jasperPrint);
+		avvisoPagamento.setPdf(reportToPdf);
+		return avvisoPagamento;
+	}
 
-		}catch(Exception e){
-			log.error("Errore durante la generazione dell'avviso ["+avviso.getCodiceAvviso()+"]: "+ e.getMessage()); 
-			errList.add(0,"Errore durante la generazione dell'avviso ["+avviso.getCodiceAvviso()+"]: "+e.getMessage());
-		}
+	public JRDataSource creaXmlDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException {
+		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		input.writeTo(os, serType);
+		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(os.toByteArray()),AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
+		return dataSource;
+	}
 
-		// colleziono eventuali errori durante la generazione del pdf
-		if(errList.size() > 0){
-			StringBuilder sb = new StringBuilder();
+	public JRDataSource creaCustomDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException {
+		List<AvvisoPagamentoInput> listaAvvisi = new ArrayList<>();
+		listaAvvisi.add(input);
+		JRDataSource dataSource = new AvvisoPagamentoDatasource(listaAvvisi,log);
+		return dataSource;
+	}
 
-			for (String errore : errList) {
-				if(sb.length() > 0)
-					sb.append(", ");
+	public void caricaLoghiAvviso(AvvisoPagamentoInput input, Properties propertiesAvvisoPerDominio) {
+		// valorizzo la sezione loghi
+		input.setEnteLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_ENTE));
+		input.setAgidLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_AGID));
+		input.setPagopaLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PAGOPA));
+		input.setPagopa90Logo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PAGOPA_90));
+		input.setAppLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_APP));
+		input.setPlaceLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PLACE));
+		input.setImportoLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_IMPORTO));
+		input.setScadenzaLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_SCADENZA));
+		input.setTaglio(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_TAGLIO));
+		input.setTaglio1(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_TAGLIO1));
+	}
 
-				sb.append(errore);
-			}
-			msg = sb.toString();
-		}
 
-		return msg;
+	public static void main(String[] args) throws Exception {
+		try (InputStream jasperTemplateInputStream = new FileInputStream("FILE_PATH/AvvisoPagamento.jasper");) {
+			Logger log = LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class);
+
+			AvvisoPagamentoProperties.newInstance("/var/govpay");
+
+			AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
+			AvvisoPagamento av = new AvvisoPagamento();
+			av.setCodDominio("83000390019");
+
+			String codDominio = av.getCodDominio();
+			Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
+
+			Map<String, Object> parameters = new HashMap<>();
+			AvvisoPagamentoInput input = new AvvisoPagamentoInput();
+			AvvisoPagamentoPdf.getInstance().caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
+
+			input.setEnteDenominazione("Comune di San Valentino in Abruzzo Citeriore");
+			input.setEnteArea("Area di sviluppo per le politiche agricole e forestali");
+			input.setEnteIdentificativo("83000390019");
+			input.setEnteCbill("AAAAAAA");
+			input.setEnteUrl("www.comune.sanciprianopicentino.sa.it/");
+			input.setEntePeo("info@comune.sancipriano.sa.it");
+			input.setEntePec("protocollo@pec.comune.sanciprianopicentino.sa.it");
+			input.setEntePartner("Link.it Srl");
+			input.setIntestatarioDenominazione("Lorenzo Nardi");
+			input.setIntestatarioIdentificativo("NRDLNA80P19D612M");
+			input.setIntestatarioIndirizzo1("Via di Corniola 119A");
+			input.setIntestatarioIndirizzo2("50053 Empoli (FI)");
+			input.setAvvisoCausale("Pagamento diritti di segreteria per il rilascio in duplice copia della documentazione richiesta.");
+			input.setAvvisoImporto(9999999.99);
+			input.setAvvisoScadenza("31/12/2020");
+			input.setAvvisoNumero("399000012345678900");
+			input.setAvvisoIuv("99000012345678900");
+			input.setAvvisoBarcode("415808888880094580203990000123456789003902222250");
+			input.setAvvisoQrcode("PAGOPA|002|399000012345678900|83000390019|222250");
+
+			JRDataSource dataSource = AvvisoPagamentoPdf.getInstance().creaXmlDataSource(log,input);
+			JasperPrint jasperPrint = AvvisoPagamentoPdf.getInstance().creaJasperPrintAvviso(log, input, av, propertiesAvvisoPerDominio, jasperTemplateInputStream, dataSource,parameters);
+
+			JasperExportManager.exportReportToPdfFile(jasperPrint,"/tmp/tmp.pdf");
+
+			//System.out.println(input.toXml_Jaxb()); 
+			System.out.println("FINE");
+		}catch(Exception e ) {
+			throw e;
+		}  
 	}
 }

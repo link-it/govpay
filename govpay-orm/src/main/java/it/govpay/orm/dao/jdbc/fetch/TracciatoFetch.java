@@ -52,30 +52,30 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Tracciato.model())){
 				Tracciato object = new Tracciato();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setDataCaricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_caricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType()));
-				setParameter(object, "setDataUltimoAggiornamento", Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_ultimo_aggiornamento", Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO.getFieldType()));
-				setParameter(object, "set_value_stato", String.class,
-					jdbcParameterUtilities.readParameter(rs, "stato", Tracciato.model().STATO.getFieldType())+"");
-				setParameter(object, "setLineaElaborazione", Tracciato.model().LINEA_ELABORAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "linea_elaborazione", Tracciato.model().LINEA_ELABORAZIONE.getFieldType()));
-				setParameter(object, "setDescrizioneStato", Tracciato.model().DESCRIZIONE_STATO.getFieldType(),
+				this.setParameter(object, "setCodDominio", Tracciato.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Tracciato.model().COD_DOMINIO.getFieldType()));
+				this.setParameter(object, "setTipo", Tracciato.model().TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo", Tracciato.model().TIPO.getFieldType()));
+				this.setParameter(object, "setStato", Tracciato.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", Tracciato.model().STATO.getFieldType()));
+				this.setParameter(object, "setDescrizioneStato", Tracciato.model().DESCRIZIONE_STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Tracciato.model().DESCRIZIONE_STATO.getFieldType()));
-				setParameter(object, "setNumLineeTotali", Tracciato.model().NUM_LINEE_TOTALI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "num_linee_totali", Tracciato.model().NUM_LINEE_TOTALI.getFieldType()));
-				setParameter(object, "setNumOperazioniOk", Tracciato.model().NUM_OPERAZIONI_OK.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "num_operazioni_ok", Tracciato.model().NUM_OPERAZIONI_OK.getFieldType()));
-				setParameter(object, "setNumOperazioniKo", Tracciato.model().NUM_OPERAZIONI_KO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "num_operazioni_ko", Tracciato.model().NUM_OPERAZIONI_KO.getFieldType()));
-				setParameter(object, "setNomeFile", Tracciato.model().NOME_FILE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "nome_file", Tracciato.model().NOME_FILE.getFieldType()));
-				setParameter(object, "setRawDataRichiesta", Tracciato.model().RAW_DATA_RICHIESTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "raw_data_richiesta", Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()));
-				setParameter(object, "setRawDataRisposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "raw_data_risposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()));
+				this.setParameter(object, "setDataCaricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_caricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType()));
+				this.setParameter(object, "setDataCompletamento", Tracciato.model().DATA_COMPLETAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_completamento", Tracciato.model().DATA_COMPLETAMENTO.getFieldType()));
+				this.setParameter(object, "setBeanDati", Tracciato.model().BEAN_DATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bean_dati", Tracciato.model().BEAN_DATI.getFieldType()));
+				this.setParameter(object, "setFileNameRichiesta", Tracciato.model().FILE_NAME_RICHIESTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "file_name_richiesta", Tracciato.model().FILE_NAME_RICHIESTA.getFieldType()));
+				this.setParameter(object, "setRawRichiesta", Tracciato.model().RAW_RICHIESTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "raw_richiesta", Tracciato.model().RAW_RICHIESTA.getFieldType()));
+				this.setParameter(object, "setFileNameEsito", Tracciato.model().FILE_NAME_ESITO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "file_name_esito", Tracciato.model().FILE_NAME_ESITO.getFieldType()));
+				this.setParameter(object, "setRawEsito", Tracciato.model().RAW_ESITO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "raw_esito", Tracciato.model().RAW_ESITO.getFieldType()));
 				return object;
 			}
 			
@@ -96,30 +96,30 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Tracciato.model())){
 				Tracciato object = new Tracciato();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setDataCaricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"dataCaricamento"));
-				setParameter(object, "setDataUltimoAggiornamento", Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"dataUltimoAggiornamento"));
-				setParameter(object, "set_value_stato", String.class,
+				this.setParameter(object, "setCodDominio", Tracciato.model().COD_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"codDominio"));
+				this.setParameter(object, "setTipo", Tracciato.model().TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipo"));
+				this.setParameter(object, "setStato", Tracciato.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));
-				setParameter(object, "setLineaElaborazione", Tracciato.model().LINEA_ELABORAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"lineaElaborazione"));
-				setParameter(object, "setDescrizioneStato", Tracciato.model().DESCRIZIONE_STATO.getFieldType(),
+				this.setParameter(object, "setDescrizioneStato", Tracciato.model().DESCRIZIONE_STATO.getFieldType(),
 					this.getObjectFromMap(map,"descrizioneStato"));
-				setParameter(object, "setNumLineeTotali", Tracciato.model().NUM_LINEE_TOTALI.getFieldType(),
-					this.getObjectFromMap(map,"numLineeTotali"));
-				setParameter(object, "setNumOperazioniOk", Tracciato.model().NUM_OPERAZIONI_OK.getFieldType(),
-					this.getObjectFromMap(map,"numOperazioniOk"));
-				setParameter(object, "setNumOperazioniKo", Tracciato.model().NUM_OPERAZIONI_KO.getFieldType(),
-					this.getObjectFromMap(map,"numOperazioniKo"));
-				setParameter(object, "setNomeFile", Tracciato.model().NOME_FILE.getFieldType(),
-					this.getObjectFromMap(map,"nomeFile"));
-				setParameter(object, "setRawDataRichiesta", Tracciato.model().RAW_DATA_RICHIESTA.getFieldType(),
-					this.getObjectFromMap(map,"rawDataRichiesta"));
-				setParameter(object, "setRawDataRisposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType(),
-					this.getObjectFromMap(map,"rawDataRisposta"));
+				this.setParameter(object, "setDataCaricamento", Tracciato.model().DATA_CARICAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"dataCaricamento"));
+				this.setParameter(object, "setDataCompletamento", Tracciato.model().DATA_COMPLETAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"dataCompletamento"));
+				this.setParameter(object, "setBeanDati", Tracciato.model().BEAN_DATI.getFieldType(),
+					this.getObjectFromMap(map,"beanDati"));
+				this.setParameter(object, "setFileNameRichiesta", Tracciato.model().FILE_NAME_RICHIESTA.getFieldType(),
+					this.getObjectFromMap(map,"fileNameRichiesta"));
+				this.setParameter(object, "setRawRichiesta", Tracciato.model().RAW_RICHIESTA.getFieldType(),
+					this.getObjectFromMap(map,"rawRichiesta"));
+				this.setParameter(object, "setFileNameEsito", Tracciato.model().FILE_NAME_ESITO.getFieldType(),
+					this.getObjectFromMap(map,"fileNameEsito"));
+				this.setParameter(object, "setRawEsito", Tracciato.model().RAW_ESITO.getFieldType(),
+					this.getObjectFromMap(map,"rawEsito"));
 				return object;
 			}
 			

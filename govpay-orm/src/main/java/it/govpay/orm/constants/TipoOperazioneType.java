@@ -41,6 +41,8 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 	ADD ("ADD"),
 	@javax.xml.bind.annotation.XmlEnumValue("DEL")
 	DEL ("DEL"),
+	@javax.xml.bind.annotation.XmlEnumValue("INC")
+	INC ("INC"),
 	@javax.xml.bind.annotation.XmlEnumValue("N_V")
 	N_V ("N_V");
 	
@@ -89,10 +91,10 @@ public enum TipoOperazioneType implements IEnumeration , Serializable , Cloneabl
 		return this.equals(((TipoOperazioneType)object));
 	}
 	public String toString(boolean reportHTML){
-		return toString();
+		return this.toString();
 	}
   	public String toString(boolean reportHTML,List<String> fieldsNotIncluded){
-  		return toString();
+  		return this.toString();
   	}
   	public String diff(Object object,StringBuffer bf,boolean reportHTML){
 		return bf.toString();

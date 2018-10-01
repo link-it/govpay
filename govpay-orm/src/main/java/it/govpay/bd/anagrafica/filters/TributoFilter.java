@@ -44,6 +44,9 @@ public class TributoFilter extends AbstractFilter {
 	private CustomField cf;
 	private Long idDominio;
 	private String codTributo = null;
+	private String descrizione = null; //TODO
+	private Long idIbanAccredito = null;
+	private Long idIbanAppoggio = null;
 	
 	public enum SortFields { }
 	
@@ -57,6 +60,7 @@ public class TributoFilter extends AbstractFilter {
 			TributoFieldConverter converter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Tributo.model()));
 			this.fieldAbilitato = it.govpay.orm.Tributo.model().ABILITATO;
+			this.listaFieldSimpleSearch.add(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 		} catch(Exception e){
 			
 		}
@@ -69,7 +73,7 @@ public class TributoFilter extends AbstractFilter {
 			boolean addAnd = false;
 			if(this.idDominio != null){
 				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), idDominio);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idDominio);
 				addAnd = true;
 			}
 			
@@ -83,7 +87,7 @@ public class TributoFilter extends AbstractFilter {
 			if(this.listaIdTributi != null && this.listaIdTributi.size() > 0){
 				if(addAnd)
 					newExpression.and();
-				newExpression.in(cf, listaIdTributi);
+				newExpression.in(this.cf, this.listaIdTributi);
 				
 				addAnd = true;
 			}
@@ -93,6 +97,24 @@ public class TributoFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.ilike(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, this.codTributo,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.idIbanAccredito != null){
+				if(addAnd)
+					newExpression.and();
+				
+				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+				newExpression.equals(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idIbanAccredito);
+				addAnd = true;
+			}
+			
+			if(this.idIbanAppoggio!= null){
+				if(addAnd)
+					newExpression.and();
+				
+				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+				newExpression.equals(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idIbanAppoggio);
 				addAnd = true;
 			}
 
@@ -116,7 +138,7 @@ public class TributoFilter extends AbstractFilter {
 			
 			if(this.idDominio != null){
 				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), idDominio);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idDominio);
 			//	addAnd = true;
 			}
 
@@ -135,7 +157,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -143,7 +165,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getListaIdTributi() {
-		return listaIdTributi;
+		return this.listaIdTributi;
 	}
 
 	public void setListaIdTributi(List<Long> listaIdTributi) {
@@ -151,7 +173,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public Long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(Long idDominio) {
@@ -159,12 +181,36 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	public String getCodTributo() {
-		return codTributo;
+		return this.codTributo;
 	}
 
 	public void setCodTributo(String codTributo) {
 		this.codTributo = codTributo;
 	}
 
+	public String getDescrizione() {
+		return this.descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
+	}
+
 	
+	public Long getIdIbanAccredito() {
+		return this.idIbanAccredito;
+	}
+
+	public void setIdIbanAccredito(Long idIbanAccredito) {
+		this.idIbanAccredito = idIbanAccredito;
+	}
+
+	public Long getIdIbanAppoggio() {
+		return this.idIbanAppoggio;
+	}
+
+	public void setIdIbanAppoggio(Long idIbanAppoggio) {
+		this.idIbanAppoggio = idIbanAppoggio;
+	}
+
 }

@@ -28,43 +28,69 @@ import it.govpay.model.IbanAccredito;
 public class Tributo extends it.govpay.model.Tributo {
 	private static final long serialVersionUID = 1L;
 	
+	public Tributo() {	}
+	
 	// Business
 	
-	public TipoContabilta getTipoContabilita() {
-		if(getTipoContabilitaCustom() != null)
-			return getTipoContabilitaCustom();
+	public TipoContabilita getTipoContabilita() {
+		if(this.getTipoContabilitaCustom() != null)
+			return this.getTipoContabilitaCustom();
 		else 
-			return getTipoContabilitaDefault();
+			return this.getTipoContabilitaDefault();
 	}
 
 	public String getCodContabilita() {
-		if(getCodContabilitaCustom() != null)
-			return getCodContabilitaCustom();
+		if(this.getCodContabilitaCustom() != null)
+			return this.getCodContabilitaCustom();
 		else 
-			return getCodContabilitaDefault();
+			return this.getCodContabilitaDefault();
 	}
 	
 	public String getCodTributoIuv() {
-		if(getCodTributoIuvCustom() != null)
-			return getCodTributoIuvCustom();
+		if(this.getCodTributoIuvCustom() != null)
+			return this.getCodTributoIuvCustom();
 		else 
-			return getCodTributoIuvDefault();
+			return this.getCodTributoIuvDefault();
 	}
 	
-	public boolean isTipoContabilitaCustom(){return getTipoContabilitaCustom() != null;}
-	public boolean isCodContabilitaCustom(){return getCodContabilitaCustom() != null;}
-	public boolean isCodTributoIuvCustom(){return getCodTributoIuvCustom() != null;}
+	public boolean isTipoContabilitaCustom(){return this.getTipoContabilitaCustom() != null;}
+	public boolean isCodContabilitaCustom(){return this.getCodContabilitaCustom() != null;}
+	public boolean isCodTributoIuvCustom(){return this.getCodTributoIuvCustom() != null;}
 	
-	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
-		if(ibanAccredito == null && this.getIdIbanAccredito() != null) {
-			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());
-		}
-		return ibanAccredito;
+	private transient IbanAccredito ibanAccredito;
+	public IbanAccredito getIbanAccredito() throws ServiceException {
+		return this.ibanAccredito;
 	}
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
+		super.setIdIbanAccredito(ibanAccredito.getId());
 		this.ibanAccredito = ibanAccredito;
 	}
+	public void setIbanAccredito(BasicBD bd, long idIbanAccredito) throws ServiceException {
+		super.setIdIbanAccredito(idIbanAccredito);
+		this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
+	}
+	
+	private transient IbanAccredito ibanAppoggio;
+	public IbanAccredito getIbanAppoggio() throws ServiceException {
+		return this.ibanAppoggio;
+	}
+	public void setIbanAppoggio(IbanAccredito ibanAppoggio) {
+		super.setIdIbanAppoggio(ibanAppoggio.getId());
+		this.ibanAppoggio = ibanAppoggio;
+	}
+	public void setIbanAppoggio(BasicBD bd, long idIbanAppoggio) throws ServiceException {
+		super.setIdIbanAppoggio(idIbanAppoggio);
+		this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAppoggio);
+	}
 
-	private transient IbanAccredito ibanAccredito;
+	
+	private transient Dominio dominio;
+	
+	public Dominio getDominio(BasicBD bd) throws ServiceException {
+		if(this.dominio == null) {
+			this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+		} 
+		return this.dominio;
+	}
 	
 }

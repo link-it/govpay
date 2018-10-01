@@ -36,6 +36,7 @@ public class StazioneFilter extends AbstractFilter {
 
 	// Filtro che indica che voglio solo le stazioni dell'intermediario passato.
 	private String codIntermediario;
+	private String codStazione;
 
 	public enum SortFields {
 		COD_STAZIONE
@@ -58,6 +59,12 @@ public class StazioneFilter extends AbstractFilter {
 			if(StringUtils.isNotEmpty(this.getCodIntermediario())){
 				//long id = Long.parseLong(this.getCodIntermediario());
 				expr.equals(Stazione.model().ID_INTERMEDIARIO.COD_INTERMEDIARIO, this.getCodIntermediario());
+				addAnd = true;
+			} 
+			
+			if(StringUtils.isNotEmpty(this.getCodStazione())){
+				//long id = Long.parseLong(this.getCodIntermediario());
+				expr.equals(Stazione.model().COD_STAZIONE, this.getCodStazione());
 				addAnd = true;
 			} 
 			
@@ -87,11 +94,19 @@ public class StazioneFilter extends AbstractFilter {
 	}
 
 	public String getCodIntermediario() {
-		return codIntermediario;
+		return this.codIntermediario;
 	}
 
 	public void setCodIntermediario(String codIntermediario) {
 		this.codIntermediario = codIntermediario;
+	}
+
+	public String getCodStazione() {
+		return this.codStazione;
+	}
+
+	public void setCodStazione(String codStazione) {
+		this.codStazione = codStazione;
 	}
 
  

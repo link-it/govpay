@@ -54,9 +54,10 @@ public class IncassiBD extends BasicBD {
 		}
 	}
 	
-	public Incasso getIncasso(String trn) throws ServiceException, NotFoundException {
+	public Incasso getIncasso(String codDominio, String trn) throws ServiceException, NotFoundException {
 		try {
 			IdIncasso idIncasso = new IdIncasso();
+			idIncasso.setCodDominio(codDominio);
 			idIncasso.setTrn(trn);
 			it.govpay.orm.Incasso pagamentoVO = this.getIncassoService().get(idIncasso);
 			return IncassoConverter.toDTO(pagamentoVO);
@@ -95,9 +96,9 @@ public class IncassiBD extends BasicBD {
 
 	public List<Incasso> findAll(IncassoFilter filter) throws ServiceException {
 		try {
-			List<Incasso> incassoLst = new ArrayList<Incasso>();
+			List<Incasso> incassoLst = new ArrayList<>();
 
-			if(filter.getCodDomini() != null && filter.getCodDomini().isEmpty()) return incassoLst;
+			// if(filter.getCodDomini() != null && filter.getCodDomini().isEmpty()) return incassoLst;
 			List<it.govpay.orm.Incasso> incassoVOLst = this.getIncassoService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Incasso incassoVO: incassoVOLst) {
 				incassoLst.add(IncassoConverter.toDTO(incassoVO));

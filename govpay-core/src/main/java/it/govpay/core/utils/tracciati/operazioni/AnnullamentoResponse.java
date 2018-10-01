@@ -1,47 +1,42 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils.tracciati.operazioni;
-
-import org.openspcoop2.generic_project.exception.ValidationException;
-import org.openspcoop2.utils.csv.Record;
-
-import it.govpay.core.utils.Utils;
 
 public class AnnullamentoResponse extends AbstractOperazioneResponse {
 	
-	public AnnullamentoResponse() {	}
+	public AnnullamentoResponse() {	super(); }
 	
 	public static final String ESITO_DEL_OK = "DEL_OK";
 	public static final String ESITO_DEL_KO = "DEL_KO";
 	
-	public AnnullamentoResponse(Record record) throws ValidationException{
-		this.setEsito(Utils.validaESettaRecord(record,"esito",null, null, false));
-		this.setCodApplicazione(Utils.validaESettaRecord(record, "codApplicazione", null, null, false));
-		this.setCodVersamentoEnte(Utils.validaESettaRecord(record, "codVersamentoEnte", null, null, false));
-		this.setDescrizioneEsito(Utils.validaESettaRecord(record,"descrizioneEsito",null, null, true));
-	}
-	
-	private String codApplicazione;
-	private String codVersamentoEnte;
-
-	public String getCodApplicazione() {
-		return codApplicazione;
-	}
-	public void setCodApplicazione(String codApplicazione) {
-		this.codApplicazione = codApplicazione;
-	}
-	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
-	}
-	public void setCodVersamentoEnte(String codVersamentoEnte) {
-		this.codVersamentoEnte = codVersamentoEnte;
-	}
-	
 	@Override
-	protected byte[] createDati() {
+	public Object getDati() {
 		switch(this.getStato()) {
-		case ESEGUITO_KO: return (ESITO_DEL_KO + this.getDelim() + this.codApplicazione + this.getDelim() + this.codVersamentoEnte + this.getDelim() + this.getDescrizioneEsito()).getBytes();
-		case ESEGUITO_OK: return (ESITO_DEL_OK + this.getDelim() + this.codApplicazione + this.getDelim() + this.codVersamentoEnte).getBytes();
-		default: return "DEL_INTERNAL: STATO NON VALIDO".getBytes();
+		case ESEGUITO_KO:
+			return this.getFaultBean(); 
+		case ESEGUITO_OK:
+		case NON_VALIDO:
+		default:
+			break;
 		}
+		return null;
 	}
-
 }

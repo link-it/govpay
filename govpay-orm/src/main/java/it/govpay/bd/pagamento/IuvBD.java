@@ -25,7 +25,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -35,16 +34,18 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
 import org.openspcoop2.utils.id.serial.InfoStatistics;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.converter.IuvConverter;
 import it.govpay.bd.pagamento.filters.IuvFilter;
 import it.govpay.bd.pagamento.util.IuvUtils;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.orm.IUV;
@@ -53,7 +54,7 @@ import it.govpay.orm.dao.jdbc.converter.IUVFieldConverter;
 
 public class IuvBD extends BasicBD {
 
-	private static Logger log = Logger.getLogger(IuvBD.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(IuvBD.class);
 
 	public IuvBD(BasicBD basicBD) {
 		super(basicBD);
@@ -61,7 +62,7 @@ public class IuvBD extends BasicBD {
 
 	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, String prefix) throws ServiceException {
 		
-		long prg = getNextPrgIuv(dominio.getCodDominio() + prefix, type);
+		long prg = this.getNextPrgIuv(dominio.getCodDominio() + prefix, type);
 		
 		String iuv = null;
 		
@@ -106,7 +107,7 @@ public class IuvBD extends BasicBD {
 				// Vedo se utilizzare l'application code o il segregation code
 				switch (dominio.getAuxDigit()) {
 					case 0: 
-						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione(this).getApplicationCode()); 
+						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode()); 
 						iuv = reference + check;
 					break;
 					case 3: 
@@ -133,9 +134,9 @@ public class IuvBD extends BasicBD {
 		iuvDTO.setTipo(type);
 		iuvDTO.setCodVersamentoEnte(codVersamentoEnte);
 		iuvDTO.setAuxDigit(dominio.getAuxDigit());
-		iuvDTO.setApplicationCode(dominio.getStazione(this).getApplicationCode());
+		iuvDTO.setApplicationCode(dominio.getStazione().getApplicationCode());
 		
-		return insertIuv(iuvDTO);
+		return this.insertIuv(iuvDTO);
 	}
 
 	public Iuv insertIuv(Iuv iuv) throws ServiceException{
@@ -173,11 +174,11 @@ public class IuvBD extends BasicBD {
 			java.sql.Connection con = null; 
 
 			// Se sono in transazione aperta, utilizzo una connessione diversa perche' l'utility di generazione non supporta le transazioni.
-			if(!isAutoCommit()) {
+			if(!this.isAutoCommit()) {
 				bd = BasicBD.newInstance(this.getIdTransaction());
 				con = bd.getConnection();
 			} else {
-				con = getConnection();
+				con = this.getConnection();
 			}
 
 			return serialGenerator.buildIDAsNumber(params, con, this.getJdbcProperties().getDatabase(), log);
@@ -285,7 +286,7 @@ public class IuvBD extends BasicBD {
 
 	public List<Iuv> findAll(IuvFilter filter) throws ServiceException {
 		try {
-			List<Iuv> iuvLst = new ArrayList<Iuv>();
+			List<Iuv> iuvLst = new ArrayList<>();
 			List<it.govpay.orm.IUV> iuvVOLst = this.getIuvService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.IUV iuvVO: iuvVOLst) {
 				iuvLst.add(IuvConverter.toDTO(iuvVO));

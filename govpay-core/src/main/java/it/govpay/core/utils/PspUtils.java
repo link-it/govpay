@@ -19,14 +19,7 @@
  */
 package it.govpay.core.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Collection;
-
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.PrefixFileFilter;
 
 import it.govpay.model.Canale;
 import it.govpay.servizi.commons.ModelloPagamento;
@@ -34,8 +27,8 @@ import it.govpay.servizi.commons.TipoVersamento;
 
 public class PspUtils {
 	
-	private static byte[] logoPsp;
-	private static byte[] logoModello;
+	public static byte[] logoPsp;
+	public static byte[] logoModello;
 	
 	static {
 		logoPsp = Base64.decodeBase64("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");
@@ -50,24 +43,6 @@ public class PspUtils {
 		return ModelloPagamento.fromValue(modelloVersamento.name());
 	}
 
-	public static byte[] getLogo160(String codPsp) {
-		return getLogo("160x80", codPsp);
-	}
-	
-	public static byte[] getLogo80(String codPsp) {
-		return getLogo("80x40", codPsp);
-	}
-	
-	private static byte[] getLogo(String subFolder, String codPsp) {
-		try {
-			Collection<File> logos = FileUtils.listFiles(new File(GovpayConfig.getInstance().getLogoDir() + File.pathSeparator + subFolder), new PrefixFileFilter(codPsp), null);
-			File logo = logos.iterator().next();
-			return IOUtils.toByteArray(new FileInputStream(logo));
-		} catch (Throwable t) {
-			return logoPsp;
-		}
-	}
-	
 	public static byte[] getLogo(Canale.ModelloPagamento modelloPagamento) {
 		return logoModello;
 	}

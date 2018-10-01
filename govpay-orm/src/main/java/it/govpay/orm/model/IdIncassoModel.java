@@ -42,6 +42,7 @@ public class IdIncassoModel extends AbstractModel<IdIncasso> {
 		super();
 	
 		this.TRN = new Field("trn",java.lang.String.class,"id-incasso",IdIncasso.class);
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"id-incasso",IdIncasso.class);
 	
 	}
 	
@@ -50,12 +51,15 @@ public class IdIncassoModel extends AbstractModel<IdIncasso> {
 		super(father);
 	
 		this.TRN = new ComplexField(father,"trn",java.lang.String.class,"id-incasso",IdIncasso.class);
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"id-incasso",IdIncasso.class);
 	
 	}
 	
 	
 
 	public IField TRN = null;
+	 
+	public IField COD_DOMINIO = null;
 	 
 
 	@Override

@@ -31,13 +31,7 @@ public class ModelFactory {
 
 	public static DominioModel DOMINIO = new DominioModel();
 	
-	public static PspModel PSP = new PspModel();
-	
-	public static CanaleModel CANALE = new CanaleModel();
-	
 	public static UoModel UO = new UoModel();
-	
-	public static PortaleModel PORTALE = new PortaleModel();
 	
 	public static ConnettoreModel CONNETTORE = new ConnettoreModel();
 	
@@ -55,9 +49,13 @@ public class ModelFactory {
 	
 	public static AuditModel AUDIT = new AuditModel();
 	
-	public static RuoloModel RUOLO = new RuoloModel();
-	
 	public static ACLModel ACL = new ACLModel();
+	
+	public static UtenzaDominioModel UTENZA_DOMINIO = new UtenzaDominioModel();
+	
+	public static UtenzaTributoModel UTENZA_TRIBUTO = new UtenzaTributoModel();
+	
+	public static UtenzaModel UTENZA = new UtenzaModel();
 	
 	public static OperatoreModel OPERATORE = new OperatoreModel();
 	
@@ -75,6 +73,10 @@ public class ModelFactory {
 	
 	public static RendicontazioneModel RENDICONTAZIONE = new RendicontazioneModel();
 	
+	public static PagamentoPortaleVersamentoModel PAGAMENTO_PORTALE_VERSAMENTO = new PagamentoPortaleVersamentoModel();
+	
+	public static PagamentoPortaleModel PAGAMENTO_PORTALE = new PagamentoPortaleModel();
+	
 	public static PagamentoModel PAGAMENTO = new PagamentoModel();
 	
 	public static NotificaModel NOTIFICA = new NotificaModel();
@@ -90,6 +92,12 @@ public class ModelFactory {
 	public static OperazioneModel OPERAZIONE = new OperazioneModel();
 	
 	public static TracciatoModel TRACCIATO = new TracciatoModel();
+	
+	public static EsitoAvvisaturaModel ESITO_AVVISATURA = new EsitoAvvisaturaModel();
+	
+	public static AvvisoModel AVVISO = new AvvisoModel();
+	
+	public static VersamentoIncassoModel VERSAMENTO_INCASSO = new VersamentoIncassoModel();
 	
 
 }

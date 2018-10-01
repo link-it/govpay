@@ -43,6 +43,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 	private CustomField cf;
 	private String codApplicazione = null;
 	
+	
 	public enum SortFields {
 	}
 
@@ -57,7 +58,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Applicazione.model()));
 			this.listaFieldSimpleSearch.add(Applicazione.model().COD_APPLICAZIONE);
-			this.fieldAbilitato = Applicazione.model().ABILITATO;
+			this.fieldAbilitato = Applicazione.model().ID_UTENZA.ABILITATO;
 		} catch(Exception e){
 			
 		}
@@ -69,7 +70,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression(); 
 			boolean addAnd = false;
 			if(this.listaIdApplicazioni != null && this.listaIdApplicazioni.size() > 0){
-				newExpression.in(cf, listaIdApplicazioni);
+				newExpression.in(this.cf, this.listaIdApplicazioni);
 				addAnd = true;
 			}
 			
@@ -99,7 +100,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 	}
 
 	public List<Long> getListaIdApplicazioni() {
-		return listaIdApplicazioni;
+		return this.listaIdApplicazioni;
 	}
 
 	public void setListaIdApplicazioni(List<Long> listaIdApplicazioni) {
@@ -107,7 +108,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 	}
 
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 
 	public void setCodApplicazione(String codApplicazione) {

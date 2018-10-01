@@ -1,5 +1,6 @@
 package it.govpay.bd.pagamento.filters;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +22,11 @@ import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
 public class EventiFilter extends AbstractFilter{
 	
 	private String codDominio= null;
+	private List<String> codDomini;
 	private String iuv;
 	private String ccp;
+	private Long idApplicazione;
+	private String codVersamentoEnte;
 	private Date datainizio;
 	private Date dataFine;
 	private List<Long> idEventi= null;
@@ -41,14 +45,25 @@ public class EventiFilter extends AbstractFilter{
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
-			IExpression newExpression = newExpression();
-			
+			IExpression newExpression = this.newExpression();
+			EventoFieldConverter eventoFieldConverter = new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+
 			boolean addAnd = false;
 			
 			if(this.codDominio != null){
 				newExpression.equals(Evento.model().COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
+			
+			if(this.codDomini != null){
+				this.codDomini.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.in(Evento.model().COD_DOMINIO, this.codDomini);
+				addAnd = true;
+			}
+
 			
 			if(this.iuv != null && StringUtils.isNotEmpty(this.iuv)) {
 				if(addAnd)
@@ -75,9 +90,25 @@ public class EventiFilter extends AbstractFilter{
 				addAnd = true;
 			}
 			
+			if(this.idApplicazione != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				CustomField idApplicazioneField = new CustomField("id_applicazione",  Long.class, "id_applicazione",  eventoFieldConverter.toTable(Evento.model().ID_VERSAMENTO));
+				newExpression.equals(idApplicazioneField, this.idApplicazione);
+				addAnd = true;
+			}
+			
+			if(this.codVersamentoEnte!= null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE, this.codVersamentoEnte);
+				addAnd = true;
+			}
+			
 			
 			if(this.idEventi != null && !this.idEventi.isEmpty()){
-				EventoFieldConverter eventoFieldConverter = new EventoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField idEventoField = new CustomField("id",  Long.class, "id",  eventoFieldConverter.toTable(Evento.model()));
 				newExpression.in(idEventoField, this.idEventi);
 				addAnd = true;
@@ -94,7 +125,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 	
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -102,7 +133,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
@@ -110,7 +141,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 
 	public void setCcp(String ccp) {
@@ -118,7 +149,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public Date getDatainizio() {
-		return datainizio;
+		return this.datainizio;
 	}
 
 	public void setDatainizio(Date datainizio) {
@@ -126,7 +157,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public Date getDataFine() {
-		return dataFine;
+		return this.dataFine;
 	}
 
 	public void setDataFine(Date dataFine) {
@@ -134,11 +165,35 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	public List<Long> getIdEventi() {
-		return idEventi;
+		return this.idEventi;
 	}
 
 	public void setIdEventi(List<Long> idEventi) {
 		this.idEventi = idEventi;
+	}
+
+	public String getCodVersamentoEnte() {
+		return this.codVersamentoEnte;
+	}
+
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
+
+	public Long getIdApplicazione() {
+		return this.idApplicazione;
+	}
+
+	public void setIdApplicazione(Long idApplicazione) {
+		this.idApplicazione = idApplicazione;
+	}
+
+	public List<String> getCodDomini() {
+		return codDomini;
+	}
+
+	public void setCodDomini(List<String> codDomini) {
+		this.codDomini = codDomini;
 	}
 
 	

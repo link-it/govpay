@@ -28,25 +28,25 @@ public class Batch {
 	private Date inizio;
 	private Date aggiornamento;
 	public String getCodBatch() {
-		return codBatch;
+		return this.codBatch;
 	}
 	public void setCodBatch(String codBatch) {
 		this.codBatch = codBatch;
 	}
 	public Integer getNodo() {
-		return nodo;
+		return this.nodo;
 	}
 	public void setNodo(Integer nodo) {
 		this.nodo = nodo;
 	}
 	public Date getInizio() {
-		return inizio;
+		return this.inizio;
 	}
 	public void setInizio(Date inizio) {
 		this.inizio = inizio;
 	}
 	public Date getAggiornamento() {
-		return aggiornamento;
+		return this.aggiornamento;
 	}
 	public void setAggiornamento(Date aggiornamento) {
 		this.aggiornamento = aggiornamento;

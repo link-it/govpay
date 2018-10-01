@@ -1,53 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<groupId>it.govpay</groupId>
 		<artifactId>govpay</artifactId>
-		<version>2.5.7</version>
+		<groupId>it.govpay</groupId>
+		<version>3.0.0-RC1</version>
 	</parent>
 	<artifactId>govpay-web-console</artifactId>
 	<packaging>war</packaging>
 	<name>GovPay Cruscotto di Gestione</name>
+	
 	<properties>
-		<frontend-maven-plugin-version>0.0.26</frontend-maven-plugin-version>
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-1.2-api</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core</artifactId>
+			<artifactId>govpay-core-rs</artifactId>
 			<type>jar</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.webjars.bower</groupId>
-			<artifactId>polymer</artifactId>
-			<version>1.1.0</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -57,72 +30,53 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.github.eirslett</groupId>
-			<artifactId>frontend-maven-plugin</artifactId>
-			<version>${frontend-maven-plugin-version}</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
-		
-		<dependency>
-		    <groupId>org.jboss.resteasy</groupId>
-		    <artifactId>resteasy-multipart-provider</artifactId>
-		    <version>2.3.2.Final</version>
-		    <scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.apache.tika</groupId>
-		    <artifactId>tika-core</artifactId>
-		    <version>1.15</version>
-		</dependency>
+
 	</dependencies>
+
 	<build>
 		<filters>
 			<filter>../resources/filters/${env}.filter.properties</filter>
 		</filters>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<id>filter-src</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>3.2.1</version>
 				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<webResources>
-			            <resource>
-			                <filtering>true</filtering>
-			                <directory>src/main/webapp/scripts</directory>
-			                <includes>
-			                    <include>*.js</include>
-			                </includes>
-			                <targetPath>scripts</targetPath>
-			            </resource>
-			            <resource>
-			                <filtering>true</filtering>
-			                <directory>src/main/webapp/public</directory>
-			                <includes>
-			                    <include>*.html</include>
-			                    <include>*.jsp</include>
-			                </includes>
-			                <targetPath>public</targetPath>
-			            </resource>
-			            <resource>
-			                <filtering>true</filtering>
-			                <directory>src/main/webapp</directory>
-			                <includes>
-			                    <include>index.html</include>
-			                </includes>
-			                <targetPath>/</targetPath>
-			            </resource>
-			        </webResources>
+						<webResource>
+							<directory>src/main/webapp</directory>
+						</webResource>
+					</webResources>
+					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+	                <archive>
+	                    <manifest>
+	                        <addClasspath>true</addClasspath>
+	                        <classpathPrefix>lib/</classpathPrefix>
+	                    </manifest>
+	                    <manifestEntries>
+							<Class-Path>properties/</Class-Path>
+						</manifestEntries>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>govpayConsole</finalName>
 	</build>
 </project>
-

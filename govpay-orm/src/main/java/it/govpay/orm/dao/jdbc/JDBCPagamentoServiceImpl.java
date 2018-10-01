@@ -23,7 +23,7 @@ import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdPagamento;
@@ -148,7 +148,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUR,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_PAGAMENTO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IBAN_ACCREDITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COMMISSIONI_PSP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().TIPO_ALLEGATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ALLEGATO,false),"?");
@@ -159,6 +158,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ESITO_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATI_ESITO_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().STATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_rpt","?");
 		sqlQueryObjectInsert.addInsertField("id_singolo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_rr","?");
@@ -174,7 +174,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataAcquisizione(),Pagamento.model().DATA_ACQUISIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIur(),Pagamento.model().IUR.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataPagamento(),Pagamento.model().DATA_PAGAMENTO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIbanAccredito(),Pagamento.model().IBAN_ACCREDITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCommissioniPsp(),Pagamento.model().COMMISSIONI_PSP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getTipoAllegato(),Pagamento.model().TIPO_ALLEGATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getAllegato(),Pagamento.model().ALLEGATO.getFieldType()),
@@ -185,6 +184,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getEsitoRevoca(),Pagamento.model().ESITO_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDatiEsitoRevoca(),Pagamento.model().DATI_ESITO_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getStato(),Pagamento.model().STATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getTipo(),Pagamento.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_singoloVersamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rr,Long.class),
@@ -309,7 +309,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getPagamentoFieldConverter().toTable(Pagamento.model()));
 		boolean isUpdate_pagamento = true;
-		java.util.List<JDBCObject> lstObjects_pagamento = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_pagamento = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_DOMINIO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getCodDominio(), Pagamento.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUV,false), "?");
@@ -324,8 +324,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getIur(), Pagamento.model().IUR.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_PAGAMENTO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getDataPagamento(), Pagamento.model().DATA_PAGAMENTO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IBAN_ACCREDITO,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getIbanAccredito(), Pagamento.model().IBAN_ACCREDITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COMMISSIONI_PSP,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getCommissioniPsp(), Pagamento.model().COMMISSIONI_PSP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().TIPO_ALLEGATO,false), "?");
@@ -346,6 +344,8 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getDatiEsitoRevoca(), Pagamento.model().DATI_ESITO_REVOCA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().STATO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getStato(), Pagamento.model().STATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().TIPO,false), "?");
+		lstObjects_pagamento.add(new JDBCObject(pagamento.getTipo(), Pagamento.model().TIPO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_rpt","?");
 		}
@@ -414,7 +414,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoFieldConverter().toTable(Pagamento.model()), 
@@ -425,7 +425,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoFieldConverter().toTable(Pagamento.model()), 
@@ -436,7 +436,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getPagamentoFieldConverter().toTable(Pagamento.model()), 

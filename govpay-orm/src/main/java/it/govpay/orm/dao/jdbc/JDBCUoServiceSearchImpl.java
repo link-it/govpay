@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -81,7 +81,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getUoFetch();
+		return this.getUoFetch();
 	}
 	
 	
@@ -131,10 +131,10 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
 
-		List<IdUo> list = new ArrayList<IdUo>();
+		List<IdUo> list = new ArrayList<>();
 
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 			fields.add(Uo.model().COD_UO);
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getUoFieldConverter().toTable(Uo.model())));
 
@@ -162,10 +162,10 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
 
-		List<Uo> list = new ArrayList<Uo>();
+		List<Uo> list = new ArrayList<>();
 
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getUoFieldConverter().toTable(Uo.model())));
             fields.add(new CustomField("id", Long.class, "id", this.getUoFieldConverter().toTable(Uo.model())));
     		fields.add(Uo.model().COD_UO);
@@ -178,6 +178,11 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
     		fields.add(Uo.model().UO_LOCALITA);
     		fields.add(Uo.model().UO_PROVINCIA);
     		fields.add(Uo.model().UO_NAZIONE);
+			fields.add(Uo.model().UO_AREA);
+			fields.add(Uo.model().UO_URL_SITO_WEB);
+			fields.add(Uo.model().UO_EMAIL);
+			fields.add(Uo.model().UO_PEC);
+
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -225,7 +230,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		
 		sqlQueryObject.addSelectCountField(this.getUoFieldConverter().toTable(Uo.model())+".id","tot",true);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 																			this.getUoFieldConverter(), Uo.model(),listaQuery);
@@ -272,7 +277,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 												this.getUoFieldConverter(), field);
 
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
@@ -293,7 +298,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
@@ -310,7 +315,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
@@ -327,7 +332,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
@@ -335,18 +340,18 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
+		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
-		List<Object> listaQuery = new ArrayList<Object>();
-		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
+		List<Object> listaQuery = new ArrayList<>();
+		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getUoFieldConverter(), Uo.model(), 
         						listaQuery,listaParams);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
@@ -364,8 +369,8 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getUoFieldConverter(), Uo.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -374,7 +379,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -393,8 +398,8 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getUoFieldConverter(), Uo.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -403,7 +408,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -465,13 +470,13 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdUo id, Uo obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Uo obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
 	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Uo obj, Uo imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
@@ -497,9 +502,6 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
-				
 		List<Uo> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -555,7 +557,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdUo id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
-        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
+        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
 		Long longId = this.findIdUo(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
         
@@ -565,8 +567,8 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		UoFieldConverter converter = this.getUoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
-		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map
 
@@ -589,7 +591,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 		
-		List<Long> list = new ArrayList<Long>();
+		List<Long> list = new ArrayList<>();
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
@@ -599,7 +601,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getUoFieldConverter(), Uo.model());
 		
-		_join(paginatedExpression,sqlQueryObject);
+		this._join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 																			this.getUoFieldConverter(), Uo.model(), objectIdClass, listaQuery);
@@ -622,7 +624,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getUoFieldConverter(), Uo.model());
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 														this.getUoFieldConverter(), Uo.model(), objectIdClass, listaQuery);
@@ -679,7 +681,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_uo = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_uo = new ArrayList<Class<?>>();
+		List<Class<?>> listaFieldIdReturnType_uo = new ArrayList<>();
 		listaFieldIdReturnType_uo.add(Uo.model().COD_UO.getFieldType());
 		listaFieldIdReturnType_uo.add(Uo.model().ID_DOMINIO.COD_DOMINIO.getFieldType());
 
@@ -738,7 +740,7 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 		sqlQueryObjectGet.addFromTable(this.getUoFieldConverter().toTable(Uo.model()));
 		sqlQueryObjectGet.addSelectField(this.getUoFieldConverter().toTable(Uo.model())+".id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getUoFieldConverter().toColumn(Uo.model().COD_UO,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition("id_dominio=?");
 

@@ -1,0 +1,6 @@
+<mat-form-field class="w-100" color="accent" [floatLabel]="_checkFloating(json.placeholder)" [formGroup]="fGroup" *ngIf="verifyDisplay()">
+  <mat-label>{{json.label}}</mat-label>
+  <input #element matInput [placeholder]="json.placeholder" [maxlength]="json.maxlength" formControlName="{{json.id}}_ctrl"
+         [value]="json.value" [required]="json.required" autocomplete="off">
+  <mat-hint align="end" *ngIf="json.maxlength != json.MaxInput()">{{element.value.length}} / {{json.maxlength}}</mat-hint>
+</mat-form-field>

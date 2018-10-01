@@ -60,7 +60,7 @@ public class StazioniBD extends BasicBD {
 
 			this.getStazioneService().create(vo);
 			stazione.setId(vo.getId());			
-			emitAudit(stazione);
+			this.emitAudit(stazione);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -78,7 +78,7 @@ public class StazioniBD extends BasicBD {
 			
 			this.getStazioneService().update(idStazione, vo);
 			stazione.setId(vo.getId());
-			emitAudit(stazione);
+			this.emitAudit(stazione);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -96,7 +96,7 @@ public class StazioniBD extends BasicBD {
 	public void setStatoNdp(long idStazione, Integer codice, String operazione, String descrizione) throws NotFoundException, ServiceException{
 		try {
 			
-			List<UpdateField> lst = new ArrayList<UpdateField>();
+			List<UpdateField> lst = new ArrayList<>();
 			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_STATO, codice));
 			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_OPERAZIONE, operazione));
 			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE, descrizione));
@@ -111,7 +111,7 @@ public class StazioniBD extends BasicBD {
 	public StatoNdP getStatoNdp(long idStazione) throws NotFoundException, ServiceException {
 		try {
 			
-			List<IField> lst = new ArrayList<IField>();
+			List<IField> lst = new ArrayList<>();
 			lst.add(it.govpay.orm.Stazione.model().NDP_STATO);
 			lst.add(it.govpay.orm.Stazione.model().NDP_OPERAZIONE);
 			lst.add(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE);
@@ -192,6 +192,10 @@ public class StazioniBD extends BasicBD {
 	
 	public StazioneFilter newFilter() throws ServiceException {
 		return new StazioneFilter(this.getStazioneService());
+	}
+	
+	public StazioneFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new StazioneFilter(this.getStazioneService(), simpleSearch);
 	}
 
 	public long count(StazioneFilter filter) throws ServiceException {

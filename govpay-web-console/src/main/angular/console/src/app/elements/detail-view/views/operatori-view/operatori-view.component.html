@@ -1,0 +1,46 @@
+<div class="container pt-4 card-container">
+  <mat-card class="shadow no-border-radius mb-4">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">Riepilogo informazioni</p>
+    <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioni" [info]="item"></link-key-value-view>
+  </mat-card>
+  <mat-card class="shadow no-border-radius mb-4 pb-0">
+    <div class="d-flex flex-row">
+      <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">Domini</p>
+      <mat-icon class="action" (click)="_asyncDetail(DOMINIO)"><i class="material-icons dark-material-icons">add</i></mat-icon>
+    </div>
+    <mat-card-content>
+      <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="domini.length == 0">Nessuna informazione</p>
+      <div class="d-block" *ngIf="domini.length != 0">
+        <link-item-view #dliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of domini" [component-data]="item" [use-item-view-directive]="true"
+                        (icon-click)="_iconClick(DOMINIO, dliv, $event)" [over-icons]="['delete']"></link-item-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="shadow no-border-radius mb-4 pb-0">
+    <div class="d-flex flex-row">
+      <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">Entrate</p>
+      <mat-icon class="action" (click)="_asyncDetail(ENTRATA)"><i class="material-icons dark-material-icons">add</i></mat-icon>
+    </div>
+    <mat-card-content>
+      <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="entrate.length == 0">Nessuna informazione</p>
+      <div class="d-block" *ngIf="entrate.length != 0">
+        <link-item-view #eliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of entrate" [component-data]="item" [use-item-view-directive]="true"
+                        (icon-click)="_iconClick(ENTRATA, eliv, $event)" [over-icons]="['delete']"></link-item-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="shadow no-border-radius mb-4 pb-0">
+    <div class="d-flex flex-row">
+      <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">{{_OPERAZIONI}}</p>
+      <mat-icon class="action" (click)="_addEdit(ACL, ADD, true)"><i class="material-icons dark-material-icons">add</i></mat-icon>
+    </div>
+    <mat-card-content>
+      <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="acls.length == 0">Nessuna informazione</p>
+      <div class="d-block" *ngIf="acls.length != 0">
+        <link-item-view #eliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of acls" [component-data]="item" [use-item-view-directive]="true"
+                        (icon-click)="_iconClick(ACL, eliv, $event)" [over-icons]="['delete']"></link-item-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<button mat-fab class="fab-action" (click)="_editOperatore()"><i class="material-icons">edit</i></button>

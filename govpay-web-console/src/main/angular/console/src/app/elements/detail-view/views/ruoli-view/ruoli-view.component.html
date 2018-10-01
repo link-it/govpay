@@ -1,0 +1,15 @@
+<div class="container pt-4 card-container">
+  <mat-card class="shadow no-border-radius mb-4 pb-0">
+    <div class="d-flex flex-row">
+      <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">{{_OPERAZIONI}}</p>
+      <mat-icon class="action" (click)="_addEdit(AUTH)"><i class="material-icons dark-material-icons">add</i></mat-icon>
+    </div>
+    <mat-card-content>
+      <p class="d-block matcard-title pb-3 regular-16 normal-color" *ngIf="autorizzazioni.length == 0">Nessuna informazione</p>
+      <div class="d-block" *ngIf="autorizzazioni.length != 0">
+        <link-item-view #eliv class="d-block link-item-view-fill-mat-card" *ngFor="let item of autorizzazioni" [component-data]="item" [use-item-view-directive]="true"
+                        (icon-click)="_iconClick(AUTH, eliv, $event)" [over-icons]="['delete']" [show-over-icons]="true"></link-item-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

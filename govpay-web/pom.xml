@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>2.5.7</version>
+		<version>3.0.0-RC1</version>
 	</parent>
 
 	<artifactId>govpay-web</artifactId>
@@ -20,7 +20,40 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-ejb</artifactId>
+			<artifactId>govpay-core-rs</artifactId>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.ws.rs</groupId>
+			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.xml.ws</groupId>
+			<artifactId>jboss-jaxws-api_2.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-api</artifactId>
+			<version>2.7.11</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -38,13 +71,28 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
+					<webXml>src/main/resources/web-${govpay-api-pagopa-auth}.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
 					<archive>
 						<manifestEntries>
 							<Class-Path>properties/</Class-Path>
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<id>filter-src</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

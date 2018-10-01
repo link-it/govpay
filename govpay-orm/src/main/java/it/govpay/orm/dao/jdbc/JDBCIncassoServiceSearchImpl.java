@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -80,7 +80,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getIncassoFetch();
+		return this.getIncassoFetch();
 	}
 	
 	
@@ -101,6 +101,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	public IdIncasso convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Incasso incasso) throws NotImplementedException, ServiceException, Exception{
 	
 		IdIncasso idIncasso = new IdIncasso();
+		idIncasso.setCodDominio(incasso.getCodDominio());
 		idIncasso.setTrn(incasso.getTrn());
 
 		return idIncasso;
@@ -125,7 +126,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	@Override
 	public List<IdIncasso> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		List<IdIncasso> list = new ArrayList<IdIncasso>();
+		List<IdIncasso> list = new ArrayList<>();
 
 		// default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
@@ -133,8 +134,9 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
         }
         
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 
+			fields.add(Incasso.model().COD_DOMINIO);
 			fields.add(Incasso.model().TRN);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
@@ -152,7 +154,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	@Override
 	public List<Incasso> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        List<Incasso> list = new ArrayList<Incasso>();
+        List<Incasso> list = new ArrayList<>();
 
 		// default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
@@ -160,10 +162,11 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
         }
         
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Incasso.model())));
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(Incasso.model())));
+			fields.add(new CustomField("id_operatore", Long.class, "id_operatore", this.getFieldConverter().toTable(Incasso.model())));
 			fields.add(Incasso.model().TRN);
 			fields.add(Incasso.model().COD_DOMINIO);
 			fields.add(Incasso.model().CAUSALE);
@@ -172,30 +175,44 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 			fields.add(Incasso.model().DATA_CONTABILE);
 			fields.add(Incasso.model().DATA_ORA_INCASSO);
 			fields.add(Incasso.model().NOME_DISPOSITIVO);
+			fields.add(Incasso.model().IBAN_ACCREDITO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
 			for(Map<String, Object> map: returnMap) {
 				
 				Object idApplicazioneObj = map.remove("id_applicazione");
+				Object idOperatoreObj = map.remove("id_operatore");
 				
 				Incasso incasso = (Incasso)this.getFetch().fetch(jdbcProperties.getDatabase(), Incasso.model(), map);
 
 				if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
 					){
-						if(idApplicazioneObj instanceof Long) {
-	
-							it.govpay.orm.IdApplicazione id_incasso_applicazione = null;
-							long idFK_incasso_applicazione = (Long) idApplicazioneObj;
-							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_incasso_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_incasso_applicazione, false);
-							}else{
-								id_incasso_applicazione = new it.govpay.orm.IdApplicazione();
-							}
-							id_incasso_applicazione.setId(idFK_incasso_applicazione);
-							incasso.setIdApplicazione(id_incasso_applicazione);
+					if(idApplicazioneObj instanceof Long) {
+						
+						it.govpay.orm.IdApplicazione id_incasso_applicazione = null;
+						long idFK_incasso_applicazione = (Long) idApplicazioneObj;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_incasso_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_incasso_applicazione, false);
+						}else{
+							id_incasso_applicazione = new it.govpay.orm.IdApplicazione();
 						}
+						id_incasso_applicazione.setId(idFK_incasso_applicazione);
+						incasso.setIdApplicazione(id_incasso_applicazione);
+					}
+					if(idOperatoreObj instanceof Long) {
+						
+						it.govpay.orm.IdOperatore id_incasso_operatore = null;
+						long idFK_incasso_operatore = (Long) idOperatoreObj;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_incasso_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findId(idFK_incasso_operatore, false);
+						}else{
+							id_incasso_operatore = new it.govpay.orm.IdOperatore();
+						}
+						id_incasso_operatore.setId(idFK_incasso_operatore);
+						incasso.setIdOperatore(id_incasso_operatore);
+					}
 					}
 
 				list.add(incasso);
@@ -227,7 +244,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		
 		sqlQueryObject.addSelectCountField(this.getIncassoFieldConverter().toTable(Incasso.model())+".id","tot",true);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 																			this.getIncassoFieldConverter(), Incasso.model(),listaQuery);
@@ -274,7 +291,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 												this.getIncassoFieldConverter(), field);
 
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
@@ -295,7 +312,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
@@ -312,7 +329,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
@@ -329,7 +346,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
@@ -337,18 +354,18 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
+		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
-		List<Object> listaQuery = new ArrayList<Object>();
-		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
+		List<Object> listaQuery = new ArrayList<>();
+		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getIncassoFieldConverter(), Incasso.model(), 
         						listaQuery,listaParams);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
@@ -366,8 +383,8 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getIncassoFieldConverter(), Incasso.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -376,7 +393,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -395,8 +412,8 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getIncassoFieldConverter(), Incasso.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -405,7 +422,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -467,13 +484,13 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIncasso id, Incasso obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Incasso obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
 	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Incasso obj, Incasso imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
@@ -495,9 +512,6 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<Incasso> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -540,17 +554,23 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
+		
 		if(expression.inUseModel(Incasso.model().ID_APPLICAZIONE,false)){
 			String tableName1 = this.getIncassoFieldConverter().toAliasTable(Incasso.model());
 			String tableName2 = this.getIncassoFieldConverter().toAliasTable(Incasso.model().ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
+		
+		if(expression.inUseModel(Incasso.model().ID_OPERATORE,false)){
+			String tableName1 = this.getIncassoFieldConverter().toAliasTable(Incasso.model());
+			String tableName2 = this.getIncassoFieldConverter().toAliasTable(Incasso.model().ID_OPERATORE);
+			sqlQueryObject.addWhereCondition(tableName1+".id_operatore="+tableName2+".id");
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIncasso id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
-        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
+        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
 		Long longId = this.findIdIncasso(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
         
@@ -560,8 +580,8 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		IncassoFieldConverter converter = this.getIncassoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
-		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map
 
@@ -591,7 +611,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 		
-		List<Long> list = new ArrayList<Long>();
+		List<Long> list = new ArrayList<>();
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
@@ -601,7 +621,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getIncassoFieldConverter(), Incasso.model());
 		
-		_join(paginatedExpression,sqlQueryObject);
+		this._join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 																			this.getIncassoFieldConverter(), Incasso.model(), objectIdClass, listaQuery);
@@ -624,7 +644,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getIncassoFieldConverter(), Incasso.model());
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 														this.getIncassoFieldConverter(), Incasso.model(), objectIdClass, listaQuery);
@@ -670,6 +690,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 
 		// Object _incasso
 		sqlQueryObjectGet.addFromTable(this.getIncassoFieldConverter().toTable(Incasso.model()));
+		sqlQueryObjectGet.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().COD_DOMINIO,true));
 		sqlQueryObjectGet.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().TRN,true));
 
 		sqlQueryObjectGet.setANDLogicOperator(true);
@@ -679,7 +700,8 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_incasso = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_incasso = new ArrayList<Class<?>>();
+		List<Class<?>> listaFieldIdReturnType_incasso = new ArrayList<>();
+		listaFieldIdReturnType_incasso.add(Incasso.model().COD_DOMINIO.getFieldType());
 		listaFieldIdReturnType_incasso.add(Incasso.model().TRN.getFieldType());
 
 		it.govpay.orm.IdIncasso id_incasso = null;
@@ -693,7 +715,8 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		else{
 			// set _incasso
 			id_incasso = new it.govpay.orm.IdIncasso();
-			id_incasso.setTrn((String) listaFieldId_incasso.get(0));
+			id_incasso.setCodDominio((String) listaFieldId_incasso.get(0));
+			id_incasso.setTrn((String) listaFieldId_incasso.get(1));
 		}
 		
 		return id_incasso;
@@ -730,12 +753,14 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		sqlQueryObjectGet.addSelectField("id");
 
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
+		sqlQueryObjectGet.addWhereCondition(this.getIncassoFieldConverter().toColumn(Incasso.model().COD_DOMINIO,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition(this.getIncassoFieldConverter().toColumn(Incasso.model().TRN,true)+"=?");
 
 		// Recupero _incasso
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_incasso = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTrn(),Incasso.model().TRN.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodDominio(),Incasso.model().COD_DOMINIO.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTrn(),Incasso.model().TRN.getFieldType()),
 		};
 		Long id_incasso = null;
 		try{

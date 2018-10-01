@@ -2,7 +2,7 @@ package it.govpay.core.utils;
 
 public class GpThreadLocal {
 	
-	public static final ThreadLocal<GpContext> userThreadLocal = new ThreadLocal<GpContext>();
+	public static final ThreadLocal<GpContext> userThreadLocal = new ThreadLocal<>();
 
 	public static void set(GpContext ctx) {
 		userThreadLocal.set(ctx);

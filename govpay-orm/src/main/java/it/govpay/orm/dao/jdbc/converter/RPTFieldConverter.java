@@ -130,11 +130,18 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "stato_versamento";
 			}
 		}
-		if(field.equals(RPT.model().ID_PORTALE.COD_PORTALE)){
+		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_portale";
+				return this.toAliasTable(field)+".id_sessione";
 			}else{
-				return "cod_portale";
+				return "id_sessione";
+			}
+		}
+		if(field.equals(RPT.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
 			}
 		}
 		if(field.equals(RPT.model().COD_CARRELLO)){
@@ -408,8 +415,11 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(RPT.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(RPT.model().ID_PORTALE.COD_PORTALE)){
-			return this.toTable(RPT.model().ID_PORTALE, returnAlias);
+		if(field.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
+			return this.toTable(RPT.model().ID_PAGAMENTO_PORTALE, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(RPT.model().ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(RPT.model().COD_CARRELLO)){
 			return this.toTable(RPT.model(), returnAlias);
@@ -532,8 +542,11 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
 		}
-		if(model.equals(RPT.model().ID_PORTALE)){
-			return "portali";
+		if(model.equals(RPT.model().ID_PAGAMENTO_PORTALE)){
+			return "pagamenti_portale";
+		}
+		if(model.equals(RPT.model().ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 
 

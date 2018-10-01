@@ -19,21 +19,31 @@
  */
 package it.govpay.bd;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
+
 import it.govpay.bd.anagrafica.AuditBD;
 import it.govpay.model.BasicModel;
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IAuditService;
+import it.govpay.orm.dao.IAvvisoService;
 import it.govpay.orm.dao.IBatchService;
-import it.govpay.orm.dao.ICanaleService;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.IDBApplicazioneService;
 import it.govpay.orm.dao.IDBAuditService;
+import it.govpay.orm.dao.IDBAvvisoService;
 import it.govpay.orm.dao.IDBBatchService;
-import it.govpay.orm.dao.IDBCanaleService;
 import it.govpay.orm.dao.IDBConnettoreService;
 import it.govpay.orm.dao.IDBDominioService;
+import it.govpay.orm.dao.IDBEsitoAvvisaturaService;
 import it.govpay.orm.dao.IDBEventoService;
 import it.govpay.orm.dao.IDBFRService;
 import it.govpay.orm.dao.IDBIUVService;
@@ -43,21 +53,24 @@ import it.govpay.orm.dao.IDBIntermediarioService;
 import it.govpay.orm.dao.IDBNotificaService;
 import it.govpay.orm.dao.IDBOperatoreService;
 import it.govpay.orm.dao.IDBOperazioneService;
+import it.govpay.orm.dao.IDBPagamentoPortaleService;
+import it.govpay.orm.dao.IDBPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IDBPagamentoService;
-import it.govpay.orm.dao.IDBPortaleService;
-import it.govpay.orm.dao.IDBPspService;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneService;
-import it.govpay.orm.dao.IDBRuoloService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
 import it.govpay.orm.dao.IDBTracciatoService;
 import it.govpay.orm.dao.IDBTributoService;
 import it.govpay.orm.dao.IDBUoService;
+import it.govpay.orm.dao.IDBUtenzaDominioService;
+import it.govpay.orm.dao.IDBUtenzaService;
+import it.govpay.orm.dao.IDBUtenzaTributoService;
 import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.IDominioService;
+import it.govpay.orm.dao.IEsitoAvvisaturaService;
 import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IFRService;
 import it.govpay.orm.dao.IIUVService;
@@ -67,80 +80,80 @@ import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.IOperatoreService;
 import it.govpay.orm.dao.IOperazioneService;
+import it.govpay.orm.dao.IPagamentoPortaleService;
+import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoService;
-import it.govpay.orm.dao.IPortaleService;
-import it.govpay.orm.dao.IPspService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
-import it.govpay.orm.dao.IRuoloService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.IUoService;
+import it.govpay.orm.dao.IUtenzaDominioService;
+import it.govpay.orm.dao.IUtenzaService;
+import it.govpay.orm.dao.IUtenzaTributoService;
+import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class BasicBD {
 	
 	private JDBCServiceManager serviceManager;
 	private JDBCServiceManagerProperties jdbcProperties;
 	
-	private IApplicazioneService applicazioneService;
-	private IACLService aclService;
-	private IAuditService auditService;
-	private IBatchService batchService;
-	private ICanaleService canaleService;
-	private IConnettoreService connettoreService;
-	private IDominioService dominioService;
-	private IEventoService eventoService;
-	private IFRService frService;
-	private IIbanAccreditoService ibanAccreditoService;
 	private IIntermediarioService intermediarioService;
-	private IIUVService iuvService;
-	private INotificaService notificaService;
-	private IOperatoreService operatoreService;
-	private IOperazioneService operazioneService;
-	private IPagamentoService pagamentoService;
-	private IPortaleService portaleService;
-	private IPspService pspService;
-	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
-	private IRendicontazioneService rendicontazioneService;
-	private IRPTService rptService;
-	private IRRService rrService;
-	private IRuoloService ruoloService;
-	private ISingoloVersamentoService singoloVersamentoService;
 	private IStazioneService stazioneService;
+	private IDominioService dominioService;
+	private IIbanAccreditoService ibanAccreditoService;
 	private ITipoTributoService tipoTributoService;
 	private ITributoService tributoService;
-	private ITracciatoService tracciatoService;
+	private IUtenzaService utenzaService;
+	private IUtenzaDominioService utenzaDominioService;
+	private IUtenzaTributoService utenzaTributoService;
+	private IApplicazioneService applicazioneService;
 	private IUoService uoService;
+	private IOperatoreService operatoreService;
+	private IConnettoreService connettoreService;
+	private IACLService aclService;
 	private IVersamentoService versamentoService;
+	private ISingoloVersamentoService singoloVersamentoService;
+	private IPagamentoPortaleService pagamentoPortaleService;
+	private IPagamentoPortaleVersamentoService pagamentoPortaleVersamentoService;
+	private IRPTService rptService;
+	private IRRService rrService;
+	private INotificaService notificaService;
+	private IIUVService iuvService;
+	private IFRService frService;
 	private IIncassoService incassoService;
+	private IPagamentoService pagamentoService;
+	private IRendicontazioneService rendicontazioneService;
+	private IEventoService eventoService;
+	private IBatchService batchService;
+	private ITracciatoService tracciatoService;
+	private IEsitoAvvisaturaService esitoAvvisaturaService;
+	private IOperazioneService operazioneService;
+	private IAuditService auditService;
+	private IAvvisoService avvisoService;
+	private IVersamentoIncassoServiceSearch versamentoIncassoServiceSearch;
+	
+	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
 	
 	private String idTransaction;
 	private String idModulo;
 	
 	private Connection connection;
 	private boolean isClosed;
-	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
+	protected static Logger log;
 	private Long idOperatore;
 	
 	BasicBD father;
 	
 	public BasicBD(BasicBD basicBD) {
-		father = basicBD;
+		this.father = basicBD;
 	}
 	
 	public static BasicBD newInstance(String idTransaction) throws ServiceException {
@@ -150,57 +163,64 @@ public class BasicBD {
 	private BasicBD(String idTransaction) throws ServiceException {
 		this.isClosed = true;
 		this.idTransaction = idTransaction;
-		this.idModulo = getCaller();
-		this.setupConnection(idTransaction, idModulo);
+		this.idModulo = this.getCaller();
+		if(log == null)
+			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
+		this.setupConnection(idTransaction, this.idModulo);
 	}
 	
 	public void setupConnection(String idTransaction) throws ServiceException {
-		this.idModulo = getCaller();
-		this.setupConnection(idTransaction, idModulo);
+		this.idModulo = this.getCaller();
+		this.setupConnection(idTransaction, this.idModulo);
 	}
 
 	private void setupConnection(String idTransaction, String idModulo) throws ServiceException {
-		if(father != null) {
-			father.setupConnection(idTransaction);
+		if(this.father != null) {
+			this.father.setupConnection(idTransaction);
 			return;
 		}
-		if(isClosed) {
+		if(this.isClosed) {
 			this.connection = ConnectionManager.getConnection(idTransaction, idModulo);
 			this.serviceManager = new JDBCServiceManager(this.connection, ConnectionManager.getJDBCServiceManagerProperties(), log);
 			this.jdbcProperties = this.serviceManager.getJdbcProperties();
 			
 			try {
-				this.applicazioneService = this.serviceManager.getApplicazioneService();
-				this.aclService = this.serviceManager.getACLService();
-				this.auditService = this.serviceManager.getAuditService();
-				this.batchService = this.serviceManager.getBatchService();
-				this.canaleService = this.serviceManager.getCanaleService();
-				this.connettoreService = this.serviceManager.getConnettoreService();
-				this.dominioService = this.serviceManager.getDominioService();
-				this.eventoService = this.serviceManager.getEventoService();
-				this.frService = this.serviceManager.getFRService();
-				this.ibanAccreditoService = this.serviceManager.getIbanAccreditoService();
 				this.intermediarioService = this.serviceManager.getIntermediarioService();
-				this.iuvService = this.serviceManager.getIUVService();
-				this.notificaService = this.serviceManager.getNotificaService();
-				this.operatoreService = this.serviceManager.getOperatoreService();
-				this.operazioneService = this.serviceManager.getOperazioneService();
-				this.portaleService = this.serviceManager.getPortaleService();
-				this.pagamentoService = this.serviceManager.getPagamentoService();
-				this.pspService = this.serviceManager.getPspService();
-				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
-				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
-				this.rptService = this.serviceManager.getRPTService();
-				this.rrService = this.serviceManager.getRRService();
-				this.ruoloService = this.serviceManager.getRuoloService();
-				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
 				this.stazioneService = this.serviceManager.getStazioneService();
+				this.dominioService = this.serviceManager.getDominioService();
+				this.ibanAccreditoService = this.serviceManager.getIbanAccreditoService();
 				this.tipoTributoService = this.serviceManager.getTipoTributoService();
 				this.tributoService = this.serviceManager.getTributoService();
-				this.tracciatoService = this.serviceManager.getTracciatoService();
+				this.utenzaService = this.serviceManager.getUtenzaService();
+				this.utenzaDominioService = this.serviceManager.getUtenzaDominioService();
+				this.utenzaTributoService = this.serviceManager.getUtenzaTributoService();
+				this.applicazioneService = this.serviceManager.getApplicazioneService();
 				this.uoService = this.serviceManager.getUoService();
+				this.operatoreService = this.serviceManager.getOperatoreService();
+				this.connettoreService = this.serviceManager.getConnettoreService();
+				this.aclService = this.serviceManager.getACLService();
 				this.versamentoService = this.serviceManager.getVersamentoService();
+				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
+				this.pagamentoPortaleService = this.serviceManager.getPagamentoPortaleService();
+				this.pagamentoPortaleVersamentoService = this.serviceManager.getPagamentoPortaleVersamentoService();
+				this.rptService = this.serviceManager.getRPTService();
+				this.rrService = this.serviceManager.getRRService();
+				this.notificaService = this.serviceManager.getNotificaService();
+				this.iuvService = this.serviceManager.getIUVService();
+				this.frService = this.serviceManager.getFRService();
 				this.incassoService = this.serviceManager.getIncassoService();
+				this.pagamentoService = this.serviceManager.getPagamentoService();
+				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
+				this.eventoService = this.serviceManager.getEventoService();
+				this.batchService = this.serviceManager.getBatchService();
+				this.tracciatoService = this.serviceManager.getTracciatoService();
+				this.esitoAvvisaturaService = this.serviceManager.getEsitoAvvisaturaService();
+				this.operazioneService = this.serviceManager.getOperazioneService();
+				this.auditService = this.serviceManager.getAuditService();
+				this.avvisoService = this.serviceManager.getAvvisoService();
+				this.versamentoIncassoServiceSearch = this.serviceManager.getVersamentoIncassoServiceSearch();
+				
+				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -215,36 +235,40 @@ public class BasicBD {
 			return;
 		}
 		try {
-			((IDBApplicazioneService)this.applicazioneService).enableSelectForUpdate();
-			((IDBACLService)this.aclService).enableSelectForUpdate();
-			((IDBAuditService)this.auditService).enableSelectForUpdate();
-			((IDBBatchService)this.batchService).enableSelectForUpdate();
-			((IDBCanaleService)this.canaleService).enableSelectForUpdate();
-			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
-			((IDBDominioService)this.dominioService).enableSelectForUpdate();
-			((IDBEventoService)this.eventoService).enableSelectForUpdate();
-			((IDBFRService)this.frService).enableSelectForUpdate();
-			((IDBIbanAccreditoService)this.ibanAccreditoService).enableSelectForUpdate();
 			((IDBIntermediarioService)this.intermediarioService).enableSelectForUpdate();
-			((IDBIUVService)this.iuvService).enableSelectForUpdate();
-			((IDBNotificaService)this.notificaService).enableSelectForUpdate();
-			((IDBOperatoreService)this.operatoreService).enableSelectForUpdate();
-			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
-			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
-			((IDBPortaleService)this.portaleService).enableSelectForUpdate();
-			((IDBPspService)this.pspService).enableSelectForUpdate();
-			((IDBRPTService)this.rptService).enableSelectForUpdate();
-			((IDBRRService)this.rrService).enableSelectForUpdate();
-			((IDBRuoloService)this.ruoloService).enableSelectForUpdate();
-			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
-			((IDBRendicontazioneService)this.rendicontazioneService).enableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).enableSelectForUpdate();
+			((IDBDominioService)this.dominioService).enableSelectForUpdate();
+			((IDBIbanAccreditoService)this.ibanAccreditoService).enableSelectForUpdate();
 			((IDBTipoTributoService)this.tipoTributoService).enableSelectForUpdate();
 			((IDBTributoService)this.tributoService).enableSelectForUpdate();
-			((IDBTracciatoService)this.tracciatoService).enableSelectForUpdate();
+			((IDBUtenzaService)this.utenzaService).enableSelectForUpdate();
+			((IDBUtenzaDominioService)this.utenzaDominioService).enableSelectForUpdate();
+			((IDBUtenzaTributoService)this.utenzaTributoService).enableSelectForUpdate();
+			((IDBApplicazioneService)this.applicazioneService).enableSelectForUpdate();
 			((IDBUoService)this.uoService).enableSelectForUpdate();
+			((IDBOperatoreService)this.operatoreService).enableSelectForUpdate();
+			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
+			((IDBACLService)this.aclService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
+			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
+			((IDBPagamentoPortaleService)this.pagamentoPortaleService).enableSelectForUpdate();
+			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).enableSelectForUpdate();
+			((IDBRPTService)this.rptService).enableSelectForUpdate();
+			((IDBRRService)this.rrService).enableSelectForUpdate();
+			((IDBNotificaService)this.notificaService).enableSelectForUpdate();
+			((IDBIUVService)this.iuvService).enableSelectForUpdate();
+			((IDBFRService)this.frService).enableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).enableSelectForUpdate();
+			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
+			((IDBRendicontazioneService)this.rendicontazioneService).enableSelectForUpdate();
+			((IDBEventoService)this.eventoService).enableSelectForUpdate();
+			((IDBBatchService)this.batchService).enableSelectForUpdate();
+			((IDBTracciatoService)this.tracciatoService).enableSelectForUpdate();
+			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).enableSelectForUpdate();
+			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
+			((IDBAuditService)this.auditService).enableSelectForUpdate();
+			((IDBAvvisoService)this.avvisoService).enableSelectForUpdate();
+			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -256,269 +280,303 @@ public class BasicBD {
 			return;
 		}
 		try {
-			((IDBApplicazioneService)this.applicazioneService).disableSelectForUpdate();
-			((IDBACLService)this.aclService).disableSelectForUpdate();
-			((IDBAuditService)this.auditService).disableSelectForUpdate();
-			((IDBBatchService)this.batchService).disableSelectForUpdate();
-			((IDBCanaleService)this.canaleService).disableSelectForUpdate();
-			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
-			((IDBDominioService)this.dominioService).disableSelectForUpdate();
-			((IDBEventoService)this.eventoService).disableSelectForUpdate();
-			((IDBFRService)this.frService).disableSelectForUpdate();
-			((IDBIbanAccreditoService)this.ibanAccreditoService).disableSelectForUpdate();
 			((IDBIntermediarioService)this.intermediarioService).disableSelectForUpdate();
-			((IDBIUVService)this.iuvService).disableSelectForUpdate();
-			((IDBNotificaService)this.notificaService).disableSelectForUpdate();
-			((IDBOperatoreService)this.operatoreService).disableSelectForUpdate();
-			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
-			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
-			((IDBPortaleService)this.portaleService).disableSelectForUpdate();
-			((IDBPspService)this.pspService).disableSelectForUpdate();
-			((IDBRPTService)this.rptService).disableSelectForUpdate();
-			((IDBRRService)this.rrService).disableSelectForUpdate();
-			((IDBRuoloService)this.ruoloService).disableSelectForUpdate();
-			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
-			((IDBRendicontazioneService)this.rendicontazioneService).disableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).disableSelectForUpdate();
+			((IDBDominioService)this.dominioService).disableSelectForUpdate();
+			((IDBIbanAccreditoService)this.ibanAccreditoService).disableSelectForUpdate();
 			((IDBTipoTributoService)this.tipoTributoService).disableSelectForUpdate();
 			((IDBTributoService)this.tributoService).disableSelectForUpdate();
-			((IDBTracciatoService)this.tracciatoService).disableSelectForUpdate();
+			((IDBUtenzaService)this.utenzaService).disableSelectForUpdate();
+			((IDBUtenzaDominioService)this.utenzaDominioService).disableSelectForUpdate();
+			((IDBUtenzaTributoService)this.utenzaTributoService).disableSelectForUpdate();
+			((IDBApplicazioneService)this.applicazioneService).disableSelectForUpdate();
 			((IDBUoService)this.uoService).disableSelectForUpdate();
+			((IDBOperatoreService)this.operatoreService).disableSelectForUpdate();
+			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
+			((IDBACLService)this.aclService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
+			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
+			((IDBPagamentoPortaleService)this.pagamentoPortaleService).disableSelectForUpdate();
+			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).disableSelectForUpdate();
+			((IDBRPTService)this.rptService).disableSelectForUpdate();
+			((IDBRRService)this.rrService).disableSelectForUpdate();
+			((IDBNotificaService)this.notificaService).disableSelectForUpdate();
+			((IDBIUVService)this.iuvService).disableSelectForUpdate();
+			((IDBFRService)this.frService).disableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).disableSelectForUpdate();
+			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
+			((IDBRendicontazioneService)this.rendicontazioneService).disableSelectForUpdate();
+			((IDBEventoService)this.eventoService).disableSelectForUpdate();
+			((IDBBatchService)this.batchService).disableSelectForUpdate();
+			((IDBTracciatoService)this.tracciatoService).disableSelectForUpdate();
+			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).disableSelectForUpdate();
+			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
+			((IDBAuditService)this.auditService).disableSelectForUpdate();
+			((IDBAvvisoService)this.avvisoService).disableSelectForUpdate();
+			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
 	
 	public String getIdTransaction() {
-		return idTransaction;
+		return this.idTransaction;
 	}
 	
 	public String getIdModulo() {
-		return idModulo;
+		return this.idModulo;
 	}
 	
-	public IApplicazioneService getApplicazioneService() {
-		if(father != null) {
-			return father.getApplicazioneService();
-		}
-		return applicazioneService;
-	}
-
-	public IACLService getAclService() {
-		if(father != null) {
-			return father.getAclService();
-		}
-		return aclService;
-	}
-
-	public IAuditService getAuditService() {
-		if(father != null) {
-			return father.getAuditService();
-		}
-		return auditService;
-	}
-
-	public IBatchService getBatchService() {
-		if(father != null) {
-			return father.getBatchService();
-		}
-		return batchService;
-	}
-
-	public ICanaleService getCanaleService() {
-		if(father != null) {
-			return father.getCanaleService();
-		}
-		return canaleService;
-	}
-
-	public IConnettoreService getConnettoreService() {
-		if(father != null) {
-			return father.getConnettoreService();
-		}
-		return connettoreService;
-	}
-
-	public IDominioService getDominioService() {
-		if(father != null) {
-			return father.getDominioService();
-		}
-		return dominioService;
-	}
 	
-	public IEventoService getEventoService() {
-		if(father != null) {
-			return father.getEventoService();
-		}
-		return eventoService;
-	}
-
-	public IFRService getFrService() {
-		if(father != null) {
-			return father.getFrService();
-		}
-		return frService;
-	}
-
-	public IIbanAccreditoService getIbanAccreditoService() {
-		if(father != null) {
-			return father.getIbanAccreditoService();
-		}
-		return ibanAccreditoService;
-	}
-
-
 	public IIntermediarioService getIntermediarioService() {
-		if(father != null) {
-			return father.getIntermediarioService();
+		if(this.father != null) {
+			return this.father.getIntermediarioService();
 		}
-		return intermediarioService;
-	}
-
-	public IIUVService getIuvService() {
-		if(father != null) {
-			return father.getIuvService();
-		}
-		return iuvService;
+		return this.intermediarioService;
 	}
 	
-	public INotificaService getNotificaService() {
-		if(father != null) {
-			return father.getNotificaService();
-		}
-		return notificaService;
-	}
-
-	public IOperatoreService getOperatoreService() {
-		if(father != null) {
-			return father.getOperatoreService();
-		}
-		return operatoreService;
-	}
-	
-	public IOperazioneService getOperazioneService() {
-		if(father != null) {
-			return father.getOperazioneService();
-		}
-		return operazioneService;
-	}
-	
-	public IPagamentoService getPagamentoService() {
-		if(father != null) {
-			return father.getPagamentoService();
-		}
-		return pagamentoService;
-	}
-
-	public IPortaleService getPortaleService() {
-		if(father != null) {
-			return father.getPortaleService();
-		}
-		return portaleService;
-	}
-
-	public IPspService getPspService() {
-		if(father != null) {
-			return father.getPspService();
-		}
-		return pspService;
-	}
-	
-	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() {
-		if(father != null) {
-			return father.getRendicontazionePagamentoServiceSearch();
-		}
-		return rendicontazionePagamentoServiceSearch;
-	}
-	
-	public IRendicontazioneService getRendicontazioneService() {
-		if(father != null) {
-			return father.getRendicontazioneService();
-		}
-		return rendicontazioneService;
-	}
-	
-	public IRPTService getRptService() {
-		if(father != null) {
-			return father.getRptService();
-		}
-		return rptService;
-	}
-	
-	public IRRService getRrService() {
-		if(father != null) {
-			return father.getRrService();
-		}
-		return rrService;
-	}
-
-	public IRuoloService getRuoloService() {
-		if(father != null) {
-			return father.getRuoloService();
-		}
-		return ruoloService;
-	}
-
-	public ISingoloVersamentoService getSingoloVersamentoService() {
-		if(father != null) {
-			return father.getSingoloVersamentoService();
-		}
-		return singoloVersamentoService;
-	}
-
 	public IStazioneService getStazioneService() {
-		if(father != null) {
-			return father.getStazioneService();
+		if(this.father != null) {
+			return this.father.getStazioneService();
 		}
-		return stazioneService;
+		return this.stazioneService;
+	}
+	
+	public IDominioService getDominioService() {
+		if(this.father != null) {
+			return this.father.getDominioService();
+		}
+		return this.dominioService;
+	}
+	
+	public IIbanAccreditoService getIbanAccreditoService() {
+		if(this.father != null) {
+			return this.father.getIbanAccreditoService();
+		}
+		return this.ibanAccreditoService;
 	}
 	
 	public ITipoTributoService getTipoTributoService() {
-		if(father != null) {
-			return father.getTipoTributoService();
+		if(this.father != null) {
+			return this.father.getTipoTributoService();
 		}
-		return tipoTributoService;
+		return this.tipoTributoService;
 	}
-
+	
 	public ITributoService getTributoService() {
-		if(father != null) {
-			return father.getTributoService();
+		if(this.father != null) {
+			return this.father.getTributoService();
 		}
-		return tributoService;
+		return this.tributoService;
 	}
-	public ITracciatoService getTracciatoService() {
-		if(father != null) {
-			return father.getTracciatoService();
+	
+	public IUtenzaService getUtenzaService() {
+		if(this.father != null) {
+			return this.father.getUtenzaService();
 		}
-		return tracciatoService;
+		return this.utenzaService;
+	}
+	
+	public IUtenzaDominioService getUtenzaDominioService() {
+		if(this.father != null) {
+			return this.father.getUtenzaDominioService();
+		}
+		return this.utenzaDominioService;
+	}
+	
+	public IUtenzaTributoService getUtenzaTributoService() {
+		if(this.father != null) {
+			return this.father.getUtenzaTributoService();
+		}
+		return this.utenzaTributoService;
+	}
+	
+	public IApplicazioneService getApplicazioneService() {
+		if(this.father != null) {
+			return this.father.getApplicazioneService();
+		}
+		return this.applicazioneService;
 	}
 	
 	public IUoService getUoService() {
-		if(father != null) {
-			return father.getUoService();
+		if(this.father != null) {
+			return this.father.getUoService();
 		}
-		return uoService;
+		return this.uoService;
 	}
-
-	public IVersamentoService getVersamentoService() {
-		if(father != null) {
-			return father.getVersamentoService();
+	
+	public IOperatoreService getOperatoreService() {
+		if(this.father != null) {
+			return this.father.getOperatoreService();
 		}
-		return versamentoService;
+		return this.operatoreService;
+	}
+	
+	public IConnettoreService getConnettoreService() {
+		if(this.father != null) {
+			return this.father.getConnettoreService();
+		}
+		return this.connettoreService;
+	}
+	
+	public IACLService getAclService() {
+		if(this.father != null) {
+			return this.father.getAclService();
+		}
+		return this.aclService;
+	}
+	
+	public IVersamentoService getVersamentoService() {
+		if(this.father != null) {
+			return this.father.getVersamentoService();
+		}
+		return this.versamentoService;
+	}
+	
+	public ISingoloVersamentoService getSingoloVersamentoService() {
+		if(this.father != null) {
+			return this.father.getSingoloVersamentoService();
+		}
+		return this.singoloVersamentoService;
+	}
+	
+	public IPagamentoPortaleService getPagamentoPortaleService() {
+		if(this.father != null) {
+			return this.father.getPagamentoPortaleService();
+		}
+		return this.pagamentoPortaleService;
+	}
+	
+	public IPagamentoPortaleVersamentoService getPagamentoPortaleVersamentoService() {
+		if(this.father != null) {
+			return this.father.getPagamentoPortaleVersamentoService();
+		}
+		return this.pagamentoPortaleVersamentoService;
+	}
+	
+	public IRPTService getRptService() {
+		if(this.father != null) {
+			return this.father.getRptService();
+		}
+		return this.rptService;
+	}
+	
+	public IRRService getRrService() {
+		if(this.father != null) {
+			return this.father.getRrService();
+		}
+		return this.rrService;
+	}
+	
+	public INotificaService getNotificaService() {
+		if(this.father != null) {
+			return this.father.getNotificaService();
+		}
+		return this.notificaService;
+	}
+	
+	public IIUVService getIuvService() {
+		if(this.father != null) {
+			return this.father.getIuvService();
+		}
+		return this.iuvService;
+	}
+	
+	public IFRService getFrService() {
+		if(this.father != null) {
+			return this.father.getFrService();
+		}
+		return this.frService;
 	}
 	
 	public IIncassoService getIncassoService() {
-		if(father != null) {
-			return father.getIncassoService();
+		if(this.father != null) {
+			return this.father.getIncassoService();
 		}
-		return incassoService;
+		return this.incassoService;
+	}
+	
+	public IPagamentoService getPagamentoService() {
+		if(this.father != null) {
+			return this.father.getPagamentoService();
+		}
+		return this.pagamentoService;
+	}
+	
+	public IRendicontazioneService getRendicontazioneService() {
+		if(this.father != null) {
+			return this.father.getRendicontazioneService();
+		}
+		return this.rendicontazioneService;
+	}
+	
+	public IEventoService getEventoService() {
+		if(this.father != null) {
+			return this.father.getEventoService();
+		}
+		return this.eventoService;
+	}
+	
+	public IBatchService getBatchService() {
+		if(this.father != null) {
+			return this.father.getBatchService();
+		}
+		return this.batchService;
+	}
+	
+	public ITracciatoService getTracciatoService() {
+		if(this.father != null) {
+			return this.father.getTracciatoService();
+		}
+		return this.tracciatoService;
+	}
+	
+	public IEsitoAvvisaturaService getEsitoAvvisaturaService() {
+		if(this.father != null) {
+			return this.father.getEsitoAvvisaturaService();
+		}
+		return this.esitoAvvisaturaService;
+	}
+	
+	public IOperazioneService getOperazioneService() {
+		if(this.father != null) {
+			return this.father.getOperazioneService();
+		}
+		return this.operazioneService;
+	}
+	
+	public IAuditService getAuditService() {
+		if(this.father != null) {
+			return this.father.getAuditService();
+		}
+		return this.auditService;
+	}
+	
+	public IAvvisoService getAvvisoService() {
+		if(this.father != null) {
+			return this.father.getAvvisoService();
+		}
+		return this.avvisoService;
+	}
+	
+
+	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() {
+		if(this.father != null) {
+			return this.father.getRendicontazionePagamentoServiceSearch();
+		}
+		return this.rendicontazionePagamentoServiceSearch;
+	}
+	
+	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() {
+		if(this.father != null) {
+			return this.father.getVersamentoIncassoServiceSearch();
+		}
+		return this.versamentoIncassoServiceSearch;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {
-		if(father != null) {
-			father.setAutoCommit(autoCommit);
+		if(this.father != null) {
+			this.father.setAutoCommit(autoCommit);
 			return;
 		}
 		
@@ -541,15 +599,15 @@ public class BasicBD {
 	}
 
 	public void closeConnection() {
-		if(father != null) {
-			father.closeConnection();
+		if(this.father != null) {
+			this.father.closeConnection();
 			return;
 		}
 		
 		try {
-			if(this.connection != null && !isClosed) {
+			if(this.connection != null && !this.isClosed) {
 				this.connection.close();
-				isClosed = true;
+				this.isClosed = true;
 			}
 		} catch (Throwable e) {
 			log.error("Errore durante la chiusura della connessione.", e);
@@ -557,8 +615,8 @@ public class BasicBD {
 	}
 	
 	public void commit() throws ServiceException{
-		if(father != null) {
-			father.commit();
+		if(this.father != null) {
+			this.father.commit();
 			return;
 		}
 		
@@ -571,13 +629,13 @@ public class BasicBD {
 	}
 	
 	public void rollback() {
-		if(father != null) {
-			father.rollback();
+		if(this.father != null) {
+			this.father.rollback();
 			return;
 		}
 		
 		try {
-			if(this.connection != null && !this.connection.getAutoCommit() && !isClosed)
+			if(this.connection != null && !this.connection.getAutoCommit() && !this.isClosed)
 				this.connection.rollback();
 		} catch (Throwable e) {
 			log.error("Errore durante la rollback.", e);
@@ -585,51 +643,50 @@ public class BasicBD {
 	}
 
 	public Connection getConnection() {
-		if(father != null) {
-			return father.getConnection();
+		if(this.father != null) {
+			return this.father.getConnection();
 		}
 		return this.connection;
 	}
 
 	public JDBCServiceManagerProperties getJdbcProperties() {
-		if(father != null) {
-			return father.getJdbcProperties();
+		if(this.father != null) {
+			return this.father.getJdbcProperties();
 		}
-		return jdbcProperties;
+		return this.jdbcProperties;
 	}
 
 	public boolean isAutoCommit() throws ServiceException {
 		try {
-			return getConnection().getAutoCommit();
+			return this.getConnection().getAutoCommit();
 		} catch (SQLException e) {
 			throw new ServiceException("Errore nell'identificazione dello stato di autocommit.", e);
 		}
 	}
 	
 	public boolean isClosed() throws ServiceException {
-		if(father != null) {
-			return father.isClosed();
+		if(this.father != null) {
+			return this.father.isClosed();
 		}
-		return isClosed;
+		return this.isClosed;
 	}
 	
 	protected void emitAudit(BasicModel model){
-		if(father != null) {
-			father.emitAudit(model);
+		if(this.father != null) {
+			this.father.emitAudit(model);
 		} else {
-			if(idOperatore != null) {
+			if(this.idOperatore != null) {
 				AuditBD db = new AuditBD(this);
-				db.insertAudit(getIdOperatore(), model);
+				db.insertAudit(this.getIdOperatore(), model);
 			}
 		}
 	}
 
 	public long getIdOperatore() {
-		return idOperatore;
+		return this.idOperatore;
 	}
 
 	public void setIdOperatore(long idOperatore) {
 		this.idOperatore = idOperatore;
 	}
 }
-

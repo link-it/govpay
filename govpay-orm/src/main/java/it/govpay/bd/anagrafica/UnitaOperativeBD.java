@@ -68,6 +68,18 @@ public class UnitaOperativeBD extends BasicBD {
 		}
 	}
 	
+	public UnitaOperativa getUnitaOperativaByCodUnivocoUo(Long idDominio, String codUnivocoUnitaOperativa) throws NotFoundException, ServiceException {
+		UnitaOperativaFilter filter = this.newFilter();
+		filter.setCodIdentificativo(codUnivocoUnitaOperativa);
+		filter.setDominioFilter(idDominio);
+		List<UnitaOperativa> findAll = this.findAll(filter);
+		if(findAll.size() == 0) {
+			throw new NotFoundException();
+		} else {
+			return findAll.get(0);
+		}
+	}
+	
 	public void updateUnitaOperativa(UnitaOperativa uo) throws NotFoundException, ServiceException {
 		try {
 			it.govpay.orm.Uo vo = UnitaOperativaConverter.toVO(uo);
@@ -76,7 +88,7 @@ public class UnitaOperativeBD extends BasicBD {
 				throw new NotFoundException("UnitaOperativa con id ["+idUnitaOperativa.toJson()+"] non trovato");
 			}
 			this.getUoService().update(idUnitaOperativa, vo);
-			emitAudit(uo);
+			this.emitAudit(uo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -91,7 +103,7 @@ public class UnitaOperativeBD extends BasicBD {
 			it.govpay.orm.Uo vo = UnitaOperativaConverter.toVO(uo);
 			this.getUoService().create(vo);
 			uo.setId(vo.getId());
-			emitAudit(uo);
+			this.emitAudit(uo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -115,7 +127,7 @@ public class UnitaOperativeBD extends BasicBD {
 
 	public List<UnitaOperativa> findAll(UnitaOperativaFilter filter) throws ServiceException {
 		try {
-			List<UnitaOperativa> lst = new ArrayList<UnitaOperativa>();
+			List<UnitaOperativa> lst = new ArrayList<>();
 			List<it.govpay.orm.Uo> lstuoVo = this.getUoService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Uo uoVO: lstuoVo) {
 				lst.add(UnitaOperativaConverter.toDTO(uoVO));

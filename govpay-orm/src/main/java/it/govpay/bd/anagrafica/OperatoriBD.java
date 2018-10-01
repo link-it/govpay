@@ -20,6 +20,8 @@
 package it.govpay.bd.anagrafica;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -30,12 +32,14 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
-import it.govpay.bd.model.converter.OperatoreConverter;
 import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.converter.OperatoreConverter;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
 
@@ -65,23 +69,10 @@ public class OperatoriBD extends BasicBD {
 
 		try {
 			it.govpay.orm.Operatore operatoreVO = ((JDBCOperatoreServiceSearch)this.getOperatoreService()).get(id);
-			return getOperatore(operatoreVO);
+			return this.getOperatore(operatoreVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
-	}
-
-	/**
-	 * Recupera l'operatore identificato dalla chiave logica
-	 * 
-	 * @param principal
-	 * @return
-	 * @throws NotFoundException
-	 * @throws MultipleResultException
-	 * @throws ServiceException
-	 */
-	public Operatore getOperatore(String principal) throws NotFoundException, MultipleResultException, ServiceException {
-		return getOperatore(principal, false);
 	}
 	
 	/**
@@ -93,21 +84,85 @@ public class OperatoriBD extends BasicBD {
 	 * @throws MultipleResultException
 	 * @throws ServiceException
 	 */
-	public Operatore getOperatore(String principal, boolean checkIgnoreCase) throws NotFoundException, MultipleResultException, ServiceException {
+	public Operatore getOperatoreByPrincipal(String principal) throws NotFoundException, MultipleResultException, ServiceException {
+		try {
+			IExpression expr = this.getOperatoreService().newExpression();
+			expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, principal);
+			
+			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
+			return this.getOperatore(operatoreVO);
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	/**
+	 * Recupera l'operatore identificato dalla chiave logica
+	 * 
+	 * @param principal
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public Operatore getOperatoreBySubject(String principal) throws NotFoundException, MultipleResultException, ServiceException {
+		try {
+			IExpression expr = this.getOperatoreService().newExpression();
+
+			Hashtable<String, String> hashSubject = null;
+			try {
+			  hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			}catch(UtilsException e) {
+				throw new NotFoundException("Utenza" + principal + "non autorizzata");
+			}
+			Enumeration<String> keys = hashSubject.keys();
+			while(keys.hasMoreElements()){
+				String key = keys.nextElement();
+				String value = hashSubject.get(key);
+				expr.like(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, "/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/", LikeMode.ANYWHERE);
+			}
+			
+			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
+			return this.getOperatore(operatoreVO);
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	
+	/**
+	 * Recupera l'operatore identificato dalla chiave logica
+	 * 
+	 * @param principal
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public Operatore getOperatore(String principal) throws NotFoundException, ServiceException {
+		return this.getOperatore(principal,false);
+	}
+	
+	/**
+	 * Recupera l'operatore identificato dalla chiave logica
+	 * 
+	 * @param principal
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public Operatore getOperatore(String principal, boolean checkIgnoreCase) throws NotFoundException, ServiceException {
 		try {
 			IExpression expr = this.getOperatoreService().newExpression();
 			if(checkIgnoreCase)
-				expr.ilike(it.govpay.orm.Operatore.model().PRINCIPAL, principal, LikeMode.EXACT);
+				expr.ilike(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL_ORIGINALE, principal, LikeMode.EXACT);
 			else 
-				expr.equals(it.govpay.orm.Operatore.model().PRINCIPAL, principal);
+				expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL_ORIGINALE, principal);
 			
 			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);
-			return getOperatore(operatoreVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
+			return this.getOperatore(operatoreVO);
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -115,6 +170,7 @@ public class OperatoriBD extends BasicBD {
 
 	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
+		operatore.setUtenza(new UtenzeBD(this).getUtenza(operatoreVO.getIdUtenza().getId()));
 		return operatore;
 	}
 
@@ -140,21 +196,39 @@ public class OperatoriBD extends BasicBD {
 	 */
 	public void updateOperatore(Operatore operatore) throws NotFoundException, ServiceException {
 		try {
+			
+			UtenzeBD utenzeBD = new UtenzeBD(this);
+			// autocommit false		
+			this.setAutoCommit(false);
+			
+			if(!utenzeBD.exists(operatore.getUtenza())) {
+				utenzeBD.insertUtenza(operatore.getUtenza());
+			} else {
+				try {
+					utenzeBD.updateUtenza(operatore.getUtenza());
+				} catch(NotFoundException e) {
+					throw new ServiceException(e);
+				}
+			}
+			operatore.setIdUtenza(operatore.getUtenza().getId());
 
 			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
 			IdOperatore idOperatore = this.getOperatoreService().convertToId(vo);
 			if(!this.getOperatoreService().exists(idOperatore)) {
 				throw new NotFoundException("Operatore con id ["+idOperatore.toJson()+"] non trovato");
 			}
+			
 			this.getOperatoreService().update(idOperatore, vo);
 			operatore.setId(vo.getId());
-			emitAudit(operatore);
-		} catch (NotImplementedException e) {
+			
+			this.emitAudit(operatore);
+			this.commit();
+		} catch (NotImplementedException | MultipleResultException | UtilsException e) {
+			this.rollback();
 			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
+		} finally {
+			// ripristino l'autocommit.
+			this.setAutoCommit(true); 
 		}
 	}
 
@@ -167,10 +241,18 @@ public class OperatoriBD extends BasicBD {
 	 */
 	public void insertOperatore(Operatore operatore) throws  ServiceException{
 		try {
+			UtenzeBD utenzeBD = new UtenzeBD(this);
+			// autocommit false		
+			this.setAutoCommit(false); 
+			utenzeBD.insertUtenza(operatore.getUtenza());
+			operatore.setIdUtenza(operatore.getUtenza().getId());
 			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
 			this.getOperatoreService().create(vo);
 			operatore.setId(vo.getId());
-			emitAudit(operatore);
+			this.commit();
+			// ripristino l'autocommit.
+			this.setAutoCommit(true); 
+			this.emitAudit(operatore);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -194,20 +276,64 @@ public class OperatoriBD extends BasicBD {
 
 	public List<Operatore> findAll(OperatoreFilter filter) throws ServiceException {
 		try {
-			List<Operatore> lst = new ArrayList<Operatore>();
+			List<Operatore> lst = new ArrayList<>();
 			List<it.govpay.orm.Operatore> lstVO = this.getOperatoreService().findAll(filter.toPaginatedExpression());
 
 			for(it.govpay.orm.Operatore operatoreVO : lstVO) {
-				lst.add(getOperatore(operatoreVO));
+				lst.add(this.getOperatore(operatoreVO));
 			}
 			return lst;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		} catch (NotImplementedException | NotFoundException | MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
 
+	public void deleteOperatore(String principal) throws ServiceException, NotFoundException {
+		boolean oldAutoCommit = this.isAutoCommit();
+		try {
+			
+			this.setAutoCommit(false); 
+			
+			Operatore operatore = this.getOperatore(principal);
+			
+			if(!this.exists(operatore )) {
+				throw new NotFoundException();
+			}
+			
+			Utenza utenza = operatore.getUtenza();
+			this.getOperatoreService().delete(OperatoreConverter.toVO(operatore));
+			
+			// chiama utenza bd. delete
+			new UtenzeBD(this).deleteUtenza(utenza, true);
+			
+			this.commit();
+		} catch (NotImplementedException e) {
+			this.rollback(); 
+			throw new ServiceException(e);
+		} catch (ServiceException e) {
+			this.rollback();
+			throw e;
+		} finally {
+			this.setAutoCommit(oldAutoCommit); 
+		} 
+	}
+	
+	/**
+	 * Recupera operatore identificata dalla chiave fisica
+	 * 
+	 * @param operatore
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public boolean exists(Operatore operatore) throws ServiceException {
+		try {
+			IExpression expr = this.getOperatoreService().newExpression();
+			expr.equals(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL_ORIGINALE,operatore.getPrincipal());
+			return this.getOperatoreService().count(expr).longValue() > 0;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
 }

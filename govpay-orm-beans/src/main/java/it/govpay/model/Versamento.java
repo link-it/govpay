@@ -21,6 +21,7 @@ package it.govpay.model;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,9 @@ import org.apache.commons.lang.StringUtils;
 
 
 public class Versamento extends BasicModel {
+	
+	public static final String INCASSO_FALSE = "f";
+	public static final String INCASSO_TRUE = "t";
 
 	public enum StatoVersamento {
 		NON_ESEGUITO,
@@ -44,14 +48,18 @@ public class Versamento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-	private long idUo;
+	private Long idUo;
+	private long idDominio;
 	private long idApplicazione;
-	private String codVersamentoEnte; 
+
+	private String nome;
+	private String codVersamentoEnte;
 	private StatoVersamento statoVersamento;
 	private String descrizioneStato;
 	private BigDecimal importoTotale;
 	private boolean aggiornabile;
 	private Date dataCreazione;
+	private Date dataValidita;
 	private Date dataScadenza;
 	private Date dataUltimoAggiornamento;
 	private Causale causaleVersamento;
@@ -60,27 +68,115 @@ public class Versamento extends BasicModel {
 	private String codLotto;
 	private String codVersamentoLotto;
 	private Integer codAnnoTributario;
+	private String datiAllegati;
+	private Boolean incasso;
+	private String anomalie;
+	private String tassonomiaAvviso;
+	private String tassonomia;
+	private String iuvVersamento;
+	private String numeroAvviso;
+	private String avvisatura;
+	private Integer tipoPagamento;
+	private boolean daAvvisare;
+	private String codAvvisatura;
+	private Long idTracciatoAvvisatura;
+	private boolean ack;
+	private boolean anomalo;
+	
+	public String getIuvVersamento() {
+		return this.iuvVersamento;
+	}
+
+	public void setIuvVersamento(String iuvVersamento) {
+		this.iuvVersamento = iuvVersamento;
+	}
+
+	public String getNumeroAvviso() {
+		return this.numeroAvviso;
+	}
+
+	public void setNumeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+	}
+
+	public String getAvvisatura() {
+		return this.avvisatura;
+	}
+
+	public void setAvvisatura(String avvisatura) {
+		this.avvisatura = avvisatura;
+	}
+
+	public Integer getTipoPagamento() {
+		return this.tipoPagamento;
+	}
+
+	public void setTipoPagamento(Integer tipoPagamento) {
+		this.tipoPagamento = tipoPagamento;
+	}
+
+	public long getIdDominio() {
+		return this.idDominio;
+	}
+
+	public void setIdDominio(long idDominio) {
+		this.idDominio = idDominio;
+	}
+
+	public String getNome() {
+		return this.nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public Date getDataValidita() {
+		return this.dataValidita;
+	}
+
+	public void setDataValidita(Date dataValidita) {
+		this.dataValidita = dataValidita;
+	}
+
+	public String getTassonomiaAvviso() {
+		return this.tassonomiaAvviso;
+	}
+
+	public void setTassonomiaAvviso(String tassonomiaAvviso) {
+		this.tassonomiaAvviso = tassonomiaAvviso;
+	}
+
+	public String getTassonomia() {
+		return this.tassonomia;
+	}
+
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
+	}
+
 	private String codBundlekey;
 	private boolean bolloTelematico;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public long getIdUo() {
-		return idUo;
+	public Long getIdUo() {
+		return this.idUo;
 	}
 
-	public void setIdUo(long idUo) {
+	public void setIdUo(Long idUo) {
 		this.idUo = idUo;
 	}
 
 	public long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 
 	public void setIdApplicazione(long idApplicazione) {
@@ -88,7 +184,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public String getCodVersamentoEnte() {
-		return codVersamentoEnte;
+		return this.codVersamentoEnte;
 	}
 
 	public void setCodVersamentoEnte(String codVersamentoEnte) {
@@ -96,7 +192,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public StatoVersamento getStatoVersamento() {
-		return statoVersamento;
+		return this.statoVersamento;
 	}
 
 	public void setStatoVersamento(StatoVersamento statoVersamento) {
@@ -104,7 +200,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return this.descrizioneStato;
 	}
 
 	public void setDescrizioneStato(String descrizioneStato) {
@@ -112,7 +208,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public BigDecimal getImportoTotale() {
-		return importoTotale;
+		return this.importoTotale;
 	}
 
 	public void setImportoTotale(BigDecimal importoTotale) {
@@ -120,7 +216,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public boolean isAggiornabile() {
-		return aggiornabile;
+		return this.aggiornabile;
 	}
 
 	public void setAggiornabile(boolean aggiornabile) {
@@ -128,7 +224,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public Date getDataCreazione() {
-		return dataCreazione;
+		return this.dataCreazione;
 	}
 
 	public void setDataCreazione(Date dataCreazione) {
@@ -136,7 +232,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public Date getDataScadenza() {
-		return dataScadenza;
+		return this.dataScadenza;
 	}
 
 	public void setDataScadenza(Date dataScadenza) {
@@ -144,7 +240,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public Date getDataUltimoAggiornamento() {
-		return dataUltimoAggiornamento;
+		return this.dataUltimoAggiornamento;
 	}
 
 	public void setDataUltimoAggiornamento(Date dataUltimoAggiornamento) {
@@ -152,7 +248,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public Anagrafica getAnagraficaDebitore() {
-		return anagraficaDebitore;
+		return this.anagraficaDebitore;
 	}
 
 	public void setAnagraficaDebitore(Anagrafica anagraficaDebitore) {
@@ -160,7 +256,7 @@ public class Versamento extends BasicModel {
 	}
 	
 	public String getCodBundlekey() {
-		return codBundlekey;
+		return this.codBundlekey;
 	}
 
 	public void setCodBundlekey(String codBundlekey) {
@@ -168,7 +264,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public Causale getCausaleVersamento() {
-		return causaleVersamento;
+		return this.causaleVersamento;
 	}
 
 	public void setCausaleVersamento(Causale causaleVersamento) {
@@ -192,8 +288,8 @@ public class Versamento extends BasicModel {
 		
 		@Override
 		public String encode() throws UnsupportedEncodingException {
-			if(causale == null) return null;
-			return "01 " + Base64.encodeBase64String(causale.getBytes("UTF-8"));
+			if(this.causale == null) return null;
+			return "01 " + Base64.encodeBase64String(this.causale.getBytes(StandardCharsets.UTF_8));
 		}
 		
 		@Override
@@ -206,12 +302,12 @@ public class Versamento extends BasicModel {
 		}
 		
 		public String getCausale() {
-			return causale;
+			return this.causale;
 		}
 		
 		@Override
 		public String toString() {
-			return causale;
+			return this.causale;
 		}
 		
 	}
@@ -221,10 +317,10 @@ public class Versamento extends BasicModel {
 		
 		@Override
 		public String encode() throws UnsupportedEncodingException {
-			if(spezzoni == null) return null;
+			if(this.spezzoni == null) return null;
 			String encoded = "02";
-			for(String spezzone : spezzoni) {
-				encoded += " " + Base64.encodeBase64String(spezzone.getBytes("UTF-8"));
+			for(String spezzone : this.spezzoni) {
+				encoded += " " + Base64.encodeBase64String(spezzone.getBytes(StandardCharsets.UTF_8));
 			}
 			return encoded;
 		}
@@ -242,12 +338,12 @@ public class Versamento extends BasicModel {
 		}
 		
 		public List<String> getSpezzoni() {
-			return spezzoni;
+			return this.spezzoni;
 		}
 		
 		@Override
 		public String toString() {
-			return StringUtils.join(spezzoni, "; ");
+			return StringUtils.join(this.spezzoni, "; ");
 		}
 	}
 	
@@ -257,10 +353,10 @@ public class Versamento extends BasicModel {
 		
 		@Override
 		public String encode() throws UnsupportedEncodingException {
-			if(spezzoni == null) return null;
+			if(this.spezzoni == null) return null;
 			String encoded = "03";
-			for(int i=0; i<spezzoni.size(); i++) {
-				encoded += " " + Base64.encodeBase64String(spezzoni.get(i).getBytes("UTF-8")) + " " + Base64.encodeBase64String(Double.toString(importi.get(i).doubleValue()).getBytes("UTF-8"));
+			for(int i=0; i<this.spezzoni.size(); i++) {
+				encoded += " " + Base64.encodeBase64String(this.spezzoni.get(i).getBytes(StandardCharsets.UTF_8)) + " " + Base64.encodeBase64String(Double.toString(this.importi.get(i).doubleValue()).getBytes(StandardCharsets.UTF_8));
 			}
 			return encoded;
 		}
@@ -269,7 +365,7 @@ public class Versamento extends BasicModel {
 		public String getSimple() throws UnsupportedEncodingException {
 			if(this.spezzoni != null && !this.spezzoni.isEmpty()){
 				StringBuffer sb = new StringBuffer();
-				sb.append(importi.get(0).doubleValue() + ": " + spezzoni.get(0) );
+				sb.append(this.importi.get(0).doubleValue() + ": " + this.spezzoni.get(0) );
 				return sb.toString();
 			}
 				
@@ -277,8 +373,8 @@ public class Versamento extends BasicModel {
 		}
 		
 		public CausaleSpezzoniStrutturati() {
-			spezzoni = new ArrayList<String>();
-			importi = new ArrayList<BigDecimal>();
+			this.spezzoni = new ArrayList<>();
+			this.importi = new ArrayList<>();
 		}
 		
 		public void setSpezzoni(List<String> spezzoni) {
@@ -286,7 +382,7 @@ public class Versamento extends BasicModel {
 		}
 		
 		public List<String> getSpezzoni() {
-			return spezzoni;
+			return this.spezzoni;
 		}
 		
 		public void setImporti(List<BigDecimal> importi) {
@@ -294,19 +390,19 @@ public class Versamento extends BasicModel {
 		}
 		
 		public List<BigDecimal> getImporti() {
-			return importi;
+			return this.importi;
 		}
 		
 		public void addSpezzoneStrutturato(String spezzone, BigDecimal importo){
-			spezzoni.add(spezzone);
-			importi.add(importo);
+			this.spezzoni.add(spezzone);
+			this.importi.add(importo);
 		}
 		
 		@Override
 		public String toString() {
 			StringBuffer sb = new StringBuffer();
-			for(int i=0; i<spezzoni.size(); i++) {
-				sb.append(importi.get(i).doubleValue() + ": " + spezzoni.get(i) + "; ");
+			for(int i=0; i<this.spezzoni.size(); i++) {
+				sb.append(this.importi.get(i).doubleValue() + ": " + this.spezzoni.get(i) + "; ");
 			}
 			return sb.toString();
 		}
@@ -320,7 +416,7 @@ public class Versamento extends BasicModel {
 		if(causaleSplit[0].equals("01")) {
 			CausaleSemplice causale = new Versamento().new CausaleSemplice();
 			if(causaleSplit.length > 1 && causaleSplit[1] != null) {
-				causale.setCausale(new String(Base64.decodeBase64(causaleSplit[1].getBytes()), "UTF-8"));
+				causale.setCausale(new String(Base64.decodeBase64(causaleSplit[1].getBytes()), StandardCharsets.UTF_8));
 				return causale;
 			} else {
 				return null;
@@ -328,9 +424,9 @@ public class Versamento extends BasicModel {
 		}
 		
 		if(causaleSplit[0].equals("02")) {
-			List<String> spezzoni = new ArrayList<String>();
+			List<String> spezzoni = new ArrayList<>();
 			for(int i=1; i<causaleSplit.length; i++) {
-				spezzoni.add(new String(Base64.decodeBase64(causaleSplit[i].getBytes()), "UTF-8"));
+				spezzoni.add(new String(Base64.decodeBase64(causaleSplit[i].getBytes()), StandardCharsets.UTF_8));
 			}
 			CausaleSpezzoni causale = new Versamento().new CausaleSpezzoni();
 			causale.setSpezzoni(spezzoni);
@@ -338,12 +434,12 @@ public class Versamento extends BasicModel {
 		}
 		
 		if(causaleSplit[0].equals("03")) {
-			List<String> spezzoni = new ArrayList<String>();
-			List<BigDecimal> importi = new ArrayList<BigDecimal>();
+			List<String> spezzoni = new ArrayList<>();
+			List<BigDecimal> importi = new ArrayList<>();
 			
 			for(int i=1; i<causaleSplit.length; i=i+2) {
-				spezzoni.add(new String(Base64.decodeBase64(causaleSplit[i].getBytes()), "UTF-8"));
-				importi.add(BigDecimal.valueOf(Double.parseDouble(new String(Base64.decodeBase64(causaleSplit[i+1].getBytes()), "UTF-8"))));
+				spezzoni.add(new String(Base64.decodeBase64(causaleSplit[i].getBytes()), StandardCharsets.UTF_8));
+				importi.add(BigDecimal.valueOf(Double.parseDouble(new String(Base64.decodeBase64(causaleSplit[i+1].getBytes()), StandardCharsets.UTF_8))));
 			}
 			CausaleSpezzoniStrutturati causale = new Versamento().new CausaleSpezzoniStrutturati();
 			causale.setSpezzoni(spezzoni);
@@ -354,7 +450,7 @@ public class Versamento extends BasicModel {
 	}
 	
 	public boolean isBolloTelematico() {
-		return bolloTelematico;
+		return this.bolloTelematico;
 	}
 
 	public void setBolloTelematico(boolean bolloTelematico) {
@@ -362,7 +458,7 @@ public class Versamento extends BasicModel {
 	}
 	
 	public String getIuvProposto() {
-		return iuvProposto;
+		return this.iuvProposto;
 	}
 
 	public void setIuvProposto(String iuvProposto) {
@@ -370,7 +466,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public String getCodLotto() {
-		return codLotto;
+		return this.codLotto;
 	}
 
 	public void setCodLotto(String codLotto) {
@@ -378,7 +474,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public String getCodVersamentoLotto() {
-		return codVersamentoLotto;
+		return this.codVersamentoLotto;
 	}
 
 	public void setCodVersamentoLotto(String codVersamentoLotto) {
@@ -386,13 +482,73 @@ public class Versamento extends BasicModel {
 	}
 
 	public Integer getCodAnnoTributario() {
-		return codAnnoTributario;
+		return this.codAnnoTributario;
 	}
 
 	public void setCodAnnoTributario(Integer codAnnoTributario) {
 		this.codAnnoTributario = codAnnoTributario;
 	}
-	
-	
+
+	public String getDatiAllegati() {
+		return this.datiAllegati;
+	}
+
+	public void setDatiAllegati(String datiAllegati) {
+		this.datiAllegati = datiAllegati;
+	}
+
+	public Boolean getIncasso() {
+		return this.incasso;
+	}
+
+	public void setIncasso(Boolean incasso) {
+		this.incasso = incasso;
+	}
+
+	public String getAnomalie() {
+		return this.anomalie;
+	}
+
+	public void setAnomalie(String anomalie) {
+		this.anomalie = anomalie;
+	}
+
+	public boolean isDaAvvisare() {
+		return this.daAvvisare;
+	}
+
+	public void setDaAvvisare(boolean daAvvisare) {
+		this.daAvvisare = daAvvisare;
+	}
+
+	public String getCodAvvisatura() {
+		return this.codAvvisatura;
+	}
+
+	public void setCodAvvisatura(String codAvvisatura) {
+		this.codAvvisatura = codAvvisatura;
+	}
+
+	public Long getIdTracciatoAvvisatura() {
+		return this.idTracciatoAvvisatura;
+	}
+
+	public void setIdTracciatoAvvisatura(Long idTracciatoAvvisatura) {
+		this.idTracciatoAvvisatura = idTracciatoAvvisatura;
+	}
+	public boolean isAck() {
+		return this.ack;
+	}
+	public void setAck(boolean ack) {
+		this.ack = ack;
+	}
+
+	public boolean isAnomalo() {
+		return anomalo;
+	}
+
+	public void setAnomalo(boolean anomalo) {
+		this.anomalo = anomalo;
+	}
 	
 }

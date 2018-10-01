@@ -1,0 +1,16 @@
+<div class="container pt-4 card-container">
+  <mat-card class="shadow no-border-radius">
+    <p class="d-block font-weight-500 matcard-title color-gray">Riepilogo</p>
+    <mat-card-content>
+    <p class="matcard-title py-3" *ngIf="informazioni.length == 0">Nessuna informazione</p>
+    <div class="d-block pt-3" *ngIf="informazioni.length != 0">
+      <link-key-value-view class="link-key-value-fill-mat-card" *ngFor="let item of informazioni" [info]="item"></link-key-value-view>
+    </div>
+    <p class="d-block pt-3 font-weight-500 matcard-title color-gray">Altre informazioni</p>
+    <p class="matcard-title py-3" *ngIf="extra.length == 0">Nessuna informazione</p>
+    <div class="d-block pt-3" *ngIf="extra.length != 0">
+      <link-key-value-view class="link-key-value-fill-mat-card" *ngFor="let item of extra" [info]="item"></link-key-value-view>
+    </div>
+    </mat-card-content>
+  </mat-card>
+</div>

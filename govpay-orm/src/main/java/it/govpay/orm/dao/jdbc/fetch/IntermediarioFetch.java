@@ -52,15 +52,17 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Intermediario.model())){
 				Intermediario object = new Intermediario();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodIntermediario", Intermediario.model().COD_INTERMEDIARIO.getFieldType(),
+				this.setParameter(object, "setCodIntermediario", Intermediario.model().COD_INTERMEDIARIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_intermediario", Intermediario.model().COD_INTERMEDIARIO.getFieldType()));
-				setParameter(object, "setCodConnettorePdd", Intermediario.model().COD_CONNETTORE_PDD.getFieldType(),
+				this.setParameter(object, "setCodConnettorePdd", Intermediario.model().COD_CONNETTORE_PDD.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_pdd", Intermediario.model().COD_CONNETTORE_PDD.getFieldType()));
-				setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
+				this.setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_ftp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType()));
+				this.setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "denominazione", Intermediario.model().DENOMINAZIONE.getFieldType()));
-				setParameter(object, "setAbilitato", Intermediario.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Intermediario.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Intermediario.model().ABILITATO.getFieldType()));
 				return object;
 			}
@@ -82,15 +84,17 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Intermediario.model())){
 				Intermediario object = new Intermediario();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodIntermediario", Intermediario.model().COD_INTERMEDIARIO.getFieldType(),
+				this.setParameter(object, "setCodIntermediario", Intermediario.model().COD_INTERMEDIARIO.getFieldType(),
 					this.getObjectFromMap(map,"codIntermediario"));
-				setParameter(object, "setCodConnettorePdd", Intermediario.model().COD_CONNETTORE_PDD.getFieldType(),
+				this.setParameter(object, "setCodConnettorePdd", Intermediario.model().COD_CONNETTORE_PDD.getFieldType(),
 					this.getObjectFromMap(map,"codConnettorePdd"));
-				setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
+				this.setParameter(object, "setCodConnettoreFtp", Intermediario.model().COD_CONNETTORE_FTP.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreFtp"));
+				this.setParameter(object, "setDenominazione", Intermediario.model().DENOMINAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"denominazione"));
-				setParameter(object, "setAbilitato", Intermediario.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Intermediario.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
 				return object;
 			}

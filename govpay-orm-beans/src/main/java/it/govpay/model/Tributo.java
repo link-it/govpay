@@ -27,7 +27,7 @@ public class Tributo extends TipoTributo {
 	
 	public static final String BOLLOT = "BOLLOT";
 	
-	public enum TipoContabilta {
+	public enum TipoContabilita {
 	    CAPITOLO("0"),
 	    SPECIALE("1"),
 	    SIOPE("2"),
@@ -35,71 +35,78 @@ public class Tributo extends TipoTributo {
 	    
 		private String codifica;
 
-		TipoContabilta(String codifica) {
+		TipoContabilita(String codifica) {
 			this.codifica = codifica;
 		}
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
-		public static TipoContabilta toEnum(String codifica) throws ServiceException {
-			for(TipoContabilta p : TipoContabilta.values()){
+		public static TipoContabilita toEnum(String codifica) throws ServiceException {
+			for(TipoContabilita p : TipoContabilita.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoContabilta.values()));
+			throw new ServiceException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
 		}
 	}
 	
 	private long idTipoTributo;
 	private long idDominio;
 	private Long idIbanAccredito;
+	private Long idIbanAppoggio;
 	private boolean abilitato;
-	private TipoContabilta tipoContabilitaCustom;
+	private TipoContabilita tipoContabilitaCustom;
 	private String codContabilitaCustom;
 	private String codTributoIuvCustom;
 	
 	public Long getIdIbanAccredito() {
-		return idIbanAccredito;
+		return this.idIbanAccredito;
 	}
 	public void setIdIbanAccredito(Long idIbanAccredito) {
 		this.idIbanAccredito = idIbanAccredito;
 	}
 	public boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
 	}
 	public long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(long idDominio) {
 		this.idDominio = idDominio;
 	}
 
 	public long getIdTipoTributo() {
-		return idTipoTributo;
+		return this.idTipoTributo;
 	}
 	public void setIdTipoTributo(long idTipoTributo) {
 		this.idTipoTributo = idTipoTributo;
 	}
-	public TipoContabilta getTipoContabilitaCustom() {
-		return tipoContabilitaCustom;
+	public TipoContabilita getTipoContabilitaCustom() {
+		return this.tipoContabilitaCustom;
 	}
-	public void setTipoContabilitaCustom(TipoContabilta tipoContabilitaCustom) {
+	public void setTipoContabilitaCustom(TipoContabilita tipoContabilitaCustom) {
 		this.tipoContabilitaCustom = tipoContabilitaCustom;
 	}
 	public String getCodContabilitaCustom() {
-		return codContabilitaCustom;
+		return this.codContabilitaCustom;
 	}
 	public void setCodContabilitaCustom(String codContabilitaCustom) {
 		this.codContabilitaCustom = codContabilitaCustom;
 	}
 	public String getCodTributoIuvCustom() {
-		return codTributoIuvCustom;
+		return this.codTributoIuvCustom;
 	}
 	public void setCodTributoIuvCustom(String codTributoIuv) {
 		this.codTributoIuvCustom = codTributoIuv;
+	}
+	public Long getIdIbanAppoggio() {
+		return this.idIbanAppoggio;
+	}
+	public void setIdIbanAppoggio(Long idIbanAppoggio) {
+		this.idIbanAppoggio = idIbanAppoggio;
 	}
 }

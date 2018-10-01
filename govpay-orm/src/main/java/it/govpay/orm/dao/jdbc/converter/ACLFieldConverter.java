@@ -67,39 +67,25 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(ACL.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+		if(field.equals(ACL.model().RUOLO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
+				return this.toAliasTable(field)+".ruolo";
 			}else{
-				return "cod_applicazione";
+				return "ruolo";
 			}
 		}
-		if(field.equals(ACL.model().ID_PORTALE.COD_PORTALE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_portale";
-			}else{
-				return "cod_portale";
-			}
-		}
-		if(field.equals(ACL.model().ID_OPERATORE.PRINCIPAL)){
+		if(field.equals(ACL.model().PRINCIPAL)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".principal";
 			}else{
 				return "principal";
 			}
 		}
-		if(field.equals(ACL.model().ID_RUOLO.COD_RUOLO)){
+		if(field.equals(ACL.model().SERVIZIO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_ruolo";
+				return this.toAliasTable(field)+".servizio";
 			}else{
-				return "cod_ruolo";
-			}
-		}
-		if(field.equals(ACL.model().COD_TIPO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_tipo";
-			}else{
-				return "cod_tipo";
+				return "servizio";
 			}
 		}
 		if(field.equals(ACL.model().DIRITTI)){
@@ -107,34 +93,6 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".diritti";
 			}else{
 				return "diritti";
-			}
-		}
-		if(field.equals(ACL.model().COD_SERVIZIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_servizio";
-			}else{
-				return "cod_servizio";
-			}
-		}
-		if(field.equals(ACL.model().ADMIN)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".amministratore";
-			}else{
-				return "amministratore";
-			}
-		}
-		if(field.equals(ACL.model().ID_DOMINIO.COD_DOMINIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_dominio";
-			}else{
-				return "cod_dominio";
-			}
-		}
-		if(field.equals(ACL.model().ID_TIPO_TRIBUTO.COD_TRIBUTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_tributo";
-			}else{
-				return "cod_tributo";
 			}
 		}
 
@@ -150,35 +108,17 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(ACL.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(ACL.model().ID_APPLICAZIONE, returnAlias);
+		if(field.equals(ACL.model().RUOLO)){
+			return this.toTable(ACL.model(), returnAlias);
 		}
-		if(field.equals(ACL.model().ID_PORTALE.COD_PORTALE)){
-			return this.toTable(ACL.model().ID_PORTALE, returnAlias);
+		if(field.equals(ACL.model().PRINCIPAL)){
+			return this.toTable(ACL.model(), returnAlias);
 		}
-		if(field.equals(ACL.model().ID_OPERATORE.PRINCIPAL)){
-			return this.toTable(ACL.model().ID_OPERATORE, returnAlias);
-		}
-		if(field.equals(ACL.model().ID_RUOLO.COD_RUOLO)){
-			return this.toTable(ACL.model().ID_RUOLO, returnAlias);
-		}
-		if(field.equals(ACL.model().COD_TIPO)){
+		if(field.equals(ACL.model().SERVIZIO)){
 			return this.toTable(ACL.model(), returnAlias);
 		}
 		if(field.equals(ACL.model().DIRITTI)){
 			return this.toTable(ACL.model(), returnAlias);
-		}
-		if(field.equals(ACL.model().COD_SERVIZIO)){
-			return this.toTable(ACL.model(), returnAlias);
-		}
-		if(field.equals(ACL.model().ADMIN)){
-			return this.toTable(ACL.model(), returnAlias);
-		}
-		if(field.equals(ACL.model().ID_DOMINIO.COD_DOMINIO)){
-			return this.toTable(ACL.model().ID_DOMINIO, returnAlias);
-		}
-		if(field.equals(ACL.model().ID_TIPO_TRIBUTO.COD_TRIBUTO)){
-			return this.toTable(ACL.model().ID_TIPO_TRIBUTO, returnAlias);
 		}
 
 
@@ -195,24 +135,6 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(ACL.model())){
 			return "acl";
-		}
-		if(model.equals(ACL.model().ID_APPLICAZIONE)){
-			return "applicazioni";
-		}
-		if(model.equals(ACL.model().ID_PORTALE)){
-			return "portali";
-		}
-		if(model.equals(ACL.model().ID_OPERATORE)){
-			return "operatori";
-		}
-		if(model.equals(ACL.model().ID_RUOLO)){
-			return "ruoli";
-		}
-		if(model.equals(ACL.model().ID_DOMINIO)){
-			return "domini";
-		}
-		if(model.equals(ACL.model().ID_TIPO_TRIBUTO)){
-			return "tipi_tributo";
 		}
 
 

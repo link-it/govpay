@@ -44,68 +44,69 @@ public class Notifica extends BasicModel {
 	private Date dataProssimaSpedizione;
 	private Date dataAggiornamento;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 	public void setIdApplicazione(long idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
 	public TipoNotifica getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 	public void setTipo(TipoNotifica tipo) {
 		this.tipo = tipo;
 	}
 	public Date getDataCreazione() {
-		return dataCreazione;
+		return this.dataCreazione;
 	}
 	public void setDataCreazione(Date dataCreazione) {
 		this.dataCreazione = dataCreazione;
 	}
 	public StatoSpedizione getStato() {
-		return stato;
+		return this.stato;
 	}
 	public void setStato(StatoSpedizione stato) {
 		this.stato = stato;
 	}
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return this.descrizioneStato;
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
 		this.descrizioneStato = descrizioneStato;
 	}
 	public Long getTentativiSpedizione() {
-		return tentativiSpedizione;
+		return this.tentativiSpedizione;
 	}
 	public void setTentativiSpedizione(Long tentativiSpedizione) {
 		this.tentativiSpedizione = tentativiSpedizione;
 	}
 	public Date getDataAggiornamento() {
-		return dataAggiornamento;
+		return this.dataAggiornamento;
 	}
 	public void setDataAggiornamento(Date dataAggiornamento) {
 		this.dataAggiornamento = dataAggiornamento;
 	}
 	public Long getIdRpt() {
-		return idRpt;
+		return this.idRpt;
 	}
 	public void setIdRpt(Long idRpt) {
 		this.idRpt = idRpt;
 	}
 	public Long getIdRr() {
-		return idRr;
+		return this.idRr;
 	}
 	public void setIdRr(Long idRr) {
 		this.idRr = idRr;	
 	}
 	public Date getDataProssimaSpedizione() {
-		return dataProssimaSpedizione;
+		return this.dataProssimaSpedizione;
 	}
 	public void setDataProssimaSpedizione(Date dataProssimaSpedizione) {
 		this.dataProssimaSpedizione = dataProssimaSpedizione;

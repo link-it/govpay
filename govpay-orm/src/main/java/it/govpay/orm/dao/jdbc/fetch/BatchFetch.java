@@ -52,15 +52,15 @@ public class BatchFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Batch.model())){
 				Batch object = new Batch();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodBatch", Batch.model().COD_BATCH.getFieldType(),
+				this.setParameter(object, "setCodBatch", Batch.model().COD_BATCH.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_batch", Batch.model().COD_BATCH.getFieldType()));
-				setParameter(object, "setNodo", Batch.model().NODO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "nodo", Batch.model().NODO.getFieldType(), org.openspcoop2.generic_project.dao.jdbc.utils.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
-				setParameter(object, "setInizio", Batch.model().INIZIO.getFieldType(),
+				this.setParameter(object, "setNodo", Batch.model().NODO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "nodo", Batch.model().NODO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				this.setParameter(object, "setInizio", Batch.model().INIZIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "inizio", Batch.model().INIZIO.getFieldType()));
-				setParameter(object, "setAggiornamento", Batch.model().AGGIORNAMENTO.getFieldType(),
+				this.setParameter(object, "setAggiornamento", Batch.model().AGGIORNAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "aggiornamento", Batch.model().AGGIORNAMENTO.getFieldType()));
 				return object;
 			}
@@ -82,15 +82,15 @@ public class BatchFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Batch.model())){
 				Batch object = new Batch();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodBatch", Batch.model().COD_BATCH.getFieldType(),
+				this.setParameter(object, "setCodBatch", Batch.model().COD_BATCH.getFieldType(),
 					this.getObjectFromMap(map,"codBatch"));
-				setParameter(object, "setNodo", Batch.model().NODO.getFieldType(),
+				this.setParameter(object, "setNodo", Batch.model().NODO.getFieldType(),
 					this.getObjectFromMap(map,"nodo"));
-				setParameter(object, "setInizio", Batch.model().INIZIO.getFieldType(),
+				this.setParameter(object, "setInizio", Batch.model().INIZIO.getFieldType(),
 					this.getObjectFromMap(map,"inizio"));
-				setParameter(object, "setAggiornamento", Batch.model().AGGIORNAMENTO.getFieldType(),
+				this.setParameter(object, "setAggiornamento", Batch.model().AGGIORNAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"aggiornamento"));
 				return object;
 			}

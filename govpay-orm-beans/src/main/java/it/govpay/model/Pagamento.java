@@ -22,10 +22,15 @@ package it.govpay.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+
 public class Pagamento extends BasicModel {
 
 	private static final long serialVersionUID = 1L;
 
+	public enum TipoPagamento {
+		ENTRATA, MBT
+	}
+	
 	public enum TipoAllegato {
 		ES, BD
 	}
@@ -41,6 +46,7 @@ public class Pagamento extends BasicModel {
 	private int indiceDati;
 	
 	private Stato stato;
+	private TipoPagamento tipo;
 	
 	private BigDecimal importoPagato;
 	private Date dataAcquisizione;
@@ -48,7 +54,6 @@ public class Pagamento extends BasicModel {
 	private BigDecimal commissioniPsp;
 	private TipoAllegato tipoAllegato;
 	private byte[] allegato;
-	private String ibanAccredito;
 	
 	private Long idRpt;
 	private Long idSingoloVersamento;
@@ -68,8 +73,9 @@ public class Pagamento extends BasicModel {
 		this.stato = Stato.PAGATO;
 	}
 
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {
@@ -77,7 +83,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public Long getIdRpt() {
-		return idRpt;
+		return this.idRpt;
 	}
 
 	public void setIdRpt(long idRpt) {
@@ -85,7 +91,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public Long getIdSingoloVersamento() {
-		return idSingoloVersamento;
+		return this.idSingoloVersamento;
 	}
 
 	public void setIdSingoloVersamento(Long idSingoloVersamento) {
@@ -93,7 +99,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public BigDecimal getImportoPagato() {
-		return importoPagato;
+		return this.importoPagato;
 	}
 
 	public void setImportoPagato(BigDecimal importoPagato) {
@@ -101,7 +107,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public String getIur() {
-		return iur;
+		return this.iur;
 	}
 
 	public void setIur(String iur) {
@@ -109,7 +115,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public Date getDataPagamento() {
-		return dataPagamento;
+		return this.dataPagamento;
 	}
 
 	public void setDataPagamento(Date dataPagamento) {
@@ -117,7 +123,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public TipoAllegato getTipoAllegato() {
-		return tipoAllegato;
+		return this.tipoAllegato;
 	}
 
 	public void setTipoAllegato(TipoAllegato tipoAllegato) {
@@ -125,7 +131,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public byte[] getAllegato() {
-		return allegato;
+		return this.allegato;
 	}
 
 	public void setAllegato(byte[] allegato) {
@@ -133,7 +139,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public BigDecimal getCommissioniPsp() {
-		return commissioniPsp;
+		return this.commissioniPsp;
 	}
 
 	public void setCommissioniPsp(BigDecimal commissioniPsp) {
@@ -141,7 +147,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public Long getIdRr() {
-		return idRr;
+		return this.idRr;
 	}
 
 	public void setIdRr(Long idRr) {
@@ -149,7 +155,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public String getCausaleRevoca() {
-		return causaleRevoca;
+		return this.causaleRevoca;
 	}
 
 	public void setCausaleRevoca(String causaleRevoca) {
@@ -157,7 +163,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public String getDatiRevoca() {
-		return datiRevoca;
+		return this.datiRevoca;
 	}
 
 	public void setDatiRevoca(String datiRevoca) {
@@ -165,7 +171,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public String getEsitoRevoca() {
-		return esitoRevoca;
+		return this.esitoRevoca;
 	}
 
 	public void setEsitoRevoca(String esitoRevoca) {
@@ -173,7 +179,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public String getDatiEsitoRevoca() {
-		return datiEsitoRevoca;
+		return this.datiEsitoRevoca;
 	}
 
 	public void setDatiEsitoRevoca(String datiEsitoRevoca) {
@@ -181,7 +187,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public BigDecimal getImportoRevocato() {
-		return importoRevocato;
+		return this.importoRevocato;
 	}
 
 	public void setImportoRevocato(BigDecimal importoRevocato) {
@@ -189,7 +195,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public Date getDataAcquisizione() {
-		return dataAcquisizione;
+		return this.dataAcquisizione;
 	}
 
 	public void setDataAcquisizione(Date dataAcquisizione) {
@@ -197,23 +203,15 @@ public class Pagamento extends BasicModel {
 	}
 
 	public Date getDataAcquisizioneRevoca() {
-		return dataAcquisizioneRevoca;
+		return this.dataAcquisizioneRevoca;
 	}
 
 	public void setDataAcquisizioneRevoca(Date dataAcquisizioneRevoca) {
 		this.dataAcquisizioneRevoca = dataAcquisizioneRevoca;
 	}
 
-	public String getIbanAccredito() {
-		return ibanAccredito;
-	}
-
-	public void setIbanAccredito(String ibanAccredito) {
-		this.ibanAccredito = ibanAccredito;
-	}
-
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -221,7 +219,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
@@ -229,7 +227,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public Stato getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(Stato stato) {
@@ -237,7 +235,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	public Long getIdIncasso() {
-		return idIncasso;
+		return this.idIncasso;
 	}
 
 	public void setIdIncasso(Long idIncasso) {
@@ -245,11 +243,20 @@ public class Pagamento extends BasicModel {
 	}
 
 	public int getIndiceDati() {
-		return indiceDati;
+		return this.indiceDati;
 	}
 
 	public void setIndiceDati(int indiceDati) {
 		this.indiceDati = indiceDati;
 	}
+
+	public TipoPagamento getTipo() {
+		return this.tipo;
+	}
+
+	public void setTipo(TipoPagamento tipo) {
+		this.tipo = tipo;
+	}
+
 }
 

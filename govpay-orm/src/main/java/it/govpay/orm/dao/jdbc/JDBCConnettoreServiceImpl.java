@@ -23,7 +23,7 @@ import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdConnettore;
@@ -135,7 +135,7 @@ public class JDBCConnettoreServiceImpl extends JDBCConnettoreServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getConnettoreFieldConverter().toTable(Connettore.model()));
 		boolean isUpdate_connettore = true;
-		java.util.List<JDBCObject> lstObjects_connettore = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_connettore = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getConnettoreFieldConverter().toColumn(Connettore.model().COD_CONNETTORE,false), "?");
 		lstObjects_connettore.add(new JDBCObject(connettore.getCodConnettore(), Connettore.model().COD_CONNETTORE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getConnettoreFieldConverter().toColumn(Connettore.model().COD_PROPRIETA,false), "?");
@@ -186,7 +186,7 @@ public class JDBCConnettoreServiceImpl extends JDBCConnettoreServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getConnettoreFieldConverter().toTable(Connettore.model()), 
@@ -197,7 +197,7 @@ public class JDBCConnettoreServiceImpl extends JDBCConnettoreServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getConnettoreFieldConverter().toTable(Connettore.model()), 
@@ -208,7 +208,7 @@ public class JDBCConnettoreServiceImpl extends JDBCConnettoreServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getConnettoreFieldConverter().toTable(Connettore.model()), 

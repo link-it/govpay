@@ -1,3 +1,4 @@
+
 ALTER TABLE rpt MODIFY COLUMN modello_pagamento VARCHAR(16) NOT NULL;
 ALTER TABLE rpt ADD COLUMN cod_canale VARCHAR(35);
 ALTER TABLE rpt ADD COLUMN cod_psp VARCHAR(35);
@@ -20,4 +21,5 @@ SET
 
 ALTER TABLE rpt DROP COLUMN id_canale;
 ALTER TABLE rpt DROP COLUMN firma_ricevuta;
+
 

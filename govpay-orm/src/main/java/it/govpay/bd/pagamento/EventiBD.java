@@ -66,7 +66,7 @@ public class EventiBD extends BasicBD {
 
 	public List<Evento> findAll(IFilter filter) throws ServiceException {
 		try {
-			List<Evento> eventoLst = new ArrayList<Evento>();
+			List<Evento> eventoLst = new ArrayList<>();
 			List<it.govpay.orm.Evento> eventoVOLst = this.getEventoService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Evento eventoVO: eventoVOLst) {
 				eventoLst.add(EventoConverter.toDTO(eventoVO));

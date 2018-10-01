@@ -1,0 +1,58 @@
+<div class="side-list-menu-group">
+  <div #head class="d-block position-relative p-3 bg-head" [ngStyle]="_size()">
+    <div class="side-nav-title">{{_title}}</div>
+    <div class="lower-position">
+      <div class="d-flex flex-row">
+        <p class="user-name light-color text-truncate mr-3">{{_utenteConnesso}}</p>
+        <mat-icon class="ml-auto action" (click)="_menuRoute(_profilo_router_link)" matTooltip="Profilo utente"><i class="material-icons">visibility</i></mat-icon>
+        <mat-icon class="ml-3 action" (click)="_logout()"><i class="material-icons" matTooltip="Esci">exit_to_app</i></mat-icon>
+      </div>
+    </div>
+  </div>
+  <div #mat_list_menu class="menu-group overflow-auto" [style.top.px]="_topRef">
+    <mat-list>
+      <mat-list-item class="action" *ngFor="let section of menu" routerLinkActive="active-route"
+                     [routerLinkActiveOptions]="{exact: false}" routerLink="{{section.link}}"
+                     (click)="_menuRoute(section)">
+        <h4 mat-line tabindex="-1">{{section.name}}</h4>
+      </mat-list-item>
+    </mat-list>
+    <mat-accordion>
+      <mat-expansion-panel *ngIf="secMenu.length != 0">
+        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+          <mat-panel-title>Configurazioni</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item class="action" *ngFor="let secSection of secMenu" routerLinkActive="active-route"
+                         [routerLinkActiveOptions]="{exact: false}" routerLink="{{secSection.link}}"
+                         (click)="_menuRoute(secSection)">
+            <h4 mat-line>{{secSection.name}}</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+      <mat-expansion-panel *ngIf="terMenu.length != 0">
+        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+          <mat-panel-title>Funzioni avanzate</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item class="action" *ngFor="let terSection of terMenu" routerLinkActive="active-route"
+                         [routerLinkActiveOptions]="{exact: false}" routerLink="{{terSection.link}}"
+                         (click)="_menuRoute(terSection)">
+            <h4 mat-line>{{terSection.name}}</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+      <mat-expansion-panel *ngIf="quaMenu.length != 0">
+        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+          <mat-panel-title>Manutenzione</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item class="action" *ngFor="let quaSection of quaMenu" (click)="_menuRoute(quaSection)">
+            <h4 mat-line>{{quaSection.name}}</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+<div class="side-nav-inhibitor" *ngIf="_disableSideNavigator"></div>

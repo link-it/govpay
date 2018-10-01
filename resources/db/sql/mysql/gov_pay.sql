@@ -1,54 +1,8 @@
-CREATE TABLE psp
-(
-	cod_psp VARCHAR(35) NOT NULL,
-	ragione_sociale VARCHAR(70) NOT NULL,
-	url_info VARCHAR(255),
-	abilitato BOOLEAN NOT NULL,
-	storno BOOLEAN NOT NULL,
-	marca_bollo BOOLEAN NOT NULL,
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	-- unique constraints
-	CONSTRAINT unique_psp_1 UNIQUE (cod_psp),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_psp PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_psp_1 ON psp (cod_psp);
-
-
-
-CREATE TABLE canali
-(
-	cod_canale VARCHAR(35) NOT NULL,
-	cod_intermediario VARCHAR(35) NOT NULL,
-	tipo_versamento VARCHAR(4) NOT NULL,
-	modello_pagamento INT NOT NULL,
-	disponibilita LONGTEXT,
-	descrizione LONGTEXT,
-	condizioni VARCHAR(35),
-	url_info VARCHAR(255),
-	abilitato BOOLEAN NOT NULL,
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_psp BIGINT NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_canali_1 UNIQUE (id_psp,cod_canale,tipo_versamento),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_can_id_psp FOREIGN KEY (id_psp) REFERENCES psp(id),
-	CONSTRAINT pk_canali PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_canali_1 ON canali (id_psp,cod_canale,tipo_versamento);
-
-
-
 CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL,
 	cod_connettore_pdd VARCHAR(35) NOT NULL,
+	cod_connettore_ftp VARCHAR(35),
 	denominazione VARCHAR(255) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
@@ -89,29 +43,48 @@ CREATE INDEX index_stazioni_1 ON stazioni (cod_stazione);
 
 
 
-CREATE TABLE applicazioni
+CREATE TABLE utenze
 (
-	cod_applicazione VARCHAR(35) NOT NULL,
-	abilitato BOOLEAN NOT NULL,
-	principal VARCHAR(255) NOT NULL,
-	firma_ricevuta VARCHAR(1) NOT NULL,
-	cod_connettore_esito VARCHAR(255),
-	cod_connettore_verifica VARCHAR(255),
-	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
-	trusted BOOLEAN NOT NULL,
-	cod_applicazione_iuv VARCHAR(3),
+	principal VARCHAR(4000) NOT NULL,
+	principal_originale VARCHAR(4000) NOT NULL,
+	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- unique constraints
-	CONSTRAINT unique_applicazioni_1 UNIQUE (cod_applicazione),
-	CONSTRAINT unique_applicazioni_2 UNIQUE (principal),
+	CONSTRAINT unique_utenze_1 UNIQUE (principal),
 	-- fk/pk keys constraints
+	CONSTRAINT pk_utenze PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE INDEX index_utenze_1 ON utenze (principal);
+
+
+
+CREATE TABLE applicazioni
+(
+	cod_applicazione VARCHAR(35) NOT NULL,
+	auto_iuv BOOLEAN NOT NULL,
+	firma_ricevuta VARCHAR(1) NOT NULL,
+	cod_connettore_esito VARCHAR(255),
+	cod_connettore_verifica VARCHAR(255),
+	trusted BOOLEAN NOT NULL,
+	cod_applicazione_iuv VARCHAR(3),
+	reg_exp VARCHAR(1024),
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_utenza BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_applicazioni_1 UNIQUE (cod_applicazione),
+	CONSTRAINT unique_applicazioni_2 UNIQUE (id_utenza),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_app_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
--- index/oracle/gov_pay.sql
+-- index
 CREATE INDEX index_applicazioni_1 ON applicazioni (cod_applicazione);
-CREATE INDEX index_applicazioni_2 ON applicazioni (principal);
+CREATE INDEX index_applicazioni_2 ON applicazioni (id_utenza);
 
 
 
@@ -121,19 +94,15 @@ CREATE TABLE domini
 	gln VARCHAR(35) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	ragione_sociale VARCHAR(70) NOT NULL,
-	xml_conti_accredito MEDIUMBLOB NOT NULL,
-	xml_tabella_controparti MEDIUMBLOB NOT NULL,
-	riuso_iuv BOOLEAN NOT NULL,
-	custom_iuv BOOLEAN NOT NULL,
 	aux_digit INT NOT NULL DEFAULT 0,
 	iuv_prefix VARCHAR(255),
-	iuv_prefix_strict BOOLEAN NOT NULL DEFAULT false,
 	segregation_code INT,
 	ndp_stato INT,
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
 	ndp_data TIMESTAMP(3),
 	logo MEDIUMBLOB,
+	cbill VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_stazione BIGINT NOT NULL,
@@ -151,101 +120,10 @@ CREATE INDEX index_domini_1 ON domini (cod_dominio);
 
 
 
-CREATE TABLE uo
-(
-	cod_uo VARCHAR(35) NOT NULL,
-	abilitato BOOLEAN NOT NULL,
-	uo_codice_identificativo VARCHAR(35),
-	uo_denominazione VARCHAR(70),
-	uo_indirizzo VARCHAR(70),
-	uo_civico VARCHAR(16),
-	uo_cap VARCHAR(16),
-	uo_localita VARCHAR(35),
-	uo_provincia VARCHAR(35),
-	uo_nazione VARCHAR(2),
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_dominio BIGINT NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_uo PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
-
-
-
-CREATE TABLE operatori
-(
-	principal VARCHAR(255) NOT NULL,
-	nome VARCHAR(35) NOT NULL,
-	profilo VARCHAR(1024) NOT NULL,
-	abilitato BOOLEAN NOT NULL DEFAULT true,
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	-- unique constraints
-	CONSTRAINT unique_operatori_1 UNIQUE (principal),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_operatori PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_operatori_1 ON operatori (principal);
-
-
-
-CREATE TABLE connettori
-(
-	cod_connettore VARCHAR(255) NOT NULL,
-	cod_proprieta VARCHAR(255) NOT NULL,
-	valore VARCHAR(255) NOT NULL,
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	-- unique constraints
-	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_connettori PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta);
-
-
-
-CREATE TABLE portali
-(
-	cod_portale VARCHAR(35) NOT NULL,
-	default_callback_url VARCHAR(512) NOT NULL,
-	principal VARCHAR(255) NOT NULL,
-	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
-	trusted BOOLEAN NOT NULL,
-	abilitato BOOLEAN NOT NULL,
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	-- unique constraints
-	CONSTRAINT unique_portali_1 UNIQUE (cod_portale),
-	CONSTRAINT unique_portali_2 UNIQUE (principal),
-	-- fk/pk keys constraints
-	CONSTRAINT pk_portali PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_portali_1 ON portali (cod_portale);
-CREATE INDEX index_portali_2 ON portali (principal);
-
-
-
 CREATE TABLE iban_accredito
 (
 	cod_iban VARCHAR(255) NOT NULL,
-	id_seller_bank VARCHAR(255),
-	id_negozio VARCHAR(255),
 	bic_accredito VARCHAR(255),
-	iban_appoggio VARCHAR(255),
-	bic_appoggio VARCHAR(255),
 	postale BOOLEAN NOT NULL,
 	attivato BOOLEAN NOT NULL,
 	abilitato BOOLEAN NOT NULL,
@@ -294,12 +172,14 @@ CREATE TABLE tributi
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,
 	id_iban_accredito BIGINT,
+	id_iban_appoggio BIGINT,
 	id_tipo_tributo BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trb_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_trb_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_trb_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
 	CONSTRAINT fk_trb_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
@@ -308,45 +188,140 @@ CREATE TABLE tributi
 CREATE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
 
 
-CREATE TABLE ruoli
+
+CREATE TABLE utenze_domini
 (
-	cod_ruolo VARCHAR(35) NOT NULL,
-	descrizione VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	-- unique constraints
-	CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
+	id_utenza BIGINT NOT NULL,
+	id_dominio BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT pk_ruoli PRIMARY KEY (id)
+	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+
+
+
+CREATE TABLE utenze_tributi
+(
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_utenza BIGINT NOT NULL,
+	id_tributo BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_nzt_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+
+
+
+CREATE TABLE uo
+(
+	cod_uo VARCHAR(35) NOT NULL,
+	abilitato BOOLEAN NOT NULL,
+	uo_codice_identificativo VARCHAR(35),
+	uo_denominazione VARCHAR(70),
+	uo_indirizzo VARCHAR(70),
+	uo_civico VARCHAR(16),
+	uo_cap VARCHAR(16),
+	uo_localita VARCHAR(35),
+	uo_provincia VARCHAR(35),
+	uo_nazione VARCHAR(2),
+	uo_area VARCHAR(255),
+	uo_url_sito_web VARCHAR(255),
+	uo_email VARCHAR(255),
+	uo_pec VARCHAR(255),
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_dominio BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_uo PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 -- index
-CREATE UNIQUE INDEX index_ruoli_1 ON ruoli (cod_ruolo);
+CREATE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
+
+
+
+CREATE TABLE operatori
+(
+	nome VARCHAR(35) NOT NULL,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_utenza BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_operatori_1 UNIQUE (id_utenza),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_opr_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT pk_operatori PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE INDEX index_operatori_1 ON operatori (id_utenza);
+
+
+
+CREATE TABLE connettori
+(
+	cod_connettore VARCHAR(255) NOT NULL,
+	cod_proprieta VARCHAR(255) NOT NULL,
+	valore VARCHAR(255) NOT NULL,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	-- unique constraints
+	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_connettori PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta);
 
 
 
 CREATE TABLE acl
 (
-	cod_tipo VARCHAR(1) NOT NULL,
-	diritti INT,
-	cod_servizio VARCHAR(35) NOT NULL,
-	amministratore BOOLEAN NOT NULL DEFAULT false,
+	ruolo VARCHAR(255),
+	principal VARCHAR(255),
+	servizio VARCHAR(255) NOT NULL,
+	diritti VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_applicazione BIGINT,
-	id_portale BIGINT,
-	id_operatore BIGINT,
-	id_ruolo BIGINT,
-	id_dominio BIGINT,
-	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_acl_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_acl_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
-	CONSTRAINT fk_acl_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_acl_id_ruolo FOREIGN KEY (id_ruolo) REFERENCES ruoli(id),
-	CONSTRAINT fk_acl_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT fk_acl_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+
+
+
+CREATE TABLE tracciati
+(
+	cod_dominio VARCHAR(35) NOT NULL,
+	tipo VARCHAR(10) NOT NULL,
+	stato VARCHAR(12) NOT NULL,
+	descrizione_stato VARCHAR(256),
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_completamento TIMESTAMP(3) DEFAULT 0,
+	bean_dati LONGTEXT,
+	file_name_richiesta VARCHAR(256),
+	raw_richiesta MEDIUMBLOB,
+	file_name_esito VARCHAR(256),
+	raw_esito MEDIUMBLOB,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_operatore BIGINT,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_tracciati PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
@@ -355,6 +330,7 @@ CREATE TABLE acl
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR(35) NOT NULL,
+	nome VARCHAR(35),
 	importo_totale DOUBLE NOT NULL,
 	stato_versamento VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(255),
@@ -363,11 +339,13 @@ CREATE TABLE versamenti
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_validita TIMESTAMP(3),
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data_scadenza TIMESTAMP(3), 
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	causale_versamento VARCHAR(1024),
+	debitore_tipo VARCHAR(1),
 	debitore_identificativo VARCHAR(35) NOT NULL,
 	debitore_anagrafica VARCHAR(70) NOT NULL,
 	debitore_indirizzo VARCHAR(70),
@@ -380,19 +358,37 @@ CREATE TABLE versamenti
 	debitore_telefono VARCHAR(35),
 	debitore_cellulare VARCHAR(35),
 	debitore_fax VARCHAR(35),
+	tassonomia_avviso VARCHAR(35),
+	tassonomia VARCHAR(35),
 	cod_lotto VARCHAR(35),
 	cod_versamento_lotto VARCHAR(35),
 	cod_anno_tributario VARCHAR(35),
 	cod_bundlekey VARCHAR(256),
+	dati_allegati LONGTEXT,
+	incasso VARCHAR(1),
+	anomalie LONGTEXT,
+	iuv_versamento VARCHAR(35),
+	numero_avviso VARCHAR(35),
+	avvisatura VARCHAR(1),
+	tipo_pagamento INT,
+	da_avvisare BOOLEAN NOT NULL,
+	cod_avvisatura VARCHAR(20),
+	ack BOOLEAN NOT NULL,
+	note LONGTEXT,
+	anomalo BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_uo BIGINT NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
+	id_tracciato BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -415,23 +411,84 @@ CREATE TABLE singoli_versamenti
 	provincia_residenza VARCHAR(2),
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
-	note VARCHAR(512),
+	descrizione VARCHAR(256),
+	dati_allegati LONGTEXT,
+	indice_dati INT NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,
 	id_tributo BIGINT,
 	id_iban_accredito BIGINT,
+	id_iban_appoggio BIGINT,
 	-- unique constraints
-	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
+	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
 	CONSTRAINT fk_sng_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_sng_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 -- index
-CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente);
+CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
+
+
+
+CREATE TABLE pagamenti_portale
+(
+	cod_applicazione VARCHAR(35) NOT NULL,
+	cod_canale VARCHAR(35),
+	nome VARCHAR(255) NOT NULL,
+	importo DOUBLE NOT NULL,
+	versante_identificativo VARCHAR(35),
+	id_sessione VARCHAR(35) NOT NULL,
+	id_sessione_portale VARCHAR(35),
+	id_sessione_psp VARCHAR(35),
+	stato VARCHAR(35) NOT NULL,
+	codice_stato VARCHAR(35) NOT NULL,
+	descrizione_stato VARCHAR(1024),
+	psp_redirect_url VARCHAR(1024),
+	psp_esito VARCHAR(255),
+	json_request LONGTEXT,
+	wisp_id_dominio VARCHAR(255),
+	wisp_key_pa VARCHAR(255),
+	wisp_key_wisp VARCHAR(255),
+	wisp_html LONGTEXT,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_richiesta TIMESTAMP(3) DEFAULT 0,
+	url_ritorno VARCHAR(1024),
+	cod_psp VARCHAR(35),
+	tipo_versamento VARCHAR(4),
+	multi_beneficiario VARCHAR(35),
+	ack BOOLEAN NOT NULL,
+	note LONGTEXT,
+	tipo INT NOT NULL,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	-- unique constraints
+	CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE UNIQUE INDEX index_pagamenti_portale_1 ON pagamenti_portale (id_sessione);
+
+
+
+CREATE TABLE pag_port_versamenti
+(
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_pagamento_portale BIGINT NOT NULL,
+	id_versamento BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_ppv_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_ppv_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_pag_port_versamenti PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
 
 
 
@@ -458,7 +515,7 @@ CREATE TABLE rpt
 	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
 	callback_url LONGTEXT,
-	modello_pagamento VARCHAR(16),
+	modello_pagamento VARCHAR(16) NOT NULL,
 	cod_msg_ricevuta VARCHAR(35),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
@@ -484,13 +541,15 @@ CREATE TABLE rpt
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,
-	id_portale BIGINT,
+	id_pagamento_portale BIGINT,
+	id_applicazione BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_rpt_id_portale FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -499,6 +558,7 @@ CREATE INDEX index_rpt_1 ON rpt (cod_msg_richiesta);
 CREATE INDEX index_rpt_2 ON rpt (iuv,ccp,cod_dominio);
 CREATE INDEX index_rpt_3 ON rpt (stato);
 CREATE INDEX index_rpt_4 ON rpt (id_versamento);
+
 
 
 CREATE TABLE rr
@@ -568,7 +628,7 @@ CREATE TABLE iuv
 	prg BIGINT NOT NULL,
 	iuv VARCHAR(35) NOT NULL,
 	application_code INT NOT NULL,
-	data_generazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	data_generazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	tipo_iuv VARCHAR(1) NOT NULL,
 	cod_versamento_ente VARCHAR(35),
 	aux_digit INT NOT NULL DEFAULT 0,
@@ -604,7 +664,7 @@ CREATE TABLE fr
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data_regolamento TIMESTAMP(3),
-	data_acquisizione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	numero_pagamenti BIGINT,
 	importo_totale_pagamenti DOUBLE,
 	cod_bic_riversamento VARCHAR(35),
@@ -628,19 +688,26 @@ CREATE TABLE incassi
 	cod_dominio VARCHAR(35) NOT NULL,
 	causale VARCHAR(512) NOT NULL,
 	importo DOUBLE NOT NULL,
-	data_valuta TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
-	data_contabile TIMESTAMP DEFAULT  CURRENT_TIMESTAMP(3),
+	data_valuta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3),
+	data_contabile TIMESTAMP(3) DEFAULT  CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3),
 	nome_dispositivo VARCHAR(512),
+	iban_accredito VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_applicazione BIGINT,
+	id_operatore BIGINT,
+	-- unique constraints
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_incassi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
+-- index
+CREATE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
 
 
 
@@ -655,7 +722,6 @@ CREATE TABLE pagamenti
 	iur VARCHAR(35) NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-	iban_accredito VARCHAR(255),
 	commissioni_psp DOUBLE,
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
 	tipo_allegato VARCHAR(2),
@@ -668,6 +734,7 @@ CREATE TABLE pagamenti
 	esito_revoca VARCHAR(140),
 	dati_esito_revoca VARCHAR(140),
 	stato VARCHAR(35),
+	tipo VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_rpt BIGINT,
@@ -704,9 +771,11 @@ CREATE TABLE rendicontazioni
 	id BIGINT AUTO_INCREMENT,
 	id_fr BIGINT NOT NULL,
 	id_pagamento BIGINT,
+	id_singolo_versamento BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rnd_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
 	CONSTRAINT fk_rnd_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
+	CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -744,6 +813,8 @@ CREATE TABLE eventi
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
+
+
 CREATE TABLE batch
 (
 	cod_batch VARCHAR(255) NOT NULL,
@@ -764,31 +835,23 @@ CREATE TABLE batch
 CREATE INDEX index_batch_1 ON batch (cod_batch);
 
 
-CREATE TABLE tracciati
+
+CREATE TABLE esiti_avvisatura
 (
+	cod_dominio VARCHAR(35) NOT NULL,
+	identificativo_avvisatura VARCHAR(20) NOT NULL,
+	tipo_canale INT NOT NULL,
+	cod_canale VARCHAR(35),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT 0,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT 0,
-	stato VARCHAR(255) NOT NULL,
-	linea_elaborazione BIGINT NOT NULL,
-	descrizione_stato VARCHAR(1024),
-	num_linee_totali BIGINT NOT NULL,
-	num_operazioni_ok BIGINT NOT NULL,
-	num_operazioni_ko BIGINT NOT NULL,
-	nome_file VARCHAR(255) NOT NULL,
-	raw_data_richiesta MEDIUMBLOB NOT NULL,
-	raw_data_risposta MEDIUMBLOB,
+	data TIMESTAMP(3) NOT NULL DEFAULT 0,
+	cod_esito INT NOT NULL,
+	descrizione_esito VARCHAR(140) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_operatore BIGINT,
-	id_applicazione BIGINT,
-	-- check constraints
-	CONSTRAINT chk_tracciati_1 CHECK (stato IN ('ANNULLATO','NUOVO','IN_CARICAMENTO','CARICAMENTO_OK','CARICAMENTO_KO')),
+	id_tracciato BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT fk_trc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
@@ -803,12 +866,13 @@ CREATE TABLE operazioni
 	dati_risposta MEDIUMBLOB,
 	dettaglio_esito VARCHAR(255),
 	cod_versamento_ente VARCHAR(255),
+	cod_dominio VARCHAR(35),
+	iuv VARCHAR(35),
+	trn VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_tracciato BIGINT NOT NULL,
 	id_applicazione BIGINT,
-	-- check constraints
-	CONSTRAINT chk_operazioni_1 CHECK (stato IN ('NON_VALIDO','ESEGUITO_OK','ESEGUITO_KO')),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -833,6 +897,26 @@ CREATE TABLE gp_audit
 	CONSTRAINT pk_gp_audit PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
+
+
+
+CREATE TABLE avvisi
+(
+	cod_dominio VARCHAR(35) NOT NULL,
+	iuv VARCHAR(35) NOT NULL,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0,
+	stato VARCHAR(255) NOT NULL,
+	pdf MEDIUMBLOB,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_avvisi PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
+CREATE INDEX index_avvisi_2 ON avvisi (stato);
 
 
 
@@ -869,4 +953,61 @@ CREATE TABLE sonde
 	-- fk/pk keys constraints
 	CONSTRAINT pk_sonde PRIMARY KEY (nome)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- Sezione Viste
+
+CREATE VIEW versamenti_incassi AS SELECT
+versamenti.id as id,
+MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,          
+MAX(versamenti.nome) as nome,                         
+MAX(versamenti.importo_totale) as importo_totale,               
+MAX(versamenti.stato_versamento) as stato_versamento,             
+MAX(versamenti.descrizione_stato) as descrizione_stato,           
+MAX(CASE WHEN versamenti.aggiornabile = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
+MAX(versamenti.data_creazione) as data_creazione,               
+MAX(versamenti.data_validita) as data_validita,                
+MAX(versamenti.data_scadenza) as data_scadenza,                
+MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
+MAX(versamenti.causale_versamento) as causale_versamento,           
+MAX(versamenti.debitore_tipo) as debitore_tipo,                
+MAX(versamenti.debitore_identificativo) as debitore_identificativo,      
+MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,          
+MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,           
+MAX(versamenti.debitore_civico) as debitore_civico,              
+MAX(versamenti.debitore_cap) as debitore_cap,                 
+MAX(versamenti.debitore_localita) as debitore_localita,            
+MAX(versamenti.debitore_provincia) as debitore_provincia,           
+MAX(versamenti.debitore_nazione) as debitore_nazione,             
+MAX(versamenti.debitore_email) as debitore_email,               
+MAX(versamenti.debitore_telefono) as debitore_telefono,            
+MAX(versamenti.debitore_cellulare) as debitore_cellulare,           
+MAX(versamenti.debitore_fax) as debitore_fax,                 
+MAX(versamenti.tassonomia_avviso) as tassonomia_avviso,            
+MAX(versamenti.tassonomia) as tassonomia,                   
+MAX(versamenti.cod_lotto) as cod_lotto,                    
+MAX(versamenti.cod_versamento_lotto) as cod_versamento_lotto,         
+MAX(versamenti.cod_anno_tributario) as cod_anno_tributario,          
+MAX(versamenti.cod_bundlekey) as cod_bundlekey,                
+MAX(versamenti.dati_allegati) as dati_allegati,                
+MAX(versamenti.incasso) as incasso,                      
+MAX(versamenti.anomalie) as anomalie,                     
+MAX(versamenti.iuv_versamento) as iuv_versamento,               
+MAX(versamenti.numero_avviso) as numero_avviso,                
+MAX(versamenti.avvisatura) as avvisatura,                   
+MAX(versamenti.tipo_pagamento) as tipo_pagamento,               
+MAX(versamenti.id_dominio) as id_dominio,                   
+MAX(versamenti.id_uo) as id_uo,                        
+MAX(versamenti.id_applicazione) as id_applicazione,             
+MAX(CASE WHEN versamenti.da_avvisare = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS da_avvisare,
+MAX(versamenti.cod_avvisatura) as cod_avvisatura,               
+MAX(versamenti.id_tracciato) as id_tracciato,      
+MAX(CASE WHEN versamenti.ack = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS ack,
+MAX(versamenti.note) as note,
+MAX(CASE WHEN versamenti.anomalo = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS anomalo,
+MAX(pagamenti.data_pagamento) as data_pagamento,            
+SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) AS importo_pagato,
+SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
+MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento
+FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
+GROUP BY versamenti.id;
 

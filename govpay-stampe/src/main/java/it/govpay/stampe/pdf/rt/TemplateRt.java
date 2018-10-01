@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.stampe.pdf.Costanti;
@@ -41,7 +41,7 @@ public class TemplateRt {
 	public static ComponentBuilder<?, ?> createTitleComponent(RicevutaPagamento ricevuta,  List<String> errList, Logger log){
 		String sezione = "Sezione Titolo";
 		try{
-			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
+			List<ComponentBuilder<?, ?>> lst = new ArrayList<>();
 			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(Costanti.logoPagoPa));
 			StyleBuilder headerStyle = stl.style(TemplateBase.bold18LeftStyle); 
 			
@@ -156,7 +156,7 @@ public class TemplateRt {
 	public static ComponentBuilder<?, ?> createSezioneDebitore(RicevutaPagamento ricevuta,  List<String> errList, Logger log){
 		String sezione = "Sezione Debitore";
 		try{
-			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
+			List<ComponentBuilder<?, ?>> lst = new ArrayList<>();
 			lst.add(cmp.text(" "));
 			lst.add(TemplateBase.createDatiDebitore(ricevuta.getAnagraficaDebitore(), false, false, stl.style(TemplateBase.rootStyle).setPadding(0), HorizontalTextAlignment.LEFT ,log));
 
@@ -280,7 +280,7 @@ public class TemplateRt {
 
 			StyleBuilder columnStyle = stl.style(TemplateBase.columnBorderStyle).setLeftPadding(5).setRightPadding(0).setTopPadding(5).setBottomPadding(5);
 
-			List<String> values = new ArrayList<String>();
+			List<String> values = new ArrayList<>();
 			StringBuilder sb = new StringBuilder();
 			boolean addBreak = false;
 			if(ricevuta.getImportoDovuto() != null) {

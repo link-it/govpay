@@ -19,51 +19,6 @@
  */
 package it.govpay.core.business;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoliPagamenti;
-import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazione;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazioneRisposta;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazione;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazioneRisposta;
-import it.gov.digitpa.schemas._2011.ws.paa.TipoIdRendicontazione;
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.PspBD;
-import it.govpay.bd.anagrafica.StazioniBD;
-import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.pagamento.FrBD;
-import it.govpay.bd.pagamento.IuvBD;
-import it.govpay.bd.pagamento.PagamentiBD;
-import it.govpay.bd.pagamento.RendicontazioniBD;
-import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.filters.FrFilter;
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.VersamentoAnnullatoException;
-import it.govpay.core.exceptions.VersamentoDuplicatoException;
-import it.govpay.core.exceptions.VersamentoScadutoException;
-import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.AclEngine;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.JaxbUtils;
-import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
-import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Rendicontazione;
-import it.govpay.model.Intermediario;
-import it.govpay.model.Rendicontazione.EsitoRendicontazione;
-import it.govpay.model.Rendicontazione.StatoRendicontazione;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Stazione;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Fr.StatoFr;
-import it.govpay.servizi.commons.EsitoOperazione;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -77,18 +32,63 @@ import java.util.Set;
 import javax.activation.DataHandler;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
+
+import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoliPagamenti;
+import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazione;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazioneRisposta;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazione;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazioneRisposta;
+import it.gov.digitpa.schemas._2011.ws.paa.TipoIdRendicontazione;
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.DominiBD;
+import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.pagamento.FrBD;
+import it.govpay.bd.pagamento.IuvBD;
+import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.RendicontazioniBD;
+import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.VersamentoAnnullatoException;
+import it.govpay.core.exceptions.VersamentoDuplicatoException;
+import it.govpay.core.exceptions.VersamentoScadutoException;
+import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
+import it.govpay.core.utils.AclEngine;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.NodoClient;
+import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Fr.StatoFr;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Rendicontazione.EsitoRendicontazione;
+import it.govpay.model.Rendicontazione.StatoRendicontazione;
 
 
 public class Rendicontazioni extends BasicBD {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(Rendicontazioni.class);
 
 	public Rendicontazioni(BasicBD basicBD) {
 		super(basicBD);
@@ -96,7 +96,7 @@ public class Rendicontazioni extends BasicBD {
 
 	public String downloadRendicontazioni(boolean deep) throws GovPayException {
 		boolean errori = false;
-		List<String> response = new ArrayList<String>();
+		List<String> response = new ArrayList<>();
 		try {
 			GpThreadLocal.get().log("rendicontazioni.acquisizione");
 			DominiBD dominiBD = new DominiBD(this);
@@ -104,19 +104,17 @@ public class Rendicontazioni extends BasicBD {
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
 
-			PspBD pspBD = new PspBD(this);
-			List<Psp> lstPsp = pspBD.getPsp();
-			closeConnection();
+			this.closeConnection();
 
 			for(Stazione stazione : lstStazioni) {
 
 
-				List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<TipoIdRendicontazione>();
+				List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
 
-				setupConnection(GpThreadLocal.get().getTransactionId());
+				this.setupConnection(GpThreadLocal.get().getTransactionId());
 				Intermediario intermediario = stazione.getIntermediario(this);
-				NodoClient nodoClient = new NodoClient(intermediario, this);
-				closeConnection();
+				NodoClient client = new NodoClient(intermediario, this);
+				this.closeConnection();
 
 				if(deep) {
 					DominioFilter filter = dominiBD.newFilter();
@@ -124,29 +122,24 @@ public class Rendicontazioni extends BasicBD {
 					List<Dominio> lstDomini = dominiBD.findAll(filter);
 
 					for(Dominio dominio : lstDomini) { 
-						List<String> sids = new ArrayList<String>();
-						for(Psp psp : lstPsp) {
-							if(sids.contains(psp.getCodPsp())) continue;
-							sids.add(psp.getCodPsp());
-							log.debug("Acquisizione dei flussi di rendicontazione dal psp [" + psp.getCodPsp() + "] per il dominio [" + dominio.getCodDominio() + "] in corso.");
-							flussiDaAcquisire.addAll(chiediListaFr(nodoClient, psp, stazione, dominio));
-						}
+						log.debug("Acquisizione dei flussi di rendicontazione per il dominio [" + dominio.getCodDominio() + "] in corso.");
+						flussiDaAcquisire.addAll(this.chiediListaFr(client, stazione, dominio));
 					}
 				} else {
 					log.debug("Acquisizione dei flussi di rendicontazione per la stazione [" + stazione.getCodStazione() + "] in corso.");
-					flussiDaAcquisire.addAll(chiediListaFr(nodoClient, null, stazione, null));
+					flussiDaAcquisire.addAll(this.chiediListaFr(client, stazione, null));
 				}
 
-				setupConnection(GpThreadLocal.get().getTransactionId());
+				this.setupConnection(GpThreadLocal.get().getTransactionId());
 				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
 				FrBD frBD = new FrBD(this);
-				Set<String> idfs = new HashSet<String>();
+				Set<String> idfs = new HashSet<>();
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()) || idfs.contains(idRendicontazione.getIdentificativoFlusso()))
 						flussiDaAcquisire.remove(idRendicontazione);
 					idfs.add(idRendicontazione.getIdentificativoFlusso());
 				}
-				closeConnection();
+				this.closeConnection();
 
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
@@ -165,7 +158,7 @@ public class Rendicontazioni extends BasicBD {
 
 						NodoChiediFlussoRendicontazioneRisposta risposta;
 						try {
-							risposta = nodoClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
+							risposta = client.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
 						} catch (Exception e) {
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + e + ".");
@@ -208,7 +201,7 @@ public class Rendicontazioni extends BasicBD {
 
 							log.info("Ricevuto flusso rendicontazione per " + flussoRendicontazione.getDatiSingoliPagamenti().size() + " singoli pagamenti");
 
-							setupConnection(GpThreadLocal.get().getTransactionId());
+							this.setupConnection(GpThreadLocal.get().getTransactionId());
 
 							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlusso");
 							GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
@@ -226,17 +219,10 @@ public class Rendicontazioni extends BasicBD {
 							fr.setXml(tracciato);
 
 							String codPsp = null, codDominio = null;
-							try {
-								codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
-								fr.setCodPsp(codPsp);
-								log.debug("Identificativo PSP estratto dall'identificativo flusso: " + codPsp);
-								AnagraficaManager.getPsp(this, codPsp);
-								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp));
-							} catch (Exception e) {
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoPspNonCensito", codPsp == null ? "null" : codPsp);
-								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp == null ? "null" : codPsp));
-								fr.addAnomalia("007108", "L'identificativo PSP [" + codPsp + "] ricavato dal codice flusso non riferisce un PSP censito");
-							}
+							codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
+							fr.setCodPsp(codPsp);
+							log.debug("Identificativo PSP estratto dall'identificativo flusso: " + codPsp);
+							GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp));
 
 							Dominio dominio = null;
 							try {
@@ -283,7 +269,7 @@ public class Rendicontazioni extends BasicBD {
 								rendicontazione.setImporto(dsp.getSingoloImportoPagato());
 								rendicontazione.setIndiceDati(indiceDati);
 								
-								totaleImportiRendicontati = totaleImportiRendicontati.add(importoRendicontato);
+								totaleImportiRendicontati = totaleImportiRendicontati.add(importoRendicontato);	
 
 								// Cerco il pagamento riferito
 								it.govpay.bd.model.Pagamento pagamento = null;
@@ -292,6 +278,10 @@ public class Rendicontazioni extends BasicBD {
 
 									// Pagamento trovato. Faccio i controlli semantici
 									rendicontazione.setIdPagamento(pagamento.getId());
+									
+									// imposto l'id singolo versamento
+									SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(this);
+									rendicontazione.setIdSingoloVersamento(singoloVersamento.getId());
 
 									// Verifico l'importo
 									if(rendicontazione.getEsito().equals(EsitoRendicontazione.REVOCATO)) {
@@ -329,7 +319,7 @@ public class Rendicontazioni extends BasicBD {
 									// Pagamento non trovato. Devo capire se ce' un errore.
 
 									// Controllo che sia per uno IUV generato da noi
-									if(!isInterno(dominio, iuv)) {
+									if(!this.isInterno(dominio, iuv)) {
 										rendicontazione.setStato(StatoRendicontazione.ALTRO_INTERMEDIARIO);
 										continue;
 									}
@@ -347,7 +337,7 @@ public class Rendicontazioni extends BasicBD {
 												versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 											} catch (NotFoundException nfe) {
 												// Non e' su sistema. Individuo l'applicativo gestore
-												codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(this));
+												codApplicazione = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv).getCodApplicazione();
 												if(codApplicazione != null)
 													versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, this);
 											}
@@ -380,6 +370,15 @@ public class Rendicontazioni extends BasicBD {
 												log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.");
 												rendicontazione.addAnomalia("007114", "Il versamento presenta piu' singoli versamenti");
 												continue;
+											}
+											
+											// inserisco l'id singolo versamento corrispondente alla posizione											
+											for (SingoloVersamento sv : versamento.getSingoliVersamenti(this)) {
+												if(sv.getIndiceDati().intValue() == rendicontazione.getIndiceDati().intValue()) {
+													rendicontazione.setIdSingoloVersamento(sv.getId());
+													break;
+												}
+												
 											}
 											
 											// Trovato versamento.
@@ -442,7 +441,7 @@ public class Rendicontazioni extends BasicBD {
 							RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(this);
 							
 							// Tutte le operazioni di salvataggio devono essere in transazione.
-							setAutoCommit(false);
+							this.setAutoCommit(false);
 							frBD.insertFr(fr);
 							for(Rendicontazione r : fr.getRendicontazioni(this)) {
 								r.setIdFr(fr.getId());
@@ -470,7 +469,7 @@ public class Rendicontazioni extends BasicBD {
 			throw new GovPayException(e);
 		} finally {
 			try {
-				if(isClosed()) setupConnection(GpThreadLocal.get().getTransactionId());
+				if(this.isClosed()) this.setupConnection(GpThreadLocal.get().getTransactionId());
 			} catch (Exception e) {
 				log.error("Errore nel ripristino della connessione", e);
 			}
@@ -536,13 +535,12 @@ public class Rendicontazioni extends BasicBD {
 		return false;
 	}
 
-	private List<TipoIdRendicontazione> chiediListaFr(NodoClient client, Psp psp, Stazione stazione, Dominio dominio){
+	private List<TipoIdRendicontazione> chiediListaFr(NodoClient client, Stazione stazione, Dominio dominio){
 		String idTransaction = null;
-		List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<TipoIdRendicontazione>();
+		List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
 		try {
 			idTransaction = GpThreadLocal.get().openTransaction();
 			GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
-			GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp != null ? psp.getCodPsp() : "-"));
 			GpThreadLocal.get().setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, Azione.nodoChiediElencoFlussiRendicontazione);
 			GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussi");
 
@@ -551,7 +549,6 @@ public class Rendicontazioni extends BasicBD {
 			richiesta.setIdentificativoIntermediarioPA(stazione.getIntermediario(this).getCodIntermediario());
 			richiesta.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione()); 
 			richiesta.setPassword(stazione.getPassword());
-			if(psp != null) richiesta.setIdentificativoPSP(psp.getCodPsp());
 
 			NodoChiediElencoFlussiRendicontazioneRisposta risposta;
 			try {
@@ -582,10 +579,10 @@ public class Rendicontazioni extends BasicBD {
 				// Per ogni flusso della lista, vedo se ce l'ho gia' in DB ed in caso lo archivio
 
 				for(TipoIdRendicontazione idRendicontazione : risposta.getElencoFlussiRendicontazione().getIdRendicontazione()) {
-					setupConnection(GpThreadLocal.get().getTransactionId());
+					this.setupConnection(GpThreadLocal.get().getTransactionId());
 					FrBD frBD = new FrBD(this);
 					boolean exists = frBD.exists(idRendicontazione.getIdentificativoFlusso());
-					closeConnection();
+					this.closeConnection();
 					if(exists){
 						GpThreadLocal.get().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso());
 						log.trace("Flusso rendicontazione gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
@@ -625,14 +622,17 @@ public class Rendicontazioni extends BasicBD {
 	 */
 	public List<Fr> chiediListaRendicontazioni(Applicazione applicazione, String codDominio, String codApplicazione, Date da, Date a) throws GovPayException, ServiceException, NotFoundException {
 		
-		List<String> domini = new ArrayList<String>();
+		List<Diritti> diritti = new ArrayList<>(); 
+		diritti.add(Diritti.LETTURA);
+		
+		List<String> domini = new ArrayList<>();
 		if(codDominio != null) {
-			if(AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null))
+			if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, codDominio, null,diritti))
 				domini.add(codDominio);
 			else
 				throw new GovPayException(EsitoOperazione.RND_001);
 		} else {
-			Set<String> authorizedRnd = AclEngine.getDominiAutorizzati(applicazione, Servizio.RENDICONTAZIONE);
+			List<String> authorizedRnd = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI,diritti);
 			if(authorizedRnd != null)
 				domini.addAll(authorizedRnd);
 			else 

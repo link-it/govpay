@@ -19,64 +19,52 @@
  */
 package it.govpay.model;
 
-import java.util.List;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Rpt.FirmaRichiesta;
 
-public class Applicazione extends Versionabile implements IAutorizzato {
+public class Applicazione extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String codApplicazione;
-	private String principal;
-	private boolean abilitato;
     private Connettore connettoreNotifica;
     private Connettore connettoreVerifica;
     private FirmaRichiesta firmaRichiesta;
     private boolean trusted;
-    private List<Acl> acls;
     private String codApplicazioneIuv;
+    private String regExp;
+	private boolean autoIuv;
+	private long idUtenza;
+
     
-    public Long getId() {
-		return id;
+    @Override
+	public Long getId() {
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getCodApplicazione() {
-		return codApplicazione;
+		return this.codApplicazione;
 	}
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
 	}
 	public Connettore getConnettoreNotifica() {
-		return connettoreNotifica;
+		return this.connettoreNotifica;
 	}
 	public void setConnettoreNotifica(Connettore connettoreNotifica) {
 		this.connettoreNotifica = connettoreNotifica;
 	}
 	public Connettore getConnettoreVerifica() {
-		return connettoreVerifica;
+		return this.connettoreVerifica;
 	}
 	public void setConnettoreVerifica(Connettore connettoreVerifica) {
 		this.connettoreVerifica = connettoreVerifica;
 	}
-	public String getPrincipal() {
-		return principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
 	public FirmaRichiesta getFirmaRichiesta() {
-		return firmaRichiesta;
+		return this.firmaRichiesta;
 	}
 	public void setFirmaRichiesta(FirmaRichiesta firmaRichiesta) {
 		this.firmaRichiesta = firmaRichiesta;
@@ -85,21 +73,33 @@ public class Applicazione extends Versionabile implements IAutorizzato {
 		this.firmaRichiesta = FirmaRichiesta.toEnum(codifica);
 	}
 	public boolean isTrusted() {
-		return trusted;
+		return this.trusted;
 	}
 	public void setTrusted(boolean trusted) {
 		this.trusted = trusted;
 	}
-	public List<Acl> getAcls() {
-		return acls;
-	}
-	public void setAcls(List<Acl> acls) {
-		this.acls = acls;
-	}
 	public String getCodApplicazioneIuv() {
-		return codApplicazioneIuv;
+		return this.codApplicazioneIuv;
 	}
 	public void setCodApplicazioneIuv(String codApplicazioneIuv) {
 		this.codApplicazioneIuv = codApplicazioneIuv;
+	}
+	public String getRegExp() {
+		return this.regExp;
+	}
+	public void setRegExp(String regExp) {
+		this.regExp = regExp;
+	}
+	public boolean isAutoIuv() {
+		return this.autoIuv;
+	}
+	public void setAutoIuv(boolean autoIuv) {
+		this.autoIuv = autoIuv;
+	}
+	public long getIdUtenza() {
+		return this.idUtenza;
+	}
+	public void setIdUtenza(long idUtenza) {
+		this.idUtenza = idUtenza;
 	}
 }

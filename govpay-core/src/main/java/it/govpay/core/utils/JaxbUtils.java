@@ -19,17 +19,6 @@
  */
 package it.govpay.core.utils;
 
-import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtRichiestaRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.ObjectFactory;
-import it.gov.digitpa.schemas._2011.psp.InformativaContoAccredito;
-import it.gov.digitpa.schemas._2011.psp.InformativaControparte;
-import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -52,8 +41,19 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.logging.log4j.LogManager;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.xml.sax.SAXException;
+
+import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
+import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.gov.digitpa.schemas._2011.pagamenti.ObjectFactory;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtRichiestaRevoca;
+import it.gov.digitpa.schemas._2011.psp.InformativaContoAccredito;
+import it.gov.digitpa.schemas._2011.psp.InformativaControparte;
+import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
 
 public class JaxbUtils {
 
@@ -89,7 +89,7 @@ public class JaxbUtils {
         ByteArrayOutputStream baos = null;
         try {
         	baos = new ByteArrayOutputStream();
-	        JAXBElement<InformativaControparte> informativaj = new JAXBElement<InformativaControparte>(new QName("informativaControparte"), InformativaControparte.class, informativa);
+	        JAXBElement<InformativaControparte> informativaj = new JAXBElement<>(new QName("informativaControparte"), InformativaControparte.class, informativa);
 	        marshal(informativaj, baos);
 			return baos.toByteArray();
         } finally {
@@ -171,17 +171,25 @@ public class JaxbUtils {
 	}
     
 	public static CtRichiestaPagamentoTelematico toRPT(byte[] rpt) throws JAXBException, SAXException {
+		return toRPT(rpt, true);
+	}
+	
+	public static CtRichiestaPagamentoTelematico toRPT(byte[] rpt, boolean validate) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		jaxbUnmarshaller.setSchema(RPT_RT_schema);
+		if(validate) jaxbUnmarshaller.setSchema(RPT_RT_schema);
 	    JAXBElement<CtRichiestaPagamentoTelematico> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rpt)), CtRichiestaPagamentoTelematico.class);
 		return root.getValue();
 	}
 	
 	public static CtRicevutaTelematica toRT(byte[] rt) throws JAXBException, SAXException {
+		return toRT(rt, true);
+	}
+	
+	public static CtRicevutaTelematica toRT(byte[] rt, boolean validate) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		jaxbUnmarshaller.setSchema(RPT_RT_schema);
+		if(validate) jaxbUnmarshaller.setSchema(RPT_RT_schema);
 		JAXBElement<CtRicevutaTelematica> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rt)), CtRicevutaTelematica.class);
 		return root.getValue();
 	}
@@ -225,7 +233,7 @@ public class JaxbUtils {
 		@Override
 		public boolean handleEvent(ValidationEvent ve) {
 			if(ve.getSeverity() == 0) {
-				LogManager.getLogger().warn("Ricevuto warning di validazione durante il marshalling del messaggio: " + ve.getMessage());
+				LoggerWrapperFactory.getLogger(JaxbUtils.class).warn("Ricevuto warning di validazione durante il marshalling del messaggio: " + ve.getMessage());
 				return true;
 			} else {
 				return false;

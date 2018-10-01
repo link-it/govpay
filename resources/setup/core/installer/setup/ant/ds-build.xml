@@ -9,16 +9,6 @@
 	
 	<target name="ds_settings">
 		
-		<antcall target="replace_token">
-			<param name="file" value="${file}"/>
-			<param name="token" value="@DS_NAME@"/>
-			<param name="value" value="${datasource_name}"/>
-		</antcall>
-		<antcall target="replace_token">
-			<param name="file" value="${file}"/>
-			<param name="token" value="@DATABASE@"/>
-			<param name="value" value="${antinstaller_dbname}"/>
-		</antcall>
 		<if>
 			<equals arg1="${antinstaller_tipo_database}" arg2="oracle"/>
 			<then>
@@ -29,6 +19,19 @@
 				</antcall>
 			</then>
 		</if>
+		<properties-filler template="${file}"/>
+
+                <!--antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="@DS_NAME@"/>
+                        <param name="value" value="${datasource_name}"/>
+                </antcall>
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="@DATABASE@"/>
+                        <param name="value" value="${antinstaller_dbname}"/>
+                </antcall>
+
 		<antcall target="replace_token">
 		    <param name="file" value="${file}"/>
 			<param name="token" value="@HOST@"/>
@@ -53,7 +56,7 @@
 		    <param name="file" value="${file}"/>
 			<param name="token" value="@NOME_DRIVER_JDBC@"/>
 			<param name="value" value="${antinstaller_modulo_driver}"/>
-		</antcall>
+		</antcall-->
 	</target>
 		
 </project>

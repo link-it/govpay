@@ -50,6 +50,9 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 		this.DETTAGLIO_ESITO = new Field("dettaglioEsito",java.lang.String.class,"Operazione",Operazione.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Operazione",Operazione.class));
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"Operazione",Operazione.class);
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Operazione",Operazione.class);
+		this.IUV = new Field("iuv",java.lang.String.class,"Operazione",Operazione.class);
+		this.TRN = new Field("trn",java.lang.String.class,"Operazione",Operazione.class);
 	
 	}
 	
@@ -66,6 +69,9 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 		this.DETTAGLIO_ESITO = new ComplexField(father,"dettaglioEsito",java.lang.String.class,"Operazione",Operazione.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Operazione",Operazione.class));
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"Operazione",Operazione.class);
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Operazione",Operazione.class);
+		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Operazione",Operazione.class);
+		this.TRN = new ComplexField(father,"trn",java.lang.String.class,"Operazione",Operazione.class);
 	
 	}
 	
@@ -88,6 +94,12 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
 	public IField COD_VERSAMENTO_ENTE = null;
+	 
+	public IField COD_DOMINIO = null;
+	 
+	public IField IUV = null;
+	 
+	public IField TRN = null;
 	 
 
 	@Override

@@ -104,7 +104,7 @@ public class TipoTributoFilter extends AbstractFilter {
 			if(this.listaIdTributi != null && this.listaIdTributi.size() > 0){
 				if(addAnd)
 					newExpression.and();
-				newExpression.in(cf, listaIdTributi);
+				newExpression.in(this.cf, this.listaIdTributi);
 				
 				addAnd = true;
 			}
@@ -114,7 +114,7 @@ public class TipoTributoFilter extends AbstractFilter {
 					newExpression.and();
 				
 				IExpression notExpression = this.newExpression();
-				notExpression.not().in(cf, listaIdTributiDaEscludere);
+				notExpression.not().in(this.cf, this.listaIdTributiDaEscludere);
 				newExpression.and(notExpression);
 				addAnd = true;
 			}
@@ -136,7 +136,7 @@ public class TipoTributoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getListaIdTributi() {
-		return listaIdTributi;
+		return this.listaIdTributi;
 	}
 
 	public void setListaIdTributi(List<Long> listaIdTributi) {
@@ -144,7 +144,7 @@ public class TipoTributoFilter extends AbstractFilter {
 	}
 
 	public String getCodTributo() {
-		return codTributo;
+		return this.codTributo;
 	}
 
 	public void setCodTributo(String codTributo) {
@@ -152,7 +152,7 @@ public class TipoTributoFilter extends AbstractFilter {
 	}
 
 	public String getCodContabilita() {
-		return codContabilita;
+		return this.codContabilita;
 	}
 
 	public void setCodContabilita(String codContabilita) {
@@ -160,7 +160,7 @@ public class TipoTributoFilter extends AbstractFilter {
 	}
 
 	public String getCodificaTipoContabilita() {
-		return codificaTipoContabilita;
+		return this.codificaTipoContabilita;
 	}
 
 	public void setCodificaTipoContabilita(String codificaTipoContabilita) {
@@ -168,7 +168,7 @@ public class TipoTributoFilter extends AbstractFilter {
 	}
 
 	public String getDescrizione() {
-		return descrizione;
+		return this.descrizione;
 	}
 
 	public void setDescrizione(String descrizione) {
@@ -176,7 +176,7 @@ public class TipoTributoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getListaIdTributiDaEscludere() {
-		return listaIdTributiDaEscludere;
+		return this.listaIdTributiDaEscludere;
 	}
 
 	public void setListaIdTributiDaEscludere(List<Long> listaIdTributiDaEscludere) {

@@ -23,8 +23,8 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 /***
  * Utility per la formattazione degli importi
@@ -45,6 +45,10 @@ public class CurrencyUtils {
 	private Logger log = null;
 	private boolean mostraVirgole = false;
 	private Locale locale = null;
+	
+	public static CurrencyUtils getInstance() {
+		return newInstance(LoggerWrapperFactory.getLogger(CurrencyUtils.class));
+	}
 	 
 	public static CurrencyUtils newInstance(Logger log) {
 		return new CurrencyUtils(log,null);
@@ -61,7 +65,7 @@ public class CurrencyUtils {
 	
 	public String getCurrencyAsEuro(Double value) {
 		StringBuilder sb = new StringBuilder();
-		String currencyAsString = getCurrencyAsString(value,this.locale);
+		String currencyAsString = this.getCurrencyAsString(value,this.locale);
 		sb.append(currencyAsString);
 		if(StringUtils.isNotEmpty(currencyAsString));
 			sb.append(EURO);
@@ -70,15 +74,15 @@ public class CurrencyUtils {
 	}
 	
 	public String getCurrencyAsString(Double value) {
-		return getCurrencyAsString(value,this.locale);
+		return this.getCurrencyAsString(value,this.locale);
 	}
 	
 	public String getCurrencyAsString(Double value, Locale locale) {
-		return getCurrencyAsStringWithStringFormat(value, locale, this.mostraVirgole);
+		return this.getCurrencyAsStringWithStringFormat(value, locale, this.mostraVirgole);
 	}
 
 	public String getCurrencyAsString(Double value, boolean mostraVirgole) {
-		return getCurrencyAsStringWithStringFormat(value, this.locale, mostraVirgole);
+		return this.getCurrencyAsStringWithStringFormat(value, this.locale, mostraVirgole);
 	}
 
 	public String getCurrencyAsStringWithStringFormat(Double value, Locale locale, boolean mostraVirgole) {
@@ -87,9 +91,9 @@ public class CurrencyUtils {
 
 		try {
 		if(mostraVirgole)
-			return getCurrencyAsStringWithStringFormatConVirgole(value,locale);
+			return this.getCurrencyAsStringWithStringFormatConVirgole(value,locale);
 		else 
-			return getCurrencyAsStringWithStringFormatSenzaVirgole(value,locale);
+			return this.getCurrencyAsStringWithStringFormatSenzaVirgole(value,locale);
 		}catch(Exception e) {
 			this.log.error("Si e' verificato un errore durante la conversione del valore ["+value+"]: "+ e.getMessage(),e); 
 			return "";
@@ -141,28 +145,28 @@ public class CurrencyUtils {
 		if(value == null)
 			return "";
 		
-		return getCurrencyAsEuro(value.doubleValue());
+		return this.getCurrencyAsEuro(value.doubleValue());
 	}
 	
 	public String getCurrencyAsString(BigDecimal value) {
 		if(value == null)
 			return "";
 		
-		return getCurrencyAsString(value.doubleValue(),this.locale);
+		return this.getCurrencyAsString(value.doubleValue(),this.locale);
 	}
 	
 	public String getCurrencyAsString(BigDecimal value, Locale locale) {
 		if(value == null)
 			return "";
 		
-		return getCurrencyAsStringWithStringFormat(value.doubleValue(), locale, this.mostraVirgole);
+		return this.getCurrencyAsStringWithStringFormat(value.doubleValue(), locale, this.mostraVirgole);
 	}
 
 	public String getCurrencyAsString(BigDecimal value, boolean mostraVirgole) {
 		if(value == null)
 			return "";
 		
-		return getCurrencyAsStringWithStringFormat(value.doubleValue(), this.locale, mostraVirgole);
+		return this.getCurrencyAsStringWithStringFormat(value.doubleValue(), this.locale, mostraVirgole);
 	}
 	
 	
@@ -172,7 +176,7 @@ public class CurrencyUtils {
 		Double d2 = 100D;
 		Double d3 = 100.01D;
 		Double d4 = 10000000000.01D;
-		Logger log = LogManager.getLogger();
+		Logger log = LoggerWrapperFactory.getLogger(CurrencyUtils.class);
 		CurrencyUtils currencyUtils = CurrencyUtils.newInstance(log,Locale.ITALIAN);
 
 		System.out.println("=======D1=======");

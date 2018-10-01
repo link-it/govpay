@@ -19,38 +19,22 @@
  */
 package it.govpay.web.listener;
 
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class HttpSessionCheckListener implements HttpSessionListener {
 
-//	private static Logger log = LoggerManager.getGUILogger();
-	
-	Logger log = LogManager.getLogger();
-	
 	@Override
 	public void sessionCreated(HttpSessionEvent e) {
-		this.log.debug("session "+e.getSession().getId()+" created.");
+		e.getSession().getId();
 	}
 
 	@Override
 	public void sessionDestroyed(HttpSessionEvent e) {
-		this.log.debug("session "+e.getSession().getId()+" destroyed.");
-		try{
-			HttpSession session = e.getSession();
-			
-			if(session != null)
-				session.invalidate();
-			
-			
-		}catch (Exception ex) {
-			this.log.error("errore durante le operazioni di clean-up della sessione: ",ex);
-		}
+		HttpSession session = e.getSession();
+		
+		if(session != null)
+			session.invalidate();
 	}
-	
 }

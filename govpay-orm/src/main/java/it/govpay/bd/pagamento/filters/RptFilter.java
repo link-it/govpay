@@ -21,6 +21,7 @@ package it.govpay.bd.pagamento.filters;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -49,6 +50,12 @@ public class RptFilter extends AbstractFilter {
 	private Boolean conservato;
 	private List<String> stato;
 	private List<Long> idRpt= null;
+	private Long idPagamentoPortale = null;
+	private String codPagamentoPortale = null;
+	private Date dataInizio;
+	private Date dataFine;
+	private String codApplicazione = null;
+	private String idPendenza = null;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -90,7 +97,7 @@ public class RptFilter extends AbstractFilter {
 			}
 
 			if(this.idDomini != null){
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				newExpression.in(RPT.model().COD_DOMINIO, this.idDomini);
@@ -128,6 +135,56 @@ public class RptFilter extends AbstractFilter {
 				newExpression.in(RPT.model().STATO, this.stato);
 				addAnd = true;
 			}
+			
+			if(this.idPagamentoPortale != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				
+				RPTFieldConverter rptFieldConverter = new RPTFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField idRptCustomField = new CustomField("id_pagamento_portale",  Long.class, "id_pagamento_portale",  rptFieldConverter.toTable(RPT.model()));
+				newExpression.equals(idRptCustomField, this.idPagamentoPortale);
+				addAnd = true;
+			}
+			
+			if(this.codPagamentoPortale != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.codPagamentoPortale);
+				addAnd = true;
+			}
+			
+			if(this.codApplicazione != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				addAnd = true;
+			}
+			
+			if(this.idPendenza != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE, this.idPendenza);
+				addAnd = true;
+			}
+			
+			if(this.dataInizio != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.greaterEquals(RPT.model().DATA_MSG_RICHIESTA, this.dataInizio);
+				addAnd = true;
+			}
+			if(this.dataFine != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(RPT.model().DATA_MSG_RICHIESTA, this.dataFine);
+				addAnd = true;
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -154,7 +211,7 @@ public class RptFilter extends AbstractFilter {
 
 			if(this.idDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				newExpressionDomini.in(Pagamento.model().COD_DOMINIO, this.idDomini);
 				newExpression.and(newExpressionDomini);
 			}
@@ -170,7 +227,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public Long getIdVersamento() {
-		return idVersamento;
+		return this.idVersamento;
 	}
 
 	public void setIdVersamento(Long idVersamento) {
@@ -178,14 +235,14 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 
 	public List<String> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(List<String> idDomini) {
@@ -193,18 +250,19 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public void setStato(StatoRpt stato) {
-		this.stato = new ArrayList<String>();
+		this.stato = new ArrayList<>();
 		if(stato!= null)
 			this.stato.add(stato.name());
 	}
 	
-	public void setStato(List<String> stato) {
+	public void setStato(List<StatoRpt> stati) {
 		this.stato = new ArrayList<String>();
-		this.stato.addAll(stato);
+		for(StatoRpt s : stati)
+			this.stato.add(s.name());
 	}
 
 	public Boolean getConservato() {
-		return conservato;
+		return this.conservato;
 	}
 
 	public void setConservato(Boolean conservato) {
@@ -212,7 +270,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdRpt() {
-		return idRpt;
+		return this.idRpt;
 	}
 
 	public void setIdRpt(List<Long> idRpt) {
@@ -220,11 +278,58 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	public String getCcp() {
-		return ccp;
+		return this.ccp;
 	}
 
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
 	}
-	
+
+	public Long getIdPagamentoPortale() {
+		return this.idPagamentoPortale;
+	}
+
+	public void setIdPagamentoPortale(Long idPagamentoPortale) {
+		this.idPagamentoPortale = idPagamentoPortale;
+	}
+	public Date getDataInizio() {
+		return this.dataInizio;
+	}
+
+	public void setDataInizio(Date dataInizio) {
+		this.dataInizio = dataInizio;
+	}
+
+	public Date getDataFine() {
+		return this.dataFine;
+	}
+
+	public void setDataFine(Date dataFine) {
+		this.dataFine = dataFine;
+	}
+
+	public String getCodPagamentoPortale() {
+		return this.codPagamentoPortale;
+	}
+
+	public void setCodPagamentoPortale(String codPagamentoPortale) {
+		this.codPagamentoPortale = codPagamentoPortale;
+	}
+
+	public String getCodApplicazione() {
+		return this.codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public String getIdPendenza() {
+		return this.idPendenza;
+	}
+
+	public void setIdPendenza(String idPendenza) {
+		this.idPendenza = idPendenza;
+	}
+
 }

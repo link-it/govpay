@@ -67,32 +67,18 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(Tracciato.model().ID_OPERATORE.PRINCIPAL)){
+		if(field.equals(Tracciato.model().COD_DOMINIO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".principal";
+				return this.toAliasTable(field)+".cod_dominio";
 			}else{
-				return "principal";
+				return "cod_dominio";
 			}
 		}
-		if(field.equals(Tracciato.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+		if(field.equals(Tracciato.model().TIPO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
+				return this.toAliasTable(field)+".tipo";
 			}else{
-				return "cod_applicazione";
-			}
-		}
-		if(field.equals(Tracciato.model().DATA_CARICAMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_caricamento";
-			}else{
-				return "data_caricamento";
-			}
-		}
-		if(field.equals(Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_ultimo_aggiornamento";
-			}else{
-				return "data_ultimo_aggiornamento";
+				return "tipo";
 			}
 		}
 		if(field.equals(Tracciato.model().STATO)){
@@ -102,13 +88,6 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 				return "stato";
 			}
 		}
-		if(field.equals(Tracciato.model().LINEA_ELABORAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".linea_elaborazione";
-			}else{
-				return "linea_elaborazione";
-			}
-		}
 		if(field.equals(Tracciato.model().DESCRIZIONE_STATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".descrizione_stato";
@@ -116,46 +95,60 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione_stato";
 			}
 		}
-		if(field.equals(Tracciato.model().NUM_LINEE_TOTALI)){
+		if(field.equals(Tracciato.model().DATA_CARICAMENTO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".num_linee_totali";
+				return this.toAliasTable(field)+".data_caricamento";
 			}else{
-				return "num_linee_totali";
+				return "data_caricamento";
 			}
 		}
-		if(field.equals(Tracciato.model().NUM_OPERAZIONI_OK)){
+		if(field.equals(Tracciato.model().DATA_COMPLETAMENTO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".num_operazioni_ok";
+				return this.toAliasTable(field)+".data_completamento";
 			}else{
-				return "num_operazioni_ok";
+				return "data_completamento";
 			}
 		}
-		if(field.equals(Tracciato.model().NUM_OPERAZIONI_KO)){
+		if(field.equals(Tracciato.model().BEAN_DATI)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".num_operazioni_ko";
+				return this.toAliasTable(field)+".bean_dati";
 			}else{
-				return "num_operazioni_ko";
+				return "bean_dati";
 			}
 		}
-		if(field.equals(Tracciato.model().NOME_FILE)){
+		if(field.equals(Tracciato.model().FILE_NAME_RICHIESTA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".nome_file";
+				return this.toAliasTable(field)+".file_name_richiesta";
 			}else{
-				return "nome_file";
+				return "file_name_richiesta";
 			}
 		}
-		if(field.equals(Tracciato.model().RAW_DATA_RICHIESTA)){
+		if(field.equals(Tracciato.model().RAW_RICHIESTA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".raw_data_richiesta";
+				return this.toAliasTable(field)+".raw_richiesta";
 			}else{
-				return "raw_data_richiesta";
+				return "raw_richiesta";
 			}
 		}
-		if(field.equals(Tracciato.model().RAW_DATA_RISPOSTA)){
+		if(field.equals(Tracciato.model().FILE_NAME_ESITO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".raw_data_risposta";
+				return this.toAliasTable(field)+".file_name_esito";
 			}else{
-				return "raw_data_risposta";
+				return "file_name_esito";
+			}
+		}
+		if(field.equals(Tracciato.model().RAW_ESITO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".raw_esito";
+			}else{
+				return "raw_esito";
+			}
+		}
+		if(field.equals(Tracciato.model().ID_OPERATORE.PRINCIPAL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal";
+			}else{
+				return "principal";
 			}
 		}
 
@@ -171,44 +164,41 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(Tracciato.model().ID_OPERATORE.PRINCIPAL)){
-			return this.toTable(Tracciato.model().ID_OPERATORE, returnAlias);
-		}
-		if(field.equals(Tracciato.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(Tracciato.model().ID_APPLICAZIONE, returnAlias);
-		}
-		if(field.equals(Tracciato.model().DATA_CARICAMENTO)){
+		if(field.equals(Tracciato.model().COD_DOMINIO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
-		if(field.equals(Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO)){
+		if(field.equals(Tracciato.model().TIPO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
 		if(field.equals(Tracciato.model().STATO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
-		if(field.equals(Tracciato.model().LINEA_ELABORAZIONE)){
-			return this.toTable(Tracciato.model(), returnAlias);
-		}
 		if(field.equals(Tracciato.model().DESCRIZIONE_STATO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
-		if(field.equals(Tracciato.model().NUM_LINEE_TOTALI)){
+		if(field.equals(Tracciato.model().DATA_CARICAMENTO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
-		if(field.equals(Tracciato.model().NUM_OPERAZIONI_OK)){
+		if(field.equals(Tracciato.model().DATA_COMPLETAMENTO)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
-		if(field.equals(Tracciato.model().NUM_OPERAZIONI_KO)){
+		if(field.equals(Tracciato.model().BEAN_DATI)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
-		if(field.equals(Tracciato.model().NOME_FILE)){
+		if(field.equals(Tracciato.model().FILE_NAME_RICHIESTA)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
-		if(field.equals(Tracciato.model().RAW_DATA_RICHIESTA)){
+		if(field.equals(Tracciato.model().RAW_RICHIESTA)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
-		if(field.equals(Tracciato.model().RAW_DATA_RISPOSTA)){
+		if(field.equals(Tracciato.model().FILE_NAME_ESITO)){
 			return this.toTable(Tracciato.model(), returnAlias);
+		}
+		if(field.equals(Tracciato.model().RAW_ESITO)){
+			return this.toTable(Tracciato.model(), returnAlias);
+		}
+		if(field.equals(Tracciato.model().ID_OPERATORE.PRINCIPAL)){
+			return this.toTable(Tracciato.model().ID_OPERATORE, returnAlias);
 		}
 
 
@@ -228,9 +218,6 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Tracciato.model().ID_OPERATORE)){
 			return "operatori";
-		}
-		if(model.equals(Tracciato.model().ID_APPLICAZIONE)){
-			return "applicazioni";
 		}
 
 

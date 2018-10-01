@@ -207,6 +207,20 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().ID_IBAN_APPOGGIO.COD_IBAN)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_iban";
+			}else{
+				return "cod_iban";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 		if(field.equals(SingoloVersamento.model().TIPO_CONTABILITA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".tipo_contabilita";
@@ -221,11 +235,25 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "codice_contabilita";
 			}
 		}
-		if(field.equals(SingoloVersamento.model().NOTE)){
+		if(field.equals(SingoloVersamento.model().DESCRIZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".note";
+				return this.toAliasTable(field)+".descrizione";
 			}else{
-				return "note";
+				return "descrizione";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().DATI_ALLEGATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_allegati";
+			}else{
+				return "dati_allegati";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().INDICE_DATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".indice_dati";
+			}else{
+				return "indice_dati";
 			}
 		}
 
@@ -301,13 +329,25 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO, returnAlias);
 		}
+		if(field.equals(SingoloVersamento.model().ID_IBAN_APPOGGIO.COD_IBAN)){
+			return this.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO, returnAlias);
+		}
 		if(field.equals(SingoloVersamento.model().TIPO_CONTABILITA)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().CODICE_CONTABILITA)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
-		if(field.equals(SingoloVersamento.model().NOTE)){
+		if(field.equals(SingoloVersamento.model().DESCRIZIONE)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().DATI_ALLEGATI)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().INDICE_DATI)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 
@@ -345,6 +385,12 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return "iban_accredito";
 		}
 		if(model.equals(SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO)){
+			return "domini";
+		}
+		if(model.equals(SingoloVersamento.model().ID_IBAN_APPOGGIO)){
+			return "iban_accredito";
+		}
+		if(model.equals(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO)){
 			return "domini";
 		}
 

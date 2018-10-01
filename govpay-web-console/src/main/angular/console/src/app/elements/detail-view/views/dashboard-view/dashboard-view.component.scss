@@ -1,0 +1,68 @@
+@import '~@angular/material/theming';
+@import '../../../../../styles/variables.scss';
+
+ul, li {
+  list-style: none;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+li.paragraph {
+  margin-top: 1rem !important;
+}
+
+.accent-text,
+a, a:hover  {
+  text-decoration: none;
+  color: mat-color($link-accent);
+}
+
+.mat-toolbar-header {
+  font-size: 24px !important;
+}
+
+.news-title {
+  font-size: 20px;
+}
+
+.news-title a,
+.news-title a:hover {
+  color: initial !important;
+}
+
+.news-spinner {
+  position: absolute !important;
+  top: calc(50% - 15px);
+  left: calc(50% - 15px);
+  transform: translate(-50%, -50%);
+}
+
+.form-col {
+  max-width: 100%;
+}
+
+@media (min-width: 768px){
+  .form-col {
+    max-width: 300px !important;
+  }
+}
+
+.card-title-margin {
+  margin-left: -16px;
+  margin-right: -16px;
+}
+
+.mat-card-title {
+  font-size: 18px !important;
+  color: $link-secondary-text;
+}
+
+.mat-elevation-card {
+  -webkit-box-shadow: 0 1px 1px 0 $link-shadow !important;
+  box-shadow: 0 1px 1px 0 $link-shadow !important;
+}
+
+//Material design override
+mat-card {
+  border-radius: 0 !important;
+}

@@ -22,10 +22,13 @@ package it.govpay.bd;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.pagamento.util.CustomIuv;
 
@@ -37,19 +40,19 @@ public class GovpayConfig {
 		return instance;
 	}
 
-	public static GovpayConfig newInstance4GovPay() throws Exception {
-		instance = new GovpayConfig("/govpay.properties", "it.govpay.resource.path", false);
+	public static GovpayConfig newInstance4GovPay(InputStream propertyFile) throws Exception {
+		instance = new GovpayConfig(propertyFile, "/govpay.properties", "it.govpay.resource.path", false);
 		return instance;
 	}
 	
-	public static GovpayConfig newInstance4GovPayConsole() throws Exception {
-		instance = new GovpayConfig("/govpayConsole.properties", "it.govpay.console.resource.path", true);
+	public static GovpayConfig newInstance4GovPayConsole(InputStream propertyFile) throws Exception {
+		instance = new GovpayConfig(propertyFile, "/govpayConsole.properties", "it.govpay.console.resource.path", true);
 		
 		return instance;
 	}
 	
-	public static GovpayConfig newInstance(String propertiesFileName, String propertyResourcePathName, boolean dataonly) throws Exception {
-		instance = new GovpayConfig(propertiesFileName, propertyResourcePathName, dataonly);
+	public static GovpayConfig newInstance(InputStream propertyFile, String propertiesFileName, String propertyResourcePathName, boolean dataonly) throws Exception {
+		instance = new GovpayConfig(propertyFile, propertiesFileName, propertyResourcePathName, dataonly);
 		return instance;
 	}
 
@@ -60,27 +63,26 @@ public class GovpayConfig {
 	private Properties[] props;
 	private String resourceDir;
 	private CustomIuv defaultCustomIuvGenerator;
+	private List<String> pspPostali;
+	private Integer sizePaginaNumeroVersamentiAvvisaturaDigitale;
+	private Integer limiteNumeroVersamentiAvvisaturaDigitale;
 	
-	
 
-	public GovpayConfig(String propertyFileName, String resourcePathProperty, boolean dataonly) throws Exception {
+	public GovpayConfig(InputStream propertyFile, String propertyFileName, String resourcePathProperty, boolean dataonly) throws Exception {
 
-		Logger log = LogManager.getLogger("boot");
+		Logger log = LoggerWrapperFactory.getLogger("boot");
 
-		// Recupero il property all'interno dell'EAR
-		InputStream is = GovpayConfig.class.getResourceAsStream(propertyFileName);
-
-		props = new Properties[2];
+		this.props = new Properties[2];
 		Properties props1 = new Properties();
-		props1.load(is);
-		props[1] = props1;
+		props1.load(propertyFile);
+		this.props[1] = props1;
 
 		// Recupero la configurazione della working dir
 		// Se e' configurata, la uso come prioritaria
 
 		try {
 			if(resourcePathProperty != null)
-				this.resourceDir = getProperty(resourcePathProperty, props1, false, true);
+				this.resourceDir = this.getProperty(resourcePathProperty, props1, false, true);
 
 			if(this.resourceDir != null) {
 				File resourceDirFile = new File(this.resourceDir);
@@ -88,29 +90,29 @@ public class GovpayConfig {
 					throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
 			}
 		} catch (Exception e) {
-			LogManager.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
+			LoggerWrapperFactory.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
 		}
 
 		Properties props0 = null;
-		props[0] = props0;
+		this.props[0] = props0;
 
 		File gpConfigFile = new File(this.resourceDir + propertyFileName);
 		if(gpConfigFile.exists()) {
 			props0 = new Properties();
 			props0.load(new FileInputStream(gpConfigFile));
 			log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
-			props[0] = props0;
+			this.props[0] = props0;
 		}
 
-		this.databaseType = getProperty("it.govpay.orm.databaseType", props, true);
-		String databaseShowSqlString = getProperty("it.govpay.orm.showSql", props, true);
+		this.databaseType = this.getProperty("it.govpay.orm.databaseType", this.props, true);
+		String databaseShowSqlString = this.getProperty("it.govpay.orm.showSql", this.props, true);
 		this.databaseShowSql = Boolean.parseBoolean(databaseShowSqlString);
-		this.dataSourceJNDIName = getProperty("it.govpay.orm.dataSourceJNDIName", props, true);
-		this.dataSourceAppName = getProperty("it.govpay.orm.dataSourceAppName", props, true);
+		this.dataSourceJNDIName = this.getProperty("it.govpay.orm.dataSourceJNDIName", this.props, true);
+		this.dataSourceAppName = this.getProperty("it.govpay.orm.dataSourceAppName", this.props, true);
 
 		if(dataonly) return;
 		
-		String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", props, false);
+		String defaultCustomIuvGeneratorClass = this.getProperty("it.govpay.defaultCustomIuvGenerator.class", this.props, false);
 		if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
 			Class<?> c = null;
 			try {
@@ -126,11 +128,37 @@ public class GovpayConfig {
 		} else {
 			this.defaultCustomIuvGenerator = new CustomIuv();
 		}
+		
+		String pspPostaliString = this.getProperty("psp.postali", this.props, false);
+		this.pspPostali = new ArrayList<>();
+		try{
+			if(pspPostaliString != null)
+				this.pspPostali = Arrays.asList(pspPostaliString.split(","));
+		} catch(Throwable t) {
+			log.info("Proprieta \"psp.postali\" impostata com valore di default (vuota)");
+			this.pspPostali = new ArrayList<>();
+		}
+		
+		String sizePaginaNumeroVersamentiPerAvvisoString = this.getProperty("it.govpay.batch.avvisaturaDigitale.sizePaginaNumeroVersamenti", this.props, false);
+		try {
+			this.sizePaginaNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(sizePaginaNumeroVersamentiPerAvvisoString);
+		} catch(Throwable t) {
+			log.info("Proprieta \"it.govpay.batch.avvisaturaDigitale.sizePaginaNumeroVersamenti\" impostata com valore di default (100)");
+			this.sizePaginaNumeroVersamentiAvvisaturaDigitale = 100;
+		}
+		
+		String limiteNumeroVersamentiPerAvvisoString = this.getProperty("it.govpay.batch.avvisaturaDigitale.limiteNumeroVersamenti", this.props, false);
+		try {
+			this.limiteNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(limiteNumeroVersamentiPerAvvisoString);
+		} catch(Throwable t) {
+			log.info("Proprieta \"it.govpay.batch.avvisaturaDigitale.limiteNumeroVersamenti\" impostata com valore di default (100000)");
+			this.limiteNumeroVersamentiAvvisaturaDigitale = 100000;
+		}
 
 	}
 
 	private String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig) throws Exception {
-		Logger log = LogManager.getLogger("boot");
+		Logger log = LoggerWrapperFactory.getLogger("boot");
 
 		String value = System.getProperty(name);
 
@@ -164,11 +192,11 @@ public class GovpayConfig {
 	}
 
 	private String getProperty(String name, Properties[] props, boolean required) throws Exception {
-		Logger log = LogManager.getLogger("boot");
+		Logger log = LoggerWrapperFactory.getLogger("boot");
 
 		String value = null;
 		for(int i=0; i<props.length; i++) {
-			try { value = getProperty(name, props[i], required, i==1); } catch (Exception e) { }
+			try { value = this.getProperty(name, props[i], required, i==1); } catch (Exception e) { }
 			if(value != null && !value.trim().isEmpty()) {
 				return value;
 			}
@@ -183,27 +211,38 @@ public class GovpayConfig {
 	}
 
 	public String getDatabaseType() {
-		return databaseType;
+		return this.databaseType;
 	}
 
 	public boolean isDatabaseShowSql() {
-		return databaseShowSql;
+		return this.databaseShowSql;
 	}
 
 	public String getDataSourceJNDIName() {
-		return dataSourceJNDIName;
+		return this.dataSourceJNDIName;
 	}
 
 	public String getDataSourceAppName() {
-		return dataSourceAppName;
+		return this.dataSourceAppName;
 	}
 
 	public CustomIuv getDefaultCustomIuvGenerator() {
-		return defaultCustomIuvGenerator;
+		return this.defaultCustomIuvGenerator;
 	}
 
 	public String getResourceDir() {
-		return resourceDir;
+		return this.resourceDir;
 	}
 
+	public List<String> getPspPostali() {
+		return this.pspPostali;
+	}
+
+	public Integer getSizePaginaNumeroVersamentiAvvisaturaDigitale() {
+		return this.sizePaginaNumeroVersamentiAvvisaturaDigitale;
+	}
+
+	public Integer getLimiteNumeroVersamentiAvvisaturaDigitale() {
+		return this.limiteNumeroVersamentiAvvisaturaDigitale;
+	}
 }

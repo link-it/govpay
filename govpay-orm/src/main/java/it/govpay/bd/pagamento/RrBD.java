@@ -111,7 +111,7 @@ public class RrBD extends BasicBD {
 		try {
 			IdRr idRr = new IdRr();
 			idRr.setId(id);
-			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(RR.model().STATO, stato.toString()));
 			lstUpdateFields.add(new UpdateField(RR.model().DESCRIZIONE_STATO, descrizione));
 			this.getRrService().updateFields(idRr, lstUpdateFields.toArray(new UpdateField[]{}));
@@ -168,7 +168,7 @@ public class RrBD extends BasicBD {
 
 	public List<Rr> findAll(RrFilter filter) throws ServiceException {
 		try {
-			List<Rr> rrLst = new ArrayList<Rr>();
+			List<Rr> rrLst = new ArrayList<>();
 			List<it.govpay.orm.RR> rrVOLst = this.getRrService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.RR rrVO: rrVOLst) {
 				rrLst.add(RrConverter.toDTO(rrVO));

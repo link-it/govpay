@@ -1,0 +1,24 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+$link-primary: mat-palette($mat-indigo, 500);
+$link-header-row: mat-palette($mat-indigo, 300);
+$link-search: mat-palette($mat-indigo, 500, 400);
+$link-secondary: mat-palette($mat-indigo, 500, 300);
+$link-accent: mat-palette($mat-light-green, A700);
+$link-error: mat-palette($mat-red);
+$link-over-item: rgb(249, 254, 245);
+
+$link-form-background: white;
+$link-secondary-text: rgb(121, 121, 121);
+$link-primary-text: #212121;
+$link-dark-gray: #616161;
+$link-border-gray: #dcdcdc;
+$link-border-light-gray: #e0e0e0;
+$link-gray-light: #fafafa;
+$link-gray-container: #f5f5f5;
+$link-shadow: rgba(33, 33, 33, .2);
+
+$link-warning: mat-palette($mat-yellow, 600);
+$link-light: #ffffff;
+$link-mobile-search-color: rgba(255, 255, 255, .5);

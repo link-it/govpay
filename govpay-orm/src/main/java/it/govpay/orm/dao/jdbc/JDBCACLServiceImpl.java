@@ -23,7 +23,7 @@ import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdAcl;
@@ -70,135 +70,21 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
-		// Object _applicazione
-		Long id_applicazione = null;
-		it.govpay.orm.IdApplicazione idLogic_applicazione = null;
-		idLogic_applicazione = acl.getIdApplicazione();
-		if(idLogic_applicazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_applicazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_applicazione = idLogic_applicazione.getId();
-				if(id_applicazione==null || id_applicazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _portale
-		Long id_portale = null;
-		it.govpay.orm.IdPortale idLogic_portale = null;
-		idLogic_portale = acl.getIdPortale();
-		if(idLogic_portale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_portale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_portale = idLogic_portale.getId();
-				if(id_portale==null || id_portale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _operatore
-		Long id_operatore = null;
-		it.govpay.orm.IdOperatore idLogic_operatore = null;
-		idLogic_operatore = acl.getIdOperatore();
-		if(idLogic_operatore!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findTableId(idLogic_operatore, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_operatore = idLogic_operatore.getId();
-				if(id_operatore==null || id_operatore<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _ruolo
-		Long id_ruolo = null;
-		it.govpay.orm.IdRuolo idLogic_ruolo = null;
-		idLogic_ruolo = acl.getIdRuolo();
-		if(idLogic_ruolo!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_ruolo = ((JDBCRuoloServiceSearch)(this.getServiceManager().getRuoloServiceSearch())).findTableId(idLogic_ruolo, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_ruolo = idLogic_ruolo.getId();
-				if(id_ruolo==null || id_ruolo<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _dominio
-		Long id_dominio = null;
-		it.govpay.orm.IdDominio idLogic_dominio = null;
-		idLogic_dominio = acl.getIdDominio();
-		if(idLogic_dominio!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findTableId(idLogic_dominio, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_dominio = idLogic_dominio.getId();
-				if(id_dominio==null || id_dominio<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _tipoTributo
-		Long id_tipoTributo = null;
-		it.govpay.orm.IdTipoTributo idLogic_tipoTributo = null;
-		idLogic_tipoTributo = acl.getIdTipoTributo();
-		if(idLogic_tipoTributo!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_tipoTributo = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findTableId(idLogic_tipoTributo, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_tipoTributo = idLogic_tipoTributo.getId();
-				if(id_tipoTributo==null || id_tipoTributo<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object acl
 		sqlQueryObjectInsert.addInsertTable(this.getACLFieldConverter().toTable(ACL.model()));
-		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().COD_TIPO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().RUOLO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().DIRITTI,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().COD_SERVIZIO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().ADMIN,false),"?");
-		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
-		sqlQueryObjectInsert.addInsertField("id_portale","?");
-		sqlQueryObjectInsert.addInsertField("id_operatore","?");
-		sqlQueryObjectInsert.addInsertField("id_ruolo","?");
-		sqlQueryObjectInsert.addInsertField("id_dominio","?");
-		sqlQueryObjectInsert.addInsertField("id_tipo_tributo","?");
 
 		// Insert acl
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getACLFetch().getKeyGeneratorObject(ACL.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getCodTipo(),ACL.model().COD_TIPO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getDiritti(),ACL.model().DIRITTI.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getCodServizio(),ACL.model().COD_SERVIZIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getAdmin(),ACL.model().ADMIN.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ruolo,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoTributo,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getRuolo(),ACL.model().RUOLO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getPrincipal(),ACL.model().PRINCIPAL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getServizio(),ACL.model().SERVIZIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getDiritti(),ACL.model().DIRITTI.getFieldType())
 		);
 		acl.setId(id);
 
@@ -240,164 +126,26 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-		boolean setIdMappingResolutionBehaviour = 
-			(idMappingResolutionBehaviour==null) ||
-			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+//		boolean setIdMappingResolutionBehaviour = 
+//			(idMappingResolutionBehaviour==null) ||
+//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
-
-		// Object _acl_applicazione
-		Long id_acl_applicazione = null;
-		it.govpay.orm.IdApplicazione idLogic_acl_applicazione = null;
-		idLogic_acl_applicazione = acl.getIdApplicazione();
-		if(idLogic_acl_applicazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_acl_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_acl_applicazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_acl_applicazione = idLogic_acl_applicazione.getId();
-				if(id_acl_applicazione==null || id_acl_applicazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _acl_portale
-		Long id_acl_portale = null;
-		it.govpay.orm.IdPortale idLogic_acl_portale = null;
-		idLogic_acl_portale = acl.getIdPortale();
-		if(idLogic_acl_portale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_acl_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_acl_portale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_acl_portale = idLogic_acl_portale.getId();
-				if(id_acl_portale==null || id_acl_portale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _acl_operatore
-		Long id_acl_operatore = null;
-		it.govpay.orm.IdOperatore idLogic_acl_operatore = null;
-		idLogic_acl_operatore = acl.getIdOperatore();
-		if(idLogic_acl_operatore!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_acl_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findTableId(idLogic_acl_operatore, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_acl_operatore = idLogic_acl_operatore.getId();
-				if(id_acl_operatore==null || id_acl_operatore<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _acl_ruolo
-		Long id_acl_ruolo = null;
-		it.govpay.orm.IdRuolo idLogic_acl_ruolo = null;
-		idLogic_acl_ruolo = acl.getIdRuolo();
-		if(idLogic_acl_ruolo!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_acl_ruolo = ((JDBCRuoloServiceSearch)(this.getServiceManager().getRuoloServiceSearch())).findTableId(idLogic_acl_ruolo, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_acl_ruolo = idLogic_acl_ruolo.getId();
-				if(id_acl_ruolo==null || id_acl_ruolo<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _acl_dominio
-		Long id_acl_dominio = null;
-		it.govpay.orm.IdDominio idLogic_acl_dominio = null;
-		idLogic_acl_dominio = acl.getIdDominio();
-		if(idLogic_acl_dominio!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_acl_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findTableId(idLogic_acl_dominio, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_acl_dominio = idLogic_acl_dominio.getId();
-				if(id_acl_dominio==null || id_acl_dominio<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _acl_tipoTributo
-		Long id_acl_tipoTributo = null;
-		it.govpay.orm.IdTipoTributo idLogic_acl_tipoTributo = null;
-		idLogic_acl_tipoTributo = acl.getIdTipoTributo();
-		if(idLogic_acl_tipoTributo!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_acl_tipoTributo = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findTableId(idLogic_acl_tipoTributo, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_acl_tipoTributo = idLogic_acl_tipoTributo.getId();
-				if(id_acl_tipoTributo==null || id_acl_tipoTributo<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 
 		// Object acl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getACLFieldConverter().toTable(ACL.model()));
 		boolean isUpdate_acl = true;
-		java.util.List<JDBCObject> lstObjects_acl = new java.util.ArrayList<JDBCObject>();
-		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().COD_TIPO,false), "?");
-		lstObjects_acl.add(new JDBCObject(acl.getCodTipo(), ACL.model().COD_TIPO.getFieldType()));
+		java.util.List<JDBCObject> lstObjects_acl = new java.util.ArrayList<>();
+		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().RUOLO,false), "?");
+		lstObjects_acl.add(new JDBCObject(acl.getRuolo(), ACL.model().RUOLO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,false), "?");
+		lstObjects_acl.add(new JDBCObject(acl.getPrincipal(), ACL.model().PRINCIPAL.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,false), "?");
+		lstObjects_acl.add(new JDBCObject(acl.getServizio(), ACL.model().SERVIZIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().DIRITTI,false), "?");
 		lstObjects_acl.add(new JDBCObject(acl.getDiritti(), ACL.model().DIRITTI.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().COD_SERVIZIO,false), "?");
-		lstObjects_acl.add(new JDBCObject(acl.getCodServizio(), ACL.model().COD_SERVIZIO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().ADMIN,false), "?");
-		lstObjects_acl.add(new JDBCObject(acl.getAdmin(), ACL.model().ADMIN.getFieldType()));
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_portale","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_ruolo","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_tipo_tributo","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_acl.add(new JDBCObject(id_acl_applicazione, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_acl.add(new JDBCObject(id_acl_portale, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_acl.add(new JDBCObject(id_acl_operatore, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_acl.add(new JDBCObject(id_acl_ruolo, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_acl.add(new JDBCObject(id_acl_dominio, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_acl.add(new JDBCObject(id_acl_tipoTributo, Long.class));
-		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_acl.add(new JDBCObject(tableId, Long.class));
 
@@ -406,6 +154,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
 				lstObjects_acl.toArray(new JDBCObject[]{}));
 		}
+
 
 	}
 	
@@ -441,7 +190,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getACLFieldConverter().toTable(ACL.model()), 
@@ -452,7 +201,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getACLFieldConverter().toTable(ACL.model()), 
@@ -463,7 +212,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getACLFieldConverter().toTable(ACL.model()), 

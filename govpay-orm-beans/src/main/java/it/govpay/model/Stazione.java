@@ -40,8 +40,9 @@ public class Stazione extends BasicModel {
 	public Stazione() {
 	}
 
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Long id) {
@@ -49,7 +50,7 @@ public class Stazione extends BasicModel {
 	}
 
 	public long getIdIntermediario() {
-		return idIntermediario;
+		return this.idIntermediario;
 	}
 
 	public void setIdIntermediario(long idIntermediario) {
@@ -57,7 +58,7 @@ public class Stazione extends BasicModel {
 	}
 
 	public String getCodStazione() {
-		return codStazione;
+		return this.codStazione;
 	}
 
 	public void setCodStazione(String codStazione) {
@@ -65,7 +66,7 @@ public class Stazione extends BasicModel {
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -73,7 +74,7 @@ public class Stazione extends BasicModel {
 	}
 
 	public boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 
 	public void setAbilitato(boolean abilitato) {
@@ -82,7 +83,7 @@ public class Stazione extends BasicModel {
 
 
 	public int getApplicationCode() {
-		return applicationCode;
+		return this.applicationCode;
 	}
 
 	public void setApplicationCode(int applicationCode) {
@@ -90,7 +91,7 @@ public class Stazione extends BasicModel {
 	}
 	
 	public Integer getNdpStato() {
-		return ndpStato;
+		return this.ndpStato;
 	}
 
 	public void setNdpStato(Integer ndpStato) {
@@ -98,7 +99,7 @@ public class Stazione extends BasicModel {
 	}
 
 	public String getNdpOperazione() {
-		return ndpOperazione;
+		return this.ndpOperazione;
 	}
 
 	public void setNdpOperazione(String ndpOperazione) {
@@ -106,7 +107,7 @@ public class Stazione extends BasicModel {
 	}
 
 	public String getNdpDescrizione() {
-		return ndpDescrizione;
+		return this.ndpDescrizione;
 	}
 
 	public void setNdpDescrizione(String ndpDescrizione) {
@@ -114,7 +115,7 @@ public class Stazione extends BasicModel {
 	}
 
 	public Date getNdpData() {
-		return ndpData;
+		return this.ndpData;
 	}
 
 	public void setNdpData(Date ndpData) {

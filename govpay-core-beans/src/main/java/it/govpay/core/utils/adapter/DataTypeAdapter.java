@@ -105,4 +105,18 @@ public class DataTypeAdapter {
         return date;
     }
 
+    public static Date parseTime(String s) {
+        if (s == null) {
+            return null;
+        }
+        return DatatypeConverter.parseTime(s).getTime();
+    }
+    public static String printTime(Date dt) {
+        if (dt == null) {
+            return null;
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        return DatatypeConverter.printTime(c);
+    }
 }

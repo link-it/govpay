@@ -19,7 +19,6 @@
  */
 package it.govpay.orm;
 
-import it.govpay.orm.constants.StatoTracciatoType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -36,19 +35,18 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Tracciato">
  * 		&lt;sequence>
- * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataCaricamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataUltimoAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="stato" type="{http://www.govpay.it/orm}StatoTracciatoType" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="lineaElaborazione" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="numLineeTotali" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="numOperazioniOk" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="numOperazioniKo" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="nomeFile" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="rawDataRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="rawDataRisposta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataCaricamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataCompletamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="beanDati" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="fileNameRichiesta" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="rawRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="fileNameEsito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="rawEsito" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -63,19 +61,18 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Tracciato", 
   propOrder = {
-  	"idOperatore",
-  	"idApplicazione",
-  	"dataCaricamento",
-  	"dataUltimoAggiornamento",
+  	"codDominio",
+  	"tipo",
   	"stato",
-  	"lineaElaborazione",
   	"descrizioneStato",
-  	"numLineeTotali",
-  	"numOperazioniOk",
-  	"numOperazioniKo",
-  	"nomeFile",
-  	"rawDataRichiesta",
-  	"rawDataRisposta"
+  	"dataCaricamento",
+  	"dataCompletamento",
+  	"beanDati",
+  	"fileNameRichiesta",
+  	"rawRichiesta",
+  	"fileNameEsito",
+  	"rawEsito",
+  	"idOperatore"
   }
 )
 
@@ -99,64 +96,28 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
 		this.id=new Long(-1);
   }
 
-  public IdOperatore getIdOperatore() {
-    return this.idOperatore;
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
   }
 
-  public void setIdOperatore(IdOperatore idOperatore) {
-    this.idOperatore = idOperatore;
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
   }
 
-  public IdApplicazione getIdApplicazione() {
-    return this.idApplicazione;
+  public java.lang.String getTipo() {
+    return this.tipo;
   }
 
-  public void setIdApplicazione(IdApplicazione idApplicazione) {
-    this.idApplicazione = idApplicazione;
+  public void setTipo(java.lang.String tipo) {
+    this.tipo = tipo;
   }
 
-  public java.util.Date getDataCaricamento() {
-    return this.dataCaricamento;
-  }
-
-  public void setDataCaricamento(java.util.Date dataCaricamento) {
-    this.dataCaricamento = dataCaricamento;
-  }
-
-  public java.util.Date getDataUltimoAggiornamento() {
-    return this.dataUltimoAggiornamento;
-  }
-
-  public void setDataUltimoAggiornamento(java.util.Date dataUltimoAggiornamento) {
-    this.dataUltimoAggiornamento = dataUltimoAggiornamento;
-  }
-
-  public void set_value_stato(String value) {
-    this.stato = (StatoTracciatoType) StatoTracciatoType.toEnumConstantFromString(value);
-  }
-
-  public String get_value_stato() {
-    if(this.stato == null){
-    	return null;
-    }else{
-    	return this.stato.toString();
-    }
-  }
-
-  public it.govpay.orm.constants.StatoTracciatoType getStato() {
+  public java.lang.String getStato() {
     return this.stato;
   }
 
-  public void setStato(it.govpay.orm.constants.StatoTracciatoType stato) {
+  public void setStato(java.lang.String stato) {
     this.stato = stato;
-  }
-
-  public long getLineaElaborazione() {
-    return this.lineaElaborazione;
-  }
-
-  public void setLineaElaborazione(long lineaElaborazione) {
-    this.lineaElaborazione = lineaElaborazione;
   }
 
   public java.lang.String getDescrizioneStato() {
@@ -167,52 +128,68 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
     this.descrizioneStato = descrizioneStato;
   }
 
-  public long getNumLineeTotali() {
-    return this.numLineeTotali;
+  public java.util.Date getDataCaricamento() {
+    return this.dataCaricamento;
   }
 
-  public void setNumLineeTotali(long numLineeTotali) {
-    this.numLineeTotali = numLineeTotali;
+  public void setDataCaricamento(java.util.Date dataCaricamento) {
+    this.dataCaricamento = dataCaricamento;
   }
 
-  public long getNumOperazioniOk() {
-    return this.numOperazioniOk;
+  public java.util.Date getDataCompletamento() {
+    return this.dataCompletamento;
   }
 
-  public void setNumOperazioniOk(long numOperazioniOk) {
-    this.numOperazioniOk = numOperazioniOk;
+  public void setDataCompletamento(java.util.Date dataCompletamento) {
+    this.dataCompletamento = dataCompletamento;
   }
 
-  public long getNumOperazioniKo() {
-    return this.numOperazioniKo;
+  public java.lang.String getBeanDati() {
+    return this.beanDati;
   }
 
-  public void setNumOperazioniKo(long numOperazioniKo) {
-    this.numOperazioniKo = numOperazioniKo;
+  public void setBeanDati(java.lang.String beanDati) {
+    this.beanDati = beanDati;
   }
 
-  public java.lang.String getNomeFile() {
-    return this.nomeFile;
+  public java.lang.String getFileNameRichiesta() {
+    return this.fileNameRichiesta;
   }
 
-  public void setNomeFile(java.lang.String nomeFile) {
-    this.nomeFile = nomeFile;
+  public void setFileNameRichiesta(java.lang.String fileNameRichiesta) {
+    this.fileNameRichiesta = fileNameRichiesta;
   }
 
-  public byte[] getRawDataRichiesta() {
-    return this.rawDataRichiesta;
+  public byte[] getRawRichiesta() {
+    return this.rawRichiesta;
   }
 
-  public void setRawDataRichiesta(byte[] rawDataRichiesta) {
-    this.rawDataRichiesta = rawDataRichiesta;
+  public void setRawRichiesta(byte[] rawRichiesta) {
+    this.rawRichiesta = rawRichiesta;
   }
 
-  public byte[] getRawDataRisposta() {
-    return this.rawDataRisposta;
+  public java.lang.String getFileNameEsito() {
+    return this.fileNameEsito;
   }
 
-  public void setRawDataRisposta(byte[] rawDataRisposta) {
-    this.rawDataRisposta = rawDataRisposta;
+  public void setFileNameEsito(java.lang.String fileNameEsito) {
+    this.fileNameEsito = fileNameEsito;
+  }
+
+  public byte[] getRawEsito() {
+    return this.rawEsito;
+  }
+
+  public void setRawEsito(byte[] rawEsito) {
+    this.rawEsito = rawEsito;
+  }
+
+  public IdOperatore getIdOperatore() {
+    return this.idOperatore;
+  }
+
+  public void setIdOperatore(IdOperatore idOperatore) {
+    this.idOperatore = idOperatore;
   }
 
   private static final long serialVersionUID = 1L;
@@ -234,11 +211,21 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   }
 
 
-  @XmlElement(name="idOperatore",required=false,nillable=false)
-  protected IdOperatore idOperatore;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=true,nillable=false)
+  protected java.lang.String codDominio;
 
-  @XmlElement(name="idApplicazione",required=false,nillable=false)
-  protected IdApplicazione idApplicazione;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipo",required=true,nillable=false)
+  protected java.lang.String tipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="stato",required=true,nillable=false)
+  protected java.lang.String stato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="descrizioneStato",required=false,nillable=false)
+  protected java.lang.String descrizioneStato;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
@@ -247,45 +234,30 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="dataUltimoAggiornamento",required=true,nillable=false,type=java.lang.String.class)
-  protected java.util.Date dataUltimoAggiornamento;
-
-  @XmlTransient
-  protected java.lang.String _value_stato;
-
-  @XmlElement(name="stato",required=true,nillable=false)
-  protected StatoTracciatoType stato;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="long")
-  @XmlElement(name="lineaElaborazione",required=true,nillable=false)
-  protected long lineaElaborazione;
+  @XmlElement(name="dataCompletamento",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataCompletamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="descrizioneStato",required=false,nillable=false)
-  protected java.lang.String descrizioneStato;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="long")
-  @XmlElement(name="numLineeTotali",required=true,nillable=false)
-  protected long numLineeTotali;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="long")
-  @XmlElement(name="numOperazioniOk",required=true,nillable=false)
-  protected long numOperazioniOk;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="long")
-  @XmlElement(name="numOperazioniKo",required=true,nillable=false)
-  protected long numOperazioniKo;
+  @XmlElement(name="beanDati",required=false,nillable=false)
+  protected java.lang.String beanDati;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="nomeFile",required=true,nillable=false)
-  protected java.lang.String nomeFile;
+  @XmlElement(name="fileNameRichiesta",required=false,nillable=false)
+  protected java.lang.String fileNameRichiesta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="rawDataRichiesta",required=true,nillable=false)
-  protected byte[] rawDataRichiesta;
+  @XmlElement(name="rawRichiesta",required=false,nillable=false)
+  protected byte[] rawRichiesta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="fileNameEsito",required=false,nillable=false)
+  protected java.lang.String fileNameEsito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="rawDataRisposta",required=false,nillable=false)
-  protected byte[] rawDataRisposta;
+  @XmlElement(name="rawEsito",required=false,nillable=false)
+  protected byte[] rawEsito;
+
+  @XmlElement(name="idOperatore",required=false,nillable=false)
+  protected IdOperatore idOperatore;
 
 }

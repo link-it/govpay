@@ -26,13 +26,14 @@ import java.util.UUID;
 
 import javax.xml.bind.JAXBException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiEsitoRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiSingolaRevoca;
@@ -40,7 +41,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiSingoloEsitoRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDominio;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIstitutoAttestante;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtRichiestaRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoPagatore;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante;
@@ -48,6 +48,12 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivoc
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivocoPersFG;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStorno;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RrBD;
@@ -63,12 +69,6 @@ import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Evento;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Versamento;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -78,7 +78,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class RrUtils extends NdpValidationUtils {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(RrUtils.class);
 
 	public static String buildUUID35() {
 		return UUID.randomUUID().toString().replace("-", "");
@@ -316,7 +316,7 @@ public class RrUtils extends NdpValidationUtils {
 		}
 		
 		if(rr.getStato().equals(StatoRr.ER_ACCETTATA_PA)) {
-			throw new NdpException(FaultPa.PAA_ER_DUPLICATA, identificativoDominio);
+			throw new NdpException(FaultPa.PAA_ER_DUPLICATA, "Esito già acquisito in data " + rr.getDataMsgRevoca(), identificativoDominio);
 		}
 		
 		RtUtils.EsitoValidazione esito = null;
@@ -375,7 +375,7 @@ public class RrUtils extends NdpValidationUtils {
 				versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.ANOMALO);
 				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), StatoSingoloVersamento.ANOMALO.toString());
 			}
-			versamentiBD.updateStatoVersamento(sv.getIdVersamento(), StatoVersamento.ANOMALO, "Pagamenti stornati");
+			versamentiBD.updateStatoVersamento(v.getId(), StatoVersamento.ANOMALO, "Pagamenti stornati");
 			v.setStatoVersamento(StatoVersamento.ANOMALO);
 		}
 		
@@ -421,9 +421,11 @@ public class RrUtils extends NdpValidationUtils {
 				esito.addErrore("Ricevuto esito di revoca non richiesta", true);
 			}
 			
-			pagamento.setDatiEsitoRevoca(singolaRevoca.getDatiAggiuntiviEsito());
-			pagamento.setEsitoRevoca(singolaRevoca.getCausaleEsito());
-			pagamento.setImportoRevocato(singolaRevoca.getSingoloImportoRevocato());
+			if(pagamento != null) {
+				pagamento.setDatiEsitoRevoca(singolaRevoca.getDatiAggiuntiviEsito());
+				pagamento.setEsitoRevoca(singolaRevoca.getCausaleEsito());
+				pagamento.setImportoRevocato(singolaRevoca.getSingoloImportoRevocato());
+			}
 			indiceDati++;
 		}
 		

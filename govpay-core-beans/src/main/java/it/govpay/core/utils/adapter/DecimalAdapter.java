@@ -26,11 +26,13 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class DecimalAdapter extends XmlAdapter<String, BigDecimal> {
 
-    public BigDecimal unmarshal(String value) {
+    @Override
+	public BigDecimal unmarshal(String value) {
         return (it.govpay.core.utils.adapter.DataTypeAdapter.parseImporto(value));
     }
 
-    public String marshal(BigDecimal value) {
+    @Override
+	public String marshal(BigDecimal value) {
         return (it.govpay.core.utils.adapter.DataTypeAdapter.printImporto(value));
     }
 }

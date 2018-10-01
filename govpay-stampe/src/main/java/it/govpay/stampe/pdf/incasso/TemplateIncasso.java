@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import it.govpay.model.Applicazione;
 import it.govpay.model.Incasso;
@@ -36,7 +36,7 @@ public class TemplateIncasso {
 		try{
 
 			StringBuilder errMsg = new StringBuilder();
-			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
+			List<ComponentBuilder<?, ?>> lst = new ArrayList<>();
 
 			String titoloReport =Costanti.TITOLO_REPORT_INCASSO;
 			
@@ -77,7 +77,7 @@ public class TemplateIncasso {
 
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_TRN, incasso.getTrn(), true, false, true);
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_CAUSALE, incasso.getCausale(), true, false, true);
-			String tot = Costanti.LABEL_EURO + " " + String.format("%.2f", (double)totale.doubleValue());
+			String tot = Costanti.LABEL_EURO + " " + String.format("%.2f", totale);
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_IMPORTO, tot, true, false, true);
 			if(incasso.getDataContabile() != null)
 				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_DATA_CONTABILE, TemplateBase.sdf_ddMMyyyy.format(incasso.getDataContabile()), true, false, true);
@@ -114,7 +114,7 @@ public class TemplateIncasso {
 	public static SubreportBuilder getTabellaDettaglioPagamenti(List<Pagamento> pagamentiList, List<Double> totale, Logger log) throws Exception{
 
 		// Scittura Intestazione
-		List<ColumnBuilder<?, ?>> colonne = new ArrayList<ColumnBuilder<?, ?>>();
+		List<ColumnBuilder<?, ?>> colonne = new ArrayList<>();
 
 		TextColumnBuilder<String> creditoreColumn = col.column(Costanti.LABEL_CREDITORE, Costanti.CREDITORE_COL, type.stringType()).setStyle(TemplateBase.fontStyle9)
 				.setWidth(20).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
@@ -148,7 +148,7 @@ public class TemplateIncasso {
 	}
 	
 	public static DRDataSource createDataSource(List<Pagamento> list, List<Double> totale) {
-		List<String> header = new ArrayList<String>();
+		List<String> header = new ArrayList<>();
 
 		Double tot = 0D;
 		
@@ -161,7 +161,7 @@ public class TemplateIncasso {
 		DRDataSource dataSource = new DRDataSource(header.toArray(new String[header.size()]));
 		for (Pagamento pagamento : list) {
 
-			List<String> oneLine = new ArrayList<String>();
+			List<String> oneLine = new ArrayList<>();
 
 			if(StringUtils.isNotEmpty(pagamento.getCodDominio()))
 				oneLine.add(pagamento.getCodDominio());

@@ -27,26 +27,27 @@ public class EsitoBase extends BasicModel {
 	protected String iuv;
 	protected long idApplicazione;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
 	public long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 	public void setIdApplicazione(long idApplicazione) {
 		this.idApplicazione = idApplicazione;

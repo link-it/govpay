@@ -48,14 +48,9 @@ public class IuvFilter extends AbstractFilter{
 	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
-			boolean addAnd = false;
 			
 			if(this.iuv != null){
-				if(addAnd)
-					newExpression.and();
-				
 				newExpression.ilike(IUV.model().IUV, this.iuv, LikeMode.ANYWHERE);
-				addAnd = true;
 			}
 			
 			return newExpression;
@@ -69,7 +64,7 @@ public class IuvFilter extends AbstractFilter{
 	}
 	
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;

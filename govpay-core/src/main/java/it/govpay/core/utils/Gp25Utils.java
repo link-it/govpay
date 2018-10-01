@@ -28,12 +28,10 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Iuv;
-import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.Anomalia;
 import it.govpay.servizi.commons.EsitoRendicontazione;
 import it.govpay.servizi.commons.IuvGenerato;
@@ -50,13 +48,12 @@ import it.govpay.servizi.v2_5.gpprt.GpChiediListaVersamentiResponse.Versamento.S
 import it.govpay.servizi.v2_5.gpprt.GpChiediStatoRichiestaStornoResponse.Storno;
 import it.govpay.servizi.v2_3.commons.FlussoRendicontazione.Rendicontazione;
 import it.govpay.servizi.v2_5.gpprt.GpAvviaTransazionePagamentoResponse;
-import it.govpay.servizi.v2_5.gpprt.GpChiediListaPspResponse;
 import it.govpay.servizi.v2_5.gpprt.GpChiediListaVersamentiResponse;
 
 public class Gp25Utils {
 	
 	public static Transazione toTransazione(Rpt rpt, BasicBD bd) throws ServiceException {
-		Transazione t = Gp21Utils.toTransazione(Versione.GP_02_05_00, rpt, bd);
+		Transazione t = Gp21Utils.toTransazione(rpt, bd);
 		t.setCanale(null);
 		return t;
 	}
@@ -133,36 +130,8 @@ public class Gp25Utils {
 		return fr;
 	}
 
-	public static List<GpChiediListaPspResponse.Psp> toPsp(List<Psp> pspsModel) {
-		List<GpChiediListaPspResponse.Psp> psps = new ArrayList<GpChiediListaPspResponse.Psp>();
-
-		for(it.govpay.bd.model.Psp pspModel : pspsModel) {
-			GpChiediListaPspResponse.Psp psp = new GpChiediListaPspResponse.Psp();
-			psp.setBollo(pspModel.isBolloGestito());
-			psp.setCodPsp(pspModel.getCodPsp());
-			psp.setLogo(PspUtils.getLogo160(pspModel.getCodPsp()));
-			psp.setRagioneSociale(pspModel.getRagioneSociale());
-			psp.setStorno(pspModel.isStornoGestito());
-			psp.setUrlInfo(pspModel.getUrlInfo());
-			for(it.govpay.bd.model.Canale canaleModel : pspModel.getCanalis()) {
-				GpChiediListaPspResponse.Psp.Canale canale = new GpChiediListaPspResponse.Psp.Canale();
-				canale.setCodCanale(canaleModel.getCodCanale());
-				canale.setCondizioni(canaleModel.getCondizioni());
-				canale.setDescrizione(canaleModel.getDescrizione());
-				canale.setDisponibilita(canaleModel.getDisponibilita());
-				canale.setLogoServizio(PspUtils.getLogo(canaleModel.getModelloPagamento()));
-				canale.setModelloPagamento(PspUtils.toWeb(canaleModel.getModelloPagamento()));
-				canale.setTipoVersamento(PspUtils.toWeb(canaleModel.getTipoVersamento()));
-				canale.setUrlInfo(canaleModel.getUrlInfo());
-				psp.getCanale().add(canale);
-			}
-			psps.add(psp);
-		}
-		return psps;
-	}
-
 	public static List<GpAvviaTransazionePagamentoResponse.RifTransazione> toRifTransazione(List<it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione> rifTransazioniModel) {
-		List<GpAvviaTransazionePagamentoResponse.RifTransazione> rifTransazioni = new ArrayList<GpAvviaTransazionePagamentoResponse.RifTransazione>();
+		List<GpAvviaTransazionePagamentoResponse.RifTransazione> rifTransazioni = new ArrayList<>();
 
 		for(it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione rifTransazioneModel : rifTransazioniModel) {
 			GpAvviaTransazionePagamentoResponse.RifTransazione rifTransazione = new GpAvviaTransazionePagamentoResponse.RifTransazione();
@@ -249,7 +218,7 @@ public class Gp25Utils {
 	}
 	
 	public static List<it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto> toIuvRichiesto(List<it.govpay.servizi.v2_3.gpapp.GpGeneraIuv.IuvRichiesto> iuvRichiesti) {
-		List<it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto> iuvRichiestiModel = new ArrayList<it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto>();
+		List<it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto> iuvRichiestiModel = new ArrayList<>();
 		for (it.govpay.servizi.v2_3.gpapp.GpGeneraIuv.IuvRichiesto iuvRichiesto : iuvRichiesti) {
 			it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto iuvRichiestoModel = new it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto();
 			iuvRichiestoModel.setCodVersamentoEnte(iuvRichiesto.getCodVersamentoEnte());
@@ -260,7 +229,7 @@ public class Gp25Utils {
 	}
 	
 	public static List<it.govpay.core.business.model.CaricaIuvDTO.Iuv> toIuvDaCaricare(List<it.govpay.servizi.v2_3.gpapp.GpCaricaIuv.IuvGenerato> iuvRichiesti) {
-		List<it.govpay.core.business.model.CaricaIuvDTO.Iuv> iuvRichiestiModel = new ArrayList<it.govpay.core.business.model.CaricaIuvDTO.Iuv>();
+		List<it.govpay.core.business.model.CaricaIuvDTO.Iuv> iuvRichiestiModel = new ArrayList<>();
 		for (it.govpay.servizi.v2_3.gpapp.GpCaricaIuv.IuvGenerato iuvRichiesto : iuvRichiesti) {
 			it.govpay.core.business.model.CaricaIuvDTO.Iuv iuvRichiestoModel = new it.govpay.core.business.model.CaricaIuvDTO.Iuv();
 			iuvRichiestoModel.setCodVersamentoEnte(iuvRichiesto.getCodVersamentoEnte());
@@ -272,7 +241,7 @@ public class Gp25Utils {
 	}
 	
 	public static List<IuvGenerato> toIuvGenerato(List<it.govpay.core.business.model.Iuv> iuvGeneratiModel) {
-		List<IuvGenerato> iuvGenerati = new ArrayList<IuvGenerato>();
+		List<IuvGenerato> iuvGenerati = new ArrayList<>();
 		for (it.govpay.core.business.model.Iuv iuvGeneratoModel : iuvGeneratiModel) {
 			iuvGenerati.add(toIuvGenerato(iuvGeneratoModel));
 		}
@@ -292,7 +261,7 @@ public class Gp25Utils {
 	}
 
 	public static Collection<? extends IuvGenerato> toIuvCaricato(List<it.govpay.core.business.model.Iuv> iuvCaricatiModel) {
-		List<IuvGenerato> iuvCaricati = new ArrayList<IuvGenerato>();
+		List<IuvGenerato> iuvCaricati = new ArrayList<>();
 		for (it.govpay.core.business.model.Iuv iuvCaricatoModel : iuvCaricatiModel) {
 			IuvGenerato iuvCaricato = new IuvGenerato();
 			iuvCaricato.setBarCode(iuvCaricatoModel.getBarCode());

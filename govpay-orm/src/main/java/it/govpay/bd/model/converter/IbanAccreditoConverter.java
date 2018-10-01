@@ -19,7 +19,7 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.IbanAccredito;
+import it.govpay.bd.model.IbanAccredito;
 import it.govpay.orm.IdDominio;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.List;
 public class IbanAccreditoConverter {
 
 	public static List<IbanAccredito> toDTOList(List<it.govpay.orm.IbanAccredito> ibanAccreditoLst) {
-		List<IbanAccredito> lstDTO = new ArrayList<IbanAccredito>();
+		List<IbanAccredito> lstDTO = new ArrayList<>();
 		if(ibanAccreditoLst != null && !ibanAccreditoLst.isEmpty()) {
 			for(it.govpay.orm.IbanAccredito ibanAccredito: ibanAccreditoLst){
 				lstDTO.add(toDTO(ibanAccredito));
@@ -41,11 +41,7 @@ public class IbanAccreditoConverter {
 		IbanAccredito dto = new IbanAccredito();
 		dto.setId(vo.getId());
 		dto.setCodIban(toNull(vo.getCodIban()));
-		dto.setCodBicAccredito(toNull(vo.getBicAccredito()));
-		dto.setCodIbanAppoggio(toNull(vo.getIbanAppoggio()));
-		dto.setCodBicAppoggio(toNull(vo.getBicAppoggio()));
-		dto.setIdSellerBank(toNull(vo.getIdSellerBank()));
-		dto.setIdNegozio(toNull(vo.getIdNegozio()));
+		dto.setCodBic(toNull(vo.getBicAccredito()));
 		dto.setPostale(vo.getPostale());
 		dto.setAttivatoObep(vo.getAttivato());
 		dto.setAbilitato(vo.getAbilitato());
@@ -54,15 +50,11 @@ public class IbanAccreditoConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.IbanAccredito toVO(IbanAccredito dto) {
+	public static it.govpay.orm.IbanAccredito toVO(it.govpay.model.IbanAccredito dto) {
 		it.govpay.orm.IbanAccredito vo = new it.govpay.orm.IbanAccredito();
 		vo.setId(dto.getId());
 		vo.setCodIban(toNull(dto.getCodIban()));
-		vo.setBicAccredito(toNull(dto.getCodBicAccredito()));
-		vo.setIbanAppoggio(toNull(dto.getCodIbanAppoggio()));
-		vo.setBicAppoggio(toNull(dto.getCodBicAppoggio()));
-		vo.setIdSellerBank(toNull(dto.getIdSellerBank()));
-		vo.setIdNegozio(toNull(dto.getIdNegozio()));
+		vo.setBicAccredito(toNull(dto.getCodBic()));
 		vo.setPostale(dto.isPostale());
 		vo.setAttivato(dto.isAttivatoObep());
 		vo.setAbilitato(dto.isAbilitato());

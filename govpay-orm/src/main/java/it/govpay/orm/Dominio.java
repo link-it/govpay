@@ -40,20 +40,16 @@ import java.io.Serializable;
  * 			&lt;element name="gln" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ragioneSociale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="xmlContiAccredito" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="xmlTabellaControparti" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="riusoIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="customIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazioneDefault" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="auxDigit" type="{http://www.govpay.it/orm}int" minOccurs="1" maxOccurs="1" default="0"/>
  * 			&lt;element name="iuvPrefix" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="iuvPrefixStrict" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="segregationCode" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpStato" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpData" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="logo" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="cbill" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -73,20 +69,16 @@ import java.io.Serializable;
   	"gln",
   	"abilitato",
   	"ragioneSociale",
-  	"xmlContiAccredito",
-  	"xmlTabellaControparti",
-  	"riusoIUV",
-  	"customIUV",
   	"idApplicazioneDefault",
   	"_decimalWrapper_auxDigit",
   	"iuvPrefix",
-  	"iuvPrefixStrict",
   	"_decimalWrapper_segregationCode",
   	"ndpStato",
   	"ndpOperazione",
   	"ndpDescrizione",
   	"ndpData",
-  	"logo"
+  	"logo",
+  	"cbill"
   }
 )
 
@@ -154,46 +146,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.ragioneSociale = ragioneSociale;
   }
 
-  public byte[] getXmlContiAccredito() {
-    return this.xmlContiAccredito;
-  }
-
-  public void setXmlContiAccredito(byte[] xmlContiAccredito) {
-    this.xmlContiAccredito = xmlContiAccredito;
-  }
-
-  public byte[] getXmlTabellaControparti() {
-    return this.xmlTabellaControparti;
-  }
-
-  public void setXmlTabellaControparti(byte[] xmlTabellaControparti) {
-    this.xmlTabellaControparti = xmlTabellaControparti;
-  }
-
-  public boolean isRiusoIUV() {
-    return this.riusoIUV;
-  }
-
-  public boolean getRiusoIUV() {
-    return this.riusoIUV;
-  }
-
-  public void setRiusoIUV(boolean riusoIUV) {
-    this.riusoIUV = riusoIUV;
-  }
-
-  public boolean isCustomIUV() {
-    return this.customIUV;
-  }
-
-  public boolean getCustomIUV() {
-    return this.customIUV;
-  }
-
-  public void setCustomIUV(boolean customIUV) {
-    this.customIUV = customIUV;
-  }
-
   public IdApplicazione getIdApplicazioneDefault() {
     return this.idApplicazioneDefault;
   }
@@ -216,18 +168,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   public void setIuvPrefix(java.lang.String iuvPrefix) {
     this.iuvPrefix = iuvPrefix;
-  }
-
-  public boolean isIuvPrefixStrict() {
-    return this.iuvPrefixStrict;
-  }
-
-  public boolean getIuvPrefixStrict() {
-    return this.iuvPrefixStrict;
-  }
-
-  public void setIuvPrefixStrict(boolean iuvPrefixStrict) {
-    this.iuvPrefixStrict = iuvPrefixStrict;
   }
 
   public java.lang.Integer getSegregationCode() {
@@ -284,6 +224,14 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.logo = logo;
   }
 
+  public java.lang.String getCbill() {
+    return this.cbill;
+  }
+
+  public void setCbill(java.lang.String cbill) {
+    this.cbill = cbill;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -322,22 +270,6 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="ragioneSociale",required=true,nillable=false)
   protected java.lang.String ragioneSociale;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="xmlContiAccredito",required=true,nillable=false)
-  protected byte[] xmlContiAccredito;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="xmlTabellaControparti",required=true,nillable=false)
-  protected byte[] xmlTabellaControparti;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="riusoIUV",required=true,nillable=false)
-  protected boolean riusoIUV;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="customIUV",required=true,nillable=false)
-  protected boolean customIUV;
-
   @XmlElement(name="idApplicazioneDefault",required=false,nillable=false)
   protected IdApplicazione idApplicazioneDefault;
 
@@ -346,23 +278,19 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="auxDigit",required=true,nillable=false,defaultValue="0")
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_auxDigit = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,  0);
 
-  @XmlTransient
+  @javax.xml.bind.annotation.XmlTransient
   protected int auxDigit;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuvPrefix",required=false,nillable=false)
   protected java.lang.String iuvPrefix;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="iuvPrefixStrict",required=true,nillable=false,defaultValue="false")
-  protected boolean iuvPrefixStrict = false;
-
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="integer")
   @XmlElement(name="segregationCode",required=false,nillable=false)
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_segregationCode = null;
 
-  @XmlTransient
+  @javax.xml.bind.annotation.XmlTransient
   protected java.lang.Integer segregationCode;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
@@ -385,5 +313,9 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="logo",required=false,nillable=false)
   protected byte[] logo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="cbill",required=false,nillable=false)
+  protected java.lang.String cbill;
 
 }

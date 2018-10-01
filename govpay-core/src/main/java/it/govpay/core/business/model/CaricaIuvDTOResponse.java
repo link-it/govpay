@@ -29,8 +29,8 @@ public class CaricaIuvDTOResponse {
 	protected List<Iuv> iuvCaricato;
 
     public List<Iuv> getIuvCaricato() {
-        if (iuvCaricato == null) {
-            iuvCaricato = new ArrayList<Iuv>();
+        if (this.iuvCaricato == null) {
+            this.iuvCaricato = new ArrayList<>();
         }
         return this.iuvCaricato;
     }

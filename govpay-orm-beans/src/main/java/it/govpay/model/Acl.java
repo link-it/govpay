@@ -19,30 +19,73 @@
  */
 package it.govpay.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Acl extends BasicModel {
+	
+	public enum Diritti {
+		LETTURA ("R"), SCRITTURA ("W") , ESECUZIONE ("X");
+		
+		
+		private String codifica;
+
+		Diritti(String codifica) {
+			this.codifica = codifica;
+		}
+		
+		public String getCodifica() {
+			return this.codifica;
+		}
+		
+		public static Diritti toEnum(String codifica) throws ServiceException {
+			for(Diritti p : Diritti.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			throw new ServiceException("Codifica inesistente per Diritto. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Diritti.values()));
+		}
+	}
+	
+	private String ruolo;
+	private String principal;
+	private String diritti;
+	private Servizio servizio;
+	private Set<Diritti> listaDiritti= null;
+	private long id;
 
 	private static final long serialVersionUID = 1L;
 	public enum Servizio {
-		PAGAMENTI_ATTESA("A"),
-		PAGAMENTI_ONLINE("O"),
-		VERSAMENTI("V"),
-		NOTIFICHE("N"),
-		RENDICONTAZIONE("R"),
-		INCASSI("I"),
-		CRUSCOTTO("C"),
-		Anagrafica_PagoPa("A_PPA"),
-		Anagrafica_Contabile("A_CON"),
-		Anagrafica_Applicazioni("A_APP"),
-		Anagrafica_Utenti("A_USR"),
-		Gestione_Pagamenti("G_PAG"),
-		Gestione_Rendicontazioni("G_RND"),
-		Giornale_Eventi("GDE"),
-		Manutenzione("MAN"),
-		Statistiche("STAT");
-		
+//		PAGAMENTI_ATTESA("A"),
+//		PAGAMENTI_ONLINE("O"),
+//		VERSAMENTI("V"),
+//		RENDICONTAZIONE("R"),
+//		INCASSI("I"),
+//		CRUSCOTTO("C"),
+//		Anagrafica_PagoPa("A_PPA"),
+//		Anagrafica_Contabile("A_CON"),
+//		Anagrafica_Applicazioni("A_APP"),
+//		Anagrafica_Utenti("A_USR"),
+//		Gestione_Pagamenti("G_PAG"),
+//		Gestione_Rendicontazioni("G_RND"),
+//		Giornale_Eventi("GDE"),
+//		Manutenzione("MAN"),
+//		Statistiche("STAT"),
+
+	    ANAGRAFICA_PAGOPA("Anagrafica PagoPA"),
+	    ANAGRAFICA_CREDITORE("Anagrafica Creditore"),
+	    ANAGRAFICA_APPLICAZIONI("Anagrafica Applicazioni"),
+	    ANAGRAFICA_RUOLI("Anagrafica Ruoli"),
+	    PAGAMENTI_E_PENDENZE("Pagamenti e Pendenze"),
+	    RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
+	    GIORNALE_DEGLI_EVENTI("Giornale degli Eventi"),
+	    STATISTICHE("Statistiche"),
+	    CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione");
+
 		private String codifica;
 
 		Servizio(String codifica) {
@@ -50,7 +93,7 @@ public class Acl extends BasicModel {
 		}
 		
 		public String getCodifica() {
-			return codifica;
+			return this.codifica;
 		}
 		
 		public static Servizio toEnum(String codifica) throws ServiceException {
@@ -61,84 +104,64 @@ public class Acl extends BasicModel {
 			throw new ServiceException("Codifica inesistente per Servizio. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Servizio.values()));
 		}
 	}
-	
-	public enum Tipo {
-		DOMINIO("D"), TRIBUTO("T");
-		
-		private String codifica;
-
-		Tipo(String codifica) {
-			this.codifica = codifica;
-		}
-		
-		public String getCodifica() {
-			return codifica;
-		}
-		
-		public static Tipo toEnum(String codifica) throws ServiceException {
-			for(Tipo p : Tipo.values()){
-				if(p.getCodifica().equals(codifica))
-					return p;
-			}
-			throw new ServiceException("Codifica inesistente per Tipo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Tipo.values()));
-		}
+	public String getRuolo() {
+		return this.ruolo;
 	}
-	
-	private Tipo tipo;
-	private Servizio servizio;
-	private String codDominio;
-	private String codTributo;
-	private Long idDominio;
-	private Long idTributo;
-	private int diritti;
-	private boolean admin;
-	
-	public Tipo getTipo() {
-		return tipo;
+	public void setRuolo(String ruolo) {
+		this.ruolo = ruolo;
 	}
-	public void setTipo(Tipo tipo) {
-		this.tipo = tipo;
+	public String getPrincipal() {
+		return this.principal;
+	}
+	public void setPrincipal(String principal) {
+		this.principal = principal;
+	}
+	public String getDiritti() {
+		return this.diritti;
+	}
+	public void setDiritti(String diritti) {
+		this.diritti = diritti;
 	}
 	public Servizio getServizio() {
-		return servizio;
+		return this.servizio;
 	}
 	public void setServizio(Servizio servizio) {
 		this.servizio = servizio;
 	}
-	public String getCodDominio() {
-		return codDominio;
+	public Set<Diritti> getListaDiritti() {
+		return this.listaDiritti;
 	}
-	public void setCodDominio(String codDominio) {
-		this.codDominio = codDominio;
+	public String getListaDirittiString() {
+		StringBuffer sb = new StringBuffer();
+		
+		if(this.listaDiritti != null && this.listaDiritti.size() >0 ) {
+			for (Diritti diritti : this.listaDiritti) {
+				sb.append(diritti.getCodifica());
+			}
+		}
+		
+		return sb.toString();
 	}
-	public String getCodTributo() {
-		return codTributo;
+	public void setListaDiritti(Set<Diritti> listaDiritti) {
+		this.listaDiritti = listaDiritti;
 	}
-	public void setCodTributo(String codTributo) {
-		this.codTributo = codTributo;
+	public void setListaDiritti(String diritti) {
+		this.listaDiritti = new HashSet<>();
+		
+		if(StringUtils.isNotEmpty(diritti)) {
+			for(Diritti p : Diritti.values()){
+				if(diritti.toUpperCase().contains(p.getCodifica()))
+					this.listaDiritti.add(p);
+			}
+		}
 	}
-	public Long getIdDominio() {
-		return idDominio;
+	
+	@Override
+	public Long getId() {
+		return this.id;
 	}
-	public void setIdDominio(Long idDominio) {
-		this.idDominio = idDominio;
+	public void setId(long id) {
+		this.id = id;
 	}
-	public Long getIdTributo() {
-		return idTributo;
-	}
-	public void setIdTributo(Long idTributo) {
-		this.idTributo = idTributo;
-	}
-	public int getDiritti() {
-		return diritti;
-	}
-	public void setDiritti(int diritti) {
-		this.diritti = diritti;
-	}
-	public boolean isAdmin() {
-		return admin;
-	}
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
-	}
+	
 }

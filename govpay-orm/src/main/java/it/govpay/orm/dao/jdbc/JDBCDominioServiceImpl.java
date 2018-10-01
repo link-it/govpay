@@ -23,7 +23,7 @@ import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdDominio;
@@ -111,19 +111,15 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().GLN,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().RAGIONE_SOCIALE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().XML_CONTI_ACCREDITO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().XML_TABELLA_CONTROPARTI,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().RIUSO_IUV,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().CUSTOM_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().AUX_DIGIT,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX_STRICT,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().SEGREGATION_CODE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().NDP_STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().NDP_OPERAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().NDP_DESCRIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().NDP_DATA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().LOGO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().CBILL,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_stazione","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione_default","?");
 
@@ -134,19 +130,15 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getGln(),Dominio.model().GLN.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getAbilitato(),Dominio.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getRagioneSociale(),Dominio.model().RAGIONE_SOCIALE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getXmlContiAccredito(),Dominio.model().XML_CONTI_ACCREDITO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getXmlTabellaControparti(),Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getRiusoIUV(),Dominio.model().RIUSO_IUV.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCustomIUV(),Dominio.model().CUSTOM_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getAuxDigit(),Dominio.model().AUX_DIGIT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getIuvPrefix(),Dominio.model().IUV_PREFIX.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getIuvPrefixStrict(),Dominio.model().IUV_PREFIX_STRICT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getSegregationCode(),Dominio.model().SEGREGATION_CODE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getNdpStato(),Dominio.model().NDP_STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getNdpOperazione(),Dominio.model().NDP_OPERAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getNdpDescrizione(),Dominio.model().NDP_DESCRIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getNdpData(),Dominio.model().NDP_DATA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getLogo(),Dominio.model().LOGO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCbill(),Dominio.model().CBILL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
@@ -235,7 +227,7 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getDominioFieldConverter().toTable(Dominio.model()));
 		boolean isUpdate_dominio = true;
-		java.util.List<JDBCObject> lstObjects_dominio = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_dominio = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_DOMINIO,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getCodDominio(), Dominio.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().GLN,false), "?");
@@ -244,20 +236,10 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		lstObjects_dominio.add(new JDBCObject(dominio.getAbilitato(), Dominio.model().ABILITATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().RAGIONE_SOCIALE,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getRagioneSociale(), Dominio.model().RAGIONE_SOCIALE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().XML_CONTI_ACCREDITO,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getXmlContiAccredito(), Dominio.model().XML_CONTI_ACCREDITO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().XML_TABELLA_CONTROPARTI,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getXmlTabellaControparti(), Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().RIUSO_IUV,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getRiusoIUV(), Dominio.model().RIUSO_IUV.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().CUSTOM_IUV,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getCustomIUV(), Dominio.model().CUSTOM_IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().AUX_DIGIT,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getAuxDigit(), Dominio.model().AUX_DIGIT.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getIuvPrefix(), Dominio.model().IUV_PREFIX.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX_STRICT,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getIuvPrefixStrict(), Dominio.model().IUV_PREFIX_STRICT.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().SEGREGATION_CODE,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getSegregationCode(), Dominio.model().SEGREGATION_CODE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().NDP_STATO,false), "?");
@@ -270,6 +252,8 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		lstObjects_dominio.add(new JDBCObject(dominio.getNdpData(), Dominio.model().NDP_DATA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().LOGO,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getLogo(), Dominio.model().LOGO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().CBILL,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getCbill(), Dominio.model().CBILL.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_stazione","?");
 		}
@@ -326,7 +310,7 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getDominioFieldConverter().toTable(Dominio.model()), 
@@ -337,7 +321,7 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getDominioFieldConverter().toTable(Dominio.model()), 
@@ -348,7 +332,7 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getDominioFieldConverter().toTable(Dominio.model()), 

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.nativequeries.NativeQueries;
@@ -29,7 +29,7 @@ public class TransazioniBD extends BasicBD {
 
 	public List<DistribuzioneEsiti> getDistribuzioneEsiti(TransazioniFilter filtro) throws ServiceException {
 		try {
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 
 			lstReturnType.add(Date.class);
 			lstReturnType.add(Long.class);
@@ -37,17 +37,17 @@ public class TransazioniBD extends BasicBD {
 			lstReturnType.add(Long.class);
 
 			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoQuery(filtro.getTipoIntervallo(), filtro.getData(), filtro.getLimit(), filtro);
-			Logger.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
+			LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
 
 			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerEsitoValues(filtro.getTipoIntervallo(), filtro.getData(), filtro.getLimit(), filtro);
-			Logger.getLogger(JDBCServiceManager.class).debug("Params: ");
+			LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug("Params: ");
 			for(Object obj: array) {
-				Logger.getLogger(JDBCServiceManager.class).debug(obj);
+				LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug(obj.toString());
 			}
 
 			List<List<Object>> lstRecords = this.getRptService().nativeQuery(nativeQueryString, lstReturnType, array);
 
-			List<DistribuzioneEsiti> distribuzioni = new ArrayList<DistribuzioneEsiti>();
+			List<DistribuzioneEsiti> distribuzioni = new ArrayList<>();
 
 			for(List<Object> record: lstRecords) {
 				distribuzioni.add(new DistribuzioneEsiti((Date) record.get(0), (Long) record.get(1), (Long) record.get(2), (Long) record.get(3)));
@@ -56,30 +56,30 @@ public class TransazioniBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
-			return new ArrayList<DistribuzioneEsiti>();
+			return new ArrayList<>();
 		}
 	}
 	
 	public List<DistribuzionePsp> getDistribuzionePsp(TransazioniFilter filtro) throws ServiceException {
 		try {
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 
 			lstReturnType.add(String.class);
 			lstReturnType.add(Long.class);
 
 			String nativeQueryString = NativeQueries.getInstance().getStatisticheTransazioniPerPspQuery(filtro.getTipoIntervallo(), filtro.getData(), filtro);
-			Logger.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
+			LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
 
 			Object[] array = NativeQueries.getInstance().getStatisticheTransazioniPerPspValues(filtro.getTipoIntervallo(), filtro.getData(), filtro);
-			Logger.getLogger(JDBCServiceManager.class).debug("Params: ");
+			LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug("Params: ");
 			for(Object obj: array) {
-				Logger.getLogger(JDBCServiceManager.class).debug(obj);
+				LoggerWrapperFactory.getLogger(JDBCServiceManager.class).debug(obj.toString());
 			}
 
 			List<List<Object>> lstRecords = this.getRptService().nativeQuery(nativeQueryString, lstReturnType, array);
 
-			List<DistribuzionePsp> distribuzioniTmp = new ArrayList<DistribuzionePsp>();
-			List<DistribuzionePsp> distribuzioniFinal = new ArrayList<DistribuzionePsp>();
+			List<DistribuzionePsp> distribuzioniTmp = new ArrayList<>();
+			List<DistribuzionePsp> distribuzioniFinal = new ArrayList<>();
 
 			long totale = 0;
 			for(List<Object> record: lstRecords) {
@@ -93,7 +93,7 @@ public class TransazioniBD extends BasicBD {
 			for(int i=0; i<distribuzioniTmp.size(); i++) {
 				DistribuzionePsp distribuzione = distribuzioniTmp.get(i);
 				
-				double percentuale = ((double) distribuzione.getTransazioni()) / totale;
+				double percentuale = totale > 0 ? ((double) distribuzione.getTransazioni()) / totale : 0;
 				if(percentuale >= filtro.getSoglia()) {
 					distribuzione.setPercentuale(percentuale);
 					distribuzioniFinal.add(distribuzione);
@@ -111,7 +111,7 @@ public class TransazioniBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
-			return new ArrayList<DistribuzionePsp>();
+			return new ArrayList<>();
 		}
 	}
 }

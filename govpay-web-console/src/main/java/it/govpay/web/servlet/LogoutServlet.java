@@ -20,17 +20,12 @@
 package it.govpay.web.servlet;
 
 import java.io.IOException;
-import java.util.UUID;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 
 public class LogoutServlet extends HttpServlet {
 
@@ -39,32 +34,14 @@ public class LogoutServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Logger log = LogManager.getLogger();
-
-	protected void initLogger(String cmd,HttpServletResponse response) {
-		String codOperazione = UUID.randomUUID().toString();
-		ThreadContext.put("cmd", cmd);
-		ThreadContext.put("op",  codOperazione);
-		response.setHeader("X-GP-CMDID", cmd);
-	}
-
-
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		try{
-			this.initLogger("logout", resp);
-			this.log.debug("Logout in corso...");
-			
 			String msg = req.getParameter("msg");
-			
 			HttpSession session = req.getSession(false);
 			if(session != null)
 				session.invalidate();
-			String location = req.getContextPath() + (msg != null ? ("?msg="+msg):"")	;//+ "/public/login.html";
+			String location = req.getContextPath() + (msg != null ? ("?msg="+msg):"")	;
 			resp.sendRedirect(location);
-		}catch(Exception e){
-			this.log.error("Si e' verificato un errore durante il logout: "+e.getMessage(),e);
-		}
 	}
 
 	@Override

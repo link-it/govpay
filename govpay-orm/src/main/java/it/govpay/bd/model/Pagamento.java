@@ -47,16 +47,16 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	private transient List<Rendicontazione> rendicontazioni;
 
 	public Pagamento() {
-		// TODO Auto-generated constructor stub
 	}
+	
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
 		if(this.getIdRpt() != null) {
-			if(rpt == null) {
+			if(this.rpt == null) {
 				RptBD rptBD = new RptBD(bd);
-				rpt = rptBD.getRpt(this.getIdRpt());
+				this.rpt = rptBD.getRpt(this.getIdRpt());
 			}
 		}
-		return rpt;
+		return this.rpt;
 	}
 
 	public void setRpt(Rpt rpt) {
@@ -65,11 +65,11 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	}
 	
 	public Rr getRr(BasicBD bd) throws ServiceException {
-		if(rr == null) {
+		if(this.rr == null) {
 			RrBD rrBD = new RrBD(bd);
-			rr = rrBD.getRr(this.getIdRr());
+			this.rr = rrBD.getRr(this.getIdRr());
 		}
-		return rr;
+		return this.rr;
 	}
 
 	public void setRr(Rr rr) {
@@ -78,11 +78,11 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	}
 
 	public SingoloVersamento getSingoloVersamento(BasicBD bd) throws ServiceException {
-		if(singoloVersamento == null) {
+		if(this.singoloVersamento == null) {
 			VersamentiBD singoliVersamentiBD = new VersamentiBD(bd);
-			singoloVersamento = singoliVersamentiBD.getSingoloVersamento(this.getIdSingoloVersamento());
+			this.singoloVersamento = singoliVersamentiBD.getSingoloVersamento(this.getIdSingoloVersamento());
 		}
-		return singoloVersamento;
+		return this.singoloVersamento;
 	}
 
 	public void setSingoloVersamento(SingoloVersamento singoloVersamento) {
@@ -91,26 +91,26 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	}
 
 	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException {
-		if(rendicontazioni == null){
+		if(this.rendicontazioni == null){
 			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
 			RendicontazioneFilter newFilter = rendicontazioniBD.newFilter();
-			newFilter.setCodDominio(getCodDominio());
-			newFilter.setIuv(getIuv());
-			newFilter.setIur(getIur());
-			newFilter.setIndiceDati(getIndiceDati());
-			rendicontazioni = rendicontazioniBD.findAll(newFilter);
+			newFilter.setCodDominio(this.getCodDominio());
+			newFilter.setIuv(this.getIuv());
+			newFilter.setIur(this.getIur());
+			newFilter.setIndiceDati(this.getIndiceDati());
+			this.rendicontazioni = rendicontazioniBD.findAll(newFilter);
 		}
-		return rendicontazioni;
+		return this.rendicontazioni;
 	}
 	
 	public Incasso getIncasso(BasicBD bd) throws ServiceException {
 		if(this.getIdIncasso() != null) {
-			if(incasso == null) {
+			if(this.incasso == null) {
 				IncassiBD incassiBD = new IncassiBD(bd);
-				incasso = incassiBD.getIncasso(this.getIdIncasso());
+				this.incasso = incassiBD.getIncasso(this.getIdIncasso());
 			}
 		}
-		return incasso;
+		return this.incasso;
 	}
 
 	public void setIncasso(Incasso incasso) {
@@ -119,7 +119,7 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	}
 	
 	public boolean isPagamentoRendicontato(BasicBD bd) throws ServiceException {
-		for(Rendicontazione r : getRendicontazioni(bd)) {
+		for(Rendicontazione r : this.getRendicontazioni(bd)) {
 			if(r.getEsito().equals(EsitoRendicontazione.ESEGUITO) || r.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT))
 				return true;
 		}
@@ -127,7 +127,7 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	}
 	
 	public boolean isPagamentoRevocato(BasicBD bd) throws ServiceException {
-		for(Rendicontazione r : getRendicontazioni(bd)) {
+		for(Rendicontazione r : this.getRendicontazioni(bd)) {
 			if(r.getEsito().equals(EsitoRendicontazione.REVOCATO) || r.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT))
 				return true;
 		}
@@ -135,10 +135,10 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	}
 	
 	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
-		if(dominio == null){
-			dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+		if(this.dominio == null){
+			this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
 		}
-		return dominio;
+		return this.dominio;
 	}
 	public void setDominio(Dominio dominio) {
 		this.dominio = dominio;

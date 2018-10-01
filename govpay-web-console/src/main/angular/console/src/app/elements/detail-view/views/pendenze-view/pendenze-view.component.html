@@ -1,0 +1,48 @@
+<mat-tab-group>
+  <mat-tab label="DATI PENDENZA">
+    <div class="container my-4 card-container">
+      <mat-card class="shadow no-border-radius mb-3" *ngIf="info">
+        <p class="d-block matcard-title pb-3 color-gray regular-24">Riepilogo</p>
+        <link-riepilogo-view [info]="info"></link-riepilogo-view>
+      </mat-card>
+      <mat-card class="shadow no-border-radius mb-3" *ngIf="importi.length!=0">
+        <p class="d-block matcard-title pb-3 color-gray regular-24">Dettaglio importi</p>
+        <link-item-view *ngFor="let item of importi" [component-data]="item" [use-item-view-directive]="true"
+                        [show-over-icons]="false" [over-icons]="_importiOverIcons" class="link-item-view-fill">
+        </link-item-view>
+        <div class="row sub-totale medium-16" *ngIf="importi.length != 0">
+          <div class="col-6 px-0 m-0">
+            <p class="text-truncate mb-1">Totale</p>
+          </div>
+          <div class="col-6 px-0 m-0 text-right">
+            <p class="text-truncate mb-1">{{us.currencyFormat(_paymentsSum)}}</p>
+          </div>
+        </div>
+      </mat-card>
+      <mat-card class="shadow no-border-radius mb-3" *ngIf="informazioni.length!=0">
+        <p class="d-block matcard-title pb-3 color-gray regular-24">Note</p>
+        <link-item-view *ngFor="let item of informazioni" [component-data]="item" class="link-item-view-fill no-directive-border">
+        </link-item-view>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab label="TENTATIVI DI PAGAMENTO">
+    <div class="container my-4 tentativi card-container">
+      <mat-card class="shadow no-border-radius pb-0" *ngIf="tentativi.length!=0">
+        <p class="d-block matcard-title pb-3 color-gray regular-24">Tentativi di pagamento</p>
+        <link-item-view *ngFor="let item of tentativi" [component-data]="item" [use-item-view-directive]="true"
+                        [show-over-icons]="false" [over-icons]="_tentativiOverIcons" class="link-item-view-fill">
+        </link-item-view>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab label="EVENTI">
+    <div class="container my-4 card-container">
+      <mat-card class="shadow no-border-radius pb-0" *ngIf="eventi.length!=0">
+        <p class="d-block matcard-title pb-3 color-gray regular-24">Eventi</p>
+        <link-item-view *ngFor="let item of eventi" [component-data]="item" [use-item-view-directive]="true"
+                        [show-over-icons]="false" class="link-item-view-fill"></link-item-view>
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>

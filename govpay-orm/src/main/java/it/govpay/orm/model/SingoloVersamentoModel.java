@@ -51,9 +51,12 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.HASH_DOCUMENTO = new Field("hashDocumento",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.PROVINCIA_RESIDENZA = new Field("provinciaResidenza",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.ID_IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new Field("idIbanAccredito",it.govpay.orm.IdIbanAccredito.class,"SingoloVersamento",SingoloVersamento.class));
+		this.ID_IBAN_APPOGGIO = new it.govpay.orm.model.IdIbanAccreditoModel(new Field("idIbanAppoggio",it.govpay.orm.IdIbanAccredito.class,"SingoloVersamento",SingoloVersamento.class));
 		this.TIPO_CONTABILITA = new Field("tipoContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.CODICE_CONTABILITA = new Field("codiceContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
-		this.NOTE = new Field("note",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.INDICE_DATI = new Field("indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -71,9 +74,12 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.HASH_DOCUMENTO = new ComplexField(father,"hashDocumento",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.PROVINCIA_RESIDENZA = new ComplexField(father,"provinciaResidenza",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.ID_IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new ComplexField(father,"idIbanAccredito",it.govpay.orm.IdIbanAccredito.class,"SingoloVersamento",SingoloVersamento.class));
+		this.ID_IBAN_APPOGGIO = new it.govpay.orm.model.IdIbanAccreditoModel(new ComplexField(father,"idIbanAppoggio",it.govpay.orm.IdIbanAccredito.class,"SingoloVersamento",SingoloVersamento.class));
 		this.TIPO_CONTABILITA = new ComplexField(father,"tipoContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.CODICE_CONTABILITA = new ComplexField(father,"codiceContabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
-		this.NOTE = new ComplexField(father,"note",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
 	
 	}
 	
@@ -99,11 +105,17 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 	 
 	public it.govpay.orm.model.IdIbanAccreditoModel ID_IBAN_ACCREDITO = null;
 	 
+	public it.govpay.orm.model.IdIbanAccreditoModel ID_IBAN_APPOGGIO = null;
+	 
 	public IField TIPO_CONTABILITA = null;
 	 
 	public IField CODICE_CONTABILITA = null;
 	 
-	public IField NOTE = null;
+	public IField DESCRIZIONE = null;
+	 
+	public IField DATI_ALLEGATI = null;
+	 
+	public IField INDICE_DATI = null;
 	 
 
 	@Override

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.sql.Connection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
@@ -85,7 +85,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getSingoloVersamentoFetch();
+		return this.getSingoloVersamentoFetch();
 	}
 	
 	
@@ -108,6 +108,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();
 		idSingoloVersamento.setIdVersamento(singoloVersamento.getIdVersamento());
 		idSingoloVersamento.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
+		idSingoloVersamento.setIndiceDati(singoloVersamento.getIndiceDati());
 	
 		return idSingoloVersamento;
 	}
@@ -135,12 +136,13 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
 
-		List<IdSingoloVersamento> list = new ArrayList<IdSingoloVersamento>();
+		List<IdSingoloVersamento> list = new ArrayList<>();
 
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE);
+			fields.add(SingoloVersamento.model().INDICE_DATI);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -158,6 +160,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				idSingoloVersamento.setIdVersamento(id_singoloVersamento_versamento);
 
 				idSingoloVersamento.setCodSingoloVersamentoEnte((String) map.get("cod_singolo_versamento_ente"));
+				idSingoloVersamento.setIndiceDati((Integer) map.get("indice_dati"));
         	list.add(idSingoloVersamento);
         }
 		} catch(NotFoundException e) {}
@@ -173,10 +176,10 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-        List<SingoloVersamento> list = new ArrayList<SingoloVersamento>();
+        List<SingoloVersamento> list = new ArrayList<>();
         
         try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(SingoloVersamento.model().TIPO_BOLLO);
 			fields.add(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE);
@@ -187,9 +190,12 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(SingoloVersamento.model().CODICE_CONTABILITA);
 			fields.add(SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO);
 			fields.add(SingoloVersamento.model().PROVINCIA_RESIDENZA);
-			fields.add(SingoloVersamento.model().NOTE);
+			fields.add(SingoloVersamento.model().DESCRIZIONE);
+			fields.add(SingoloVersamento.model().DATI_ALLEGATI);
+			fields.add(SingoloVersamento.model().INDICE_DATI);
 
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
+			fields.add(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_tributo", Long.class, "id_tributo", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
         
@@ -209,6 +215,11 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 					idIbanAccredito = (Long) idIbanAccreditoObj;
 				}
 				
+				Object idIbanAppoggioObj = map.remove("id_iban_appoggio");
+				Long idIbanAppoggio = null;
+				if(idIbanAppoggioObj instanceof Long) {
+					idIbanAppoggio = (Long) idIbanAppoggioObj;
+				}
 				
 				Long idVersamento = (Long)map.remove("id_versamento");
 
@@ -236,6 +247,17 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 					singoloVersamento.setIdIbanAccredito(id_singoloVersamento_ibanAccredito);
 				}
 
+				if(idIbanAppoggio != null) {
+					it.govpay.orm.IdIbanAccredito id_singoloVersamento_ibanAccredito = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_singoloVersamento_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAppoggio, false);
+					}else{
+						id_singoloVersamento_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
+					}
+					id_singoloVersamento_ibanAccredito.setId(idIbanAppoggio);
+					singoloVersamento.setIdIbanAppoggio(id_singoloVersamento_ibanAccredito);
+				}
+
 				it.govpay.orm.IdVersamento id_singoloVersamento_versamento = null;
 				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
 					id_singoloVersamento_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
@@ -244,7 +266,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				}
 				id_singoloVersamento_versamento.setId(idVersamento);
 				singoloVersamento.setIdVersamento(id_singoloVersamento_versamento);
-
+				
 				list.add(singoloVersamento);
 			}
 		} catch(NotFoundException e) {}
@@ -274,7 +296,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		
 		sqlQueryObject.addSelectCountField(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id","tot",true);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 																			this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model(),listaQuery);
@@ -321,7 +343,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 												this.getSingoloVersamentoFieldConverter(), field);
 
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
@@ -342,7 +364,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
@@ -359,7 +381,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
@@ -376,7 +398,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
@@ -384,18 +406,18 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
+		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
-		List<Object> listaQuery = new ArrayList<Object>();
-		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
+		List<Object> listaQuery = new ArrayList<>();
+		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model(), 
         						listaQuery,listaParams);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
@@ -413,8 +435,8 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -423,7 +445,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -442,8 +464,8 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -452,7 +474,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -514,13 +536,13 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdSingoloVersamento id, SingoloVersamento obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, SingoloVersamento obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
 	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, SingoloVersamento obj, SingoloVersamento imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
@@ -543,12 +565,27 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 					imgSaved.getIdTributo().getIdDominio()!=null){
 				obj.getIdTributo().getIdDominio().setId(imgSaved.getIdTributo().getIdDominio().getId());
 			}
+			if(obj.getIdTributo().getIdTipoTributo()!=null && 
+					imgSaved.getIdTributo().getIdTipoTributo()!=null){
+				obj.getIdTributo().getIdTipoTributo().setId(imgSaved.getIdTributo().getIdTipoTributo().getId());
+			}
 		}
 		if(obj.getIdIbanAccredito()!=null && 
 				imgSaved.getIdIbanAccredito()!=null){
 			obj.getIdIbanAccredito().setId(imgSaved.getIdIbanAccredito().getId());
+			if(obj.getIdIbanAccredito().getIdDominio()!=null && 
+					imgSaved.getIdIbanAccredito().getIdDominio()!=null){
+				obj.getIdIbanAccredito().getIdDominio().setId(imgSaved.getIdIbanAccredito().getIdDominio().getId());
+			}
 		}
-
+		if(obj.getIdIbanAppoggio()!=null && 
+				imgSaved.getIdIbanAppoggio()!=null){
+			obj.getIdIbanAppoggio().setId(imgSaved.getIdIbanAppoggio().getId());
+			if(obj.getIdIbanAppoggio().getIdDominio()!=null && 
+					imgSaved.getIdIbanAppoggio().getIdDominio()!=null){
+				obj.getIdIbanAppoggio().getIdDominio().setId(imgSaved.getIdIbanAppoggio().getIdDominio().getId());
+			}
+		}
 	}
 	
 	@Override
@@ -563,9 +600,6 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
-				
 		List<SingoloVersamento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -649,6 +683,12 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			sqlQueryObject.addWhereCondition(tableName1+".id_iban_accredito="+tableName2+".id");
 		}
 		
+		if(expression.inUseModel(SingoloVersamento.model().ID_IBAN_APPOGGIO,false)){
+			String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+			String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_IBAN_APPOGGIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_iban_appoggio="+tableName2+".id");
+		}
+		
 		if(expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE,false)){
 			
 			if(!expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO,false)){
@@ -667,7 +707,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdSingoloVersamento id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
-        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
+        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
 		Long longId = this.findIdSingoloVersamento(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
         
@@ -678,8 +718,8 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		SingoloVersamentoFieldConverter converter = this.getSingoloVersamentoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
-		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map
 
@@ -700,6 +740,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
 			));
+
 		// SingoloVersamento.model().ID_TRIBUTO
 		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_TRIBUTO),
 			utilities.newList(
@@ -712,19 +753,43 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO))
 			));
 
+		// SingoloVersamento.model().ID_TRIBUTO.ID_TIPO_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_TRIBUTO.ID_TIPO_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_TRIBUTO.ID_TIPO_TRIBUTO))
+			));
+
 		// SingoloVersamento.model().ID_IBAN_ACCREDITO
 		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO))
 			));
 
+		// SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO))
+			));
+
+		// SingoloVersamento.model().ID_IBAN_APPOGGIO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO))
+			));
+
+		// SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO))
+			));
+   
         return mapTableToPKColumn;		
 	}
 	
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 		
-		List<Long> list = new ArrayList<Long>();
+		List<Long> list = new ArrayList<>();
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
@@ -734,7 +799,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model());
 		
-		_join(paginatedExpression,sqlQueryObject);
+		this._join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 																			this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model(), objectIdClass, listaQuery);
@@ -757,7 +822,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model());
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 														this.getSingoloVersamentoFieldConverter(), SingoloVersamento.model(), objectIdClass, listaQuery);
@@ -808,6 +873,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE,true));
 		sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE,true));
 		sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,true));
+		sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().INDICE_DATI,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id=?");
 		sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id_versamento="+this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO)+".id");
@@ -817,10 +883,11 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_singoloVersamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_singoloVersamento = new ArrayList<Class<?>>();
+		List<Class<?>> listaFieldIdReturnType_singoloVersamento = new ArrayList<>();
 		listaFieldIdReturnType_singoloVersamento.add(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType());
 		listaFieldIdReturnType_singoloVersamento.add(SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE.getFieldType());
 		listaFieldIdReturnType_singoloVersamento.add(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType());
+		listaFieldIdReturnType_singoloVersamento.add(SingoloVersamento.model().INDICE_DATI.getFieldType());
 		it.govpay.orm.IdSingoloVersamento id_singoloVersamento = null;
 		List<Object> listaFieldId_singoloVersamento = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_singoloVersamento, searchParams_singoloVersamento);
@@ -841,6 +908,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			id_singoloVersamento.setIdVersamento(idVersamento);
 			
 			id_singoloVersamento.setCodSingoloVersamentoEnte((String) listaFieldId_singoloVersamento.get(2));
+			id_singoloVersamento.setIndiceDati((Integer) listaFieldId_singoloVersamento.get(3));
 		}
 		
 		return id_singoloVersamento;
@@ -877,17 +945,19 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_singoloVersamento = null;
 		if(id.getIdVersamento().getId() != null && id.getIdVersamento().getId() > 0) {
-			// Object _tributo
+			// Object _singoloVersamento
 			sqlQueryObjectGet.addFromTable(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model()));
 			sqlQueryObjectGet.addSelectField("id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
-			sqlQueryObjectGet.setSelectDistinct(true);
+//			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().INDICE_DATI,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition("id_versamento=?");
 
-			// Recupero _tributo
+			// Recupero _singoloVersamento
 			searchParams_singoloVersamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodSingoloVersamentoEnte(),SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIndiceDati(),SingoloVersamento.model().INDICE_DATI.getFieldType()),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getId(),Long.class)
 			};
 		} else {
@@ -897,10 +967,11 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			sqlQueryObjectGet.addFromTable(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE));
 			sqlQueryObjectGet.addSelectField(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
-			sqlQueryObjectGet.setSelectDistinct(true);
+//			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE,true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().INDICE_DATI,true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())+".id_versamento="+this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO)+".id");
 			sqlQueryObjectGet.addWhereCondition(this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO)+".id_applicazione="+this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE)+".id");
 
@@ -908,7 +979,8 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			searchParams_singoloVersamento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getIdApplicazione().getCodApplicazione(),SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType()),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getCodVersamentoEnte(),SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE.getFieldType()),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodSingoloVersamentoEnte(),SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType())
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodSingoloVersamentoEnte(),SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIndiceDati(),SingoloVersamento.model().INDICE_DATI.getFieldType())
 			};
 		}
 

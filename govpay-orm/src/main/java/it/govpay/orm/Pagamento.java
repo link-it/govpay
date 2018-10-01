@@ -44,7 +44,6 @@ import java.io.Serializable;
  * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ibanAccredito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="commissioniPsp" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoAllegato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="allegato" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
@@ -57,6 +56,7 @@ import java.io.Serializable;
  * 			&lt;element name="datiEsitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -80,7 +80,6 @@ import java.io.Serializable;
   	"dataAcquisizione",
   	"iur",
   	"dataPagamento",
-  	"ibanAccredito",
   	"commissioniPsp",
   	"tipoAllegato",
   	"allegato",
@@ -92,7 +91,8 @@ import java.io.Serializable;
   	"esitoRevoca",
   	"datiEsitoRevoca",
   	"stato",
-  	"idIncasso"
+  	"idIncasso",
+  	"tipo"
   }
 )
 
@@ -186,14 +186,6 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
 
   public void setDataPagamento(java.util.Date dataPagamento) {
     this.dataPagamento = dataPagamento;
-  }
-
-  public java.lang.String getIbanAccredito() {
-    return this.ibanAccredito;
-  }
-
-  public void setIbanAccredito(java.lang.String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
   }
 
   public java.lang.Double getCommissioniPsp() {
@@ -292,6 +284,14 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
     this.idIncasso = idIncasso;
   }
 
+  public java.lang.String getTipo() {
+    return this.tipo;
+  }
+
+  public void setTipo(java.lang.String tipo) {
+    this.tipo = tipo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -347,10 +347,6 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @XmlElement(name="dataPagamento",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataPagamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ibanAccredito",required=false,nillable=false)
-  protected java.lang.String ibanAccredito;
-
   @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
   @XmlElement(name="commissioniPsp",required=false,nillable=false)
   protected java.lang.Double commissioniPsp;
@@ -397,5 +393,9 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
 
   @XmlElement(name="idIncasso",required=false,nillable=false)
   protected IdIncasso idIncasso;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipo",required=true,nillable=false)
+  protected java.lang.String tipo;
 
 }

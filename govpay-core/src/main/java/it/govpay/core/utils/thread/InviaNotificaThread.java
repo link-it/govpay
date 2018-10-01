@@ -19,31 +19,32 @@
  */
 package it.govpay.core.utils.thread;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.pagamento.NotificheBD;
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.model.Notifica.StatoSpedizione;
-import it.govpay.model.Notifica.TipoNotifica;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.client.NotificaClient;
-
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.NotificaClient;
+import it.govpay.model.Notifica.StatoSpedizione;
+import it.govpay.model.Notifica.TipoNotifica;
 
 public class InviaNotificaThread implements Runnable {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(InviaNotificaThread.class);
 	private Notifica notifica;
 	private boolean completed = false;
 
@@ -76,71 +77,73 @@ public class InviaNotificaThread implements Runnable {
 		GpContext ctx = null;
 		BasicBD bd = null;
 		try {
-			if(notifica.getIdRpt() != null) {
-				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-					ctx = new GpContext(notifica.getRpt(bd).getIdTransazioneRpt());
+			
+			if(this.notifica.getIdRpt() != null) {
+				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+					ctx = new GpContext(this.notifica.getRpt(bd).getIdTransazioneRpt());
 				} else {
-					ctx = new GpContext(notifica.getRpt(bd).getIdTransazioneRt());
+					ctx = new GpContext(this.notifica.getRpt(bd).getIdTransazioneRt());
 				}
 				
-				if(notifica.getRpt(bd).getCodCarrello() != null) {
-					ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", notifica.getRpt(bd).getCodCarrello()));
+				if(this.notifica.getRpt(bd).getCodCarrello() != null) {
+					ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", this.notifica.getRpt(bd).getCodCarrello()));
 				} 
-				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", notifica.getRpt(null).getCodDominio()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", notifica.getRpt(null).getIuv()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", notifica.getRpt(null).getCcp()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", this.notifica.getRpt(null).getCodDominio()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", this.notifica.getRpt(null).getIuv()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", this.notifica.getRpt(null).getCcp()));
 				
-				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) 
+				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) 
 					ctx.log("notifica.rpt");
 				else
 					ctx.log("notifica.rt");
 			} else {
-				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-					ctx = new GpContext(notifica.getRr(bd).getIdTransazioneRr());
+				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+					ctx = new GpContext(this.notifica.getRr(bd).getIdTransazioneRr());
 				} else {
-					ctx = new GpContext(notifica.getRr(bd).getIdTransazioneEr());
+					ctx = new GpContext(this.notifica.getRr(bd).getIdTransazioneEr());
 				}
-				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", notifica.getRr(null).getCodDominio()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", notifica.getRr(null).getIuv()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", notifica.getRr(null).getCcp()));
-				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) 
+				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", this.notifica.getRr(null).getCodDominio()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", this.notifica.getRr(null).getIuv()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", this.notifica.getRr(null).getCcp()));
+				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) 
 					ctx.log("notifica.rr");
 				else
 					ctx.log("notifica.er");
 			}
 			GpThreadLocal.set(ctx);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", notifica.getApplicazione(bd).getConnettoreNotifica() == null ? null : notifica.getApplicazione(bd).getConnettoreNotifica().getUrl(), notifica.getApplicazione(null).getVersione());
+			Applicazione applicazione = this.notifica.getApplicazione(bd);
 					
-			ThreadContext.put("op", ctx.getTransactionId());
+			MDC.put("op", ctx.getTransactionId());
 			
-			log.info("Spedizione della notifica [idNotifica: " + notifica.getId() +"] all'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]");
-			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null || notifica.getApplicazione(bd).getConnettoreNotifica().getUrl() == null) {
+			log.info("Spedizione della notifica [idNotifica: " + this.notifica.getId() +"] all'applicazione [CodApplicazione: " + this.notifica.getApplicazione(null).getCodApplicazione() + "]");
+			if(applicazione.getConnettoreNotifica() == null || applicazione.getConnettoreNotifica().getUrl() == null) {
 				ctx.log("notifica.annullata");
-				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]. Spedizione inibita.");
-				if(bd == null)
-					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
 				NotificheBD notificheBD = new NotificheBD(bd);
-				long tentativi = notifica.getTentativiSpedizione() + 1;
+				long tentativi = this.notifica.getTentativiSpedizione() + 1;
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();
-				notificheBD.updateDaSpedire(notifica.getId(), "Connettore Notifica non configurato.", tentativi, prossima);
+				notificheBD.updateDaSpedire(this.notifica.getId(), "Connettore Notifica non configurato.", tentativi, prossima);
 				return;
 			}
 			
+			ctx.setupPaClient(applicazione.getCodApplicazione(), this.notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", applicazione.getConnettoreNotifica().getUrl(), applicazione.getConnettoreNotifica().getVersione());
 			ctx.log("notifica.spedizione");
 			
-			NotificaClient client = new NotificaClient(notifica.getApplicazione(bd));
-			client.invoke(notifica);
-			notifica.setStato(StatoSpedizione.SPEDITO);
-			notifica.setDescrizioneStato(null);
-			notifica.setDataAggiornamento(new Date());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			NotificaClient client = new NotificaClient(applicazione);
+			client.invoke(this.notifica,bd);
+			this.notifica.setStato(StatoSpedizione.SPEDITO);
+			this.notifica.setDescrizioneStato(null);
+			this.notifica.setDataAggiornamento(new Date());
+			if(bd == null)
+				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			NotificheBD notificheBD = new NotificheBD(bd);
-			notificheBD.updateSpedito(notifica.getId());
+			notificheBD.updateSpedito(this.notifica.getId());
 			
-			if(notifica.getIdRpt() != null) {
-				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-					if(notifica.getRpt(bd).getCodCarrello() != null) {
+			if(this.notifica.getIdRpt() != null) {
+				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+					if(this.notifica.getRpt(bd).getCodCarrello() != null) {
 						ctx.log("notifica.carrellook");
 					} else {
 						ctx.log("notifica.rptok");
@@ -149,7 +152,7 @@ public class InviaNotificaThread implements Runnable {
 					ctx.log("notifica.rtok");
 				}
 			} else {
-				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
 					ctx.log("notifica.rrok");
 				} else {
 					ctx.log("notifica.erok");
@@ -164,7 +167,7 @@ public class InviaNotificaThread implements Runnable {
 			try {
 				if(bd == null)
 					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-				long tentativi = notifica.getTentativiSpedizione() + 1;
+				long tentativi = this.notifica.getTentativiSpedizione() + 1;
 				NotificheBD notificheBD = new NotificheBD(bd);
 				
 				Date today = new Date();
@@ -174,10 +177,10 @@ public class InviaNotificaThread implements Runnable {
 				// Limito la rispedizione al giorno dopo.
 				if(prossima.after(tomorrow)) prossima = tomorrow;
 				
-				if(tentativi == 1 || !e.getMessage().equals(notifica.getDescrizioneStato())) {
-					if(notifica.getIdRpt() != null) {
-						if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-							if(notifica.getRpt(bd).getCodCarrello() != null) {
+				if(tentativi == 1 || !e.getMessage().equals(this.notifica.getDescrizioneStato())) {
+					if(this.notifica.getIdRpt() != null) {
+						if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+							if(this.notifica.getRpt(bd).getCodCarrello() != null) {
 								ctx.log("notifica.carrelloko", e.getMessage());
 							} else {
 								ctx.log("notifica.rptko", e.getMessage());
@@ -186,16 +189,16 @@ public class InviaNotificaThread implements Runnable {
 							ctx.log("notifica.rtko", e.getMessage());
 						}
 					} else {
-						if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+						if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
 							ctx.log("notifica.rrko", e.getMessage());
 						} else {
 							ctx.log("notifica.erko", e.getMessage());
 						}
 					}
 				} else {
-					if(notifica.getIdRpt() != null) {
-						if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-							if(notifica.getRpt(bd).getCodCarrello() != null) {
+					if(this.notifica.getIdRpt() != null) {
+						if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+							if(this.notifica.getRpt(bd).getCodCarrello() != null) {
 								ctx.log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
 							} else {
 								ctx.log("notifica.rptRetryko", e.getMessage(), prossima.toString());
@@ -204,7 +207,7 @@ public class InviaNotificaThread implements Runnable {
 							ctx.log("notifica.rtRetryko", e.getMessage(), prossima.toString());
 						}
 					} else {
-						if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+						if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
 							ctx.log("notifica.rrRetryko", e.getMessage(), prossima.toString());
 						} else {
 							ctx.log("notifica.erRetryko", e.getMessage(), prossima.toString());
@@ -212,18 +215,18 @@ public class InviaNotificaThread implements Runnable {
 					}
 				}
 				
-				notificheBD.updateDaSpedire(notifica.getId(), e.getMessage(), tentativi, prossima);
+				notificheBD.updateDaSpedire(this.notifica.getId(), e.getMessage(), tentativi, prossima);
 			} catch (Exception ee) {
 				// Andato male l'aggiornamento. Non importa, verra' rispedito.
 			}
 		} finally {
-			completed = true;
+			this.completed = true;
 			if(bd != null) bd.closeConnection(); 
 			if(ctx != null) ctx.log();
 		}
 	}
 
 	public boolean isCompleted() {
-		return completed;
+		return this.completed;
 	}
 }

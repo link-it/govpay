@@ -36,7 +36,8 @@ import java.io.Serializable;
  * &lt;complexType name="RPT">
  * 		&lt;sequence>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idPortale" type="{http://www.govpay.it/orm}id-portale" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codCarrello" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -85,7 +86,8 @@ import java.io.Serializable;
 @XmlType(name = "RPT", 
   propOrder = {
   	"idVersamento",
-  	"idPortale",
+  	"idPagamentoPortale",
+  	"idApplicazione",
   	"codCarrello",
   	"iuv",
   	"ccp",
@@ -150,12 +152,20 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.idVersamento = idVersamento;
   }
 
-  public IdPortale getIdPortale() {
-    return this.idPortale;
+  public IdPagamentoPortale getIdPagamentoPortale() {
+    return this.idPagamentoPortale;
   }
 
-  public void setIdPortale(IdPortale idPortale) {
-    this.idPortale = idPortale;
+  public void setIdPagamentoPortale(IdPagamentoPortale idPagamentoPortale) {
+    this.idPagamentoPortale = idPagamentoPortale;
+  }
+
+  public IdApplicazione getIdApplicazione() {
+    return this.idApplicazione;
+  }
+
+  public void setIdApplicazione(IdApplicazione idApplicazione) {
+    this.idApplicazione = idApplicazione;
   }
 
   public java.lang.String getCodCarrello() {
@@ -450,8 +460,11 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @XmlElement(name="idVersamento",required=true,nillable=false)
   protected IdVersamento idVersamento;
 
-  @XmlElement(name="idPortale",required=false,nillable=false)
-  protected IdPortale idPortale;
+  @XmlElement(name="idPagamentoPortale",required=false,nillable=false)
+  protected IdPagamentoPortale idPagamentoPortale;
+
+  @XmlElement(name="idApplicazione",required=false,nillable=false)
+  protected IdApplicazione idApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codCarrello",required=false,nillable=false)
@@ -529,7 +542,7 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @XmlElement(name="codEsitoPagamento",required=false,nillable=false)
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_codEsitoPagamento = null;
 
-  @XmlTransient
+  @javax.xml.bind.annotation.XmlTransient
   protected java.lang.Integer codEsitoPagamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="decimal")

@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.model.converter;
 
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdStazione;
@@ -30,19 +31,18 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class DominioConverter {
 
-	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst) throws ServiceException {
-		List<Dominio> lstDTO = new ArrayList<Dominio>();
+	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst, BasicBD bd) throws ServiceException {
+		List<Dominio> lstDTO = new ArrayList<>();
 		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
 			for(it.govpay.orm.Dominio anagrafica: anagraficaLst){
-				lstDTO.add(toDTO(anagrafica));
+				lstDTO.add(toDTO(anagrafica, bd));
 			}
 		}
 		return lstDTO;
 	}
 
-	public static Dominio toDTO(it.govpay.orm.Dominio vo) throws ServiceException {
-		Dominio dto = new Dominio();
-		dto.setId(vo.getId());
+	public static Dominio toDTO(it.govpay.orm.Dominio vo, BasicBD bd) throws ServiceException {
+		Dominio dto = new Dominio(bd, vo.getId(), vo.getIdStazione().getId());
 		if(vo.getIdApplicazioneDefault() != null) {
 			dto.setIdApplicazioneDefault(vo.getIdApplicazioneDefault().getId());
 		}
@@ -50,20 +50,15 @@ public class DominioConverter {
 		dto.setRagioneSociale(vo.getRagioneSociale());
 		dto.setGln(vo.getGln());
 		dto.setAbilitato(vo.isAbilitato());
-		dto.setRiusoIuv(vo.getRiusoIUV());
-		dto.setCustomIuv(vo.getCustomIUV());
-		dto.setIdStazione(vo.getIdStazione().getId());
-		dto.setContiAccredito(vo.getXmlContiAccredito());
-		dto.setTabellaControparti(vo.getXmlTabellaControparti());
 		dto.setAuxDigit(vo.getAuxDigit());
 		dto.setIuvPrefix(vo.getIuvPrefix());
-		dto.setIuvPrefixStrict(vo.isIuvPrefixStrict());
 		dto.setSegregationCode(vo.getSegregationCode());
 		dto.setNdpStato(vo.getNdpStato());
 		dto.setNdpOperazione(vo.getNdpOperazione());
 		dto.setNdpDescrizione(vo.getNdpDescrizione());
 		dto.setNdpData(vo.getNdpData());
 		dto.setLogo(vo.getLogo());
+		dto.setCbill(vo.getCbill());
 		return dto;
 	}
 
@@ -79,13 +74,8 @@ public class DominioConverter {
 		vo.setRagioneSociale(dto.getRagioneSociale());
 		vo.setGln(dto.getGln());
 		vo.setAbilitato(dto.isAbilitato());
-		vo.setRiusoIUV(dto.isRiusoIuv());
-		vo.setCustomIUV(dto.isCustomIuv());
-		vo.setXmlContiAccredito(dto.getContiAccredito());
-		vo.setXmlTabellaControparti(dto.getTabellaControparti());
 		vo.setAuxDigit(dto.getAuxDigit());
 		vo.setIuvPrefix(dto.getIuvPrefix());
-		vo.setIuvPrefixStrict(dto.isIuvPrefixStrict());
 		IdStazione idStazione = new IdStazione();
 		idStazione.setId(dto.getIdStazione());
 		vo.setIdStazione(idStazione);
@@ -95,6 +85,7 @@ public class DominioConverter {
 		vo.setNdpDescrizione(dto.getNdpDescrizione());
 		vo.setNdpData(dto.getNdpData());
 		vo.setLogo(dto.getLogo());
+		vo.setCbill(dto.getCbill());
 
 		return vo;
 	}

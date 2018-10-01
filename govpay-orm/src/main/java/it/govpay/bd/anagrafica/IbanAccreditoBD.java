@@ -30,7 +30,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.IFilter;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.model.converter.IbanAccreditoConverter;
-import it.govpay.model.IbanAccredito;
+import it.govpay.bd.model.IbanAccredito;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.dao.jdbc.JDBCIbanAccreditoServiceSearch;
@@ -98,7 +98,7 @@ public class IbanAccreditoBD extends BasicBD {
 	 * @throws NotFoundException se non esiste
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public void updateIbanAccredito(IbanAccredito ibanAccredito) throws NotFoundException, ServiceException {
+	public void updateIbanAccredito(it.govpay.model.IbanAccredito ibanAccredito) throws NotFoundException, ServiceException {
 		try {
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
 			IdIbanAccredito id = this.getIbanAccreditoService().convertToId(vo);
@@ -107,7 +107,7 @@ public class IbanAccreditoBD extends BasicBD {
 			}
 			this.getIbanAccreditoService().update(id, vo);
 			ibanAccredito.setId(vo.getId());
-			emitAudit(ibanAccredito);
+			this.emitAudit(ibanAccredito);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -121,12 +121,12 @@ public class IbanAccreditoBD extends BasicBD {
 	 * @param ibanAccredito
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public void insertIbanAccredito(IbanAccredito ibanAccredito) throws ServiceException{
+	public void insertIbanAccredito(it.govpay.model.IbanAccredito ibanAccredito) throws ServiceException{
 		try {
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
 			this.getIbanAccreditoService().create(vo);
 			ibanAccredito.setId(vo.getId());
-			emitAudit(ibanAccredito);
+			this.emitAudit(ibanAccredito);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -134,6 +134,10 @@ public class IbanAccreditoBD extends BasicBD {
 	
 	public IbanAccreditoFilter newFilter() throws ServiceException {
 		return new IbanAccreditoFilter(this.getIbanAccreditoService());
+	}
+	
+	public IbanAccreditoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new IbanAccreditoFilter(this.getIbanAccreditoService(),simpleSearch);
 	}
 
 	public long count(IFilter filter) throws ServiceException {

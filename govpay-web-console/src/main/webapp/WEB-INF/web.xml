@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<display-name>govpay-web-console</display-name>
-    
-    <listener>
-	    <listener-class>it.govpay.web.InitListener</listener-class>
-	</listener>
-	<listener>
-	    <listener-class>it.govpay.web.listener.HttpSessionCheckListener</listener-class>
-	</listener>
+
 	<filter>
-		<filter-name>SessionTimeoutFilter</filter-name>
-		<filter-class>it.govpay.web.filters.SessionTimeoutFilter</filter-class>
+		<filter-name>OriginFilter</filter-name>
+		<filter-class>it.govpay.rs.filter.OriginFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>SessionTimeoutFilter</filter-name>
+		<filter-name>OriginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+
 	<servlet>
 		<servlet-name>logoutServlet</servlet-name>
 		<servlet-class>it.govpay.web.servlet.LogoutServlet</servlet-class>
@@ -28,22 +19,16 @@
 		<servlet-name>logoutServlet</servlet-name>
 		<url-pattern>/logout</url-pattern>
 	</servlet-mapping>
-    
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Resources-Unprotected</web-resource-name>
-            <url-pattern>/scripts/*</url-pattern>
-            <url-pattern>/styles/*</url-pattern>
-            <url-pattern>/images/*</url-pattern>
-            <url-pattern>/logout</url-pattern>
-            <url-pattern>/public/error.html</url-pattern>
-            <url-pattern>/public/nonAutorizzato.html</url-pattern>
-            <url-pattern>/rs/*</url-pattern>
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>NONE</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Resources-Unprotected</web-resource-name>
+			<url-pattern>/public/*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Resources-Protected</web-resource-name>
@@ -56,21 +41,21 @@
 			<transport-guarantee>NONE</transport-guarantee>
 		</user-data-constraint>
 	</security-constraint>
-	
+
 	<login-config>
 		<auth-method>FORM</auth-method>
 		<form-login-config>
-			<form-login-page>/public/login.jsp</form-login-page>
-			<form-error-page>/public/login.jsp?msg=le</form-error-page>
+			<form-login-page>/public/index.html</form-login-page>
+			<form-error-page>/public/index_error.html</form-error-page>
 		</form-login-config>
 	</login-config>
-	
+
 	<security-role>
 		<role-name>*</role-name>
 	</security-role>
-	
+
 	<session-config>
-		<session-timeout>-1</session-timeout>
+		<session-timeout>60</session-timeout>
 	</session-config>
-	
+
 </web-app>

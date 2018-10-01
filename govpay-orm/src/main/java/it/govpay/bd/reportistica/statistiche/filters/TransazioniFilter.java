@@ -15,13 +15,13 @@ public class TransazioniFilter extends StatisticaFilter {
 	private String codPsp;
 	
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public String getCodPsp() {
-		return codPsp;
+		return this.codPsp;
 	}
 	public void setCodPsp(String codPsp) {
 		this.codPsp = codPsp;

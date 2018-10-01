@@ -23,11 +23,11 @@ package it.govpay.core.business.model;
 import java.util.List;
 
 import it.govpay.bd.model.Canale;
-import it.govpay.model.Portale;
+import it.govpay.bd.model.Applicazione;
 
 public class AvviaTransazioneDTO {
 
-	private Portale portale;
+	private Applicazione applicazione;
 	private List<Object> versamentoOrVersamentoRef;
 	private it.govpay.servizi.commons.Anagrafica versante;
 	private String ibanAddebito;
@@ -36,50 +36,50 @@ public class AvviaTransazioneDTO {
 	private Boolean aggiornaSeEsisteB;
 	private Canale canale;
 	
-	public Portale getPortale() {
-		return portale;
+	public Applicazione getApplicazione() {
+		return this.applicazione;
 	}
-	public void setPortale(Portale portale) {
-		this.portale = portale;
+	public void setApplicazione(Applicazione applicazione) {
+		this.applicazione = applicazione;
 	}
 	public List<Object> getVersamentoOrVersamentoRef() {
-		return versamentoOrVersamentoRef;
+		return this.versamentoOrVersamentoRef;
 	}
 	public void setVersamentoOrVersamentoRef(List<Object> versamentoOrVersamentoRef) {
 		this.versamentoOrVersamentoRef = versamentoOrVersamentoRef;
 	}
 	public it.govpay.servizi.commons.Anagrafica getVersante() {
-		return versante;
+		return this.versante;
 	}
 	public void setVersante(it.govpay.servizi.commons.Anagrafica versante) {
 		this.versante = versante;
 	}
 	public String getIbanAddebito() {
-		return ibanAddebito;
+		return this.ibanAddebito;
 	}
 	public void setIbanAddebito(String ibanAddebito) {
 		this.ibanAddebito = ibanAddebito;
 	}
 	public String getAutenticazione() {
-		return autenticazione;
+		return this.autenticazione;
 	}
 	public void setAutenticazione(String autenticazione) {
 		this.autenticazione = autenticazione;
 	}
 	public String getUrlRitorno() {
-		return urlRitorno;
+		return this.urlRitorno;
 	}
 	public void setUrlRitorno(String urlRitorno) {
 		this.urlRitorno = urlRitorno;
 	}
 	public Boolean getAggiornaSeEsisteB() {
-		return aggiornaSeEsisteB;
+		return this.aggiornaSeEsisteB;
 	}
 	public void setAggiornaSeEsisteB(Boolean aggiornaSeEsisteB) {
 		this.aggiornaSeEsisteB = aggiornaSeEsisteB;
 	}
 	public Canale getCanale() {
-		return canale;
+		return this.canale;
 	}
 	public void setCanale(Canale canale) {
 		this.canale = canale;

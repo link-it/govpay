@@ -53,10 +53,24 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VersamentoIncasso }
+     */
+    public VersamentoIncasso createVersamentoIncasso() {
+        return new VersamentoIncasso();
+    }
+
+    /**
      * Create an instance of {@link IdContoAccredito }
      */
     public IdContoAccredito createIdContoAccredito() {
         return new IdContoAccredito();
+    }
+
+    /**
+     * Create an instance of {@link PagamentoPortaleVersamento }
+     */
+    public PagamentoPortaleVersamento createPagamentoPortaleVersamento() {
+        return new PagamentoPortaleVersamento();
     }
 
     /**
@@ -99,13 +113,6 @@ public class ObjectFactory {
      */
     public RPT createRPT() {
         return new RPT();
-    }
-
-    /**
-     * Create an instance of {@link IdRuolo }
-     */
-    public IdRuolo createIdRuolo() {
-        return new IdRuolo();
     }
 
     /**
@@ -158,17 +165,24 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdUtenza }
+     */
+    public IdUtenza createIdUtenza() {
+        return new IdUtenza();
+    }
+
+    /**
+     * Create an instance of {@link UtenzaTributo }
+     */
+    public UtenzaTributo createUtenzaTributo() {
+        return new UtenzaTributo();
+    }
+
+    /**
      * Create an instance of {@link IdTipoTributo }
      */
     public IdTipoTributo createIdTipoTributo() {
         return new IdTipoTributo();
-    }
-
-    /**
-     * Create an instance of {@link Psp }
-     */
-    public Psp createPsp() {
-        return new Psp();
     }
 
     /**
@@ -183,6 +197,13 @@ public class ObjectFactory {
      */
     public FR createFR() {
         return new FR();
+    }
+
+    /**
+     * Create an instance of {@link Avviso }
+     */
+    public Avviso createAvviso() {
+        return new Avviso();
     }
 
     /**
@@ -263,6 +284,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link UtenzaDominio }
+     */
+    public UtenzaDominio createUtenzaDominio() {
+        return new UtenzaDominio();
+    }
+
+    /**
      * Create an instance of {@link Operatore }
      */
     public Operatore createOperatore() {
@@ -274,6 +302,13 @@ public class ObjectFactory {
      */
     public Tracciato createTracciato() {
         return new Tracciato();
+    }
+
+    /**
+     * Create an instance of {@link PagamentoPortale }
+     */
+    public PagamentoPortale createPagamentoPortale() {
+        return new PagamentoPortale();
     }
 
     /**
@@ -298,17 +333,17 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Ruolo }
-     */
-    public Ruolo createRuolo() {
-        return new Ruolo();
-    }
-
-    /**
      * Create an instance of {@link RendicontazionePagamento }
      */
     public RendicontazionePagamento createRendicontazionePagamento() {
         return new RendicontazionePagamento();
+    }
+
+    /**
+     * Create an instance of {@link IdPagamentoPortale }
+     */
+    public IdPagamentoPortale createIdPagamentoPortale() {
+        return new IdPagamentoPortale();
     }
 
     /**
@@ -326,24 +361,10 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Portale }
-     */
-    public Portale createPortale() {
-        return new Portale();
-    }
-
-    /**
      * Create an instance of {@link IdMail }
      */
     public IdMail createIdMail() {
         return new IdMail();
-    }
-
-    /**
-     * Create an instance of {@link IdPsp }
-     */
-    public IdPsp createIdPsp() {
-        return new IdPsp();
     }
 
     /**
@@ -403,13 +424,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdPortale }
-     */
-    public IdPortale createIdPortale() {
-        return new IdPortale();
-    }
-
-    /**
      * Create an instance of {@link Batch }
      */
     public Batch createBatch() {
@@ -421,13 +435,6 @@ public class ObjectFactory {
      */
     public ACL createACL() {
         return new ACL();
-    }
-
-    /**
-     * Create an instance of {@link IdCanale }
-     */
-    public IdCanale createIdCanale() {
-        return new IdCanale();
     }
 
     /**
@@ -459,10 +466,10 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Canale }
+     * Create an instance of {@link Utenza }
      */
-    public Canale createCanale() {
-        return new Canale();
+    public Utenza createUtenza() {
+        return new Utenza();
     }
 
     /**

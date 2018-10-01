@@ -30,14 +30,14 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
-import it.govpay.orm.IdPortale;
 import it.govpay.orm.IdVersamento;
 
 public class RptConverter {
 
 	public static List<Rpt> toDTOList(List<it.govpay.orm.RPT> applicazioneLst) throws ServiceException {
-		List<Rpt> lstDTO = new ArrayList<Rpt>();
+		List<Rpt> lstDTO = new ArrayList<>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.RPT applicazione: applicazioneLst){
 				lstDTO.add(toDTO(applicazione));
@@ -64,8 +64,6 @@ public class RptConverter {
 		if(vo.getCodEsitoPagamento() != null)
 			dto.setEsitoPagamento(EsitoPagamento.toEnum(vo.getCodEsitoPagamento()));
 		dto.setId(vo.getId());
-		if(vo.getIdPortale() != null)
-			dto.setIdPortale(vo.getIdPortale().getId());
 		dto.setIdTransazioneRpt(vo.getCodTransazioneRPT());
 		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
@@ -84,6 +82,9 @@ public class RptConverter {
 			dto.setStatoConservazione(it.govpay.model.Rpt.StatoConservazione.valueOf(vo.getStatoConservazione()));
 		
 		dto.setDescrizioneStatoConservazione(vo.getDescrizioneStatoCons());
+		
+		if(vo.getIdPagamentoPortale() != null)
+			dto.setIdPagamentoPortale(vo.getIdPagamentoPortale().getId());
 
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setCodIntermediarioPsp(vo.getCodIntermediarioPsp());
@@ -117,11 +118,6 @@ public class RptConverter {
 		vo.setDataMsgRicevuta(dto.getDataMsgRicevuta());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 		vo.setId(dto.getId());
-		if(dto.getIdPortale() != null) {
-			IdPortale idPortale = new IdPortale();
-			idPortale.setId(dto.getIdPortale());
-			vo.setIdPortale(idPortale);
-		}
 		IdVersamento idVersamento = new IdVersamento();
 		idVersamento.setId(dto.getIdVersamento());
 		vo.setIdVersamento(idVersamento);
@@ -143,6 +139,13 @@ public class RptConverter {
 			vo.setStatoConservazione(dto.getStatoConservazione().name());
 		
 		vo.setDescrizioneStatoCons(dto.getDescrizioneStatoConservazione());
+		
+		if(dto.getIdPagamentoPortale() != null) {
+			IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
+			idPagamentoPortale.setId(dto.getIdPagamentoPortale());
+			vo.setIdPagamentoPortale(idPagamentoPortale );
+		}
+		
 
 		vo.setCodCanale(dto.getCodCanale());
 		vo.setCodIntermediarioPsp(dto.getCodIntermediarioPsp());

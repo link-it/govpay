@@ -19,14 +19,13 @@
  */
 package it.govpay.orm.dao.jdbc.fetch;
 
+import java.sql.ResultSet;
+import java.util.Map;
+
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
-
-import java.sql.ResultSet;
-import java.util.Map;
-
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 
@@ -53,34 +52,33 @@ public class TributoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Tributo.model())){
 				Tributo object = new Tributo();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setAbilitato", Tributo.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Tributo.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Tributo.model().ABILITATO.getFieldType()));
-				setParameter(object, "setTipoContabilita", Tributo.model().TIPO_CONTABILITA.getFieldType(),
+				this.setParameter(object, "setTipoContabilita", Tributo.model().TIPO_CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", Tributo.model().TIPO_CONTABILITA.getFieldType()));
-				setParameter(object, "setCodiceContabilita", Tributo.model().CODICE_CONTABILITA.getFieldType(),
+				this.setParameter(object, "setCodiceContabilita", Tributo.model().CODICE_CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "codice_contabilita", Tributo.model().CODICE_CONTABILITA.getFieldType()));
-				setParameter(object, "setCodTributoIuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType(),
+				this.setParameter(object, "setCodTributoIuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_tributo_iuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType()));
 				return object;
-			} else if(model.equals(Tributo.model().TIPO_TRIBUTO)){
-				TipoTributo object = new TipoTributo();
-				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodTributo", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_tributo", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO.getFieldType()));
-				setParameter(object, "setDescrizione", Tributo.model().TIPO_TRIBUTO.DESCRIZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione", Tributo.model().TIPO_TRIBUTO.DESCRIZIONE.getFieldType()));
-				setParameter(object, "setCodContabilita", Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_contabilita", Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA.getFieldType()));
-				setParameter(object, "setCodTributoIuv", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_tributo_iuv", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV.getFieldType()));
-				setParameter(object, "setTipoContabilita", Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA.getFieldType()));
-				return object;
+			 } else if(model.equals(Tributo.model().TIPO_TRIBUTO)){
+		         TipoTributo object = new TipoTributo();
+		         this.setParameter(object, "setId", Long.class,
+		                 jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+		         this.setParameter(object, "setCodTributo", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO.getFieldType(),
+		                 jdbcParameterUtilities.readParameter(rs, "cod_tributo", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO.getFieldType()));
+		         this.setParameter(object, "setDescrizione", Tributo.model().TIPO_TRIBUTO.DESCRIZIONE.getFieldType(),
+		                 jdbcParameterUtilities.readParameter(rs, "descrizione", Tributo.model().TIPO_TRIBUTO.DESCRIZIONE.getFieldType()));
+		         this.setParameter(object, "setCodContabilita", Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA.getFieldType(),
+		                 jdbcParameterUtilities.readParameter(rs, "cod_contabilita", Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA.getFieldType()));
+		         this.setParameter(object, "setCodTributoIuv", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV.getFieldType(),
+		                 jdbcParameterUtilities.readParameter(rs, "cod_tributo_iuv", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV.getFieldType()));
+		         this.setParameter(object, "setTipoContabilita", Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA.getFieldType(),
+		                 jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA.getFieldType()));
+		         return object;
 			}
-
 			
 			else{
 				throw new ServiceException("Model ["+model.toString()+"] not supported by fetch: "+this.getClass().getName());
@@ -99,32 +97,33 @@ public class TributoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Tributo.model())){
 				Tributo object = new Tributo();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setAbilitato", Tributo.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Tributo.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
-				setParameter(object, "setTipoContabilita", Tributo.model().TIPO_CONTABILITA.getFieldType(),
+				this.setParameter(object, "setTipoContabilita", Tributo.model().TIPO_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"tipoContabilita"));
-				setParameter(object, "setCodiceContabilita", Tributo.model().CODICE_CONTABILITA.getFieldType(),
+				this.setParameter(object, "setCodiceContabilita", Tributo.model().CODICE_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"codiceContabilita"));
-				setParameter(object, "setCodTributoIuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType(),
+				this.setParameter(object, "setCodTributoIuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType(),
 					this.getObjectFromMap(map,"codTributoIuv"));
 				return object;
 			} else if(model.equals(Tributo.model().TIPO_TRIBUTO)){
-				TipoTributo object = new TipoTributo();
-				setParameter(object, "setId", Long.class,
-					this.getObjectFromMap(map,"tipoTributo.id"));
-				setParameter(object, "setCodTributo", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO.getFieldType(),
-					this.getObjectFromMap(map,"tipoTributo.codTributo"));
-				setParameter(object, "setDescrizione", Tributo.model().TIPO_TRIBUTO.DESCRIZIONE.getFieldType(),
-					this.getObjectFromMap(map,"tipoTributo.descrizione"));
-				setParameter(object, "setCodContabilita", Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA.getFieldType(),
-						this.getObjectFromMap(map,"tipoTributo.codContabilita"));
-				setParameter(object, "setCodTributoIuv", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV.getFieldType(),
-						this.getObjectFromMap(map,"tipoTributo.codTributoIuv"));
-				setParameter(object, "setTipoContabilita", Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA.getFieldType(),
-						this.getObjectFromMap(map,"tipoTributo.tipoContabilita"));
-				return object;
+		        TipoTributo object = new TipoTributo();
+		        this.setParameter(object, "setId", Long.class,
+		                this.getObjectFromMap(map,"tipoTributo.id"));
+		        this.setParameter(object, "setCodTributo", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO.getFieldType(),
+		                this.getObjectFromMap(map,"tipoTributo.codTributo"));
+		        this.setParameter(object, "setDescrizione", Tributo.model().TIPO_TRIBUTO.DESCRIZIONE.getFieldType(),
+		                this.getObjectFromMap(map,"tipoTributo.descrizione"));
+		        this.setParameter(object, "setCodContabilita", Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA.getFieldType(),
+		                        this.getObjectFromMap(map,"tipoTributo.codContabilita"));
+		        this.setParameter(object, "setCodTributoIuv", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV.getFieldType(),
+		                        this.getObjectFromMap(map,"tipoTributo.codTributoIuv"));
+		        this.setParameter(object, "setTipoContabilita", Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA.getFieldType(),
+		                        this.getObjectFromMap(map,"tipoTributo.tipoContabilita"));
+		        return object;
+
 			}
 			
 			else{

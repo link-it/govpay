@@ -44,9 +44,13 @@ public class UnitaOperativaFilter extends AbstractFilter {
 
 	private String dbType;
 	private Long idDominio;
+	private String codDominio;
 	private List<Long> listaIdUo = null;
 	private String codUo= null;
+	private String codIdentificativo= null;
+	private String ragioneSociale= null;
 	private boolean excludeEC = false;
+	private Boolean abilitato; 
 
 	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor, String dbType) {
 		this(expressionConstructor,dbType,false);
@@ -65,14 +69,38 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			if(this.idDominio != null){
-				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), idDominio);
+				UoFieldConverter fieldConverter = new UoFieldConverter(this.dbType);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), this.idDominio);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd) newExpression.and();
+				newExpression.equals(Uo.model().ID_DOMINIO.COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
 			
 			if(this.codUo != null){
 				if(addAnd) newExpression.and();
-				newExpression.ilike(Uo.model().COD_UO, this.codUo,LikeMode.ANYWHERE);
+				newExpression.ilike(Uo.model().COD_UO, this.codUo, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.codIdentificativo != null){
+				if(addAnd) newExpression.and();
+				newExpression.ilike(Uo.model().UO_CODICE_IDENTIFICATIVO, this.codIdentificativo, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.ragioneSociale != null){
+				if(addAnd) newExpression.and();
+				newExpression.ilike(Uo.model().UO_DENOMINAZIONE, this.ragioneSociale, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.abilitato != null){
+				if(addAnd) newExpression.and();
+				newExpression.equals(Uo.model().ABILITATO, this.abilitato);
 				addAnd = true;
 			}
 			
@@ -85,9 +113,8 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			
 			if(this.listaIdUo != null && this.listaIdUo.size() > 0){
 				if(addAnd) newExpression.and();
-				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
-				
-				newExpression.in(new CustomField("id", Long.class, "id", fieldConverter.toTable(it.govpay.orm.Uo.model())), listaIdUo);				
+				UoFieldConverter fieldConverter = new UoFieldConverter(this.dbType);
+				newExpression.in(new CustomField("id", Long.class, "id", fieldConverter.toTable(it.govpay.orm.Uo.model())), this.listaIdUo);				
 			}
 			
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
@@ -109,8 +136,8 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.idDominio != null){
-				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), idDominio);
+				UoFieldConverter fieldConverter = new UoFieldConverter(this.dbType);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), this.idDominio);
 				addAnd = true;
 			}
 			
@@ -140,7 +167,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	}
 
 	public List<Long> getListaIdUo() {
-		return listaIdUo;
+		return this.listaIdUo;
 	}
 
 	public void setListaIdUo(List<Long> listaIdUo) {
@@ -148,7 +175,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	}
 
 	public String getCodUo() {
-		return codUo;
+		return this.codUo;
 	}
 
 	public void setCodUo(String codUo) {
@@ -156,10 +183,27 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	}
 
 	public boolean isExcludeEC() {
-		return excludeEC;
+		return this.excludeEC;
 	}
 
 	public void setExcludeEC(boolean excludeEC) {
 		this.excludeEC = excludeEC;
 	}
+
+	public void setCodIdentificativo(String codIdentificativo) {
+		this.codIdentificativo = codIdentificativo;
+	}
+	
+	public void setRagioneSociale(String ragioneSociale) {
+		this.ragioneSociale = ragioneSociale;
+	}
+
+	public String getCodDominio() {
+		return this.codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+	
 }

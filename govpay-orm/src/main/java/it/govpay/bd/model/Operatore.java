@@ -20,42 +20,39 @@
 
 package it.govpay.bd.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Ruolo;
+import it.govpay.bd.model.Utenza;
 
-public class Operatore extends it.govpay.model.Operatore {
+public class Operatore extends it.govpay.model.Operatore{
+	
 	private static final long serialVersionUID = 1L;
 	
-	// Business
-	
-	private transient List<Ruolo> ruoli;
-	
 	public Operatore() {
-        super();
+		super();
+	}
+	
+	private transient Utenza utenza;
+	
+	public Operatore(BasicBD bd, long idUtenza) throws ServiceException {
+		super();
+		this.setIdUtenza(idUtenza); 
+		this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza())); 
 	}
 
-	public List<Ruolo> getRuoli(BasicBD bd) throws ServiceException {
-		if(ruoli == null && super.getRuoli() != null) {
-			ruoli = new ArrayList<Ruolo>();
-			for(String codRuolo : super.getRuoli()) {
-				try {
-					if(StringUtils.isNotEmpty(codRuolo) && !codRuolo.equals(it.govpay.model.Operatore.RUOLO_SYSTEM))
-						ruoli.add(AnagraficaManager.getRuolo(bd, codRuolo));
-				} catch (NotFoundException e) {
-					throw new ServiceException(e);
-				}
-			}
-		} 
-		return ruoli;
+
+	public Utenza getUtenza() {
+		return this.utenza;
 	}
 
+	public void setUtenza(Utenza utenza) {
+		this.utenza = utenza;
+	}
+
+	public String getPrincipal() {
+		return this.utenza != null ? this.utenza.getPrincipal() : null;
+	}
 }
 

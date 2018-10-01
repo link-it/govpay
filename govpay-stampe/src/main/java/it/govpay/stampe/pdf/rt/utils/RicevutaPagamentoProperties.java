@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.Utilities;
+import org.slf4j.Logger;
 
 public class RicevutaPagamentoProperties {
 
@@ -21,18 +21,19 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 
 	private static RicevutaPagamentoProperties instance;
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(RicevutaPagamentoProperties.class);
 
 	private String govpayResourceDir = null;
 
-	private Map<String, Properties> propMap = new HashMap<String, Properties>();
+	private Map<String, Properties> propMap = new HashMap<>();
 
 	public static RicevutaPagamentoProperties getInstance() {
 		return instance;
 	}
 
-	public static RicevutaPagamentoProperties newInstance(String govpayResourceDir) throws Exception {
-		instance = new RicevutaPagamentoProperties(govpayResourceDir);
+	public static synchronized RicevutaPagamentoProperties newInstance(String govpayResourceDir) throws Exception {
+		if(instance == null)
+			instance = new RicevutaPagamentoProperties(govpayResourceDir);
 		return instance;
 	}
 
@@ -46,13 +47,13 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 			Properties props1 = new Properties();
 			props1.load(is);
 
-			propMap.put(DEFAULT_PROPS, props1);
+			this.propMap.put(DEFAULT_PROPS, props1);
 
 			Properties props0 = null;
 
-			props = new Properties[2];
-			props[0] = props0;
-			props[1] = props1;
+			this.props = new Properties[2];
+			this.props[0] = props0;
+			this.props[1] = props1;
 
 			// Recupero la configurazione della working dir
 			// Se e' configurata, la uso come prioritaria
@@ -70,7 +71,7 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 					if(gpConfigFile.exists()) {
 						props0 = new Properties();
 						props0.load(new FileInputStream(gpConfigFile));
-						propMap.put(DEFAULT_PROPS, props0);
+						this.propMap.put(DEFAULT_PROPS, props0);
 						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
 					}
 				}
@@ -93,7 +94,7 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 					// la configurazione di defaut e' gia'stata caricata
 					if(!key.equals("ricevutaPagamento")) {
 						log.info("Caricata configurazione avviso di pagamento con chiave " + key);
-						propMap.put(key, p);
+						this.propMap.put(key, p);
 					}
 				}
 			}
@@ -123,7 +124,7 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 
 	public String getProperty(String idprops, String name, boolean required) throws Exception {
 		String value = null;
-		Properties p = getProperties(idprops);
+		Properties p = this.getProperties(idprops);
 
 		try { value = getProperty(name, p, required); } catch (Exception e) { }
 		if(value != null && !value.trim().isEmpty()) {
@@ -140,13 +141,13 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 
 
 	public String getPropertyEnte(String idprop, String name) throws Exception {
-		String property = getProperty(idprop, name, false);
+		String property = this.getProperty(idprop, name, false);
 		return property != null ? property : "";
 	}
 
 	public Properties getProperties(String id) throws Exception {
 		if(id == null) id = DEFAULT_PROPS;
-		Properties p = propMap.get(id);
+		Properties p = this.propMap.get(id);
 
 		if(p == null) {
 			log.debug("Configurazione ["+id+"] non trovata");
@@ -157,7 +158,7 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 	}
 	
 	public String getDefaultImplClassName() throws Exception{
-		return getPropertyEnte(DEFAULT_PROPS, RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY);
+		return this.getPropertyEnte(DEFAULT_PROPS, RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY);
 	}
 	
 	public Properties getProperties(Properties props, String prefix) throws Exception {
@@ -167,9 +168,9 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 	
 	
 	public TreeMap<String, String> getPropertiesAsMap(Properties props, String prefix) throws Exception {
-		TreeMap<String, String> mappaProperties = new TreeMap<String, String>();
+		TreeMap<String, String> mappaProperties = new TreeMap<>();
 		
-		Properties p = getProperties(props, prefix);
+		Properties p = this.getProperties(props, prefix);
 		
 		for (Object pKeyObj: p.keySet()) {
 			Object pValObj = p.get(pKeyObj);

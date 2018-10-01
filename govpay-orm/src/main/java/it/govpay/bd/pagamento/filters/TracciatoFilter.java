@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,112 +19,91 @@
  */
 package it.govpay.bd.pagamento.filters;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.model.Tracciato.StatoTracciatoType;
 import it.govpay.orm.Tracciato;
-import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
 
 public class TracciatoFilter extends AbstractFilter {
 
-	private List<Long> idTracciati = null; 
-	private CustomField cf;
-	
-	private List<StatoTracciatoType> statoTracciato;
-	private Long idOperatore = null;
-	private Long idApplicazione = null;
-	private Date dataUltimoAggiornamentoMax;
-	private Date dataUltimoAggiornamentoMin;
-	private Date dataCaricamentoMax;
-	private Date dataCaricamentoMin;
-	
-	public enum SortFields {
-		DATA_CARICAMENTO
+	private String filenameRichiestaLike;
+	private String filenameRichiesta;
+	private List<it.govpay.model.Tracciato.TIPO_TRACCIATO> tipo;
+	private it.govpay.model.Tracciato.STATO_ELABORAZIONE stato;
+	private String dettaglioStato;
+	private List<String> domini;
+	private String operatore;
+
+	public String getFilenameRichiestaLike() {
+		return this.filenameRichiestaLike;
 	}
-	
+
+	public void setFilenameRichiestaLike(String filenameRichiestaLike) {
+		this.filenameRichiestaLike = filenameRichiestaLike;
+	}
+
 	public TracciatoFilter(IExpressionConstructor expressionConstructor) {
-		this(expressionConstructor, false);
+		this(expressionConstructor,false);
 	}
 	
 	public TracciatoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
-		
-		try{
-			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Tracciato.model()));
-			this.statoTracciato = new ArrayList<StatoTracciatoType>();
-		} catch(Exception e){
-			
-		}
 	}
 
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
-			IExpression newExpression = this.newExpression();
+			IExpression exp = this.newExpression();
 			boolean addAnd = false;
 			
-			if(this.statoTracciato != null && !this.statoTracciato.isEmpty()) {
-				List<it.govpay.orm.constants.StatoTracciatoType> statoTracciatoOrm  = toStatoTracciatoOrm(this.statoTracciato);
-				newExpression.in(it.govpay.orm.Tracciato.model().STATO, statoTracciatoOrm);
+			if(this.filenameRichiestaLike != null){
+				exp.like(Tracciato.model().FILE_NAME_RICHIESTA, this.filenameRichiestaLike,LikeMode.END); 
 				addAnd = true;
 			}
 			
-			if(this.idTracciati != null && this.idTracciati.size() > 0 ){
+			if(this.filenameRichiesta != null){
+				exp.equals(Tracciato.model().FILE_NAME_RICHIESTA, this.filenameRichiesta); 
+				addAnd = true;
+			}
+			
+			if(this.tipo != null && !this.tipo.isEmpty()){
 				if(addAnd)
-					newExpression.and();
+					exp.and();
+				exp.in(Tracciato.model().TIPO, this.tipo.stream().map(t -> t.toString()).collect(Collectors.toList()));
+				addAnd = true;
+			}
+			
+			if(this.stato != null){
+				if(addAnd)
+					exp.and();
 				
-				newExpression.in(cf, idTracciati);
+				exp.equals(Tracciato.model().STATO, this.stato.toString());
+				
+				if(this.getDettaglioStato() != null) {
+					exp.like(Tracciato.model().BEAN_DATI, this.dettaglioStato,LikeMode.ANYWHERE);
+				}
+				
 				addAnd = true;
 			}
 
-			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			if(this.domini != null && !this.domini.isEmpty()){
+				if(addAnd)
+					exp.and();
+				
+				exp.in(Tracciato.model().COD_DOMINIO, this.domini); 
+				addAnd = true;
+			}
 
-			if(this.idOperatore != null){
-				if(addAnd)
-					newExpression.and();
-				CustomField idOperatoreCustomField = new CustomField("id_operatore",  Long.class, "id_operatore",converter.toTable(it.govpay.orm.Tracciato.model()));
-				newExpression.equals(idOperatoreCustomField, this.idOperatore);
-			}
-			
-			if(this.idApplicazione != null){
-				if(addAnd)
-					newExpression.and();
-				CustomField idOperatoreCustomField = new CustomField("id_applicazione",  Long.class, "id_applicazione",converter.toTable(it.govpay.orm.Tracciato.model()));
-				newExpression.equals(idOperatoreCustomField, this.idApplicazione);
-			}
-			
-			if(this.dataUltimoAggiornamentoMax != null) {
-				newExpression.lessEquals(it.govpay.orm.Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO, this.dataUltimoAggiornamentoMax);
-			}
-			
-			if(this.dataUltimoAggiornamentoMin != null) {
-				newExpression.greaterEquals(it.govpay.orm.Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO, this.dataUltimoAggiornamentoMin);
-			}
-			
-			if(this.dataCaricamentoMax != null) {
-				newExpression.lessEquals(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO, this.dataCaricamentoMax);
-			}
-			
-			if(this.dataCaricamentoMin != null) {
-				newExpression.greaterEquals(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO, this.dataCaricamentoMin);
-			}
-			
-			return newExpression;
+			return exp;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -134,121 +112,54 @@ public class TracciatoFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
-	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpressionOr = super._toSimpleSearchExpression();
-			
-			if(this.idOperatore != null){
-				IExpression newExpressionOperatore = this.newExpression();
-				TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				CustomField idOperatoreCustomField = new CustomField("id_operatore",  Long.class, "id_operatore",converter.toTable(it.govpay.orm.Tracciato.model()));
-				newExpressionOperatore.equals(idOperatoreCustomField, this.idOperatore);
-				
-				newExpressionOr.and(newExpressionOperatore);
-			}
-			return newExpressionOr;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+
+	public it.govpay.model.Tracciato.STATO_ELABORAZIONE getStato() {
+		return this.stato;
 	}
 
-	/**
-	 * @param statoTracciato2
-	 * @return
-	 */
-	private List<it.govpay.orm.constants.StatoTracciatoType> toStatoTracciatoOrm(
-			List<StatoTracciatoType> statoTracciato) {
-		if(statoTracciato == null) return null;
-		List<it.govpay.orm.constants.StatoTracciatoType> lst = new ArrayList<it.govpay.orm.constants.StatoTracciatoType>();
-		for(StatoTracciatoType stato: statoTracciato) {
-			lst.add(it.govpay.orm.constants.StatoTracciatoType.valueOf(stato.name()));
-		}
-		return lst;
+	public void setStato(it.govpay.model.Tracciato.STATO_ELABORAZIONE stato) {
+		this.stato = stato;
 	}
 
-	public void addSortField(SortFields field, boolean asc) {
-		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
-		
-		switch (field) {
-		case DATA_CARICAMENTO:
-			filterSortWrapper.setField(Tracciato.model().DATA_CARICAMENTO);
-			break;
-		}
-		
-		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
-		this.filterSortList.add(filterSortWrapper);
+	public List<String> getDomini() {
+		return this.domini;
 	}
 
-	public List<Long> getIdTracciati() {
-		return idTracciati;
+	public void setDomini(List<String> domini) {
+		this.domini = domini;
 	}
 
-	public void setIdTracciati(List<Long> idTracciati) {
-		this.idTracciati = idTracciati;
+	public List<it.govpay.model.Tracciato.TIPO_TRACCIATO> getTipo() {
+		return this.tipo;
 	}
 
-	public List<StatoTracciatoType> getStatoTracciato() {
-		return statoTracciato;
+	public void setTipo(List<it.govpay.model.Tracciato.TIPO_TRACCIATO> tipo) {
+		this.tipo = tipo;
 	}
 
-	public void addStatoTracciato(StatoTracciatoType statoTracciato) {
-		this.statoTracciato.add(statoTracciato);
+	public String getFilenameRichiesta() {
+		return this.filenameRichiesta;
 	}
 
-	public Long getIdOperatore() {
-		return idOperatore;
+	public void setFilenameRichiesta(String filenameRichiesta) {
+		this.filenameRichiesta = filenameRichiesta;
 	}
 
-	public void setIdOperatore(Long idOperatore) {
-		this.idOperatore = idOperatore;
+	public String getOperatore() {
+		return this.operatore;
 	}
 
-	public Date getDataUltimoAggiornamentoMax() {
-		return dataUltimoAggiornamentoMax;
+	public void setOperatore(String operatore) {
+		this.operatore = operatore;
 	}
 
-	public void setDataUltimoAggiornamentoMax(Date dataUltimoAggiornamentoMax) {
-		this.dataUltimoAggiornamentoMax = dataUltimoAggiornamentoMax;
+	public String getDettaglioStato() {
+		return dettaglioStato;
 	}
 
-	public Long getIdApplicazione() {
-		return idApplicazione;
+	public void setDettaglioStato(String dettaglioStato) {
+		this.dettaglioStato = dettaglioStato;
 	}
 
-	public void setIdApplicazione(Long idApplicazione) {
-		this.idApplicazione = idApplicazione;
-	}
 
-	public Date getDataUltimoAggiornamentoMin() {
-		return dataUltimoAggiornamentoMin;
-	}
-
-	public void setDataUltimoAggiornamentoMin(Date dataUltimoAggiornamentoMin) {
-		this.dataUltimoAggiornamentoMin = dataUltimoAggiornamentoMin;
-	}
-
-	public Date getDataCaricamentoMin() {
-		return dataCaricamentoMin;
-	}
-
-	public void setDataCaricamentoMin(Date dataCaricamentoMin) {
-		this.dataCaricamentoMin = dataCaricamentoMin;
-	}
-
-	public Date getDataCaricamentoMax() {
-		return dataCaricamentoMax;
-	}
-
-	public void setDataCaricamentoMax(Date dataCaricamentoMax) {
-		this.dataCaricamentoMax = dataCaricamentoMax;
-	}
-
-	
-	
 }

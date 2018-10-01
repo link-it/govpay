@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.AliasField;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
@@ -85,7 +85,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getTributoFetch();
+		return this.getTributoFetch();
 	}
 	
 	
@@ -137,10 +137,10 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
 
-		List<IdTributo> list = new ArrayList<IdTributo>();
+		List<IdTributo> list = new ArrayList<>();
 
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 
 			fields.add(new CustomField("id_tipo_tributo", Long.class, "id_tipo_tributo", this.getTributoFieldConverter().toTable(Tributo.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
@@ -194,9 +194,9 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-        List<Tributo> list = new ArrayList<Tributo>();
+        List<Tributo> list = new ArrayList<>();
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 			AliasField tributoId = new AliasField(new CustomField("id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model())), "id");
 			fields.add(tributoId);
 			fields.add(Tributo.model().ABILITATO);
@@ -205,17 +205,18 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			fields.add(Tributo.model().COD_TRIBUTO_IUV);
 			AliasField tipoTributoId = new AliasField(new CustomField("tipoTributo.id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)), this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)+"_id");
 			fields.add(tipoTributoId);
-			AliasField tipoContabilitaAlias = getAliasField(Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA);
+			AliasField tipoContabilitaAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA);
 			fields.add(tipoContabilitaAlias);
-			AliasField codiceContabilitaAlias = getAliasField(Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA);
+			AliasField codiceContabilitaAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA);
 			fields.add(codiceContabilitaAlias);
-			AliasField codiceTributoIuvAlias = getAliasField(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV);
+			AliasField codiceTributoIuvAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV);
 			fields.add(codiceTributoIuvAlias);
 			fields.add(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 			fields.add(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE);
 
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getTributoFieldConverter().toTable(Tributo.model())));
+			fields.add(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", this.getTributoFieldConverter().toTable(Tributo.model())));
 
 			sqlQueryObject.setANDLogicOperator(true);
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
@@ -227,6 +228,11 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 				Long idIbanAccredito = null;
 				if(idIbanAccreditoObj instanceof Long)
 					idIbanAccredito = (Long) idIbanAccreditoObj;
+
+				Object idIbanAppoggioObj = map.remove("id_iban_appoggio");
+				Long idIbanAppoggio = null;
+				if(idIbanAppoggioObj instanceof Long)
+					idIbanAppoggio = (Long) idIbanAppoggioObj;
 				
 				
 				Tributo tributo = (Tributo)this.getTributoFetch().fetch(jdbcProperties.getDatabase(), Tributo.model(), map);
@@ -254,6 +260,17 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 							}
 							id_tributo_ibanAccredito.setId(idIbanAccredito);
 							tributo.setIdIbanAccredito(id_tributo_ibanAccredito);
+						}
+
+						if(idIbanAppoggio != null) {
+							it.govpay.orm.IdIbanAccredito id_tributo_ibanAccredito = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_tributo_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAppoggio, false);
+							}else{
+								id_tributo_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
+							}
+							id_tributo_ibanAccredito.setId(idIbanAppoggio);
+							tributo.setIdIbanAppoggio(id_tributo_ibanAccredito);
 						}
 					}
 
@@ -293,7 +310,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		
 		sqlQueryObject.addSelectCountField(this.getTributoFieldConverter().toTable(Tributo.model())+".id","tot",true);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 																			this.getTributoFieldConverter(), Tributo.model(),listaQuery);
@@ -340,7 +357,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 												this.getTributoFieldConverter(), field);
 
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
@@ -361,7 +378,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
@@ -378,7 +395,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
@@ -395,7 +412,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
@@ -403,18 +420,18 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
+		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
-		List<Object> listaQuery = new ArrayList<Object>();
-		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
+		List<Object> listaQuery = new ArrayList<>();
+		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getTributoFieldConverter(), Tributo.model(), 
         						listaQuery,listaParams);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
@@ -432,8 +449,8 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getTributoFieldConverter(), Tributo.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -442,7 +459,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -461,8 +478,8 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getTributoFieldConverter(), Tributo.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -471,7 +488,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -533,13 +550,13 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTributo id, Tributo obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Tributo obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
 	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Tributo obj, Tributo imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
@@ -569,9 +586,6 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2);expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
-				
 		List<Tributo> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -643,7 +657,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTributo id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
-        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
+        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
 		Long longId = this.findIdTributo(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
         
@@ -654,8 +668,8 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		TributoFieldConverter converter = this.getTributoFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
-		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		//		  If a table doesn't have a primary key, don't add it to this map
 
@@ -684,7 +698,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 		
-		List<Long> list = new ArrayList<Long>();
+		List<Long> list = new ArrayList<>();
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
@@ -694,7 +708,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getTributoFieldConverter(), Tributo.model());
 		
-		_join(paginatedExpression,sqlQueryObject);
+		this._join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 																			this.getTributoFieldConverter(), Tributo.model(), objectIdClass, listaQuery);
@@ -717,7 +731,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getTributoFieldConverter(), Tributo.model());
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 														this.getTributoFieldConverter(), Tributo.model(), objectIdClass, listaQuery);
@@ -775,7 +789,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tributo = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_tributo = new ArrayList<Class<?>>();
+		List<Class<?>> listaFieldIdReturnType_tributo = new ArrayList<>();
 		listaFieldIdReturnType_tributo.add(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO.getFieldType());
 		listaFieldIdReturnType_tributo.add(Tributo.model().ID_DOMINIO.COD_DOMINIO.getFieldType());
 		it.govpay.orm.IdTributo id_tributo = null;
@@ -840,7 +854,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		sqlQueryObjectGet.addFromTable(this.getTributoFieldConverter().toTable(Tributo.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition("id_tipo_tributo=?");
 		sqlQueryObjectGet.addWhereCondition("id_dominio=?");
 

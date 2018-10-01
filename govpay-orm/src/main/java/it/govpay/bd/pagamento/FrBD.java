@@ -37,11 +37,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 public class FrBD extends BasicBD {
 
@@ -82,7 +83,7 @@ public class FrBD extends BasicBD {
 	 */
 	public Fr getFrExt(long idFr) throws ServiceException {
 		try {
-			FrFilter filter = newFilter();
+			FrFilter filter = this.newFilter();
 			filter.setIdFr(Arrays.asList(idFr));
 			List<Fr> lstFrExt = this.findAllExt(filter);
 			if(lstFrExt.isEmpty()) {
@@ -155,11 +156,11 @@ public class FrBD extends BasicBD {
 		return new FrFilter(this.getFrService(),simpleSearch);
 	}
 	
-	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
 
 	public long countExt(FrFilter filter) throws ServiceException {
 		try {
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 			lstReturnType.add(Long.class);
 			String nativeCount = NativeQueries.getInstance().getFrCountQuery();
 			log.info("NATIVE: "+ nativeCount);
@@ -185,7 +186,7 @@ public class FrBD extends BasicBD {
 
 	public List<Fr> findAllExt(FrFilter filter) throws ServiceException {
 		try {
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 
 			lstReturnType.add(FR.model().COD_FLUSSO.getFieldType());
 			lstReturnType.add(FR.model().STATO.getFieldType());
@@ -211,16 +212,16 @@ public class FrBD extends BasicBD {
 
 			Object[] array = filter.getFields(false).toArray(new Object[]{});
 			List<List<Object>> lstRecords = this.getRendicontazionePagamentoServiceSearch().nativeQuery(nativeQueryString, lstReturnType, array);
-			List<Fr> lstFr = new ArrayList<Fr>();
+			List<Fr> lstFr = new ArrayList<>();
 
 			for(List<Object> record: lstRecords) {
-				lstFr.add(getFr(record));
+				lstFr.add(this.getFr(record));
 			}
 			return lstFr;
 		} catch (NotImplementedException e) {
 		throw new ServiceException(e);
 	} catch (NotFoundException e) {
-		return new ArrayList<Fr>();
+		return new ArrayList<>();
 	}
 	}
 
@@ -258,7 +259,7 @@ public class FrBD extends BasicBD {
 
 	public List<Fr> findAll(IFilter filter) throws ServiceException {
 		try {
-			List<Fr> frLst = new ArrayList<Fr>();
+			List<Fr> frLst = new ArrayList<>();
 			List<it.govpay.orm.FR> frVOLst = this.getFrService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.FR frVO: frVOLst) {
 				frLst.add(FrConverter.toDTO(frVO));

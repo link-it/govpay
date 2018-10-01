@@ -1,133 +1,117 @@
-/*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
- * http://www.gov4j.it/govpay
- * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 3, as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
 package it.govpay.model;
 
 import java.util.Date;
 
-public class Tracciato {
+public class Tracciato extends BasicModel {
 
-	public enum StatoTracciatoType {
-		ANNULLATO ,NUOVO ,IN_CARICAMENTO ,CARICAMENTO_OK ,CARICAMENTO_KO;
-	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
-	
-	private long id;
-	private Long idOperatore;
-	private Long idApplicazione;
-	private Date dataCaricamento;
-	private Date dataUltimoAggiornamento;
-	private StatoTracciatoType stato;
-	private long lineaElaborazione;
-	private String descrizioneStato;
-	private long numLineeTotali;
-	private long numOperazioniOk;
-	private long numOperazioniKo;
-	private String nomeFile;
-	private byte[] rawDataRichiesta;
-	private byte[] rawDataRisposta;
-	
-	public Long getIdOperatore() {
-		return idOperatore;
-	}
-	public void setIdOperatore(Long idOperatore) {
-		this.idOperatore = idOperatore;
-	}
-	public Date getDataCaricamento() {
-		return dataCaricamento;
-	}
-	public void setDataCaricamento(Date dataCaricamento) {
-		this.dataCaricamento = dataCaricamento;
-	}
-	public StatoTracciatoType getStato() {
-		return stato;
-	}
-	public void setStato(StatoTracciatoType stato) {
-		this.stato = stato;
-	}
-	public long getLineaElaborazione() {
-		return lineaElaborazione;
-	}
-	public void setLineaElaborazione(long lineaElaborazione) {
-		this.lineaElaborazione = lineaElaborazione;
-	}
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return this.descrizioneStato;
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
 		this.descrizioneStato = descrizioneStato;
 	}
-	public long getNumLineeTotali() {
-		return numLineeTotali;
+	public Date getDataCaricamento() {
+		return this.dataCaricamento;
 	}
-	public void setNumLineeTotali(long numLineeTotali) {
-		this.numLineeTotali = numLineeTotali;
+	public void setDataCaricamento(Date dataCaricamento) {
+		this.dataCaricamento = dataCaricamento;
 	}
-	public long getNumOperazioniOk() {
-		return numOperazioniOk;
+	public Date getDataCompletamento() {
+		return this.dataCompletamento;
 	}
-	public void setNumOperazioniOk(long numOperazioniOk) {
-		this.numOperazioniOk = numOperazioniOk;
+	public void setDataCompletamento(Date dataCompletamento) {
+		this.dataCompletamento = dataCompletamento;
 	}
-	public long getNumOperazioniKo() {
-		return numOperazioniKo;
+	public String getBeanDati() {
+		return this.beanDati;
 	}
-	public void setNumOperazioniKo(long numOperazioniKo) {
-		this.numOperazioniKo = numOperazioniKo;
+	public void setBeanDati(String beanDati) {
+		this.beanDati = beanDati;
 	}
-	public String getNomeFile() {
-		return nomeFile;
+	public String getFileNameRichiesta() {
+		return this.fileNameRichiesta;
 	}
-	public void setNomeFile(String nomeFile) {
-		this.nomeFile = nomeFile;
+	public void setFileNameRichiesta(String fileNameRichiesta) {
+		this.fileNameRichiesta = fileNameRichiesta;
 	}
-	public long getId() {
-		return id;
+	public byte[] getRawRichiesta() {
+		return this.rawRichiesta;
 	}
-	public void setId(long id) {
+	public void setRawRichiesta(byte[] rawRichiesta) {
+		this.rawRichiesta = rawRichiesta;
+	}
+	public String getFileNameEsito() {
+		return this.fileNameEsito;
+	}
+	public void setFileNameEsito(String fileNameEsito) {
+		this.fileNameEsito = fileNameEsito;
+	}
+	public byte[] getRawEsito() {
+		return this.rawEsito;
+	}
+	public void setRawEsito(byte[] rawEsito) {
+		this.rawEsito = rawEsito;
+	}
+	
+	public TIPO_TRACCIATO getTipo() {
+		return this.tipo;
+	}
+	public void setTipo(TIPO_TRACCIATO tipo) {
+		this.tipo = tipo;
+	}
+
+	public STATO_ELABORAZIONE getStato() {
+		return this.stato;
+	}
+	public void setStato(STATO_ELABORAZIONE stato) {
+		this.stato = stato;
+	}
+
+	@Override
+	public Long getId() {
+		return this.id;
+	}
+	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public Date getDataUltimoAggiornamento() {
-		return dataUltimoAggiornamento;
+
+	public String getCodDominio() {
+		return this.codDominio;
 	}
-	public void setDataUltimoAggiornamento(Date dataUltimoAggiornamento) {
-		this.dataUltimoAggiornamento = dataUltimoAggiornamento;
-	}
-	public byte[] getRawDataRichiesta() {
-		return rawDataRichiesta;
-	}
-	public void setRawDataRichiesta(byte[] rawDataRichiesta) {
-		this.rawDataRichiesta = rawDataRichiesta;
-	}
-	public byte[] getRawDataRisposta() {
-		return rawDataRisposta;
-	}
-	public void setRawDataRisposta(byte[] rawDataRisposta) {
-		this.rawDataRisposta = rawDataRisposta;
-	}
-	public Long getIdApplicazione() {
-		return idApplicazione;
-	}
-	public void setIdApplicazione(Long idApplicazione) {
-		this.idApplicazione = idApplicazione;
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
 	}
 	
+	public Long getIdOperatore() {
+		return this.idOperatore;
+	}
+	public void setIdOperatore(Long idOperatore) {
+		this.idOperatore = idOperatore;
+	}
+
+	public enum STATO_ELABORAZIONE {ELABORAZIONE, COMPLETATO, SCARTATO}
+	
+	public enum TIPO_TRACCIATO {AV, AV_ESITO, PENDENZA}
+	
+	private TIPO_TRACCIATO tipo;
+	private STATO_ELABORAZIONE stato;
+	private String descrizioneStato;
+	private String codDominio;
+	private Date dataCaricamento;
+	private Date dataCompletamento;
+	private String beanDati;
+	private String fileNameRichiesta;
+	private byte[] rawRichiesta;
+	private String fileNameEsito;
+	private byte[] rawEsito;
+	private Long id;
+	private Long idOperatore;
+
+
 
 }

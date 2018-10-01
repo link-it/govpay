@@ -10,25 +10,25 @@ public class StatoNdP {
 	private Date data;
 	
 	public Integer getCodice() {
-		return codice;
+		return this.codice;
 	}
 	public void setCodice(Integer codice) {
 		this.codice = codice;
 	}
 	public String getOperazione() {
-		return operazione;
+		return this.operazione;
 	}
 	public void setOperazione(String operazione) {
 		this.operazione = operazione;
 	}
 	public String getDescrizione() {
-		return descrizione;
+		return this.descrizione;
 	}
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
 	}
 	public Date getData() {
-		return data;
+		return this.data;
 	}
 	public void setData(Date data) {
 		this.data = data;

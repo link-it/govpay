@@ -27,11 +27,11 @@ import java.util.UUID;
 
 import javax.activation.DataHandler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
@@ -41,35 +41,38 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPT;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoElementoListaRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoListaRPT;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.pagamento.RptBD;
+
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Evento;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.servizi.commons.EsitoOperazione;
 
 public class RptUtils {
 
-	private static Logger log = LogManager.getLogger();
+	private static Logger log = LoggerWrapperFactory.getLogger(RptUtils.class);
 
 	public static String buildUUID35() {
 		return UUID.randomUUID().toString().replace("-", "");
@@ -84,18 +87,15 @@ public class RptUtils {
 		enteBeneficiario.setIdentificativoUnivocoBeneficiario(idUnivocoBeneficiario);
 		enteBeneficiario.setDenominazioneBeneficiario(dominio.getRagioneSociale());
 
-		try {
-			Anagrafica anagrafica = dominio.getAnagrafica(bd);
-			enteBeneficiario.setCapBeneficiario(getNotEmpty(anagrafica.getCap()));
-			enteBeneficiario.setCivicoBeneficiario(getNotEmpty(anagrafica.getCivico()));
-			enteBeneficiario.setIndirizzoBeneficiario(getNotEmpty(anagrafica.getIndirizzo()));
-			enteBeneficiario.setLocalitaBeneficiario(getNotEmpty(anagrafica.getLocalita()));
-			enteBeneficiario.setNazioneBeneficiario(getNotEmpty(anagrafica.getNazione()));
-			enteBeneficiario.setProvinciaBeneficiario(getNotEmpty(anagrafica.getProvincia()));
-		} catch (NotFoundException e) {
-		}
+		Anagrafica anagrafica = dominio.getAnagrafica();
+		enteBeneficiario.setCapBeneficiario(getNotEmpty(anagrafica.getCap()));
+		enteBeneficiario.setCivicoBeneficiario(getNotEmpty(anagrafica.getCivico()));
+		enteBeneficiario.setIndirizzoBeneficiario(getNotEmpty(anagrafica.getIndirizzo()));
+		enteBeneficiario.setLocalitaBeneficiario(getNotEmpty(anagrafica.getLocalita()));
+		enteBeneficiario.setNazioneBeneficiario(getNotEmpty(anagrafica.getNazione()));
+		enteBeneficiario.setProvinciaBeneficiario(getNotEmpty(anagrafica.getProvincia()));
 
-		if(!uo.getCodUo().equals(Dominio.EC) && uo.getAnagrafica() != null) {
+		if(!uo.getCodUo().equals(it.govpay.model.Dominio.EC) && uo.getAnagrafica() != null) {
 			if(uo.getAnagrafica().getCodUnivoco() != null && uo.getAnagrafica().getCodUnivoco().trim().length()>0)
 				enteBeneficiario.setCodiceUnitOperBeneficiario(uo.getAnagrafica().getCodUnivoco());
 			if(uo.getAnagrafica().getRagioneSociale() != null && uo.getAnagrafica().getRagioneSociale().trim().length()>0)
@@ -123,47 +123,8 @@ public class RptUtils {
 			return text;
 	}
 
-
-
-
-	public static it.govpay.core.business.model.Risposta inviaRPT(Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException {
-		if(bd != null) bd.closeConnection();
-		Evento evento = new Evento();
-		it.govpay.core.business.model.Risposta risposta = null;
-		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
-			NodoInviaRPT inviaRPT = new NodoInviaRPT();
-			inviaRPT.setIdentificativoCanale(rpt.getCodCanale());
-			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCodIntermediarioPsp());
-			inviaRPT.setIdentificativoPSP(rpt.getCodPsp());
-			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
-			inviaRPT.setRpt(rpt.getXmlRpt());
-			
-			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
-			inviaRPT.setTipoFirma("");
-			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
-			return risposta;
-		} finally {
-			// Se mi chiama InviaRptThread, BD e' null
-			boolean newCon = bd == null;
-			if(!newCon) 
-				bd.setupConnection(GpThreadLocal.get().getTransactionId());
-			else {
-				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			}
-			
-			try {
-				GiornaleEventi giornale = new GiornaleEventi(bd);
-				buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaRPT, bd);
-				giornale.registraEvento(evento);
-			} finally {
-				if(newCon) bd.closeConnection();
-			}
-		}
-	}
-
 	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, BasicBD bd) throws GovPayException, ClientException, ServiceException {
-		bd.closeConnection();
+		if(bd != null) bd.closeConnection();
 		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
@@ -187,12 +148,21 @@ public class RptUtils {
 			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaCarrelloRPT(intermediario, stazione, inviaCarrelloRpt, rpts.get(0).getCodCarrello())); 
 			return risposta;
 		} finally {
-			bd.setupConnection(GpThreadLocal.get().getTransactionId());
-
-			GiornaleEventi giornale = new GiornaleEventi(bd);
-			for(Rpt rpt : rpts) {
-				buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaCarrelloRPT, bd);
-				giornale.registraEvento(evento);
+			// Se mi chiama InviaRptThread, BD e' null
+			boolean newCon = bd == null;
+			if(!newCon) 
+				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+			else {
+				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			}
+			try {
+				GiornaleEventi giornale = new GiornaleEventi(bd);
+				for(Rpt rpt : rpts) {
+					buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaCarrelloRPT, bd);
+					giornale.registraEvento(evento);
+				}
+			} finally {
+				if(newCon) bd.closeConnection();
 			}
 		}
 	}
@@ -253,10 +223,34 @@ public class RptUtils {
 				return false;
 				
 			case RPT_ATTIVATA:
-				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato non terminale [" + rpt.getStato()+ "]. Eseguo una rispedizione della RPT.");
-				inviaRPTAsync(rpt, bd);
-				return false;
+				// Se modello 3, rispedisco
 				
+				if(rpt.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP)) {
+					log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] iniziativa PSP in stato [" + rpt.getStato()+ "]. Eseguo una rispedizione della RPT.");
+					inviaRPTAsync(rpt, bd);
+					return false;
+				} else {
+					// Se modello 1, spedizione fallita
+					StatoRpt nuovoStato = StatoRpt.RPT_ERRORE_INVIO_A_NODO;
+					log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] iniziativa Ente in stato[" + rpt.getStato()+ "]. Aggiorno in [" + nuovoStato + "].");
+					
+					bd.enableSelectForUpdate();
+					RptBD rptBD = new RptBD(bd);
+					Rpt rpt_attuale = rptBD.getRpt(rpt.getId());
+					if(!stato_originale.equals(rpt_attuale.getStato())) {
+						// Lo stato e' cambiato. Rinuncio all'aggiornamento
+						log.info("Lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] risulta cambiato su GovPay durante l'aggiornamento: " + rpt_attuale.getStato() + ". Operazione di recupero annullata.");
+						bd.disableSelectForUpdate();
+						return false;
+					}
+					log.info("Aggiorno lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in " + nuovoStato + ".");
+					rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato aggiornato in fase di recupero pendenti.", null, null);
+					rpt.setStato(nuovoStato);
+					rpt.setDescrizioneStato("Stato aggiornato in fase di recupero pendenti.");
+					bd.disableSelectForUpdate();
+					return true;
+				}
+ 				
 			default:
 				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato non terminale [" + rpt.getStato()+ "]. Eseguo un aggiornamento dello stato con il Nodo dei Pagamenti.");
 
@@ -281,9 +275,8 @@ public class RptUtils {
 				}
 				
 				if(risposta.getFault() != null) {
-					if(it.govpay.core.exceptions.NdpException.FaultNodo.valueOf(risposta.getFault().getFaultCode()).equals(it.govpay.core.exceptions.NdpException.FaultNodo.PPT_RPT_SCONOSCIUTA)) {
+					if(risposta.getFault().getFaultCode().equals(it.govpay.core.exceptions.NdpException.FaultNodo.PPT_RPT_SCONOSCIUTA.name())) {
 						log.info("Rpt inesistene sul Nodo dei Pagamenti [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: aggiorno lo stato in " + StatoRpt.RPT_ERRORE_INVIO_A_NODO + ".");
-
 						rpt.setStato(StatoRpt.RPT_ERRORE_INVIO_A_NODO);
 						rpt.setDescrizioneStato("Stato sul nodo: PPT_RPT_SCONOSCIUTA");
 	

@@ -43,6 +43,7 @@ public class FrFilter extends AbstractFilter {
 	//select distinct id from fr join rendicontazioni on rendicontazioni.id_fr = fr.id join pagamenti on rendicontazioni.id_pagamento = pagamenti.id join singoli_versamenti on pagamenti.id_singolo_versamento = singoli_versamenti.id join versamenti on singoli_versamenti.id_versamento = versamenti.id and versamenti.id_applicazione = 5;
 	private Long idApplicazione;
 	private List<String> codDominio;
+	private String codDominioFiltro;
 	private String codPsp;
 	private String stato;
 	private Date datainizio;
@@ -66,7 +67,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
-		List<Object> obj = new ArrayList<Object>();
+		List<Object> obj = new ArrayList<>();
 
 		if(this.idApplicazione != null){
 			obj.add(this.idApplicazione);
@@ -151,7 +152,7 @@ public class FrFilter extends AbstractFilter {
 				} else {
 					placeholderWhereIn += " WHERE ";
 				}
-				placeholderWhereIn += ilike("r.iuv") + " like ?";
+				placeholderWhereIn += this.ilike("r.iuv") + " like ?";
 				// join non necessaria, tabella r gia' inserita nella query principale
 			}
 
@@ -225,7 +226,7 @@ public class FrFilter extends AbstractFilter {
 				}
 				String field = "fr."+this.getColumn(FR.model().COD_FLUSSO);
 
-				String iLikefield = ilike(field);		
+				String iLikefield = this.ilike(field);		
 				
 				placeholderWhereIn += iLikefield +" like ?";
 			}
@@ -238,7 +239,7 @@ public class FrFilter extends AbstractFilter {
 				}
 				String field = "fr."+this.getColumn(FR.model().IUR);
 
-				String iLikefield = ilike(field);		
+				String iLikefield = this.ilike(field);		
 				
 				placeholderWhereIn += iLikefield +" like ?";
 
@@ -268,7 +269,7 @@ public class FrFilter extends AbstractFilter {
 						field = this.getColumn(this.listaFieldSimpleSearch.get(i),true);
 					}
 					
-					String iLikefield = ilike(field);		
+					String iLikefield = this.ilike(field);		
 					
 					placeholderWhereIn += iLikefield +" like ?";
 				}
@@ -314,7 +315,7 @@ public class FrFilter extends AbstractFilter {
 	@Override
 	public IExpression _toExpression() throws ServiceException {
 		try {
-			IExpression newExpression = newExpression();
+			IExpression newExpression = this.newExpression();
 			
 			boolean addAnd = false;
 			// Filtro sullo stato pagamenti
@@ -332,8 +333,19 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.codDominio != null){
+			if(this.codDominio != null && this.codDominio.size() > 0){
+				if(addAnd)
+					newExpression.and();
+				
 				newExpression.in(FR.model().COD_DOMINIO, this.codDominio);
+				addAnd = true;
+			}
+			
+			if(this.codDominioFiltro != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(FR.model().COD_DOMINIO, this.codDominioFiltro);
 				addAnd = true;
 			}
 			
@@ -345,11 +357,19 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.datainizio != null && this.dataFine != null) {
+			if(this.datainizio != null) {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.between(FR.model().DATA_ORA_FLUSSO, this.datainizio,this.dataFine);
+				newExpression.greaterEquals(FR.model().DATA_ORA_FLUSSO, this.datainizio);
+				addAnd = true;
+			}
+			
+			if(this.dataFine != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(FR.model().DATA_ORA_FLUSSO, this.dataFine);
 				addAnd = true;
 			}
 			
@@ -363,7 +383,7 @@ public class FrFilter extends AbstractFilter {
 			if(this.idFr != null && !this.idFr.isEmpty()) {
 				if(addAnd)
 					newExpression.and();
-				CustomField baseField = new CustomField("id", Long.class, "id", getRootTable());
+				CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
 
 				newExpression.in(baseField, this.idFr);
 				addAnd = true;
@@ -380,7 +400,7 @@ public class FrFilter extends AbstractFilter {
 	}
 	
 	public String getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(String stato) {
@@ -388,7 +408,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public Date getDatainizio() {
-		return datainizio;
+		return this.datainizio;
 	}
 
 	public void setDatainizio(Date datainizio) {
@@ -396,7 +416,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public Date getDataFine() {
-		return dataFine;
+		return this.dataFine;
 	}
 
 	public void setDataFine(Date dataFine) {
@@ -404,7 +424,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public String getCodPsp() {
-		return codPsp;
+		return this.codPsp;
 	}
 
 	public void setCodPsp(String codPsp) {
@@ -412,7 +432,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public Long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 
 	public void setIdApplicazione(long idApplicazione) {
@@ -420,14 +440,14 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public List<String> getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(List<String> codDominio) {
 		this.codDominio = codDominio;
 	}
 	public List<Long> getIdFr() {
-		return idFr;
+		return this.idFr;
 	}
 
 	public void setIdFr(List<Long> idFr) {
@@ -435,7 +455,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public String getCodFlusso() {
-		return codFlusso;
+		return this.codFlusso;
 	}
 
 	public void setCodFlusso(String codFlusso) {
@@ -443,7 +463,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public String getTnr() {
-		return tnr;
+		return this.tnr;
 	}
 
 	public void setTnr(String tnr) {
@@ -451,7 +471,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public boolean isNascondiSeSoloDiAltriIntermediari() {
-		return nascondiSeSoloDiAltriIntermediari;
+		return this.nascondiSeSoloDiAltriIntermediari;
 	}
 
 	public void setNascondiSeSoloDiAltriIntermediari(
@@ -460,11 +480,19 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+
+	public String getCodDominioFiltro() {
+		return codDominioFiltro;
+	}
+
+	public void setCodDominioFiltro(String codDominioFiltro) {
+		this.codDominioFiltro = codDominioFiltro;
 	}
 	
 }

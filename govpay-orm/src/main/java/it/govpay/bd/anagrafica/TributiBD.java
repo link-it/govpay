@@ -65,7 +65,7 @@ public class TributiBD extends BasicBD {
 
 		long id = idTributo.longValue();
 		try {
-			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id));
+			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id), this);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -94,7 +94,7 @@ public class TributiBD extends BasicBD {
 			idTributo.setIdDominio(idDominioOrm);
 			idTipoTributo.setCodTributo(codTributo);
 			idTributo.setIdTipoTributo(idTipoTributo); 
-			return TributoConverter.toDTO(this.getTributoService().get(idTributo));
+			return TributoConverter.toDTO(this.getTributoService().get(idTributo), this);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -116,7 +116,7 @@ public class TributiBD extends BasicBD {
 			}
 			this.getTributoService().update(idVO, vo);
 			tributo.setId(vo.getId());
-			emitAudit(tributo);
+			this.emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
@@ -134,12 +134,12 @@ public class TributiBD extends BasicBD {
 	 * @throws NotPermittedException
 	 * @throws ServiceException
 	 */
-	public void insertTributo(Tributo tributo) throws ServiceException {
+	public void insertTributo(it.govpay.model.Tributo tributo) throws ServiceException {
 		try {
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
 			this.getTributoService().create(vo);
 			tributo.setId(vo.getId());
-			emitAudit(tributo);
+			this.emitAudit(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -163,14 +163,14 @@ public class TributiBD extends BasicBD {
 
 	public List<Tributo> findAll(TributoFilter filter) throws ServiceException {
 		try {
-			return TributoConverter.toDTOList(this.getTributoService().findAll(filter.toPaginatedExpression()));
+			return TributoConverter.toDTOList(this.getTributoService().findAll(filter.toPaginatedExpression()), this);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
 
 	public List<Long> getIdTipiTributiDefinitiPerDominio(Long idDominio) throws ServiceException {
-		List<Long> lstIdTipiTributi = new ArrayList<Long>();
+		List<Long> lstIdTipiTributi = new ArrayList<>();
 
 		try {
 			IPaginatedExpression pagExpr = this.getTributoService().newPaginatedExpression();
@@ -191,7 +191,7 @@ public class TributiBD extends BasicBD {
 		}catch(ServiceException e){
 			throw e;
 		} catch (NotFoundException e) {
-			return new ArrayList<Long>();
+			return new ArrayList<>();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {

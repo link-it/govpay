@@ -19,11 +19,11 @@
  */
 package it.govpay.bd.model.converter;
 
-import java.util.Arrays;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.Utilities;
 
 import it.govpay.bd.model.Operatore;
+import it.govpay.orm.IdUtenza;
 
 public class OperatoreConverter {
 
@@ -31,30 +31,24 @@ public class OperatoreConverter {
 	public static Operatore toDTO(it.govpay.orm.Operatore vo) throws ServiceException {
 		Operatore dto = new Operatore();
 		dto.setId(vo.getId());
-		dto.setPrincipal(vo.getPrincipal());
+		if(vo.getIdUtenza() != null)
+		dto.setIdUtenza(vo.getIdUtenza().getId());
 		dto.setNome(vo.getNome());
-		String profilo = vo.getProfilo();
-		String[] split = profilo.split(Operatore.SEPARATORE_RUOLO);
-		dto.setRuoli(Arrays.asList(split));  
-		dto.setAbilitato(vo.isAbilitato());
 		return dto;
 	}
 
 	public static it.govpay.orm.Operatore toVO(Operatore dto) {
 		it.govpay.orm.Operatore vo = new it.govpay.orm.Operatore();
 		vo.setId(dto.getId());
-		vo.setPrincipal(dto.getPrincipal());
-		vo.setNome(dto.getNome());
-		StringBuffer sb = new StringBuffer();
-		for(String ruolo : dto.getRuoli()) {
-			if(sb.length() > 0)
-				sb.append(Operatore.SEPARATORE_RUOLO);
-			sb.append(ruolo);
+		IdUtenza idUtenza = new IdUtenza();
+		idUtenza.setId(dto.getIdUtenza());
+		try {
+			idUtenza.setPrincipal(Utilities.formatSubject(dto.getPrincipal()));
+		} catch (Exception e) {
+			idUtenza.setPrincipal(dto.getPrincipal());
 		}
-		
-		vo.setProfilo(sb.toString());
-		vo.setAbilitato(dto.isAbilitato());
+		vo.setIdUtenza(idUtenza);
+		vo.setNome(dto.getNome());
 		return vo;
 	}
-
 }

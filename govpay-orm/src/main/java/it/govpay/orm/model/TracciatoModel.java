@@ -41,19 +41,18 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 	
 		super();
 	
-		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new Field("idOperatore",it.govpay.orm.IdOperatore.class,"Tracciato",Tracciato.class));
-		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Tracciato",Tracciato.class));
-		this.DATA_CARICAMENTO = new Field("dataCaricamento",java.util.Date.class,"Tracciato",Tracciato.class);
-		this.DATA_ULTIMO_AGGIORNAMENTO = new Field("dataUltimoAggiornamento",java.util.Date.class,"Tracciato",Tracciato.class);
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Tracciato",Tracciato.class);
+		this.TIPO = new Field("tipo",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.STATO = new Field("stato",java.lang.String.class,"Tracciato",Tracciato.class);
-		this.LINEA_ELABORAZIONE = new Field("lineaElaborazione",long.class,"Tracciato",Tracciato.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"Tracciato",Tracciato.class);
-		this.NUM_LINEE_TOTALI = new Field("numLineeTotali",long.class,"Tracciato",Tracciato.class);
-		this.NUM_OPERAZIONI_OK = new Field("numOperazioniOk",long.class,"Tracciato",Tracciato.class);
-		this.NUM_OPERAZIONI_KO = new Field("numOperazioniKo",long.class,"Tracciato",Tracciato.class);
-		this.NOME_FILE = new Field("nomeFile",java.lang.String.class,"Tracciato",Tracciato.class);
-		this.RAW_DATA_RICHIESTA = new Field("rawDataRichiesta",byte[].class,"Tracciato",Tracciato.class);
-		this.RAW_DATA_RISPOSTA = new Field("rawDataRisposta",byte[].class,"Tracciato",Tracciato.class);
+		this.DATA_CARICAMENTO = new Field("dataCaricamento",java.util.Date.class,"Tracciato",Tracciato.class);
+		this.DATA_COMPLETAMENTO = new Field("dataCompletamento",java.util.Date.class,"Tracciato",Tracciato.class);
+		this.BEAN_DATI = new Field("beanDati",java.lang.String.class,"Tracciato",Tracciato.class);
+		this.FILE_NAME_RICHIESTA = new Field("fileNameRichiesta",java.lang.String.class,"Tracciato",Tracciato.class);
+		this.RAW_RICHIESTA = new Field("rawRichiesta",byte[].class,"Tracciato",Tracciato.class);
+		this.FILE_NAME_ESITO = new Field("fileNameEsito",java.lang.String.class,"Tracciato",Tracciato.class);
+		this.RAW_ESITO = new Field("rawEsito",byte[].class,"Tracciato",Tracciato.class);
+		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new Field("idOperatore",it.govpay.orm.IdOperatore.class,"Tracciato",Tracciato.class));
 	
 	}
 	
@@ -61,49 +60,46 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 	
 		super(father);
 	
-		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new ComplexField(father,"idOperatore",it.govpay.orm.IdOperatore.class,"Tracciato",Tracciato.class));
-		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Tracciato",Tracciato.class));
-		this.DATA_CARICAMENTO = new ComplexField(father,"dataCaricamento",java.util.Date.class,"Tracciato",Tracciato.class);
-		this.DATA_ULTIMO_AGGIORNAMENTO = new ComplexField(father,"dataUltimoAggiornamento",java.util.Date.class,"Tracciato",Tracciato.class);
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Tracciato",Tracciato.class);
+		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"Tracciato",Tracciato.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Tracciato",Tracciato.class);
-		this.LINEA_ELABORAZIONE = new ComplexField(father,"lineaElaborazione",long.class,"Tracciato",Tracciato.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"Tracciato",Tracciato.class);
-		this.NUM_LINEE_TOTALI = new ComplexField(father,"numLineeTotali",long.class,"Tracciato",Tracciato.class);
-		this.NUM_OPERAZIONI_OK = new ComplexField(father,"numOperazioniOk",long.class,"Tracciato",Tracciato.class);
-		this.NUM_OPERAZIONI_KO = new ComplexField(father,"numOperazioniKo",long.class,"Tracciato",Tracciato.class);
-		this.NOME_FILE = new ComplexField(father,"nomeFile",java.lang.String.class,"Tracciato",Tracciato.class);
-		this.RAW_DATA_RICHIESTA = new ComplexField(father,"rawDataRichiesta",byte[].class,"Tracciato",Tracciato.class);
-		this.RAW_DATA_RISPOSTA = new ComplexField(father,"rawDataRisposta",byte[].class,"Tracciato",Tracciato.class);
+		this.DATA_CARICAMENTO = new ComplexField(father,"dataCaricamento",java.util.Date.class,"Tracciato",Tracciato.class);
+		this.DATA_COMPLETAMENTO = new ComplexField(father,"dataCompletamento",java.util.Date.class,"Tracciato",Tracciato.class);
+		this.BEAN_DATI = new ComplexField(father,"beanDati",java.lang.String.class,"Tracciato",Tracciato.class);
+		this.FILE_NAME_RICHIESTA = new ComplexField(father,"fileNameRichiesta",java.lang.String.class,"Tracciato",Tracciato.class);
+		this.RAW_RICHIESTA = new ComplexField(father,"rawRichiesta",byte[].class,"Tracciato",Tracciato.class);
+		this.FILE_NAME_ESITO = new ComplexField(father,"fileNameEsito",java.lang.String.class,"Tracciato",Tracciato.class);
+		this.RAW_ESITO = new ComplexField(father,"rawEsito",byte[].class,"Tracciato",Tracciato.class);
+		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new ComplexField(father,"idOperatore",it.govpay.orm.IdOperatore.class,"Tracciato",Tracciato.class));
 	
 	}
 	
 	
 
-	public it.govpay.orm.model.IdOperatoreModel ID_OPERATORE = null;
+	public IField COD_DOMINIO = null;
 	 
-	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
-	 
-	public IField DATA_CARICAMENTO = null;
-	 
-	public IField DATA_ULTIMO_AGGIORNAMENTO = null;
+	public IField TIPO = null;
 	 
 	public IField STATO = null;
 	 
-	public IField LINEA_ELABORAZIONE = null;
-	 
 	public IField DESCRIZIONE_STATO = null;
 	 
-	public IField NUM_LINEE_TOTALI = null;
+	public IField DATA_CARICAMENTO = null;
 	 
-	public IField NUM_OPERAZIONI_OK = null;
+	public IField DATA_COMPLETAMENTO = null;
 	 
-	public IField NUM_OPERAZIONI_KO = null;
+	public IField BEAN_DATI = null;
 	 
-	public IField NOME_FILE = null;
+	public IField FILE_NAME_RICHIESTA = null;
 	 
-	public IField RAW_DATA_RICHIESTA = null;
+	public IField RAW_RICHIESTA = null;
 	 
-	public IField RAW_DATA_RISPOSTA = null;
+	public IField FILE_NAME_ESITO = null;
+	 
+	public IField RAW_ESITO = null;
+	 
+	public it.govpay.orm.model.IdOperatoreModel ID_OPERATORE = null;
 	 
 
 	@Override

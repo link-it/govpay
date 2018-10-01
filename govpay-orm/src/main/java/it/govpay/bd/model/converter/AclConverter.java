@@ -19,76 +19,32 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.TipiTributoBD;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Acl.Tipo;
 import it.govpay.orm.ACL;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdTipoTributo;
-
-import org.openspcoop2.generic_project.exception.MultipleResultException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class AclConverter {
 
-	public static Acl toDTO(ACL vo, BasicBD bd) throws ServiceException, NotFoundException {
+	public static Acl toDTO(ACL vo) throws ServiceException {
 		Acl dto = new Acl();
-		dto.setServizio(Servizio.toEnum(vo.getCodServizio()));
-		dto.setTipo(Tipo.toEnum(vo.getCodTipo()));
 		dto.setDiritti(vo.getDiritti());
-		dto.setAdmin(vo.isAdmin());
-
-		if(vo.getIdDominio() != null){
-			try{
-				dto.setCodDominio(new DominiBD(bd).getDominio(vo.getIdDominio().getId()).getCodDominio());
-			} catch(MultipleResultException e) {}
-			
-			dto.setIdDominio(vo.getIdDominio().getId());
-		}
-		if(vo.getIdTipoTributo() != null){
-			try {
-				dto.setCodTributo(new TipiTributoBD(bd).getTipoTributo(vo.getIdTipoTributo().getId()).getCodTributo());
-			} catch(MultipleResultException e) {}
-			dto.setIdTributo(vo.getIdTipoTributo().getId());
-		}
+		dto.setListaDiritti(vo.getDiritti());
+		dto.setPrincipal(vo.getPrincipal());
+		dto.setRuolo(vo.getRuolo());
+		dto.setServizio(Servizio.toEnum(vo.getServizio()));
+		dto.setId(vo.getId());
 		return dto;
 	}
 
-	public static it.govpay.orm.ACL toVO(Acl dto, BasicBD bd) throws ServiceException, NotFoundException {
+	public static it.govpay.orm.ACL toVO(Acl dto) throws ServiceException {
 		ACL vo = new ACL();
-		vo.setCodServizio(dto.getServizio().getCodifica());
-		vo.setCodTipo(dto.getTipo().getCodifica());
-		vo.setDiritti(dto.getDiritti());
-		vo.setAdmin(dto.isAdmin());
-		if(dto.getIdDominio() != null || dto.getCodDominio() != null){
-			IdDominio idDominio = new IdDominio();
-			if(dto.getIdDominio() == null) {
-				try {
-					idDominio.setId(new DominiBD(bd).getDominio(dto.getCodDominio()).getId());
-				} catch(MultipleResultException e) {}
-			} else {
-				idDominio.setId(dto.getIdDominio());
-			}
-
-			vo.setIdDominio(idDominio);
-		}
-
-		if(dto.getIdTributo() != null || dto.getCodTributo() != null){
-			IdTipoTributo idTributo = new IdTipoTributo();
-			if(dto.getIdTributo() == null){
-				try {
-					idTributo.setId(new TipiTributoBD(bd).getTipoTributo(dto.getCodTributo()).getId());	
-				} catch(MultipleResultException e) {}
-			} else { 
-				idTributo.setId(dto.getIdTributo());
-			}
-			vo.setIdTipoTributo(idTributo);
-		}
-
+		vo.setDiritti(dto.getListaDirittiString()); 
+		vo.setServizio(dto.getServizio().getCodifica());
+		vo.setPrincipal(dto.getPrincipal());
+		vo.setRuolo(dto.getRuolo());
+		vo.setId(dto.getId());
 		return vo;
 	}
 }

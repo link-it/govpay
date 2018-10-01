@@ -23,7 +23,7 @@ import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdBatch;
@@ -130,7 +130,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getBatchFieldConverter().toTable(Batch.model()));
 		boolean isUpdate_batch = true;
-		java.util.List<JDBCObject> lstObjects_batch = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_batch = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getBatchFieldConverter().toColumn(Batch.model().COD_BATCH,false), "?");
 		lstObjects_batch.add(new JDBCObject(batch.getCodBatch(), Batch.model().COD_BATCH.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getBatchFieldConverter().toColumn(Batch.model().NODO,false), "?");
@@ -183,7 +183,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getBatchFieldConverter().toTable(Batch.model()), 
@@ -194,7 +194,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getBatchFieldConverter().toTable(Batch.model()), 
@@ -205,7 +205,7 @@ public class JDBCBatchServiceImpl extends JDBCBatchServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getBatchFieldConverter().toTable(Batch.model()), 

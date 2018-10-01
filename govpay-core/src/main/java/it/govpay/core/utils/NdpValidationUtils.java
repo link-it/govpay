@@ -35,7 +35,7 @@ public class NdpValidationUtils {
 
 	public static void validaSemantica(it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante rr, it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante er, EsitoValidazione esito) {
 		if(rr == null && er == null) return;
-		if(rr == null || er == null) esito.addErrore("SoggettoVersante non corriponde", true);
+		if(rr == null || er == null) {esito.addErrore("SoggettoVersante non corriponde", true); return; }
 
 		valida(rr.getAnagraficaVersante(),er.getAnagraficaVersante(), esito, "AnagraficaVersante non corrisponde", false);
 		valida(rr.getCapVersante(),er.getCapVersante(), esito, "CapVersante non corrisponde", false);
@@ -88,7 +88,7 @@ public class NdpValidationUtils {
 
 	public static void validaSemantica(CtSoggettoVersante rpt, CtSoggettoVersante rt, EsitoValidazione esito) {
 		if(rpt == null && rt == null) return;
-		if(rpt == null || rt == null) esito.addErrore("SoggettoVersante non corriponde", false);
+		if(rpt == null || rt == null) { esito.addErrore("SoggettoVersante non corriponde", false);  return; }
 
 		valida(rpt.getAnagraficaVersante(),rt.getAnagraficaVersante(), esito, "AnagraficaVersante non corrisponde", false);
 		valida(rpt.getCapVersante(),rt.getCapVersante(), esito, "CapVersante non corrisponde", false);

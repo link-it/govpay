@@ -25,51 +25,36 @@ public class IbanAccredito extends BasicModel {
 
 	private Long id; 
 	private String codIban;
-	private String codBicAccredito;
-	private String codIbanAppoggio;
-	private String codBicAppoggio;
-	private String idSellerBank;
-	private String idNegozio;
+	private String codBic;
 	private boolean postale;
 	private boolean attivatoObep;
 	private boolean abilitato;
 	private Long idDominio;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public String getCodIban() {
-		return codIban;
+		return this.codIban;
 	}
 	public void setCodIban(String codIban) {
 		this.codIban = codIban;
 	}
-	public String getIdSellerBank() {
-		return idSellerBank;
-	}
-	public void setIdSellerBank(String idSellerBank) {
-		this.idSellerBank = idSellerBank;
-	}
-	public String getIdNegozio() {
-		return idNegozio;
-	}
-	public void setIdNegozio(String idNegozio) {
-		this.idNegozio = idNegozio;
-	}
 	public boolean isPostale() {
-		return postale;
+		return this.postale;
 	}
 	public void setPostale(boolean postale) {
 		this.postale = postale;
 	}
 	public boolean isAttivatoObep() {
-		return attivatoObep;
+		return this.attivatoObep;
 	}
 	public void setAttivatoObep(boolean attivatoObep) {
 		this.attivatoObep = attivatoObep;
 	}
 	public boolean isAbilitato() {
-		return abilitato;
+		return this.abilitato;
 	}
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
@@ -77,29 +62,17 @@ public class IbanAccredito extends BasicModel {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getCodBicAccredito() {
-		return codBicAccredito;
-	}
-	public void setCodBicAccredito(String codBicAccredito) {
-		this.codBicAccredito = codBicAccredito;
-	}
-	public String getCodIbanAppoggio() {
-		return codIbanAppoggio;
-	}
-	public void setCodIbanAppoggio(String codIbanAppoggio) {
-		this.codIbanAppoggio = codIbanAppoggio;
-	}
-	public String getCodBicAppoggio() {
-		return codBicAppoggio;
-	}
-	public void setCodBicAppoggio(String codBicAppoggio) {
-		this.codBicAppoggio = codBicAppoggio;
-	}
 	public Long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
+	}
+	public String getCodBic() {
+		return this.codBic;
+	}
+	public void setCodBic(String codBic) {
+		this.codBic = codBic;
 	}
 }
 

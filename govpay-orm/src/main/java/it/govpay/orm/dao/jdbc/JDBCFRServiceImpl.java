@@ -24,7 +24,7 @@ import it.govpay.orm.IdFr;
 
 import java.sql.Connection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
@@ -150,7 +150,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getFRFieldConverter().toTable(FR.model()));
 		boolean isUpdate_fr = true;
-		java.util.List<JDBCObject> lstObjects_fr = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_fr = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().COD_PSP,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getCodPsp(), FR.model().COD_PSP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().COD_DOMINIO,false), "?");
@@ -221,7 +221,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getFRFieldConverter().toTable(FR.model()), 
@@ -232,7 +232,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getFRFieldConverter().toTable(FR.model()), 
@@ -243,7 +243,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getFRFieldConverter().toTable(FR.model()), 

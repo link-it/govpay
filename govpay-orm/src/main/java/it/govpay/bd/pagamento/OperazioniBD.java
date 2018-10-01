@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2018 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ public class OperazioniBD extends BasicBD {
 	
 	private List<it.govpay.bd.model.Operazione> findAll(IPaginatedExpression exp) throws ServiceException, NotImplementedException {
 		List<Operazione> findAll = this.getOperazioneService().findAll(exp);
-		List<it.govpay.bd.model.Operazione> findAllDTO = new ArrayList<it.govpay.bd.model.Operazione>(); 
+		List<it.govpay.bd.model.Operazione> findAllDTO = new ArrayList<>(); 
 		for(Operazione caricamento : findAll) {
 			findAllDTO.add(OperazioneConverter.toDTO(caricamento));
 		}
@@ -64,18 +64,16 @@ public class OperazioniBD extends BasicBD {
 		try{
 			Operazione caricamentoVo = OperazioneConverter.toVO(caricamento);
 			this.getOperazioneService().update(caricamentoVo);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch(NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		}
 	}
 	
-	public OperazioneFilter newFilter() throws ServiceException {
+	public OperazioneFilter newFilter() {
 		return new OperazioneFilter(this.getOperazioneService());
 	}
 	
-	public OperazioneFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public OperazioneFilter newFilter(boolean simpleSearch) {
 		return new OperazioneFilter(this.getOperazioneService(),simpleSearch);
 	}
 	
@@ -98,14 +96,8 @@ public class OperazioniBD extends BasicBD {
 	public it.govpay.bd.model.Operazione getOperazione(long id) throws ServiceException {
 		try {
 			it.govpay.orm.Operazione operazione = ((IDBOperazioneService)this.getOperazioneService()).get(id);
-			it.govpay.bd.model.Operazione dto = OperazioneConverter.toDettaglioDTO(operazione);
-			
-			return dto;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+			return OperazioneConverter.toDTO(operazione);
+		} catch (NotImplementedException | NotFoundException | MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}

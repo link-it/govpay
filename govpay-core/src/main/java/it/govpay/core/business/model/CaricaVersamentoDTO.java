@@ -43,19 +43,19 @@ public class CaricaVersamentoDTO {
 	}
 	
 	public Applicazione getApplicazione() {
-		return applicazione;
+		return this.applicazione;
 	}
 	
 	public it.govpay.bd.model.Versamento getVersamento() {
-		return versamento;
+		return this.versamento;
 	}
 	
 	public Operatore getOperatore() {
-		return operatore;
+		return this.operatore;
 	}
 	
 	public boolean isGeneraIuv() {
-		return generaIuv;
+		return this.generaIuv;
 	}
 	
 	public void setGeneraIuv(boolean generaIuv) {
@@ -63,7 +63,7 @@ public class CaricaVersamentoDTO {
 	}
 	
 	public boolean isAggiornaSeEsiste() {
-		return aggiornaSeEsiste;
+		return this.aggiornaSeEsiste;
 	}
 	
 	public void setAggiornaSeEsiste(boolean aggiornaSeEsiste) {

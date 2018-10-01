@@ -130,6 +130,20 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(Incasso.model().ID_OPERATORE.PRINCIPAL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal";
+			}else{
+				return "principal";
+			}
+		}
+		if(field.equals(Incasso.model().IBAN_ACCREDITO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iban_accredito";
+			}else{
+				return "iban_accredito";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -170,6 +184,12 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Incasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Incasso.model().ID_APPLICAZIONE, returnAlias);
 		}
+		if(field.equals(Incasso.model().ID_OPERATORE.PRINCIPAL)){
+			return this.toTable(Incasso.model().ID_OPERATORE, returnAlias);
+		}
+		if(field.equals(Incasso.model().IBAN_ACCREDITO)){
+			return this.toTable(Incasso.model(), returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -188,6 +208,9 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Incasso.model().ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Incasso.model().ID_OPERATORE)){
+			return "operatori";
 		}
 
 

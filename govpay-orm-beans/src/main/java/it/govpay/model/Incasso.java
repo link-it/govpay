@@ -35,22 +35,25 @@ public class Incasso extends BasicModel {
 	private Date dataIncasso;
 	private Date dataContabile;
 	private String dispositivo;
-	private long idApplicazione;
+	private String ibanAccredito;
+	private Long idApplicazione;
+	private Long idOperatore;
 	
+	@Override
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getTrn() {
-		return trn;
+		return this.trn;
 	}
 	public void setTrn(String trn) {
 		this.trn = trn;
 	}
 	public String getCausale() {
-		return causale;
+		return this.causale;
 	}
 	public void setCausale(String causale) {
 		if(causale != null)
@@ -59,46 +62,58 @@ public class Incasso extends BasicModel {
 			this.causale = causale;
 	}
 	public BigDecimal getImporto() {
-		return importo;
+		return this.importo;
 	}
 	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
 	public String getDispositivo() {
-		return dispositivo;
+		return this.dispositivo;
 	}
 	public void setDispositivo(String dispositivo) {
 		this.dispositivo = dispositivo;
 	}
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
 	}
 	public Date getDataValuta() {
-		return dataValuta;
+		return this.dataValuta;
 	}
 	public void setDataValuta(Date dataValuta) {
 		this.dataValuta = dataValuta;
 	}
 	public Date getDataIncasso() {
-		return dataIncasso;
+		return this.dataIncasso;
 	}
 	public void setDataIncasso(Date dataIncasso) {
 		this.dataIncasso = dataIncasso;
 	}
 	public Date getDataContabile() {
-		return dataContabile;
+		return this.dataContabile;
 	}
 	public void setDataContabile(Date dataContabile) {
 		this.dataContabile = dataContabile;
 	}
-	public long getIdApplicazione() {
-		return idApplicazione;
+	public Long getIdApplicazione() {
+		return this.idApplicazione;
 	}
-	public void setIdApplicazione(long idApplicazione) {
+	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
+	}
+	public Long getIdOperatore() {
+		return this.idOperatore;
+	}
+	public void setIdOperatore(Long idOperatore) {
+		this.idOperatore = idOperatore;
+	}
+	public String getIbanAccredito() {
+		return this.ibanAccredito;
+	}
+	public void setIbanAccredito(String ibanAccredito) {
+		this.ibanAccredito = ibanAccredito;
 	}
 }
 

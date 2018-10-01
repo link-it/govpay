@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,7 +20,6 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -29,78 +27,74 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.TracciatoConverter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.model.Tracciato.StatoTracciatoType;
-import it.govpay.orm.Tracciato;
-import it.govpay.orm.dao.jdbc.JDBCTracciatoService;
+import it.govpay.bd.model.Tracciato;
+import it.govpay.orm.IdTracciato;
+import it.govpay.orm.dao.jdbc.JDBCTracciatoServiceSearch;
 
 public class TracciatiBD extends BasicBD {
 
 	public TracciatiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
-	
-	private List<it.govpay.bd.model.Tracciato> findAll(IPaginatedExpression exp) throws ServiceException, NotImplementedException {
-		List<Tracciato> findAll = this.getTracciatoService().findAll(exp);
-		List<it.govpay.bd.model.Tracciato> findAllDTO = new ArrayList<it.govpay.bd.model.Tracciato>(); 
-		for(Tracciato tracciato : findAll) {
-			findAllDTO.add(TracciatoConverter.toDTO(tracciato));
+
+	/**
+	 * Recupera l'tracciato tramite l'id fisico
+	 * 
+	 * @param idEnte
+	 * @return
+	 * @throws NotFoundException se l'ente non esiste.
+	 * @throws MultipleResultException in caso di duplicati.
+	 * @throws ServiceException in caso di errore DB.
+	 */
+	public Tracciato getTracciato(Long idTracciato) throws NotFoundException, ServiceException {
+		if(idTracciato == null) {
+			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
-		return findAllDTO;
-	}
-	
-	
-	public void insertTracciato(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
-		try{
-			Tracciato tracciatoVo = TracciatoConverter.toVO(tracciato);
-			this.getTracciatoService().create(tracciatoVo);
-			
-			tracciato.setId(tracciatoVo.getId());
-		} catch(NotImplementedException e) {
+
+		long id = idTracciato.longValue();
+
+		try {
+			it.govpay.orm.Tracciato tracciatoVO = ((JDBCTracciatoServiceSearch)this.getTracciatoService()).get(id);
+			return TracciatoConverter.toDTO(tracciatoVO);
+
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		}
-	}
-	
-	public void updateTracciato(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
-		try{
-			Tracciato tracciatoVo = TracciatoConverter.toVO(tracciato);
-			this.getTracciatoService().update(this.getTracciatoService().convertToId(tracciatoVo), tracciatoVo);
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
-	
-	public void updateTracciato(long idTracciato, StatoTracciatoType stato, long lineaElaborazione, long ok, long ko) throws ServiceException {
-		try{
-			List<UpdateField> listUpdateFields = new ArrayList<UpdateField>();
-			listUpdateFields.add(new UpdateField(Tracciato.model().STATO, stato.toString()));
-			listUpdateFields.add(new UpdateField(Tracciato.model().NUM_OPERAZIONI_OK, ok));
-			listUpdateFields.add(new UpdateField(Tracciato.model().NUM_OPERAZIONI_KO, ko));
-			listUpdateFields.add(new UpdateField(Tracciato.model().LINEA_ELABORAZIONE, lineaElaborazione));
-			listUpdateFields.add(new UpdateField(Tracciato.model().DATA_ULTIMO_AGGIORNAMENTO, new Date()));
-			
-			((JDBCTracciatoService)this.getTracciatoService()).updateFields(idTracciato, listUpdateFields.toArray(new UpdateField[]{}));
-		} catch(NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
+
+	/**
+	 * Aggiorna l'intermediari con i dati forniti
+	 * @param intermediari
+	 * @throws NotPermittedException se si inserisce un intermediari gia' censito
+	 * @throws ServiceException in caso di errore DB.
+	 */
+	public void insertTracciato(Tracciato tracciato) throws ServiceException{
+		try {
+			it.govpay.orm.Tracciato vo = TracciatoConverter.toVO(tracciato);
+
+			this.getTracciatoService().create(vo);
+			tracciato.setId(vo.getId());
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
+
 	}
-	
-	public TracciatoFilter newFilter() throws ServiceException {
+
+
+	public TracciatoFilter newFilter() {
 		return new TracciatoFilter(this.getTracciatoService());
 	}
 	
-	public TracciatoFilter newFilter(boolean simpleSearch) throws ServiceException {
+	public TracciatoFilter newFilter(boolean simpleSearch) {
 		return new TracciatoFilter(this.getTracciatoService(),simpleSearch);
 	}
-	
+
 	public long count(TracciatoFilter filter) throws ServiceException {
 		try {
 			return this.getTracciatoService().count(filter.toExpression()).longValue();
@@ -109,26 +103,41 @@ public class TracciatiBD extends BasicBD {
 		}
 	}
 
-	public List<it.govpay.bd.model.Tracciato> findAll(TracciatoFilter filter) throws ServiceException {
+	public List<Tracciato> findAll(TracciatoFilter filter) throws ServiceException {
 		try {
-			return this.findAll(filter.toPaginatedExpression());
+			List<Tracciato> lst = new ArrayList<>();
+			List<it.govpay.orm.Tracciato> lstTracciatoVO = this.getTracciatoService().findAll(filter.toPaginatedExpression());
+			for(it.govpay.orm.Tracciato tracciatoVO: lstTracciatoVO) {
+				lst.add(TracciatoConverter.toDTO(tracciatoVO));
+			}
+			return lst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
-	
-	public it.govpay.bd.model.Tracciato getTracciato(long id) throws ServiceException, NotFoundException {
+
+	public void update(Tracciato tracciato) throws ServiceException {
 		try {
-			it.govpay.orm.IdTracciato idTracciato = new it.govpay.orm.IdTracciato();
-			idTracciato.setId(id);
-			it.govpay.orm.Tracciato versamento = this.getTracciatoService().get(idTracciato);
-			return TracciatoConverter.toDTO(versamento);
+			it.govpay.orm.Tracciato vo = TracciatoConverter.toVO(tracciato);
+			this.getTracciatoService().update(this.getTracciatoService().convertToId(vo), vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
+		}
+	}
+
+	public void updateBeanDati(Tracciato tracciato, String beanDati) throws ServiceException {
+		try {
+			IdTracciato convertToId = this.getTracciatoService().convertToId(TracciatoConverter.toVO(tracciato));
+			
+			log.info("aggiorno bean dati del tracciato: %s" , convertToId.getId());
+			this.getTracciatoService().updateFields(convertToId, new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, beanDati));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		}
 	}
+
 }

@@ -1,0 +1,10 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
+.card-profilo {
+  border-bottom: 1px solid $link-shadow;
+}
+
+mat-card .card-profilo:last-child {
+  border: none !important;
+}

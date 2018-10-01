@@ -40,6 +40,8 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	// Filtro che indica che voglio gli iban associati al dominio.
 	private String codDominio;
 	private Long idDominio;
+	private String codIbanAccredito;
+	private Boolean postale;
 
 	public enum SortFields {
 		COD_IBAN
@@ -66,7 +68,20 @@ public class IbanAccreditoFilter extends AbstractFilter {
 			if(this.getIdDominio() != null){
 				if(addAnd) expr.and();
 				IbanAccreditoFieldConverter fieldConverter = new IbanAccreditoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.IbanAccredito.model())), getIdDominio());
+				expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.IbanAccredito.model())), this.getIdDominio());
+				addAnd = true;
+			}
+			
+			if(this.postale != null){
+				if(addAnd) expr.and();
+				expr.equals(IbanAccredito.model().POSTALE, this.postale);
+				addAnd = true;
+			}
+			
+			
+			if(this.codIbanAccredito != null){
+				if(addAnd) expr.and();
+				expr.equals(IbanAccredito.model().COD_IBAN, this.codIbanAccredito);
 				addAnd = true;
 			}
 			
@@ -97,7 +112,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	}
 
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -105,11 +120,23 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	}
 
 	public Long getIdDominio() {
-		return idDominio;
+		return this.idDominio;
 	}
 
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
+	}
+	
+	public void setCodIbanAccredito(String codIbanAccredito) {
+		this.codIbanAccredito = codIbanAccredito;
+	}
+
+	public Boolean getPostale() {
+		return this.postale;
+	}
+
+	public void setPostale(Boolean postale) {
+		this.postale = postale;
 	}
 
  

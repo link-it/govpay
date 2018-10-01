@@ -21,29 +21,24 @@ package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
 
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.apache.log4j.Logger;
-
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdRpt;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
-
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-
+import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
  * JDBCRPTServiceImpl
@@ -87,18 +82,36 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
+		// Object _pagamentoPortale
+		Long id_pagamentoPortale = null;
+		it.govpay.orm.IdPagamentoPortale idLogic_pagamentoPortale = null;
+		idLogic_pagamentoPortale = rpt.getIdPagamentoPortale();
+		if(idLogic_pagamentoPortale!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_pagamentoPortale = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findTableId(idLogic_pagamentoPortale, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_pagamentoPortale = idLogic_pagamentoPortale.getId();
+				if(id_pagamentoPortale==null || id_pagamentoPortale<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+
 		// Object _portale
-		Long id_portale = null;
-		it.govpay.orm.IdPortale idLogic_portale = null;
-		idLogic_portale = rpt.getIdPortale();
+		Long id_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_portale = null;
+		idLogic_portale = rpt.getIdApplicazione();
 		if(idLogic_portale!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_portale, false);
+				id_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_portale, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_portale = idLogic_portale.getId();
-				if(id_portale==null || id_portale<=0){
+				id_applicazione = idLogic_portale.getId();
+				if(id_applicazione==null || id_applicazione<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -141,7 +154,8 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DESCRIZIONE_STATO_CONS,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_CONSERVAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
-		sqlQueryObjectInsert.addInsertField("id_portale","?");
+		sqlQueryObjectInsert.addInsertField("id_pagamento_portale","?");
+		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 
 		// Insert rpt
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getRPTFetch().getKeyGeneratorObject(RPT.model());
@@ -180,7 +194,8 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDescrizioneStatoCons(),RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataConservazione(),RPT.model().DATA_CONSERVAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamentoPortale,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
 		rpt.setId(id);
 
@@ -245,18 +260,36 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
+		// Object _rpt_pagamentoPortale
+		Long id_rpt_pagamentoPortale = null;
+		it.govpay.orm.IdPagamentoPortale idLogic_rpt_pagamentoPortale = null;
+		idLogic_rpt_pagamentoPortale = rpt.getIdPagamentoPortale();
+		if(idLogic_rpt_pagamentoPortale!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_rpt_pagamentoPortale = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findTableId(idLogic_rpt_pagamentoPortale, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_rpt_pagamentoPortale = idLogic_rpt_pagamentoPortale.getId();
+				if(id_rpt_pagamentoPortale==null || id_rpt_pagamentoPortale<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+
 		// Object _rpt_portale
-		Long id_rpt_portale = null;
-		it.govpay.orm.IdPortale idLogic_rpt_portale = null;
-		idLogic_rpt_portale = rpt.getIdPortale();
+		Long id_rpt_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_rpt_portale = null;
+		idLogic_rpt_portale = rpt.getIdApplicazione();
 		if(idLogic_rpt_portale!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_rpt_portale, false);
+				id_rpt_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_rpt_portale, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt_portale = idLogic_rpt_portale.getId();
-				if(id_rpt_portale==null || id_rpt_portale<=0){
+				id_rpt_applicazione = idLogic_rpt_portale.getId();
+				if(id_rpt_applicazione==null || id_rpt_applicazione<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -267,7 +300,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getRPTFieldConverter().toTable(RPT.model()));
 		boolean isUpdate_rpt = true;
-		java.util.List<JDBCObject> lstObjects_rpt = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_rpt = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_CARRELLO,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodCarrello(), RPT.model().COD_CARRELLO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().IUV,false), "?");
@@ -338,13 +371,19 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_portale","?");
+			sqlQueryObjectUpdate.addUpdateField("id_pagamento_portale","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_versamento, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
-			lstObjects_rpt.add(new JDBCObject(id_rpt_portale, Long.class));
+			lstObjects_rpt.add(new JDBCObject(id_rpt_pagamentoPortale, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_rpt.add(new JDBCObject(id_rpt_applicazione, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_rpt.add(new JDBCObject(tableId, Long.class));
@@ -389,7 +428,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getRPTFieldConverter().toTable(RPT.model()), 
@@ -400,7 +439,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getRPTFieldConverter().toTable(RPT.model()), 
@@ -411,7 +450,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getRPTFieldConverter().toTable(RPT.model()), 

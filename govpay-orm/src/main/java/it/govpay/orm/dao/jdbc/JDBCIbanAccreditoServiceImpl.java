@@ -23,7 +23,7 @@ import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
 import it.govpay.orm.IdIbanAccredito;
@@ -91,11 +91,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 		// Object ibanAccredito
 		sqlQueryObjectInsert.addInsertTable(this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()));
 		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().COD_IBAN,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ID_SELLER_BANK,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ID_NEGOZIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().BIC_ACCREDITO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().IBAN_APPOGGIO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().BIC_APPOGGIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().POSTALE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ATTIVATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ABILITATO,false),"?");
@@ -105,11 +101,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getIbanAccreditoFetch().getKeyGeneratorObject(IbanAccredito.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getCodIban(),IbanAccredito.model().COD_IBAN.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getIdSellerBank(),IbanAccredito.model().ID_SELLER_BANK.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getIdNegozio(),IbanAccredito.model().ID_NEGOZIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getBicAccredito(),IbanAccredito.model().BIC_ACCREDITO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getIbanAppoggio(),IbanAccredito.model().IBAN_APPOGGIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getBicAppoggio(),IbanAccredito.model().BIC_APPOGGIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getPostale(),IbanAccredito.model().POSTALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getAttivato(),IbanAccredito.model().ATTIVATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(ibanAccredito.getAbilitato(),IbanAccredito.model().ABILITATO.getFieldType()),
@@ -182,19 +174,11 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()));
 		boolean isUpdate_ibanAccredito = true;
-		java.util.List<JDBCObject> lstObjects_ibanAccredito = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_ibanAccredito = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().COD_IBAN,false), "?");
 		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getCodIban(), IbanAccredito.model().COD_IBAN.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ID_SELLER_BANK,false), "?");
-		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getIdSellerBank(), IbanAccredito.model().ID_SELLER_BANK.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ID_NEGOZIO,false), "?");
-		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getIdNegozio(), IbanAccredito.model().ID_NEGOZIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().BIC_ACCREDITO,false), "?");
 		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getBicAccredito(), IbanAccredito.model().BIC_ACCREDITO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().IBAN_APPOGGIO,false), "?");
-		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getIbanAppoggio(), IbanAccredito.model().IBAN_APPOGGIO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().BIC_APPOGGIO,false), "?");
-		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getBicAppoggio(), IbanAccredito.model().BIC_APPOGGIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().POSTALE,false), "?");
 		lstObjects_ibanAccredito.add(new JDBCObject(ibanAccredito.getPostale(), IbanAccredito.model().POSTALE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ATTIVATO,false), "?");
@@ -251,7 +235,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()), 
@@ -262,7 +246,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()), 
@@ -273,7 +257,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()), 

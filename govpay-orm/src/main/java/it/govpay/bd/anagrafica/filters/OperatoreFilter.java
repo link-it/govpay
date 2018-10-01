@@ -35,7 +35,7 @@ import it.govpay.orm.Operatore;
 public class OperatoreFilter extends AbstractFilter {
 	
 	private String principal= null;
-	private String ruolo = null;
+	private boolean searchModeEquals = false; 
 
 	public enum SortFields {
 	}
@@ -46,9 +46,9 @@ public class OperatoreFilter extends AbstractFilter {
 	
 	public OperatoreFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
-		this.listaFieldSimpleSearch.add(Operatore.model().PRINCIPAL);
+		this.listaFieldSimpleSearch.add(Operatore.model().ID_UTENZA.PRINCIPAL);
 		this.listaFieldSimpleSearch.add(Operatore.model().NOME);
-		this.fieldAbilitato = it.govpay.orm.Operatore.model().ABILITATO;
+		this.fieldAbilitato = it.govpay.orm.Operatore.model().ID_UTENZA.ABILITATO;
 	}
 
 	@Override
@@ -58,15 +58,13 @@ public class OperatoreFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.principal != null){
-				newExpression.ilike(Operatore.model().PRINCIPAL, this.principal,LikeMode.ANYWHERE);
+				if(!this.searchModeEquals)
+					newExpression.ilike(Operatore.model().ID_UTENZA.PRINCIPAL, this.principal,LikeMode.ANYWHERE);
+				else 
+					newExpression.equals(Operatore.model().ID_UTENZA.PRINCIPAL, this.principal);
 				addAnd = true;
 			}
-			if(this.ruolo != null){
-				if(addAnd) newExpression.and();
-				newExpression.ilike(Operatore.model().PROFILO, this.ruolo,LikeMode.ANYWHERE);
-				addAnd = true;
-			}
-			
+
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
@@ -86,18 +84,19 @@ public class OperatoreFilter extends AbstractFilter {
 	}
 
 	public String getPrincipal() {
-		return principal;
+		return this.principal;
 	}
 
 	public void setPrincipal(String principal) {
 		this.principal = principal;
 	}
-
-	public String getRuolo() {
-		return ruolo;
+	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
 	}
 
-	public void setRuolo(String ruolo) {
-		this.ruolo = ruolo;
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
 	}
+
 }

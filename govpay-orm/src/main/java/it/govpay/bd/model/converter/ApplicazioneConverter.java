@@ -19,40 +19,37 @@
  */
 package it.govpay.bd.model.converter;
 
-import java.util.List;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.Utilities;
 
-import it.govpay.model.Acl;
-import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Rpt.FirmaRichiesta;
-import it.govpay.model.Versionabile.Versione;
+import it.govpay.orm.IdUtenza;
 
 public class ApplicazioneConverter {
 
-	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreNotifica, Connettore connettoreVerifica, List<Acl> acls) throws ServiceException {
+	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreNotifica, Connettore connettoreVerifica) throws ServiceException {
 		Applicazione dto = new Applicazione();
-		dto.setAbilitato(vo.isAbilitato());
+		dto.setAutoIuv(vo.getAutoIUV());
 		dto.setCodApplicazione(vo.getCodApplicazione());
 		dto.setConnettoreNotifica(connettoreNotifica);
 		dto.setConnettoreVerifica(connettoreVerifica);
+
 		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
-		dto.setPrincipal(vo.getPrincipal());
 		dto.setTrusted(vo.getTrusted());
-		dto.setAcls(acls);
-		dto.setVersione(Versione.toEnum(vo.getVersione()));
 		dto.setCodApplicazioneIuv(vo.getCodApplicazioneIuv());
+		dto.setRegExp(vo.getRegExp());
 		return dto;
 	}
 
 	public static it.govpay.orm.Applicazione toVO(Applicazione dto) {
 		it.govpay.orm.Applicazione vo = new it.govpay.orm.Applicazione();
 		vo.setId(dto.getId());
+		vo.setAutoIUV(dto.isAutoIuv());
 		vo.setCodApplicazione(dto.getCodApplicazione());
-		vo.setAbilitato(dto.isAbilitato());
-		
+
 		if(dto.getConnettoreNotifica()!= null) {
 			dto.getConnettoreNotifica().setIdConnettore(dto.getCodApplicazione() + "_ESITO");
 			vo.setCodConnettoreEsito(dto.getConnettoreNotifica().getIdConnettore());
@@ -64,10 +61,20 @@ public class ApplicazioneConverter {
 		}
 		
 		vo.setFirmaRicevuta(dto.getFirmaRichiesta().getCodifica());
-		vo.setPrincipal(dto.getPrincipal());
+		IdUtenza idUtenza = new IdUtenza();
+		idUtenza.setId(dto.getIdUtenza());
+		try {
+			idUtenza.setPrincipal(Utilities.formatSubject(dto.getUtenza().getPrincipal()));
+		} catch (Exception e) {
+			idUtenza.setPrincipal(dto.getUtenza().getPrincipal());
+		}
+		
+ 
+		
+		vo.setIdUtenza(idUtenza);
 		vo.setTrusted(dto.isTrusted());
-		vo.setVersione(dto.getVersione().getLabel()); 
 		vo.setCodApplicazioneIuv(dto.getCodApplicazioneIuv());
+		vo.setRegExp(dto.getRegExp());
 		return vo;
 	}
 }

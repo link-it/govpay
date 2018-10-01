@@ -15,7 +15,7 @@ public class OperazioneConverter {
 
 
 	public static List<Operazione> toDTOList(List<it.govpay.orm.Operazione> anagraficaLst) throws ServiceException {
-		List<Operazione> lstDTO = new ArrayList<Operazione>();
+		List<Operazione> lstDTO = new ArrayList<>();
 		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
 			for(it.govpay.orm.Operazione anagrafica: anagraficaLst){
 				lstDTO.add(toDTO(anagrafica));
@@ -28,10 +28,10 @@ public class OperazioneConverter {
 		Operazione dto = new Operazione();
 		
 		dto.setId(vo.getId());
-		dto.setTipoOperazione(TipoOperazioneType.valueOf(vo.getTipoOperazione().name()));
+		dto.setTipoOperazione(TipoOperazioneType.valueOf(vo.getTipoOperazione()));
 		dto.setLineaElaborazione(vo.getLineaElaborazione());
 		if(vo.getStato() != null)
-		dto.setStato(StatoOperazioneType.valueOf(vo.getStato().name()));
+			dto.setStato(StatoOperazioneType.valueOf(vo.getStato()));
 
 		
 		dto.setDatiRichiesta(vo.getDatiRichiesta());
@@ -43,6 +43,7 @@ public class OperazioneConverter {
 		if(vo.getIdApplicazione() != null)
 			dto.setIdApplicazione(vo.getIdApplicazione().getId());
 		
+		dto.setCodDominio(vo.getCodDominio());
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 
 		return dto;
@@ -51,10 +52,10 @@ public class OperazioneConverter {
 	public static it.govpay.orm.Operazione toVO(Operazione dto) throws ServiceException {
 		it.govpay.orm.Operazione vo = new it.govpay.orm.Operazione();
 		vo.setId(dto.getId());
-		vo.setTipoOperazione(it.govpay.orm.constants.TipoOperazioneType.valueOf(dto.getTipoOperazione().name()));
+		vo.setTipoOperazione(dto.getTipoOperazione().name());
 		vo.setLineaElaborazione(dto.getLineaElaborazione());
 		if(dto.getStato() != null)
-			vo.setStato(it.govpay.orm.constants.StatoOperazioneType.valueOf(dto.getStato().name()));
+			vo.setStato(dto.getStato().name());
 
 		
 		vo.setDatiRichiesta(dto.getDatiRichiesta());
@@ -71,36 +72,9 @@ public class OperazioneConverter {
 			vo.setIdApplicazione(idApp);
 		}
 
+		vo.setCodDominio(dto.getCodDominio());
 		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
 		
 		return vo;
 	}
-	
-	public static Operazione toDettaglioDTO(it.govpay.orm.Operazione vo) throws ServiceException {
-		Operazione dto = new Operazione();
-		
-		dto.setId(vo.getId());
-		dto.setTipoOperazione(TipoOperazioneType.valueOf(vo.getTipoOperazione().name()));
-		dto.setLineaElaborazione(vo.getLineaElaborazione());
-		if(vo.getStato() != null)
-		dto.setStato(StatoOperazioneType.valueOf(vo.getStato().name()));
-
-		
-		dto.setDatiRichiesta(vo.getDatiRichiesta());
-		dto.setDatiRisposta(vo.getDatiRisposta());
-		dto.setDettaglioEsito(vo.getDettaglioEsito());
-
-		dto.setIdTracciato(vo.getIdTracciato().getIdTracciato());
-		
-		if(dto.getIdApplicazione() != null) {
-			IdApplicazione idApp = new IdApplicazione();
-			idApp.setId(dto.getIdApplicazione());
-			vo.setIdApplicazione(idApp);
-		}
-		
-		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
-
-		return dto;
-	}
-
 }

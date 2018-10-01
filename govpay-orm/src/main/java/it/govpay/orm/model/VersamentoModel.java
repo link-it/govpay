@@ -42,17 +42,22 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		super();
 	
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"Versamento",Versamento.class);
+		this.NOME = new Field("nome",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"Versamento",Versamento.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"Versamento",Versamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Versamento",Versamento.class));
+		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new Field("idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"Versamento",Versamento.class));
 		this.IUV = new it.govpay.orm.model.IuvSearchModel(new Field("iuv",it.govpay.orm.IuvSearch.class,"Versamento",Versamento.class));
 		this.IMPORTO_TOTALE = new Field("importoTotale",double.class,"Versamento",Versamento.class);
 		this.STATO_VERSAMENTO = new Field("statoVersamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"Versamento",Versamento.class);
 		this.AGGIORNABILE = new Field("aggiornabile",boolean.class,"Versamento",Versamento.class);
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_VALIDITA = new Field("dataValidita",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_SCADENZA = new Field("dataScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new Field("dataOraUltimoAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
 		this.CAUSALE_VERSAMENTO = new Field("causaleVersamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_TIPO = new Field("debitoreTipo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_IDENTIFICATIVO = new Field("debitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_ANAGRAFICA = new Field("debitoreAnagrafica",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_INDIRIZZO = new Field("debitoreIndirizzo",java.lang.String.class,"Versamento",Versamento.class);
@@ -65,10 +70,25 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DEBITORE_TELEFONO = new Field("debitoreTelefono",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_CELLULARE = new Field("debitoreCellulare",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_FAX = new Field("debitoreFax",java.lang.String.class,"Versamento",Versamento.class);
+		this.TASSONOMIA_AVVISO = new Field("tassonomiaAvviso",java.lang.String.class,"Versamento",Versamento.class);
+		this.TASSONOMIA = new Field("tassonomia",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_LOTTO = new Field("codLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_VERSAMENTO_LOTTO = new Field("codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_ANNO_TRIBUTARIO = new Field("codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_BUNDLEKEY = new Field("codBundlekey",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"Versamento",Versamento.class);
+		this.INCASSO = new Field("incasso",java.lang.String.class,"Versamento",Versamento.class);
+		this.ANOMALIE = new Field("anomalie",java.lang.String.class,"Versamento",Versamento.class);
+		this.IUV_VERSAMENTO = new Field("iuvVersamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.NUMERO_AVVISO = new Field("numeroAvviso",java.lang.String.class,"Versamento",Versamento.class);
+		this.AVVISATURA = new Field("avvisatura",java.lang.String.class,"Versamento",Versamento.class);
+		this.TIPO_PAGAMENTO = new Field("tipoPagamento",java.lang.Integer.class,"Versamento",Versamento.class);
+		this.DA_AVVISARE = new Field("daAvvisare",boolean.class,"Versamento",Versamento.class);
+		this.COD_AVVISATURA = new Field("codAvvisatura",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"Versamento",Versamento.class));
+		this.ACK = new Field("ack",boolean.class,"Versamento",Versamento.class);
+		this.NOTE = new Field("note",java.lang.String.class,"Versamento",Versamento.class);
+		this.ANOMALO = new Field("anomalo",boolean.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -77,17 +97,22 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		super(father);
 	
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"Versamento",Versamento.class);
+		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"Versamento",Versamento.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"Versamento",Versamento.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Versamento",Versamento.class));
+		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new ComplexField(father,"idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"Versamento",Versamento.class));
 		this.IUV = new it.govpay.orm.model.IuvSearchModel(new ComplexField(father,"iuv",it.govpay.orm.IuvSearch.class,"Versamento",Versamento.class));
 		this.IMPORTO_TOTALE = new ComplexField(father,"importoTotale",double.class,"Versamento",Versamento.class);
 		this.STATO_VERSAMENTO = new ComplexField(father,"statoVersamento",java.lang.String.class,"Versamento",Versamento.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"Versamento",Versamento.class);
 		this.AGGIORNABILE = new ComplexField(father,"aggiornabile",boolean.class,"Versamento",Versamento.class);
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"Versamento",Versamento.class);
+		this.DATA_VALIDITA = new ComplexField(father,"dataValidita",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_SCADENZA = new ComplexField(father,"dataScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.DATA_ORA_ULTIMO_AGGIORNAMENTO = new ComplexField(father,"dataOraUltimoAggiornamento",java.util.Date.class,"Versamento",Versamento.class);
 		this.CAUSALE_VERSAMENTO = new ComplexField(father,"causaleVersamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_TIPO = new ComplexField(father,"debitoreTipo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_IDENTIFICATIVO = new ComplexField(father,"debitoreIdentificativo",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_ANAGRAFICA = new ComplexField(father,"debitoreAnagrafica",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_INDIRIZZO = new ComplexField(father,"debitoreIndirizzo",java.lang.String.class,"Versamento",Versamento.class);
@@ -100,10 +125,25 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DEBITORE_TELEFONO = new ComplexField(father,"debitoreTelefono",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_CELLULARE = new ComplexField(father,"debitoreCellulare",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_FAX = new ComplexField(father,"debitoreFax",java.lang.String.class,"Versamento",Versamento.class);
+		this.TASSONOMIA_AVVISO = new ComplexField(father,"tassonomiaAvviso",java.lang.String.class,"Versamento",Versamento.class);
+		this.TASSONOMIA = new ComplexField(father,"tassonomia",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_LOTTO = new ComplexField(father,"codLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_VERSAMENTO_LOTTO = new ComplexField(father,"codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_ANNO_TRIBUTARIO = new ComplexField(father,"codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_BUNDLEKEY = new ComplexField(father,"codBundlekey",java.lang.String.class,"Versamento",Versamento.class);
+		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"Versamento",Versamento.class);
+		this.INCASSO = new ComplexField(father,"incasso",java.lang.String.class,"Versamento",Versamento.class);
+		this.ANOMALIE = new ComplexField(father,"anomalie",java.lang.String.class,"Versamento",Versamento.class);
+		this.IUV_VERSAMENTO = new ComplexField(father,"iuvVersamento",java.lang.String.class,"Versamento",Versamento.class);
+		this.NUMERO_AVVISO = new ComplexField(father,"numeroAvviso",java.lang.String.class,"Versamento",Versamento.class);
+		this.AVVISATURA = new ComplexField(father,"avvisatura",java.lang.String.class,"Versamento",Versamento.class);
+		this.TIPO_PAGAMENTO = new ComplexField(father,"tipoPagamento",java.lang.Integer.class,"Versamento",Versamento.class);
+		this.DA_AVVISARE = new ComplexField(father,"daAvvisare",boolean.class,"Versamento",Versamento.class);
+		this.COD_AVVISATURA = new ComplexField(father,"codAvvisatura",java.lang.String.class,"Versamento",Versamento.class);
+		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"Versamento",Versamento.class));
+		this.ACK = new ComplexField(father,"ack",boolean.class,"Versamento",Versamento.class);
+		this.NOTE = new ComplexField(father,"note",java.lang.String.class,"Versamento",Versamento.class);
+		this.ANOMALO = new ComplexField(father,"anomalo",boolean.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -111,9 +151,15 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 
 	public IField COD_VERSAMENTO_ENTE = null;
 	 
+	public IField NOME = null;
+	 
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
+	 
 	public it.govpay.orm.model.IdUoModel ID_UO = null;
 	 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
+	 
+	public it.govpay.orm.model.IdPagamentoPortaleModel ID_PAGAMENTO_PORTALE = null;
 	 
 	public it.govpay.orm.model.IuvSearchModel IUV = null;
 	 
@@ -127,11 +173,15 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	 
 	public IField DATA_CREAZIONE = null;
 	 
+	public IField DATA_VALIDITA = null;
+	 
 	public IField DATA_SCADENZA = null;
 	 
 	public IField DATA_ORA_ULTIMO_AGGIORNAMENTO = null;
 	 
 	public IField CAUSALE_VERSAMENTO = null;
+	 
+	public IField DEBITORE_TIPO = null;
 	 
 	public IField DEBITORE_IDENTIFICATIVO = null;
 	 
@@ -157,6 +207,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	 
 	public IField DEBITORE_FAX = null;
 	 
+	public IField TASSONOMIA_AVVISO = null;
+	 
+	public IField TASSONOMIA = null;
+	 
 	public IField COD_LOTTO = null;
 	 
 	public IField COD_VERSAMENTO_LOTTO = null;
@@ -164,6 +218,32 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField COD_ANNO_TRIBUTARIO = null;
 	 
 	public IField COD_BUNDLEKEY = null;
+	 
+	public IField DATI_ALLEGATI = null;
+	 
+	public IField INCASSO = null;
+	 
+	public IField ANOMALIE = null;
+	 
+	public IField IUV_VERSAMENTO = null;
+	 
+	public IField NUMERO_AVVISO = null;
+	 
+	public IField AVVISATURA = null;
+	 
+	public IField TIPO_PAGAMENTO = null;
+	 
+	public IField DA_AVVISARE = null;
+	 
+	public IField COD_AVVISATURA = null;
+	 
+	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO_AVVISATURA = null;
+	 
+	public IField ACK = null;
+	 
+	public IField NOTE = null;
+	 
+	public IField ANOMALO = null;
 	 
 
 	@Override

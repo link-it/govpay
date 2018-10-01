@@ -19,28 +19,25 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdVersamento;
+import java.sql.Connection;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import it.govpay.orm.IdVersamento;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.utils.ProjectInfo;
-
-import java.sql.Connection;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.Versamento} 
@@ -122,16 +119,16 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("Create not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Create not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -219,19 +216,19 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -319,19 +316,19 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Update not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -389,16 +386,16 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -459,16 +456,16 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -526,16 +523,16 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -593,16 +590,16 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -663,16 +660,16 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -730,16 +727,16 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotFoundException e){
 			rollback = true;
-			this.log.debug(e,e); throw e;
+			this.log.debug(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateFields not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -827,16 +824,16 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 			
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -924,16 +921,16 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(ValidationException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("UpdateOrCreate not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -988,13 +985,13 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("Delete not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("Delete not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -1050,13 +1047,13 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("DeleteById not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteById not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -1106,13 +1103,13 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("DeleteAll not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteAll not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -1172,13 +1169,13 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 	
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("DeleteAll(expression) not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteAll(expression) not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -1235,13 +1232,13 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 	
 		}catch(ServiceException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(NotImplementedException e){
 			rollback = true;
-			this.log.error(e,e); throw e;
+			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
 			rollback = true;
-			this.log.error(e,e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteById(tableId) not completed: "+e.getMessage(),e);
 		}finally{
 			if(this.jdbcProperties.isAutomaticTransactionManagement()){
 				if(rollback){
@@ -1266,5 +1263,37 @@ public class JDBCVersamentoService extends JDBCVersamentoServiceSearch  implemen
 		}
 	
 	}
+	
+	
+	@Override
+	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException{
+	
+		Connection connection = null;
+		try{
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return ((JDBCVersamentoServiceImpl)this.serviceCRUD).nativeUpdate(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,param);		
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("nativeQuery not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	
+	}
+
 	
 }

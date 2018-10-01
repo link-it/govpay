@@ -26,13 +26,13 @@ public class Periodo {
 	public Periodo(){}
 	
 	public String getDa() {
-		return da;
+		return this.da;
 	}
 	public void setDa(String da) {
 		this.da = da;
 	}
 	public String getA() {
-		return a;
+		return this.a;
 	}
 	public void setA(String a) {
 		this.a = a;
@@ -47,11 +47,11 @@ public class Periodo {
 			return false;
 		}
 		
-		return da.equals(periodo.getDa()) && a.equals(periodo.getA()); 
+		return this.da.equals(periodo.getDa()) && this.a.equals(periodo.getA()); 
 	}
 	
 	@Override
 	public String toString() {
-		return da + "-" + a;
+		return this.da + "-" + this.a;
 	}
 }

@@ -23,7 +23,7 @@ import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
-import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.FR;
 import it.govpay.orm.Incasso;
@@ -44,7 +44,7 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 
 	public long count(RendicontazionePagamentoFilter filter) throws ServiceException {
 		try {
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 			lstReturnType.add(Long.class);
 			String nativeCount = NativeQueries.getInstance().getPagamentoRendicontazioneCountQuery();
 			String sqlFilterString = filter.getSQLFilterString(nativeCount);
@@ -67,7 +67,7 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 	public List<RendicontazionePagamento> findAll(RendicontazionePagamentoFilter filter) throws ServiceException {
 		try {
 			
-			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			List<Class<?>> lstReturnType = new ArrayList<>();
 			
 			lstReturnType.add(FR.model().COD_FLUSSO.getFieldType());
 			lstReturnType.add(FR.model().STATO.getFieldType());
@@ -145,7 +145,7 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			lstReturnType.add(Long.class); //id_singolo_versamento
 			lstReturnType.add(Long.class); //id_rr
 			lstReturnType.add(Long.class); //id_incasso
-			lstReturnType.add(Pagamento.model().IBAN_ACCREDITO.getFieldType());
+//			lstReturnType.add(Pagamento.model().IBAN_ACCREDITO.getFieldType());
 			lstReturnType.add(Pagamento.model().COD_DOMINIO.getFieldType());
 			lstReturnType.add(Pagamento.model().IUV.getFieldType());
 			lstReturnType.add(Pagamento.model().STATO.getFieldType());
@@ -158,7 +158,7 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			lstReturnType.add(SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType());
 			lstReturnType.add(SingoloVersamento.model().TIPO_CONTABILITA.getFieldType());
 			lstReturnType.add(SingoloVersamento.model().CODICE_CONTABILITA.getFieldType());
-			lstReturnType.add(SingoloVersamento.model().NOTE.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().DATI_ALLEGATI.getFieldType());
 			lstReturnType.add(Long.class); //id
 			lstReturnType.add(Long.class); //id_versamento
 			lstReturnType.add(Long.class); //id_tributo
@@ -175,16 +175,16 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			
 			Object[] array = filter.getFields(false).toArray(new Object[]{});
 			List<List<Object>> lstRecords = this.getRendicontazionePagamentoServiceSearch().nativeQuery(nativeQueryString, lstReturnType, array);
-			List<RendicontazionePagamento> lstNonFiltrata = new ArrayList<RendicontazionePagamento>();
+			List<RendicontazionePagamento> lstNonFiltrata = new ArrayList<>();
 
 			for(List<Object> record: lstRecords) {
-				lstNonFiltrata.add(getRendicontazionePagamento(record));
+				lstNonFiltrata.add(this.getRendicontazionePagamento(record));
 			}
 			return lstNonFiltrata;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
-			return new ArrayList<RendicontazionePagamento>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -346,7 +346,6 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			i++;
 		}
 		
-		pagamento.setIbanAccredito((String) record.get(i++));
 		pagamento.setCodDominio((String) record.get(i++));
 		pagamento.setIuv((String) record.get(i++));
 		
@@ -373,12 +372,12 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			singoloVersamento.setHashDocumento((String) record.get(i++));
 			singoloVersamento.setProvinciaResidenza((String) record.get(i++));
 			if(record.get(i) != null) {
-				singoloVersamento.setTipoContabilita(TipoContabilta.toEnum((String) record.get(i++)));
+				singoloVersamento.setTipoContabilita(TipoContabilita.toEnum((String) record.get(i++)));
 			} else {
 				i++;
 			}
 			singoloVersamento.setCodContabilita((String) record.get(i++));
-			singoloVersamento.setNote((String) record.get(i++));
+			singoloVersamento.setDatiAllegati((String) record.get(i++));
 			
 			singoloVersamento.setId((Long) record.get(i++));
 			singoloVersamento.setIdVersamento((Long) record.get(i++));

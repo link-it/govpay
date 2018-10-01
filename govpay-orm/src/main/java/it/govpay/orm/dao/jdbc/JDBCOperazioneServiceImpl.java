@@ -23,7 +23,7 @@ import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
@@ -113,6 +113,9 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().DATI_RISPOSTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().DETTAGLIO_ESITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().COD_VERSAMENTO_ENTE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().COD_DOMINIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().TRN,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tracciato","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 
@@ -126,6 +129,9 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getDatiRisposta(),Operazione.model().DATI_RISPOSTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getDettaglioEsito(),Operazione.model().DETTAGLIO_ESITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getCodVersamentoEnte(),Operazione.model().COD_VERSAMENTO_ENTE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getCodDominio(),Operazione.model().COD_DOMINIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getIuv(),Operazione.model().IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getTrn(),Operazione.model().TRN.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciato,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
@@ -205,7 +211,7 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getOperazioneFieldConverter().toTable(Operazione.model()));
 		boolean isUpdate_operazione = true;
-		java.util.List<JDBCObject> lstObjects_operazione = new java.util.ArrayList<JDBCObject>();
+		java.util.List<JDBCObject> lstObjects_operazione = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().TIPO_OPERAZIONE,false), "?");
 		lstObjects_operazione.add(new JDBCObject(operazione.getTipoOperazione(), Operazione.model().TIPO_OPERAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().LINEA_ELABORAZIONE,false), "?");
@@ -220,6 +226,12 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 		lstObjects_operazione.add(new JDBCObject(operazione.getDettaglioEsito(), Operazione.model().DETTAGLIO_ESITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().COD_VERSAMENTO_ENTE,false), "?");
 		lstObjects_operazione.add(new JDBCObject(operazione.getCodVersamentoEnte(), Operazione.model().COD_VERSAMENTO_ENTE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().COD_DOMINIO,false), "?");
+		lstObjects_operazione.add(new JDBCObject(operazione.getCodDominio(), Operazione.model().COD_DOMINIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().IUV,false), "?");
+		lstObjects_operazione.add(new JDBCObject(operazione.getIuv(), Operazione.model().IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().TRN,false), "?");
+		lstObjects_operazione.add(new JDBCObject(operazione.getTrn(), Operazione.model().TRN.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tracciato","?");
 		}
@@ -276,7 +288,7 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getOperazioneFieldConverter().toTable(Operazione.model()), 
@@ -287,7 +299,7 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getOperazioneFieldConverter().toTable(Operazione.model()), 
@@ -298,7 +310,7 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<Object>();
+		java.util.List<Object> ids = new java.util.ArrayList<>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getOperazioneFieldConverter().toTable(Operazione.model()), 

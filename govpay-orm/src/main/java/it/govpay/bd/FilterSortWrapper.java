@@ -26,15 +26,23 @@ public class FilterSortWrapper {
 
 	private IField field;
 	private SortOrder sortOrder;
+	
+	public FilterSortWrapper() {
+	}
+	
+	public FilterSortWrapper(IField field, SortOrder sortOrder) {
+		this.field = field;
+		this.sortOrder = sortOrder;
+	}
 
 	public IField getField() {
-		return field;
+		return this.field;
 	}
 	public void setField(IField field) {
 		this.field = field;
 	}
 	public SortOrder getSortOrder() {
-		return sortOrder;
+		return this.sortOrder;
 	}
 	public void setSortOrder(SortOrder sortOrder) {
 		this.sortOrder = sortOrder;

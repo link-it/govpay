@@ -102,34 +102,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "ragione_sociale";
 			}
 		}
-		if(field.equals(Dominio.model().XML_CONTI_ACCREDITO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".xml_conti_accredito";
-			}else{
-				return "xml_conti_accredito";
-			}
-		}
-		if(field.equals(Dominio.model().XML_TABELLA_CONTROPARTI)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".xml_tabella_controparti";
-			}else{
-				return "xml_tabella_controparti";
-			}
-		}
-		if(field.equals(Dominio.model().RIUSO_IUV)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".riuso_iuv";
-			}else{
-				return "riuso_iuv";
-			}
-		}
-		if(field.equals(Dominio.model().CUSTOM_IUV)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".custom_iuv";
-			}else{
-				return "custom_iuv";
-			}
-		}
 		if(field.equals(Dominio.model().ID_APPLICAZIONE_DEFAULT.COD_APPLICAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_applicazione";
@@ -149,13 +121,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".iuv_prefix";
 			}else{
 				return "iuv_prefix";
-			}
-		}
-		if(field.equals(Dominio.model().IUV_PREFIX_STRICT)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iuv_prefix_strict";
-			}else{
-				return "iuv_prefix_strict";
 			}
 		}
 		if(field.equals(Dominio.model().SEGREGATION_CODE)){
@@ -200,6 +165,13 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "logo";
 			}
 		}
+		if(field.equals(Dominio.model().CBILL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cbill";
+			}else{
+				return "cbill";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -228,18 +200,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Dominio.model().RAGIONE_SOCIALE)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
-		if(field.equals(Dominio.model().XML_CONTI_ACCREDITO)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().XML_TABELLA_CONTROPARTI)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().RIUSO_IUV)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().CUSTOM_IUV)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
 		if(field.equals(Dominio.model().ID_APPLICAZIONE_DEFAULT.COD_APPLICAZIONE)){
 			return this.toTable(Dominio.model().ID_APPLICAZIONE_DEFAULT, returnAlias);
 		}
@@ -247,9 +207,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().IUV_PREFIX)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().IUV_PREFIX_STRICT)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().SEGREGATION_CODE)){
@@ -268,6 +225,9 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().LOGO)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().CBILL)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 

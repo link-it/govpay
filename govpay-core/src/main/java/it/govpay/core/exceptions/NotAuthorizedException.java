@@ -19,17 +19,19 @@
  */
 package it.govpay.core.exceptions;
 
-public class NotAuthorizedException extends Exception {
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
+
+public class NotAuthorizedException extends BaseExceptionV1 {
 
 	private static final long serialVersionUID = 1L;
-	public static final String descrizione = "Operazione non autorizzata";
 	
-	public NotAuthorizedException() {
-		super();
+	public NotAuthorizedException(String cause) {
+		super("Operazione non autorizzata", "403000", cause, CategoriaEnum.AUTORIZZAZIONE);
 	}
 	
-	public NotAuthorizedException(String causa) {
-		super(causa);
+	@Override
+	public int getTransportErrorCode() {
+		return 403;
 	}
 	
 }

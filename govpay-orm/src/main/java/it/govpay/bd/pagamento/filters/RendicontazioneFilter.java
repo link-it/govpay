@@ -61,7 +61,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 			
 			if(this.idDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				newExpressionDomini.in(Rendicontazione.model().ID_FR.COD_DOMINIO, this.idDomini);
 				newExpression.and(newExpressionDomini);
 			}
@@ -120,7 +120,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 			}
 			
 			if(this.idDomini != null){
-				idDomini.removeAll(Collections.singleton(null));
+				this.idDomini.removeAll(Collections.singleton(null));
 				exp.in(Rendicontazione.model().ID_FR.COD_DOMINIO, this.idDomini);
 			}
 
@@ -149,7 +149,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 	
 	public String getCodDominio() {
-		return codDominio;
+		return this.codDominio;
 	}
 
 	public void setCodDominio(String codDominio) {
@@ -157,7 +157,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public String getIuv() {
-		return iuv;
+		return this.iuv;
 	}
 
 	public void setIuv(String iuv) {
@@ -165,7 +165,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public String getIur() {
-		return iur;
+		return this.iur;
 	}
 
 	public void setIur(String iur) {
@@ -173,7 +173,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public EsitoRendicontazione getEsito() {
-		return esito;
+		return this.esito;
 	}
 
 	public void setEsito(EsitoRendicontazione esito) {
@@ -181,7 +181,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public StatoRendicontazione getStato() {
-		return stato;
+		return this.stato;
 	}
 
 	public void setStato(StatoRendicontazione stato) {
@@ -189,7 +189,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public Long getIdFr() {
-		return idFr;
+		return this.idFr;
 	}
 
 	public void setIdFr(Long idFr) {
@@ -197,7 +197,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public Long getIdPagamento() {
-		return idPagamento;
+		return this.idPagamento;
 	}
 
 	public void setIdPagamento(Long idPagamento) {
@@ -205,7 +205,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public Long getIdApplicazione() {
-		return idApplicazione;
+		return this.idApplicazione;
 	}
 
 	public void setIdApplicazione(Long idApplicazione) {
@@ -213,7 +213,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public String getTipo() {
-		return tipo;
+		return this.tipo;
 	}
 
 	public void setTipo(String tipo) {
@@ -221,7 +221,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public List<String> getIdDomini() {
-		return idDomini;
+		return this.idDomini;
 	}
 
 	public void setIdDomini(List<String> idDomini) {
@@ -229,7 +229,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public List<Long> getIdRendicontazione() {
-		return idRendicontazione;
+		return this.idRendicontazione;
 	}
 
 	public void setIdRendicontazione(List<Long> idRendicontazione) {
@@ -237,7 +237,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	public Integer getIndiceDati() {
-		return indiceDati;
+		return this.indiceDati;
 	}
 
 	public void setIndiceDati(Integer indiceDati) {

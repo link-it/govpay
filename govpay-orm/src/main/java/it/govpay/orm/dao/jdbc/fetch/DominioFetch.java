@@ -52,42 +52,34 @@ public class DominioFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Dominio.model())){
 				Dominio object = new Dominio();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodDominio", Dominio.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", Dominio.model().COD_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Dominio.model().COD_DOMINIO.getFieldType()));
-				setParameter(object, "setGln", Dominio.model().GLN.getFieldType(),
+				this.setParameter(object, "setGln", Dominio.model().GLN.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "gln", Dominio.model().GLN.getFieldType()));
-				setParameter(object, "setAbilitato", Dominio.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Dominio.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Dominio.model().ABILITATO.getFieldType()));
-				setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
+				this.setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ragione_sociale", Dominio.model().RAGIONE_SOCIALE.getFieldType()));
-				setParameter(object, "setXmlContiAccredito", Dominio.model().XML_CONTI_ACCREDITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "xml_conti_accredito", Dominio.model().XML_CONTI_ACCREDITO.getFieldType()));
-				setParameter(object, "setXmlTabellaControparti", Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "xml_tabella_controparti", Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType()));
-				setParameter(object, "setRiusoIUV", Dominio.model().RIUSO_IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "riuso_iuv", Dominio.model().RIUSO_IUV.getFieldType()));
-				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "custom_iuv", Dominio.model().CUSTOM_IUV.getFieldType()));
-				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
+				this.setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "aux_digit", Dominio.model().AUX_DIGIT.getFieldType()));
-				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
+				this.setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv_prefix", Dominio.model().IUV_PREFIX.getFieldType()));
-				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv_prefix_strict", Dominio.model().IUV_PREFIX_STRICT.getFieldType()));
-				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
+				this.setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "segregation_code", Dominio.model().SEGREGATION_CODE.getFieldType()));
-				setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Dominio.model().NDP_STATO.getFieldType(), org.openspcoop2.generic_project.dao.jdbc.utils.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
-				setParameter(object, "setNdpOperazione", Dominio.model().NDP_OPERAZIONE.getFieldType(),
+				this.setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Dominio.model().NDP_STATO.getFieldType(), org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				this.setParameter(object, "setNdpOperazione", Dominio.model().NDP_OPERAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_operazione", Dominio.model().NDP_OPERAZIONE.getFieldType()));
-				setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
+				this.setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_descrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType()));
-				setParameter(object, "setNdpData", Dominio.model().NDP_DATA.getFieldType(),
+				this.setParameter(object, "setNdpData", Dominio.model().NDP_DATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_data", Dominio.model().NDP_DATA.getFieldType()));
-				setParameter(object, "setLogo", Dominio.model().LOGO.getFieldType(),
+				this.setParameter(object, "setLogo", Dominio.model().LOGO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "logo", Dominio.model().LOGO.getFieldType()));
+				this.setParameter(object, "setCbill", Dominio.model().CBILL.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cbill", Dominio.model().CBILL.getFieldType()));
 				return object;
 			}
 			
@@ -108,42 +100,34 @@ public class DominioFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Dominio.model())){
 				Dominio object = new Dominio();
-				setParameter(object, "setId", Long.class,
+				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodDominio", Dominio.model().COD_DOMINIO.getFieldType(),
+				this.setParameter(object, "setCodDominio", Dominio.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
-				setParameter(object, "setGln", Dominio.model().GLN.getFieldType(),
+				this.setParameter(object, "setGln", Dominio.model().GLN.getFieldType(),
 					this.getObjectFromMap(map,"gln"));
-				setParameter(object, "setAbilitato", Dominio.model().ABILITATO.getFieldType(),
+				this.setParameter(object, "setAbilitato", Dominio.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
-				setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
+				this.setParameter(object, "setRagioneSociale", Dominio.model().RAGIONE_SOCIALE.getFieldType(),
 					this.getObjectFromMap(map,"ragioneSociale"));
-				setParameter(object, "setXmlContiAccredito", Dominio.model().XML_CONTI_ACCREDITO.getFieldType(),
-					this.getObjectFromMap(map,"xmlContiAccredito"));
-				setParameter(object, "setXmlTabellaControparti", Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType(),
-					this.getObjectFromMap(map,"xmlTabellaControparti"));
-				setParameter(object, "setRiusoIUV", Dominio.model().RIUSO_IUV.getFieldType(),
-					this.getObjectFromMap(map,"riusoIUV"));
-				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),
-					this.getObjectFromMap(map,"customIUV"));
-				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
+				this.setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
 					this.getObjectFromMap(map,"auxDigit"));
-				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
+				this.setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
 					this.getObjectFromMap(map,"iuvPrefix"));
-				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
-					this.getObjectFromMap(map,"iuvPrefixStrict"));
-				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
+				this.setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"segregationCode"));
-				setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
+				this.setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
 					this.getObjectFromMap(map,"ndpStato"));
-				setParameter(object, "setNdpOperazione", Dominio.model().NDP_OPERAZIONE.getFieldType(),
+				this.setParameter(object, "setNdpOperazione", Dominio.model().NDP_OPERAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"ndpOperazione"));
-				setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
+				this.setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"ndpDescrizione"));
-				setParameter(object, "setNdpData", Dominio.model().NDP_DATA.getFieldType(),
+				this.setParameter(object, "setNdpData", Dominio.model().NDP_DATA.getFieldType(),
 					this.getObjectFromMap(map,"ndpData"));
-				setParameter(object, "setLogo", Dominio.model().LOGO.getFieldType(),
+				this.setParameter(object, "setLogo", Dominio.model().LOGO.getFieldType(),
 					this.getObjectFromMap(map,"logo"));
+				this.setParameter(object, "setCbill", Dominio.model().CBILL.getFieldType(),
+					this.getObjectFromMap(map,"cbill"));
 				return object;
 			}
 			

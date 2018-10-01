@@ -58,7 +58,7 @@ public class NotificaConverter {
 	}
 
 	public static List<Notifica> toDTOList(List<it.govpay.orm.Notifica> findAll) {
-		List<Notifica> notifiche = new ArrayList<Notifica>();
+		List<Notifica> notifiche = new ArrayList<>();
 		for(it.govpay.orm.Notifica vo : findAll)
 			notifiche.add(toDTO(vo));
 		return notifiche;

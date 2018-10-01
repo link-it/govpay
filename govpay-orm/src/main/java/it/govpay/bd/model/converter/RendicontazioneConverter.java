@@ -5,6 +5,7 @@ import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.orm.IdFr;
 import it.govpay.orm.IdPagamento;
+import it.govpay.orm.IdSingoloVersamento;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class RendicontazioneConverter {
 		dto.setIdFr(vo.getIdFR().getId());
 		if(vo.getIdPagamento() != null)
 			dto.setIdPagamento(vo.getIdPagamento().getId());
+		if(vo.getIdSingoloVersamento() != null)
+			dto.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
 		
 		return dto;
 	}
@@ -49,18 +52,23 @@ public class RendicontazioneConverter {
 		idFr.setId(dto.getIdFr());
 		vo.setIdFR(idFr);
 		if(dto.getIdPagamento() != null) {
-			
 			IdPagamento idPagamento = new IdPagamento();
 			idPagamento.setId(dto.getIdPagamento());
 			idPagamento.setIdPagamento(dto.getIdPagamento());
 			vo.setIdPagamento(idPagamento);
+		}
+		
+		if(dto.getIdSingoloVersamento() != null) {
+			IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();
+			idSingoloVersamento.setId(dto.getIdSingoloVersamento());
+			vo.setIdSingoloVersamento(idSingoloVersamento);
 		}
 		return vo;
 	}
 
 	public static List<Rendicontazione> toDTO(
 			List<it.govpay.orm.Rendicontazione> rendicontazioneVOLst) throws ServiceException {
-		List<Rendicontazione> dto = new ArrayList<Rendicontazione>();
+		List<Rendicontazione> dto = new ArrayList<>();
 		for(it.govpay.orm.Rendicontazione vo : rendicontazioneVOLst) {
 			dto.add(toDTO(vo));
 		}

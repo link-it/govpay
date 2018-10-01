@@ -35,15 +35,15 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Applicazione">
  * 		&lt;sequence>
+ * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="autoIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="firmaRicevuta" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreVerifica" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="versione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1" default="2.1"/>
  * 			&lt;element name="trusted" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codApplicazioneIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="regExp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -58,15 +58,15 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Applicazione", 
   propOrder = {
+  	"idUtenza",
   	"codApplicazione",
-  	"abilitato",
-  	"principal",
+  	"autoIUV",
   	"firmaRicevuta",
   	"codConnettoreEsito",
   	"codConnettoreVerifica",
-  	"versione",
   	"trusted",
-  	"codApplicazioneIuv"
+  	"codApplicazioneIuv",
+  	"regExp"
   }
 )
 
@@ -90,6 +90,14 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
 		this.id=new Long(-1);
   }
 
+  public IdUtenza getIdUtenza() {
+    return this.idUtenza;
+  }
+
+  public void setIdUtenza(IdUtenza idUtenza) {
+    this.idUtenza = idUtenza;
+  }
+
   public java.lang.String getCodApplicazione() {
     return this.codApplicazione;
   }
@@ -98,24 +106,16 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.codApplicazione = codApplicazione;
   }
 
-  public boolean isAbilitato() {
-    return this.abilitato;
+  public boolean isAutoIUV() {
+    return this.autoIUV;
   }
 
-  public boolean getAbilitato() {
-    return this.abilitato;
+  public boolean getAutoIUV() {
+    return this.autoIUV;
   }
 
-  public void setAbilitato(boolean abilitato) {
-    this.abilitato = abilitato;
-  }
-
-  public java.lang.String getPrincipal() {
-    return this.principal;
-  }
-
-  public void setPrincipal(java.lang.String principal) {
-    this.principal = principal;
+  public void setAutoIUV(boolean autoIUV) {
+    this.autoIUV = autoIUV;
   }
 
   public java.lang.String getFirmaRicevuta() {
@@ -142,14 +142,6 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.codConnettoreVerifica = codConnettoreVerifica;
   }
 
-  public java.lang.String getVersione() {
-    return this.versione;
-  }
-
-  public void setVersione(java.lang.String versione) {
-    this.versione = versione;
-  }
-
   public boolean isTrusted() {
     return this.trusted;
   }
@@ -168,6 +160,14 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
 
   public void setCodApplicazioneIuv(java.lang.String codApplicazioneIuv) {
     this.codApplicazioneIuv = codApplicazioneIuv;
+  }
+
+  public java.lang.String getRegExp() {
+    return this.regExp;
+  }
+
+  public void setRegExp(java.lang.String regExp) {
+    this.regExp = regExp;
   }
 
   private static final long serialVersionUID = 1L;
@@ -189,17 +189,16 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   }
 
 
+  @XmlElement(name="idUtenza",required=true,nillable=false)
+  protected IdUtenza idUtenza;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codApplicazione",required=true,nillable=false)
   protected java.lang.String codApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="abilitato",required=true,nillable=false)
-  protected boolean abilitato;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="principal",required=true,nillable=false)
-  protected java.lang.String principal;
+  @XmlElement(name="autoIUV",required=true,nillable=false)
+  protected boolean autoIUV;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="firmaRicevuta",required=true,nillable=false)
@@ -213,10 +212,6 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @XmlElement(name="codConnettoreVerifica",required=false,nillable=false)
   protected java.lang.String codConnettoreVerifica;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="versione",required=true,nillable=false,defaultValue="2.1")
-  protected java.lang.String versione = "2.1";
-
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="trusted",required=true,nillable=false)
   protected boolean trusted;
@@ -224,5 +219,9 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codApplicazioneIuv",required=false,nillable=false)
   protected java.lang.String codApplicazioneIuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="regExp",required=false,nillable=false)
+  protected java.lang.String regExp;
 
 }

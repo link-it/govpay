@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -46,6 +45,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
 import it.govpay.orm.IdRendicontazione;
 import it.govpay.orm.Rendicontazione;
@@ -80,7 +80,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return getRendicontazioneFetch();
+		return this.getRendicontazioneFetch();
 	}
 	
 	
@@ -125,10 +125,10 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	@Override
 	public List<IdRendicontazione> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		List<IdRendicontazione> list = new ArrayList<IdRendicontazione>();
+		List<IdRendicontazione> list = new ArrayList<>();
 
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Rendicontazione.model())));
 
@@ -146,14 +146,15 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	@Override
 	public List<Rendicontazione> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        List<Rendicontazione> list = new ArrayList<Rendicontazione>();
+        List<Rendicontazione> list = new ArrayList<>();
         
 		try{
-			List<IField> fields = new ArrayList<IField>();
+			List<IField> fields = new ArrayList<>();
 
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Rendicontazione.model())));
 			fields.add(new CustomField("id_fr", Long.class, "id_fr", this.getFieldConverter().toTable(Rendicontazione.model())));
 			fields.add(new CustomField("id_pagamento", Long.class, "id_pagamento", this.getFieldConverter().toTable(Rendicontazione.model())));
+			fields.add(new CustomField("id_singolo_versamento", Long.class, "id_singolo_versamento", this.getFieldConverter().toTable(Rendicontazione.model())));
 			fields.add(Rendicontazione.model().IUV);
 			fields.add(Rendicontazione.model().IUR);
 			fields.add(Rendicontazione.model().INDICE_DATI);
@@ -174,6 +175,12 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 
 				if(idPagamentoObj instanceof Long)
 					id_pagamento = (Long) idPagamentoObj;
+				
+				Long id_singolo_versamento = null;
+				Object idSingoloVersamentoObj = map.remove("id_singolo_versamento");
+
+				if(idSingoloVersamentoObj instanceof Long)
+					id_singolo_versamento = (Long) idSingoloVersamentoObj;
 
 				if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
@@ -201,6 +208,21 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 							id_rendicontazione_pagamento.setId(id_pagamento);
 							rendicontazione.setIdPagamento(id_rendicontazione_pagamento);
 						}
+				}
+				
+				if(id_singolo_versamento != null){
+					if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+							){
+						it.govpay.orm.IdSingoloVersamento id_pagamento_singoloVersamento = null;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_pagamento_singoloVersamento = ((JDBCSingoloVersamentoServiceSearch)(this.getServiceManager().getSingoloVersamentoServiceSearch())).findId(id_singolo_versamento, false);
+						}else{
+							id_pagamento_singoloVersamento = new it.govpay.orm.IdSingoloVersamento();
+						}
+						id_pagamento_singoloVersamento.setId(id_singolo_versamento);
+						rendicontazione.setIdSingoloVersamento(id_pagamento_singoloVersamento);
+					}
 				}
 				
 				list.add(rendicontazione);
@@ -232,7 +254,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		
 		sqlQueryObject.addSelectCountField(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model())+".id","tot",true);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 																			this.getRendicontazioneFieldConverter(), Rendicontazione.model(),listaQuery);
@@ -279,7 +301,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 												this.getRendicontazioneFieldConverter(), field);
 
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
@@ -300,7 +322,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
@@ -317,7 +339,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
@@ -334,7 +356,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
-			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
@@ -342,18 +364,18 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
+		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
-		List<Object> listaQuery = new ArrayList<Object>();
-		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
+		List<Object> listaQuery = new ArrayList<>();
+		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getRendicontazioneFieldConverter(), Rendicontazione.model(), 
         						listaQuery,listaParams);
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
@@ -371,8 +393,8 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getRendicontazioneFieldConverter(), Rendicontazione.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -381,7 +403,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -400,8 +422,8 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getRendicontazioneFieldConverter(), Rendicontazione.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -410,7 +432,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				_join(expression,sqlQueryObjectInnerList.get(i));
+				this._join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -472,13 +494,13 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRendicontazione id, Rendicontazione obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Rendicontazione obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
 	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Rendicontazione obj, Rendicontazione imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
@@ -516,9 +538,6 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<Rendicontazione> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
@@ -593,11 +612,72 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 
 		}
 		
+		String tableSingoliVersamenti = this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false)){
+			String tableVersamenti = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+			String tableApplicazioni = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableVersamenti+".id_applicazione="+tableApplicazioni+".id");
+
+			if(!expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)){
+				sqlQueryObject.addFromTable(tableSingoliVersamenti);
+
+				String tablePagamenti = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
+				sqlQueryObject.addWhereCondition(tablePagamenti+".id_versamento="+tableSingoliVersamenti+".id");
+
+			}
+
+			if(!expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+				sqlQueryObject.addFromTable(tableVersamenti);
+				sqlQueryObject.addWhereCondition(tableSingoliVersamenti+".id_versamento="+tableVersamenti+".id");
+
+			}
+
+		}
+
+
+
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)){
+			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
+			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_singolo_versamento="+tableName2+".id");
+
+			if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+				if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)==false){
+					sqlQueryObject.addFromTable(tableSingoliVersamenti);
+				}
+				String tableName3 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_versamento");
+
+			}
+
+			if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
+				if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO,false)==false){
+					sqlQueryObject.addFromTable(tableSingoliVersamenti);
+				}
+				String tableName3 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
+				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_tributo");
+
+			}
+
+		}
+
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
+			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+		}
+
+		if(expression.inUseModel(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
+			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO);
+			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
+		}
+		
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRendicontazione id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
-        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
+        java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
 		Long longId = this.findIdRendicontazione(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
         
@@ -607,8 +687,8 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
 		RendicontazioneFieldConverter converter = this.getRendicontazioneFieldConverter();
-		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
-		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
+		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
+		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
 		// Rendicontazione.model()
 		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model()),
@@ -628,13 +708,62 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_PAGAMENTO))
 			));
 
+		// Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO))
+			));
+
+		// Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO))
+			));
+
+		// Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Rendicontazione.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO))
+			));
+
+ 
         return mapTableToPKColumn;		
 	}
 	
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 		
-		List<Long> list = new ArrayList<Long>();
+		List<Long> list = new ArrayList<>();
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
@@ -644,7 +773,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getRendicontazioneFieldConverter(), Rendicontazione.model());
 		
-		_join(paginatedExpression,sqlQueryObject);
+		this._join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 																			this.getRendicontazioneFieldConverter(), Rendicontazione.model(), objectIdClass, listaQuery);
@@ -667,7 +796,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getRendicontazioneFieldConverter(), Rendicontazione.model());
 		
-		_join(expression,sqlQueryObject);
+		this._join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 														this.getRendicontazioneFieldConverter(), Rendicontazione.model(), objectIdClass, listaQuery);
@@ -713,7 +842,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_rendicontazione = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
-		List<Class<?>> listaFieldIdReturnType_rendicontazione = new ArrayList<Class<?>>();
+		List<Class<?>> listaFieldIdReturnType_rendicontazione = new ArrayList<>();
 		listaFieldIdReturnType_rendicontazione.add(Long.class);
 		it.govpay.orm.IdRendicontazione id_rendicontazione = null;
 		List<Object> listaFieldId_rendicontazione = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
@@ -761,7 +890,7 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		sqlQueryObjectGet.addFromTable(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()));
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _rendicontazione

@@ -19,23 +19,27 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.Anagrafica;
-import it.govpay.bd.model.Versamento;
-import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdUo;
-
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IOException;
+
+import it.govpay.bd.model.Versamento;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Anagrafica.TIPO;
+import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdTracciato;
+import it.govpay.orm.IdUo;
 
 public class VersamentoConverter {
 
 	public static List<Versamento> toDTOList(List<it.govpay.orm.Versamento> versamenti) throws ServiceException {
-		List<Versamento> lstDTO = new ArrayList<Versamento>();
+		List<Versamento> lstDTO = new ArrayList<>();
 		if(versamenti != null && !versamenti.isEmpty()) {
 			for(it.govpay.orm.Versamento versamento: versamenti){
 				lstDTO.add(toDTO(versamento));
@@ -49,17 +53,26 @@ public class VersamentoConverter {
 			Versamento dto = new Versamento();
 			dto.setId(vo.getId());
 			dto.setIdApplicazione(vo.getIdApplicazione().getId());
-			dto.setIdUo(vo.getIdUo().getId());
+			
+			if(vo.getIdUo() != null)
+				dto.setIdUo(vo.getIdUo().getId());
+			
+			if(vo.getIdDominio() != null)
+				dto.setIdDominio(vo.getIdDominio().getId());
+			dto.setNome(vo.getNome());
 			dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 			dto.setStatoVersamento(StatoVersamento.valueOf(vo.getStatoVersamento()));
 			dto.setDescrizioneStato(vo.getDescrizioneStato());
 			dto.setImportoTotale(BigDecimal.valueOf(vo.getImportoTotale()));
 			dto.setAggiornabile(vo.isAggiornabile());
 			dto.setDataCreazione(vo.getDataCreazione());
+			dto.setDataValidita(vo.getDataValidita());
 			dto.setDataScadenza(vo.getDataScadenza());
 			dto.setDataUltimoAggiornamento(vo.getDataOraUltimoAggiornamento());
 			dto.setCausaleVersamento(vo.getCausaleVersamento());
 			Anagrafica debitore = new Anagrafica();
+			if(vo.getDebitoreTipo()!=null)
+				debitore.setTipo(TIPO.valueOf(vo.getDebitoreTipo()));
 			debitore.setRagioneSociale(vo.getDebitoreAnagrafica());
 			debitore.setCap(vo.getDebitoreCap());
 			debitore.setCellulare(vo.getDebitoreCellulare());
@@ -73,11 +86,49 @@ public class VersamentoConverter {
 			debitore.setProvincia(vo.getDebitoreProvincia());
 			debitore.setTelefono(vo.getDebitoreTelefono());
 			dto.setAnagraficaDebitore(debitore);
+			
 			if(vo.getCodAnnoTributario() != null && !vo.getCodAnnoTributario().isEmpty())
 				dto.setCodAnnoTributario(Integer.parseInt(vo.getCodAnnoTributario()));
+			
 			dto.setCodLotto(vo.getCodLotto());
+			
+			dto.setTassonomiaAvviso(vo.getTassonomiaAvviso()); 
+			dto.setTassonomia(vo.getTassonomia());
+			
 			dto.setCodVersamentoLotto(vo.getCodVersamentoLotto()); 
 			dto.setCodBundlekey(vo.getCodBundlekey()); 
+			dto.setDatiAllegati(vo.getDatiAllegati());
+			if(vo.getIncasso() != null) {
+				dto.setIncasso(vo.getIncasso().equals(it.govpay.model.Versamento.INCASSO_TRUE) ? true : false);
+			}
+			dto.setAnomalie(vo.getAnomalie());
+			
+			dto.setIuvVersamento(vo.getIuvVersamento());
+			dto.setNumeroAvviso(vo.getNumeroAvviso());
+			dto.setAvvisatura(vo.getAvvisatura());
+			dto.setTipoPagamento(vo.getTipoPagamento());
+			
+			// se il numero avviso e' impostato lo iuv proposto deve coincidere con quello inserito a partire dall'avviso
+			// TODO controllare
+			if(dto.getNumeroAvviso() !=  null) {
+				dto.setIuvProposto(dto.getIuvVersamento());
+			}
+			
+			dto.setDaAvvisare(vo.isDaAvvisare());
+			dto.setCodAvvisatura(vo.getCodAvvisatura());
+			if(vo.getIdTracciatoAvvisatura()!=null)
+				dto.setIdTracciatoAvvisatura(vo.getIdTracciatoAvvisatura().getId());
+			
+			dto.setAck(vo.isAck());
+			if(vo.getNote()!=null)
+				try {
+					dto.setNote(vo.getNote());
+				} catch(IOException e) {
+					throw new ServiceException(e);
+				}
+			
+			dto.setAnomalo(vo.isAnomalo());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -91,20 +142,35 @@ public class VersamentoConverter {
 			IdApplicazione idApplicazione = new IdApplicazione();
 			idApplicazione.setId(dto.getIdApplicazione());
 			vo.setIdApplicazione(idApplicazione);
-			IdUo idUo = new IdUo();
-			idUo.setId(dto.getIdUo());
-			vo.setIdUo(idUo);
+			
+			if(dto.getIdUo() > 0) {
+				IdUo idUo = new IdUo();
+				idUo.setId(dto.getIdUo());
+				vo.setIdUo(idUo);
+			}
+
+			if(dto.getIdDominio() > 0) {
+				IdDominio idDominio = new IdDominio();
+				idDominio.setId(dto.getIdDominio());
+				vo.setIdDominio(idDominio);
+			}
+
+			vo.setNome(dto.getNome());
 			vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
+			
 			vo.setStatoVersamento(dto.getStatoVersamento().toString());
 			vo.setDescrizioneStato(dto.getDescrizioneStato());
 			vo.setImportoTotale(dto.getImportoTotale().doubleValue());
 			vo.setAggiornabile(dto.isAggiornabile());
 			vo.setDataCreazione(dto.getDataCreazione());
+			vo.setDataValidita(dto.getDataValidita());
 			vo.setDataScadenza(dto.getDataScadenza());
 			vo.setDataOraUltimoAggiornamento(dto.getDataUltimoAggiornamento());
 			if(dto.getCausaleVersamento() != null)
 			vo.setCausaleVersamento(dto.getCausaleVersamento().encode());
 			Anagrafica anagraficaDebitore = dto.getAnagraficaDebitore();
+			if(anagraficaDebitore.getTipo()!=null)
+				vo.setDebitoreTipo(anagraficaDebitore.getTipo().toString());
 			vo.setDebitoreAnagrafica(anagraficaDebitore.getRagioneSociale());
 			vo.setDebitoreCap(anagraficaDebitore.getCap());
 			vo.setDebitoreCellulare(anagraficaDebitore.getCellulare());
@@ -119,8 +185,41 @@ public class VersamentoConverter {
 			vo.setDebitoreTelefono(anagraficaDebitore.getTelefono());
 			vo.setCodAnnoTributario(dto.getCodAnnoTributario() != null ? dto.getCodAnnoTributario().toString() : null);
 			vo.setCodLotto(dto.getCodLotto());
+			
+			vo.setTassonomiaAvviso(dto.getTassonomiaAvviso()); 
+			vo.setTassonomia(dto.getTassonomia()); 
 			vo.setCodVersamentoLotto(dto.getCodVersamentoLotto()); 
 			vo.setCodBundlekey(dto.getCodBundlekey());
+			vo.setDatiAllegati(dto.getDatiAllegati());
+			
+			if(dto.getIncasso()!=null) {
+				vo.setIncasso(dto.getIncasso() ? it.govpay.model.Versamento.INCASSO_TRUE : it.govpay.model.Versamento.INCASSO_FALSE);
+			}
+			vo.setAnomalie(dto.getAnomalie());
+			
+			vo.setIuvVersamento(dto.getIuvVersamento());
+			vo.setNumeroAvviso(dto.getNumeroAvviso());
+			vo.setAvvisatura(dto.getAvvisatura());
+			vo.setTipoPagamento(dto.getTipoPagamento());
+
+			vo.setDaAvvisare(dto.isDaAvvisare());
+			vo.setCodAvvisatura(dto.getCodAvvisatura());
+			if(dto.getIdTracciatoAvvisatura()!=null) {
+				IdTracciato idTracciato = new IdTracciato();
+				idTracciato.setId(dto.getIdTracciatoAvvisatura());
+				idTracciato.setIdTracciato(dto.getIdTracciatoAvvisatura());
+				vo.setIdTracciatoAvvisatura(idTracciato);
+			}
+			
+			vo.setAck(dto.isAck());
+			if(dto.getNote()!=null && !dto.getNote().isEmpty())
+				try {
+					vo.setNote(dto.getNoteString());
+				} catch(IOException e) {
+					throw new ServiceException(e);
+				}
+
+			vo.setAnomalo(dto.isAnomalo());
 			return vo;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

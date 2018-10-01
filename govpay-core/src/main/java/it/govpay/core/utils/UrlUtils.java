@@ -31,7 +31,7 @@ import java.util.Map;
 public class UrlUtils {
 	
 	private static Map<String, List<String>> splitQuery(URL url) throws UnsupportedEncodingException {
-		final Map<String, List<String>> query_pairs = new LinkedHashMap<String, List<String>>();
+		final Map<String, List<String>> query_pairs = new LinkedHashMap<>();
 		final String[] pairs = url.getQuery().split("&");
 		for (String pair : pairs) {
 			final int idx = pair.indexOf("=");
@@ -45,12 +45,20 @@ public class UrlUtils {
 		return query_pairs;
 	}
 	
-	public static String getCodSessione(String urlString) throws MalformedURLException, UnsupportedEncodingException {
+	public static String getCodSessione(String urlString)  {
+		return getParameter(urlString, "idSession");
+	}
+	
+	public static String getParameter(String urlString,String parameterName)  {
+		try {
 		URL url = new URL(urlString);
-		if(splitQuery(url).get("idSession") != null)
-			return splitQuery(url).get("idSession").get(0);
+		if(splitQuery(url).get(parameterName) != null)
+			return splitQuery(url).get(parameterName).get(0);
 		else
 			return null;
+		}catch(Exception e) {
+			return null;
+		}
 	}
 	
 	public static URL addParameter(URL url, String paramName, String paramValue) throws MalformedURLException {
@@ -64,5 +72,17 @@ public class UrlUtils {
 			urlString = urlString + "?" + paramName + "=" + paramValue;
 		}
 		return new URL(urlString);
+	}
+	
+	public static String addParameter(String urlString, String paramName, String paramValue) {
+		if(urlString.contains("?")) {
+			if(urlString.endsWith("&")) 
+				urlString = urlString + paramName + "=" + paramValue;
+			else
+				urlString = urlString + "&" + paramName + "=" + paramValue;
+		} else {
+			urlString = urlString + "?" + paramName + "=" + paramValue;
+		}
+		return urlString;
 	}
 }

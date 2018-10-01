@@ -19,24 +19,24 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.model.SingoloVersamento.TipoBollo;
-import it.govpay.model.Tributo.TipoContabilta;
-import it.govpay.orm.IdIbanAccredito;
-import it.govpay.orm.IdTributo;
-import it.govpay.orm.IdVersamento;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.model.Tributo.TipoContabilita;
+import it.govpay.orm.IdIbanAccredito;
+import it.govpay.orm.IdTributo;
+import it.govpay.orm.IdVersamento;
+
 public class SingoloVersamentoConverter {
 
 	public static List<SingoloVersamento> toDTO(List<it.govpay.orm.SingoloVersamento> applicazioneLst) throws ServiceException {
-		List<SingoloVersamento> lstDTO = new ArrayList<SingoloVersamento>();
+		List<SingoloVersamento> lstDTO = new ArrayList<>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.SingoloVersamento vo: applicazioneLst){
 				lstDTO.add(toDTO(vo));
@@ -52,6 +52,8 @@ public class SingoloVersamentoConverter {
 			dto.setIdTributo(vo.getIdTributo().getId());
 		if(vo.getIdIbanAccredito() != null)
 			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
+		if(vo.getIdIbanAppoggio() != null)
+			dto.setIdIbanAppoggio(vo.getIdIbanAppoggio().getId());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
 		dto.setImportoSingoloVersamento(BigDecimal.valueOf(vo.getImportoSingoloVersamento()));
 		dto.setCodSingoloVersamentoEnte(vo.getCodSingoloVersamentoEnte());
@@ -60,10 +62,12 @@ public class SingoloVersamentoConverter {
 		if(vo.getTipoBollo() != null)
 			dto.setTipoBollo(TipoBollo.toEnum(vo.getTipoBollo()));
 		if(vo.getTipoContabilita() != null)
-			dto.setTipoContabilita(TipoContabilta.toEnum(vo.getTipoContabilita()));
+			dto.setTipoContabilita(TipoContabilita.toEnum(vo.getTipoContabilita()));
 		dto.setHashDocumento(vo.getHashDocumento());
 		dto.setProvinciaResidenza(vo.getProvinciaResidenza());
-		dto.setNote(vo.getNote());
+		dto.setDatiAllegati(vo.getDatiAllegati());
+		dto.setDescrizione(vo.getDescrizione());
+		dto.setIndiceDati(vo.getIndiceDati()); 
 		return dto;
 	}
 
@@ -75,6 +79,12 @@ public class SingoloVersamentoConverter {
 			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
 			idIbanAccredito.setId(dto.getIdIbanAccredito());
 			vo.setIdIbanAccredito(idIbanAccredito);
+		}
+		
+		if(dto.getIdIbanAppoggio() != null) {
+			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
+			idIbanAccredito.setId(dto.getIdIbanAppoggio());
+			vo.setIdIbanAppoggio(idIbanAccredito);
 		}
 		
 		if(dto.getIdTributo() != null) {
@@ -97,7 +107,9 @@ public class SingoloVersamentoConverter {
 			vo.setTipoContabilita(dto.getTipoContabilita().getCodifica());
 		vo.setHashDocumento(dto.getHashDocumento());
 		vo.setProvinciaResidenza(dto.getProvinciaResidenza());
-		vo.setNote(dto.getNote());
+		vo.setDatiAllegati(dto.getDatiAllegati());
+		vo.setDescrizione(dto.getDescrizione());
+		vo.setIndiceDati(dto.getIndiceDati());
 		return vo;
 	}
 }

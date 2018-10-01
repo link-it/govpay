@@ -65,7 +65,7 @@ public class IncassoFilter extends AbstractFilter{
 
 			if(this.codDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
-				codDomini.removeAll(Collections.singleton(null));
+				this.codDomini.removeAll(Collections.singleton(null));
 				newExpressionDomini.in(Incasso.model().COD_DOMINIO, this.codDomini);
 				newExpression.and(newExpressionDomini);
 			}
@@ -100,8 +100,8 @@ public class IncassoFilter extends AbstractFilter{
 				addAnd = true;
 			}
 
-			if(this.codDomini != null){
-				codDomini.removeAll(Collections.singleton(null));
+			if(this.codDomini != null && !this.codDomini.isEmpty()){
+				this.codDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				newExpression.in(Incasso.model().COD_DOMINIO, this.codDomini);
@@ -143,7 +143,7 @@ public class IncassoFilter extends AbstractFilter{
 	}
 
 	public List<String> getCodDomini() {
-		return codDomini;
+		return this.codDomini;
 	}
 
 	public void setCodDomini(List<String> codDomini) {
@@ -151,7 +151,7 @@ public class IncassoFilter extends AbstractFilter{
 	}
 
 	public Date getDataInizio() {
-		return dataInizio;
+		return this.dataInizio;
 	}
 
 	public void setDataInizio(Date dataInizio) {
@@ -159,7 +159,7 @@ public class IncassoFilter extends AbstractFilter{
 	}
 
 	public Date getDataFine() {
-		return dataFine;
+		return this.dataFine;
 	}
 
 	public void setDataFine(Date dataFine) {
@@ -167,7 +167,7 @@ public class IncassoFilter extends AbstractFilter{
 	}
 
 	public String getTrn() {
-		return trn;
+		return this.trn;
 	}
 
 	public void setTrn(String trn) {
@@ -175,7 +175,7 @@ public class IncassoFilter extends AbstractFilter{
 	}
 
 	public String getDispositivo() {
-		return dispositivo;
+		return this.dispositivo;
 	}
 
 	public void setDispositivo(String dispositivo) {
@@ -183,14 +183,14 @@ public class IncassoFilter extends AbstractFilter{
 	}
 
 	public String getCausale() {
-		return causale;
+		return this.causale;
 	}
 
 	public void setCausale(String causale) {
 		this.causale = causale;
 	}
 	public List<Long> getIdIncasso() {
-		return idIncasso;
+		return this.idIncasso;
 	}
 
 	public void setIdIncasso(List<Long> idIncasso) {
