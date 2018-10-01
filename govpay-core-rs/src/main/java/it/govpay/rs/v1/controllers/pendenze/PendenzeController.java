@@ -31,12 +31,14 @@ import it.govpay.core.rs.v1.beans.pendenze.FaultBean;
 import it.govpay.core.rs.v1.beans.pendenze.FaultBean.CategoriaEnum;
 import it.govpay.core.rs.v1.beans.pendenze.ListaPendenze;
 import it.govpay.core.rs.v1.beans.pendenze.Pendenza;
+import it.govpay.core.rs.v1.beans.pendenze.PendenzaCreata;
 import it.govpay.core.rs.v1.beans.pendenze.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.pendenze.PendenzaPut;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.pendenze.VersamentoUtils;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.beans.pendenze.converter.PendenzeConverter;
@@ -236,6 +238,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			String jsonRequest = baos.toString();
 			PendenzaPut pendenzaPost= JSONSerializable.parse(jsonRequest, PendenzaPut.class);
+			pendenzaPost.validate();
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idPendenza", idPendenza).notNull().minLength(1).maxLength(35);
+			vf.getValidator("idA2A", idA2A).minLength(1).maxLength(35);
 			
 			Versamento versamento = VersamentoUtils.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza);
 			
@@ -248,12 +255,15 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
 			
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
-				
-			Avviso avviso = PendenzeConverter.toAvvisoRsModel(createOrUpdate.getVersamento(), createOrUpdate.getDominio(), createOrUpdate.getBarCode(), createOrUpdate.getQrCode(), createOrUpdate.getPdf());
+			
+			PendenzaCreata pc = new PendenzaCreata();
+			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
+			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
+			pc.pdf(createOrUpdate.getPdf());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
-			this.logResponse(uriInfo, httpHeaders, methodName, avviso.toJSON(null), responseStatus.getStatusCode());
+			this.logResponse(uriInfo, httpHeaders, methodName, pc.toJSON(null), responseStatus.getStatusCode());
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus).entity(avviso.toJSON(null)),transactionId).build();
+			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

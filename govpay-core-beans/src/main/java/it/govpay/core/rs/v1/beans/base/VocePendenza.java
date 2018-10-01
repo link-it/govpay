@@ -383,6 +383,7 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable im
         Objects.equals(this.provinciaResidenza, vocePendenza.provinciaResidenza) &&
         Objects.equals(this.codiceContabilita, vocePendenza.codiceContabilita) &&
         Objects.equals(this.ibanAccredito, vocePendenza.ibanAccredito) &&
+        Objects.equals(this.ibanAppoggio, vocePendenza.ibanAppoggio) &&
         Objects.equals(this.tipoContabilita, vocePendenza.tipoContabilita) &&
         Objects.equals(riscossioni, vocePendenza.riscossioni) &&
         Objects.equals(rendicontazioni, vocePendenza.rendicontazioni);
@@ -418,6 +419,7 @@ public class VocePendenza extends it.govpay.core.rs.v1.beans.JSONSerializable im
     sb.append("    provinciaResidenza: ").append(this.toIndentedString(this.provinciaResidenza)).append("\n");
     sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
     sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
+    sb.append("    ibanAppoggio: ").append(this.toIndentedString(this.ibanAppoggio)).append("\n");
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
     sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("    rendicontazioni: ").append(toIndentedString(rendicontazioni)).append("\n");

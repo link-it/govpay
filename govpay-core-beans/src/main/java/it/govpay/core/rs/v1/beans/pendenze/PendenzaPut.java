@@ -1,6 +1,7 @@
 package it.govpay.core.rs.v1.beans.pendenze;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,403 +12,438 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.rs.v1.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"nome",
-"causale",
-"soggettoPagatore",
-"importo",
-"numeroAvviso",
-"dataCaricamento",
-"dataValidita",
-"dataScadenza",
-"annoRiferimento",
-"cartellaPagamento",
-"datiAllegati",
-"tassonomia",
-"tassonomiaAvviso",
-"idDominio",
-"idUnitaOperativa",
-"voci",
+	"nome",
+	"causale",
+	"soggettoPagatore",
+	"importo",
+	"numeroAvviso",
+	"dataCaricamento",
+	"dataValidita",
+	"dataScadenza",
+	"annoRiferimento",
+	"cartellaPagamento",
+	"datiAllegati",
+	"tassonomia",
+	"tassonomiaAvviso",
+	"idDominio",
+	"idUnitaOperativa",
+	"voci",
 })
-public class PendenzaPut extends JSONSerializable {
-  
-  @JsonProperty("nome")
-  private String nome = null;
-  
-  @JsonProperty("causale")
-  private String causale = null;
-  
-  @JsonProperty("soggettoPagatore")
-  private Soggetto soggettoPagatore = null;
-  
-  @JsonProperty("importo")
-  private BigDecimal importo = null;
-  
-  @JsonProperty("numeroAvviso")
-  private String numeroAvviso = null;
-  
-  @JsonProperty("dataCaricamento")
-  private Date dataCaricamento = null;
-  
-  @JsonProperty("dataValidita")
-  private Date dataValidita = null;
-  
-  @JsonProperty("dataScadenza")
-  private Date dataScadenza = null;
-  
-  @JsonProperty("annoRiferimento")
-  private BigDecimal annoRiferimento = null;
-  
-  @JsonProperty("cartellaPagamento")
-  private String cartellaPagamento = null;
-  
-  @JsonProperty("datiAllegati")
-  private String datiAllegati = null;
-  
-  @JsonProperty("tassonomia")
-  private String tassonomia = null;
-  
-  @JsonProperty("tassonomiaAvviso")
-  private TassonomiaAvviso tassonomiaAvviso = null;
-  
-  @JsonProperty("idDominio")
-  private String idDominio = null;
-  
-  @JsonProperty("idUnitaOperativa")
-  private String idUnitaOperativa = null;
-  
-  @JsonProperty("voci")
-  private List<VocePendenza> voci = new ArrayList<>();
-  
-  /**
-   * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
-   **/
-  public PendenzaPut nome(String nome) {
-    this.nome = nome;
-    return this;
-  }
 
-  @JsonProperty("nome")
-  public String getNome() {
-    return this.nome;
-  }
-  public void setNome(String nome) {
-    this.nome = nome;
-  }
+public class PendenzaPut extends JSONSerializable implements IValidable {
 
-  /**
-   * Descrizione da inserire nell'avviso di pagamento
-   **/
-  public PendenzaPut causale(String causale) {
-    this.causale = causale;
-    return this;
-  }
+	private static final String FIELD_ID_DOMINIO = "idDominio";
+	private static final String FIELD_ID_UO = "idUnitaOperativa";
+	private static final String FIELD_NOME = "nome";
+	private static final String FIELD_CAUSALE = "causale";
+	private static final String FIELD_SOGGETTO_PAGATORE = "soggettoPagatore";
+	private static final String FIELD_IMPORTO = "importo";
+	private static final String FIELD_NUMERO_AVVISO = "numeroAvviso";
+	private static final String FIELD_DATA_VALIDITA = "dataValidita";
+	private static final String FIELD_DATA_SCADENZA = "dataScadenza";
+	private static final String FIELD_ANNORIFERIMENTO = "annoRiferimento";
+	private static final String FIELD_CARTELLA_PAGAMENTO = "cartellaPagamento";
+	private static final String FIELD_VOCI = "voci";
 
-  @JsonProperty("causale")
-  public String getCausale() {
-    return this.causale;
-  }
-  public void setCausale(String causale) {
-    this.causale = causale;
-  }
+	@JsonProperty("nome")
+	private String nome = null;
 
-  /**
-   **/
-  public PendenzaPut soggettoPagatore(Soggetto soggettoPagatore) {
-    this.soggettoPagatore = soggettoPagatore;
-    return this;
-  }
+	@JsonProperty("causale")
+	private String causale = null;
 
-  @JsonProperty("soggettoPagatore")
-  public Soggetto getSoggettoPagatore() {
-    return this.soggettoPagatore;
-  }
-  public void setSoggettoPagatore(Soggetto soggettoPagatore) {
-    this.soggettoPagatore = soggettoPagatore;
-  }
+	@JsonProperty("soggettoPagatore")
+	private Soggetto soggettoPagatore = null;
 
-  /**
-   * Importo della pendenza. Deve corrispondere alla somma delle singole voci.
-   **/
-  public PendenzaPut importo(BigDecimal importo) {
-    this.importo = importo;
-    return this;
-  }
+	@JsonProperty("importo")
+	private BigDecimal importo = null;
 
-  @JsonProperty("importo")
-  public BigDecimal getImporto() {
-    return this.importo;
-  }
-  public void setImporto(BigDecimal importo) {
-    this.importo = importo;
-  }
+	@JsonProperty("numeroAvviso")
+	private String numeroAvviso = null;
 
-  /**
-   * Identificativo univoco versamento, assegnato se pagabile da psp
-   **/
-  public PendenzaPut numeroAvviso(String numeroAvviso) {
-    this.numeroAvviso = numeroAvviso;
-    return this;
-  }
+	@JsonProperty("dataCaricamento")
+	private Date dataCaricamento = null;
 
-  @JsonProperty("numeroAvviso")
-  public String getNumeroAvviso() {
-    return this.numeroAvviso;
-  }
-  public void setNumeroAvviso(String numeroAvviso) {
-    this.numeroAvviso = numeroAvviso;
-  }
+	@JsonProperty("dataValidita")
+	private Date dataValidita = null;
 
-  /**
-   * Data di emissione della pendenza
-   **/
-  public PendenzaPut dataCaricamento(Date dataCaricamento) {
-    this.dataCaricamento = dataCaricamento;
-    return this;
-  }
+	@JsonProperty("dataScadenza")
+	private Date dataScadenza = null;
 
-  @JsonProperty("dataCaricamento")
-  public Date getDataCaricamento() {
-    return this.dataCaricamento;
-  }
-  public void setDataCaricamento(Date dataCaricamento) {
-    this.dataCaricamento = dataCaricamento;
-  }
+	@JsonProperty("annoRiferimento")
+	private BigDecimal annoRiferimento = null;
 
-  /**
-   * Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
-   **/
-  public PendenzaPut dataValidita(Date dataValidita) {
-    this.dataValidita = dataValidita;
-    return this;
-  }
+	@JsonProperty("cartellaPagamento")
+	private String cartellaPagamento = null;
 
-  @JsonProperty("dataValidita")
-  public Date getDataValidita() {
-    return this.dataValidita;
-  }
-  public void setDataValidita(Date dataValidita) {
-    this.dataValidita = dataValidita;
-  }
+	@JsonProperty("datiAllegati")
+	private String datiAllegati = null;
 
-  /**
-   * Data di scadenza della pendenza, decorsa la quale non è più pagabile.
-   **/
-  public PendenzaPut dataScadenza(Date dataScadenza) {
-    this.dataScadenza = dataScadenza;
-    return this;
-  }
+	@JsonProperty("tassonomia")
+	private String tassonomia = null;
 
-  @JsonProperty("dataScadenza")
-  public Date getDataScadenza() {
-    return this.dataScadenza;
-  }
-  public void setDataScadenza(Date dataScadenza) {
-    this.dataScadenza = dataScadenza;
-  }
+	@JsonProperty("tassonomiaAvviso")
+	private TassonomiaAvviso tassonomiaAvviso = null;
 
-  /**
-   * Anno di riferimento della pendenza
-   **/
-  public PendenzaPut annoRiferimento(BigDecimal annoRiferimento) {
-    this.annoRiferimento = annoRiferimento;
-    return this;
-  }
+	@JsonProperty("idDominio")
+	private String idDominio = null;
 
-  @JsonProperty("annoRiferimento")
-  public BigDecimal getAnnoRiferimento() {
-    return this.annoRiferimento;
-  }
-  public void setAnnoRiferimento(BigDecimal annoRiferimento) {
-    this.annoRiferimento = annoRiferimento;
-  }
+	@JsonProperty("idUnitaOperativa")
+	private String idUnitaOperativa = null;
 
-  /**
-   * Identificativo della cartella di pagamento a cui afferisce la pendenza
-   **/
-  public PendenzaPut cartellaPagamento(String cartellaPagamento) {
-    this.cartellaPagamento = cartellaPagamento;
-    return this;
-  }
+	@JsonProperty("voci")
+	private List<VocePendenza> voci = new ArrayList<>();
 
-  @JsonProperty("cartellaPagamento")
-  public String getCartellaPagamento() {
-    return this.cartellaPagamento;
-  }
-  public void setCartellaPagamento(String cartellaPagamento) {
-    this.cartellaPagamento = cartellaPagamento;
-  }
+	/**
+	 * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
+	 **/
+	public PendenzaPut nome(String nome) {
+		this.nome = nome;
+		return this;
+	}
 
-  /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
-   **/
-  public PendenzaPut datiAllegati(String datiAllegati) {
-    this.datiAllegati = datiAllegati;
-    return this;
-  }
+	@JsonProperty("nome")
+	public String getNome() {
+		return this.nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-  @JsonProperty("datiAllegati")
-  public String getDatiAllegati() {
-    return this.datiAllegati;
-  }
-  public void setDatiAllegati(String datiAllegati) {
-    this.datiAllegati = datiAllegati;
-  }
+	/**
+	 * Descrizione da inserire nell'avviso di pagamento
+	 **/
+	public PendenzaPut causale(String causale) {
+		this.causale = causale;
+		return this;
+	}
 
-  /**
-   * Macro categoria della pendenza secondo la classificazione del creditore
-   **/
-  public PendenzaPut tassonomia(String tassonomia) {
-    this.tassonomia = tassonomia;
-    return this;
-  }
+	@JsonProperty("causale")
+	public String getCausale() {
+		return this.causale;
+	}
+	public void setCausale(String causale) {
+		this.causale = causale;
+	}
 
-  @JsonProperty("tassonomia")
-  public String getTassonomia() {
-    return this.tassonomia;
-  }
-  public void setTassonomia(String tassonomia) {
-    this.tassonomia = tassonomia;
-  }
+	/**
+	 **/
+	public PendenzaPut soggettoPagatore(Soggetto soggettoPagatore) {
+		this.soggettoPagatore = soggettoPagatore;
+		return this;
+	}
 
-  /**
-   **/
-  public PendenzaPut tassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {
-    this.tassonomiaAvviso = tassonomiaAvviso;
-    return this;
-  }
+	@JsonProperty("soggettoPagatore")
+	public Soggetto getSoggettoPagatore() {
+		return this.soggettoPagatore;
+	}
+	public void setSoggettoPagatore(Soggetto soggettoPagatore) {
+		this.soggettoPagatore = soggettoPagatore;
+	}
 
-  @JsonProperty("tassonomiaAvviso")
-  public TassonomiaAvviso getTassonomiaAvviso() {
-    return this.tassonomiaAvviso;
-  }
-  public void setTassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {
-    this.tassonomiaAvviso = tassonomiaAvviso;
-  }
+	/**
+	 * Importo della pendenza. Deve corrispondere alla somma delle singole voci.
+	 **/
+	public PendenzaPut importo(BigDecimal importo) {
+		this.importo = importo;
+		return this;
+	}
 
-  /**
-   * Identificativo del dominio creditore
-   **/
-  public PendenzaPut idDominio(String idDominio) {
-    this.idDominio = idDominio;
-    return this;
-  }
+	@JsonProperty("importo")
+	public BigDecimal getImporto() {
+		return this.importo;
+	}
+	public void setImporto(BigDecimal importo) {
+		this.importo = importo;
+	}
 
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return this.idDominio;
-  }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
-  }
+	/**
+	 * Identificativo univoco versamento, assegnato se pagabile da psp
+	 **/
+	public PendenzaPut numeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+		return this;
+	}
 
-  /**
-   * Identificativo dell'unita' operativa
-   **/
-  public PendenzaPut idUnitaOperativa(String idUnitaOperativa) {
-    this.idUnitaOperativa = idUnitaOperativa;
-    return this;
-  }
+	@JsonProperty("numeroAvviso")
+	public String getNumeroAvviso() {
+		return this.numeroAvviso;
+	}
+	public void setNumeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+	}
 
-  @JsonProperty("idUnitaOperativa")
-  public String getIdUnitaOperativa() {
-    return this.idUnitaOperativa;
-  }
-  public void setIdUnitaOperativa(String idUnitaOperativa) {
-    this.idUnitaOperativa = idUnitaOperativa;
-  }
+	/**
+	 * Data di emissione della pendenza
+	 **/
+	public PendenzaPut dataCaricamento(Date dataCaricamento) {
+		this.dataCaricamento = dataCaricamento;
+		return this;
+	}
 
-  /**
-   **/
-  public PendenzaPut voci(List<VocePendenza> voci) {
-    this.voci = voci;
-    return this;
-  }
+	@JsonProperty("dataCaricamento")
+	public Date getDataCaricamento() {
+		return this.dataCaricamento;
+	}
+	public void setDataCaricamento(Date dataCaricamento) {
+		this.dataCaricamento = dataCaricamento;
+	}
 
-  @JsonProperty("voci")
-  public List<VocePendenza> getVoci() {
-    return this.voci;
-  }
-  public void setVoci(List<VocePendenza> voci) {
-    this.voci = voci;
-  }
+	/**
+	 * Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+	 **/
+	public PendenzaPut dataValidita(Date dataValidita) {
+		this.dataValidita = dataValidita;
+		return this;
+	}
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || this.getClass() != o.getClass()) {
-      return false;
-    }
-    PendenzaPut pendenzaPut = (PendenzaPut) o;
-    return Objects.equals(this.nome, pendenzaPut.nome) &&
-        Objects.equals(this.causale, pendenzaPut.causale) &&
-        Objects.equals(this.soggettoPagatore, pendenzaPut.soggettoPagatore) &&
-        Objects.equals(this.importo, pendenzaPut.importo) &&
-        Objects.equals(this.numeroAvviso, pendenzaPut.numeroAvviso) &&
-        Objects.equals(this.dataCaricamento, pendenzaPut.dataCaricamento) &&
-        Objects.equals(this.dataValidita, pendenzaPut.dataValidita) &&
-        Objects.equals(this.dataScadenza, pendenzaPut.dataScadenza) &&
-        Objects.equals(this.annoRiferimento, pendenzaPut.annoRiferimento) &&
-        Objects.equals(this.cartellaPagamento, pendenzaPut.cartellaPagamento) &&
-        Objects.equals(this.datiAllegati, pendenzaPut.datiAllegati) &&
-        Objects.equals(this.tassonomia, pendenzaPut.tassonomia) &&
-        Objects.equals(this.tassonomiaAvviso, pendenzaPut.tassonomiaAvviso) &&
-        Objects.equals(this.idDominio, pendenzaPut.idDominio) &&
-        Objects.equals(this.idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
-        Objects.equals(this.voci, pendenzaPut.voci);
-  }
+	@JsonProperty("dataValidita")
+	public Date getDataValidita() {
+		return this.dataValidita;
+	}
+	public void setDataValidita(Date dataValidita) {
+		this.dataValidita = dataValidita;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idDominio, this.idUnitaOperativa, this.voci);
-  }
+	/**
+	 * Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+	 **/
+	public PendenzaPut dataScadenza(Date dataScadenza) {
+		this.dataScadenza = dataScadenza;
+		return this;
+	}
 
-  public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return parse(json, PendenzaPut.class);
-  }
+	@JsonProperty("dataScadenza")
+	public Date getDataScadenza() {
+		return this.dataScadenza;
+	}
+	public void setDataScadenza(Date dataScadenza) {
+		this.dataScadenza = dataScadenza;
+	}
 
-  @Override
-  public String getJsonIdFilter() {
-    return "pendenzaPut";
-  }
+	/**
+	 * Anno di riferimento della pendenza
+	 **/
+	public PendenzaPut annoRiferimento(BigDecimal annoRiferimento) {
+		this.annoRiferimento = annoRiferimento;
+		return this;
+	}
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class PendenzaPut {\n");
-    
-    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
-    sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
-    sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
-    sb.append("    dataCaricamento: ").append(this.toIndentedString(this.dataCaricamento)).append("\n");
-    sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
-    sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
-    sb.append("    annoRiferimento: ").append(this.toIndentedString(this.annoRiferimento)).append("\n");
-    sb.append("    cartellaPagamento: ").append(this.toIndentedString(this.cartellaPagamento)).append("\n");
-    sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
-    sb.append("    tassonomia: ").append(this.toIndentedString(this.tassonomia)).append("\n");
-    sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    idUnitaOperativa: ").append(this.toIndentedString(this.idUnitaOperativa)).append("\n");
-    sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+	@JsonProperty("annoRiferimento")
+	public BigDecimal getAnnoRiferimento() {
+		return this.annoRiferimento;
+	}
+	public void setAnnoRiferimento(BigDecimal annoRiferimento) {
+		this.annoRiferimento = annoRiferimento;
+	}
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
+	/**
+	 * Identificativo della cartella di pagamento a cui afferisce la pendenza
+	 **/
+	public PendenzaPut cartellaPagamento(String cartellaPagamento) {
+		this.cartellaPagamento = cartellaPagamento;
+		return this;
+	}
+
+	@JsonProperty("cartellaPagamento")
+	public String getCartellaPagamento() {
+		return this.cartellaPagamento;
+	}
+	public void setCartellaPagamento(String cartellaPagamento) {
+		this.cartellaPagamento = cartellaPagamento;
+	}
+
+	/**
+	 * Dati applicativi allegati dal gestionale secondo un formato proprietario.
+	 **/
+	public PendenzaPut datiAllegati(String datiAllegati) {
+		this.datiAllegati = datiAllegati;
+		return this;
+	}
+
+	@JsonProperty("datiAllegati")
+	public String getDatiAllegati() {
+		return this.datiAllegati;
+	}
+	public void setDatiAllegati(String datiAllegati) {
+		this.datiAllegati = datiAllegati;
+	}
+
+	/**
+	 * Macro categoria della pendenza secondo la classificazione del creditore
+	 **/
+	public PendenzaPut tassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
+		return this;
+	}
+
+	@JsonProperty("tassonomia")
+	public String getTassonomia() {
+		return this.tassonomia;
+	}
+	public void setTassonomia(String tassonomia) {
+		this.tassonomia = tassonomia;
+	}
+
+	/**
+	 **/
+	public PendenzaPut tassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {
+		this.tassonomiaAvviso = tassonomiaAvviso;
+		return this;
+	}
+
+	@JsonProperty("tassonomiaAvviso")
+	public TassonomiaAvviso getTassonomiaAvviso() {
+		return this.tassonomiaAvviso;
+	}
+	public void setTassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {
+		this.tassonomiaAvviso = tassonomiaAvviso;
+	}
+
+	/**
+	 * Identificativo del dominio creditore
+	 **/
+	public PendenzaPut idDominio(String idDominio) {
+		this.idDominio = idDominio;
+		return this;
+	}
+
+	@JsonProperty("idDominio")
+	public String getIdDominio() {
+		return this.idDominio;
+	}
+	public void setIdDominio(String idDominio) {
+		this.idDominio = idDominio;
+	}
+
+	/**
+	 * Identificativo dell'unita' operativa
+	 **/
+	public PendenzaPut idUnitaOperativa(String idUnitaOperativa) {
+		this.idUnitaOperativa = idUnitaOperativa;
+		return this;
+	}
+
+	@JsonProperty("idUnitaOperativa")
+	public String getIdUnitaOperativa() {
+		return this.idUnitaOperativa;
+	}
+	public void setIdUnitaOperativa(String idUnitaOperativa) {
+		this.idUnitaOperativa = idUnitaOperativa;
+	}
+
+	/**
+	 **/
+	public PendenzaPut voci(List<VocePendenza> voci) {
+		this.voci = voci;
+		return this;
+	}
+
+	@JsonProperty("voci")
+	public List<VocePendenza> getVoci() {
+		return this.voci;
+	}
+	public void setVoci(List<VocePendenza> voci) {
+		this.voci = voci;
+	}
+
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || this.getClass() != o.getClass()) {
+			return false;
+		}
+		PendenzaPut pendenzaPut = (PendenzaPut) o;
+		return Objects.equals(this.nome, pendenzaPut.nome) &&
+				Objects.equals(this.causale, pendenzaPut.causale) &&
+				Objects.equals(this.soggettoPagatore, pendenzaPut.soggettoPagatore) &&
+				Objects.equals(this.importo, pendenzaPut.importo) &&
+				Objects.equals(this.numeroAvviso, pendenzaPut.numeroAvviso) &&
+				Objects.equals(this.dataCaricamento, pendenzaPut.dataCaricamento) &&
+				Objects.equals(this.dataValidita, pendenzaPut.dataValidita) &&
+				Objects.equals(this.dataScadenza, pendenzaPut.dataScadenza) &&
+				Objects.equals(this.annoRiferimento, pendenzaPut.annoRiferimento) &&
+				Objects.equals(this.cartellaPagamento, pendenzaPut.cartellaPagamento) &&
+				Objects.equals(this.datiAllegati, pendenzaPut.datiAllegati) &&
+				Objects.equals(this.tassonomia, pendenzaPut.tassonomia) &&
+				Objects.equals(this.tassonomiaAvviso, pendenzaPut.tassonomiaAvviso) &&
+				Objects.equals(this.idDominio, pendenzaPut.idDominio) &&
+				Objects.equals(this.idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
+				Objects.equals(this.voci, pendenzaPut.voci);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idDominio, this.idUnitaOperativa, this.voci);
+	}
+
+	public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+		return parse(json, PendenzaPut.class);
+	}
+
+	@Override
+	public String getJsonIdFilter() {
+		return "pendenzaPut";
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class PendenzaPut {\n");
+
+		sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
+		sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
+		sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
+		sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
+		sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
+		sb.append("    dataCaricamento: ").append(this.toIndentedString(this.dataCaricamento)).append("\n");
+		sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
+		sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
+		sb.append("    annoRiferimento: ").append(this.toIndentedString(this.annoRiferimento)).append("\n");
+		sb.append("    cartellaPagamento: ").append(this.toIndentedString(this.cartellaPagamento)).append("\n");
+		sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
+		sb.append("    tassonomia: ").append(this.toIndentedString(this.tassonomia)).append("\n");
+		sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
+		sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+		sb.append("    idUnitaOperativa: ").append(this.toIndentedString(this.idUnitaOperativa)).append("\n");
+		sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
+		sb.append("}");
+		return sb.toString();
+	}
+
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n    ");
+	}
+
+	@Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+
+		vf.getValidator(FIELD_ID_DOMINIO, this.idDominio).notNull().minLength(1).maxLength(35);
+		vf.getValidator(FIELD_ID_UO, this.idUnitaOperativa).minLength(1).maxLength(35);
+		vf.getValidator(FIELD_NOME, this.nome).minLength(1).maxLength(35);
+		vf.getValidator(FIELD_CAUSALE, this.causale).notNull().minLength(1).maxLength(140);
+		vf.getValidator(FIELD_SOGGETTO_PAGATORE, this.soggettoPagatore).notNull().validateFields();
+		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
+		vf.getValidator(FIELD_NUMERO_AVVISO, this.numeroAvviso).pattern("[0-9]{18}");
+		vf.getValidator(FIELD_DATA_VALIDITA, this.dataValidita).after(LocalDate.now());
+		vf.getValidator(FIELD_DATA_SCADENZA, this.dataScadenza).after(LocalDate.now());
+		if(this.annoRiferimento != null)
+			vf.getValidator(FIELD_ANNORIFERIMENTO, this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
+		vf.getValidator(FIELD_CARTELLA_PAGAMENTO, this.cartellaPagamento).minLength(1).maxLength(35);
+		vf.getValidator(FIELD_VOCI, this.voci).notNull().minItems(1).maxItems(5).validateObjects();
+	}
 }
 
 

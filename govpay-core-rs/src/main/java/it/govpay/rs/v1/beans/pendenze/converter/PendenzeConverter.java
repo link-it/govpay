@@ -71,7 +71,8 @@ public class PendenzeConverter {
 
 	rsModel.setStato(statoPendenza);
 	rsModel.setTassonomia(versamento.getTassonomia());
-	rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
+	if(versamento.getTassonomiaAvviso() != null)
+		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 	rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 	
 	if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(it.govpay.model.Dominio.EC))

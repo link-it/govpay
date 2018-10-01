@@ -922,6 +922,7 @@ public class Versamento {
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "", propOrder = {
             "ibanAccredito",
+            "ibanAppoggio",
             "tipoContabilita",
             "codContabilita"
         })
@@ -929,6 +930,7 @@ public class Versamento {
 
             @XmlElement(required = true)
             protected String ibanAccredito;
+            private String ibanAppoggio;
             @XmlElement(required = true)
             @XmlSchemaType(name = "string")
             protected TipoContabilita tipoContabilita;
@@ -1006,6 +1008,14 @@ public class Versamento {
             public void setCodContabilita(String value) {
                 this.codContabilita = value;
             }
+
+			public String getIbanAppoggio() {
+				return ibanAppoggio;
+			}
+
+			public void setIbanAppoggio(String ibanAppoggio) {
+				this.ibanAppoggio = ibanAppoggio;
+			}
 
         }
 

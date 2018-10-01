@@ -422,3 +422,23 @@ FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamen
 GROUP BY versamenti.id;
 
 
+
+-- INDICI
+
+-- eventi
+create index idx_eventi_1 on eventi (data_1);
+create index idx_eventi_2 on eventi (iuv);
+create index idx_eventi_3 on eventi (cod_dominio);
+
+-- versamenti
+create index idx_versamenti_1 on versamenti (numero_avviso);
+create index idx_versamenti_2 on versamenti (id_dominio);
+create index idx_versamenti_3 on versamenti (stato_versamento);
+
+-- pagamenti
+create index idx_pagamenti_1 on pagamenti (id_singolo_versamento);
+
+
+
+
+

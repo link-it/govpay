@@ -26,6 +26,7 @@ import it.govpay.core.rs.v1.beans.pagamenti.ListaPendenzeIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.Pendenza;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex;
 import it.govpay.core.rs.v1.beans.pagamenti.PendenzaPost;
+import it.govpay.core.rs.v1.beans.pendenze.PendenzaCreata;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -137,58 +138,6 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pendenzeIdA2AIdPendenzaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
-    	String methodName = "pendenzeIdA2AIdPendenzaPUT";  
-		GpContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			String jsonRequest = baos.toString();
-			PendenzaPost pendenzaPost= JSONSerializable.parse(jsonRequest, PendenzaPost.class);
-			
-			Versamento versamento = PagamentiPortaleConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza); 
-			
-			
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
-
-			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
-			putVersamentoDTO.setVersamento(versamento);
-			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
-			
-			Avviso avviso = PendenzeConverter.toAvvisoRsModel(createOrUpdate.getVersamento(), createOrUpdate.getDominio(), createOrUpdate.getBarCode(), createOrUpdate.getQrCode());
-			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
-			this.logResponse(uriInfo, httpHeaders, methodName, avviso.toJSON(null), responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus).entity(avviso.toJSON(null)),transactionId).build();
-//		} catch(GovPayException e) {
-//			log.error("Errore durante il processo di pagamento", e);
-//			FaultBean respKo = new FaultBean();
-//			respKo.setCategoria(CategoriaEnum.OPERAZIONE);
-//			respKo.setCodice(e.getCodEsito().name());
-//			respKo.setDescrizione(e.getDescrizioneEsito());
-//			respKo.setDettaglio(e.getMessage());
-//			try {
-//				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-//			}catch(Exception e1) {
-//				log.error("Errore durante il log della risposta", e1);
-//			}
-//			return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKo.toJSON(null)).build();
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-	
 }
 
 

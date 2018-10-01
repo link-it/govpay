@@ -232,7 +232,7 @@ public class Operazioni{
 					aggiornaSondaOK(NTFY, bd);
 					BatchManager.stopEsecuzione(bd, NTFY);
 					aggiornaSondaOK(NTFY, bd);
-					log.info("Nessuna notifica da inviare.");
+					log.debug("Nessuna notifica da inviare.");
 					return "Nessuna notifica da inviare.";
 				}
 

@@ -40,6 +40,7 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.viste.VersamentiIncassiBD;
@@ -388,7 +389,14 @@ public class PendenzeDAO extends BaseDAO{
 			for(PatchOp op: patchPendenzaDTO.getOp()) {
 				
 				if(PATH_STATO.equals(op.getPath())) {
-					this.patchStato(versamentoLetto, op);
+					String motivazione = null;
+					//cerco il patch di descrizione stato
+					for(PatchOp op2: patchPendenzaDTO.getOp()) {
+						if(PATH_DESCRIZIONE_STATO.equals(op2.getPath())) {
+							try { motivazione = (String) op2.getValue(); } catch (Exception e) {}
+						}
+					}
+					this.patchStato(patchPendenzaDTO.getUser(), versamentoLetto, op, motivazione, bd);
 				}
 				
 				if(PATH_DESCRIZIONE_STATO.equals(op.getPath())) {
@@ -402,6 +410,31 @@ public class PendenzeDAO extends BaseDAO{
 				if(PATH_NOTA.equals(op.getPath())) {
 					this.patchNota(patchPendenzaDTO.getUser(), versamentoLetto, op, bd);
 				}
+				
+				// Casi di operazioni patch che implicano una nota:
+				// ANNULLAMENTO
+				if(PATH_DESCRIZIONE_STATO.equals(op.getPath()) && PATH_STATO.equals(op.getPath()) && this.getNuovoStatoVersamento(op).equals(StatoVersamento.ANNULLATO)) {
+					Nota nota = new Nota();
+					nota.setPrincipal(patchPendenzaDTO.getUser().getPrincipal());
+					nota.setAutore(this.getOperatoreFromUser(patchPendenzaDTO.getUser(), bd).getNome());
+					nota.setData(new Date());
+					nota.setOggetto("Pendenza annullata");
+					nota.setTipo(TipoNota.SISTEMA_INFO);
+			 		versamentoLetto.getNote().add(0,nota);
+				}
+				
+				// RIPRISTINO
+				if(PATH_DESCRIZIONE_STATO.equals(op.getPath()) && PATH_STATO.equals(op.getPath()) && this.getNuovoStatoVersamento(op).equals(StatoVersamento.NON_ESEGUITO)) {
+					Nota nota = new Nota();
+					nota.setPrincipal(patchPendenzaDTO.getUser().getPrincipal());
+					nota.setAutore(this.getOperatoreFromUser(patchPendenzaDTO.getUser(), bd).getNome());
+					nota.setData(new Date());
+					nota.setTesto(versamentoLetto.getDescrizioneStato());
+					nota.setOggetto("Pendenza ripristinata");
+					nota.setTipo(TipoNota.SISTEMA_INFO);
+			 		versamentoLetto.getNote().add(0,nota);
+				}
+				
 			}
 			
 			versamentoLetto.setDataUltimoAggiornamento(new Date());
@@ -428,7 +461,7 @@ public class PendenzeDAO extends BaseDAO{
 		versamentoLetto.setDescrizioneStato(descrizioneStato);
 	}
 
-	private void patchStato(it.govpay.bd.model.Versamento versamentoLetto, PatchOp op) throws ValidationException {
+	private void patchStato(IAutorizzato iAutorizzato, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, String motivazione, BasicBD bd) throws ValidationException {
 		if(!op.getOp().equals(OpEnum.REPLACE)) {
 			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 		}
@@ -453,6 +486,23 @@ public class PendenzeDAO extends BaseDAO{
 		default:
 			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, nuovoStato.name()));
 		}
+		
+		Nota nota = new Nota();
+		nota.setPrincipal(iAutorizzato.getPrincipal());
+		try {
+			nota.setAutore(this.getOperatoreFromUser(iAutorizzato, bd).getNome());
+		} catch (ServiceException | NotFoundException e) {
+			try {
+				nota.setAutore(this.getApplicazioneFromUser(iAutorizzato, bd).getCodApplicazione());
+			} catch (ServiceException | NotFoundException e2) {
+				nota.setAutore("Anonimo");
+			}
+		}
+		nota.setData(new Date());
+		nota.setOggetto("Pendenza annullata");
+		nota.setTesto(motivazione);
+		nota.setTipo(TipoNota.SISTEMA_INFO);
+ 		versamentoLetto.getNote().add(0,nota);
 	}
 	
 	private void patchAck(it.govpay.bd.model.Versamento versamentoLetto, PatchOp op) throws ValidationException {

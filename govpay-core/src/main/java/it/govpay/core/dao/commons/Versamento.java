@@ -392,6 +392,7 @@ public class Versamento {
         	}
 
             private String ibanAccredito;
+            private String ibanAppoggio;
             private TipoContabilita tipoContabilita;
             private String codContabilita;
 			public String getIbanAccredito() {
@@ -411,6 +412,12 @@ public class Versamento {
 			}
 			public void setCodContabilita(String codContabilita) {
 				this.codContabilita = codContabilita;
+			}
+			public String getIbanAppoggio() {
+				return ibanAppoggio;
+			}
+			public void setIbanAppoggio(String ibanAppoggio) {
+				this.ibanAppoggio = ibanAppoggio;
 			}
 
         }

@@ -168,7 +168,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/avviso'
+                type: object
+                required:
+                  - idDominio
+                  - numeroAvviso
+                properties:
+                  idDominio:
+                    type: string
+                    description: Identificativo del creditore dell'avviso
+                    example: 01234567890
+                  numeroAvviso:
+                    type: string
+                    description: Numero identificativo dell'avviso di pagamento
+                    example: 00100000000000012
+                  pdf:
+                    type: string
+                    format: base64
+                    description: Stampa pdf dell'avviso
         '201':
           description: Pendenza creata con successo
           content:
@@ -1097,7 +1113,6 @@ components:
         - type: object
           required:
             - rpp
-            - pagamenti
           properties:
             rpp:
               type: string
@@ -1136,7 +1151,6 @@ components:
           required:
             - voci
             - rpp
-            - pagamenti
           properties:
             voci:
               type: array

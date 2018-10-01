@@ -116,7 +116,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	}
 	
 	public List<Rpt> getRpt(BasicBD bd) throws ServiceException {
-		if(this.rpts == null) {
+		if(this.rpts == null && bd != null) {
 			RptBD rptBD = new RptBD(bd);
 			RptFilter filter = rptBD.newFilter();
 			filter.setIdVersamento(this.getId());

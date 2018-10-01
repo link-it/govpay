@@ -88,8 +88,8 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	
 	public void setIbanAppoggio(IbanAccredito ibanAppoggio) {
 		this.ibanAppoggio = ibanAppoggio;
-		if(ibanAppoggio.getId() != null)
-			this.setIdIbanAccredito(ibanAppoggio.getId());
+		if(ibanAppoggio != null && ibanAppoggio.getId() != null)
+			this.setIdIbanAppoggio(ibanAppoggio.getId());
 	}
 	
 	public IbanAccredito getIbanAppoggio(BasicBD bd) throws ServiceException {

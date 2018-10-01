@@ -174,6 +174,8 @@ public class VersamentoUtils {
 			
 			try {
 				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(bd, versamento.getUo(bd).getDominio(bd).getId(), singoloVersamento.getTributo().getIbanAccredito()));
+				if(singoloVersamento.getTributo().getIbanAppoggio() != null)
+					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, versamento.getUo(bd).getDominio(bd).getId(), singoloVersamento.getTributo().getIbanAppoggio()));
 				model.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
 				model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
 			} catch (NotFoundException e) {
