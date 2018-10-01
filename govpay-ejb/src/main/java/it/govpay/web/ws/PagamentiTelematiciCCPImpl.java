@@ -297,12 +297,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			ctx.log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
-			RptBD rptBD = new RptBD(bd);
-			// Da specifica, le RPT ad iniziativa PSP non possono richiedere firma
-			rpt.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
-
-			
-
 			bd.setAutoCommit(false);
 			bd.enableSelectForUpdate();
 
