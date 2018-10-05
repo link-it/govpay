@@ -63,7 +63,7 @@ export class HeaderMenuComponent implements OnInit {
    * @private
    */
   protected _showActionMenuIcon() {
-    return this._showActionMenu;
+    return this._showActionMenu && this._actions.length != 0;
   }
 
   /**

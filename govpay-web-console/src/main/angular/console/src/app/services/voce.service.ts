@@ -4,9 +4,10 @@ import { Injectable } from '@angular/core';
 export class Voce {
 
   public static ABILITATO: string = 'Abilitato';
+  public static APPLICAZIONE: string = 'Applicazione';
   public static AUTORIZZAZIONI: string = 'Autorizzazioni';
   public static AUX: string = 'Aux';
-  public static AVVISO: string = 'Avviso';
+  public static AVVISO: string = 'N. avviso';
 
   public static BASIC: string = 'HTTP Basic';
   public static BIC_RIVERSAMENTO: string = 'Codice Bic riversamento';
@@ -20,18 +21,23 @@ export class Voce {
   public static CODICE: string = 'Codice';
   public static CODICE_CONTABILITA: string = 'Codice contabilità';
   public static COMMISSIONI: string = 'Commissioni';
+  public static CONTABILITA: string = 'Contabilità';
   public static CONTENUTO_ALLEGATO: string = 'Contenuto allegato';
+  public static CONTO_ACCREDITO: string = 'Conto accredito';
 
   public static DATA: string = 'Data';
+  public static DATA_CARICAMENTO: string = 'Data caricamento';
   public static DATA_CONTABILE: string = 'Data contabile';
   public static DATA_ESITO: string = 'Data esito';
   public static DATA_ESECUZIONE_RISCOSSIONE: string = 'Data esecuzione riscossione';
   public static DATA_REGOLAMENTO: string = 'Data regolamento';
   public static DATA_RICEVUTA: string = 'Data ricevuta';
   public static DATA_RICHIESTA: string = 'Data richiesta';
-  public static DATA_RICHIESTA_PAGAMENTO: string = 'Data richiesta pagamento';
+  public static DATA_RICHIESTA_PAGAMENTO: string = 'Data richiesta';
   public static DATA_RISPOSTA: string = 'Data risposta';
+  public static DATA_ULTIMO_AGGIORNAMENTO: string = 'Ultimo aggiornamento';
   public static DATA_VALUTA_INCASSO: string = 'Data valuta incasso';
+  public static DATA_VALIDITA: string = 'Data validità';
   public static DEBITORE: string = 'Debitore';
   public static DENOMINAZIONE: string = 'Denominazione';
   public static DESCRIZIONE: string = 'Descrizione';
@@ -56,6 +62,7 @@ export class Voce {
   public static ID_INTERMEDIARIO: string = 'Id intermediario';
   public static ID_PSP: string = 'Id PSP';
   public static ID_PENDENZA: string = 'Id pendenza';
+  public static ID_SESSIONE: string = 'Id carrello';
   public static ID_STAZIONE: string = 'Id stazione';
   public static ID_UNITA: string = 'Id unità';
   public static IDENTIFICATIVO: string = 'Identificativo';
@@ -82,9 +89,14 @@ export class Voce {
   public static NO_PSP: string = 'PSP non pervenuto';
   public static NUMERO_PAY: string = 'Numero di pagamenti';
   public static NOME: string = 'Nome';
+  public static NON_PRESENTE: string = 'Non presente';
   public static NESSUNA: string = 'Nessuna';
 
+  public static OPERATORE_MITTENTE: string = 'Operatore mittente';
   public static OPERAZIONI: string = 'Operazioni';
+  public static OPERAZIONI_FALLITE: string = 'Operazioni fallite';
+  public static OPERAZIONI_ESEGUITE: string = 'Operazioni eseguite';
+  public static OPERAZIONI_TOTALI: string = 'Operazioni totali';
 
   public static PAGO_PA: string = 'Principal pagoPa';
   public static PARAMETRI: string = 'Parametri';
@@ -100,17 +112,19 @@ export class Voce {
 
   public static SCADENZA: string = 'Scadenza';
   public static SECRET_CODE: string = 'Codice di segregazione';
+  public static SOGGETTO_VERSANTE: string = 'Versante';
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';
 
   public static TASSONOMIA: string = 'Tipo (ente)';
-  public static TASSONOMIA_AVVISO: string = 'Tipo (AGID)';
+  public static TASSONOMIA_AVVISO: string = 'Tassonomia avviso';
   public static TELEFONO: string = 'Telefono';
   public static TIPO: string = 'Tipo';
   public static TIPO_ALLEGATO: string = 'Tipo allegato';
   public static TIPO_AUTH: string = 'Tipo autenticazione';
   public static TIPO_CONTABILITA: string = 'Tipo contabilità';
   public static TIPO_EVENTO: string = 'Tipo evento';
+  public static TIPO_OPERAZIONE: string = 'Tipo operazione';
   public static TIPO_RISCOSSIONE: string = 'Tipo riscossione';
   public static TIPO_VERSAMENTO: string = 'Tipo versamento';
   public static TRN: string = 'Id operazione di riversamento (TRN)';

@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.anagrafica;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.converter.UtenzaConverter;
+import it.govpay.model.Acl;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdUtenza;
@@ -183,25 +185,60 @@ public class UtenzeBD extends BasicBD {
 			// se il nuovo valore normalizzato coincide con quello vecchio non cambio la chiave
 			String pr, prOld;
 			try {
-			        pr = Utilities.formatSubject(utenza.getPrincipal());
+				pr = Utilities.formatSubject(utenza.getPrincipal());
 			}catch(Exception e) {
-			        pr= utenza.getPrincipal();
+				pr= utenza.getPrincipal();
 			}
+			
 			try {
-			        prOld = Utilities.formatSubject(utenza2.getPrincipal());
+				prOld = Utilities.formatSubject(utenza2.getPrincipal());
 			}catch(Exception e) {
-			        prOld= utenza2.getPrincipal();
+				prOld= utenza2.getPrincipal();
 			}
 
 			if(pr.equals(prOld)) {
-			        idUtenza.setPrincipal(utenza2.getPrincipal());
-			        vo.setPrincipal(utenza2.getPrincipal());
+				idUtenza.setPrincipal(utenza2.getPrincipal());
+				vo.setPrincipal(utenza2.getPrincipal());
 			}
 
-			
+
 			this.getUtenzaService().update(idUtenza, vo);
 			this.updateUtenzeDominio(vo.getId(), utenza.getIdDomini());
 			this.updateUtenzeTributo(vo.getId(), utenza.getIdTributi());
+			
+			AclBD aclBD = new AclBD(this);
+			AclFilter filter = aclBD.newFilter();
+			filter.setPrincipal(utenza.getPrincipalOriginale());
+			List<Acl> alcEsistenti = aclBD.findAll(filter);
+			
+			// Copio la lista delle ACL nuove
+			
+			List<Acl> aclNuove = new ArrayList<Acl>();
+			for(Acl aclNuova : utenza.getAcls())
+				aclNuove.add(aclNuova);
+			
+			
+			for(Acl aclEsistente : alcEsistenti) {
+				boolean found = false;
+				for(Acl aclNuova : utenza.getAcls()) {
+					if(aclNuova.getServizio().equals(aclEsistente.getServizio())) {
+						found = true;
+						aclNuova.setId(aclEsistente.getId());
+						aclBD.updateAcl(aclNuova);
+						aclNuove.remove(aclNuova);
+						break;
+					}
+				}
+				
+				if(!found) {
+					aclBD.deleteAcl(aclEsistente);
+				}
+			}
+			
+			for(Acl aclNuova : aclNuove)
+				aclBD.insertAcl(aclNuova);
+			
+			
 			utenza.setId(vo.getId());
 			this.emitAudit(utenza);
 		} catch (NotImplementedException | MultipleResultException e) {
@@ -331,6 +368,13 @@ public class UtenzeBD extends BasicBD {
 			utenza.setId(vo.getId());
 			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDomini());
 			this.updateUtenzeTributo(utenza.getId(), utenza.getIdTributi());
+			
+			if(utenza.getAcls() != null && utenza.getAcls().size() > 0) {
+				AclBD aclBD = new AclBD(this);
+				for(Acl aclNuova : utenza.getAcls())
+					aclBD.insertAcl(aclNuova);
+			}
+			
 			this.emitAudit(utenza);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

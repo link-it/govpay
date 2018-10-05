@@ -56,7 +56,7 @@ export class StandardCollapseViewComponent implements OnInit, AfterViewInit {
   // }
 
   protected _collapse() {
-    if(this.info.motivo) {
+    if(this.info.motivo || (this.info.elenco && this.info.elenco.length != 0)) {
       this._expanded = !this._expanded;
     }
   }

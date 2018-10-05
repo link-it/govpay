@@ -41,6 +41,9 @@ import { IncassoViewComponent } from '../elements/detail-view/views/dialog-view/
 import { RppsViewComponent } from '../elements/detail-view/views/rpps-view/rpps-view.component';
 import { StandardCollapseViewComponent } from '../elements/item-view/views/standard-collapse-view/standard-collapse-view.component';
 import { RuoloViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/ruolo-view/ruolo-view.component';
+import { TracciatiViewComponent } from '../elements/detail-view/views/tracciati-view/tracciati-view.component';
+import { TracciatoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tracciato-view/tracciato-view.component';
+import { NotaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/nota-view/nota-view.component';
 
 export class EntryPointList {
 
@@ -57,6 +60,9 @@ export class EntryPointList {
     IncassiViewComponent,
     DominiViewComponent,
     EntrateViewComponent,
+    TracciatiViewComponent,
+    TracciatoViewComponent,
+    NotaViewComponent,
     OperatoriViewComponent,
     StandardViewComponent,
     StandardCollapseViewComponent,
@@ -125,6 +131,9 @@ export class EntryPointList {
       case UtilService.OPERATORI:
         _type = OperatoriViewComponent;
         break;
+      case UtilService.TRACCIATI:
+        _type = TracciatiViewComponent;
+        break;
       //Item view ref
       case UtilService.RIEPILOGO:
         _type = RiepilogoViewComponent;
@@ -183,6 +192,12 @@ export class EntryPointList {
         break;
       case UtilService.PENDENZA:
         _type = PendenzaViewComponent;
+        break;
+      case UtilService.TRACCIATO:
+        _type = TracciatoViewComponent;
+        break;
+      case UtilService.NOTA:
+        _type = NotaViewComponent;
         break;
       //Material Lib
       case UtilService.INPUT:
@@ -251,6 +266,9 @@ export class EntryPointList {
       case 'OperatoriViewComponent':
         _name = UtilService.OPERATORI;
         break;
+      case 'TracciatiViewComponent':
+        _name = UtilService.TRACCIATI;
+        break;
       //Item view ref
       case 'RiepilogoViewComponent':
         _name = UtilService.RIEPILOGO;
@@ -306,6 +324,12 @@ export class EntryPointList {
         break;
       case 'PendenzaViewComponent':
         _name = UtilService.PENDENZA;
+        break;
+      case 'TracciatoViewComponent':
+        _name = UtilService.TRACCIATO;
+        break;
+      case 'NotaViewComponent':
+        _name = UtilService.NOTA;
         break;
       //Material Lib
       case 'InputViewComponent':

@@ -179,7 +179,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setIdSessione(pagamentiPortaleDTO.getIdSessione());
 			pagamentoPortale.setIdSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
 			pagamentoPortale.setJsonRequest(pagamentiPortaleDTO.getJsonRichiesta());
-			pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idPagamento",pagamentiPortaleDTO.getIdSessione()));
+			if(pagamentiPortaleDTO.getUrlRitorno() != null)
+				pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idPagamento",pagamentiPortaleDTO.getIdSessione()));
 			pagamentoPortale.setDataRichiesta(new Date());
 			pagamentoPortale.setCodApplicazione(codApplicazione);
 			pagamentoPortale.setWispIdDominio(codDominio);
@@ -226,7 +227,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					codiceStato = CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP;
 					stato = STATO.IN_CORSO;
 					idSessionePsp = rpt.getCodSessione();
-					pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "idSession", idSessionePsp));
+					if(pagamentoPortale.getUrlRitorno()!= null)
+						pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "idSession", idSessionePsp));
 					pspRedirect = rpt.getPspRedirectURL(); 
 					response.setRedirectUrl(pspRedirect);
 					response.setIdSessione(idSessionePsp); 

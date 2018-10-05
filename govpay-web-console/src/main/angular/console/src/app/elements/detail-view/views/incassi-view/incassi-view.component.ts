@@ -48,15 +48,15 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
 
   protected mapJsonDetail() {
     //Riepilogo
-    let _dvi = UtilService.defaultDisplay({ value: moment(this.json.dataValuta).format('DD/MM/YYYY') });
-    let _dci = UtilService.defaultDisplay({ value: moment(this.json.dataContabile).format('DD/MM/YYYY') });
+    let _dvi = this.json.dataValuta?moment(this.json.dataValuta).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
+    let _dci = this.json.dataContabile?moment(this.json.dataContabile).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
     this.info = new Riepilogo({
-      titolo: new Dato({ label: Voce.DATA_VALUTA_INCASSO, value: UtilService.defaultDisplay({ value: _dvi }) }),
+      titolo: new Dato({ label: Voce.DATA_VALUTA_INCASSO, value: _dvi }),
       sottotitolo: new Dato({ label: Voce.ID_INCASSO, value: this.json.idIncasso }),
       importo: this.us.currencyFormat(this.json.importo),
       extraInfo: [
         { label: Voce.CAUSALE+': ', value: this.json.causale },
-        { label: Voce.DATA_CONTABILE+': ', value: UtilService.defaultDisplay({ value: _dci }) }
+        { label: Voce.DATA_CONTABILE+': ', value: _dci }
       ]
     });
 

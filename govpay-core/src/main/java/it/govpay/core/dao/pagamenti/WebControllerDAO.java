@@ -124,10 +124,14 @@ public class WebControllerDAO extends BaseDAO{
 				break;
 			}
 			String urlRitorno = pagamentoPortale.getUrlRitorno();
-			urlRitorno = UrlUtils.addParameter(urlRitorno, "idPagamento", pagamentoPortale.getIdSessione());
-			urlRitorno = UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito());
-			redirectDaPspDTOResponse.setLocation(urlRitorno);
-
+			
+			if(urlRitorno != null) {
+				urlRitorno = UrlUtils.addParameter(urlRitorno, "idPagamento", pagamentoPortale.getIdSessione());
+				urlRitorno = UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito());
+				redirectDaPspDTOResponse.setLocation(urlRitorno);
+			} else {
+				redirectDaPspDTOResponse.setLocation(null);
+			}
 		}finally {
 			if(bd != null)
 				bd.closeConnection();

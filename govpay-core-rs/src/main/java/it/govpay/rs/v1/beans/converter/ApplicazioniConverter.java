@@ -65,6 +65,16 @@ public class ApplicazioniConverter {
 		applicazioneDTO.setApplicazione(applicazione);
 		applicazioneDTO.setIdApplicazione(idA2A);
 		
+		if(applicazionePost.getAcl()!=null) {
+			List<Acl> aclPrincipal = new ArrayList<Acl>();
+			for(AclPost aclPost: applicazionePost.getAcl()) {
+				Acl acl = AclConverter.getAcl(aclPost, user);
+				acl.setPrincipal(applicazionePost.getPrincipal());
+				aclPrincipal.add(acl);
+			}
+			applicazione.getUtenza().setAclPrincipal(aclPrincipal);
+		}
+		
 		return applicazioneDTO;		
 	}
 

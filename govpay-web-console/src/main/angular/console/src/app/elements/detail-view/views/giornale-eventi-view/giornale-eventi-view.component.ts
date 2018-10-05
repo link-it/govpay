@@ -40,9 +40,9 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit {
     _dettaglio.push(new Dato({ label: Voce.ID_CANALE, value: this.json.idCanale }));
     _dettaglio.push(new Dato({ label: Voce.ID_STAZIONE, value: this.json.idStazione }));
     _dettaglio.push(new Dato({ label: Voce.PARAMETRI, value: this.json.parametri }));
-    let _date = UtilService.defaultDisplay({ value: moment(this.json.dataOraRichiesta).format('DD/MM/YYYY [ore] HH:mm') });
+    let _date = this.json.dataOraRichiesta?moment(this.json.dataOraRichiesta).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
     _dettaglio.push(new Dato({ label: Voce.DATA_RICHIESTA, value: _date }));
-    _date = UtilService.defaultDisplay({ value: moment(this.json.dataOraRisposta).format('DD/MM/YYYY [ore] HH:mm') });
+    _date = this.json.dataOraRisposta?moment(this.json.dataOraRisposta).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
     _dettaglio.push(new Dato({ label: Voce.DATA_RISPOSTA, value: _date }));
     _dettaglio.push(new Dato({ label: Voce.ESITO, value: this.json.esito }));
 

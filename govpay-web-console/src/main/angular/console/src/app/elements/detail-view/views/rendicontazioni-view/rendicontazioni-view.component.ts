@@ -49,10 +49,10 @@ export class RendicontazioniViewComponent implements IModalDialog, OnInit {
 
   protected mapJsonDetail() {
     //Riepilogo
-    let _dvi = UtilService.defaultDisplay({ value: moment(this.json.dataFlusso).format('DD/MM/YYYY [ore] HH:mm') });
-    let _dr = UtilService.defaultDisplay({ value: moment(this.json.dataRegolamento).format('DD/MM/YYYY [ore] HH:mm') });
+    let _dvi = this.json.dataFlusso?moment(this.json.dataFlusso).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
+    let _dr = this.json.dataRegolamento?moment(this.json.dataRegolamento).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
     this.info = new Riepilogo({
-      titolo: new Dato({ label: Voce.DATA_VALUTA_INCASSO, value: UtilService.defaultDisplay({ value: _dvi }) }),
+      titolo: new Dato({ label: Voce.DATA_VALUTA_INCASSO, value: _dvi }),
       sottotitolo: new Dato({ label: Voce.TRN, value: this.json.trn }),
       importo: this.us.currencyFormat(this.json.importoTotale),
       extraInfo: [
@@ -61,7 +61,7 @@ export class RendicontazioniViewComponent implements IModalDialog, OnInit {
         { label: Voce.ID_PSP+': ', value: this.json.idPsp },
         { label: Voce.ID_DOMINIO+': ', value: this.json.idDominio },
         { label: Voce.NUMERO_PAY+': ', value: this.json.numeroPagamenti },
-        { label: Voce.DATA_REGOLAMENTO+': ', value: UtilService.defaultDisplay({ value: _dr }) }
+        { label: Voce.DATA_REGOLAMENTO+': ', value: _dr }
       ]
     });
     let _warn = [];
@@ -91,9 +91,10 @@ export class RendicontazioniViewComponent implements IModalDialog, OnInit {
     let _std = new Standard();
     switch(type) {
       case UtilService.URL_RENDICONTAZIONI:
+        let _tmpData = item.data?moment(item.data).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
         let _st = Dato.arraysToDato(
           [ Voce.DATA_ESITO, Voce.IUR ],
-          [ UtilService.defaultDisplay({ value: moment(item.data).format('DD/MM/YYYY') }), item.iur ],
+          [ _tmpData, item.iur ],
           ', '
         );
         _std.titolo = new Dato({ label: '',  value: item.iuv });

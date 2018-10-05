@@ -20,6 +20,14 @@ public class AclConverter {
 	public static PostAclDTO getPostAclDTO(AclPost aclPost, IAutorizzato user) throws ServiceException {
 		
 		PostAclDTO aclDTO = new PostAclDTO(user);
+		Acl acl = getAcl(aclPost, user);
+		aclDTO.setAcl(acl);
+
+		return aclDTO;		
+	}
+	
+	public static Acl getAcl(AclPost aclPost, IAutorizzato user) throws ServiceException {
+		
 		Acl acl = new Acl();
 		
 		Set<Diritti> lst = new HashSet<>();
@@ -39,9 +47,7 @@ public class AclConverter {
 
 		acl.setListaDiritti(lst);
 		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
-		aclDTO.setAcl(acl);
-
-		return aclDTO;		
+		return acl;
 	}
 	
 	public static AclPost toRsModel(it.govpay.model.Acl acl) {

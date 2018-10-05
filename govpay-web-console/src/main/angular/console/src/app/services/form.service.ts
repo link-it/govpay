@@ -27,7 +27,7 @@ export class FormService {
   public static FORM_PH_SESSIONE: string = '';
   public static FORM_DATA_INIZIO: string = 'Data da';
   public static FORM_DATA_FINE: string = 'Data a';
-  public static FORM_VERIFICATO: string = 'Verificati';
+  public static FORM_VERIFICATO: string = 'Stato verifica';
 
   //PSP
   // public static FORM_BOLLO: string = 'Bollo';
