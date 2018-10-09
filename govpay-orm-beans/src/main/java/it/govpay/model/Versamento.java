@@ -41,8 +41,7 @@ public class Versamento extends BasicModel {
 		ESEGUITO,
 		PARZIALMENTE_ESEGUITO,
 		ANNULLATO,
-		ANOMALO,
-		ESEGUITO_SENZA_RPT;
+		ESEGUITO_ALTRO_CANALE;
 	}
 	
 	private static final long serialVersionUID = 1L;

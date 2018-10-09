@@ -39,6 +39,7 @@ import it.govpay.core.dao.pagamenti.exception.TokenWISPNonValidoException;
 import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
@@ -130,7 +131,7 @@ public class WebControllerDAO extends BaseDAO{
 				urlRitorno = UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",pagamentoPortale.getPspEsito());
 				redirectDaPspDTOResponse.setLocation(urlRitorno);
 			} else {
-				redirectDaPspDTOResponse.setLocation(null);
+				throw new GovPayException("Impossibile indirizzare il Portale di Pagamento: non e' stata fornita una URL di ritorno in fase di richiesta. IdCarrello " + pagamentoPortale.getIdSessione(), EsitoOperazione.PAG_013, pagamentoPortale.getIdSessione());
 			}
 		}finally {
 			if(bd != null)

@@ -14,9 +14,6 @@ import java.util.Date;
  */
 public class Nota implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L; 
 	
 	public static final String UTENTE_SISTEMA = "SISTEMA";
@@ -31,6 +28,27 @@ public class Nota implements Serializable{
 	private String testo = null;
 	private TipoNota tipo =null;
 	private String oggetto = null;
+	
+	public Nota() {
+		this.data = new Date();
+	}
+	
+	public Nota(TipoNota tipo, String oggetto, String testo, String principal, String autore) {
+		this.data = new Date();
+		this.tipo = tipo;
+		this.oggetto = oggetto;
+		this.testo = testo;
+		this.principal = principal;
+		this.autore = autore;
+	}
+	
+	public Nota(TipoNota tipo, String oggetto, String testo) {
+		this.data = new Date();
+		this.tipo = tipo;
+		this.oggetto = oggetto;
+		this.testo = testo;
+		this.autore = UTENTE_SISTEMA;
+	}
 	
 	public String getAutore() {
 		return this.autore;

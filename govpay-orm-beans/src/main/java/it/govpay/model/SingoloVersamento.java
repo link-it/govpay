@@ -29,8 +29,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 
 	public enum StatoSingoloVersamento {
 		ESEGUITO,
-		NON_ESEGUITO,
-		ANOMALO;
+		NON_ESEGUITO;
 	}
 	
 	public enum TipoBollo {

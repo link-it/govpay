@@ -37,6 +37,8 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
+import it.govpay.bd.model.Nota;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.pagamento.FrBD;
@@ -305,19 +307,21 @@ public class Incassi extends BasicBD {
 								pagamentiBD.insertPagamento(pagamento);
 								rendicontazione.setIdPagamento(pagamento.getId());
 									
+								versamento.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento eseguito senza RPT", "Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "]."));
+
 								//Aggiorno lo stato del versamento:
 								switch (versamento.getSingoliVersamenti(this).get(0).getStatoSingoloVersamento()) {
 									case NON_ESEGUITO:
 										versamentiBD.updateStatoSingoloVersamento(versamento.getSingoliVersamenti(this).get(0).getId(), StatoSingoloVersamento.ESEGUITO);
-										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO_SENZA_RPT, "Eseguito senza RPT");
+										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
 										break;
 									case ESEGUITO:
-										versamentiBD.updateStatoSingoloVersamento(versamento.getSingoliVersamenti(this).get(0).getId(), StatoSingoloVersamento.ANOMALO); 
-										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ANOMALO, "Pagamento duplicato");
-										break;
-									case ANOMALO:	
+										versamento.setAnomalo(true);
+										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato");
 										break;
 								}
+								
+								versamentiBD.updateVersamento(versamento);
 							} catch (MultipleResultException e) {
 								GpThreadLocal.get().log("incasso.frAnomala", idf);
 								throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");
