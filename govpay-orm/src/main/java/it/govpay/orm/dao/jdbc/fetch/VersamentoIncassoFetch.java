@@ -146,6 +146,8 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "importo_incassato", VersamentoIncasso.model().IMPORTO_INCASSATO.getFieldType()));
 				setParameter(object, "setStatoPagamento", VersamentoIncasso.model().STATO_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "stato_pagamento", VersamentoIncasso.model().STATO_PAGAMENTO.getFieldType()));
+				setParameter(object, "setIuvPagamento", VersamentoIncasso.model().IUV_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_pagamento", VersamentoIncasso.model().IUV_PAGAMENTO.getFieldType()));
 				return object;
 			}
 			
@@ -260,6 +262,8 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"importoIncassato"));
 				setParameter(object, "setStatoPagamento", VersamentoIncasso.model().STATO_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"statoPagamento"));
+				setParameter(object, "setIuvPagamento", VersamentoIncasso.model().IUV_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"iuvPagamento"));
 				return object;
 			}
 			

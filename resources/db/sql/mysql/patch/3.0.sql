@@ -337,8 +337,10 @@ alter table singoli_versamenti add column indice_dati INT;
 update singoli_versamenti sv set indice_dati = (select sb1.indice_dati from (select sv1.id as id , sv1.id_versamento as id_versamento, row_number() over (partition by sv1.id_versamento) as indice_dati from singoli_versamenti sv1) as sb1 where sb1.id = sv.id);
 alter table singoli_versamenti MODIFY column indice_dati NOT NULL;
 
-alter table singoli_versamenti drop constraint unique_singoli_versamenti_1;
+alter table singoli_versamenti drop index unique_singoli_versamenti_1;
 alter table singoli_versamenti add CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati);
+alter table singoli_versamenti drop index index_singoli_versamenti_1;
+alter table singoli_versamenti add index index_singoli_versamenti_1 (id_versamento,cod_singolo_versamento_ente,indice_dati);
 
 alter table rendicontazioni add column id_singolo_versamento BIGINT;
 alter table rendicontazioni add CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id);
@@ -398,6 +400,7 @@ MAX(CASE WHEN versamenti.anomalo = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS anomalo
 MAX(pagamenti.data_pagamento) as data_pagamento,            
 SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) AS importo_pagato,
 SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
-MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento
+MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento,
+MAX(pagamenti.iuv) AS iuv_pagamento
 FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
 GROUP BY versamenti.id;
