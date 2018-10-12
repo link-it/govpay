@@ -379,7 +379,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setDataFine(listaPagamentiPortaleDTO.getDataA());
 			filter.setAck(listaPagamentiPortaleDTO.getVerificato());
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
-			
+			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
 			if(listaPagamentiPortaleDTO.getStato()!=null) {
 				try {
 					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));

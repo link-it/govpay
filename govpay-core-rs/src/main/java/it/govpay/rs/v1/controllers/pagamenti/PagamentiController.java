@@ -150,7 +150,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale) {
+    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, String idSessionePsp) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -169,12 +169,14 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setStato(stato);
-			
+			listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
+			listaPagamentiPortaleDTO.setIdSessionePsp(idSessionePsp);
 			if(versante != null)
 				listaPagamentiPortaleDTO.setVersante(versante);
 
 			if(ordinamento != null)
 				listaPagamentiPortaleDTO.setOrderBy(ordinamento);
+			
 			// INIT DAO
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();

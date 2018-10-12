@@ -26,7 +26,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
@@ -258,7 +257,7 @@ public class PendenzeDAO extends BaseDAO{
 		return new ListaPendenzeDTOResponse(count, resList);
 	}
 
-	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException{
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 		if(leggiPendenzaDTO.isInfoIncasso())
 			_leggiPendenzaConInfromazionIncasso(leggiPendenzaDTO, response);
@@ -268,16 +267,21 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	private void _leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO, LeggiPendenzaDTOResponse response)
-			throws ServiceException, NotAuthenticatedException, NotAuthorizedException, PendenzaNonTrovataException {
-		Versamento versamento;
+			throws ServiceException, NotAuthenticatedException, NotAuthorizedException, PendenzaNonTrovataException, GovPayException {
+		Versamento versamento = null;
 		BasicBD bd = null;
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
+			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
+			if(leggiPendenzaDTO.getCodA2A() != null)
+				versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
+			else if(leggiPendenzaDTO.getNumeroAvviso() != null)
+				versamento = versamentiBD.getVersamento(leggiPendenzaDTO.getIdDominio(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso()));
+			
 			
 			Dominio dominio = versamento.getDominio(versamentiBD);
 			// controllo che il dominio sia autorizzato

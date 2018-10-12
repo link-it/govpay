@@ -237,7 +237,7 @@ public class UtentiDAO extends BaseDAO{
 				UtenzaPatchUtils.patchUtenza(op, operatore.getUtenza(), bd);
 			}
 			
-			operatoriBD.updateOperatore(operatore);
+			//operatoriBD.updateOperatore(operatore);
 			
 			AnagraficaManager.removeFromCache(operatore);
 			AnagraficaManager.removeFromCache(operatore.getUtenza()); 

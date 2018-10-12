@@ -49,6 +49,7 @@ import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.model.Acl.Diritti;
@@ -459,8 +460,6 @@ public class VersamentoUtils {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
-//		versamento.setAnomalie(pendenza.getAnomalie());  //TODO
-
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenza.getVoci());
 
@@ -530,8 +529,6 @@ public class VersamentoUtils {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 		
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
-//		if(pendenza.getNumeroAvviso()!=null)
-//			versamento.setIuv(pendenza.getNumeroAvviso());
 		
 //		versamento.setIncasso(pendenza.getIncasso()); //TODO
 //		versamento.setAnomalie(pendenza.getAnomalie()); 

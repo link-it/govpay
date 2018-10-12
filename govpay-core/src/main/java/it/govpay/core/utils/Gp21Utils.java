@@ -230,7 +230,7 @@ public class Gp21Utils {
 		if(pagamento.getAllegato() != null) {
 			it.govpay.core.rs.v1.beans.base.Allegato allegato = new it.govpay.core.rs.v1.beans.base.Allegato();
 			allegato.setTesto(Base64.encodeBase64String(pagamento.getAllegato()));
-			allegato.setTipo(TipoEnum.valueOf(pagamento.getTipoAllegato().toString()));
+			allegato.setTipo(TipoEnum.fromCodifica(pagamento.getTipoAllegato().toString()));
 			riscossione.setAllegato(allegato);
 		}
 		
@@ -244,13 +244,6 @@ public class Gp21Utils {
 		riscossione.setIur(pagamento.getIur());
 		riscossione.setPendenza(urlPendenza); 
 		riscossione.setRpp(urlRpt);
-//		riscossione.setCausaleRevoca(pagamento.getCausaleRevoca());
-//		riscossione.setDatiEsitoRevoca(pagamento.getDatiEsitoRevoca());
-//		riscossione.setDatiRevoca(pagamento.getDatiRevoca());
-//		riscossione.setEsitoRevoca(pagamento.getEsitoRevoca());
-//		riscossione.setImportoRevocato(pagamento.getImportoRevocato());
-//		riscossione.setDataAcquisizione(pagamento.getDataAcquisizione());
-//		riscossione.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
 		
 		return riscossione;
 	}

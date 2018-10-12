@@ -98,7 +98,7 @@ public class DominiDAO extends BaseDAO{
 			this.autorizzaRichiesta(putDominioDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.SCRITTURA,bd); 
 			// stazione
 			try {
-				putDominioDTO.getDominio().setIdStazione(AnagraficaManager.getStazione(bd, putDominioDTO.getCodStazione()).getId());
+				putDominioDTO.getDominio().setIdStazione(this.useCacheData ? AnagraficaManager.getStazione(bd, putDominioDTO.getCodStazione()).getId() : AnagraficaManagerNoCache.getStazione(bd, putDominioDTO.getCodStazione()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new StazioneNonTrovataException(e.getMessage());
 			} 
@@ -115,7 +115,7 @@ public class DominiDAO extends BaseDAO{
 				TipoTributo bolloT = null;
 				// bollo telematico
 				try {
-					bolloT = AnagraficaManager.getTipoTributo(bd, it.govpay.model.Tributo.BOLLOT);
+					bolloT = this.useCacheData ? AnagraficaManager.getTipoTributo(bd, it.govpay.model.Tributo.BOLLOT) : AnagraficaManagerNoCache.getTipoTributo(bd, it.govpay.model.Tributo.BOLLOT);
 				} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 					throw new TipoTributoNonTrovatoException(e.getMessage());
 				}

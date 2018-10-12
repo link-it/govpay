@@ -119,6 +119,14 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 				return "01";
 			}
 		}
+		
+		public static TipoBolloEnum fromCodifica(String codifica) {
+			switch (codifica) {
+			case "01":
+			default:
+				return IMPOSTA_DI_BOLLO;
+			}
+		}
 
 		public static TipoBolloEnum fromValue(String text) {
 			for (TipoBolloEnum b : TipoBolloEnum.values()) {
