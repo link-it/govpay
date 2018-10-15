@@ -42,6 +42,14 @@ public class Pagamenti extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale);
     }
+    
+    @GET
+    @Path("/byIdSession/{idSession}")
+    @Produces({ "application/json" })
+    public Response pagamentiIdSessionGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idSession") String idSession){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pagamentiIdSessionGET(this.getUser(), uriInfo, httpHeaders,  idSession);
+    }
 
     @GET
     @Path("/{id}")
