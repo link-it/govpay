@@ -57,7 +57,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
-			leggiPagamentoPortaleDTO.setIdSessione(id);
+			leggiPagamentoPortaleDTO.setId(id);
 			leggiPagamentoPortaleDTO.setRisolviLink(true);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 

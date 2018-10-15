@@ -29,7 +29,6 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
@@ -43,6 +42,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private STATO stato;
 	private String versante;
 	private String idSessionePortale;
+	private String idSessionePsp;
 	private List<String> codDomini;
 	private Boolean ack;
 	
@@ -92,7 +92,13 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			if(this.idSessionePortale!= null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PORTALE, this.idSessionePortale, LikeMode.ANYWHERE);
+				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PORTALE, this.idSessionePortale);
+				addAnd = true;
+			}
+			if(this.idSessionePsp!= null) {
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE_PSP, this.idSessionePsp);
 				addAnd = true;
 			}
 			
@@ -199,6 +205,14 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 	public void setIdSessionePortale(String idSessionePortale) {
 		this.idSessionePortale = idSessionePortale;
+	}
+
+	public String getIdSessionePsp() {
+		return idSessionePsp;
+	}
+
+	public void setIdSessionePsp(String idSessionePsp) {
+		this.idSessionePsp = idSessionePsp;
 	}
 
 }

@@ -87,6 +87,7 @@ import java.io.Serializable;
  * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="statoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -152,7 +153,8 @@ import java.io.Serializable;
   	"dataPagamento",
   	"importoPagato",
   	"importoIncassato",
-  	"statoPagamento"
+  	"statoPagamento",
+  	"iuvPagamento"
   }
 )
 
@@ -592,6 +594,14 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.statoPagamento = statoPagamento;
   }
 
+  public java.lang.String getIuvPagamento() {
+    return this.iuvPagamento;
+  }
+
+  public void setIuvPagamento(java.lang.String iuvPagamento) {
+    this.iuvPagamento = iuvPagamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -817,5 +827,9 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="statoPagamento",required=false,nillable=false)
   protected java.lang.String statoPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuvPagamento",required=false,nillable=false)
+  protected java.lang.String iuvPagamento;
 
 }

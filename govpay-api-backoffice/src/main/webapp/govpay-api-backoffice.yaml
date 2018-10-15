@@ -1787,6 +1787,7 @@ paths:
               $ref: '#/components/schemas/tracciatoPendenzePost'
           multipart/form-data:
             schema:
+              type: object
               properties:
                 fileName:
                   type: string
@@ -1960,16 +1961,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-              - stato
-              properties:
-                stato:
-                  $ref: '#/components/schemas/statoPendenza'
-                descrizioneStato:
-                  description: Causale del cambio di stato.
-                  example: Annullata
-                  type: string
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
       responses:
         '200':
           description: Pendenza aggiornata con successo
@@ -3896,8 +3891,12 @@ components:
           example: 10.01
         numeroAvviso:
           type: string
-          description: Identificativo univoco versamento, assegnato se pagabile da psp
-          example: 123456789012345678
+          description: Numero avviso, assegnato se pagabile da psp
+          example: 001000000000012345
+        iuvAvviso:
+          type: string
+          description: Iuv avviso, assegnato se pagabile da psp
+          example: 000000000012345
         dataCaricamento:
           type: string
           format: date
@@ -3930,6 +3929,10 @@ components:
           example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/tassonomiaAvviso'
+        iuvPagamento:
+          type: string
+          description: Iuv dell'ultimo pagamento eseguito con successo 
+          example: 000000000012345
     pendenzaPut:
       type: object
       allOf:
@@ -4360,6 +4363,9 @@ components:
         testo:
           description: allegato codificato in base64
           type: string
+        contenuto:
+          description: allegato decodificato, se previsto
+          type: object
     flussoRendicontazioneIndex:
       type: object
       required:

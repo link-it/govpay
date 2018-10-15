@@ -2588,7 +2588,7 @@
 			<xsd:element name="importoPagato" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="importoIncassato" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="statoPagamento" type="String35" minOccurs="0"/>
-			
+			<xsd:element name="iuvPagamento" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

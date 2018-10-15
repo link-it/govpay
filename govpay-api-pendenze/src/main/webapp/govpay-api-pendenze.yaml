@@ -200,10 +200,9 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     patch:
-      description: L'aggiornamento dello stato di una pendenza in `Annullata` può essere completato solo se la pendenza si trova in stato `Da pagare`. Viceversa il ripristino dello stato `Da pagare` può essere disposto solo in caso di pendenza `Annullata`. L'aggiornamento è consentito solo se di dispone di ACL per il servizio Pendenze di tipo scrittura. 
       tags:
         - Pendenze
-      summary: Annullamento o ripristino di una pendenza
+      summary: Aggiornamento di una pendenza
       parameters:
         - in: path
           name: idA2A
@@ -221,16 +220,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-              - stato
-              properties:
-                stato:
-                  $ref: '#/components/schemas/statoPendenza'
-                descrizioneStato:
-                  description: Causale del cambio di stato.
-                  example: Annullata
-                  type: string
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
       responses:
         '200':
           description: Pendenza aggiornata con successo
@@ -1384,6 +1377,29 @@ components:
           example:
             - Lettura
             - Scrittura
+    patchOp:
+      type: object
+      required: 
+        - op
+        - path
+        - value
+      properties:
+        op:
+          type: string
+          enum:
+            - ADD
+            - DELETE
+            - REPLACE
+          description: Operazione da eseguire
+          example: "ADD"
+        path:
+          type: string
+          description: path dell'oggetto dell'operazione
+          example: "domini"
+        value:
+          type: object
+          description: valore del'oggetto dell'operazione
+          example: "01234567890"            
     profilo:
       type: object
       required: 

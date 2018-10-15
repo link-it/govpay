@@ -438,6 +438,13 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "stato_pagamento";
 			}
 		}
+		if(field.equals(VersamentoIncasso.model().IUV_PAGAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv_pagamento";
+			}else{
+				return "iuv_pagamento";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -608,6 +615,9 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().STATO_PAGAMENTO)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().IUV_PAGAMENTO)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 

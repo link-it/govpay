@@ -128,6 +128,9 @@ public class VersamentoIncassoConverter {
 			
 			dto.setAnomalo("true".equalsIgnoreCase(vo.getAnomalo()));
 			
+			// TODO
+			dto.setIuvPagamento(vo.getIuvPagamento());
+			
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

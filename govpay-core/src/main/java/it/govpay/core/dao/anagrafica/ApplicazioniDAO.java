@@ -169,7 +169,7 @@ public class ApplicazioniDAO extends BaseDAO {
 				UtenzaPatchUtils.patchUtenza(op, getApplicazioneDTOResponse.getApplicazione().getUtenza(), bd);
 			}
 
-			applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
+			//applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
 			
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione());
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione().getUtenza()); 

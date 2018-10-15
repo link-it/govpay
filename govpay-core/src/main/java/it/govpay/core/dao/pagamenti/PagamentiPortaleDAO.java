@@ -321,7 +321,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
-			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getIdSessione());
+			PagamentoPortale pagamentoPortale = null;
+			if(leggiPagamentoPortaleDTO.getId() != null) 
+				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getId());
+			else
+				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessionePsp(leggiPagamentoPortaleDTO.getIdSessionePsp());
 
 			if(pagamentoPortale.getVersamenti(bd) != null && pagamentoPortale.getVersamenti(bd).size() > 0) {
 				for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
@@ -338,20 +342,20 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(leggiPagamentoPortaleDTO.isRisolviLink()) {
 				PendenzeDAO pendenzeDao = new PendenzeDAO();
 				ListaPendenzeDTO listaPendenzaDTO = new ListaPendenzeDTO(leggiPagamentoPortaleDTO.getUser());
-				listaPendenzaDTO.setIdPagamento(leggiPagamentoPortaleDTO.getIdSessione());
+				listaPendenzaDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
 
 				RptDAO rptDao = new RptDAO(); 
 				ListaRptDTO listaRptDTO = new ListaRptDTO(leggiPagamentoPortaleDTO.getUser());
-				listaRptDTO.setIdPagamento(leggiPagamentoPortaleDTO.getIdSessione());
+				listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 			}
 
 			return leggiPagamentoPortaleDTOResponse;
 		}catch(NotFoundException e) {
-			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getIdSessione()+"]");
+			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getId()+"]");
 		}finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -379,7 +383,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setDataFine(listaPagamentiPortaleDTO.getDataA());
 			filter.setAck(listaPagamentiPortaleDTO.getVerificato());
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
-			
+			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
 			if(listaPagamentiPortaleDTO.getStato()!=null) {
 				try {
 					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
