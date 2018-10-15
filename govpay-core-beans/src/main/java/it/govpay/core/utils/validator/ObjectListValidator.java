@@ -22,7 +22,7 @@ public class ObjectListValidator {
 	}
 	
 	public ObjectListValidator isNull() throws ValidationException {
-		if(this.fieldValue != null) {
+		if(this.fieldValue != null && !this.fieldValue.isEmpty()) {
 			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
 		}
 		return this;

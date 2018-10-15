@@ -503,7 +503,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator(FIELD_NOME, this.nome).isNull();
 				vf.getValidator(FIELD_CAUSALE, this.causale).isNull();
 				vf.getValidator(FIELD_SOGGETTO_PAGATORE, this.soggettoPagatore).isNull();
-				vf.getValidator(FIELD_IMPORTO, this.importo).notNull().isNull();
+				vf.getValidator(FIELD_IMPORTO, this.importo).isNull();
 				vf.getValidator(FIELD_NUMERO_AVVISO, this.numeroAvviso).isNull();
 				vf.getValidator(FIELD_DATA_VALIDITA, this.dataValidita).isNull();
 				vf.getValidator(FIELD_DATA_SCADENZA, this.dataScadenza).isNull();
@@ -514,9 +514,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				throw new ValidationException("Pendenza riferita per identificativo A2A. " + ve.getMessage());
 			}
 			return;
-		}
-
-		if(this.idA2A == null && this.idDominio != null) {
+		} else if(this.idA2A == null && this.idDominio != null) {
 			vf.getValidator(FIELD_ID_DOMINIO, this.idDominio).notNull().minLength(1).maxLength(35);
 			vf.getValidator(FIELD_NUMERO_AVVISO, this.numeroAvviso).notNull().pattern("[0-9]{18}");
 			try {
@@ -535,23 +533,24 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 			} catch (ValidationException ve) {
 				throw new ValidationException("Pendenza riferita per numero avviso. " + ve.getMessage());
 			}
+		} else {
+	
+			vf.getValidator(FIELD_ID_DOMINIO, this.idDominio).notNull().minLength(1).maxLength(35);
+			vf.getValidator(FIELD_ID_UO, this.idUnitaOperativa).minLength(1).maxLength(35);
+			vf.getValidator(FIELD_NOME, this.nome).minLength(1).maxLength(35);
+			vf.getValidator(FIELD_CAUSALE, this.causale).notNull().minLength(1).maxLength(140);
+			vf.getValidator(FIELD_SOGGETTO_PAGATORE, this.soggettoPagatore).notNull().validateFields();
+			vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
+			vf.getValidator(FIELD_NUMERO_AVVISO, this.numeroAvviso).pattern("[0-9]{18}");
+			vf.getValidator(FIELD_DATA_VALIDITA, this.dataValidita).after(LocalDate.now());
+			vf.getValidator(FIELD_DATA_SCADENZA, this.dataScadenza).after(LocalDate.now());
+			if(this.annoRiferimento != null)
+				vf.getValidator(FIELD_ANNORIFERIMENTO, this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
+			vf.getValidator(FIELD_CARTELLA_PAGAMENTO, this.cartellaPagamento).minLength(1).maxLength(35);
+			vf.getValidator(FIELD_ID_A2A, this.idA2A).notNull().minLength(1).maxLength(35);
+			vf.getValidator(FIELD_ID_PENDENZA, this.idPendenza).notNull().minLength(1).maxLength(35);
+			vf.getValidator(FIELD_VOCI, this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 		}
-
-		vf.getValidator(FIELD_ID_DOMINIO, this.idDominio).notNull().minLength(1).maxLength(35);
-		vf.getValidator(FIELD_ID_UO, this.idUnitaOperativa).minLength(1).maxLength(35);
-		vf.getValidator(FIELD_NOME, this.nome).minLength(1).maxLength(35);
-		vf.getValidator(FIELD_CAUSALE, this.causale).notNull().minLength(1).maxLength(140);
-		vf.getValidator(FIELD_SOGGETTO_PAGATORE, this.soggettoPagatore).notNull().validateFields();
-		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
-		vf.getValidator(FIELD_NUMERO_AVVISO, this.numeroAvviso).pattern("[0-9]{18}");
-		vf.getValidator(FIELD_DATA_VALIDITA, this.dataValidita).after(LocalDate.now());
-		vf.getValidator(FIELD_DATA_SCADENZA, this.dataScadenza).after(LocalDate.now());
-		if(this.annoRiferimento != null)
-			vf.getValidator(FIELD_ANNORIFERIMENTO, this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
-		vf.getValidator(FIELD_CARTELLA_PAGAMENTO, this.cartellaPagamento).minLength(1).maxLength(35);
-		vf.getValidator(FIELD_ID_A2A, this.idA2A).notNull().minLength(1).maxLength(35);
-		vf.getValidator(FIELD_ID_PENDENZA, this.idPendenza).notNull().minLength(1).maxLength(35);
-		vf.getValidator(FIELD_VOCI, this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 	}
 }
 

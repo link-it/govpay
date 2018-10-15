@@ -342,7 +342,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
-		this.log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+		this.log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		if(e.getFaultBean()!=null) {
 			respKo.setCategoria(CategoriaEnum.PAGOPA);
