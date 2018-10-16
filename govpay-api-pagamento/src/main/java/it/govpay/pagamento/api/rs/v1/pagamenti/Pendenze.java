@@ -30,24 +30,20 @@ public class Pendenze extends BaseRsServiceV1{
 		this.controller = new PendenzeController(this.nomeServizio,this.log);
 	}
 
-
-
-    @GET
-    @Path("/{idA2A}/{idPendenza}")
-    
-    @Produces({ "application/json" })
-    public Response pendenzeIdA2AIdPendenzaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.pendenzeIdA2AIdPendenzaGET(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza);
-    }
-
     @GET
     @Path("/")
-    
     @Produces({ "application/json" })
     public Response pendenzeGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") String stato, @QueryParam("idPagamento") String idPagamento){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.pendenzeGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento);
+    }
+
+    @GET
+    @Path("/{idA2A}/{idPendenza}")
+    @Produces({ "application/json" })
+    public Response pendenzeIdA2AIdPendenzaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.pendenzeIdA2AIdPendenzaGET(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza);
     }
 
 }

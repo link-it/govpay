@@ -354,7 +354,7 @@ versamenti.id as id,
 MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,          
 MAX(versamenti.nome) as nome,                         
 MAX(versamenti.importo_totale) as importo_totale,               
-MAX(versamenti.stato_versamento) as stato_versamento,             
+versamenti.stato_versamento as stato_versamento,             
 MAX(versamenti.descrizione_stato) as descrizione_stato,           
 MAX(CASE WHEN versamenti.aggiornabile = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
 MAX(versamenti.data_creazione) as data_creazione,               
@@ -363,7 +363,7 @@ MAX(versamenti.data_scadenza) as data_scadenza,
 MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
 MAX(versamenti.causale_versamento) as causale_versamento,           
 MAX(versamenti.debitore_tipo) as debitore_tipo,                
-MAX(versamenti.debitore_identificativo) as debitore_identificativo,      
+versamenti.debitore_identificativo as debitore_identificativo,      
 MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,          
 MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,           
 MAX(versamenti.debitore_civico) as debitore_civico,              
@@ -406,4 +406,4 @@ MAX(0) AS smart_order_rank,
 MIN(0) AS smart_order_date
 FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
 WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0
-GROUP BY versamenti.id;
+GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
