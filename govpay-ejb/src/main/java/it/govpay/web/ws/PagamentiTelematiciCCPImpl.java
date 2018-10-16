@@ -25,9 +25,6 @@ import java.util.List;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import it.gov.digitpa.schemas._2011.ws.psp.CtSpezzoneStrutturatoCausaleVersamento;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiMarcaBolloDigitale;
-import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
-import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
 import it.gov.digitpa.schemas._2011.ws.psp.CtSpezzoniCausaleVersamento;
 import it.gov.digitpa.schemas._2011.ws.psp.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.psp.EsitoAttivaRPT;
@@ -49,13 +46,8 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.model.Rpt.FirmaRichiesta;
-import it.govpay.model.SingoloVersamento.TipoBollo;
-import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
@@ -305,13 +297,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Rpt rpt = new RptBuilder().buildRptAttivata(bodyrichiesta.getIdentificativoIntermediarioPSP(), bodyrichiesta.getIdentificativoPSP(), bodyrichiesta.getIdentificativoCanalePSP(), versamento, iuv, ccp, bodyrichiesta.getDatiPagamentoPSP(), bd);
 
 			ctx.log("ccp.attivazione", rpt.getCodMsgRichiesta());
-
-			RptBD rptBD = new RptBD(bd);
-			// Da specifica, le RPT ad iniziativa PSP non possono richiedere firma
-			rpt.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
-
-			
-
 			bd.setAutoCommit(false);
 			bd.enableSelectForUpdate();
 

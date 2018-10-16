@@ -25,6 +25,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.core.utils.GpContext;
@@ -53,6 +54,10 @@ public class InviaNotificaThread implements Runnable {
 		this.notifica.getApplicazione(bd);
 		if(this.notifica.getIdRpt() != null) {
 			this.notifica.getRpt(bd).getVersamento(bd);
+			for(SingoloVersamento sv : this.notifica.getRpt(bd).getVersamento(bd).getSingoliVersamenti(bd)) {
+				sv.getIbanAccredito(bd);
+				sv.getIbanAppoggio(bd);
+			}
 			List<Pagamento> pagamenti = this.notifica.getRpt(bd).getPagamenti(bd);
 			if(pagamenti != null) {
 				for(Pagamento pagamento : pagamenti)
@@ -62,6 +67,10 @@ public class InviaNotificaThread implements Runnable {
 			this.notifica.getRr(bd);
 			this.notifica.getRr(bd).getRpt(bd);
 			this.notifica.getRr(bd).getRpt(bd).getVersamento(bd);
+			for(SingoloVersamento sv : this.notifica.getRpt(bd).getVersamento(bd).getSingoliVersamenti(bd)) {
+				sv.getIbanAccredito(bd);
+				sv.getIbanAppoggio(bd);
+			}
 			List<Pagamento> pagamenti = this.notifica.getRr(bd).getRpt(bd).getPagamenti(bd);
 			if(pagamenti != null) {
 				for(Pagamento pagamento : pagamenti)

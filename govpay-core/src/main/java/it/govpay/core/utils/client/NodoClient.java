@@ -20,6 +20,7 @@
 package it.govpay.core.utils.client;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
+import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazione;
@@ -34,6 +35,8 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPTRisposta;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRPT;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRPTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStorno;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStornoRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.ObjectFactory;
@@ -46,6 +49,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Intermediario;
+import it.govpay.model.Rpt;
 import it.govpay.model.Stazione;
 
 import javax.xml.bind.JAXBElement;
@@ -58,7 +62,7 @@ public class NodoClient extends BasicClient {
 	
 
 	public enum Azione {
-		nodoInviaCarrelloRPT, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione, nodoChiediSceltaWISP
+		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione, nodoChiediSceltaWISP
 	}
 
 	private static ObjectFactory objectFactory;
@@ -114,6 +118,21 @@ public class NodoClient extends BasicClient {
 			updateStato();
 		}
 		
+	}
+	
+	public NodoInviaRPTRisposta nodoInviaRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, NodoInviaRPT inviaRPT) throws GovPayException, ClientException {
+		this.stazione = stazione.getCodStazione();
+		this.dominio = rpt.getCodDominio();
+		
+		IntestazionePPT intestazione = new IntestazionePPT();
+		intestazione.setCodiceContestoPagamento(rpt.getCcp());
+		intestazione.setIdentificativoDominio(rpt.getCodDominio());
+		intestazione.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
+		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
+		intestazione.setIdentificativoUnivocoVersamento(rpt.getIuv());
+		
+		Risposta response = send(Azione.nodoInviaRPT.toString(), objectFactory.createNodoInviaRPT(inviaRPT), intestazione);
+		return (NodoInviaRPTRisposta) response;
 	}
 
 	public NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPT(Intermediario intermediario, Stazione stazione, NodoInviaCarrelloRPT inviaCarrelloRPT, String codCarrello) throws GovPayException, ClientException {
