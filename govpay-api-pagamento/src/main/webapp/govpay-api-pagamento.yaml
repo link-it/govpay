@@ -2373,7 +2373,7 @@ components:
       properties:
         nome:
           type: string
-          description: Nome dell'utenza
+          description: Nome o principal dell'utenza
         domini:
           type: array
           description: domini su cui e' abilitato ad operare
@@ -2388,6 +2388,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/aclPost'
+        anagrafica:
+          $ref: '#/components/schemas/soggetto'
+        identityData:
+          type: object
     tipoContabilita:
       description: Tipologia di codifica del capitolo di bilancio
       type: string

@@ -442,7 +442,8 @@ create index idx_versamenti_3 on versamenti (stato_versamento);
 -- pagamenti
 create index idx_pagamenti_1 on pagamenti (id_singolo_versamento);
 
-
+-- FIX bug che non valorizzava il tipo debitore
+update versamenti set debitore_tipo = 'F';
 
 
 
