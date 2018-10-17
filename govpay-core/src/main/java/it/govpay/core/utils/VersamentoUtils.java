@@ -49,6 +49,7 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Dominio;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
@@ -282,6 +283,7 @@ public class VersamentoUtils {
 		anagraficaModel.setProvincia(anagrafica.getProvincia());
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
+		anagraficaModel.setTipo(TIPO.valueOf(anagrafica.getTipo()));
 		return anagraficaModel;
 	}
 	
@@ -300,6 +302,7 @@ public class VersamentoUtils {
 		anagraficaModel.setProvincia(anagrafica.getProvincia());
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
+		anagraficaModel.setTipo(TIPO.valueOf(anagrafica.getTipo()));
 		return anagraficaModel;
 	}
 	

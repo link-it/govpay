@@ -35,6 +35,7 @@ import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -201,12 +202,14 @@ public class VersamentoUtils {
 		anagraficaModel.setProvincia(anagrafica.getProvincia());
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
+		anagraficaModel.setTipo(TIPO.valueOf(anagrafica.getTipo()));
 		return anagraficaModel;
 	}
 	
 	public static it.govpay.model.Anagrafica toAnagraficaModel(it.govpay.core.dao.commons.Anagrafica anagrafica) {
 		if(anagrafica == null) return null;
 		it.govpay.model.Anagrafica anagraficaModel = new it.govpay.model.Anagrafica();
+		
 		anagraficaModel.setCap(anagrafica.getCap());
 		anagraficaModel.setCellulare(anagrafica.getCellulare());
 		anagraficaModel.setCivico(anagrafica.getCivico());
@@ -219,6 +222,7 @@ public class VersamentoUtils {
 		anagraficaModel.setProvincia(anagrafica.getProvincia());
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
+		anagraficaModel.setTipo(TIPO.valueOf(anagrafica.getTipo()));
 		return anagraficaModel;
 	}
 }
