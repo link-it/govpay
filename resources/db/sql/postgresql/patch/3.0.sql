@@ -380,7 +380,7 @@ MAX(versamenti.data_scadenza) as data_scadenza,
 MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
 MAX(versamenti.causale_versamento) as causale_versamento,
 MAX(versamenti.debitore_tipo) as debitore_tipo,
-MAX(versamenti.debitore_identificativo) as debitore_identificativo,
+versamenti.debitore_identificativo as debitore_identificativo,
 MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,
 MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,
 MAX(versamenti.debitore_civico) as debitore_civico,
@@ -423,7 +423,7 @@ MAX(CASE WHEN versamenti.stato_versamento='NON_ESEGUITO' AND versamenti.data_val
 MIN(@((date_part('epoch',CURRENT_TIMESTAMP)*1000) - (date_part('epoch',COALESCE (pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))*1000))) AS smart_order_date
 FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
 WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0
-GROUP BY versamenti.id;
+GROUP BY versamenti.id, versamenti.debitore_identificativo;
 
 
 
