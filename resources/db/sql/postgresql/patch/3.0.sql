@@ -420,7 +420,7 @@ SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0
 MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento,
 MAX(pagamenti.iuv) AS iuv_pagamento,
 MAX(CASE WHEN versamenti.stato_versamento='NON_ESEGUITO' AND versamenti.data_validita > CURRENT_TIMESTAMP THEN 0 ELSE 1 END) AS smart_order_rank,
-MIN(@((date_part('epoch',CURRENT_TIMESTAMP)*1000) - (date_part('epoch',COALESCE (pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))*1000))) AS smart_order_date
+CAST(MIN(@((date_part('epoch',CURRENT_TIMESTAMP)*1000) - (date_part('epoch',COALESCE (pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))*1000))) AS BIGINT) AS smart_order_date
 FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
 WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0
 GROUP BY versamenti.id, versamenti.debitore_identificativo;
