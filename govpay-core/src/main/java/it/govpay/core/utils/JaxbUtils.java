@@ -59,7 +59,8 @@ import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVers
 public class JaxbUtils {
 
 	private static JAXBContext jaxbContext, jaxbContextCodes, jaxbContextIntestazioneCarrelloPPT, jaxbBolloContext;
-	public static Schema RPT_RT_schema, RR_ER_schema, GP_PA_schema, bollo_schema;
+	private static Schema RPT_RT_schema, RR_ER_schema;
+	public static Schema  GP_PA_schema;
 	private static GpEventHandler gpEventHandler;
 
 	public static void init() throws JAXBException, SAXException {
@@ -70,8 +71,6 @@ public class JaxbUtils {
 			GP_PA_schema = schemaFactory.newSchema(GP_PA_sources); 
 			RR_ER_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/RR_ER_1_0_0.xsd"))); 
 			
-			Source[] bollo_sources ={new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/xmldsig-core-schema.xsd")), new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/MarcaDaBollo.xsd"))}; 
-			bollo_schema = schemaFactory.newSchema(bollo_sources); 
 			jaxbBolloContext = JAXBContext.newInstance("it.gov.agenziaentrate._2014.marcadabollo");
 			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.pagamenti.revoche:it.gov.digitpa.schemas._2011.ws.paa:it.gov.digitpa.schemas._2011.psp:gov.telematici.pagamenti.ws.ppthead:it.govpay.servizi.pa");
 			jaxbContextCodes = JAXBContext.newInstance("it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr");
@@ -246,10 +245,9 @@ public class JaxbUtils {
 		}
 	}
 	
-	public static TipoMarcaDaBollo toMarcaDaBollo(byte[] marca, boolean validate) throws JAXBException, SAXException {
+	public static TipoMarcaDaBollo toMarcaDaBollo(byte[] marca) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbBolloContext.createUnmarshaller();
-		if(validate) jaxbUnmarshaller.setSchema(bollo_schema);
 	    JAXBElement<TipoMarcaDaBollo> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(marca)), TipoMarcaDaBollo.class);
 		return root.getValue();
 	}

@@ -64,7 +64,7 @@ public class RiscossioniConverter {
 			if(allegato.getTipo() != null && allegato.getTipo().equals(TipoEnum.MARCA_DA_BOLLO)) {
 				byte[] xmlMarca = input.getAllegato();
 				try {
-					allegato.setContenuto(JaxbUtils.toMarcaDaBollo(xmlMarca, false));
+					allegato.setContenuto(JaxbUtils.toMarcaDaBollo(xmlMarca));
 				} catch (JAXBException | SAXException e) {
 					allegato.setContenuto(new TipoMarcaDaBollo());
 				}
