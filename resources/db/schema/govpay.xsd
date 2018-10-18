@@ -551,7 +551,7 @@
 			<xsd:element name="ndpData" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="logo" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="cbill" type="String255" minOccurs="0"/>
-			
+			<xsd:element name="autStampaPoste" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2345,39 +2345,40 @@
 	<xsd:element name="AvvisoPagamentoInput" type="AvvisoPagamentoInput" />
 	<xsd:complexType name="AvvisoPagamentoInput">
 		<xsd:sequence>
-			<xsd:element name="ente_logo" type="xsd:string"/>
-			<xsd:element name="agid_logo" type="xsd:string"/>
-			<xsd:element name="pagopa_logo" type="xsd:string"/>
-			<xsd:element name="pagopa90_logo" type="xsd:string"/>
-			<xsd:element name="app_logo" type="xsd:string"/>
-			<xsd:element name="place_logo" type="xsd:string"/>
-			<xsd:element name="importo_logo" type="xsd:string"/>
-			<xsd:element name="scadenza_logo" type="xsd:string"/>
-			<xsd:element name="taglio" type="xsd:string"/>
-			<xsd:element name="taglio1" type="xsd:string"/>
-			<xsd:element name="ente_denominazione" type="xsd:string"/>
-			<xsd:element name="ente_area" type="xsd:string"/>
-			<xsd:element name="ente_identificativo" type="xsd:string"/>
-			<xsd:element name="ente_identificativo_split" type="xsd:string"/>
-			<xsd:element name="ente_cbill" type="xsd:string"/>
-			<xsd:element name="ente_url" type="xsd:string"/>
-			<xsd:element name="ente_peo" type="xsd:string"/>
-			<xsd:element name="ente_pec" type="xsd:string"/>
-			<xsd:element name="ente_partner" type="xsd:string"/>
-			<xsd:element name="intestatario_denominazione" type="xsd:string"/>
-			<xsd:element name="intestatario_identificativo" type="xsd:string"/>
-			<xsd:element name="intestatario_indirizzo_1" type="xsd:string"/>
-			<xsd:element name="intestatario_indirizzo_2" type="xsd:string"/>
-			<xsd:element name="avviso_causale" type="xsd:string"/>
-			<xsd:element name="avviso_mav" type="xsd:boolean"/>
-			<xsd:element name="avviso_importo" type="xsd:double"/>
-			<xsd:element name="avviso_scadenza" type="xsd:string"/>
-			<xsd:element name="avviso_numero" type="xsd:string"/>
-			<xsd:element name="avviso_numero_split" type="xsd:string"/>
-			<xsd:element name="avviso_iuv" type="xsd:string"/>
-			<xsd:element name="avviso_iuv_split" type="xsd:string"/>
-			<xsd:element name="avviso_barcode" type="xsd:string"/>
-			<xsd:element name="avviso_qrcode" type="xsd:string"/>
+			<xsd:element name="logo_ente" type="xsd:string"/>
+			<xsd:element name="logo_pagopa" type="xsd:string"/>
+			<xsd:element name="logo_app" type="xsd:string"/>
+			<xsd:element name="logo_place" type="xsd:string"/>
+			<xsd:element name="logo_posta" type="xsd:string"/>
+			<xsd:element name="logo_scissors" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
+			<xsd:element name="cf_ente" type="xsd:string"/>
+			<xsd:element name="cf_destinatario" type="xsd:string"/>
+			<xsd:element name="nome_cognome_destinatario" type="xsd:string"/>
+			<xsd:element name="ente_creditore" type="xsd:string"/>
+			<xsd:element name="settore_ente" type="xsd:string"/>
+			<xsd:element name="indirizzo_destinatario" type="xsd:string"/>
+			<xsd:element name="info_ente" type="InfoEnte"/>
+			<xsd:element name="del_tuo_ente" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="di_poste" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="importo" type="xsd:double"/>
+			<xsd:element name="data" type="xsd:string"/>
+			<xsd:element name="qr_code" type="xsd:string"/>
+			<xsd:element name="cbill" type="xsd:string"/>
+			<xsd:element name="codice_avviso" type="xsd:string"/>
+			<xsd:element name="numero_cc_postale" type="xsd:string"/>
+			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
+			<xsd:element name="autorizzazione" type="xsd:string"/>
+			<xsd:element name="data_matrix" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="InfoEnte" type="InfoEnte" />
+	<xsd:complexType name="InfoEnte">
+		<xsd:sequence>
+			<xsd:element name="web" type="xsd:string"/>
+			<xsd:element name="email" type="xsd:string"/>
+			<xsd:element name="pec" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2589,6 +2590,9 @@
 			<xsd:element name="importoIncassato" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="statoPagamento" type="String35" minOccurs="0"/>
 			<xsd:element name="iuvPagamento" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="smartOrderDate" type="xsd:positiveInteger" minOccurs="0"/>
+			<xsd:element name="smartOrderRank" type="xsd:positiveInteger" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

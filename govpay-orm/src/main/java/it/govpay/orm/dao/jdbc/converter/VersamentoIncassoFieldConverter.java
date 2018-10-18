@@ -445,6 +445,20 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "iuv_pagamento";
 			}
 		}
+		if(field.equals(VersamentoIncasso.model().SMART_ORDER_DATE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".smart_order_date";
+			}else{
+				return "smart_order_date";
+			}
+		}
+		if(field.equals(VersamentoIncasso.model().SMART_ORDER_RANK)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".smart_order_rank";
+			}else{
+				return "smart_order_rank";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -618,6 +632,12 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().IUV_PAGAMENTO)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().SMART_ORDER_DATE)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().SMART_ORDER_RANK)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 

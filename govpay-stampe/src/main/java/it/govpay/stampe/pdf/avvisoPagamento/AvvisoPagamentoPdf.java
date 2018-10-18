@@ -4,9 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -17,6 +15,7 @@ import org.slf4j.Logger;
 
 import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.model.avvisi.AvvisoPagamentoInput;
+import it.govpay.model.avvisi.InfoEnte;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -86,25 +85,14 @@ public class AvvisoPagamentoPdf {
 		return dataSource;
 	}
 
-	public JRDataSource creaCustomDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException {
-		List<AvvisoPagamentoInput> listaAvvisi = new ArrayList<>();
-		listaAvvisi.add(input);
-		JRDataSource dataSource = new AvvisoPagamentoDatasource(listaAvvisi,log);
-		return dataSource;
-	}
-
 	public void caricaLoghiAvviso(AvvisoPagamentoInput input, Properties propertiesAvvisoPerDominio) {
 		// valorizzo la sezione loghi
-		input.setEnteLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_ENTE));
-		input.setAgidLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_AGID));
-		input.setPagopaLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PAGOPA));
-		input.setPagopa90Logo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PAGOPA_90));
-		input.setAppLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_APP));
-		input.setPlaceLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PLACE));
-		input.setImportoLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_IMPORTO));
-		input.setScadenzaLogo(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_SCADENZA));
-		input.setTaglio(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_TAGLIO));
-		input.setTaglio1(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_TAGLIO1));
+		input.setLogoEnte(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_ENTE));
+		input.setLogoPagopa(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PAGOPA));
+		input.setLogoApp(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_APP));
+		input.setLogoPlace(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PLACE));
+		input.setLogoPosta(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_POSTA));
+		input.setLogoScissors(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_SCISSORS));
 	}
 
 
@@ -125,25 +113,25 @@ public class AvvisoPagamentoPdf {
 			AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 			AvvisoPagamentoPdf.getInstance().caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
 
-			input.setEnteDenominazione("Comune di San Valentino in Abruzzo Citeriore");
-			input.setEnteArea("Area di sviluppo per le politiche agricole e forestali");
-			input.setEnteIdentificativo("83000390019");
-			input.setEnteCbill("AAAAAAA");
-			input.setEnteUrl("www.comune.sanciprianopicentino.sa.it/");
-			input.setEntePeo("info@comune.sancipriano.sa.it");
-			input.setEntePec("protocollo@pec.comune.sanciprianopicentino.sa.it");
-			input.setEntePartner("Link.it Srl");
-			input.setIntestatarioDenominazione("Lorenzo Nardi");
-			input.setIntestatarioIdentificativo("NRDLNA80P19D612M");
-			input.setIntestatarioIndirizzo1("Via di Corniola 119A");
-			input.setIntestatarioIndirizzo2("50053 Empoli (FI)");
-			input.setAvvisoCausale("Pagamento diritti di segreteria per il rilascio in duplice copia della documentazione richiesta.");
-			input.setAvvisoImporto(9999999.99);
-			input.setAvvisoScadenza("31/12/2020");
-			input.setAvvisoNumero("399000012345678900");
-			input.setAvvisoIuv("99000012345678900");
-			input.setAvvisoBarcode("415808888880094580203990000123456789003902222250");
-			input.setAvvisoQrcode("PAGOPA|002|399000012345678900|83000390019|222250");
+			input.setEnteCreditore("Comune di San Valentino in Abruzzo Citeriore"); 
+			input.setSettoreEnte("Area di sviluppo per le politiche agricole e forestali");
+			input.setCfEnte("83000390019");
+			input.setCbill("AAAAAAA");
+			InfoEnte infoEnte = new InfoEnte();
+			infoEnte.setWeb("www.comune.sanciprianopicentino.sa.it/");
+			infoEnte.setEmail("info@comune.sancipriano.sa.it");
+			infoEnte.setPec("protocollo@pec.comune.sanciprianopicentino.sa.it");
+			input.setInfoEnte(infoEnte );
+			input.setNomeCognomeDestinatario("Lorenzo Nardi");
+			input.setCfDestinatario("NRDLNA80P19D612M");
+			input.setIndirizzoDestinatario("Via di Corniola 119A 50053 Empoli (FI)");
+			input.setOggettoDelPagamento("Pagamento diritti di segreteria per il rilascio in duplice copia della documentazione richiesta.");
+			input.setImporto(9999999.99);
+			input.setData("31/12/2020");
+			input.setCodiceAvviso("399000012345678900");
+			input.setDataMatrix("01034531200000111719112510ABCD1234");
+			input.setQrCode("PAGOPA|002|399000012345678900|83000390019|222250");
+			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
 
 			JRDataSource dataSource = AvvisoPagamentoPdf.getInstance().creaXmlDataSource(log,input);
 			JasperPrint jasperPrint = AvvisoPagamentoPdf.getInstance().creaJasperPrintAvviso(log, input, av, propertiesAvvisoPerDominio, jasperTemplateInputStream, dataSource,parameters);

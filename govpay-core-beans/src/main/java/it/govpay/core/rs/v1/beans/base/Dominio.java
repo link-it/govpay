@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "segregationCode",
 "logo",
 "abilitato",
+"autStampaPosteItaliane",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -93,6 +94,9 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
+  
+  @JsonProperty("autStampaPosteItaliane")
+  private String autStampaPosteItaliane = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -427,6 +431,22 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * numero di autorizzazione per la stampa in proprio rilasciato da poste italiane
+   **/
+  public Dominio autStampaPosteItaliane(String autStampaPosteItaliane) {
+    this.autStampaPosteItaliane = autStampaPosteItaliane;
+    return this;
+  }
+
+  @JsonProperty("autStampaPosteItaliane")
+  public String getAutStampaPosteItaliane() {
+    return autStampaPosteItaliane;
+  }
+  public void setAutStampaPosteItaliane(String autStampaPosteItaliane) {
+    this.autStampaPosteItaliane = autStampaPosteItaliane;
+  }
+
+  /**
    * Codice fiscale del beneficiario
    **/
   public Dominio idDominio(String idDominio) {
@@ -518,6 +538,7 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(this.segregationCode, dominio.segregationCode) &&
         Objects.equals(this.logo, dominio.logo) &&
         Objects.equals(this.abilitato, dominio.abilitato) &&
+        Objects.equals(this.autStampaPosteItaliane, dominio.autStampaPosteItaliane) &&
         Objects.equals(this.idDominio, dominio.idDominio) &&
         Objects.equals(this.unitaOperative, dominio.unitaOperative) &&
         Objects.equals(this.contiAccredito, dominio.contiAccredito) &&
@@ -526,7 +547,7 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato, this.idDominio, this.unitaOperative, this.contiAccredito, this.entrate);
+    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato, this.autStampaPosteItaliane, this.idDominio, this.unitaOperative, this.contiAccredito, this.entrate);
   }
 
   public static Dominio parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -563,6 +584,7 @@ public class Dominio extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    segregationCode: ").append(this.toIndentedString(this.segregationCode)).append("\n");
     sb.append("    logo: ").append(this.toIndentedString(this.logo)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    autStampaPosteItaliane: ").append(this.toIndentedString(this.autStampaPosteItaliane)).append("\n");
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(this.toIndentedString(this.unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(this.toIndentedString(this.contiAccredito)).append("\n");

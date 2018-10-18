@@ -148,11 +148,13 @@ public class DominiConverter {
 		dominio.setRagioneSociale(dominioPost.getRagioneSociale());
 		if(dominioPost.getSegregationCode() != null)
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
-		
+
+		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
 		
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
 		dominioDTO.setCodStazione(dominioPost.getStazione());
+		
 		return dominioDTO;		
 	}
 	
@@ -187,6 +189,7 @@ public class DominiConverter {
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
 		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
 		rsModel.setAbilitato(dominio.isAbilitato());
+		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
 		
 		return rsModel;
 	}
@@ -244,6 +247,7 @@ public class DominiConverter {
 			rsModel.setEntrate(entrate);
 		}
 		rsModel.setAbilitato(dominio.isAbilitato());
+		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
 		
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));  

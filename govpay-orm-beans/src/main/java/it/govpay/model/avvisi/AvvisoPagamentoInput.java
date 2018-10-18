@@ -36,39 +36,31 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="AvvisoPagamentoInput">
  * 		&lt;sequence>
- * 			&lt;element name="ente_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="agid_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="pagopa_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="pagopa90_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="app_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="place_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="importo_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="scadenza_logo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- *  		&lt;element name="taglio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- *  		&lt;element name="taglio1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ente_denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ente_area" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ente_identificativo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ente_identificativo_split" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ente_cbill" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ente_url" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ente_peo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ente_pec" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ente_partner" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="intestatario_denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="intestatario_identificativo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="intestatario_indirizzo_1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="intestatario_indirizzo_2" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_causale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_mav" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_importo" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_scadenza" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_numero" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_numero_split" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_iuv" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_iuv_split" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_barcode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="avviso_qrcode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="logo_ente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="logo_pagopa" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="logo_app" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="logo_place" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="logo_posta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="logo_scissors" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="oggetto_del_pagamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="cf_ente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="cf_destinatario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="nome_cognome_destinatario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ente_creditore" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="settore_ente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="indirizzo_destinatario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="info_ente" type="{http://www.govpay.it/orm}InfoEnte" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="del_tuo_ente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="di_poste" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importo" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="qr_code" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="cbill" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codice_avviso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="numero_cc_postale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="intestatario_conto_corrente_postale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="autorizzazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="data_matrix" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -83,39 +75,31 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AvvisoPagamentoInput", 
   propOrder = {
-  	"enteLogo",
-  	"agidLogo",
-  	"pagopaLogo",
-  	"pagopa90Logo",
-  	"appLogo",
-  	"placeLogo",
-  	"importoLogo",
-  	"scadenzaLogo",
-  	"taglio",
-  	"taglio1",
-  	"enteDenominazione",
-  	"enteArea",
-  	"enteIdentificativo",
-  	"enteIdentificativoSplit",
-  	"enteCbill",
-  	"enteUrl",
-  	"entePeo",
-  	"entePec",
-  	"entePartner",
-  	"intestatarioDenominazione",
-  	"intestatarioIdentificativo",
-  	"intestatarioIndirizzo1",
-  	"intestatarioIndirizzo2",
-  	"avvisoCausale",
-  	"avvisoMav",
-  	"avvisoImporto",
-  	"avvisoScadenza",
-  	"avvisoNumero",
-  	"avvisoNumeroSplit",
-  	"avvisoIuv",
-  	"avvisoIuvSplit",
-  	"avvisoBarcode",
-  	"avvisoQrcode"
+  	"logoEnte",
+  	"logoPagopa",
+  	"logoApp",
+  	"logoPlace",
+  	"logoPosta",
+  	"logoScissors",
+  	"oggettoDelPagamento",
+  	"cfEnte",
+  	"cfDestinatario",
+  	"nomeCognomeDestinatario",
+  	"enteCreditore",
+  	"settoreEnte",
+  	"indirizzoDestinatario",
+  	"infoEnte",
+  	"delTuoEnte",
+  	"diPoste",
+  	"importo",
+  	"data",
+  	"qrCode",
+  	"cbill",
+  	"codiceAvviso",
+  	"numeroCcPostale",
+  	"intestatarioContoCorrentePostale",
+  	"autorizzazione",
+  	"dataMatrix"
   }
 , namespace=""
 )
@@ -142,276 +126,207 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getEnteLogo() {
-    return this.enteLogo;
+  public java.lang.String getLogoEnte() {
+    return this.logoEnte;
   }
 
-  public void setEnteLogo(java.lang.String enteLogo) {
-    this.enteLogo = enteLogo;
+  public void setLogoEnte(java.lang.String logoEnte) {
+    this.logoEnte = logoEnte;
   }
 
-  public java.lang.String getAgidLogo() {
-    return this.agidLogo;
+  public java.lang.String getLogoPagopa() {
+    return this.logoPagopa;
   }
 
-  public void setAgidLogo(java.lang.String agidLogo) {
-    this.agidLogo = agidLogo;
+  public void setLogoPagopa(java.lang.String logoPagopa) {
+    this.logoPagopa = logoPagopa;
   }
 
-  public java.lang.String getPagopaLogo() {
-    return this.pagopaLogo;
+  public java.lang.String getLogoApp() {
+    return this.logoApp;
   }
 
-  public void setPagopaLogo(java.lang.String pagopaLogo) {
-    this.pagopaLogo = pagopaLogo;
+  public void setLogoApp(java.lang.String logoApp) {
+    this.logoApp = logoApp;
   }
 
-  public java.lang.String getPagopa90Logo() {
-    return this.pagopa90Logo;
+  public java.lang.String getLogoPlace() {
+    return this.logoPlace;
   }
 
-  public void setPagopa90Logo(java.lang.String pagopa90Logo) {
-    this.pagopa90Logo = pagopa90Logo;
+  public void setLogoPlace(java.lang.String logoPlace) {
+    this.logoPlace = logoPlace;
   }
 
-  public java.lang.String getAppLogo() {
-    return this.appLogo;
+  public java.lang.String getLogoPosta() {
+    return this.logoPosta;
   }
 
-  public void setAppLogo(java.lang.String appLogo) {
-    this.appLogo = appLogo;
+  public void setLogoPosta(java.lang.String logoPosta) {
+    this.logoPosta = logoPosta;
   }
 
-  public java.lang.String getPlaceLogo() {
-    return this.placeLogo;
+  public java.lang.String getLogoScissors() {
+    return this.logoScissors;
   }
 
-  public void setPlaceLogo(java.lang.String placeLogo) {
-    this.placeLogo = placeLogo;
+  public void setLogoScissors(java.lang.String logoScissors) {
+    this.logoScissors = logoScissors;
   }
 
-  public java.lang.String getImportoLogo() {
-    return this.importoLogo;
+  public java.lang.String getOggettoDelPagamento() {
+    return this.oggettoDelPagamento;
   }
 
-  public void setImportoLogo(java.lang.String importoLogo) {
-    this.importoLogo = importoLogo;
+  public void setOggettoDelPagamento(java.lang.String oggettoDelPagamento) {
+    this.oggettoDelPagamento = oggettoDelPagamento;
   }
 
-  public java.lang.String getScadenzaLogo() {
-    return this.scadenzaLogo;
+  public java.lang.String getCfEnte() {
+    return this.cfEnte;
   }
 
-  public void setScadenzaLogo(java.lang.String scadenzaLogo) {
-    this.scadenzaLogo = scadenzaLogo;
+  public void setCfEnte(java.lang.String cfEnte) {
+    this.cfEnte = cfEnte;
   }
 
-  public java.lang.String getEnteDenominazione() {
-    return this.enteDenominazione;
+  public java.lang.String getCfDestinatario() {
+    return this.cfDestinatario;
   }
 
-  public void setEnteDenominazione(java.lang.String enteDenominazione) {
-    this.enteDenominazione = enteDenominazione;
+  public void setCfDestinatario(java.lang.String cfDestinatario) {
+    this.cfDestinatario = cfDestinatario;
   }
 
-  public java.lang.String getEnteArea() {
-    return this.enteArea;
+  public java.lang.String getNomeCognomeDestinatario() {
+    return this.nomeCognomeDestinatario;
   }
 
-  public void setEnteArea(java.lang.String enteArea) {
-    this.enteArea = enteArea;
+  public void setNomeCognomeDestinatario(java.lang.String nomeCognomeDestinatario) {
+    this.nomeCognomeDestinatario = nomeCognomeDestinatario;
   }
 
-  public java.lang.String getEnteIdentificativo() {
-    return this.enteIdentificativo;
+  public java.lang.String getEnteCreditore() {
+    return this.enteCreditore;
   }
 
-  public void setEnteIdentificativo(java.lang.String enteIdentificativo) {
-    this.enteIdentificativo = enteIdentificativo;
+  public void setEnteCreditore(java.lang.String enteCreditore) {
+    this.enteCreditore = enteCreditore;
   }
 
-  public java.lang.String getEnteIdentificativoSplit() {
-    return this.enteIdentificativoSplit;
+  public java.lang.String getSettoreEnte() {
+    return this.settoreEnte;
   }
 
-  public void setEnteIdentificativoSplit(java.lang.String enteIdentificativoSplit) {
-    this.enteIdentificativoSplit = enteIdentificativoSplit;
+  public void setSettoreEnte(java.lang.String settoreEnte) {
+    this.settoreEnte = settoreEnte;
   }
 
-  public java.lang.String getEnteCbill() {
-    return this.enteCbill;
+  public java.lang.String getIndirizzoDestinatario() {
+    return this.indirizzoDestinatario;
   }
 
-  public void setEnteCbill(java.lang.String enteCbill) {
-    this.enteCbill = enteCbill;
+  public void setIndirizzoDestinatario(java.lang.String indirizzoDestinatario) {
+    this.indirizzoDestinatario = indirizzoDestinatario;
   }
 
-  public java.lang.String getEnteUrl() {
-    return this.enteUrl;
+  public InfoEnte getInfoEnte() {
+    return this.infoEnte;
   }
 
-  public void setEnteUrl(java.lang.String enteUrl) {
-    this.enteUrl = enteUrl;
+  public void setInfoEnte(InfoEnte infoEnte) {
+    this.infoEnte = infoEnte;
   }
 
-  public java.lang.String getEntePeo() {
-    return this.entePeo;
+  public java.lang.String getDelTuoEnte() {
+    return this.delTuoEnte;
   }
 
-  public void setEntePeo(java.lang.String entePeo) {
-    this.entePeo = entePeo;
+  public void setDelTuoEnte(java.lang.String delTuoEnte) {
+    this.delTuoEnte = delTuoEnte;
   }
 
-  public java.lang.String getEntePec() {
-    return this.entePec;
+  public java.lang.String getDiPoste() {
+    return this.diPoste;
   }
 
-  public void setEntePec(java.lang.String entePec) {
-    this.entePec = entePec;
+  public void setDiPoste(java.lang.String diPoste) {
+    this.diPoste = diPoste;
   }
 
-  public java.lang.String getEntePartner() {
-    return this.entePartner;
+  public double getImporto() {
+    return this.importo;
   }
 
-  public void setEntePartner(java.lang.String entePartner) {
-    this.entePartner = entePartner;
+  public void setImporto(double importo) {
+    this.importo = importo;
   }
 
-  public java.lang.String getIntestatarioDenominazione() {
-    return this.intestatarioDenominazione;
+  public java.lang.String getData() {
+    return this.data;
   }
 
-  public void setIntestatarioDenominazione(java.lang.String intestatarioDenominazione) {
-    this.intestatarioDenominazione = intestatarioDenominazione;
+  public void setData(java.lang.String data) {
+    this.data = data;
   }
 
-  public java.lang.String getIntestatarioIdentificativo() {
-    return this.intestatarioIdentificativo;
+  public java.lang.String getQrCode() {
+    return this.qrCode;
   }
 
-  public void setIntestatarioIdentificativo(java.lang.String intestatarioIdentificativo) {
-    this.intestatarioIdentificativo = intestatarioIdentificativo;
+  public void setQrCode(java.lang.String qrCode) {
+    this.qrCode = qrCode;
   }
 
-  public java.lang.String getIntestatarioIndirizzo1() {
-    return this.intestatarioIndirizzo1;
+  public java.lang.String getCbill() {
+    return this.cbill;
   }
 
-  public void setIntestatarioIndirizzo1(java.lang.String intestatarioIndirizzo1) {
-    this.intestatarioIndirizzo1 = intestatarioIndirizzo1;
+  public void setCbill(java.lang.String cbill) {
+    this.cbill = cbill;
   }
 
-  public java.lang.String getIntestatarioIndirizzo2() {
-    return this.intestatarioIndirizzo2;
+  public java.lang.String getCodiceAvviso() {
+    return this.codiceAvviso;
   }
 
-  public void setIntestatarioIndirizzo2(java.lang.String intestatarioIndirizzo2) {
-    this.intestatarioIndirizzo2 = intestatarioIndirizzo2;
+  public void setCodiceAvviso(java.lang.String codiceAvviso) {
+    this.codiceAvviso = codiceAvviso;
   }
 
-  public java.lang.String getAvvisoCausale() {
-    return this.avvisoCausale;
+  public java.lang.String getNumeroCcPostale() {
+    return this.numeroCcPostale;
   }
 
-  public void setAvvisoCausale(java.lang.String avvisoCausale) {
-    this.avvisoCausale = avvisoCausale;
+  public void setNumeroCcPostale(java.lang.String numeroCcPostale) {
+    this.numeroCcPostale = numeroCcPostale;
   }
 
-  public boolean isAvvisoMav() {
-    return this.avvisoMav;
+  public java.lang.String getIntestatarioContoCorrentePostale() {
+    return this.intestatarioContoCorrentePostale;
   }
 
-  public boolean getAvvisoMav() {
-    return this.avvisoMav;
+  public void setIntestatarioContoCorrentePostale(java.lang.String intestatarioContoCorrentePostale) {
+    this.intestatarioContoCorrentePostale = intestatarioContoCorrentePostale;
   }
 
-  public void setAvvisoMav(boolean avvisoMav) {
-    this.avvisoMav = avvisoMav;
+  public java.lang.String getAutorizzazione() {
+    return this.autorizzazione;
   }
 
-  public double getAvvisoImporto() {
-    return this.avvisoImporto;
+  public void setAutorizzazione(java.lang.String autorizzazione) {
+    this.autorizzazione = autorizzazione;
   }
 
-  public void setAvvisoImporto(double avvisoImporto) {
-    this.avvisoImporto = avvisoImporto;
+  public java.lang.String getDataMatrix() {
+    return this.dataMatrix;
   }
 
-  public java.lang.String getAvvisoScadenza() {
-    return this.avvisoScadenza;
+  public void setDataMatrix(java.lang.String dataMatrix) {
+    this.dataMatrix = dataMatrix;
   }
 
-  public void setAvvisoScadenza(java.lang.String avvisoScadenza) {
-    this.avvisoScadenza = avvisoScadenza;
-  }
-
-  public java.lang.String getAvvisoNumero() {
-    return this.avvisoNumero;
-  }
-
-  public void setAvvisoNumero(java.lang.String avvisoNumero) {
-    this.avvisoNumero = avvisoNumero;
-  }
-
-  public java.lang.String getAvvisoNumeroSplit() {
-    return this.avvisoNumeroSplit;
-  }
-
-  public void setAvvisoNumeroSplit(java.lang.String avvisoNumeroSplit) {
-    this.avvisoNumeroSplit = avvisoNumeroSplit;
-  }
-
-  public java.lang.String getAvvisoIuv() {
-    return this.avvisoIuv;
-  }
-
-  public void setAvvisoIuv(java.lang.String avvisoIuv) {
-    this.avvisoIuv = avvisoIuv;
-  }
-
-  public java.lang.String getAvvisoIuvSplit() {
-    return this.avvisoIuvSplit;
-  }
-
-  public void setAvvisoIuvSplit(java.lang.String avvisoIuvSplit) {
-    this.avvisoIuvSplit = avvisoIuvSplit;
-  }
-
-  public java.lang.String getAvvisoBarcode() {
-    return this.avvisoBarcode;
-  }
-
-  public void setAvvisoBarcode(java.lang.String avvisoBarcode) {
-    this.avvisoBarcode = avvisoBarcode;
-  }
-
-  public java.lang.String getAvvisoQrcode() {
-    return this.avvisoQrcode;
-  }
-
-  public void setAvvisoQrcode(java.lang.String avvisoQrcode) {
-    this.avvisoQrcode = avvisoQrcode;
-  }
-  
-	  public java.lang.String getTaglio() {
-		return this.taglio;
-	}
-	
-	public void setTaglio(java.lang.String taglio) {
-		this.taglio = taglio;
-	}
-	
-	public java.lang.String getTaglio1() {
-		return this.taglio1;
-	}
-	
-	public void setTaglio1(java.lang.String taglio1) {
-		this.taglio1 = taglio1;
-	}
-
-
-private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
   @XmlTransient
   private Long id;
@@ -419,135 +334,102 @@ private static final long serialVersionUID = 1L;
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_logo",required=true,nillable=false)
-  protected java.lang.String enteLogo;
+  @XmlElement(name="logo_ente",required=true,nillable=false)
+  protected java.lang.String logoEnte;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="agid_logo",required=true,nillable=false)
-  protected java.lang.String agidLogo;
+  @XmlElement(name="logo_pagopa",required=true,nillable=false)
+  protected java.lang.String logoPagopa;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="pagopa_logo",required=true,nillable=false)
-  protected java.lang.String pagopaLogo;
+  @XmlElement(name="logo_app",required=true,nillable=false)
+  protected java.lang.String logoApp;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="pagopa90_logo",required=true,nillable=false)
-  protected java.lang.String pagopa90Logo;
+  @XmlElement(name="logo_place",required=true,nillable=false)
+  protected java.lang.String logoPlace;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="app_logo",required=true,nillable=false)
-  protected java.lang.String appLogo;
+  @XmlElement(name="logo_posta",required=true,nillable=false)
+  protected java.lang.String logoPosta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="place_logo",required=true,nillable=false)
-  protected java.lang.String placeLogo;
+  @XmlElement(name="logo_scissors",required=true,nillable=false)
+  protected java.lang.String logoScissors;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="importo_logo",required=true,nillable=false)
-  protected java.lang.String importoLogo;
+  @XmlElement(name="oggetto_del_pagamento",required=true,nillable=false)
+  protected java.lang.String oggettoDelPagamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="scadenza_logo",required=true,nillable=false)
-  protected java.lang.String scadenzaLogo;
-  
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="taglio",required=true,nillable=false)
-  protected java.lang.String taglio;
-  
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="taglio1",required=true,nillable=false)
-  protected java.lang.String taglio1;
+  @XmlElement(name="cf_ente",required=true,nillable=false)
+  protected java.lang.String cfEnte;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_denominazione",required=true,nillable=false)
-  protected java.lang.String enteDenominazione;
+  @XmlElement(name="cf_destinatario",required=true,nillable=false)
+  protected java.lang.String cfDestinatario;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_area",required=true,nillable=false)
-  protected java.lang.String enteArea;
+  @XmlElement(name="nome_cognome_destinatario",required=true,nillable=false)
+  protected java.lang.String nomeCognomeDestinatario;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_identificativo",required=true,nillable=false)
-  protected java.lang.String enteIdentificativo;
+  @XmlElement(name="ente_creditore",required=true,nillable=false)
+  protected java.lang.String enteCreditore;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_identificativo_split",required=true,nillable=false)
-  protected java.lang.String enteIdentificativoSplit;
+  @XmlElement(name="settore_ente",required=true,nillable=false)
+  protected java.lang.String settoreEnte;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_cbill",required=true,nillable=false)
-  protected java.lang.String enteCbill;
+  @XmlElement(name="indirizzo_destinatario",required=true,nillable=false)
+  protected java.lang.String indirizzoDestinatario;
+
+  @XmlElement(name="info_ente",required=true,nillable=false)
+  protected InfoEnte infoEnte;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_url",required=true,nillable=false)
-  protected java.lang.String enteUrl;
+  @XmlElement(name="del_tuo_ente",required=false,nillable=false)
+  protected java.lang.String delTuoEnte;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_peo",required=true,nillable=false)
-  protected java.lang.String entePeo;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_pec",required=true,nillable=false)
-  protected java.lang.String entePec;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ente_partner",required=true,nillable=false)
-  protected java.lang.String entePartner;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="intestatario_denominazione",required=true,nillable=false)
-  protected java.lang.String intestatarioDenominazione;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="intestatario_identificativo",required=true,nillable=false)
-  protected java.lang.String intestatarioIdentificativo;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="intestatario_indirizzo_1",required=true,nillable=false)
-  protected java.lang.String intestatarioIndirizzo1;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="intestatario_indirizzo_2",required=true,nillable=false)
-  protected java.lang.String intestatarioIndirizzo2;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="avviso_causale",required=true,nillable=false)
-  protected java.lang.String avvisoCausale;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="avviso_mav",required=true,nillable=false)
-  protected boolean avvisoMav;
+  @XmlElement(name="di_poste",required=false,nillable=false)
+  protected java.lang.String diPoste;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="double")
-  @XmlElement(name="avviso_importo",required=true,nillable=false)
-  protected double avvisoImporto;
+  @XmlElement(name="importo",required=true,nillable=false)
+  protected double importo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="avviso_scadenza",required=true,nillable=false)
-  protected java.lang.String avvisoScadenza;
+  @XmlElement(name="data",required=true,nillable=false)
+  protected java.lang.String data;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="avviso_numero",required=true,nillable=false)
-  protected java.lang.String avvisoNumero;
+  @XmlElement(name="qr_code",required=true,nillable=false)
+  protected java.lang.String qrCode;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="avviso_numero_split",required=true,nillable=false)
-  protected java.lang.String avvisoNumeroSplit;
+  @XmlElement(name="cbill",required=true,nillable=false)
+  protected java.lang.String cbill;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="avviso_iuv",required=true,nillable=false)
-  protected java.lang.String avvisoIuv;
+  @XmlElement(name="codice_avviso",required=true,nillable=false)
+  protected java.lang.String codiceAvviso;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="avviso_iuv_split",required=true,nillable=false)
-  protected java.lang.String avvisoIuvSplit;
+  @XmlElement(name="numero_cc_postale",required=true,nillable=false)
+  protected java.lang.String numeroCcPostale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="avviso_barcode",required=true,nillable=false)
-  protected java.lang.String avvisoBarcode;
+  @XmlElement(name="intestatario_conto_corrente_postale",required=true,nillable=false)
+  protected java.lang.String intestatarioContoCorrentePostale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="avviso_qrcode",required=true,nillable=false)
-  protected java.lang.String avvisoQrcode;
+  @XmlElement(name="autorizzazione",required=true,nillable=false)
+  protected java.lang.String autorizzazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="data_matrix",required=true,nillable=false)
+  protected java.lang.String dataMatrix;
 
 }

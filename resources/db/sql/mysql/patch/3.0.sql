@@ -410,3 +410,5 @@ GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_ver
 
 -- FIX bug che non valorizzava il tipo debitore
 update versamenti set debitore_tipo = 'F';
+
+alter table domini add column aut_stampa_poste VARCHAR(255);
