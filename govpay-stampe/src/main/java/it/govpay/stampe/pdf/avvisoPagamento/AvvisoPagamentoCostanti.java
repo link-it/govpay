@@ -26,4 +26,6 @@ public class AvvisoPagamentoCostanti {
 	public static final Integer DATAMATRIX_LUNGHEZZA_CAMPO_CAUSALE = 110;
 	public static final Integer DATAMATRIX_LUNGHEZZA_CAMPO_ANAGRAFICA_DEBITORE = 40;
 	public static final Integer DATAMATRIX_LUNGHEZZA_CAMPO_CF_DEBITORE = 16;
+	
+	public static final Integer AVVISO_LUNGHEZZA_CAMPO_CAUSALE = 40;
 }

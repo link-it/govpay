@@ -14,17 +14,17 @@
 	<artifactId>govpay-stampe-fonts-TitilliumWeb</artifactId>
 	<packaging>jar</packaging>
 	<name>Titillium Font</name>
-        <properties>
-                <rel-to-parent>..</rel-to-parent>
-        </properties>
-<build>
-<resources>
-<resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**</include>
-        </includes>
-</resource>
-</resources>
-</build>
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+	</properties>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 </project>

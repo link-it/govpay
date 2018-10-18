@@ -70,7 +70,6 @@ public class PendenzeConverter {
 		rsModel.setImportoPagato(versamento.getImportoPagato()); 
 		rsModel.setIuvPagamento(versamento.getIuvPagamento());
 		rsModel.setIuvAvviso(versamento.getIuvVersamento());
-		rsModel.setIuvPagamento(versamento.getIuvPagamento());
 		return rsModel;
 	}
 	

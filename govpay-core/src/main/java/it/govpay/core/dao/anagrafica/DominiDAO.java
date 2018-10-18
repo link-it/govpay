@@ -146,7 +146,15 @@ public class DominiDAO extends BaseDAO{
 				// ripristino l'autocommit.
 				bd.setAutoCommit(true); 
 			} else {
+				bd.setAutoCommit(false);
 				dominiBD.updateDominio(putDominioDTO.getDominio());
+				UnitaOperativa uo = new UnitaOperativa();
+				uo.setAbilitato(true);
+				uo.setAnagrafica(putDominioDTO.getDominio().getAnagrafica());
+				uo.setCodUo(it.govpay.model.Dominio.EC);
+				uo.setIdDominio(putDominioDTO.getDominio().getId());
+				uoBd.updateUnitaOperativa(uo);
+				bd.setAutoCommit(true); 
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DominioNonTrovatoException(e.getMessage());
