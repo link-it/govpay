@@ -128,6 +128,7 @@ public class DominiConverter {
 		anagrafica.setRagioneSociale(dominioPost.getRagioneSociale());
 		anagrafica.setTelefono(dominioPost.getTel());
 		anagrafica.setUrlSitoWeb(dominioPost.getWeb());
+		anagrafica.setPec(dominioPost.getPec());
 		
 		dominio.setAnagrafica(anagrafica );
 		if(dominioPost.getAuxDigit() != null)
@@ -148,11 +149,13 @@ public class DominiConverter {
 		dominio.setRagioneSociale(dominioPost.getRagioneSociale());
 		if(dominioPost.getSegregationCode() != null)
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
-		
+
+		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
 		
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
 		dominioDTO.setCodStazione(dominioPost.getStazione());
+		
 		return dominioDTO;		
 	}
 	
@@ -170,6 +173,7 @@ public class DominiConverter {
 		rsModel.setProvincia(dominio.getAnagrafica().getProvincia());
 		rsModel.setNazione(dominio.getAnagrafica().getNazione());
 		rsModel.setEmail(dominio.getAnagrafica().getEmail());
+		rsModel.setPec(dominio.getAnagrafica().getPec()); 
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
@@ -187,6 +191,7 @@ public class DominiConverter {
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
 		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
 		rsModel.setAbilitato(dominio.isAbilitato());
+		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
 		
 		return rsModel;
 	}
@@ -203,6 +208,7 @@ public class DominiConverter {
 		rsModel.setProvincia(dominio.getAnagrafica().getProvincia());
 		rsModel.setNazione(dominio.getAnagrafica().getNazione());
 		rsModel.setEmail(dominio.getAnagrafica().getEmail());
+		rsModel.setPec(dominio.getAnagrafica().getPec()); 
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
@@ -244,6 +250,7 @@ public class DominiConverter {
 			rsModel.setEntrate(entrate);
 		}
 		rsModel.setAbilitato(dominio.isAbilitato());
+		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
 		
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));  

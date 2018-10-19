@@ -53,6 +53,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link InfoEnte }
+     */
+    public InfoEnte createInfoEnte() {
+        return new InfoEnte();
+    }
+
+    /**
      * Create an instance of {@link AvvisoPagamentoInput }
      */
     public AvvisoPagamentoInput createAvvisoPagamentoInput() {

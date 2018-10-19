@@ -30,6 +30,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "segregationCode",
 "logo",
 "abilitato",
+"autStampaPosteItaliane",
 })
 public class DominioPost extends it.govpay.core.rs.v1.beans.JSONSerializable implements IValidable{
   
@@ -92,6 +93,9 @@ public class DominioPost extends it.govpay.core.rs.v1.beans.JSONSerializable imp
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
+  
+  @JsonProperty("autStampaPosteItaliane")
+  private String autStampaPosteItaliane = null;
   
   /**
    * Ragione sociale del beneficiario
@@ -413,6 +417,22 @@ public class DominioPost extends it.govpay.core.rs.v1.beans.JSONSerializable imp
     this.abilitato = abilitato;
   }
 
+  /**
+   * numero di autorizzazione per la stampa in proprio rilasciato da poste italiane
+   **/
+  public DominioPost autStampaPosteItaliane(String autStampaPosteItaliane) {
+    this.autStampaPosteItaliane = autStampaPosteItaliane;
+    return this;
+  }
+
+  @JsonProperty("autStampaPosteItaliane")
+  public String getAutStampaPosteItaliane() {
+    return autStampaPosteItaliane;
+  }
+  public void setAutStampaPosteItaliane(String autStampaPosteItaliane) {
+    this.autStampaPosteItaliane = autStampaPosteItaliane;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -441,12 +461,13 @@ public class DominioPost extends it.govpay.core.rs.v1.beans.JSONSerializable imp
         Objects.equals(this.auxDigit, dominioPost.auxDigit) &&
         Objects.equals(this.segregationCode, dominioPost.segregationCode) &&
         Objects.equals(this.logo, dominioPost.logo) &&
-        Objects.equals(this.abilitato, dominioPost.abilitato);
+        Objects.equals(this.abilitato, dominioPost.abilitato) &&
+        Objects.equals(this.autStampaPosteItaliane, dominioPost.autStampaPosteItaliane);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato);
+    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato, this.autStampaPosteItaliane);
   }
 
   public static DominioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -482,7 +503,8 @@ public class DominioPost extends it.govpay.core.rs.v1.beans.JSONSerializable imp
     sb.append("    auxDigit: ").append(this.toIndentedString(this.auxDigit)).append("\n");
     sb.append("    segregationCode: ").append(this.toIndentedString(this.segregationCode)).append("\n");
     sb.append("    logo: ").append(this.toIndentedString(this.logo)).append("\n");
-    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n").append("\n");
+    sb.append("    autStampaPosteItaliane: ").append(this.toIndentedString(this.autStampaPosteItaliane)).append("\n");
     sb.append("}");
     return sb.toString();
   }

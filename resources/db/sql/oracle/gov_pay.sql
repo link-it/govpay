@@ -150,7 +150,8 @@ CREATE TABLE domini
 	ndp_descrizione VARCHAR2(1024 CHAR),
 	ndp_data TIMESTAMP,
 	logo BLOB,
-	cbill VARCHAR2(255 CHAR),
+	cbill VARCHAR(255),
+	aut_stampa_poste VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,

@@ -3211,6 +3211,10 @@ components:
           type: boolean
           description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
           example: 'true'
+        autStampaPosteItaliane:
+          type: string
+          description: numero di autorizzazione per la stampa in proprio rilasciato da poste italiane
+          example: AUT. DB/xxxx/xxx xxxxx DEL xx/xx/xxxx
     dominioIndex:
       type: object
       allOf:

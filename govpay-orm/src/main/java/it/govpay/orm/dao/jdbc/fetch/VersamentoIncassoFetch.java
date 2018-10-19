@@ -148,6 +148,10 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "stato_pagamento", VersamentoIncasso.model().STATO_PAGAMENTO.getFieldType()));
 				setParameter(object, "setIuvPagamento", VersamentoIncasso.model().IUV_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv_pagamento", VersamentoIncasso.model().IUV_PAGAMENTO.getFieldType()));
+				setParameter(object, "setSmartOrderDate", VersamentoIncasso.model().SMART_ORDER_DATE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "smart_order_date", VersamentoIncasso.model().SMART_ORDER_DATE.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setSmartOrderRank", VersamentoIncasso.model().SMART_ORDER_RANK.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "smart_order_rank", VersamentoIncasso.model().SMART_ORDER_RANK.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				return object;
 			}
 			
@@ -264,6 +268,10 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"statoPagamento"));
 				setParameter(object, "setIuvPagamento", VersamentoIncasso.model().IUV_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"iuvPagamento"));
+				setParameter(object, "setSmartOrderDate", VersamentoIncasso.model().SMART_ORDER_DATE.getFieldType(),
+					this.getObjectFromMap(map,"smartOrderDate"));
+				setParameter(object, "setSmartOrderRank", VersamentoIncasso.model().SMART_ORDER_RANK.getFieldType(),
+					this.getObjectFromMap(map,"smartOrderRank"));
 				return object;
 			}
 			

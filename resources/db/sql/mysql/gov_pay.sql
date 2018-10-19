@@ -103,6 +103,7 @@ CREATE TABLE domini
 	ndp_data TIMESTAMP(3),
 	logo MEDIUMBLOB,
 	cbill VARCHAR(255),
+	aut_stampa_poste VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_stazione BIGINT NOT NULL,

@@ -480,5 +480,6 @@ create index idx_pagamenti_1 on pagamenti (id_singolo_versamento);
 -- FIX bug che non valorizzava il tipo debitore
 update versamenti set debitore_tipo = 'F';
 
+alter table domini add column aut_stampa_poste VARCHAR(255);
 
 

@@ -128,7 +128,6 @@ public class VersamentoIncassoConverter {
 			
 			dto.setAnomalo("true".equalsIgnoreCase(vo.getAnomalo()));
 			
-			// TODO
 			dto.setIuvPagamento(vo.getIuvPagamento());
 			
 			return dto;
