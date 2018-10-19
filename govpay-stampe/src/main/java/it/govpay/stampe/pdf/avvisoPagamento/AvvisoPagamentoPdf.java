@@ -126,7 +126,8 @@ public class AvvisoPagamentoPdf {
 			input.setInfoEnte(infoEnte );
 			input.setNomeCognomeDestinatario("Lorenzo Nardi");
 			input.setCfDestinatario("NRDLNA80P19D612M");
-			input.setIndirizzoDestinatario("Via di Corniola 119A 50053 Empoli (FI)");
+			input.setIndirizzoDestinatario1("Via di Corniola 119A,");
+			input.setIndirizzoDestinatario2(" 50053 Empoli (FI)");
 			input.setOggettoDelPagamento("Pagamento diritti di segreteria per il rilascio in duplice copia della documentazione richiesta.");
 			input.setImporto(9999999.99);
 			input.setData("31/12/2020");

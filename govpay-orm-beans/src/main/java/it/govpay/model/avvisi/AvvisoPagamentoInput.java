@@ -43,12 +43,15 @@ import javax.xml.bind.annotation.XmlType;
  * 			&lt;element name="logo_posta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="logo_scissors" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="oggetto_del_pagamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="oggetto_del_pagamento_rata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="oggetto_del_pagamento_bollettino" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="cf_ente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="cf_destinatario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nome_cognome_destinatario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ente_creditore" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="settore_ente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="indirizzo_destinatario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="indirizzo_destinatario_1" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="indirizzo_destinatario_2" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="info_ente" type="{http://www.govpay.it/orm}InfoEnte" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="del_tuo_ente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="di_poste" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
@@ -82,12 +85,15 @@ import javax.xml.bind.annotation.XmlType;
   	"logoPosta",
   	"logoScissors",
   	"oggettoDelPagamento",
+  	"oggettoDelPagamentoRata",
+  	"oggettoDelPagamentoBollettino",
   	"cfEnte",
   	"cfDestinatario",
   	"nomeCognomeDestinatario",
   	"enteCreditore",
   	"settoreEnte",
-  	"indirizzoDestinatario",
+  	"indirizzoDestinatario1",
+  	"indirizzoDestinatario2",
   	"infoEnte",
   	"delTuoEnte",
   	"diPoste",
@@ -182,6 +188,22 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
     this.oggettoDelPagamento = oggettoDelPagamento;
   }
 
+  public java.lang.String getOggettoDelPagamentoRata() {
+    return this.oggettoDelPagamentoRata;
+  }
+
+  public void setOggettoDelPagamentoRata(java.lang.String oggettoDelPagamentoRata) {
+    this.oggettoDelPagamentoRata = oggettoDelPagamentoRata;
+  }
+
+  public java.lang.String getOggettoDelPagamentoBollettino() {
+    return this.oggettoDelPagamentoBollettino;
+  }
+
+  public void setOggettoDelPagamentoBollettino(java.lang.String oggettoDelPagamentoBollettino) {
+    this.oggettoDelPagamentoBollettino = oggettoDelPagamentoBollettino;
+  }
+
   public java.lang.String getCfEnte() {
     return this.cfEnte;
   }
@@ -222,12 +244,20 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
     this.settoreEnte = settoreEnte;
   }
 
-  public java.lang.String getIndirizzoDestinatario() {
-    return this.indirizzoDestinatario;
+  public java.lang.String getIndirizzoDestinatario1() {
+    return this.indirizzoDestinatario1;
   }
 
-  public void setIndirizzoDestinatario(java.lang.String indirizzoDestinatario) {
-    this.indirizzoDestinatario = indirizzoDestinatario;
+  public void setIndirizzoDestinatario1(java.lang.String indirizzoDestinatario1) {
+    this.indirizzoDestinatario1 = indirizzoDestinatario1;
+  }
+
+  public java.lang.String getIndirizzoDestinatario2() {
+    return this.indirizzoDestinatario2;
+  }
+
+  public void setIndirizzoDestinatario2(java.lang.String indirizzoDestinatario2) {
+    this.indirizzoDestinatario2 = indirizzoDestinatario2;
   }
 
   public InfoEnte getInfoEnte() {
@@ -362,6 +392,14 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   protected java.lang.String oggettoDelPagamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="oggetto_del_pagamento_rata",required=true,nillable=false)
+  protected java.lang.String oggettoDelPagamentoRata;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="oggetto_del_pagamento_bollettino",required=true,nillable=false)
+  protected java.lang.String oggettoDelPagamentoBollettino;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="cf_ente",required=true,nillable=false)
   protected java.lang.String cfEnte;
 
@@ -382,8 +420,12 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   protected java.lang.String settoreEnte;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="indirizzo_destinatario",required=true,nillable=false)
-  protected java.lang.String indirizzoDestinatario;
+  @XmlElement(name="indirizzo_destinatario_1",required=true,nillable=false)
+  protected java.lang.String indirizzoDestinatario1;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="indirizzo_destinatario_2",required=true,nillable=false)
+  protected java.lang.String indirizzoDestinatario2;
 
   @XmlElement(name="info_ente",required=true,nillable=false)
   protected InfoEnte infoEnte;

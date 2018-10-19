@@ -2352,12 +2352,15 @@
 			<xsd:element name="logo_posta" type="xsd:string"/>
 			<xsd:element name="logo_scissors" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento_rata" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento_bollettino" type="xsd:string"/>
 			<xsd:element name="cf_ente" type="xsd:string"/>
 			<xsd:element name="cf_destinatario" type="xsd:string"/>
 			<xsd:element name="nome_cognome_destinatario" type="xsd:string"/>
 			<xsd:element name="ente_creditore" type="xsd:string"/>
 			<xsd:element name="settore_ente" type="xsd:string"/>
-			<xsd:element name="indirizzo_destinatario" type="xsd:string"/>
+			<xsd:element name="indirizzo_destinatario_1" type="xsd:string"/>
+			<xsd:element name="indirizzo_destinatario_2" type="xsd:string"/>
 			<xsd:element name="info_ente" type="InfoEnte"/>
 			<xsd:element name="del_tuo_ente" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="di_poste" type="xsd:string" minOccurs="0"/>

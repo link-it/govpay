@@ -148,9 +148,14 @@ public class AvvisoPagamento extends BasicBD {
 				causaleVersamento = versamento.getCausaleVersamento().getSimple();
 
 				if(causaleVersamento.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_CAUSALE) {
-					input.setOggettoDelPagamento(causaleVersamento.substring(0, AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_CAUSALE));
+					String causaleTroncata = causaleVersamento.substring(0, AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_CAUSALE);
+					input.setOggettoDelPagamento(causaleTroncata);
+					input.setOggettoDelPagamentoRata(causaleTroncata);
+					input.setOggettoDelPagamentoBollettino(causaleTroncata);
 				} else {
 					input.setOggettoDelPagamento(causaleVersamento);
+					input.setOggettoDelPagamentoRata(causaleVersamento);
+					input.setOggettoDelPagamentoBollettino(causaleVersamento);
 				}
 			}catch (UnsupportedEncodingException e) {
 				throw new ServiceException(e);
@@ -232,10 +237,21 @@ public class AvvisoPagamento extends BasicBD {
 			String indirizzoCivicoDebitore = indirizzoDebitore + " " + civicoDebitore;
 			String capCittaDebitore = capDebitore + " " + localitaDebitore + provinciaDebitore;
 
-			String indirizzoDestinatario = indirizzoCivicoDebitore + ", " + capCittaDebitore;
+			String indirizzoDestinatario = indirizzoCivicoDebitore + ",";
 			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
 			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco());
-			input.setIndirizzoDestinatario(indirizzoDestinatario);
+			
+			if(indirizzoDestinatario.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
+				input.setIndirizzoDestinatario1(indirizzoDestinatario);
+			}else {
+				input.setIndirizzoDestinatario1(indirizzoDestinatario);
+			}
+			
+			if(capCittaDebitore.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
+				input.setIndirizzoDestinatario2(capCittaDebitore);
+			}else {
+				input.setIndirizzoDestinatario2(capCittaDebitore);
+			}
 		}
 	}
 
