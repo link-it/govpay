@@ -366,64 +366,99 @@ update rendicontazioni set id_singolo_versamento = (select p.id_singolo_versamen
 
 -- Sezione Viste
 
-CREATE VIEW versamenti_incassi AS SELECT                                                                                                                           
-versamenti.id as id,
-MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,
-MAX(versamenti.nome) as nome,
-MAX(versamenti.importo_totale) as importo_totale,
-MAX(versamenti.stato_versamento) as stato_versamento,
-MAX(versamenti.descrizione_stato) as descrizione_stato,
-MAX(CASE WHEN versamenti.aggiornabile = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
-MAX(versamenti.data_creazione) as data_creazione,
-MAX(versamenti.data_validita) as data_validita,
-MAX(versamenti.data_scadenza) as data_scadenza,
-MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
-MAX(versamenti.causale_versamento) as causale_versamento,
-MAX(versamenti.debitore_tipo) as debitore_tipo,
-versamenti.debitore_identificativo as debitore_identificativo,
-MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,
-MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,
-MAX(versamenti.debitore_civico) as debitore_civico,
-MAX(versamenti.debitore_cap) as debitore_cap,
-MAX(versamenti.debitore_localita) as debitore_localita,
-MAX(versamenti.debitore_provincia) as debitore_provincia,
-MAX(versamenti.debitore_nazione) as debitore_nazione,
-MAX(versamenti.debitore_email) as debitore_email,
-MAX(versamenti.debitore_telefono) as debitore_telefono,
-MAX(versamenti.debitore_cellulare) as debitore_cellulare,
-MAX(versamenti.debitore_fax) as debitore_fax,
-MAX(versamenti.tassonomia_avviso) as tassonomia_avviso,
-MAX(versamenti.tassonomia) as tassonomia,
-MAX(versamenti.cod_lotto) as cod_lotto,
-MAX(versamenti.cod_versamento_lotto) as cod_versamento_lotto,
-MAX(versamenti.cod_anno_tributario) as cod_anno_tributario,
-MAX(versamenti.cod_bundlekey) as cod_bundlekey,
-MAX(versamenti.dati_allegati) as dati_allegati,
-MAX(versamenti.incasso) as incasso,
-MAX(versamenti.anomalie) as anomalie,
-MAX(versamenti.iuv_versamento) as iuv_versamento,
-MAX(versamenti.numero_avviso) as numero_avviso,
-MAX(versamenti.avvisatura) as avvisatura,
-MAX(versamenti.tipo_pagamento) as tipo_pagamento,
-MAX(versamenti.id_dominio) as id_dominio,
-MAX(versamenti.id_uo) as id_uo,
-MAX(versamenti.id_applicazione) as id_applicazione,
-MAX(CASE WHEN versamenti.da_avvisare = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS da_avvisare,
-MAX(versamenti.cod_avvisatura) as cod_avvisatura,
-MAX(versamenti.id_tracciato) as id_tracciato,
-MAX(CASE WHEN versamenti.ack = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS ack,
-MAX(versamenti.note) as note,
-MAX(CASE WHEN versamenti.anomalo = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS anomalo,
-MAX(pagamenti.data_pagamento) as data_pagamento,
-SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) AS importo_pagato,
-SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
-MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento,
-MAX(pagamenti.iuv) AS iuv_pagamento,
-MAX(CASE WHEN versamenti.stato_versamento='NON_ESEGUITO' AND versamenti.data_validita > CURRENT_TIMESTAMP THEN 0 ELSE 1 END) AS smart_order_rank,
-CAST(MIN(@((date_part('epoch',CURRENT_TIMESTAMP)*1000) - (date_part('epoch',COALESCE (pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))*1000))) AS BIGINT) AS smart_order_date
-FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
-WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0
-GROUP BY versamenti.id, versamenti.debitore_identificativo;
+ SELECT versamenti.id,
+    max(versamenti.cod_versamento_ente::text) AS cod_versamento_ente,
+    max(versamenti.nome::text) AS nome,
+    max(versamenti.importo_totale) AS importo_totale,
+    max(versamenti.stato_versamento::text) AS stato_versamento,
+    max(versamenti.descrizione_stato::text) AS descrizione_stato,
+    max(
+        CASE
+            WHEN versamenti.aggiornabile = true THEN 'TRUE'::text
+            ELSE 'FALSE'::text
+        END) AS aggiornabile,
+    max(versamenti.data_creazione) AS data_creazione,
+    max(versamenti.data_validita) AS data_validita,
+    max(versamenti.data_scadenza) AS data_scadenza,
+    max(versamenti.data_ora_ultimo_aggiornamento) AS data_ora_ultimo_aggiornamento,
+    max(versamenti.causale_versamento::text) AS causale_versamento,
+    max(versamenti.debitore_tipo::text) AS debitore_tipo,
+    versamenti.debitore_identificativo,
+    max(versamenti.debitore_anagrafica::text) AS debitore_anagrafica,
+    max(versamenti.debitore_indirizzo::text) AS debitore_indirizzo,
+    max(versamenti.debitore_civico::text) AS debitore_civico,
+    max(versamenti.debitore_cap::text) AS debitore_cap,
+    max(versamenti.debitore_localita::text) AS debitore_localita,
+    max(versamenti.debitore_provincia::text) AS debitore_provincia,
+    max(versamenti.debitore_nazione::text) AS debitore_nazione,
+    max(versamenti.debitore_email::text) AS debitore_email,
+    max(versamenti.debitore_telefono::text) AS debitore_telefono,
+    max(versamenti.debitore_cellulare::text) AS debitore_cellulare,
+    max(versamenti.debitore_fax::text) AS debitore_fax,
+    max(versamenti.tassonomia_avviso::text) AS tassonomia_avviso,
+    max(versamenti.tassonomia::text) AS tassonomia,
+    max(versamenti.cod_lotto::text) AS cod_lotto,
+    max(versamenti.cod_versamento_lotto::text) AS cod_versamento_lotto,
+    max(versamenti.cod_anno_tributario::text) AS cod_anno_tributario,
+    max(versamenti.cod_bundlekey::text) AS cod_bundlekey,
+    max(versamenti.dati_allegati) AS dati_allegati,
+    max(versamenti.incasso::text) AS incasso,
+    max(versamenti.anomalie) AS anomalie,
+    max(versamenti.iuv_versamento::text) AS iuv_versamento,
+    max(versamenti.numero_avviso::text) AS numero_avviso,
+    max(versamenti.avvisatura::text) AS avvisatura,
+    max(versamenti.tipo_pagamento) AS tipo_pagamento,
+    max(versamenti.id_dominio) AS id_dominio,
+    max(versamenti.id_uo) AS id_uo,
+    max(versamenti.id_applicazione) AS id_applicazione,
+    max(
+        CASE
+            WHEN versamenti.da_avvisare = true THEN 'TRUE'::text
+            ELSE 'FALSE'::text
+        END) AS da_avvisare,
+    max(versamenti.cod_avvisatura::text) AS cod_avvisatura,
+    max(versamenti.id_tracciato) AS id_tracciato,
+    max(
+        CASE
+            WHEN versamenti.ack = true THEN 'TRUE'::text
+            ELSE 'FALSE'::text
+        END) AS ack,
+    max(versamenti.note) AS note,
+    max(
+        CASE
+            WHEN versamenti.anomalo = true THEN 'TRUE'::text
+            ELSE 'FALSE'::text
+        END) AS anomalo,
+    max(pagamenti.data_pagamento) AS data_pagamento,
+    sum(
+        CASE
+            WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato
+            ELSE 0::double precision
+        END) AS importo_pagato,
+    sum(
+        CASE
+            WHEN pagamenti.stato::text = 'INCASSATO'::text THEN pagamenti.importo_pagato
+            ELSE 0::double precision
+        END) AS importo_incassato,
+    max(
+        CASE
+            WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO'::text
+            WHEN pagamenti.stato::text = 'INCASSATO'::text THEN 'INCASSATO'::text
+            ELSE 'PAGATO'::text
+        END) AS stato_pagamento,
+    max(pagamenti.iuv::text) AS iuv_pagamento,
+    max(
+        CASE
+            WHEN versamenti.stato_versamento::text = 'NON_ESEGUITO'::text AND versamenti.data_validita > now() THEN 0
+            ELSE 1
+        END) AS smart_order_rank,
+    min(@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint)):
+:bigint AS smart_order_date
+   FROM versamenti
+     LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento
+     LEFT JOIN pagamenti ON singoli_versamenti.id = pagamenti.id_singolo_versamento
+  WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0::double precision
+  GROUP BY versamenti.id, versamenti.debitore_identificativo;
 
 
 
