@@ -203,7 +203,7 @@ public class AvvisoPagamento extends BasicBD {
 
 		input.setEnteCreditore(dominio.getRagioneSociale());
 		input.setCfEnte(codDominio);
-		input.setCbill(dominio.getCbill() != null ? dominio.getCbill()  : "");
+		input.setCbill(dominio.getCbill() != null ? dominio.getCbill()  : " ");
 
 		InfoEnte infoEnte = new InfoEnte();
 		if(anagraficaDominio != null) {
@@ -215,7 +215,9 @@ public class AvvisoPagamento extends BasicBD {
 
 		input.setAutorizzazione(dominio.getAutStampaPoste());
 		input.setInfoEnte(infoEnte);
-		input.setLogoEnte(new String(dominio.getLogo()));
+		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
+		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
+			input.setLogoEnte(new String(dominio.getLogo()));
 		return dominio;
 	}
 

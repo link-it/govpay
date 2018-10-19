@@ -129,6 +129,7 @@ public class DominiConverter {
 		anagrafica.setTelefono(dominioPost.getTel());
 		anagrafica.setUrlSitoWeb(dominioPost.getWeb());
 		anagrafica.setPec(dominioPost.getPec());
+		anagrafica.setArea(dominioPost.getArea()); 
 		
 		dominio.setAnagrafica(anagrafica );
 		if(dominioPost.getAuxDigit() != null)
@@ -176,6 +177,7 @@ public class DominiConverter {
 		rsModel.setPec(dominio.getAnagrafica().getPec()); 
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
+		rsModel.setArea(dominio.getAnagrafica().getArea());
 		rsModel.setGln(dominio.getGln());
 		rsModel.setCbill(dominio.getCbill());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
@@ -211,6 +213,7 @@ public class DominiConverter {
 		rsModel.setPec(dominio.getAnagrafica().getPec()); 
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
+		rsModel.setArea(dominio.getAnagrafica().getArea());
 		rsModel.setGln(dominio.getGln());
 		rsModel.setCbill(dominio.getCbill());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());

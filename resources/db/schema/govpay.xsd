@@ -2591,7 +2591,7 @@
 			<xsd:element name="statoPagamento" type="String35" minOccurs="0"/>
 			<xsd:element name="iuvPagamento" type="String35" minOccurs="0"/>
 			
-			<xsd:element name="smartOrderDate" type="xsd:positiveInteger" minOccurs="0"/>
+			<xsd:element name="smartOrderDate" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="smartOrderRank" type="xsd:positiveInteger" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>

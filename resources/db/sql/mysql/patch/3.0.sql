@@ -131,7 +131,7 @@ DROP TABLE ruoli;
 
 CREATE TABLE utenze
 (
-	principal VARCHAR(255) NOT NULL,
+	principal VARCHAR(756) NOT NULL,
         abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
@@ -233,10 +233,10 @@ ALTER TABLE versamenti ADD COLUMN numero_avviso VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN avvisatura VARCHAR(1);
 ALTER TABLE versamenti ADD COLUMN tipo_pagamento INT;
 
-ALTER TABLE utenze MODIFY COLUMN principal VARCHAR(4000);
-ALTER TABLE utenze ADD COLUMN principal_originale VARCHAR(4000);
+ALTER TABLE utenze MODIFY COLUMN principal VARCHAR(756);
+ALTER TABLE utenze ADD COLUMN principal_originale VARCHAR(756);
 update utenze set principal_originale = principal;
-ALTER TABLE utenze MODIFY COLUMN principal_originale VARCHAR(4000) NOT NULL;
+ALTER TABLE utenze MODIFY COLUMN principal_originale VARCHAR(756) NOT NULL;
 
 -- patch dati pagamenti_portale malformati non gestiti dal cruscotto
 
@@ -402,8 +402,8 @@ SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato
 SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
 MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento,
 MAX(pagamenti.iuv) AS iuv_pagamento,
-MAX(0) AS smart_order_rank,
-MIN(0) AS smart_order_date
+MAX(CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
+MIN(ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
 FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
 WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0
 GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;

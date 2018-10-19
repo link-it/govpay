@@ -3215,6 +3215,10 @@ components:
           type: string
           description: numero di autorizzazione per la stampa in proprio rilasciato da poste italiane
           example: AUT. DB/xxxx/xxx xxxxx DEL xx/xx/xxxx
+        area:
+          type: string
+          description: Nome dell'area di competenza del dominio
+          example: Affari generali e istituzionali 
     dominioIndex:
       type: object
       allOf:

@@ -88,7 +88,7 @@ import java.io.Serializable;
  * 			&lt;element name="importoIncassato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="statoPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="smartOrderDate" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="smartOrderDate" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="smartOrderRank" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -606,11 +606,11 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
     this.iuvPagamento = iuvPagamento;
   }
 
-  public java.lang.Integer getSmartOrderDate() {
+  public long getSmartOrderDate() {
     return this.smartOrderDate;
   }
 
-  public void setSmartOrderDate(java.lang.Integer smartOrderDate) {
+  public void setSmartOrderDate(long smartOrderDate) {
     this.smartOrderDate = smartOrderDate;
   }
 
@@ -852,9 +852,9 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="iuvPagamento",required=false,nillable=false)
   protected java.lang.String iuvPagamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="smartOrderDate",required=false,nillable=false)
-  protected java.lang.Integer smartOrderDate;
+  protected long smartOrderDate;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="smartOrderRank",required=false,nillable=false)

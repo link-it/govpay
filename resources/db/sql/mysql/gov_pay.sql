@@ -45,8 +45,8 @@ CREATE INDEX index_stazioni_1 ON stazioni (cod_stazione);
 
 CREATE TABLE utenze
 (
-	principal VARCHAR(4000) NOT NULL,
-	principal_originale VARCHAR(4000) NOT NULL,
+	principal VARCHAR(756) NOT NULL,
+	principal_originale VARCHAR(756) NOT NULL,
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
@@ -962,7 +962,7 @@ versamenti.id as id,
 MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,          
 MAX(versamenti.nome) as nome,                         
 MAX(versamenti.importo_totale) as importo_totale,               
-MAX(versamenti.stato_versamento) as stato_versamento,             
+versamenti.stato_versamento as stato_versamento,             
 MAX(versamenti.descrizione_stato) as descrizione_stato,           
 MAX(CASE WHEN versamenti.aggiornabile = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
 MAX(versamenti.data_creazione) as data_creazione,               
@@ -971,7 +971,7 @@ MAX(versamenti.data_scadenza) as data_scadenza,
 MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
 MAX(versamenti.causale_versamento) as causale_versamento,           
 MAX(versamenti.debitore_tipo) as debitore_tipo,                
-MAX(versamenti.debitore_identificativo) as debitore_identificativo,      
+versamenti.debitore_identificativo as debitore_identificativo,      
 MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,          
 MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,           
 MAX(versamenti.debitore_civico) as debitore_civico,              
@@ -1009,8 +1009,10 @@ MAX(pagamenti.data_pagamento) as data_pagamento,
 SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) AS importo_pagato,
 SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
 MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento,
-MAX(pagamenti.iuv) AS iuv_pagamento
+MAX(pagamenti.iuv) AS iuv_pagamento,
+MAX(CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
+MIN(ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
 FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
 WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0
-GROUP BY versamenti.id;
+GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 
