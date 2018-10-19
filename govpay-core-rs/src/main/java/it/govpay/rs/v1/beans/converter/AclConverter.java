@@ -47,6 +47,7 @@ public class AclConverter {
 
 		acl.setListaDiritti(lst);
 		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
+		acl.setPrincipal(user.getPrincipal());
 		return acl;
 	}
 	
