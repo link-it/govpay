@@ -44,6 +44,7 @@ import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
@@ -57,6 +58,14 @@ import it.govpay.model.IAutorizzato;
 
 
 public class UtentiDAO extends BaseDAO{
+	
+	public UtentiDAO() {
+		super();
+	}
+
+	public UtentiDAO(boolean useCacheData) {
+		super(useCacheData);
+	}
 
 	public enum TipoUtenza {
 		PORTALE, OPERATORE, APPLICAZIONE;
@@ -66,7 +75,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.populateUser(user, bd);
 		} finally {
 			if(bd != null)
@@ -78,7 +87,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 		LeggiProfiloDTOResponse response = new LeggiProfiloDTOResponse();
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			response.setNome(this.populateUser(user, bd));
 			
 			response.setUtente(user);
@@ -98,7 +107,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(leggiOperatore.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
 			OperatoriBD applicazioniBD = new OperatoriBD(bd);
 			
@@ -118,7 +127,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(listaOperatoriDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
 
 			OperatoriBD applicazioniBD = new OperatoriBD(bd);
@@ -149,7 +158,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(putOperatoreDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd);
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter(false);
@@ -210,7 +219,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(deleteOperatoreDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd);
 			new OperatoriBD(bd).deleteOperatore(deleteOperatoreDTO.getPrincipal());
 		} catch (NotFoundException e) {
@@ -226,7 +235,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			
 			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd);
 

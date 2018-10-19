@@ -53,8 +53,6 @@ public class AvvisiController extends it.govpay.rs.BaseController {
 			
 			AvvisiDAO avvisiDAO = new AvvisiDAO();
 			
-			
-			
 			if(accept.toLowerCase().contains("application/pdf")) {
 				getAvvisoDTO.setFormato(FormatoAvviso.PDF);
 				GetAvvisoDTOResponse getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);

@@ -365,7 +365,7 @@ alter table rendicontazioni add CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN 
 update rendicontazioni set id_singolo_versamento = (select p.id_singolo_versamento from (select r1.id as id, pagamenti.id_singolo_versamento as id_singolo_versamento from pagamenti , rendicontazioni r1 where r1.id_pagamento = pagamenti.id) as p where p.id = rendicontazioni.id) ;
 
 -- Sezione Viste
-
+CREATE VIEW versamenti_incassi AS
  SELECT versamenti.id,
     max(versamenti.cod_versamento_ente::text) AS cod_versamento_ente,
     max(versamenti.nome::text) AS nome,
@@ -452,8 +452,7 @@ update rendicontazioni set id_singolo_versamento = (select p.id_singolo_versamen
             WHEN versamenti.stato_versamento::text = 'NON_ESEGUITO'::text AND versamenti.data_validita > now() THEN 0
             ELSE 1
         END) AS smart_order_rank,
-    min(@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint)):
-:bigint AS smart_order_date
+    min(@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
    FROM versamenti
      LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento
      LEFT JOIN pagamenti ON singoli_versamenti.id = pagamenti.id_singolo_versamento

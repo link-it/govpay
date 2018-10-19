@@ -30,16 +30,16 @@ public class Stazione extends it.govpay.model.Stazione {
 	private static final long serialVersionUID = 1L;
 
 	// Business
-	
+
 	private transient Intermediario intermediario;
-	
+
 	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
 		if(this.intermediario == null) {
 			this.intermediario = AnagraficaManager.getIntermediario(bd, this.getIdIntermediario());
 		}
 		return this.intermediario;
 	}
-	
+
 	public void setIntermediario(Intermediario intermediario) {
 		this.intermediario = intermediario;
 	}

@@ -1,9 +1,8 @@
 /**
  * 
  */
-package it.govpay.core.dao.pagamenti.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.model.IAutorizzato;
 
 /**

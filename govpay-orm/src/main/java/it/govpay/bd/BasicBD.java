@@ -151,19 +151,25 @@ public class BasicBD {
 	private Long idOperatore;
 	
 	BasicBD father;
+	private boolean useCache;
 	
 	public BasicBD(BasicBD basicBD) {
 		this.father = basicBD;
 	}
 	
 	public static BasicBD newInstance(String idTransaction) throws ServiceException {
-		return new BasicBD(idTransaction);
+		return new BasicBD(idTransaction, true);
 	}
 	
-	private BasicBD(String idTransaction) throws ServiceException {
+	public static BasicBD newInstance(String idTransaction, boolean useCache) throws ServiceException {
+		return new BasicBD(idTransaction, useCache);
+	}
+	
+	private BasicBD(String idTransaction, boolean useCache) throws ServiceException {
 		this.isClosed = true;
 		this.idTransaction = idTransaction;
 		this.idModulo = this.getCaller();
+		this.useCache = useCache;
 		if(log == null)
 			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
 		this.setupConnection(idTransaction, this.idModulo);
@@ -688,5 +694,9 @@ public class BasicBD {
 
 	public void setIdOperatore(long idOperatore) {
 		this.idOperatore = idOperatore;
+	}
+
+	public boolean isUseCache() {
+		return useCache;
 	}
 }

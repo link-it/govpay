@@ -7,6 +7,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.beans.base.AclPost;
@@ -29,7 +30,7 @@ public class ApplicazioniConverter {
 		utenza.setAbilitato(applicazionePost.isAbilitato());
 		utenza.setPrincipal(applicazionePost.getPrincipal());
 		utenza.setPrincipalOriginale(applicazionePost.getPrincipal()); 
-		applicazione.setUtenza(utenza);
+		applicazione.setUtenza(new UtenzaApplicazione(utenza, idA2A));
 		applicazioneDTO.setIdUtenza(applicazionePost.getPrincipal());
 		
 		applicazioneDTO.setIdDomini(applicazionePost.getDomini());

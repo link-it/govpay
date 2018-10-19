@@ -70,7 +70,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO();
+			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -112,7 +112,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			PutStazioneDTO putIntermediarioDTO = StazioniConverter.getPutStazioneDTO(inrtermediarioRequest, idIntermediario, idStazione, user);
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO();
+			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
 			
 			PutStazioneDTOResponse putIntermediarioDTOResponse = intermediariDAO.createOrUpdateStazione(putIntermediarioDTO);
 			
@@ -154,7 +154,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO();
+			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -203,7 +203,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			PutIntermediarioDTO putIntermediarioDTO = IntermediariConverter.getPutIntermediarioDTO(inrtermediarioRequest, idIntermediario, user);
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO();
+			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
 			
 			PutIntermediarioDTOResponse putIntermediarioDTOResponse = intermediariDAO.createOrUpdateIntermediario(putIntermediarioDTO);
 			
@@ -246,7 +246,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO();
+			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -294,7 +294,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO();
+			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
 			
 			// CHIAMATA AL DAO
 			

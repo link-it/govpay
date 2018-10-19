@@ -64,7 +64,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			
 			PutOperatoreDTO putOperatoreDTO = OperatoriConverter.getPutOperatoreDTO(operatoreRequest, principal, user); 
 			
-			UtentiDAO operatoriDAO = new UtentiDAO();
+			UtentiDAO operatoriDAO = new UtentiDAO(false);
 			
 			PutOperatoreDTOResponse putOperatoreDTOResponse = operatoriDAO.createOrUpdate(putOperatoreDTO);
 			
@@ -103,7 +103,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 
 			// INIT DAO
 
-			UtentiDAO operatoriDAO = new UtentiDAO();
+			UtentiDAO operatoriDAO = new UtentiDAO(false);
 
 			// CHIAMATA AL DAO
 
@@ -142,7 +142,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			UtentiDAO operatoriDAO = new UtentiDAO();
+			UtentiDAO operatoriDAO = new UtentiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -203,7 +203,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			
 			verificaPagamentoDTO.setOp(lstOp );
 
-			UtentiDAO utentiDAO = new UtentiDAO();
+			UtentiDAO utentiDAO = new UtentiDAO(false);
 			
 			LeggiOperatoreDTOResponse pagamentoPortaleDTOResponse = utentiDAO.patch(verificaPagamentoDTO);
 			
@@ -248,7 +248,7 @@ public class OperatoriController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			UtentiDAO operatoriDAO = new UtentiDAO();
+			UtentiDAO operatoriDAO = new UtentiDAO(false);
 			
 			// CHIAMATA AL DAO
 			

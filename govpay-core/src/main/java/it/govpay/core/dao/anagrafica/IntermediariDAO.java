@@ -50,12 +50,20 @@ import it.govpay.model.Acl.Servizio;
 
 public class IntermediariDAO extends BaseDAO{
 
+	public IntermediariDAO() {
+		super();
+	}
+
+	public IntermediariDAO(boolean useCacheData) {
+		super(useCacheData);
+	}
+	
 	public PutIntermediarioDTOResponse createOrUpdateIntermediario(PutIntermediarioDTO putIntermediarioDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutIntermediarioDTOResponse intermediarioDTOResponse = new PutIntermediarioDTOResponse();
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(putIntermediarioDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.SCRITTURA,bd); 
 
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
@@ -84,7 +92,7 @@ public class IntermediariDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(putStazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.SCRITTURA,bd); 
 			try {
 				// inserisco l'iddominio
@@ -119,7 +127,7 @@ public class IntermediariDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(listaIntermediariDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = null;
@@ -143,7 +151,7 @@ public class IntermediariDAO extends BaseDAO{
 	}
 
 	public GetIntermediarioDTOResponse getIntermediario(GetIntermediarioDTO getIntermediarioDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 		try {
 			this.autorizzaRichiesta(getIntermediarioDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			GetIntermediarioDTOResponse response = new GetIntermediarioDTOResponse(AnagraficaManager.getIntermediario(bd, getIntermediarioDTO.getCodIntermediario()));
@@ -161,7 +169,7 @@ public class IntermediariDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(findStazioniDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			StazioniBD stazioneBD = new StazioniBD(bd);
 			StazioneFilter filter = null;
@@ -189,7 +197,7 @@ public class IntermediariDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(getStazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			try {
 				AnagraficaManager.getIntermediario(bd, getStazioneDTO.getCodIntermediario());

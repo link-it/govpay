@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.govpay.core.dao.anagrafica;
+package it.govpay.core.dao.anagrafica.utils;
 
 import java.text.MessageFormat;
 import java.util.Date;

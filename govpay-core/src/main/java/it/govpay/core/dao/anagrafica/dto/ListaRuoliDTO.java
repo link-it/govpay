@@ -1,8 +1,7 @@
-package it.govpay.core.dao.pagamenti.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
 import org.openspcoop2.generic_project.expression.SortOrder;
 
-import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.IAutorizzato;
 import it.govpay.orm.ACL;
 

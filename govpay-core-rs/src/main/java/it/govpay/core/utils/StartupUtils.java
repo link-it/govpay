@@ -41,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.AnagraficaManagerNoCache;
 import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -164,7 +163,6 @@ public class StartupUtils {
 		
 		try {
 			AnagraficaManager.newInstance(dominioAnagraficaManager);
-			AnagraficaManagerNoCache.newInstance();
 			JaxbUtils.init();
 			ThreadExecutorManager.setup();
 			AvvisoPagamentoProperties.newInstance(gpConfig.getResourceDir());

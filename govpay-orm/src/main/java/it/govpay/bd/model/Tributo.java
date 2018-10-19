@@ -27,11 +27,11 @@ import it.govpay.model.IbanAccredito;
 
 public class Tributo extends it.govpay.model.Tributo {
 	private static final long serialVersionUID = 1L;
-	
+
 	public Tributo() {	}
-	
+
 	// Business
-	
+
 	public TipoContabilita getTipoContabilita() {
 		if(this.getTipoContabilitaCustom() != null)
 			return this.getTipoContabilitaCustom();
@@ -45,18 +45,18 @@ public class Tributo extends it.govpay.model.Tributo {
 		else 
 			return this.getCodContabilitaDefault();
 	}
-	
+
 	public String getCodTributoIuv() {
 		if(this.getCodTributoIuvCustom() != null)
 			return this.getCodTributoIuvCustom();
 		else 
 			return this.getCodTributoIuvDefault();
 	}
-	
+
 	public boolean isTipoContabilitaCustom(){return this.getTipoContabilitaCustom() != null;}
 	public boolean isCodContabilitaCustom(){return this.getCodContabilitaCustom() != null;}
 	public boolean isCodTributoIuvCustom(){return this.getCodTributoIuvCustom() != null;}
-	
+
 	private transient IbanAccredito ibanAccredito;
 	public IbanAccredito getIbanAccredito() throws ServiceException {
 		return this.ibanAccredito;
@@ -69,7 +69,7 @@ public class Tributo extends it.govpay.model.Tributo {
 		super.setIdIbanAccredito(idIbanAccredito);
 		this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
 	}
-	
+
 	private transient IbanAccredito ibanAppoggio;
 	public IbanAccredito getIbanAppoggio() throws ServiceException {
 		return this.ibanAppoggio;
@@ -80,17 +80,17 @@ public class Tributo extends it.govpay.model.Tributo {
 	}
 	public void setIbanAppoggio(BasicBD bd, long idIbanAppoggio) throws ServiceException {
 		super.setIdIbanAppoggio(idIbanAppoggio);
-		this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAppoggio);
+		this.ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, idIbanAppoggio);
 	}
 
-	
+
 	private transient Dominio dominio;
-	
+
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(this.dominio == null) {
 			this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
 		} 
 		return this.dominio;
 	}
-	
+
 }

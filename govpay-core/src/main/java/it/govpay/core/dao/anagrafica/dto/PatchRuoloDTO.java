@@ -1,8 +1,9 @@
 /**
  * 
  */
-package it.govpay.core.dao.pagamenti.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
+import it.govpay.core.dao.pagamenti.dto.AbstractPatchDTO;
 import it.govpay.model.IAutorizzato;
 
 /**
@@ -11,11 +12,11 @@ import it.govpay.model.IAutorizzato;
  * @version $ Rev: 12563 $, $Date: 28 giu 2018 $
  * 
  */
-public class RuoloPatchDTO extends AbstractPatchDTO {
+public class PatchRuoloDTO extends AbstractPatchDTO {
 
 	private String idRuolo;
 	
-	public RuoloPatchDTO(IAutorizzato user) {
+	public PatchRuoloDTO(IAutorizzato user) {
 		super(user);
 	}
 

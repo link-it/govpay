@@ -59,7 +59,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			PutEntrataDTO putIntermediarioDTO = EntrateConverter.getPutEntrataDTO(entrataRequest, idEntrata, user);
 			
-			EntrateDAO intermediariDAO = new EntrateDAO();
+			EntrateDAO intermediariDAO = new EntrateDAO(false);
 			
 			PutEntrataDTOResponse putIntermediarioDTOResponse = intermediariDAO.createOrUpdateEntrata(putIntermediarioDTO);
 			
@@ -96,7 +96,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			EntrateDAO entrateDAO = new EntrateDAO();
+			EntrateDAO entrateDAO = new EntrateDAO(false);
 			
 			// CHIAMATA AL DAO
 			
@@ -140,7 +140,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			// INIT DAO
 			
-			EntrateDAO entrateDAO = new EntrateDAO();
+			EntrateDAO entrateDAO = new EntrateDAO(false);
 			
 			// CHIAMATA AL DAO
 			

@@ -23,11 +23,12 @@ package it.govpay.core.business.model;
 import java.util.List;
 
 import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Applicazione;
 
 public class AvviaTransazioneDTO {
 
-	private Applicazione applicazione;
+	private Utenza utente;
 	private List<Object> versamentoOrVersamentoRef;
 	private it.govpay.servizi.commons.Anagrafica versante;
 	private String ibanAddebito;
@@ -36,12 +37,6 @@ public class AvviaTransazioneDTO {
 	private Boolean aggiornaSeEsisteB;
 	private Canale canale;
 	
-	public Applicazione getApplicazione() {
-		return this.applicazione;
-	}
-	public void setApplicazione(Applicazione applicazione) {
-		this.applicazione = applicazione;
-	}
 	public List<Object> getVersamentoOrVersamentoRef() {
 		return this.versamentoOrVersamentoRef;
 	}
@@ -83,6 +78,12 @@ public class AvviaTransazioneDTO {
 	}
 	public void setCanale(Canale canale) {
 		this.canale = canale;
+	}
+	public Utenza getUtente() {
+		return utente;
+	}
+	public void setUtente(Utenza utente) {
+		this.utente = utente;
 	}
 
 }

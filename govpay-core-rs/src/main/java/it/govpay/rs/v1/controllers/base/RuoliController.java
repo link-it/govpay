@@ -13,14 +13,14 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 
 import it.govpay.core.cache.AclCache;
-import it.govpay.core.dao.pagamenti.RuoliDAO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTO;
-import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
-import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.RuoloPatchDTO;
+import it.govpay.core.dao.anagrafica.RuoliDAO;
+import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTO;
+import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTO;
+import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
+import it.govpay.core.dao.anagrafica.dto.PutRuoloDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTO;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.AclPost;
 import it.govpay.core.rs.v1.beans.base.ListaAcl;
@@ -67,7 +67,7 @@ public class RuoliController extends BaseController {
 
 			// INIT DAO
 
-			RuoliDAO rptDAO = new RuoliDAO();
+			RuoliDAO rptDAO = new RuoliDAO(false);
 
 			// CHIAMATA AL DAO
 
@@ -110,7 +110,7 @@ public class RuoliController extends BaseController {
 			
 			// INIT DAO
 
-			RuoliDAO rptDAO = new RuoliDAO();
+			RuoliDAO rptDAO = new RuoliDAO(false);
 
 			// CHIAMATA AL DAO
 
@@ -151,7 +151,7 @@ public class RuoliController extends BaseController {
 			
 			String jsonRequest = baos.toString();
 
-			RuoloPatchDTO ruoloPatchDTO = new RuoloPatchDTO(user);
+			PatchRuoloDTO ruoloPatchDTO = new PatchRuoloDTO(user);
 			ruoloPatchDTO.setIdRuolo(idRuolo);
 			
 			
@@ -175,7 +175,7 @@ public class RuoliController extends BaseController {
 			}
 			
 			ruoloPatchDTO.setOp(lstOp);
-			RuoliDAO ruoliDAO = new RuoliDAO();
+			RuoliDAO ruoliDAO = new RuoliDAO(false);
 			ruoliDAO.patch(ruoloPatchDTO);
 			
 			// reload ruolo nella cache
@@ -221,7 +221,7 @@ public class RuoliController extends BaseController {
 
 			PutRuoloDTO putRuoloDTO = RuoliConverter.getPutRuoloDTO(listaAcl, idRuolo, user); 
 			
-			RuoliDAO applicazioniDAO = new RuoliDAO();
+			RuoliDAO applicazioniDAO = new RuoliDAO(false);
 			
 			PutRuoloDTOResponse putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putRuoloDTO);
 			

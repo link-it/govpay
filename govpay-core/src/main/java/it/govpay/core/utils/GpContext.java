@@ -44,6 +44,7 @@ public class GpContext {
 	private List<Context> contexts;
 	
 	private PagamentoContext pagamentoCtx;
+	private boolean useCacheData = true;
 	
 	public static final String NOT_SET = "<Non valorizzato>";
 	
@@ -399,6 +400,15 @@ public class GpContext {
 		if(this.pagamentoCtx == null) 
 			this.pagamentoCtx = new PagamentoContext();
 		return this.pagamentoCtx;
+	}
+
+
+	public boolean isUseCacheData() {
+		return useCacheData;
+	}
+
+	public void setUseCacheData(boolean useCacheData) {
+		this.useCacheData = useCacheData;
 	}
 
 

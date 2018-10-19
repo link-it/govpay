@@ -1,4 +1,4 @@
-package it.govpay.core.dao.pagamenti.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 

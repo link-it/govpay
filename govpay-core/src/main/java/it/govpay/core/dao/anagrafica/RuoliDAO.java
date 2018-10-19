@@ -1,4 +1,4 @@
-package it.govpay.core.dao.pagamenti;
+package it.govpay.core.dao.anagrafica;
 
 import java.util.List;
 
@@ -8,16 +8,16 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
-import it.govpay.core.dao.anagrafica.UtenzaPatchUtils;
+import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTO;
+import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTO;
+import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
+import it.govpay.core.dao.anagrafica.dto.PutRuoloDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTO;
+import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTO;
-import it.govpay.core.dao.pagamenti.dto.LeggiRuoloDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTO;
-import it.govpay.core.dao.pagamenti.dto.ListaRuoliDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.PatchRuoloDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
-import it.govpay.core.dao.pagamenti.dto.PutRuoloDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.RuoloPatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.rs.v1.beans.base.PatchOp;
@@ -29,6 +29,11 @@ import it.govpay.model.Acl.Servizio;
 public class RuoliDAO extends BaseDAO{
 
 	public RuoliDAO() {
+		super();
+	}
+
+	public RuoliDAO(boolean useCacheData) {
+		super(useCacheData);
 	}
 
 	public LeggiRuoloDTOResponse leggiRuoli(LeggiRuoloDTO leggiRuoliDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
@@ -36,7 +41,7 @@ public class RuoliDAO extends BaseDAO{
 		BasicBD bd = null;
 		LeggiRuoloDTOResponse response = null;
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			// controllo che il dominio sia autorizzato
 			this.autorizzaRichiesta(leggiRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA, leggiRuoliDTO.getRuolo(), null, bd);
 
@@ -60,7 +65,7 @@ public class RuoliDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(listaRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA, bd);
 	
 			AclBD rptBD = new AclBD(bd);
@@ -92,7 +97,7 @@ public class RuoliDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(listaRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA, bd);
 	
 			AclBD aclBD = new AclBD(bd);
@@ -119,13 +124,13 @@ public class RuoliDAO extends BaseDAO{
 
 	}
 	
-	public PatchRuoloDTOResponse patch(RuoloPatchDTO patchDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public PatchRuoloDTOResponse patch(PatchRuoloDTO patchDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
 		PatchRuoloDTOResponse patchRuoloDTOResponse = new PatchRuoloDTOResponse();
 		
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA, bd);
 			
 			AclBD aclBD = new AclBD(bd);

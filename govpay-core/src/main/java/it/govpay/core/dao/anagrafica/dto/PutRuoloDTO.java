@@ -1,8 +1,7 @@
-package it.govpay.core.dao.pagamenti.dto;
+package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
-import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
 
