@@ -105,6 +105,7 @@ public class VersamentoUtils {
 			anagraficaCommons.setNazione(anagraficaRest.getNazione());
 			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
 			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
+			anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
 		}
 
 		return anagraficaCommons;
