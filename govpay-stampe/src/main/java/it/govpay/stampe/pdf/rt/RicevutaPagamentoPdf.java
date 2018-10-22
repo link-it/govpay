@@ -19,6 +19,25 @@ import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
 
 public class RicevutaPagamentoPdf implements IRicevutaPagamento{
+	
+	
+	private static RicevutaPagamentoPdf _instance = null;
+
+	public static RicevutaPagamentoPdf getInstance() {
+		if(_instance == null)
+			init();
+
+		return _instance;
+	}
+
+	public static synchronized void init() {
+		if(_instance == null)
+			_instance = new RicevutaPagamentoPdf();
+	}
+
+	public RicevutaPagamentoPdf() {
+
+	}
 
 	@Override
 	public String getPdfRicevutaPagamento(RicevutaPagamento ricevuta, Properties prop, OutputStream os ,Logger log) throws Exception {
