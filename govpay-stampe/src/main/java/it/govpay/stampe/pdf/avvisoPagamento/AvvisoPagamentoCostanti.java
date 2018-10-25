@@ -12,6 +12,7 @@ public class AvvisoPagamentoCostanti {
 	public static final String LOGO_PLACE = "avvisoPagamento.logo.place";
 	public static final String LOGO_SCISSORS = "avvisoPagamento.logo.scissors";
 	public static final String LOGO_POSTA = "avvisoPagamento.logo.posta";
+	public static final String LOGO_EURO = "avvisoPagamento.logo.euro";
 	
 	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER = "avvisoPagamento.risorse.template";
 

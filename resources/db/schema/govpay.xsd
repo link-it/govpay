@@ -596,8 +596,8 @@
 			<xsd:element name="uoUrlSitoWeb" type="String255" minOccurs="0"/>
 			<xsd:element name="uoEmail" type="String255" minOccurs="0"/>
 			<xsd:element name="uoPec" type="String255" minOccurs="0"/>
-			
-
+			<xsd:element name="uoTel" type="String255" minOccurs="0"/>
+			<xsd:element name="uoFax" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2351,6 +2351,7 @@
 			<xsd:element name="logo_place" type="xsd:string"/>
 			<xsd:element name="logo_posta" type="xsd:string"/>
 			<xsd:element name="logo_scissors" type="xsd:string"/>
+			<xsd:element name="logo_euro" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento_rata" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento_bollettino" type="xsd:string"/>
@@ -2385,7 +2386,7 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:element name="RicevutaTelematicaInput" type="RicevutaTelematicaInput" />
+	<!--<xsd:element name="RicevutaTelematicaInput" type="RicevutaTelematicaInput" />
 	<xsd:complexType name="RicevutaTelematicaInput">
 		<xsd:sequence>
 			<xsd:element name="logo_ente" type="xsd:string"/>
@@ -2418,7 +2419,7 @@
 			<xsd:element name="importo" type="xsd:double"/>
 			<xsd:element name="stato" type="xsd:string"/>
 		</xsd:sequence>
-	</xsd:complexType>
+	</xsd:complexType>-->
 	
 	<xsd:simpleType name="StatoTracciatoType">
 		<xsd:restriction base="xsd:string">

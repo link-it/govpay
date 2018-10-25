@@ -241,6 +241,8 @@ CREATE TABLE uo
 	uo_url_sito_web VARCHAR(255),
 	uo_email VARCHAR(255),
 	uo_pec VARCHAR(255),
+	uo_tel VARCHAR(255),
+	uo_fax VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_uo') NOT NULL,
 	id_dominio BIGINT NOT NULL,

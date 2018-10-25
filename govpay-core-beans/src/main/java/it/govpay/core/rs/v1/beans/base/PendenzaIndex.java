@@ -229,7 +229,7 @@ public class PendenzaIndex extends JSONSerializable {
 
   @JsonProperty("iuvAvviso")
   public String getIuvAvviso() {
-    return this.numeroAvviso;
+    return this.iuvAvviso;
   }
   public void setIuvAvviso(String iuvAvviso) {
     this.iuvAvviso = iuvAvviso;

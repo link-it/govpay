@@ -1022,8 +1022,7 @@ public class Operazioni{
 		} catch (Exception e) {
 			log.error("Avvisatura digitale Fallita", e);
 			try {
-				if(bd.isAutoCommit())
-					bd.rollback();
+				if(!bd.isAutoCommit()) bd.rollback();
 				aggiornaSondaKO(BATCH_AVVISATURA_DIGITALE, e, bd);
 			} catch (ServiceException e1) {
 				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
@@ -1039,6 +1038,7 @@ public class Operazioni{
 	public static String elaborazioneTracciati(String serviceName){
 		BasicBD bd = null;
 		GpContext ctx = null;
+		boolean wasAutoCommit = false;
 		try {
 			ctx = new GpContext();
 			MDC.put("cmd", "ElaborazioneTracciati");
@@ -1052,9 +1052,12 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			wasAutoCommit = bd.isAutoCommit();
 			
 			if(BatchManager.startEsecuzione(bd, BATCH_TRACCIATI)) {
-				bd.setAutoCommit(false);
+				wasAutoCommit = bd.isAutoCommit();
+				if(wasAutoCommit)
+					bd.setAutoCommit(false);
 				log.trace("Elaborazione tracciati");
 				
 				TracciatiBD tracciatiBD = new TracciatiBD(bd);
@@ -1088,14 +1091,17 @@ public class Operazioni{
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
-			if(bd != null) {
-				bd.rollback();
-				aggiornaSondaKO(BATCH_TRACCIATI, e, bd); 
+			try {
+				if(!bd.isAutoCommit()) bd.rollback();
+				aggiornaSondaKO(BATCH_TRACCIATI, e, bd);
+			} catch (ServiceException e1) {
+				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
 			}
 			log.error("Non è stato possibile eseguire l'elaborazione dei tracciati", e);
 			return "Non è stato possibile eseguire l'elaborazione dei tracciati: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
 		}
 	}
 }

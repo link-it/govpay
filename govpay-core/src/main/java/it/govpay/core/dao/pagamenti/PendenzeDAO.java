@@ -160,15 +160,15 @@ public class PendenzeDAO extends BaseDAO{
 				elem.setApplicazione(versamento.getApplicazione(versamentiBD));
 				elem.setDominio(versamento.getDominio(versamentiBD));
 				elem.setUnitaOperativa(versamento.getUo(versamentiBD));
-				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
-				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-					singoloVersamento.getCodContabilita(bd);
-					singoloVersamento.getIbanAccredito(bd);
-					singoloVersamento.getTipoContabilita(bd);
-					singoloVersamento.getTributo(bd);
-					
-				}
-				elem.setLstSingoliVersamenti(singoliVersamenti);
+//				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
+//				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+//					singoloVersamento.getCodContabilita(bd);
+//					singoloVersamento.getIbanAccredito(bd);
+//					singoloVersamento.getTipoContabilita(bd);
+//					singoloVersamento.getTributo(bd);
+//					
+//				}
+//				elem.setLstSingoliVersamenti(singoliVersamenti);
 
 				resList.add(elem);
 			}
@@ -240,15 +240,15 @@ public class PendenzeDAO extends BaseDAO{
 				elem.setApplicazione(versamentoIncasso.getApplicazione(versamentiBD));
 				elem.setDominio(versamentoIncasso.getDominio(versamentiBD));
 				elem.setUnitaOperativa(versamentoIncasso.getUo(versamentiBD));
-				List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
-				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-					singoloVersamento.getCodContabilita(bd);
-					singoloVersamento.getIbanAccredito(bd);
-					singoloVersamento.getTipoContabilita(bd);
-					singoloVersamento.getTributo(bd);
-					
-				}
-				elem.setLstSingoliVersamenti(singoliVersamenti);
+//				List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
+//				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+//					singoloVersamento.getCodContabilita(bd);
+//					singoloVersamento.getIbanAccredito(bd);
+//					singoloVersamento.getTipoContabilita(bd);
+//					singoloVersamento.getTributo(bd);
+//					
+//				}
+//				elem.setLstSingoliVersamenti(singoliVersamenti);
 
 				resList.add(elem);
 			}

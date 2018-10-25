@@ -52,6 +52,7 @@ public class DominiConverter {
 		anagrafica.setCivico(uoPost.getCivico());
 		anagrafica.setCodUnivoco(idUo);
 		anagrafica.setEmail(uoPost.getEmail());
+		anagrafica.setPec(uoPost.getPec());
 		anagrafica.setFax(uoPost.getFax());
 		anagrafica.setIndirizzo(uoPost.getIndirizzo());
 		anagrafica.setLocalita(uoPost.getLocalita());
@@ -60,6 +61,7 @@ public class DominiConverter {
 		anagrafica.setRagioneSociale(uoPost.getRagioneSociale());
 		anagrafica.setTelefono(uoPost.getTel());
 		anagrafica.setUrlSitoWeb(uoPost.getWeb());
+		anagrafica.setArea(uoPost.getArea());
 		
 		uo.setAnagrafica(anagrafica);
 		uo.setCodUo(idUo);
@@ -81,6 +83,7 @@ public class DominiConverter {
 		anagrafica.setCivico(dominioPost.getCivico());
 		anagrafica.setCodUnivoco(idDominio);
 		anagrafica.setEmail(dominioPost.getEmail());
+		anagrafica.setPec(dominioPost.getPec());
 		anagrafica.setFax(dominioPost.getFax());
 		anagrafica.setIndirizzo(dominioPost.getIndirizzo());
 		anagrafica.setLocalita(dominioPost.getLocalita());
@@ -130,6 +133,7 @@ public class DominiConverter {
 		rsModel.setProvincia(dominio.getAnagrafica().getProvincia());
 		rsModel.setNazione(dominio.getAnagrafica().getNazione());
 		rsModel.setEmail(dominio.getAnagrafica().getEmail());
+		rsModel.setPec(dominio.getAnagrafica().getPec());
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
@@ -161,6 +165,7 @@ public class DominiConverter {
 		rsModel.setProvincia(dominio.getAnagrafica().getProvincia());
 		rsModel.setNazione(dominio.getAnagrafica().getNazione());
 		rsModel.setEmail(dominio.getAnagrafica().getEmail());
+		rsModel.setPec(dominio.getAnagrafica().getPec());
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
@@ -225,6 +230,14 @@ public class DominiConverter {
 		rsModel.setIndirizzo(uo.getAnagrafica().getIndirizzo());
 		rsModel.setLocalita(uo.getAnagrafica().getLocalita());
 		rsModel.setRagioneSociale(uo.getAnagrafica().getRagioneSociale());
+		rsModel.setWeb(uo.getAnagrafica().getUrlSitoWeb());
+		rsModel.setProvincia(uo.getAnagrafica().getProvincia());
+		rsModel.setNazione(uo.getAnagrafica().getNazione());
+		rsModel.setEmail(uo.getAnagrafica().getEmail());
+		rsModel.setPec(uo.getAnagrafica().getPec());
+		rsModel.setTel(uo.getAnagrafica().getTelefono());
+		rsModel.setFax(uo.getAnagrafica().getFax());
+		rsModel.setArea(uo.getAnagrafica().getArea());
 		
 		return rsModel;
 	}

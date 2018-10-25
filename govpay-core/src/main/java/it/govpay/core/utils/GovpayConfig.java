@@ -93,6 +93,9 @@ public class GovpayConfig {
 	
 	private boolean validazioneAPIRest;
 	private boolean dumpAPIRestGETResponse;
+	
+	private String appName;
+	private String ambienteDeploy;
 
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -118,6 +121,9 @@ public class GovpayConfig {
 		this.batchCaricamentoTracciati = false;
 		this.timeoutPendenti = false;
 		this.timeoutPendentiMins = null;
+		
+		this.appName = null;
+		this.ambienteDeploy = null;
 
 		try {
 
@@ -336,6 +342,9 @@ public class GovpayConfig {
 				}
 			}
 			
+			this.appName = getProperty("it.govpay.backoffice.gui.appName", this.props, false, log);
+			this.ambienteDeploy = getProperty("it.govpay.backoffice.gui.ambienteDeploy", this.props, false, log);
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -512,6 +521,14 @@ public class GovpayConfig {
 
 	public Integer getTimeoutPendentiMins() {
 		return timeoutPendentiMins;
+	}
+
+	public String getAppName() {
+		return appName;
+	}
+
+	public String getAmbienteDeploy() {
+		return ambienteDeploy;
 	}
 
 }

@@ -95,6 +95,7 @@ public class AvvisoPagamentoPdf {
 		input.setLogoPlace(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PLACE));
 		input.setLogoPosta(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_POSTA));
 		input.setLogoScissors(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_SCISSORS));
+		input.setLogoEuro(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_EURO));
 	}
 
 

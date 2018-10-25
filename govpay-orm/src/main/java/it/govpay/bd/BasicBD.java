@@ -689,6 +689,9 @@ public class BasicBD {
 	}
 
 	public long getIdOperatore() {
+		if(this.father != null) {
+			return this.father.getIdOperatore();
+		}
 		return this.idOperatore;
 	}
 
@@ -697,6 +700,9 @@ public class BasicBD {
 	}
 
 	public boolean isUseCache() {
+		if(this.father != null) {
+			return this.father.isUseCache();
+		}
 		return useCache;
 	}
 }

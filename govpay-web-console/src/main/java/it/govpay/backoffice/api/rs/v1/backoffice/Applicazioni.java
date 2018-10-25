@@ -37,7 +37,6 @@ public class Applicazioni extends BaseRsServiceV1{
 
     @GET
     @Path("/{idA2A}")
-    
     @Produces({ "application/json" })
     public Response applicazioniIdA2AGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A){
         this.controller.setRequestResponse(this.request, this.response);
@@ -56,7 +55,6 @@ public class Applicazioni extends BaseRsServiceV1{
     @PUT
     @Path("/{idA2A}")
     @Consumes({ "application/json" })
-    
     public Response applicazioniIdA2APUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, java.io.InputStream is){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.applicazioniIdA2APUT(this.getUser(), uriInfo, httpHeaders,  idA2A, is);

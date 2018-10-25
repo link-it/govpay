@@ -42,6 +42,7 @@ import javax.xml.bind.annotation.XmlType;
  * 			&lt;element name="logo_place" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="logo_posta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="logo_scissors" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="logo_euro" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="oggetto_del_pagamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="oggetto_del_pagamento_rata" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="oggetto_del_pagamento_bollettino" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
@@ -84,6 +85,7 @@ import javax.xml.bind.annotation.XmlType;
   	"logoPlace",
   	"logoPosta",
   	"logoScissors",
+  	"logoEuro",
   	"oggettoDelPagamento",
   	"oggettoDelPagamentoRata",
   	"oggettoDelPagamentoBollettino",
@@ -178,6 +180,14 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
 
   public void setLogoScissors(java.lang.String logoScissors) {
     this.logoScissors = logoScissors;
+  }
+
+  public java.lang.String getLogoEuro() {
+    return this.logoEuro;
+  }
+
+  public void setLogoEuro(java.lang.String logoEuro) {
+    this.logoEuro = logoEuro;
   }
 
   public java.lang.String getOggettoDelPagamento() {
@@ -386,6 +396,10 @@ public class AvvisoPagamentoInput extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="logo_scissors",required=true,nillable=false)
   protected java.lang.String logoScissors;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="logo_euro",required=true,nillable=false)
+  protected java.lang.String logoEuro;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="oggetto_del_pagamento",required=true,nillable=false)

@@ -483,7 +483,7 @@ public class DominioPost extends it.govpay.core.rs.v1.beans.JSONSerializable imp
         Objects.equals(this.logo, dominioPost.logo) &&
         Objects.equals(this.abilitato, dominioPost.abilitato) &&
         Objects.equals(this.autStampaPosteItaliane, dominioPost.autStampaPosteItaliane)&&
-        Objects.equals(area, dominioPost.area);
+        Objects.equals(this.area, dominioPost.area);
   }
 
   @Override

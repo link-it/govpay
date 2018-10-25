@@ -18,7 +18,7 @@ tags:
   - name: Operatori
     description: Anagrafica degli Operatori    
   - name: Ruoli
-    description: Ruoli autorizzativi previsti in GovPay     
+    description: Ruoli autorizzativi previsti in GovPay
   - name: Pagamenti
     description: Pagamenti gestiti dalla piattaforma
   - name: Pendenze
@@ -39,6 +39,8 @@ tags:
     description: Operazioni per l'utente autenticato
   - name: Tracciati
     description: Operazioni sui tracciati
+  - name: Info
+    description: Informazioni di configurazione del cruscotto
 security:
   - basicAuth: []    
 paths:
@@ -1601,6 +1603,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/profilo'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  '/info':
+    get:
+      summary: Informazioni sul prodotto Govpay
+      tags:
+        - Info
+      responses:
+        '200':
+          description: Informazioni sull'installazione corrente di Govpay
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/infoGovPay'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -5319,7 +5339,6 @@ components:
             - $ref: '#/components/schemas/annullamentoPendenza'
         risposta:
           $ref: '#/components/schemas/esitoOperazionePendenza'
-          
     tracciatoPendenzePost:
       type: object
       required:
@@ -5421,3 +5440,28 @@ components:
           oneOf:
             - $ref: '#/components/schemas/avviso'
             - $ref: '#/components/schemas/faultBean'
+    infoGovPay:
+      type: object
+      required:
+        - appName
+        - versione
+        - build
+        - ambiente
+      properties:
+        appName:
+          type: string
+          description: Nome da visualizzare sul browser
+          example: "GovPay"
+        versione:
+          type: string
+          description: Versione di Govpay installata
+          example: "3.0.0"
+        build:
+          type: string
+          description: Numero build di Govpay installata
+          example: "Numero Build: 3dfre546"
+        ambiente:
+          type: string
+          description: ambiente destinazione del Govpay
+          example: "produzione"
+      

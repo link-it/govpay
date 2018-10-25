@@ -76,8 +76,23 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			GetIntermediarioDTOResponse getIntermediarioDTOResponse = intermediariDAO.getIntermediario(getIntermediarioDTO);
 			
+			
+			FindStazioniDTO listaStazioniDTO = new FindStazioniDTO(user);
+			
+			listaStazioniDTO.setPagina(1);
+			listaStazioniDTO.setLimit(25);
+			listaStazioniDTO.setCodIntermediario(idIntermediario);
+			FindStazioniDTOResponse listaStazioniDTOResponse = intermediariDAO.findStazioni(listaStazioniDTO);
+			
+			List<StazioneIndex> listaStazioni = new ArrayList<>();
+			for(it.govpay.bd.model.Stazione stazione: listaStazioniDTOResponse.getResults()) {
+				listaStazioni.add(StazioniConverter.toRsModelIndex(stazione));
+			}
+			
 			// CONVERT TO JSON DELLA RISPOSTA
 			Intermediario response = IntermediariConverter.toRsModel(getIntermediarioDTOResponse.getIntermediario());
+			
+			response.setStazioni(listaStazioni);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 

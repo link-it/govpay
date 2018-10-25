@@ -82,6 +82,10 @@ public class UoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "uo_email", Uo.model().UO_EMAIL.getFieldType()));
 				this.setParameter(object, "setUoPec", Uo.model().UO_PEC.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "uo_pec", Uo.model().UO_PEC.getFieldType()));
+				this.setParameter(object, "setUoTel", Uo.model().UO_TEL.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "uo_tel", Uo.model().UO_TEL.getFieldType()));
+				this.setParameter(object, "setUoFax", Uo.model().UO_FAX.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "uo_fax", Uo.model().UO_FAX.getFieldType()));
 				return object;
 			}
 			
@@ -132,6 +136,10 @@ public class UoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"uoEmail"));
 				this.setParameter(object, "setUoPec", Uo.model().UO_PEC.getFieldType(),
 					this.getObjectFromMap(map,"uoPec"));
+				this.setParameter(object, "setUoTel", Uo.model().UO_TEL.getFieldType(),
+					this.getObjectFromMap(map,"uoTel"));
+				this.setParameter(object, "setUoFax", Uo.model().UO_FAX.getFieldType(),
+					this.getObjectFromMap(map,"uoFax"));
 				return object;
 			}
 			

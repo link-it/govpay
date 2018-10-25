@@ -96,15 +96,6 @@
 				<scope>compile</scope>
 			</dependency>
 
-
-			<dependency>
-				<groupId>it.govpay</groupId>
-				<artifactId>govpay-ejb</artifactId>
-				<version>${project.version}</version>
-				<type>jar</type>
-				<scope>compile</scope>
-			</dependency>
-
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-orm-beans</artifactId>
