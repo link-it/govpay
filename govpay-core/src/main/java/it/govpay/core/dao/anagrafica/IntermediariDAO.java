@@ -19,14 +19,19 @@
  */
 package it.govpay.core.dao.anagrafica;
 
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
+import it.govpay.bd.model.Dominio;
 import it.govpay.core.dao.anagrafica.dto.FindIntermediariDTO;
 import it.govpay.core.dao.anagrafica.dto.FindIntermediariDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindStazioniDTO;
@@ -205,6 +210,13 @@ public class IntermediariDAO extends BaseDAO{
 				throw new IntermediarioNonTrovatoException("Intermediario " + getStazioneDTO.getCodIntermediario() + " non censito in Anagrafica");
 			}
 			GetStazioneDTOResponse response = new GetStazioneDTOResponse(AnagraficaManager.getStazione(bd, getStazioneDTO.getCodStazione())); 
+			
+			DominiBD dominiBD = new DominiBD(bd);
+			DominioFilter dominioFilter = dominiBD.newFilter();
+			dominioFilter.setCodStazione(getStazioneDTO.getCodStazione());
+			List<Dominio> findAll = dominiBD.findAll(dominioFilter);
+			response.setDomini(findAll);
+			
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new StazioneNonTrovataException("Stazione " + getStazioneDTO.getCodStazione() + " non censita in Anagrafica per l'intermediario " + getStazioneDTO.getCodIntermediario());

@@ -27,6 +27,7 @@ import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.Intermediario;
+import it.govpay.core.rs.v1.beans.base.IntermediarioIndex;
 import it.govpay.core.rs.v1.beans.base.IntermediarioPost;
 import it.govpay.core.rs.v1.beans.base.ListaIntermediari;
 import it.govpay.core.rs.v1.beans.base.ListaStazioni;
@@ -177,9 +178,9 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<Intermediario> results = new ArrayList<>();
+			List<IntermediarioIndex> results = new ArrayList<>();
 			for(it.govpay.model.Intermediario intermediario: listaIntermediariDTOResponse.getResults()) {
-				results.add(IntermediariConverter.toRsModel(intermediario));
+				results.add(IntermediariConverter.toRsModelIndex(intermediario));
 			}
 			
 			ListaIntermediari response = new ListaIntermediari(results, this.getServicePath(uriInfo),
@@ -317,7 +318,7 @@ public class IntermediariController extends it.govpay.rs.BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Stazione response = StazioniConverter.toRsModel(getStazioneDTOResponse.getStazione(), null); //TODO domini list
+			Stazione response = StazioniConverter.toRsModel(getStazioneDTOResponse.getStazione(), getStazioneDTOResponse.getDomini());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 

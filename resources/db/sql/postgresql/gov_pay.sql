@@ -1027,8 +1027,7 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
             WHEN versamenti.stato_versamento::text = 'NON_ESEGUITO'::text AND versamenti.data_validita > now() THEN 0
             ELSE 1
         END) AS smart_order_rank,
-    min(@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint)):
-:bigint AS smart_order_date
+    min(@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
    FROM versamenti
      LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento
      LEFT JOIN pagamenti ON singoli_versamenti.id = pagamenti.id_singolo_versamento

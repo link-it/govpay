@@ -31,6 +31,7 @@ public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 	public FindUnitaOperativeDTO(IAutorizzato user, String codDominio) {
 		super(user);
 		this.codDominio = codDominio;
+		this.addSortField("ragioneSociale", it.govpay.orm.Uo.model().UO_DENOMINAZIONE);
 	}
 	
 	public String getCodDominio(){
