@@ -17,6 +17,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Operatore;
@@ -89,6 +90,9 @@ public class UtenzaPatchUtils {
 		break;
 		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 		}
+		
+		UtenzeBD utenzaBD = new UtenzeBD(bd);
+		utenzaBD.updateUtenza(utenza);
 
 		utenza.setTributi(null);
 		utenza.getTributi(bd);
@@ -112,6 +116,9 @@ public class UtenzaPatchUtils {
 		break;
 		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 		}
+		
+		UtenzeBD utenzaBD = new UtenzeBD(bd);
+		utenzaBD.updateUtenza(utenza);
 
 		utenza.setDomini(null);
 		utenza.getDomini(bd);

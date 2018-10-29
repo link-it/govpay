@@ -546,7 +546,7 @@ public class DominioPost extends it.govpay.core.rs.v1.beans.JSONSerializable imp
 public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 
-		vf.getValidator("segregationCode", this.segregationCode).pattern("[0-9]");
+		vf.getValidator("segregationCode", this.segregationCode).pattern("(^[0-4][0-9]$)");
   }
 }
 
