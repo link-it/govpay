@@ -27,7 +27,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
-import it.govpay.core.dao.anagrafica.UtenzaPatchUtils;
+import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
@@ -179,7 +179,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setIdSessione(pagamentiPortaleDTO.getIdSessione());
 			pagamentoPortale.setIdSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
 			pagamentoPortale.setJsonRequest(pagamentiPortaleDTO.getJsonRichiesta());
-			pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idPagamento",pagamentiPortaleDTO.getIdSessione()));
+			if(pagamentiPortaleDTO.getUrlRitorno() != null)
+				pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentiPortaleDTO.getUrlRitorno() , "idPagamento",pagamentiPortaleDTO.getIdSessione()));
 			pagamentoPortale.setDataRichiesta(new Date());
 			pagamentoPortale.setCodApplicazione(codApplicazione);
 			pagamentoPortale.setWispIdDominio(codDominio);
@@ -209,7 +210,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			stato = STATO.IN_CORSO;
 
 			try {
-				rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata, null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), true, pagamentoPortale);
+				rpts = rptBD.avviaTransazione(versamenti, applicazioneAutenticata.getUtenza(), null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), true, pagamentoPortale);
 
 				Rpt rpt = rpts.get(0);
 
@@ -226,7 +227,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					codiceStato = CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP;
 					stato = STATO.IN_CORSO;
 					idSessionePsp = rpt.getCodSessione();
-					pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "idSession", idSessionePsp));
+					if(pagamentoPortale.getUrlRitorno()!= null)
+						pagamentoPortale.setUrlRitorno(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "idSession", idSessionePsp));
 					pspRedirect = rpt.getPspRedirectURL(); 
 					response.setRedirectUrl(pspRedirect);
 					response.setIdSessione(idSessionePsp); 
@@ -319,7 +321,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
-			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getIdSessione());
+			PagamentoPortale pagamentoPortale = null;
+			if(leggiPagamentoPortaleDTO.getId() != null) 
+				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getId());
+			else
+				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessionePsp(leggiPagamentoPortaleDTO.getIdSessionePsp());
 
 			if(pagamentoPortale.getVersamenti(bd) != null && pagamentoPortale.getVersamenti(bd).size() > 0) {
 				for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
@@ -336,20 +342,20 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(leggiPagamentoPortaleDTO.isRisolviLink()) {
 				PendenzeDAO pendenzeDao = new PendenzeDAO();
 				ListaPendenzeDTO listaPendenzaDTO = new ListaPendenzeDTO(leggiPagamentoPortaleDTO.getUser());
-				listaPendenzaDTO.setIdPagamento(leggiPagamentoPortaleDTO.getIdSessione());
+				listaPendenzaDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
 
 				RptDAO rptDao = new RptDAO(); 
 				ListaRptDTO listaRptDTO = new ListaRptDTO(leggiPagamentoPortaleDTO.getUser());
-				listaRptDTO.setIdPagamento(leggiPagamentoPortaleDTO.getIdSessione());
+				listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 			}
 
 			return leggiPagamentoPortaleDTOResponse;
 		}catch(NotFoundException e) {
-			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getIdSessione()+"]");
+			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+leggiPagamentoPortaleDTO.getId()+"]");
 		}finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -377,7 +383,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setDataFine(listaPagamentiPortaleDTO.getDataA());
 			filter.setAck(listaPagamentiPortaleDTO.getVerificato());
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
-			
+			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
 			if(listaPagamentiPortaleDTO.getStato()!=null) {
 				try {
 					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));

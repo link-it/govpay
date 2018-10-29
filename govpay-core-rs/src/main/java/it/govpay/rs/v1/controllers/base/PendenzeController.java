@@ -75,12 +75,12 @@ import it.govpay.rs.v1.beans.converter.TracciatiConverter;
 
 
 public class PendenzeController extends it.govpay.rs.BaseController {
-	
+
 	private SerializationConfig serializationConfig  = null;
 
 	public PendenzeController(String nomeServizio,Logger log) {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
-		
+
 		this.serializationConfig = new SerializationConfig();
 		this.serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
 		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -115,8 +115,8 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			Pendenza pendenza = addInfoIncasso ? 
 					PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti())
 					: PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
-			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
+					this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+					return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -164,7 +164,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			// INIT DAO
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
-			
+
 			listaPendenzeDTO.setInfoIncasso(addInfoIncasso); 
 
 			// CHIAMATA AL DAO
@@ -254,10 +254,10 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			Pendenza pendenza = 
 					addInfoIncasso ? 
-					PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti())
-					: PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
-			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
+							PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti())
+							: PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento(), ricevutaDTOResponse.getUnitaOperativa(), ricevutaDTOResponse.getApplicazione(), ricevutaDTOResponse.getDominio(), ricevutaDTOResponse.getLstSingoliVersamenti());
+							this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+							return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		} catch(GovPayException e) {
 			this.log.error("Errore durante il processo di pagamento", e);
 			FaultBean respKo = new FaultBean();
@@ -300,28 +300,28 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			String fileName = null;
 			InputStream fileInputStream = null;
 			try{
-			// controllo se sono in una richiesta multipart
-			if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
-				javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
-				this.log.info(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
+				// controllo se sono in una richiesta multipart
+				if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
+					javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
+					this.log.info(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
 
-				MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
+					MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
 
-				for(int i = 0 ; i < mimeMultipart.countBodyParts() ;  i ++) {
-					BodyPart bodyPart = mimeMultipart.getBodyPart(i);
-					fileName = getBodyPartFileName(bodyPart);
-					
-					if(fileName != null) {
-						fileInputStream = bodyPart.getInputStream();
-						break;
+					for(int i = 0 ; i < mimeMultipart.countBodyParts() ;  i ++) {
+						BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+						fileName = getBodyPartFileName(bodyPart);
+
+						if(fileName != null) {
+							fileInputStream = bodyPart.getInputStream();
+							break;
+						}
+					}
+
+					if(fileInputStream != null) {
+						BaseRsService.copy(fileInputStream, baos);
 					}
 				}
-				
-				if(fileInputStream != null) {
-					BaseRsService.copy(fileInputStream, baos);
-				}
-			}
-						}catch(Exception e) {
+			}catch(Exception e) {
 				this.log.error(e.getMessage(),e);
 			}
 
@@ -636,25 +636,25 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			zos.closeEntry();
 		}
 	}
-	
+
 	private String getBodyPartFileName (BodyPart bodyPart) throws Exception{
-        String partName =  null;
-        String[] headers = bodyPart.getHeader(it.govpay.rs.BaseController.PARAMETRO_CONTENT_DISPOSITION);
-        if(headers != null && headers.length > 0){
-                String header = headers[0];
+		String partName =  null;
+		String[] headers = bodyPart.getHeader(it.govpay.rs.BaseController.PARAMETRO_CONTENT_DISPOSITION);
+		if(headers != null && headers.length > 0){
+			String header = headers[0];
 
-                // in due parti perche il suffisso con solo " imbrogliava il controllo
-                int prefixIndex = header.indexOf(it.govpay.rs.BaseController.PREFIX_FILENAME);
-                if(prefixIndex > -1){
-                        partName = header.substring(prefixIndex + it.govpay.rs.BaseController.PREFIX_FILENAME.length());
+			// in due parti perche il suffisso con solo " imbrogliava il controllo
+			int prefixIndex = header.indexOf(it.govpay.rs.BaseController.PREFIX_FILENAME);
+			if(prefixIndex > -1){
+				partName = header.substring(prefixIndex + it.govpay.rs.BaseController.PREFIX_FILENAME.length());
 
-                        int suffixIndex = partName.indexOf(it.govpay.rs.BaseController.SUFFIX_FILENAME);
-                        partName = partName.substring(0,suffixIndex);
-                }
-        }
+				int suffixIndex = partName.indexOf(it.govpay.rs.BaseController.SUFFIX_FILENAME);
+				partName = partName.substring(0,suffixIndex);
+			}
+		}
 
-        return partName;
-}
+		return partName;
+	}
 
 }
 

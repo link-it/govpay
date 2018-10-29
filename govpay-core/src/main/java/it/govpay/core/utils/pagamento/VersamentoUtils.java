@@ -53,6 +53,7 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Dominio;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
@@ -291,6 +292,7 @@ public class VersamentoUtils {
 		anagraficaModel.setProvincia(anagrafica.getProvincia());
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
+		anagraficaModel.setTipo(TIPO.valueOf(anagrafica.getTipo()));
 		return anagraficaModel;
 	}
 	
@@ -309,6 +311,7 @@ public class VersamentoUtils {
 		anagraficaModel.setProvincia(anagrafica.getProvincia());
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
+		anagraficaModel.setTipo(TIPO.valueOf(anagrafica.getTipo()));
 		return anagraficaModel;
 	}
 	
@@ -459,8 +462,6 @@ public class VersamentoUtils {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
-//		versamento.setAnomalie(pendenza.getAnomalie());  //TODO
-
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenza.getVoci());
 
@@ -530,8 +531,6 @@ public class VersamentoUtils {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 		
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
-//		if(pendenza.getNumeroAvviso()!=null)
-//			versamento.setIuv(pendenza.getNumeroAvviso());
 		
 //		versamento.setIncasso(pendenza.getIncasso()); //TODO
 //		versamento.setAnomalie(pendenza.getAnomalie()); 
@@ -630,6 +629,7 @@ public class VersamentoUtils {
 			anagraficaCommons.setNazione(anagraficaRest.getNazione());
 			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
 			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
+			anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
 		}
 
 		return anagraficaCommons;
@@ -649,6 +649,7 @@ public class VersamentoUtils {
 			anagraficaCommons.setNazione(anagraficaRest.getNazione());
 			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
 			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
+			anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
 		}
 
 		return anagraficaCommons;

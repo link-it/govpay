@@ -20,6 +20,17 @@
     function httpLogoutService() {
       return hostname() + '/govpay/backend/gui/backoffice/logout'; //exit
     }
+    function httpBasePath() {
+      return hostname() + '/govpay/backend/gui/backoffice'; //manuale
+    }
+    function backInTime() {
+      //Ore, (filtro badge)
+      return 2;
+    }
+    function badgeTimer() {
+      //Millisecondi, (timer badge)
+      return 30000;
+    }
   </script>
 </head>
 <body>

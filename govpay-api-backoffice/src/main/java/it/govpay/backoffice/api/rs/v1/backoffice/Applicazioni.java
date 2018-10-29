@@ -33,15 +33,28 @@ public class Applicazioni extends BaseRsServiceV1{
 		this.controller = new ApplicazioniController(this.nomeServizio,this.log);
 	}
 
-
+	@GET
+    @Path("/")
+    @Produces({ "application/json" })
+    public Response applicazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.applicazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
 
     @GET
     @Path("/{idA2A}")
-    
     @Produces({ "application/json" })
     public Response applicazioniIdA2AGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.applicazioniIdA2AGET(this.getUser(), uriInfo, httpHeaders,  idA2A);
+    }
+    
+    @PUT
+    @Path("/{idA2A}")
+    @Consumes({ "application/json" })
+    public Response applicazioniIdA2APUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.applicazioniIdA2APUT(this.getUser(), uriInfo, httpHeaders,  idA2A, is);
     }
 
     @PATCH
@@ -51,24 +64,6 @@ public class Applicazioni extends BaseRsServiceV1{
     public Response applicazioniIdA2APATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idA2A") String idA2A){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.applicazioniIdA2APATCH(this.getUser(), uriInfo, httpHeaders, is,  idA2A);
-    }
-
-    @PUT
-    @Path("/{idA2A}")
-    @Consumes({ "application/json" })
-    
-    public Response applicazioniIdA2APUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.applicazioniIdA2APUT(this.getUser(), uriInfo, httpHeaders,  idA2A, is);
-    }
-
-    @GET
-    @Path("/")
-    
-    @Produces({ "application/json" })
-    public Response applicazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.applicazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 
 }

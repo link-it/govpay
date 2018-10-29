@@ -45,8 +45,12 @@ public class BatchManager {
 			return true;
 		}
 		
+		boolean wasAutocommit = false;
 		try {
-			bd.setAutoCommit(false);
+			if(bd.isAutoCommit()) {
+				bd.setAutoCommit(false);
+				wasAutocommit = true;
+			}
 			bd.enableSelectForUpdate();
 			
 			BatchBD batchBD = new BatchBD(bd);
@@ -78,7 +82,8 @@ public class BatchManager {
 				return false;
 			}
 		} finally {
-			bd.setAutoCommit(true);
+			if(wasAutocommit)
+				bd.setAutoCommit(true);
 			bd.disableSelectForUpdate();
 		}
 	}
@@ -126,8 +131,12 @@ public class BatchManager {
 				return;
 			}
 			
+			boolean wasAutocommit = false;
 			try {
-				bd.setAutoCommit(false);
+				if(bd.isAutoCommit()) {
+					bd.setAutoCommit(false);
+					wasAutocommit = true;
+				}
 				bd.enableSelectForUpdate();
 				BatchBD batchBD = new BatchBD(bd);
 				Batch batch = null;
@@ -156,7 +165,8 @@ public class BatchManager {
 					return;
 				}
 			} finally {
-				bd.setAutoCommit(true);
+				if(wasAutocommit)
+					bd.setAutoCommit(true);
 				bd.disableSelectForUpdate();
 			}
 		} catch(Throwable se) {
@@ -173,7 +183,7 @@ public class BatchManager {
 			log.trace("ClusterId non impostato. Gestione concorrenza non abilitata. Aggiornamento non necessario");
 			return;
 		}
-		boolean wasAutocommit = true;
+		boolean wasAutocommit = false;
 		try {
 			if(bd.isAutoCommit()) {
 				bd.setAutoCommit(false);

@@ -16,6 +16,11 @@ body,
 }
 
 //SCSS global classes
+.break-all {
+  -ms-word-break: break-all !important;
+  word-break: break-all !important;
+}
+
 .stato-error {
   color: mat-color($link-error);
 }

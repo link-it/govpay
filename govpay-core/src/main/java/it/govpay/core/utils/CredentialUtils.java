@@ -35,6 +35,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.UtenzaApplicazione;
 
 public class CredentialUtils {
 	
@@ -44,7 +45,10 @@ public class CredentialUtils {
 	}
 
 	public static Utenza getUser(HttpServletCredential credential) {
-		Utenza user = new Utenza();
+		Utenza user = new UtenzaApplicazione();
+		
+
+		
 		
 		if(credential.getSubject() != null) {
 			user.setPrincipal(credential.getSubject());

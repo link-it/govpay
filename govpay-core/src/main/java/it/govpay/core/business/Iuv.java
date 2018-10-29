@@ -138,7 +138,9 @@ public class Iuv extends BasicBD {
 		}
 		
 		// Verifico che lo iuv generato rispetti la regular expr definita nell'applicazione
-		Pattern patternIuv = Pattern.compile(applicazione.getRegExp());
+		
+		String regexp = (applicazione.getRegExp() != null && !applicazione.getRegExp().isEmpty()) ? applicazione.getRegExp() : ".*";
+		Pattern patternIuv = Pattern.compile(regexp);
 		Matcher matcher = patternIuv.matcher(iuv.getIuv()); 
 		if(!matcher.matches())
 			throw new GovPayException(EsitoOperazione.VER_030, prefix ,applicazione.getCodApplicazione()); 

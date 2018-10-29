@@ -104,6 +104,8 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_URL_SITO_WEB,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_EMAIL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_PEC,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_TEL,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUoFieldConverter().toColumn(Uo.model().UO_FAX,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
 		// Insert uo
@@ -123,6 +125,8 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoUrlSitoWeb(),Uo.model().UO_URL_SITO_WEB.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoEmail(),Uo.model().UO_EMAIL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoPec(),Uo.model().UO_PEC.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoTel(),Uo.model().UO_TEL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(uo.getUoFax(),Uo.model().UO_FAX.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
 		uo.setId(id);
@@ -221,6 +225,10 @@ public class JDBCUoServiceImpl extends JDBCUoServiceSearchImpl
 		lstObjects_uo.add(new JDBCObject(uo.getUoEmail(), Uo.model().UO_EMAIL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().UO_PEC,false), "?");
 		lstObjects_uo.add(new JDBCObject(uo.getUoPec(), Uo.model().UO_PEC.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().UO_TEL,false), "?");
+		lstObjects_uo.add(new JDBCObject(uo.getUoTel(), Uo.model().UO_TEL.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUoFieldConverter().toColumn(Uo.model().UO_FAX,false), "?");
+		lstObjects_uo.add(new JDBCObject(uo.getUoFax(), Uo.model().UO_FAX.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
 		}

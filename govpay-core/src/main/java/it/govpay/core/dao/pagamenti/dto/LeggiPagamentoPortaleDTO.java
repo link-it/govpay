@@ -12,21 +12,21 @@ public class LeggiPagamentoPortaleDTO extends BasicCreateRequestDTO {
 		super(user);
 	}
 	
-	private Long id;
-	private String idSessione;
+	private String id;
+	private String idSessionePsp;
 	private boolean risolviLink = false;
 	
-	public Long getId() {
+	public String getId() {
 		return this.id;
 	}
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	public String getIdSessione() {
-		return this.idSessione;
+	public String getIdSessionePsp() {
+		return this.idSessionePsp;
 	}
-	public void setIdSessione(String idSessione) {
-		this.idSessione = idSessione;
+	public void setIdSessionePsp(String idSessionePsp) {
+		this.idSessionePsp = idSessionePsp;
 	}
 	public boolean isRisolviLink() {
 		return this.risolviLink;

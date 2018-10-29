@@ -76,53 +76,57 @@ public class AnagraficaManager {
 
 	private static final boolean DEBUG = false;
 	
-	private static DominiBDCacheWrapper dominiBDCacheWrapper;
-	private static ApplicazioniBDCacheWrapper applicazioniBDCacheWrapper;
-	private static UoBDCacheWrapper uoBDCacheWrapper;
-	private static IbanAccreditoBDCacheWrapper ibanAccreditoBDCacheWrapper;
-	private static IntermediariBDCacheWrapper intermediariBDCacheWrapper;
-	private static OperatoriBDCacheWrapper operatoriBDCacheWrapper;
-	private static StazioniBDCacheWrapper stazioniBDCacheWrapper;
-	private static TributiBDCacheWrapper tributiBDCacheWrapper;
-	private static TipiTributoBDCacheWrapper tipiTributoBDCacheWrapper;
-	private static UtenzeBDCacheWrapper utenzeBDCacheWrapper;
+	private static DominiBDCacheWrapper dominiBDCacheWrapper, dominiBDNoCacheWrapper;
+	private static ApplicazioniBDCacheWrapper applicazioniBDCacheWrapper, applicazioniBDNoCacheWrapper;
+	private static UoBDCacheWrapper uoBDCacheWrapper, uoBDNoCacheWrapper;
+	private static IbanAccreditoBDCacheWrapper ibanAccreditoBDCacheWrapper, ibanAccreditoBDNoCacheWrapper;
+	private static IntermediariBDCacheWrapper intermediariBDCacheWrapper, intermediariBDNoCacheWrapper;
+	private static OperatoriBDCacheWrapper operatoriBDCacheWrapper, operatoriBDNoCacheWrapper;
+	private static StazioniBDCacheWrapper stazioniBDCacheWrapper, stazioniBDNoCacheWrapper;
+	private static TributiBDCacheWrapper tributiBDCacheWrapper, tributiBDNoCacheWrapper;
+	private static TipiTributoBDCacheWrapper tipiTributoBDCacheWrapper, tipiTributoBDNoCacheWrapper;
+	private static UtenzeBDCacheWrapper utenzeBDCacheWrapper, utenzeBDNoCacheWrapper;
 
 	private AnagraficaManager(String domain) throws UtilsException {
 		
-		boolean enableCaching = (domain != null);
-		dominiBDCacheWrapper = new DominiBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(DominiBDCacheWrapper.class));
-		applicazioniBDCacheWrapper = new ApplicazioniBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(ApplicazioniBDCacheWrapper.class));
-		uoBDCacheWrapper = new UoBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(UoBDCacheWrapper.class));
-		ibanAccreditoBDCacheWrapper = new IbanAccreditoBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(IbanAccreditoBDCacheWrapper.class));
-		intermediariBDCacheWrapper = new IntermediariBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(IntermediariBDCacheWrapper.class));
-		operatoriBDCacheWrapper = new OperatoriBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(OperatoriBDCacheWrapper.class));
-		stazioniBDCacheWrapper = new StazioniBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(StazioniBDCacheWrapper.class));
-		tributiBDCacheWrapper = new TributiBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(TributiBDCacheWrapper.class));
-		tipiTributoBDCacheWrapper = new TipiTributoBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(TipiTributoBDCacheWrapper.class));
-		utenzeBDCacheWrapper = new UtenzeBDCacheWrapper(enableCaching, LoggerWrapperFactory.getLogger(UtenzeBDCacheWrapper.class));
+		dominiBDCacheWrapper = new DominiBDCacheWrapper(true, LoggerWrapperFactory.getLogger(DominiBDCacheWrapper.class));
+		applicazioniBDCacheWrapper = new ApplicazioniBDCacheWrapper(true, LoggerWrapperFactory.getLogger(ApplicazioniBDCacheWrapper.class));
+		uoBDCacheWrapper = new UoBDCacheWrapper(true, LoggerWrapperFactory.getLogger(UoBDCacheWrapper.class));
+		ibanAccreditoBDCacheWrapper = new IbanAccreditoBDCacheWrapper(true, LoggerWrapperFactory.getLogger(IbanAccreditoBDCacheWrapper.class));
+		intermediariBDCacheWrapper = new IntermediariBDCacheWrapper(true, LoggerWrapperFactory.getLogger(IntermediariBDCacheWrapper.class));
+		operatoriBDCacheWrapper = new OperatoriBDCacheWrapper(true, LoggerWrapperFactory.getLogger(OperatoriBDCacheWrapper.class));
+		stazioniBDCacheWrapper = new StazioniBDCacheWrapper(true, LoggerWrapperFactory.getLogger(StazioniBDCacheWrapper.class));
+		tributiBDCacheWrapper = new TributiBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TributiBDCacheWrapper.class));
+		tipiTributoBDCacheWrapper = new TipiTributoBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TipiTributoBDCacheWrapper.class));
+		utenzeBDCacheWrapper = new UtenzeBDCacheWrapper(true, LoggerWrapperFactory.getLogger(UtenzeBDCacheWrapper.class));
+		
+		dominiBDNoCacheWrapper = new DominiBDCacheWrapper(false, LoggerWrapperFactory.getLogger(DominiBDCacheWrapper.class));
+		applicazioniBDNoCacheWrapper = new ApplicazioniBDCacheWrapper(false, LoggerWrapperFactory.getLogger(ApplicazioniBDCacheWrapper.class));
+		uoBDNoCacheWrapper = new UoBDCacheWrapper(false, LoggerWrapperFactory.getLogger(UoBDCacheWrapper.class));
+		ibanAccreditoBDNoCacheWrapper = new IbanAccreditoBDCacheWrapper(false, LoggerWrapperFactory.getLogger(IbanAccreditoBDCacheWrapper.class));
+		intermediariBDNoCacheWrapper = new IntermediariBDCacheWrapper(false, LoggerWrapperFactory.getLogger(IntermediariBDCacheWrapper.class));
+		operatoriBDNoCacheWrapper = new OperatoriBDCacheWrapper(false, LoggerWrapperFactory.getLogger(OperatoriBDCacheWrapper.class));
+		stazioniBDNoCacheWrapper = new StazioniBDCacheWrapper(false, LoggerWrapperFactory.getLogger(StazioniBDCacheWrapper.class));
+		tributiBDNoCacheWrapper = new TributiBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TributiBDCacheWrapper.class));
+		tipiTributoBDNoCacheWrapper = new TipiTributoBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TipiTributoBDCacheWrapper.class));
+		utenzeBDNoCacheWrapper = new UtenzeBDCacheWrapper(false, LoggerWrapperFactory.getLogger(UtenzeBDCacheWrapper.class));
 
-		if(enableCaching) {
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), domain, "domini");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new ApplicazioniBDCacheJmx(), domain, "applicazioni");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UoBDCacheJmx(), domain, "uo");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IbanAccreditoBDCacheJmx(), domain, "ibanAccredito");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IntermediariBDCacheJmx(), domain, "intermediari");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new OperatoriBDCacheJmx(), domain, "operatori");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new StazioniBDCacheJmx(), domain, "stazioni");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), domain, "tributi");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiTributoBDCacheJmx(), domain, "tipiTributo");
-			CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UtenzeBDCacheJmx(), domain, "utenze");
-		}
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), domain, "domini");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new ApplicazioniBDCacheJmx(), domain, "applicazioni");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UoBDCacheJmx(), domain, "uo");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IbanAccreditoBDCacheJmx(), domain, "ibanAccredito");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new IntermediariBDCacheJmx(), domain, "intermediari");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new OperatoriBDCacheJmx(), domain, "operatori");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new StazioniBDCacheJmx(), domain, "stazioni");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), domain, "tributi");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiTributoBDCacheJmx(), domain, "tipiTributo");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UtenzeBDCacheJmx(), domain, "utenze");
 	}
 
 	public static AnagraficaManager newInstance(String dominio) throws UtilsException {
 		return new AnagraficaManager(dominio);
 	}
 	
-	public static AnagraficaManager newInstance() throws UtilsException {
-		return new AnagraficaManager(null);
-	}
-
 	public static DominiBDCacheWrapper getDominiBDCacheWrapper() {
 		return dominiBDCacheWrapper;
 	}
@@ -161,6 +165,46 @@ public class AnagraficaManager {
 	
 	public static TipiTributoBDCacheWrapper getTipiTributoBDCacheWrapper() {
 		return tipiTributoBDCacheWrapper;
+	}
+	
+	public static DominiBDCacheWrapper getDominiBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? dominiBDCacheWrapper : dominiBDNoCacheWrapper;
+	}
+
+	public static ApplicazioniBDCacheWrapper getApplicazioniBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? applicazioniBDCacheWrapper : applicazioniBDNoCacheWrapper;
+	}
+
+	public static UoBDCacheWrapper getUoBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? uoBDCacheWrapper : uoBDNoCacheWrapper;
+	}
+
+	public static IbanAccreditoBDCacheWrapper getIbanAccreditoBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? ibanAccreditoBDCacheWrapper : ibanAccreditoBDNoCacheWrapper;
+	}
+
+	public static IntermediariBDCacheWrapper getIntermediariBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? intermediariBDCacheWrapper : intermediariBDNoCacheWrapper;
+	}
+
+	public static OperatoriBDCacheWrapper getOperatoriBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? operatoriBDCacheWrapper : operatoriBDNoCacheWrapper;
+	}
+	
+	public static UtenzeBDCacheWrapper getUtenzeBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? utenzeBDCacheWrapper : utenzeBDNoCacheWrapper;
+	}
+
+	public static StazioniBDCacheWrapper getStazioniBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? stazioniBDCacheWrapper : stazioniBDNoCacheWrapper;
+	}
+
+	public static TributiBDCacheWrapper getTributiBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? tributiBDCacheWrapper : tributiBDNoCacheWrapper;
+	}
+	
+	public static TipiTributoBDCacheWrapper getTipiTributoBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? tipiTributoBDCacheWrapper : tipiTributoBDNoCacheWrapper;
 	}
 	
 	public static void removeFromCache(Applicazione applicazione) {
@@ -220,7 +264,7 @@ public class AnagraficaManager {
 	public static Dominio getDominio(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_DOMINIO;
-			Object dominio = dominiBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object dominio = getDominiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Dominio) dominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -239,7 +283,7 @@ public class AnagraficaManager {
 	public static Dominio getDominio(BasicBD basicBD, String codDominio) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_DOMINIO;
-			Object dominio = dominiBDCacheWrapper.getObjectCache(basicBD, DEBUG, codDominio, method, codDominio);
+			Object dominio = getDominiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, codDominio, method, codDominio);
 			return (Dominio) dominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -258,7 +302,7 @@ public class AnagraficaManager {
 	public static Applicazione getApplicazione(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE;
-			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object applicazione = getApplicazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -277,7 +321,7 @@ public class AnagraficaManager {
 	public static Applicazione getApplicazione(BasicBD basicBD, String codApplicazione) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE;
-			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, codApplicazione, method, codApplicazione);
+			Object applicazione = getApplicazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, codApplicazione, method, codApplicazione);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -296,7 +340,7 @@ public class AnagraficaManager {
 	public static Applicazione getApplicazioneBySubject(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT;
-			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
+			Object applicazione = getApplicazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -315,7 +359,7 @@ public class AnagraficaManager {
 	public static Applicazione getApplicazioneByPrincipal(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL;
-			Object applicazione = applicazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
+			Object applicazione = getApplicazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -335,7 +379,7 @@ public class AnagraficaManager {
 	public static UnitaOperativa getUnitaOperativa(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_UNITA_OPERATIVA;
-			Object uo = uoBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object uo = getUoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -354,7 +398,7 @@ public class AnagraficaManager {
 	public static UnitaOperativa getUnitaOperativa(BasicBD basicBD, long idDominio, String codUo) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_UNITA_OPERATIVA;
-			Object uo = uoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codUo + "@" + idDominio, method, idDominio, codUo);
+			Object uo = getUoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, codUo + "@" + idDominio, method, idDominio, codUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -373,7 +417,7 @@ public class AnagraficaManager {
 	public static UnitaOperativa getUnitaOperativaByCodUnivocoUo(BasicBD basicBD, long idDominio, String codUnivocoUo) throws ServiceException, NotFoundException {
 		try {
 			String method = "getUnitaOperativaByCodUnivocoUo";
-			Object uo = uoBDCacheWrapper.getObjectCache(basicBD, DEBUG, "ByCodUnivocoUo#" + codUnivocoUo + "@" + idDominio, method, idDominio, codUnivocoUo);
+			Object uo = getUoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, "ByCodUnivocoUo#" + codUnivocoUo + "@" + idDominio, method, idDominio, codUnivocoUo);
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -393,7 +437,7 @@ public class AnagraficaManager {
 	public static IbanAccredito getIbanAccredito(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
-			Object ibanAccredito = ibanAccreditoBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object ibanAccredito = getIbanAccreditoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -412,7 +456,7 @@ public class AnagraficaManager {
 	public static IbanAccredito getIbanAccredito(BasicBD basicBD, Long idDominio, String codIbanAccredito) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
-			Object ibanAccredito = ibanAccreditoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codIbanAccredito + "@" + idDominio, method, idDominio, codIbanAccredito);
+			Object ibanAccredito = getIbanAccreditoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, codIbanAccredito + "@" + idDominio, method, idDominio, codIbanAccredito);
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -432,7 +476,7 @@ public class AnagraficaManager {
 	public static Intermediario getIntermediario(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_INTERMEDIARIO;
-			Object intermediario = intermediariBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object intermediario = getIntermediariBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -451,7 +495,7 @@ public class AnagraficaManager {
 	public static Intermediario getIntermediario(BasicBD basicBD, String codIntermediario) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_INTERMEDIARIO;
-			Object intermediario = intermediariBDCacheWrapper.getObjectCache(basicBD, DEBUG, codIntermediario, method, codIntermediario);
+			Object intermediario = getIntermediariBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, codIntermediario, method, codIntermediario);
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -470,7 +514,7 @@ public class AnagraficaManager {
 	public static Operatore getOperatore(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_OPERATORE;
-			Object operatore = operatoriBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object operatore = getOperatoriBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -490,7 +534,7 @@ public class AnagraficaManager {
 	public static Operatore getOperatoreByPrincipal(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL;
-			Object operatore = operatoriBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
+			Object operatore = getOperatoriBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -509,7 +553,7 @@ public class AnagraficaManager {
 	public static Operatore getOperatoreBySubject(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_OPERATORE_BY_SUBJECT;
-			Object operatore = operatoriBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
+			Object operatore = getOperatoriBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -528,7 +572,7 @@ public class AnagraficaManager {
 	public static Utenza getUtenza(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_UTENZA;
-			Object utenza = utenzeBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object utenza = getUtenzeBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -547,7 +591,7 @@ public class AnagraficaManager {
 	public static Utenza getUtenza(BasicBD basicBD, String principal) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_UTENZA;
-			Object utenza = utenzeBDCacheWrapper.getObjectCache(basicBD, DEBUG, principal, method, principal);
+			Object utenza = getUtenzeBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, principal, method, principal);
 			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -568,7 +612,7 @@ public class AnagraficaManager {
 	public static Stazione getStazione(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_STAZIONE;
-			Object stazione = stazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object stazione = getStazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Stazione) stazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -587,7 +631,7 @@ public class AnagraficaManager {
 	public static Stazione getStazione(BasicBD basicBD, String codStazione) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_STAZIONE;
-			Object stazione = stazioniBDCacheWrapper.getObjectCache(basicBD, DEBUG, codStazione, method, codStazione);
+			Object stazione = getStazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, codStazione, method, codStazione);
 			return (Stazione) stazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -607,7 +651,7 @@ public class AnagraficaManager {
 	public static Tributo getTributo(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_TRIBUTO;
-			Object tributo = tributiBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object tributo = getTributiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Tributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -626,7 +670,7 @@ public class AnagraficaManager {
 	public static Tributo getTributo(BasicBD basicBD, long idDominio, String codTributo) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_TRIBUTO;
-			Object tributo = tributiBDCacheWrapper.getObjectCache(basicBD, DEBUG, codTributo + "@" +  String.valueOf(idDominio), method, Long.valueOf(idDominio), codTributo);
+			Object tributo = getTributiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, codTributo + "@" +  String.valueOf(idDominio), method, Long.valueOf(idDominio), codTributo);
 			return (Tributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -645,7 +689,7 @@ public class AnagraficaManager {
 	public static TipoTributo getTipoTributo(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = CACHE_KEY_GET_TIPO_TRIBUTO;
-			Object tipoTributo = tipiTributoBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			Object tipoTributo = getTipiTributoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (TipoTributo) tipoTributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
@@ -664,7 +708,7 @@ public class AnagraficaManager {
 	public static TipoTributo getTipoTributo(BasicBD basicBD, String codTributo) throws ServiceException, NotFoundException {
 		try {
 			String method = CACHE_KEY_GET_TIPO_TRIBUTO;
-			Object tributo = tipiTributoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codTributo, method, codTributo);
+			Object tributo = getTipiTributoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, codTributo, method, codTributo);
 			return (TipoTributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {

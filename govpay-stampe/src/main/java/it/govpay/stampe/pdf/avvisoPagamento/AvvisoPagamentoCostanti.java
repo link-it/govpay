@@ -7,30 +7,27 @@ public class AvvisoPagamentoCostanti {
 	
 	// nomi properties loghi
 	public static final String LOGO_ENTE = "avvisoPagamento.logo.ente";
-	public static final String LOGO_AGID = "avvisoPagamento.logo.agid";
 	public static final String LOGO_PAGOPA = "avvisoPagamento.logo.pagopa";
-	public static final String LOGO_PAGOPA_90 = "avvisoPagamento.logo.pagopa90";
 	public static final String LOGO_APP = "avvisoPagamento.logo.app";
 	public static final String LOGO_PLACE = "avvisoPagamento.logo.place";
-	public static final String LOGO_IMPORTO = "avvisoPagamento.logo.importo";
-	public static final String LOGO_SCADENZA = "avvisoPagamento.logo.scadenza";
-	public static final String LOGO_TAGLIO = "avvisoPagamento.logo.taglio";
-	public static final String LOGO_TAGLIO1 = "avvisoPagamento.logo.taglio1";
-	
-	public static final String PREFIX_LOGO = "avvisoPagamento.logo";
+	public static final String LOGO_SCISSORS = "avvisoPagamento.logo.scissors";
+	public static final String LOGO_POSTA = "avvisoPagamento.logo.posta";
+	public static final String LOGO_EURO = "avvisoPagamento.logo.euro";
 	
 	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER = "avvisoPagamento.risorse.template";
+
+	public static final String DEL_TUO_ENTE_CREDITORE = "del tuo Ente Creditore";
+	public static final String DI_POSTE = "di Poste Italiane";
 	
-	// chiavi contenuto statico
-	public static final String SEZIONE_DOVUTO_KEY = "sezioneDovuto";
-	public static final String SEZIONE_DISPONIBILITA_KEY = "sezioneDisponibilita";
-	public static final String SEZIONE_COMUNICAZIONI_KEY = "sezioneComunicazioni";
-	public static final String SEZIONE_PAGOPA_KEY = "sezionePagoPA";
+	public static final String FILLER_DATAMATRIX = "            ";
+	public static final String PATTERN_DATAMATRIX = "codfase=NBPA;{0}1P1{1}{2}{3}{4}{5}A";
+	public static final String PATTERN_CODELINE = "18{0}12{1}10{2}3896";
 	
-	public static final String[] SEZIONE_STATICA_KEYS  = {
-			SEZIONE_DOVUTO_KEY,	SEZIONE_DISPONIBILITA_KEY,SEZIONE_COMUNICAZIONI_KEY,SEZIONE_PAGOPA_KEY
-	};
+	public static final Integer DATAMATRIX_LUNGHEZZA_CAMPO_IMPORTO = 10;
+	public static final Integer DATAMATRIX_LUNGHEZZA_CAMPO_CAUSALE = 110;
+	public static final Integer DATAMATRIX_LUNGHEZZA_CAMPO_ANAGRAFICA_DEBITORE = 40;
+	public static final Integer DATAMATRIX_LUNGHEZZA_CAMPO_CF_DEBITORE = 16;
 	
-	public static final String ENTE_CREDITORE_KEY = "$ENTE_CREDITORE$";
-	public static final String URL_ENTE_CREDITORE_KEY = "$URL_ENTE_CREDITORE$";
+	public static final Integer AVVISO_LUNGHEZZA_CAMPO_CAUSALE = 60;
+	public static final Integer AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO = 40;
 }

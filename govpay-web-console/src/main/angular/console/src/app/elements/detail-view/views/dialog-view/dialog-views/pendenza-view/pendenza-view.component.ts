@@ -8,7 +8,7 @@ import { IFormComponent } from '../../../../../../classes/interfaces/IFormCompon
   templateUrl: './pendenza-view.component.html',
   styleUrls: ['./pendenza-view.component.scss']
 })
-export class PendenzaViewComponent implements IFormComponent,  OnInit, AfterViewInit {
+export class PendenzaViewComponent implements IFormComponent, OnInit, AfterViewInit {
 
   @Input() fGroup: FormGroup;
   @Input() json: any;

@@ -35,13 +35,13 @@ public class Versamento {
 		this.codVersamentoEnte = codVersamentoEnte;
 	}
 
-//	public String getIuv() {
-//		return iuv;
-//	}
-//
-//	public void setIuv(String iuv) {
-//		this.iuv = iuv;
-//	}
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
 
 	public String getCodDominio() {
 		return this.codDominio;
@@ -251,7 +251,7 @@ public class Versamento {
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
-//    private String iuv;
+    private String iuv;
     private String nome;
     private String codDominio;
     private String codLotto;

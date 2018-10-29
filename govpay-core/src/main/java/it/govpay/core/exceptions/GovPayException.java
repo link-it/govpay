@@ -146,6 +146,7 @@ public class GovPayException extends Exception {
 		case PAG_010: return "Richiesta di storno inesistente."; 
 		case PAG_011: return "Nessun pagamento da stornare."; 
 		case PAG_012: return "Richiesto pagamento di una pendenza [Applicazione:" + this.params[0] + " IdPendenza:"+ this.params[1] +" ] con data validita' decorsa il "+ this.params[2]+".";
+		case PAG_013: return "Impossibile indirizzare il Portale di Pagamento: non e' stata fornita una URL di ritorno in fase di richiesta. IdCarrello " + this.params[0]; 
 		case PRT_000: return "Portale (" + this.params[0] + ") inesistente";	
 		case PRT_001: return "Portale (" + this.params[0] + ") disabilitato";
 		case PRT_002: return "Portale autenticato (" + this.params[0] + ") diverso dal chiamante (" + this.params[1] + ")";
@@ -202,6 +203,9 @@ public class GovPayException extends Exception {
 		case VER_028: return "Il prefisso IUV di tipo numerico generato ("+this.params[0]+") per il versamento (IdA2A:"+this.params[1]+" Id:"+this.params[2]+") non e' valido rispetto alla configurazione prevista per il dominio ("+this.params[3]+", prefix:"+this.params[4]+").";
 		case VER_029: return "Il prefisso IUV di tipo ISO11694 generato ("+this.params[0]+") per il versamento (IdA2A:"+this.params[1]+" Id:"+this.params[2]+") non e' valido rispetto alla configurazione prevista per il dominio ("+this.params[3]+", prefix:"+this.params[4]+").";
 		case VER_030: return "Lo IUV generato (" + this.params[0] + ") non rispetta il pattern previsto dall'applicazione (IdA2A:"+this.params[1]+").";
+		
+		default:
+			break;
 		}
 		
 		return "";
@@ -281,6 +285,7 @@ public class GovPayException extends Exception {
 		case PAG_010: return "Richiesta non valida"; 
 		case PAG_011: return "Richiesta non valida"; 
 		case PAG_012: return "Richiesta non valida"; 
+		case PAG_013: return "Richiesta non valida"; 
 		case PRT_000: return "Richiesta non valida";	
 		case PRT_001: return "Richiesta non valida";
 		case PRT_002: return "Richiesta non valida";

@@ -127,7 +127,7 @@ public class Tracciati extends BasicBD {
 				PendenzaPost pendenzaPost = inserimenti.get((int) linea);
 				String jsonPendenza = pendenzaPost.toJSON(null);
 
-				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.tracciati.VersamentoUtils.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.VersamentoUtils.getVersamentoFromPendenza(pendenzaPost);
 
 				// inserisco l'identificativo del dominio
 				versamentoToAdd.setCodDominio(codDominio);

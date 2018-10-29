@@ -10,6 +10,7 @@ export class FormInput {
   values: any[] = [];
   value: any = '';
   showTime: boolean = true;
+  defaultTime: string = null; //HH:MM
   pattern: RegExp = null;
   required: boolean = false;
 

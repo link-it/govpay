@@ -30,7 +30,7 @@ public class FindStazioniDTO extends BasicFindRequestDTO {
 	
 	public FindStazioniDTO(IAutorizzato user) throws ServiceException {
 		super(user);
-		this.addSortField("idIntermediario", it.govpay.orm.Intermediario.model().COD_INTERMEDIARIO);
+		this.addSortField("idStazione", it.govpay.orm.Stazione.model().COD_STAZIONE);
 	}
 
 	public String getCodIntermediario() {

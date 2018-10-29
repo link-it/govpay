@@ -19,6 +19,9 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.UtenzaApplicazione;
+import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.NotificheBD;
@@ -54,18 +57,18 @@ import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class Rpt extends BasicBD{
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(Rpt.class);
 
 	public Rpt(BasicBD basicBD) {
 		super(basicBD);
 	}
-	
-	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Applicazione applicazione, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
-		return this.avviaTransazione(versamenti, applicazione, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
+
+	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Utenza utenzaChiamante, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
+		return this.avviaTransazione(versamenti, utenzaChiamante, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
 	}
 
-	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Applicazione applicazione, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException {
+	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Utenza utenza, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		try {
 			ctx.getPagamentoCtx().setCarrello(true);
@@ -75,7 +78,7 @@ public class Rpt extends BasicBD{
 			ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
 			ctx.setCorrelationId(codCarrello);
 			ctx.log("pagamento.avviaTransazioneCarrelloWISP20");
-			
+
 			Stazione stazione = null;
 
 			for(Versamento versamentoModel : versamenti) {
@@ -86,17 +89,17 @@ public class Rpt extends BasicBD{
 
 					String codTributo = sv.getTributo(this) != null ? sv.getTributo(this).getCodTributo() : null;
 
-					log.debug("Verifica autorizzazione applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
+					log.debug("Verifica autorizzazione " + utenza.getTipoUtenza() + " [" + utenza.getIdentificativo() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]...");
 
 					List<Diritti> diritti = new ArrayList<>(); 
 					diritti.add(Diritti.ESECUZIONE);
-					
-					if(!AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti)) {
-						log.warn("Non autorizzato applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
-						throw new GovPayException(EsitoOperazione.APP_003, applicazione.getCodApplicazione(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+
+					if(!AclEngine.isAuthorized(utenza, Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti)) {
+						log.warn("Non autorizzato applicazione " + utenza.getTipoUtenza() + " [" + utenza.getIdentificativo() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
+						throw new GovPayException(EsitoOperazione.APP_003, utenza.getIdentificativo(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 					}
 
-					log.debug("Autorizzato applicazione [" + applicazione.getCodApplicazione() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]");
+					log.debug("Autorizzato " + utenza.getTipoUtenza() + " [" + utenza.getIdentificativo() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]");
 
 				}
 
@@ -107,7 +110,7 @@ public class Rpt extends BasicBD{
 				} else {
 					log.debug("Autorizzato pagamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]: pagamento in stato " + StatoVersamento.NON_ESEGUITO);
 				}
-				
+
 				log.debug("Verifica scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
 				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataScaduta(versamentoModel.getDataScadenza())) {
 					log.warn("Scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] decorsa.");
@@ -115,7 +118,7 @@ public class Rpt extends BasicBD{
 				} else { // versamento non scaduto, controllo data validita'
 					log.debug("Verifica validita' del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
 					if(versamentoModel.getDataValidita() != null && DateUtils.isDataScaduta(versamentoModel.getDataValidita())) {
-						
+
 						if(versamentoModel.getId() == null) {
 							// Versamento fornito scaduto. Ritorno errore.
 							throw new GovPayException(EsitoOperazione.PAG_012, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(), SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(versamentoModel.getDataValidita()));
@@ -146,7 +149,7 @@ public class Rpt extends BasicBD{
 						// versamento valido passo
 					}
 				}
-				
+
 				log.debug("Scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] verificata.");
 
 				if(stazione == null) {
@@ -214,12 +217,12 @@ public class Rpt extends BasicBD{
 				} else {
 					ctx.setCorrelationId(versamento.getUo(this).getDominio(this).getCodDominio() + iuv.getIuv() + ccp);
 				}
-				it.govpay.bd.model.Rpt rpt = new RptBuilder().buildRpt(ctx.getPagamentoCtx().getCodCarrello(), versamento, canale, iuv.getIuv(), ccp, applicazione, versante, autenticazione, ibanAddebito, redirect, this);
+				it.govpay.bd.model.Rpt rpt = new RptBuilder().buildRpt(ctx.getPagamentoCtx().getCodCarrello(), versamento, canale, iuv.getIuv(), ccp, versante, autenticazione, ibanAddebito, redirect, this);
 				rpt.setCodSessionePortale(ctx.getPagamentoCtx().getCodSessionePortale());
-				
+
 				if(pagamentoPortale!= null)
 					rpt.setIdPagamentoPortale(pagamentoPortale.getId());
-				
+
 				rptBD.insertRpt(rpt);
 				rpts.add(rpt);
 				ctx.log("rpt.creazioneRpt", versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp, rpt.getCodMsgRichiesta());
@@ -247,7 +250,7 @@ public class Rpt extends BasicBD{
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
 					try {
-						
+
 						for(FaultBean fb : risposta.getListaErroriRPT()) {
 							it.govpay.bd.model.Rpt rpt = rpts.get(fb.getSerial() - 1);
 							String descrizione = null; 
@@ -259,7 +262,7 @@ public class Rpt extends BasicBD{
 							rpt.setDescrizioneStato(descrizione);
 							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
 						}
-						
+
 					} catch (Exception e) {
 						// Se uno o piu' aggiornamenti vanno male, non importa. 
 						// si risolvera' poi nella verifica pendenti
@@ -354,7 +357,7 @@ public class Rpt extends BasicBD{
 			throw e;
 		} 
 	}
-	
+
 	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, PagamentoPortale pagamentoPortale, Exception e) throws ServiceException, GovPayException { 
 		GpContext ctx = GpThreadLocal.get();
 		this.setupConnection(ctx.getTransactionId());
@@ -391,24 +394,24 @@ public class Rpt extends BasicBD{
 			// Casi di rifiuto. Rendo l'errore
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
 		default:
-			
+
 			String codSessione = rpts.get(0).getCodSessione();
-			
+
 			if(codSessione != null) {
 				ctx.getContext().getResponse().addGenericProperty(new Property("codPspSession", codSessione));
 			}
-			
+
 			if(codSessione != null) {
 				ctx.log("pagamento.invioCarrelloRpt");
 			} else {
 				ctx.log("pagamento.invioCarrelloRptNoRedirect");
 			}
-			
+
 			log.info("RPT inviata correttamente al nodo");
 			return rpts;
 		}
 	}
-	
+
 	public it.govpay.bd.model.Rpt chiediTransazione(Applicazione applicazioneAutenticata, String codDominio, String iuv, String ccp) throws GovPayException, ServiceException {
 		if(!applicazioneAutenticata.getUtenza().isAbilitato())
 			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());

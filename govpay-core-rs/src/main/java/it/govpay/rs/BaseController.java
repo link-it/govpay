@@ -14,6 +14,7 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -233,6 +234,13 @@ public abstract class BaseController {
 			return responseBuilder;
 	}
 	
+	protected ResponseBuilder handleResponseKo(ResponseBuilder responseBuilder, String transactionId) {
+		if(transactionId != null)
+			return responseBuilder.header(this.transactionIdHeaderName, transactionId);
+		else 
+			return responseBuilder;
+	}
+	
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
 		
 		if(e instanceof BaseExceptionV1) {
@@ -265,10 +273,7 @@ public abstract class BaseController {
 		
 		String respKoJson = this.getRespJson(respKo);
 		 
-		if(transactionId != null)
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKoJson).header(this.transactionIdHeaderName, transactionId).build();
-		else 
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(respKoJson).build();
+		return handleResponseKo(Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKoJson), transactionId).build();
 	}
 
 	protected String getRespJson(FaultBean respKo) {
@@ -335,14 +340,11 @@ public abstract class BaseController {
 		}
 
 		String respJson = this.getRespJson(respKo);
-		if(transactionId != null)
-				return Response.status(e.getTransportErrorCode()).entity(respJson).header(this.transactionIdHeaderName, transactionId).build();
-			else
-				return Response.status(e.getTransportErrorCode()).entity(respJson).build();
+		return handleResponseKo(Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
-		this.log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+		this.log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		if(e.getFaultBean()!=null) {
 			respKo.setCategoria(CategoriaEnum.PAGOPA);
@@ -366,11 +368,8 @@ public abstract class BaseController {
 		}
 		
 		String respJson = this.getRespJson(respKo);
-
-		if(transactionId != null)
-			return Response.status(statusCode).entity(respJson).header(this.transactionIdHeaderName, transactionId).build();
-		else 
-			return Response.status(statusCode).entity(respJson).build();
+		
+		return handleResponseKo(Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
 	}
 	
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
@@ -390,11 +389,8 @@ public abstract class BaseController {
 		}
 		
 		String respJson = this.getRespJson(respKo);
-
-		if(transactionId != null)
-			return Response.status(statusCode).entity(respJson).header(this.transactionIdHeaderName, transactionId).build();
-		else 
-			return Response.status(statusCode).entity(respJson).build();
+		
+		return handleResponseKo(Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {

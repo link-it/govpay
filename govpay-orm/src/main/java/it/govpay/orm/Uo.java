@@ -50,6 +50,8 @@ import java.io.Serializable;
  * 			&lt;element name="uoUrlSitoWeb" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="uoEmail" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="uoPec" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="uoTel" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="uoFax" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -78,7 +80,9 @@ import java.io.Serializable;
   	"uoArea",
   	"uoUrlSitoWeb",
   	"uoEmail",
-  	"uoPec"
+  	"uoPec",
+  	"uoTel",
+  	"uoFax"
   }
 )
 
@@ -226,6 +230,22 @@ public class Uo extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.uoPec = uoPec;
   }
 
+  public java.lang.String getUoTel() {
+    return this.uoTel;
+  }
+
+  public void setUoTel(java.lang.String uoTel) {
+    this.uoTel = uoTel;
+  }
+
+  public java.lang.String getUoFax() {
+    return this.uoFax;
+  }
+
+  public void setUoFax(java.lang.String uoFax) {
+    this.uoFax = uoFax;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -303,5 +323,13 @@ public class Uo extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="uoPec",required=false,nillable=false)
   protected java.lang.String uoPec;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="uoTel",required=false,nillable=false)
+  protected java.lang.String uoTel;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="uoFax",required=false,nillable=false)
+  protected java.lang.String uoFax;
 
 }

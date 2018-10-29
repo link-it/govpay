@@ -36,6 +36,8 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.Iuv;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 
 public class IuvUtils {
 
@@ -51,7 +53,7 @@ public class IuvUtils {
 		byte[] infoByte = JaxbUtils.toByte(info);
 		return infoByte;
 	}
-	
+
 	private static byte[] buildQrCode002(String codDominio, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) throws JAXBException, SAXException {
 		// Da "L’Avviso di pagamento analogico nel sistema pagoPA" par. 2.1
 		String qrCode = null; 
@@ -64,20 +66,20 @@ public class IuvUtils {
 	}
 
 	private static final DecimalFormat nFormatter = new DecimalFormat("00.00", new DecimalFormatSymbols(Locale.ENGLISH));
-	
+
 	private static String buildBarCode(String gln, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) {
 		// Da Guida Tecnica di Adesione PA 3.8 pag 25 
 		String payToLoc = "415";
 		String refNo = "8020";
 		String amount = "3902";
 		String importo = nFormatter.format(importoTotale).replace(".", "");
-		
+
 		if(auxDigit == 3)
 			return payToLoc + gln + refNo + "3" + iuv + amount + importo;
 		else 
 			return payToLoc + gln + refNo + "0" + String.format("%02d", applicationCode) + iuv + amount + importo;
 	}
-	
+
 	public static Iuv toIuv(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {
 		Iuv iuvGenerato = new Iuv();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
@@ -90,7 +92,7 @@ public class IuvUtils {
 			iuvGenerato.setNumeroAvviso(iuv.getAuxDigit() + iuv.getIuv());
 		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale).getBytes());
 		try {
-		switch (GovpayConfig.getInstance().getVersioneAvviso()) {
+			switch (GovpayConfig.getInstance().getVersioneAvviso()) {
 			case v001:
 				iuvGenerato.setQrCode(buildQrCode001(dominio.getCodDominio(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
 				break;
@@ -101,13 +103,13 @@ public class IuvUtils {
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
-		
+
 		return iuvGenerato;
 	}
-	
+
 	public static String buildCCP(){
-		 Date today = new Date();
-		 return SimpleDateFormatUtils.newSimpleDateFormatIuvUtils().format(today);
+		Date today = new Date();
+		return SimpleDateFormatUtils.newSimpleDateFormatIuvUtils().format(today);
 	}
 
 	public static boolean checkIuvNumerico(String iuv, int auxDigit, int applicationCode) {
@@ -123,21 +125,21 @@ public class IuvUtils {
 			return false;
 		}
 	}
-	
+
 	public static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio) throws ServiceException {
 		Iuv iuvGenerato = new Iuv();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
 		iuvGenerato.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 		iuvGenerato.setIuv(versamento.getIuvVersamento());
-		
+
 		if(dominio.getAuxDigit() == 0)
 			iuvGenerato.setNumeroAvviso(dominio.getAuxDigit() + String.format("%02d", dominio.getStazione().getApplicationCode()) + versamento.getIuvVersamento());
 		else
 			iuvGenerato.setNumeroAvviso(dominio.getAuxDigit() + versamento.getIuvVersamento());
 		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()).getBytes());
 		try {
-		switch (GovpayConfig.getInstance().getVersioneAvviso()) {
+			switch (GovpayConfig.getInstance().getVersioneAvviso()) {
 			case v001:
 				iuvGenerato.setQrCode(buildQrCode001(dominio.getCodDominio(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()));
 				break;
@@ -148,7 +150,32 @@ public class IuvUtils {
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
-		
+
 		return iuvGenerato;
+	}
+
+	public static String toIuv(String numeroAvviso) throws GovPayException {
+		if(numeroAvviso == null)
+			return null;
+
+		if(numeroAvviso.length() != 18)
+			throw new GovPayException(EsitoOperazione.VER_026, "Numero Avviso [" + numeroAvviso + "] fornito non valido: Consentite 18 cifre trovate ["+numeroAvviso.length()+"].");
+
+		try {
+			Long.parseLong(numeroAvviso);
+		}catch(Exception e) {
+			throw new GovPayException(EsitoOperazione.VER_026, "Numero Avviso [" + numeroAvviso + "] fornito non valido: non e' in formato numerico.");
+		}
+
+		if(numeroAvviso.startsWith("0")) // '0' + applicationCode(2) + ref(13) + check(2)
+			return numeroAvviso.substring(3);
+		else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
+			return numeroAvviso.substring(1);
+		else if(numeroAvviso.startsWith("3")) // '3' + segregationCode(2) +  ref(13) + check(2) 
+			return numeroAvviso.substring(1);
+		else 
+			throw new GovPayException(EsitoOperazione.VER_026, "Numero Avviso [" + numeroAvviso + "] fornito non valido: prima cifra non e' [0|1|2|3]");
 	}
 }

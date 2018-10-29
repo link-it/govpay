@@ -1,6 +1,6 @@
 {
   "/govpay/backend/api/backoffice/rs/v1/*": {
-    "target": "http://10.114.87.30:8080",
+    "target": "http://localhost:8080",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

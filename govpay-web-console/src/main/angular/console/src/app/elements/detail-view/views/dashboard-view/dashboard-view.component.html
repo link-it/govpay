@@ -1,4 +1,16 @@
 <div class="container-fluid p-3">
+  <div class="row align-items-stretch">
+    <div class="col-sm-6 col-12 flex-column">
+      <link-badge-card class="d-block action" badge-title="Pagamenti rifiutati"
+                       [service]="_PFService" [diff-service]="_PFDiffService" [exam-service]="_PFExamService"
+                       [badge-location]="DASHBOARD" (click)="_route(0)"></link-badge-card>
+    </div>
+    <div class="col-sm-6 col-12 flex-column">
+      <link-badge-card class="d-block action" badge-title="Pagamenti sospesi"
+                       [service]="_PICService" [diff-service]="_PICDiffService" [exam-service]="_PICExamService"
+                       [badge-location]="DASHBOARD" (click)="_route(1)"></link-badge-card>
+    </div>
+  </div>
   <div class="row">
     <div class="col-sm-4 col-12 flex-column form-col">
       <mat-card class="mb-3 mat-elevation-card">
@@ -7,20 +19,14 @@
         </mat-card-header>
         <mat-card-content>
           <ul class="regular-16">
-            <li class="accent-text">
-              <a class="pt-1 d-block" href="" target="_blank">Manuale utente</a>
+            <li class="accent-text d-block">
+              <a class="pt-1" [href]="_LinkBasePath+'/public/GovPay-ManualeUtente.pdf'" target="_blank">Manuale utente</a>
             </li>
-            <li class="accent-text">
-              <a class="pt-1 d-block" href="" target="_blank">Copyright</a>
+            <li class="accent-text d-block">
+              <a class="pt-1" [href]="_LinkBasePath+'/public/LICENSE'" target="_blank">Licenza</a>
             </li>
-            <li class="accent-text">
-              <a class="pt-1 d-block" href="" target="_blank">Progetto Govpay</a>
-            </li>
-            <li class="accent-text paragraph">
-              <a class="pt-1 d-block action" (click)="_route(0)">Pagamenti falliti</a>
-            </li>
-            <li class="accent-text">
-              <a class="pt-1 d-block action" (click)="_route(1)">Pagamenti incompleti</a>
+            <li class="accent-text d-block">
+              <a class="pt-1" href="https://github.com/link-it/GovPay" target="_blank">Progetto Govpay</a>
             </li>
           </ul>
         </mat-card-content>

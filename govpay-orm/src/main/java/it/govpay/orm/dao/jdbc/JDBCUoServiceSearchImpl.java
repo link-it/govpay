@@ -182,6 +182,8 @@ public class JDBCUoServiceSearchImpl implements IJDBCServiceSearchWithId<Uo, IdU
 			fields.add(Uo.model().UO_URL_SITO_WEB);
 			fields.add(Uo.model().UO_EMAIL);
 			fields.add(Uo.model().UO_PEC);
+			fields.add(Uo.model().UO_TEL);
+			fields.add(Uo.model().UO_FAX);
 
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));

@@ -27,7 +27,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.AnagraficaManagerNoCache;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
@@ -43,7 +42,7 @@ public class Dominio extends it.govpay.model.Dominio {
 	public Dominio() {
 		super();
 	}
-	
+
 	// Business
 	public Dominio(BasicBD bd, long idDominio, long idStazione) throws ServiceException {
 		super.setId(idDominio);
@@ -51,18 +50,16 @@ public class Dominio extends it.govpay.model.Dominio {
 
 		try {
 			this.anagrafica = AnagraficaManager.getUnitaOperativa(bd, idDominio, EC).getAnagrafica();
+			this.stazione = AnagraficaManager.getStazione(bd, idStazione);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		}
-
-		this.stazione = AnagraficaManager.getStazione(bd, idStazione);
 	}
-	
+
 	// Business
 
 	private transient Anagrafica anagrafica;
 	private transient Stazione stazione;
-	private transient Applicazione applicazioneDefault;
 	private transient List<UnitaOperativa> unitaOperative;
 	private transient List<IbanAccredito> ibanAccredito;
 	private transient List<Tributo> tributi;
@@ -78,20 +75,19 @@ public class Dominio extends it.govpay.model.Dominio {
 	public void setAnagrafica(Anagrafica anagrafica) {
 		this.anagrafica = anagrafica;
 	}
-	
+
 	public Applicazione getApplicazioneDefault(BasicBD bd) throws ServiceException {
-		return this.getApplicazioneDefault(bd, false);
+		return this.getApplicazioneDefault(bd, true);
 	}
 
 	public Applicazione getApplicazioneDefault(BasicBD bd, boolean useCacheData) throws ServiceException {
-		if(this.applicazioneDefault == null && this.getIdApplicazioneDefault() != null) {
-			this.applicazioneDefault = useCacheData ? AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault()) : AnagraficaManagerNoCache.getApplicazione(bd, this.getIdApplicazioneDefault());
+		if(this.getIdApplicazioneDefault() != null) {
+			return AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault());
 		} 
-		return this.applicazioneDefault;
+		return null;
 	}
 
 	public void setApplicazioneDefault(Applicazione applicazioneDefault) {
-		this.applicazioneDefault = applicazioneDefault;
 		this.setIdApplicazioneDefault(applicazioneDefault.getId());
 	}
 
@@ -108,13 +104,13 @@ public class Dominio extends it.govpay.model.Dominio {
 		return this.unitaOperative;
 	}
 
-	
+
 	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco) throws ServiceException, NotFoundException {
 		return this.getUnitaOperativa(bd, codUnivoco, true);
 	}
-	
+
 	public UnitaOperativa getUnitaOperativa(BasicBD bd, String codUnivoco, boolean useCacheData) throws ServiceException, NotFoundException {
-		return useCacheData ? AnagraficaManager.getUnitaOperativa(bd, this.getId(), codUnivoco) : AnagraficaManagerNoCache.getUnitaOperativa(bd, this.getId(), codUnivoco);
+		return AnagraficaManager.getUnitaOperativa(bd, this.getId(), codUnivoco);
 	}
 
 	public List<IbanAccredito> getIbanAccredito(BasicBD bd) throws ServiceException {
@@ -126,13 +122,13 @@ public class Dominio extends it.govpay.model.Dominio {
 		}
 		return this.ibanAccredito;
 	}
-	
+
 	public IbanAccredito getIban(BasicBD bd, String iban) throws ServiceException, NotFoundException {
 		return this.getIban(bd, iban, true);
 	}
 
 	public IbanAccredito getIban(BasicBD bd, String iban, boolean useCacheData) throws ServiceException, NotFoundException {
-		return useCacheData ? AnagraficaManager.getIbanAccredito(bd, this.getId(), iban) : AnagraficaManagerNoCache.getIbanAccredito(bd, this.getId(), iban);
+		return AnagraficaManager.getIbanAccredito(bd, this.getId(), iban);
 	}
 
 	public List<Tributo> getTributi(BasicBD bd) throws ServiceException {
@@ -148,9 +144,9 @@ public class Dominio extends it.govpay.model.Dominio {
 	public Tributo getTributo(BasicBD bd, String codTributo) throws ServiceException, NotFoundException {
 		return this.getTributo(bd, codTributo, true);
 	}
-	
+
 	public Tributo getTributo(BasicBD bd, String codTributo, boolean useCacheData) throws ServiceException, NotFoundException {
-		return useCacheData ? AnagraficaManager.getTributo(bd, this.getId(), codTributo) : AnagraficaManagerNoCache.getTributo(bd, this.getId(), codTributo);
+		return AnagraficaManager.getTributo(bd, this.getId(), codTributo);
 	}
 }
 

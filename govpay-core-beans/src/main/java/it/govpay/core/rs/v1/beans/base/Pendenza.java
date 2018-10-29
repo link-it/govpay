@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "soggettoPagatore",
 "importo",
 "numeroAvviso",
+"iuvAvviso",
 "dataCaricamento",
 "dataValidita",
 "dataScadenza",
@@ -41,6 +42,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "voci",
 "rpp",
 "pagamenti",
+"iuvPagamento",
 })
 public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
@@ -58,6 +60,9 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
+
+  @JsonProperty("iuvAvviso")
+  private String iuvAvviso = null;  
   
   @JsonProperty("dataCaricamento")
   private Date dataCaricamento = null;
@@ -133,6 +138,9 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   
   @JsonProperty("pagamenti")
   private List<Pagamento> pagamenti = new ArrayList<>();
+  
+  @JsonProperty("iuvPagamento")
+  private String iuvPagamento = null;
   
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -212,6 +220,22 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
   }
+  
+  /**
+   * Identificativo univoco versamento, assegnato se pagabile da psp
+   **/
+  public Pendenza iuvAvviso(String iuvAvviso) {
+    this.iuvAvviso = iuvAvviso;
+    return this;
+  }
+
+  @JsonProperty("iuvAvviso")
+  public String getIuvAvviso() {
+    return this.iuvAvviso;
+  }
+  public void setIuvAvviso(String iuvAvviso) {
+    this.iuvAvviso = iuvAvviso;
+  }  
 
   /**
    * Data di emissione della pendenza
@@ -614,6 +638,19 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
   public void setPagamenti(List<Pagamento> pagamenti) {
     this.pagamenti = pagamenti;
   }
+  
+  public Pendenza iuvPagamento(String iuvPagamento) {
+	    this.iuvPagamento = iuvPagamento;
+	    return this;
+	  }
+
+	  @JsonProperty("iuvPagamento")
+	  public String getIuvPagamento() {
+	    return this.iuvPagamento;
+	  }
+	  public void setIuvPagamento(String iuvPagamento) {
+	    this.iuvPagamento = iuvPagamento;
+	  }
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -629,6 +666,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(this.soggettoPagatore, pendenza.soggettoPagatore) &&
         Objects.equals(this.importo, pendenza.importo) &&
         Objects.equals(this.numeroAvviso, pendenza.numeroAvviso) &&
+        Objects.equals(this.iuvAvviso, pendenza.iuvAvviso) &&
         Objects.equals(this.dataCaricamento, pendenza.dataCaricamento) &&
         Objects.equals(this.dataValidita, pendenza.dataValidita) &&
         Objects.equals(this.dataScadenza, pendenza.dataScadenza) &&
@@ -648,17 +686,18 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(this.dataPagamento, pendenza.dataPagamento) &&
         Objects.equals(this.importoPagato, pendenza.importoPagato) &&
         Objects.equals(this.importoIncassato, pendenza.importoIncassato) &&
-        Objects.equals(anomalo, pendenza.anomalo) &&
-        Objects.equals(verificato, pendenza.verificato) &&
-        Objects.equals(note, pendenza.note) &&
+        Objects.equals(this.anomalo, pendenza.anomalo) &&
+        Objects.equals(this.verificato, pendenza.verificato) &&
+        Objects.equals(this.note, pendenza.note) &&
         Objects.equals(this.voci, pendenza.voci) &&
         Objects.equals(this.rpp, pendenza.rpp) &&
-        Objects.equals(this.pagamenti, pendenza.pagamenti);
+        Objects.equals(this.pagamenti, pendenza.pagamenti) &&
+        Objects.equals(this.iuvPagamento, pendenza.iuvPagamento);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, anomalo, verificato, note, voci, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, iuvAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, anomalo, verificato, note, voci, rpp, pagamenti, iuvPagamento);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -680,6 +719,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
     sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
     sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
+    sb.append("    iuvAvviso: ").append(this.toIndentedString(this.iuvAvviso)).append("\n");
     sb.append("    dataCaricamento: ").append(this.toIndentedString(this.dataCaricamento)).append("\n");
     sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
@@ -705,6 +745,7 @@ public class Pendenza extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
     sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
     sb.append("    pagamenti: ").append(this.toIndentedString(this.pagamenti)).append("\n");
+    sb.append("    iuvPagamento: ").append(this.toIndentedString(this.iuvPagamento)).append("\n");
     sb.append("}");
     return sb.toString();
   }

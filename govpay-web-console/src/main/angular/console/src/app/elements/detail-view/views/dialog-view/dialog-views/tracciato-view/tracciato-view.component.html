@@ -1,0 +1,10 @@
+<div class="col-12" [formGroup]="fGroup">
+  <input #iBrowse hidden placeholder="Logo" type="file" formControlName="tracciato_ctrl" hidden>
+  <div class="d-block action link-key-value-fill" (click)="_select()">
+    <p *ngIf="!doc">Seleziona tracciato...</p>
+    <div *ngIf="doc" class="d-flex align-items-center">
+      <p class="w-100 m-0 pr-3">{{doc.filename}}</p>
+      <button mat-icon-button type="button" (click)="_resetSelection($event)"><mat-icon>delete</mat-icon></button>
+    </div>
+  </div>
+</div>

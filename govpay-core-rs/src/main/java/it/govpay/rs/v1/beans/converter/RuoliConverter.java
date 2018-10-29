@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.core.dao.pagamenti.dto.PutRuoloDTO;
+import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.core.rs.v1.beans.base.AclPost;
 import it.govpay.core.rs.v1.beans.base.Ruolo;
 import it.govpay.core.rs.v1.beans.base.RuoloIndex;

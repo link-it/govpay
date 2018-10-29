@@ -75,6 +75,12 @@ public class Anagrafica {
 	public void setFax(String fax) {
 		this.fax = fax;
 	}
+	public String getTipo() {
+		return tipo;
+	}
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
 	protected String codUnivoco;
     protected String ragioneSociale;
     protected String indirizzo;
@@ -87,6 +93,6 @@ public class Anagrafica {
     protected String telefono;
     protected String cellulare;
     protected String fax;
-
+    protected String tipo;
 
 }

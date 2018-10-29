@@ -48,19 +48,19 @@ public class Incasso extends it.govpay.model.Incasso {
 		}
 		return this.pagamenti;
 	}
-	
+
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
 		if(this.applicazione == null) {
 			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
 		} 
 		return this.applicazione;
 	}
-	
+
 	public void setApplicazione(long idApplicazione, BasicBD bd) throws ServiceException {
 		this.applicazione = AnagraficaManager.getApplicazione(bd, idApplicazione);
 		this.setIdApplicazione(this.applicazione.getId());
 	}
-	
+
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(this.dominio == null) {
 			try{

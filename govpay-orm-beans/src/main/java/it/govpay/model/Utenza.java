@@ -9,13 +9,13 @@ public class Utenza extends BasicModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
-	private String principal;
-	private String principalOriginale;
-	private boolean abilitato;
-	private List<Long> idDomini;
-	private List<Long> idTributi;
-	private boolean checkSubject;
+	protected Long id;
+	protected String principal;
+	protected String principalOriginale;
+	protected boolean abilitato;
+	protected List<Long> idDomini;
+	protected List<Long> idTributi;
+	protected boolean checkSubject;
 	
 	public String getPrincipal() {
 		return this.principal;

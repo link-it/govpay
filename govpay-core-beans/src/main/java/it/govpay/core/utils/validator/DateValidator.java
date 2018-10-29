@@ -28,7 +28,7 @@ public class DateValidator {
 	}
 	
 	public DateValidator isNull() throws ValidationException {
-		if(this.fieldValue == null) {
+		if(this.fieldValue != null) {
 			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
 		}
 		return this;

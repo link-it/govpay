@@ -55,7 +55,16 @@ export class DatePickerViewComponent implements IFormComponent, AfterViewInit {
 
   //TIME_PICKER
   protected _overlayTimepicker(_picker, event) {
-    let _dp = !_picker?new Date():_picker;
+    let _dp;
+    if(!_picker) {
+      _dp = new Date();
+      if(this.json.defaultTime && this.json.defaultTime.indexOf(':') != -1) {
+        let _hm = this.json['defaultTime'].split(':');
+        _dp.setHours(_hm[0], _hm[1], 59);
+      }
+    } else {
+      _dp = _picker;
+    }
     event.preventDefault();
     event.stopPropagation();
     let timeDialog = this.dialog.open(TimePickerDialogComponent, {
@@ -65,6 +74,9 @@ export class DatePickerViewComponent implements IFormComponent, AfterViewInit {
     timeDialog.afterClosed().subscribe(orario => {
       if(orario) {
         let _date = this.fGroup.controls[this.json.id+'_ctrl'].value;
+        if(!_date) {
+          _date = new Date();
+        }
         let _md = moment(_date).set('hour', orario.hh).set('minute', orario.mm);
         _date = new Date(_md.year(), _md.month(), _md.date(), _md.hour(), _md.minute());
         this.fGroup.controls[this.json.id+'_ctrl'].setValue(_date);

@@ -169,7 +169,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(VersamentoIncasso.model().IMPORTO_TOTALE);
 			fields.add(VersamentoIncasso.model().STATO_VERSAMENTO);
 			fields.add(VersamentoIncasso.model().DESCRIZIONE_STATO);
-//			fields.add(VersamentoIncasso.model().AGGIORNABILE);
+			fields.add(VersamentoIncasso.model().AGGIORNABILE);
 			fields.add(VersamentoIncasso.model().TASSONOMIA);
 			fields.add(VersamentoIncasso.model().TASSONOMIA_AVVISO);
 			fields.add(VersamentoIncasso.model().DATA_CREAZIONE);
@@ -201,16 +201,18 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(VersamentoIncasso.model().NUMERO_AVVISO);
 			fields.add(VersamentoIncasso.model().AVVISATURA);
 			fields.add(VersamentoIncasso.model().TIPO_PAGAMENTO);
-//			fields.add(VersamentoIncasso.model().DA_AVVISARE);
+			fields.add(VersamentoIncasso.model().DA_AVVISARE);
 			fields.add(VersamentoIncasso.model().COD_AVVISATURA);
 			fields.add(VersamentoIncasso.model().ACK);
 			fields.add(VersamentoIncasso.model().NOTE);
-//			fields.add(VersamentoIncasso.model().ANOMALO);
-			
+			fields.add(VersamentoIncasso.model().ANOMALO);
+			fields.add(VersamentoIncasso.model().IUV_PAGAMENTO);
 			fields.add(VersamentoIncasso.model().DATA_PAGAMENTO);
 			fields.add(VersamentoIncasso.model().IMPORTO_PAGATO);
 			fields.add(VersamentoIncasso.model().IMPORTO_INCASSATO);
 			fields.add(VersamentoIncasso.model().STATO_PAGAMENTO);
+			fields.add(VersamentoIncasso.model().SMART_ORDER_DATE);
+			fields.add(VersamentoIncasso.model().SMART_ORDER_RANK);
 	
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(VersamentoIncasso.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(VersamentoIncasso.model())));

@@ -609,6 +609,33 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'      
+  '/pagamenti/byIdSession/{idSession}':
+    get:
+      summary: Dettaglio di un pagamento
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: idSession
+          description: Identificativo di sessione assegnato al pagamento da pagoPA
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio del pagamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pagamento'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'              
   '/pendenze':
     get:
       tags:
@@ -2346,7 +2373,7 @@ components:
       properties:
         nome:
           type: string
-          description: Nome dell'utenza
+          description: Nome o principal dell'utenza
         domini:
           type: array
           description: domini su cui e' abilitato ad operare
@@ -2361,6 +2388,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/aclPost'
+        anagrafica:
+          $ref: '#/components/schemas/soggetto'
+        identityData:
+          type: object
     tipoContabilita:
       description: Tipologia di codifica del capitolo di bilancio
       type: string

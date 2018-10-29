@@ -37,11 +37,11 @@ public class Fr extends it.govpay.model.Fr {
 	// Business
 	private transient Dominio dominio;
 	private transient List<Rendicontazione> rendicontazioni;
-	
+
 	private transient long numOk;
 	private transient long numAnomale;
 	private transient long numAltroIntermediario;
-	
+
 	public long getNumOk() {
 		return this.numOk;
 	}
@@ -79,12 +79,12 @@ public class Fr extends it.govpay.model.Fr {
 		}
 		return this.rendicontazioni;
 	}
-	
+
 	public void addRendicontazione(Rendicontazione rendicontazione) {
 		if(this.rendicontazioni == null) {
 			this.rendicontazioni = new ArrayList<>();
 		}
 		this.rendicontazioni.add(rendicontazione);
 	}
-	
+
 }

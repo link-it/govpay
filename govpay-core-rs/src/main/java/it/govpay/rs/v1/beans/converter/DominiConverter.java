@@ -91,6 +91,7 @@ public class DominiConverter {
 		anagrafica.setCivico(uoPost.getCivico());
 		anagrafica.setCodUnivoco(idUo);
 		anagrafica.setEmail(uoPost.getEmail());
+		anagrafica.setPec(uoPost.getPec());
 		anagrafica.setFax(uoPost.getFax());
 		anagrafica.setIndirizzo(uoPost.getIndirizzo());
 		anagrafica.setLocalita(uoPost.getLocalita());
@@ -99,6 +100,7 @@ public class DominiConverter {
 		anagrafica.setRagioneSociale(uoPost.getRagioneSociale());
 		anagrafica.setTelefono(uoPost.getTel());
 		anagrafica.setUrlSitoWeb(uoPost.getWeb());
+		anagrafica.setArea(uoPost.getArea());
 		
 		uo.setAnagrafica(anagrafica);
 		uo.setCodUo(idUo);
@@ -128,6 +130,8 @@ public class DominiConverter {
 		anagrafica.setRagioneSociale(dominioPost.getRagioneSociale());
 		anagrafica.setTelefono(dominioPost.getTel());
 		anagrafica.setUrlSitoWeb(dominioPost.getWeb());
+		anagrafica.setPec(dominioPost.getPec());
+		anagrafica.setArea(dominioPost.getArea()); 
 		
 		dominio.setAnagrafica(anagrafica );
 		if(dominioPost.getAuxDigit() != null)
@@ -148,11 +152,13 @@ public class DominiConverter {
 		dominio.setRagioneSociale(dominioPost.getRagioneSociale());
 		if(dominioPost.getSegregationCode() != null)
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
-		
+
+		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
 		
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
 		dominioDTO.setCodStazione(dominioPost.getStazione());
+		
 		return dominioDTO;		
 	}
 	
@@ -170,8 +176,10 @@ public class DominiConverter {
 		rsModel.setProvincia(dominio.getAnagrafica().getProvincia());
 		rsModel.setNazione(dominio.getAnagrafica().getNazione());
 		rsModel.setEmail(dominio.getAnagrafica().getEmail());
+		rsModel.setPec(dominio.getAnagrafica().getPec()); 
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
+		rsModel.setArea(dominio.getAnagrafica().getArea());
 		rsModel.setGln(dominio.getGln());
 		rsModel.setCbill(dominio.getCbill());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
@@ -187,6 +195,7 @@ public class DominiConverter {
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
 		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
 		rsModel.setAbilitato(dominio.isAbilitato());
+		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
 		
 		return rsModel;
 	}
@@ -203,8 +212,10 @@ public class DominiConverter {
 		rsModel.setProvincia(dominio.getAnagrafica().getProvincia());
 		rsModel.setNazione(dominio.getAnagrafica().getNazione());
 		rsModel.setEmail(dominio.getAnagrafica().getEmail());
+		rsModel.setPec(dominio.getAnagrafica().getPec()); 
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
+		rsModel.setArea(dominio.getAnagrafica().getArea());
 		rsModel.setGln(dominio.getGln());
 		rsModel.setCbill(dominio.getCbill());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
@@ -244,6 +255,7 @@ public class DominiConverter {
 			rsModel.setEntrate(entrate);
 		}
 		rsModel.setAbilitato(dominio.isAbilitato());
+		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
 		
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));  
@@ -273,6 +285,15 @@ public class DominiConverter {
 		rsModel.setIndirizzo(uo.getAnagrafica().getIndirizzo());
 		rsModel.setLocalita(uo.getAnagrafica().getLocalita());
 		rsModel.setRagioneSociale(uo.getAnagrafica().getRagioneSociale());
+		rsModel.setWeb(uo.getAnagrafica().getUrlSitoWeb());
+		rsModel.setProvincia(uo.getAnagrafica().getProvincia());
+		rsModel.setNazione(uo.getAnagrafica().getNazione());
+		rsModel.setEmail(uo.getAnagrafica().getEmail());
+		rsModel.setPec(uo.getAnagrafica().getPec());
+		rsModel.setTel(uo.getAnagrafica().getTelefono());
+		rsModel.setFax(uo.getAnagrafica().getFax());
+		rsModel.setArea(uo.getAnagrafica().getArea());
+		rsModel.setAbilitato(uo.isAbilitato());
 		
 		return rsModel;
 	}

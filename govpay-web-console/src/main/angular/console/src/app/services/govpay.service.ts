@@ -88,17 +88,20 @@ export class GovpayService {
    * @param {any} body: body object
    * @param {string} query: query string
    * @param {string} method: POST/PUT
+   * @param {boolean} autoHeaders: true|false
    * @returns {Observable<any>}
    */
-  saveData(service: string, body: any, query?: string, method?: string): Observable<any> {
+  saveData(service: string, body: any, query?: string, method?: string, autoHeaders: boolean = false): Observable<any> {
     method = (method || UtilService.METHODS.PUT);
     let url = UtilService.ROOT_SERVICE + service;
     let headers = new HttpHeaders();
-    if(UtilService.NEED_BASIC_AUTHORIZATION) {
+    if (UtilService.NEED_BASIC_AUTHORIZATION) {
       headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
     }
-    headers = headers.set('Content-Type', 'application/json');
-    headers = headers.set('Accept', '*/*');
+    if(!autoHeaders) {
+      headers = headers.set('Content-Type', 'application/json');
+      headers = headers.set('Accept', '*/*');
+    }
     let _params = null;
     if(query) {
       _params = new HttpParams();
@@ -164,6 +167,28 @@ export class GovpayService {
       return method.timeout(UtilService.TIMEOUT);
     });
     return forkJoin(methods)
+      .map((response) => {
+        return response;
+      })
+      .pipe(catchError(this.handleExportError.bind(this)));
+  }
+
+
+  /**
+   * FORK DATA SERVICES
+   */
+  forkService(methods: any[]): Observable<any> {
+    let headers = new HttpHeaders();
+    if(UtilService.NEED_BASIC_AUTHORIZATION) {
+      headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
+    }
+    headers = headers.set('Content-Type', 'application/json');
+    let fullMethods: any[] = [];
+    methods.forEach((_method) => {
+      fullMethods.push(this.http.get(UtilService.ROOT_SERVICE + _method, { headers: headers, observe: 'response' }));
+    });
+
+    return forkJoin(fullMethods)
       .map((response) => {
         return response;
       })

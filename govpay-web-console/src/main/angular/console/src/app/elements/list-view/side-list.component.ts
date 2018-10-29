@@ -73,7 +73,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
    * @param {boolean} concat
    */
   getList(service?: string, query?: string, concat?: boolean) {
-    service = (service || this.rsc.path);
+    service = (service || this.rsc.fullPath); //TODO: HighPriority - Verificare .path vs .fullPath
     concat = (concat || false);
     if(!this._isLoading) {
       this._isLoading = true;
@@ -109,7 +109,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   private blueDialogBehaviorDataMapper(): ModalBehavior {
     let _mb = new ModalBehavior();
     let _component;
-    switch(this.rsc.path) {
+    switch(this.rsc.fullPath) { //TODO: HighPriority - Verificare .path vs .fullPath
       case UtilService.URL_REGISTRO_INTERMEDIARI:
         _mb.info = {
           dialogTitle: 'Nuovo intermediario',
@@ -158,6 +158,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           templateName: UtilService.INCASSO
         };
         _component = this.ls.componentRefByName(UtilService.INCASSI);
+        break;
+      case UtilService.URL_TRACCIATI:
+        _mb.info = {
+          dialogTitle: 'Nuovo tracciato',
+          templateName: UtilService.TRACCIATO
+        };
+        _component = this.ls.componentRefByName(UtilService.TRACCIATI);
         break;
       default:
         return null;
@@ -278,12 +285,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
 
   protected showFabAction(): boolean {
     let _fabAction: boolean = false;
-    switch(this.rsc.path) {
+    switch(this.rsc.fullPath) { //TODO: HighPriority - Verificare .path vs .fullPath
       case UtilService.URL_REGISTRO_INTERMEDIARI:
       case UtilService.URL_APPLICAZIONI:
       case UtilService.URL_OPERATORI:
       case UtilService.URL_DOMINI:
       case UtilService.URL_RUOLI:
+      case UtilService.URL_TRACCIATI:
         _fabAction = true;
         break;
       default:
@@ -298,6 +306,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       switch (_mb.info.templateName) {
         case UtilService.ENTRATA:
         case UtilService.INCASSO:
+        case UtilService.TRACCIATO:
           UtilService.dialogBehavior.next(_mb);
           break;
         default:
@@ -323,7 +332,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
     let _st, _date;
-    switch(this.rsc.path) {
+    switch(this.rsc.fullPath) { //TODO: HighPriority - Verificare .path vs .fullPath
       case UtilService.URL_PENDENZE:
         _std.titolo = new Dato({ label: '',  value: item.causale });
         _std.sottotitolo = new Dato({ label: '',  value: Dato.concatStrings([ Voce.ENTE_CREDITORE+': '+item.dominio.ragioneSociale, Voce.IUV+': '+item.numeroAvviso ], ', ') });
@@ -331,7 +340,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.stato = UtilService.STATI_PENDENZE[item.stato];
         break;
       case UtilService.URL_PAGAMENTI:
-        _date = UtilService.defaultDisplay({ value: moment(item.dataRichiestaPagamento).format('DD/MM/YYYY') });
+        _date = item.dataRichiestaPagamento?moment(item.dataRichiestaPagamento).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
         _st = new Dato({ label: Voce.DATA_RICHIESTA_PAGAMENTO+': ', value: _date });
         _std.titolo = new Dato({ value: item.nome });
         _std.sottotitolo = _st;
@@ -357,7 +366,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.importo = this.us.currencyFormat(item.importo);
         break;
       case UtilService.URL_GIORNALE_EVENTI:
-        let _dataOraRichiesta = UtilService.defaultDisplay({ value: moment(item.dataOraRichiesta).format('DD/MM/YYYY [ore] HH:mm') });
+        let _dataOraRichiesta = item.dataOraRichiesta?moment(item.dataOraRichiesta).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
         _st = Dato.arraysToDato(
           [ Voce.ID_DOMINIO, Voce.IUV, Voce.CCP, Voce.DATA ],
           [ item.idDominio, item.iuv, item.ccp, _dataOraRichiesta ],
@@ -378,8 +387,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.importo = this.us.currencyFormat(item.importo);
         break;
       case UtilService.URL_RENDICONTAZIONI:
+        let _tmpDR = item.dataRegolamento?moment(item.dataRegolamento).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
         let tmpValue = [];
-        tmpValue.push(UtilService.defaultDisplay({ value: moment(item.dataRegolamento).format('DD/MM/YYYY') }));
+        tmpValue.push(_tmpDR);
         tmpValue.push(item.ragioneSocialeDominio?item.ragioneSocialeDominio:item.idDominio);
         tmpValue.push(item.ragioneSocialePsp?item.ragioneSocialePsp:item.idPsp);
         _st = Dato.arraysToDato(
@@ -417,11 +427,17 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.sottotitolo = _st;
         break;
       case UtilService.URL_RPPS:
-        _date = UtilService.defaultDisplay({ value: moment(item.rpt.dataOraMessaggioRichiesta).format('DD/MM/YYYY') });
+        _date = item.rpt.dataOraMessaggioRichiesta?moment(item.rpt.dataOraMessaggioRichiesta).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
         let _subtitle = Dato.concatStrings([ Voce.DATA+': '+_date, Voce.CCP+': '+item.rpt.datiVersamento.codiceContestoPagamento ], ', ');
         _std.titolo = new Dato({ label: '', value: (item.rt && item.rt.istitutoAttestante)?item.rt.istitutoAttestante.denominazioneAttestante:Voce.NO_PSP });
         _std.sottotitolo = new Dato({ label: '', value: _subtitle });
         _std.stato = this._mapStato(item).stato;
+        break;
+      case UtilService.URL_TRACCIATI:
+        let _tmpDC = item.dataOraCaricamento?moment(item.dataOraCaricamento).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
+        _std.titolo = new Dato({ label: '',  value: item.nomeFile });
+        _std.sottotitolo = new Dato({ label: Voce.DATA_CARICAMENTO+': ',  value: _tmpDC });
+        _std.stato = UtilService.STATI_TRACCIATO[item.stato];
         break;
     }
     return _std;

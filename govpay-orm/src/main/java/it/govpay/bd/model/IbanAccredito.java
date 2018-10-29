@@ -31,17 +31,17 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 
 public class IbanAccredito extends it.govpay.model.IbanAccredito {
 	private static final long serialVersionUID = 1L;
-	
+
 	// Business
-	
+
 	private transient Dominio dominio;
-	
+
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(this.dominio == null) {
 			this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
 		} 
 		return this.dominio;
 	}
-	
+
 }
 

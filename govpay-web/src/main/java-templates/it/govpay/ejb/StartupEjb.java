@@ -67,12 +67,14 @@ public class StartupEjb {
 			log = LoggerWrapperFactory.getLogger("boot");	
 			StartupUtils.startupServices(log, warName, govpayVersion, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
 			
-			Map<String, String> map = new HashMap<String, String>();
-			map.put(GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
-			map.put(GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
-			
-			for(String k : map.keySet()) {
-				StartupUtils.initValidator(log, warName, govpayVersion, commit, ctx, k, StartupEjb.class.getResourceAsStream(map.get(k)));				
+			if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
+				Map<String, String> map = new HashMap<String, String>();
+				map.put(GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
+				map.put(GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
+				
+				for(String k : map.keySet()) {
+					StartupUtils.initValidator(log, warName, govpayVersion, commit, ctx, k, StartupEjb.class.getResourceAsStream(map.get(k)));				
+				}
 			}
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);

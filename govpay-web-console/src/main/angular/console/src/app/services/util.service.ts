@@ -6,11 +6,14 @@ import { ModalBehavior } from '../classes/modal-behavior';
 import { FormService } from './form.service';
 import { Subscription } from 'rxjs/Subscription';
 
+import * as moment from 'moment';
 
 @Injectable()
 export class UtilService {
 
-  public static NEED_BASIC_AUTHORIZATION: boolean = true;
+  public static NEED_BASIC_AUTHORIZATION: boolean = false;
+
+  public static ROOT_ZIP_FOLDER: string = '-root-'; //Save to zip root folder
 
   public static ROOT_SERVICE: string = UtilService.HTTP_ROOT_SERVICE();
   public static LOGOUT_SERVICE: string = UtilService.HTTP_LOGOUT_SERVICE();
@@ -118,6 +121,21 @@ export class UtilService {
     9: 'Pagamento eseguito in assenza di RPT'
   };
 
+  //STATI TRACCIATO
+  public static STATI_TRACCIATO: any = {
+    IN_ATTESA: 'In attesa',
+    IN_ELABORAZIONE: 'In elaborazione',
+    ESEGUITO: 'Eseguito',
+    ESEGUITO_CON_ERRORI: 'Eseguito con errori',
+    SCARTATO: 'Scartato'
+  };
+
+  //TIPOLOGIE OPERAZIONI TRACCIATO
+  public static TIPO_OPERAZIONI_TRACCIATO: any = {
+    ADD: { LABEL: 'Inserimento', KEY: 'ADD' },
+    DEL: { LABEL: 'Annullamento', KEY: 'DEL' }
+  };
+
   //TIPOLOGIE VERSAMENTO
   public static TIPI_VERSAMENTO: any = {
     PO: 'Pagamento da PSP',
@@ -187,6 +205,15 @@ export class UtilService {
     'false': 'Non verificato'
   };
 
+  public static COOKIE_RIFIUTATI: string = 'GovPay_Dashboard_Rifiutati';
+  public static COOKIE_SOSPESI: string = 'GovPay_Dashboard_Sospesi';
+  public static COOKIE_SESSION: string = null;
+  public static BACK_IN_TIME_DATE: string = '';
+
+  public static GET_BADGE_TIMER(): number {
+    return window['badgeTimer']();
+  }
+
   //ROOT URL SERVIZI
   public static URL_DETTAGLIO: string = '/dettaglio';
   public static URL_PROFILO: string = '/profilo';
@@ -212,6 +239,8 @@ export class UtilService {
   public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
   public static URL_RECUPERO_RPT_PENDENTI: string = '/recuperoRptPendenti';
 
+  public static URL_TRACCIATI: string = '/pendenze/tracciati';
+
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
   public static URL_TIPI_VERSIONE_API: string = '/enumerazioni/versioneConnettore';
@@ -232,6 +261,8 @@ export class UtilService {
   public static TXT_RISCOSSIONI: string = 'Riscossioni';
   public static TXT_RENDICONTAZIONI: string = 'Rendicontazioni';
   public static TXT_INCASSI: string = 'Riconciliazioni';
+
+  public static TXT_TRACCIATI: string = 'Caricamento pendenze';
 
   public static TXT_MAN_NOTIFICHE: string = 'Spedisci notifiche';
   public static TXT_MAN_RENDICONTAZIONI: string = 'Acquisisci rendicontazioni';
@@ -258,6 +289,12 @@ export class UtilService {
   public static INCASSI: string = 'incassi';
   public static UNITA_OPERATIVE: string = 'unitaOperative';
   public static IBAN_ACCREDITI: string = 'ibanAccredito';
+
+  public static TRACCIATI: string = 'tracciati';
+  public static TRACCIATO: string = 'tracciato';
+  public static OPERAZIONI_TRACCIATO: string = 'operazioni';
+  public static VERIFICATO: string = 'verificato';
+
   //Item view ref
   public static STANDARD: string = '';
   public static STANDARD_COLLAPSE: string = 'standard_collapse';
@@ -270,6 +307,7 @@ export class UtilService {
   public static STAZIONE: string = 'stazione';
   public static APPLICAZIONE: string = 'applicazione';
   public static ACL: string = 'autorizzazione';
+  public static NOTA: string = 'nota';
   public static RUOLO: string = 'ruolo';
   public static DOMINIO: string = 'dominio';
   public static OPERATORE: string = 'operatore';
@@ -312,6 +350,8 @@ export class UtilService {
   public static EXPORT_RISCOSSIONI: string = 'esporta_riscossioni';
   public static EXPORT_INCASSI: string = 'esporta_incassi';
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
+  public static EXPORT_TRACCIATO: string = 'esporta_tracciato';
+  public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
 
   /**
    * Dashboard link params
@@ -333,6 +373,15 @@ export class UtilService {
 
   public static HTTP_BASE_HREF(): string {
     return window['httpBase']();
+  }
+
+  //Link (Manuale, Copyright, GovPay)
+  public static LINK_BASE_PATH(): string {
+    return window['httpBasePath']();
+  }
+
+  public static BACK_IN_TIME(): string {
+    return window['backInTime']();
   }
 
   /**
@@ -522,6 +571,38 @@ export class UtilService {
   }
 
   /**
+   * Lettura cookie
+   * @constructor
+   */
+  static ReadCookie(name: string): string {
+    let _name = name + '=';
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(_name) == 0) {
+        return c.substring(_name.length, c.length);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Scrittura cookie
+   * @constructor
+   */
+  static SaveCookie(name: string) {
+    let d = new Date();
+    let value = moment().format('YYYY-MM-DDTHH:mm:ss');
+    d.setTime(d.getTime() + (365*24*60*60*1000));
+    let expirationDate = "expires="+ d.toUTCString();
+    document.cookie = name + '=' + value + ';' + expirationDate + ';path=/';
+  }
+
+  /**
    * Search fields list by service
    * @param {string} service
    * @returns {any[]}
@@ -533,8 +614,10 @@ export class UtilService {
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
-          new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE, type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
-          new FormInput({ id: 'stato', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza() }),
+          new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
+                        type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
+          new FormInput({ id: 'stato', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+                      values: this.statiPendenza() }),
           new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT })
           // new FormInput({ id: 'stato2', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza(),
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })
@@ -542,12 +625,13 @@ export class UtilService {
         break;
       case UtilService.PAGAMENTI:
         _list = [
-          new FormInput({ id: 'versante', label: FormService.FORM_VERSANTE, placeholder: FormService.FORM_PH_VERSANTE, type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
+          new FormInput({ id: 'versante', label: FormService.FORM_VERSANTE, placeholder: FormService.FORM_PH_VERSANTE, type: UtilService.INPUT,
+                     pattern: FormService.VAL_CODICE_FISCALE }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPagamento() }),
           new FormInput({ id: 'idSessionePortale', label: FormService.FORM_SESSIONE, placeholder: FormService.FORM_PH_SESSIONE, type: UtilService.INPUT }),
-          new FormInput({ id: 'dataRichiestaPagamentoInizio', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),
-          new FormInput({ id: 'dataRichiestaPagamentoFine', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER }),
-          new FormInput({ id: 'verificato', label: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiVerifica() })
+          new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),
+          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
+          new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, type: UtilService.SELECT, values: this.statiVerifica() })
         ];
         break;
       case UtilService.REGISTRO_INTERMEDIARI:
@@ -580,7 +664,7 @@ export class UtilService {
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
-          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER })
+          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
         ];
       break;
       case UtilService.GIORNALE_EVENTI:
@@ -598,8 +682,13 @@ export class UtilService {
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiRiscossione() }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
-          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER }),
+          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
           new FormInput({ id: 'tipo', label: FormService.FORM_TIPO_RISCOSSIONE, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.elencoTipiRiscossione() })
+        ];
+      break;
+      case UtilService.TRACCIATI:
+        _list = [
+          new FormInput({ id: 'statoTracciatoPendenza', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiTracciatoPendenza() })
         ];
       break;
     }
@@ -628,6 +717,12 @@ export class UtilService {
   statiAbilitazione(): any[] {
     return Object.keys(UtilService.ABILITAZIONI).map((key) => {
       return { label: UtilService.ABILITAZIONI[key], value: key == 'true' };
+    });
+  }
+
+  statiTracciatoPendenza(): any[] {
+    return Object.keys(UtilService.STATI_TRACCIATO).map((key) => {
+      return { label: UtilService.STATI_TRACCIATO[key], value: key };
     });
   }
 

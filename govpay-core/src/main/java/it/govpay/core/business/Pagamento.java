@@ -152,7 +152,7 @@ public class Pagamento extends BasicBD {
 		Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(dto.getVersante());
 		boolean aggiornaSeEsiste = dto.getAggiornaSeEsisteB() != null ? dto.getAggiornaSeEsisteB() : true;
 		it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(this);
-		List<Rpt> rpts = rptBD.avviaTransazione(versamenti, dto.getApplicazione(), dto.getCanale(), dto.getIbanAddebito(), versanteModel, dto.getAutenticazione(), dto.getUrlRitorno(), aggiornaSeEsiste);
+		List<Rpt> rpts = rptBD.avviaTransazione(versamenti, dto.getUtente(), dto.getCanale(), dto.getIbanAddebito(), versanteModel, dto.getAutenticazione(), dto.getUrlRitorno(), aggiornaSeEsiste);
 
 		AvviaTransazioneDTOResponse response = new AvviaTransazioneDTOResponse();
 

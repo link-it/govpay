@@ -131,7 +131,7 @@ DROP TABLE ruoli;
 
 CREATE TABLE utenze
 (
-	principal VARCHAR(255) NOT NULL,
+	principal VARCHAR(756) NOT NULL,
         abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
@@ -233,10 +233,10 @@ ALTER TABLE versamenti ADD COLUMN numero_avviso VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN avvisatura VARCHAR(1);
 ALTER TABLE versamenti ADD COLUMN tipo_pagamento INT;
 
-ALTER TABLE utenze MODIFY COLUMN principal VARCHAR(4000);
-ALTER TABLE utenze ADD COLUMN principal_originale VARCHAR(4000);
+ALTER TABLE utenze MODIFY COLUMN principal VARCHAR(756);
+ALTER TABLE utenze ADD COLUMN principal_originale VARCHAR(756);
 update utenze set principal_originale = principal;
-ALTER TABLE utenze MODIFY COLUMN principal_originale VARCHAR(4000) NOT NULL;
+ALTER TABLE utenze MODIFY COLUMN principal_originale VARCHAR(756) NOT NULL;
 
 -- patch dati pagamenti_portale malformati non gestiti dal cruscotto
 
@@ -337,8 +337,10 @@ alter table singoli_versamenti add column indice_dati INT;
 update singoli_versamenti sv set indice_dati = (select sb1.indice_dati from (select sv1.id as id , sv1.id_versamento as id_versamento, row_number() over (partition by sv1.id_versamento) as indice_dati from singoli_versamenti sv1) as sb1 where sb1.id = sv.id);
 alter table singoli_versamenti MODIFY column indice_dati NOT NULL;
 
-alter table singoli_versamenti drop constraint unique_singoli_versamenti_1;
+alter table singoli_versamenti drop index unique_singoli_versamenti_1;
 alter table singoli_versamenti add CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati);
+alter table singoli_versamenti drop index index_singoli_versamenti_1;
+alter table singoli_versamenti add index index_singoli_versamenti_1 (id_versamento,cod_singolo_versamento_ente,indice_dati);
 
 alter table rendicontazioni add column id_singolo_versamento BIGINT;
 alter table rendicontazioni add CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id);
@@ -352,7 +354,7 @@ versamenti.id as id,
 MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,          
 MAX(versamenti.nome) as nome,                         
 MAX(versamenti.importo_totale) as importo_totale,               
-MAX(versamenti.stato_versamento) as stato_versamento,             
+versamenti.stato_versamento as stato_versamento,             
 MAX(versamenti.descrizione_stato) as descrizione_stato,           
 MAX(CASE WHEN versamenti.aggiornabile = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
 MAX(versamenti.data_creazione) as data_creazione,               
@@ -361,7 +363,7 @@ MAX(versamenti.data_scadenza) as data_scadenza,
 MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
 MAX(versamenti.causale_versamento) as causale_versamento,           
 MAX(versamenti.debitore_tipo) as debitore_tipo,                
-MAX(versamenti.debitore_identificativo) as debitore_identificativo,      
+versamenti.debitore_identificativo as debitore_identificativo,      
 MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,          
 MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,           
 MAX(versamenti.debitore_civico) as debitore_civico,              
@@ -398,6 +400,18 @@ MAX(CASE WHEN versamenti.anomalo = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS anomalo
 MAX(pagamenti.data_pagamento) as data_pagamento,            
 SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) AS importo_pagato,
 SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
-MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento
+MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento,
+MAX(pagamenti.iuv) AS iuv_pagamento,
+MAX(CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
+MIN(ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
 FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
-GROUP BY versamenti.id;
+WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0
+GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
+
+-- FIX bug che non valorizzava il tipo debitore
+update versamenti set debitore_tipo = 'F';
+
+alter table domini add column aut_stampa_poste VARCHAR(255);
+
+ALTER TABLE uo ADD COLUMN uo_tel VARCHAR(255);
+ALTER TABLE uo ADD COLUMN uo_fax VARCHAR(255);

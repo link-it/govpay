@@ -39,6 +39,7 @@ import org.openspcoop2.utils.UtilsException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
 import it.govpay.model.Connettore;
@@ -346,7 +347,7 @@ public class ApplicazioniBD extends BasicBD {
 			}
 
 			Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO, connettoreNotifica, connettoreVerifica);
-			applicazione.setUtenza(new UtenzeBD(this).getUtenza(applicazioneVO.getIdUtenza().getId()));
+			applicazione.setUtenza(new UtenzaApplicazione(new UtenzeBD(this).getUtenza(applicazioneVO.getIdUtenza().getId()), applicazione.getCodApplicazione()));
 			return applicazione;
 		} catch (ExpressionNotImplementedException | MultipleResultException | NotFoundException e) {
 			throw new ServiceException(e);

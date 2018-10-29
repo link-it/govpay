@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "anagrafica", propOrder = {
+	"tipo",
     "codUnivoco",
     "ragioneSociale",
     "indirizzo",
@@ -54,6 +55,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Anagrafica {
 
+	private String tipo;
     @XmlElement(required = true)
     protected String codUnivoco;
     @XmlElement(required = true)
@@ -356,5 +358,13 @@ public class Anagrafica {
     public void setFax(String value) {
         this.fax = value;
     }
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
 
 }

@@ -104,6 +104,52 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
     
+    public Response pagamentiIdSessionGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idSessione) {
+    	String methodName = "getPagamentoPortaleById";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
+			leggiPagamentoPortaleDTO.setIdSessionePsp(idSessione);
+			leggiPagamentoPortaleDTO.setRisolviLink(true); 
+			
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
+			
+			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
+			
+			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
+			it.govpay.core.rs.v1.beans.pagamenti.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
+			
+			List<RppIndex> rpp = new ArrayList<>();
+			for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
+				rpp.add(RptConverter.toRsModelIndex(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione()));
+			}
+			response.setRpp(rpp);
+
+			List<PendenzaIndex> pendenze = new ArrayList<>();
+			for(LeggiPendenzaDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
+				pendenze.add(PendenzeConverter.toRsModelIndex(leggiRptDtoResponse.getVersamento()));
+			}
+			response.setPendenze(pendenze);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+    }
+    
     public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
@@ -118,7 +164,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(user);
-			leggiPagamentoPortaleDTO.setIdSessione(id);
+			leggiPagamentoPortaleDTO.setId(id);
 			leggiPagamentoPortaleDTO.setRisolviLink(true); 
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
@@ -150,7 +196,7 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 		}
     }
 
-    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale) {
+    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, String idSessionePsp) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -169,12 +215,14 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
 			listaPagamentiPortaleDTO.setStato(stato);
-			
+			listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
+			listaPagamentiPortaleDTO.setIdSessionePsp(idSessionePsp);
 			if(versante != null)
 				listaPagamentiPortaleDTO.setVersante(versante);
 
 			if(ordinamento != null)
 				listaPagamentiPortaleDTO.setOrderBy(ordinamento);
+			
 			// INIT DAO
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
