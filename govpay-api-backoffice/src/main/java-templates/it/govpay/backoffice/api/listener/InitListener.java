@@ -22,8 +22,8 @@ public class InitListener implements ServletContextListener{
 	private static Logger log = null;
 	private static boolean initialized = false;
 	private String warName = "GovPay-API-Backoffice";
-	private String govpayVersion = "${project.version}";
-	private String buildVersion = "${git.commit.id}";
+	public static final String GOVPAY_VERSION = "${project.version}";
+	public static final String GOVPAY_BUILD_NUMBER = "${git.commit.id}";
 	private String tipoServizioGovpay = GpContext.TIPO_SERVIZIO_GOVPAY_JSON;
 	private String dominioAnagraficaManager = "it.govpay.cache.anagrafica.backoffice";
 
@@ -34,22 +34,23 @@ public class InitListener implements ServletContextListener{
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		// Commit id
-		String commit = (buildVersion.length() > 7) ? buildVersion.substring(0, 7) : buildVersion;
-		
+		String commit = (GOVPAY_BUILD_NUMBER.length() > 7) ? GOVPAY_BUILD_NUMBER.substring(0, 7) : GOVPAY_BUILD_NUMBER;
+
 		InputStream govpayPropertiesIS = InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE);
 		URL log4j2URL = InitListener.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
 		InputStream msgDiagnosticiIS = InitListener.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
-		GpContext ctx = StartupUtils.startup(log, warName, govpayVersion, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
+		GpContext ctx = StartupUtils.startup(log, warName, GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
 		try {
 			log = LoggerWrapperFactory.getLogger("boot");	
-			StartupUtils.startupServices(log, warName, govpayVersion, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
-			
-			Map<String, String> map = new HashMap<String, String>();
-			map.put(GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
-			map.put(GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
-			
-			for(String k : map.keySet()) {
-				StartupUtils.initValidator(log, warName, govpayVersion, commit, ctx, k, InitListener.class.getResourceAsStream(map.get(k)));				
+			StartupUtils.startupServices(log, warName, GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
+			if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) { 
+				Map<String, String> map = new HashMap<String, String>();
+				map.put(GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
+				map.put(GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
+
+				for(String k : map.keySet()) {
+					StartupUtils.initValidator(log, warName, GOVPAY_VERSION, commit, ctx, k, InitListener.class.getResourceAsStream(map.get(k)));				
+				}
 			}
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);
@@ -58,12 +59,12 @@ public class InitListener implements ServletContextListener{
 		} catch (Exception e) {
 			log.error("Inizializzazione fallita", e);
 			ctx.log();
-			throw new RuntimeException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" fallita.", e);
+			throw new RuntimeException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, GOVPAY_VERSION, commit)+" fallita.", e);
 		} 
 
 		ctx.log();
 
-		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" completata con successo."); 
+		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, GOVPAY_VERSION, commit)+" completata con successo."); 
 		initialized = true;
 	}
 
@@ -71,24 +72,24 @@ public class InitListener implements ServletContextListener{
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 		// Commit id
-		String commit = (buildVersion.length() > 7) ? buildVersion.substring(0, 7) : buildVersion;
+		String commit = (GOVPAY_BUILD_NUMBER.length() > 7) ? GOVPAY_BUILD_NUMBER.substring(0, 7) : GOVPAY_BUILD_NUMBER;
 		MDC.put("cmd", "Shutdown");
 		MDC.put("op", UUID.randomUUID().toString() );
-		
-		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" in corso...");
-		
-//		log.info("De-registrazione delle cache ...");
-//		AnagraficaManager.unregister();
-//		log.info("De-registrazione delle cache completato");
-//		
-//		log.info("Shutdown del Connection Manager ...");
-//		try {
-//			ConnectionManager.shutdown();
-//			log.info("Shutdown del Connection Manager completato.");
-//		} catch (Exception e) {
-//			log.warn("Errore nello shutdown del Connection Manager: " + e);
-//		}
-		
-		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, govpayVersion, commit)+" completato.");
+
+		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, GOVPAY_VERSION, commit)+" in corso...");
+
+		//		log.info("De-registrazione delle cache ...");
+		//		AnagraficaManager.unregister();
+		//		log.info("De-registrazione delle cache completato");
+		//		
+		//		log.info("Shutdown del Connection Manager ...");
+		//		try {
+		//			ConnectionManager.shutdown();
+		//			log.info("Shutdown del Connection Manager completato.");
+		//		} catch (Exception e) {
+		//			log.warn("Errore nello shutdown del Connection Manager: " + e);
+		//		}
+
+		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, GOVPAY_VERSION, commit)+" completato.");
 	}
 }

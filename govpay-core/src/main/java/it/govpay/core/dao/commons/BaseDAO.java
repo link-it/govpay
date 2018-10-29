@@ -27,7 +27,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.AnagraficaManagerNoCache;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.exceptions.NotAuthenticatedException;
@@ -70,23 +69,13 @@ public class BaseDAO {
 	}
 
 	public Applicazione getApplicazioneFromUser(IAutorizzato user, BasicBD bd) throws ServiceException, NotFoundException {
-		if(this.useCacheData) {
 			return user.isCheckSubject() ? AnagraficaManager.getApplicazioneBySubject(bd, user.getPrincipal())
 					: AnagraficaManager.getApplicazioneByPrincipal(bd, user.getPrincipal());
-		} else {
-			return user.isCheckSubject() ? AnagraficaManagerNoCache.getApplicazioneBySubject(bd, user.getPrincipal())
-					: AnagraficaManagerNoCache.getApplicazioneByPrincipal(bd, user.getPrincipal());
-		}
 	}
 	
 	public Operatore getOperatoreFromUser(IAutorizzato user, BasicBD bd) throws ServiceException, NotFoundException {
-		if(this.useCacheData) {
 			return user.isCheckSubject() ? AnagraficaManager.getOperatoreBySubject(bd, user.getPrincipal())
 				: AnagraficaManager.getOperatoreByPrincipal(bd, user.getPrincipal());
-		} else {
-			return user.isCheckSubject() ? AnagraficaManagerNoCache.getOperatoreBySubject(bd, user.getPrincipal())
-					: AnagraficaManagerNoCache.getOperatoreByPrincipal(bd, user.getPrincipal());
-		}
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {

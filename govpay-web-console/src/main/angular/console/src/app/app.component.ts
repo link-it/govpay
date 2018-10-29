@@ -7,6 +7,7 @@ import { GovpayService } from './services/govpay.service';
 
 import { NavigationEnd, Router } from '@angular/router';
 
+import * as moment from 'moment';
 import 'rxjs/add/operator/filter';
 import { DialogViewComponent } from './elements/detail-view/views/dialog-view/dialog-view.component';
 import { ModalBehavior } from './classes/modal-behavior';
@@ -45,6 +46,7 @@ export class AppComponent implements AfterContentChecked {
 
   _showBlueDialog: boolean = false;
   _blueDialogData: ModalBehavior;
+
 
   constructor(public router: Router, public ls: LinkService, public gps: GovpayService, private us: UtilService) {
     this._extraSideNavQueryMatches = this.ls.checkLargeMediaMatch();
@@ -150,6 +152,34 @@ export class AppComponent implements AfterContentChecked {
         break;
       case UtilService.URL_PAGAMENTI+UtilService.URL_DETTAGLIO:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_PAGAMENTO });
+        let _showExclude = false;
+        if(rsc.data.info) {
+          if(rsc.data.info['stato'] == this.us.getKeyByValue(UtilService.STATI_PAGAMENTO, UtilService.STATI_PAGAMENTO.IN_CORSO)) {
+            UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BACK_IN_TIME(), 'h').format('YYYY-MM-DDTHH:mm');
+            let dFine = moment(rsc.data.info['dataRichiestaPagamento']);
+            let dLimit = moment(UtilService.BACK_IN_TIME_DATE);
+            if(dFine < dLimit && !rsc.data.info['verificato']) {
+              _showExclude = true;
+            }
+          }
+          if(rsc.data.info['stato'] == this.us.getKeyByValue(UtilService.STATI_PAGAMENTO, UtilService.STATI_PAGAMENTO.FALLITO)) {
+            if(!rsc.data.info['verificato']) {
+              _showExclude = true;
+            }
+          }
+          if(_showExclude) {
+            a.push({ label: 'Segna come esaminato', type: UtilService.ESCLUDI_NOTIFICA });
+          }
+        }
+        break;
+      case UtilService.URL_TRACCIATI+UtilService.URL_DETTAGLIO:
+        if(rsc.data.info) {
+          let _sia = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ATTESA);
+          let _sie = this.us.getKeyByValue(UtilService.STATI_TRACCIATO, UtilService.STATI_TRACCIATO.IN_ELABORAZIONE);
+          if(rsc.data.info['stato'] != _sia && rsc.data.info['stato'] != _sie) {
+            a.push({label: 'Scarica tracciato', type: UtilService.EXPORT_TRACCIATO});
+          }
+        }
         break;
     }
     return a;
@@ -238,7 +268,9 @@ export class AppComponent implements AfterContentChecked {
       this.ls.resetRouteReuseStrategy();
       this.ls.resetRouteHistory();
       this.us.resetDashboardLinksParams();
-      //this.ls.navigateTo([event.target.link]);
+      if(event.target.icon) {
+        this.ls.navigateTo([event.target.link]);
+      }
     }
   }
 
@@ -258,7 +290,11 @@ export class AppComponent implements AfterContentChecked {
         //Detail
         case UtilService.EXPORT_PENDENZA:
         case UtilService.EXPORT_PAGAMENTO:
+        case UtilService.EXPORT_TRACCIATO:
           (_componentRef)?_componentRef.instance.exportData():null;
+          break;
+        case UtilService.ESCLUDI_NOTIFICA:
+          (_componentRef)?_componentRef.instance.esclusioneNotifiche():null;
           break;
         case UtilService.PENDENZA:
           if(_componentRef) {

@@ -16,7 +16,7 @@ export class SelectViewComponent implements IFormComponent, AfterViewInit {
   constructor() { }
 
   ngAfterViewInit() {
-    if(this.json && this.json.value) {
+    if(this.json && this.json.value !== null && this.json.value !== undefined) {
       //Default selection
       this.fGroup.controls[this.json.id+'_ctrl'].setValue(this.json.value);
     }

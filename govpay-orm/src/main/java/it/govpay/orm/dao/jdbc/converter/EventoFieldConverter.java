@@ -370,7 +370,7 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 			return "versamenti";
 		}
 		if(model.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
-			return "versamenti";
+			return "applicazioni";
 		}
 
 

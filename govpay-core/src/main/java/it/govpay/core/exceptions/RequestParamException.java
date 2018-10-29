@@ -1,6 +1,8 @@
 package it.govpay.core.exceptions;
 
-public class RequestParamException extends BaseException {
+import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
+
+public class RequestParamException extends BaseExceptionV1 {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -25,7 +27,7 @@ public class RequestParamException extends BaseException {
 	}
 	
 	public RequestParamException(FaultType faultType, String details) {
-		super("Errore nella valorizzazione dei parametri della richiesta", faultType.faultSubCode, details);
+		super("Errore nella valorizzazione dei parametri della richiesta", faultType.faultSubCode, details, CategoriaEnum.RICHIESTA);
 	}
 	
 	@Override

@@ -19,7 +19,7 @@ private static final long serialVersionUID = 1L;
 	public Applicazione(BasicBD bd, long idUtenza) throws ServiceException {
 		super();
 		this.setIdUtenza(idUtenza); 
-		this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza())); 
+		this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza()));
 	}
 
 

@@ -119,6 +119,14 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 				return "01";
 			}
 		}
+		
+		public static TipoBolloEnum fromCodifica(String codifica) {
+			switch (codifica) {
+			case "01":
+			default:
+				return IMPOSTA_DI_BOLLO;
+			}
+		}
 
 		public static TipoBolloEnum fromValue(String text) {
 			for (TipoBolloEnum b : TipoBolloEnum.values()) {
@@ -475,7 +483,7 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 			return;
 		}
 
-		if(this.tipoBollo != null) {
+		else if(this.tipoBollo != null) {
 			vf.getValidator("tipoBollo", this.tipoBollo).notNull();
 			vf.getValidator("hashDocumento", this.hashDocumento).notNull().minLength(1).maxLength(70);
 			vf.getValidator("provinciaResidenza", this.provinciaResidenza).notNull().pattern("[A-Z]{2,2}");
@@ -493,7 +501,7 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 		}
 
 
-		if(this.ibanAccredito != null) {
+		else if(this.ibanAccredito != null) {
 			vf.getValidator("ibanAccredito", this.ibanAccredito).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
 			vf.getValidator("ibanAppoggio", this.ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");;
 			vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
@@ -505,6 +513,10 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 			} catch (ValidationException ve) {
 				throw new ValidationException("Valorizzato ibanAccredito. " + ve.getMessage());
 			}
+		}
+		
+		else {
+			throw new ValidationException("Nella voce di pendenza deve essere valorizzato uno tra codEntrata, tipoBollo o ibanAccredito.");
 		}
 
 	}

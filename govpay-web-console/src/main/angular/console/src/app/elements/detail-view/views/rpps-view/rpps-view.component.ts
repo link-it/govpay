@@ -43,9 +43,9 @@ export class RppsViewComponent implements IModalDialog, OnInit {
     _ai.push(new Dato({ label: Voce.ID_DOMINIO, value: this.json.rpt.dominio.identificativoDominio }));
     _ai.push(new Dato({ label: Voce.TIPO_VERSAMENTO, value: UtilService.TIPI_VERSAMENTO[this.json.rpt.datiVersamento.tipoVersamento] }));
     _ai.push(new Dato({ label: Voce.STATO, value: this._mapStato().stato }));
-    _ai.push(new Dato({ label: Voce.DATA_RICHIESTA, value: UtilService.defaultDisplay({ value: moment(this.json.rpt.dataOraMessaggioRichiesta).format('DD/MM/YYYY') }) }));
+    _ai.push(new Dato({ label: Voce.DATA_RICHIESTA, value: this.json.rpt.dataOraMessaggioRichiesta?moment(this.json.rpt.dataOraMessaggioRichiesta).format('DD/MM/YYYY'):Voce.NON_PRESENTE }));
     if(this.json.rt) {
-      _ai.push(new Dato({ label: Voce.DATA_RICEVUTA, value: UtilService.defaultDisplay({ value: moment(this.json.rt.dataOraMessaggioRicevuta).format('DD/MM/YYYY') }) }));
+      _ai.push(new Dato({ label: Voce.DATA_RICEVUTA, value: this.json.rt.dataOraMessaggioRicevuta?moment(this.json.rt.dataOraMessaggioRicevuta).format('DD/MM/YYYY'):Voce.NON_PRESENTE }));
     }
     this.extra = _ai.slice(0);
 

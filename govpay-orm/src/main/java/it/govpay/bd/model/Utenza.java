@@ -13,17 +13,23 @@ import it.govpay.model.IAutorizzato;
 
 public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	
-	private transient List<Dominio> domini;
-	private transient List<Tributo> tributi;
-	private transient List<Acl> aclPrincipal;
-	private transient List<Acl> aclRuoli;
-	private List<String> ruoli;
-	
+
+	protected transient List<Dominio> domini;
+	protected transient List<Tributo> tributi;
+	protected transient List<Acl> aclPrincipal;
+	protected transient List<Acl> aclRuoli;
+	protected List<String> ruoli;
+
+	public String getTipoUtenza() { 
+		// TODO ABSTRACT 
+		return "";
+	}
+	public String getIdentificativo() {
+		// TODO ABSTRACT 
+		return "";
+	}
+
 	@Override
 	public List<Acl> getAcls() {
 		List<Acl> collect = new ArrayList<>();
@@ -94,12 +100,12 @@ public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 	public void setAclRuoli(List<Acl> aclRuoli) {
 		this.aclRuoli = aclRuoli;
 	}
-	
+
 	@Override
 	public void merge(IAutorizzato src) throws ServiceException  {
 		if(src instanceof Utenza) {
 			Utenza srcUtenza = (Utenza) src;
-			
+
 			this.setAbilitato(srcUtenza.isAbilitato());
 			this.setAclPrincipal(srcUtenza.getAcls());
 			this.setIdDomini(srcUtenza.getIdDomini());

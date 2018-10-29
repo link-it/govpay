@@ -29,7 +29,6 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.AnagraficaManagerNoCache;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.model.Applicazione;
@@ -40,6 +39,7 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
+import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
@@ -63,7 +63,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(listaApplicazioniDTO.getUser(), Servizio.ANAGRAFICA_APPLICAZIONI, Diritti.LETTURA,bd);
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
@@ -91,9 +91,9 @@ public class ApplicazioniDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(getApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_APPLICAZIONI, Diritti.LETTURA,bd);
-			return new GetApplicazioneDTOResponse(this.useCacheData ? AnagraficaManager.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()) : AnagraficaManagerNoCache.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()));
+			return new GetApplicazioneDTOResponse(AnagraficaManager.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new ApplicazioneNonTrovataException("Applicazione " + getApplicazioneDTO.getCodApplicazione() + " non censita in Anagrafica");
 		} finally {
@@ -109,7 +109,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(putApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_APPLICAZIONI, Diritti.SCRITTURA,bd);
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
@@ -156,7 +156,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 
 			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.ANAGRAFICA_APPLICAZIONI, Diritti.SCRITTURA,bd);
@@ -169,7 +169,7 @@ public class ApplicazioniDAO extends BaseDAO {
 				UtenzaPatchUtils.patchUtenza(op, getApplicazioneDTOResponse.getApplicazione().getUtenza(), bd);
 			}
 
-			applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
+			//applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
 			
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione());
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione().getUtenza()); 

@@ -4,7 +4,7 @@
          formControlName="{{json.id}}_ctrl" [(ngModel)]="_pickerDate" name="pickerDate">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker touchUi></mat-datepicker>
-  <button mat-icon-button matSuffix (click)="_overlayTimepicker(_pickerDate, $event)" *ngIf="json.showTime">
+  <button mat-icon-button matSuffix (click)="_overlayTimepicker(_pickerDate, $event)" *ngIf="json.showTime" type="button">
     <mat-icon>access_time</mat-icon>
   </button>
 </mat-form-field>

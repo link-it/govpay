@@ -161,7 +161,7 @@ public class InviaNotificaThread implements Runnable {
 			log.info("Notifica consegnata con successo");
 		} catch(Exception e) {
 			if(e instanceof GovPayException || e instanceof ClientException)
-				log.warn("Errore nella consegna della notifica: " + e);
+				log.warn("Errore nella consegna della notifica: " + e.getMessage());
 			else
 				log.error("Errore nella consegna della notifica", e);
 			try {

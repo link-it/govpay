@@ -26,7 +26,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
@@ -49,7 +48,7 @@ import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
-import it.govpay.core.dao.anagrafica.UtenzaPatchUtils;
+import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
@@ -161,15 +160,15 @@ public class PendenzeDAO extends BaseDAO{
 				elem.setApplicazione(versamento.getApplicazione(versamentiBD));
 				elem.setDominio(versamento.getDominio(versamentiBD));
 				elem.setUnitaOperativa(versamento.getUo(versamentiBD));
-				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
-				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-					singoloVersamento.getCodContabilita(bd);
-					singoloVersamento.getIbanAccredito(bd);
-					singoloVersamento.getTipoContabilita(bd);
-					singoloVersamento.getTributo(bd);
-					
-				}
-				elem.setLstSingoliVersamenti(singoliVersamenti);
+//				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
+//				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+//					singoloVersamento.getCodContabilita(bd);
+//					singoloVersamento.getIbanAccredito(bd);
+//					singoloVersamento.getTipoContabilita(bd);
+//					singoloVersamento.getTributo(bd);
+//					
+//				}
+//				elem.setLstSingoliVersamenti(singoliVersamenti);
 
 				resList.add(elem);
 			}
@@ -241,15 +240,15 @@ public class PendenzeDAO extends BaseDAO{
 				elem.setApplicazione(versamentoIncasso.getApplicazione(versamentiBD));
 				elem.setDominio(versamentoIncasso.getDominio(versamentiBD));
 				elem.setUnitaOperativa(versamentoIncasso.getUo(versamentiBD));
-				List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
-				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-					singoloVersamento.getCodContabilita(bd);
-					singoloVersamento.getIbanAccredito(bd);
-					singoloVersamento.getTipoContabilita(bd);
-					singoloVersamento.getTributo(bd);
-					
-				}
-				elem.setLstSingoliVersamenti(singoliVersamenti);
+//				List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
+//				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+//					singoloVersamento.getCodContabilita(bd);
+//					singoloVersamento.getIbanAccredito(bd);
+//					singoloVersamento.getTipoContabilita(bd);
+//					singoloVersamento.getTributo(bd);
+//					
+//				}
+//				elem.setLstSingoliVersamenti(singoliVersamenti);
 
 				resList.add(elem);
 			}
@@ -258,7 +257,7 @@ public class PendenzeDAO extends BaseDAO{
 		return new ListaPendenzeDTOResponse(count, resList);
 	}
 
-	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException{
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 		if(leggiPendenzaDTO.isInfoIncasso())
 			_leggiPendenzaConInfromazionIncasso(leggiPendenzaDTO, response);
@@ -268,16 +267,21 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	private void _leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO, LeggiPendenzaDTOResponse response)
-			throws ServiceException, NotAuthenticatedException, NotAuthorizedException, PendenzaNonTrovataException {
-		Versamento versamento;
+			throws ServiceException, NotAuthenticatedException, NotAuthorizedException, PendenzaNonTrovataException, GovPayException {
+		Versamento versamento = null;
 		BasicBD bd = null;
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
+			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
+			if(leggiPendenzaDTO.getCodA2A() != null)
+				versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
+			else if(leggiPendenzaDTO.getNumeroAvviso() != null)
+				versamento = versamentiBD.getVersamento(leggiPendenzaDTO.getIdDominio(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso()));
+			
 			
 			Dominio dominio = versamento.getDominio(versamentiBD);
 			// controllo che il dominio sia autorizzato

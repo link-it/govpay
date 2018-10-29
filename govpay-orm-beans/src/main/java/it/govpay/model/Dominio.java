@@ -24,9 +24,9 @@ import java.util.Date;
 
 public class Dominio extends BasicModel {
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String EC = "EC"; 
-	
+
 	private Long id; 
 	private long idStazione; 
 	private Long idApplicazioneDefault; 
@@ -36,16 +36,17 @@ public class Dominio extends BasicModel {
 	private boolean abilitato;
 	private int auxDigit;
 	private Integer segregationCode;
-	
+
 	private transient Integer ndpStato;
 	private transient String ndpOperazione;
 	private transient String ndpDescrizione;
 	private transient Date ndpData;
-	
+
 	private String iuvPrefix;
 	private byte[] logo;
 	private String cbill;
-	
+	private String autStampaPoste;
+
 	@Override
 	public Long getId() {
 		return this.id;
@@ -173,6 +174,13 @@ public class Dominio extends BasicModel {
 	public void setCbill(String cbill) {
 		this.cbill = cbill;
 	}
-	
+
+	public String getAutStampaPoste() {
+		return autStampaPoste;
+	}
+
+	public void setAutStampaPoste(String autStampaPoste) {
+		this.autStampaPoste = autStampaPoste;
+	}
 }
 

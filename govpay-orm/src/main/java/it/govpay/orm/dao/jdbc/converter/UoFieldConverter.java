@@ -172,6 +172,20 @@ public class UoFieldConverter extends AbstractSQLFieldConverter {
 				return "uo_pec";
 			}
 		}
+		if(field.equals(Uo.model().UO_TEL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".uo_tel";
+			}else{
+				return "uo_tel";
+			}
+		}
+		if(field.equals(Uo.model().UO_FAX)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".uo_fax";
+			}else{
+				return "uo_fax";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -228,6 +242,12 @@ public class UoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Uo.model(), returnAlias);
 		}
 		if(field.equals(Uo.model().UO_PEC)){
+			return this.toTable(Uo.model(), returnAlias);
+		}
+		if(field.equals(Uo.model().UO_TEL)){
+			return this.toTable(Uo.model(), returnAlias);
+		}
+		if(field.equals(Uo.model().UO_FAX)){
 			return this.toTable(Uo.model(), returnAlias);
 		}
 

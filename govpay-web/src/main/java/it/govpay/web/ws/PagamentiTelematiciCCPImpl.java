@@ -237,10 +237,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ANOMALO))
-							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, "Il pagamento risulta gi\u00E0 effettuato, ma si riscontrano anomalie negli importi. Per maggiori informazioni contattare il supporto clienti.", codDominio);
-						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE)) {
 							PagamentiBD pagamentiBD = new PagamentiBD(bd);
 							List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
 							if(pagamenti.isEmpty())
@@ -584,10 +581,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ANOMALO))
-							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato, ma si riscontrano anomalie negli importi. Per maggiori informazioni contattare il supporto clienti.");
-						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE)) {
 							PagamentiBD pagamentiBD = new PagamentiBD(bd);
 							List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
 							if(pagamenti.isEmpty())

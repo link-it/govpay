@@ -1,0 +1,538 @@
+openapi: 3.0.0
+info:
+  description: >-
+    API di integrazione ai servizi di pagamento di 
+    [GovPay](https://github.com/link-it/GovPay) erogate
+    dagli applicativi dell'Ente Creditore
+  version: "1.0.0"
+  title: "GovPay - API Applicazioni"
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - description: Base url servizio
+    url: https://host/baseurl
+tags:
+  - name: Verifica
+  - name: Notifica
+paths:
+  '/avvisi/{idDomino}/{iuv}':
+    get:
+      summary: Verifica di una pendenza da avviso
+      tags:
+        - Verifica
+      parameters:
+        - name: idDomino
+          in: path
+          description: Identificativo del dominio
+          required: true
+          schema:
+            type: string
+        - name: iuv
+          in: path
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pendenzaVerificata'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'             
+  '/pagamenti/{idDominio}/{iuv}':
+    post:
+      summary: Notifica di un pagamento
+      tags:
+        - Notifica
+      parameters:
+        - name: idDominio
+          in: path
+          description: Dominio creditore
+          required: true
+          schema:
+            type: string
+        - name: iuv
+          in: path
+          description: Identificativo di versamento
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Notifica di pagamento
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/notifica'
+      responses:
+        '201':
+          description: notifica acquisita
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+components:
+  responses:
+    '400':
+      description: Richiesta non correttamente formata
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: RICHIESTA
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+    '401':
+      description: Richiesta non autenticata
+    '403':
+      description: Richiesta non autorizzata
+    '404':
+      description: Risorsa inesistente
+    '500':
+      description: Servizio non disponibile
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: INTERNO
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+  schemas:
+    faultBean:
+      type: object
+      required:
+        - categoria
+        - codice
+        - descrizione
+      properties:
+        categoria:
+          type: string
+          description: >-
+            Categoria dell'errore riscontrato:
+             * `AUTORIZZAZIONE` - Operazione non autorizzata
+             * `RICHIESTA` - Richiesta non valida
+             * `OPERAZIONE` - Operazione non eseguibile
+             * `PAGOPA` - Errore da PagoPA
+             * `INTERNO` - Errore interno
+          enum:
+            - AUTORIZZAZIONE
+            - RICHIESTA
+            - OPERAZIONE
+            - INTERNO
+        codice:
+          type: string
+          description: Codice di errore
+        descrizione:
+          type: string
+          description: Descrizione dell'errore
+        dettaglio:
+          type: string
+          description: Descrizione aggiuntiva
+      example:
+        categoria: INTERNO
+        codice: INTERNO
+        descrizione: Servizio non disponibile
+    pendenzaVerificata:
+      type: object
+      required:
+        - idA2A
+        - idPendenza
+        - stato
+        - idDominio
+        - numeroAvviso
+        - soggettoPagatore
+        - importo
+        - causale
+      properties:
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: A2A_12345
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: abcdef12345
+        stato:
+          $ref: '#/components/schemas/statoPendenzaVerificata'
+        descrizioneStato:
+          type: string
+          description: Informazioni addizionali sullo stato della pendenza
+        idDominio:
+          type: string
+          description: Identificativo del dominio creditore
+          example: 1234567890
+        idUnitaOperativa:
+          type: string
+          description: Identificativo dell'unita' operativa
+          example: UO33132  
+        nome:
+          type: string
+          description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
+          example: 'Immatricolazione AA 2017/2018'
+        causale:
+          type: string
+          description: Descrizione da inserire nell'avviso di pagamento
+          example: 'Sanzione CdS n. abc00000'
+        soggettoPagatore:
+          $ref: '#/components/schemas/soggetto'
+        importo:
+          type: number
+          description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
+          example: 10.01
+        numeroAvviso:
+          type: string
+          description: Identificativo univoco versamento, assegnato se pagabile da psp
+          example: 123456789012345678
+        dataCaricamento:
+          type: string
+          format: date
+          description: Data di emissione della pendenza
+          example: '2010-12-31'
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+          example: '2019-12-31'
+        dataScadenza:
+          type: string
+          format: date
+          description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        annoRiferimento:
+          type: number
+          description: Anno di riferimento della pendenza
+          example: 2020
+        cartellaPagamento:
+          type: string
+          description: Identificativo della cartella di pagamento a cui afferisce la pendenza
+          example: ABC00000001
+        datiAllegati:
+          type: string
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+        tassonomia:
+          type: string
+          description: Macro categoria della pendenza secondo la classificazione del creditore
+          example: Sanzioni
+        tassonomiaAvviso:
+          $ref: '#/components/schemas/tassonomiaAvviso'            
+        voci:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/vocePendenza'          
+    statoPendenzaVerificata:
+      example: NON_ESEGUITO
+      type: string
+      enum:
+        - NON_ESEGUITA
+        - ANNULLATA
+        - SCADUTA
+        - DUPLICATA
+        - SCONOSCIUTA
+    tassonomiaAvviso:
+      description: Macro categoria della pendenza Agid
+      type: string
+      enum:
+        - Cartelle esattoriali
+        - Diritti e concessioni
+        - Imposte e tasse
+        - IMU, TASI e altre tasse comunali
+        - Ingressi a mostre e musei
+        - Multe e sanzioni amministrative
+        - Previdenza e infortuni
+        - Servizi erogati dal comune
+        - Servizi erogati da altri enti
+        - Servizi scolastici
+        - Tassa automobilistica
+        - Ticket e prestazioni sanitarie
+        - Trasporti, mobilità e parcheggi
+      example: 
+        Ticket e prestazioni sanitarie             
+    vocePendenza:
+      allOf:
+        - type: object
+          required:
+            - idVocePendenza
+            - importo
+            - descrizione
+          properties:
+            indice:
+              type: number
+              description: indice di voce all'interno della pendenza
+              example: 1
+            idVocePendenza:
+              type: string
+              description: >-
+                Identificativo della voce di pedenza nel gestionale
+                proprietario
+              example: abcdef12345_1
+            importo:
+              type: number
+              description: Importo della voce
+              example: 10.01
+            descrizione:
+              type: string
+              description: descrizione della voce di pagamento
+              example: Sanzione CdS n. abc00000
+            datiAllegati:
+              type: string
+              description: >-
+                Dati applicativi allegati dal gestionale secondo un
+                formato proprietario.
+        - oneOf:
+            - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+              type: object
+              required:
+                - codEntrata
+              properties:
+                codEntrata:
+                  type: string
+            - description: Definisce i dettagli di incasso.
+              type: object
+              required:
+                - ibanAccredito
+                - tipoContabilita
+                - codiceContabilita
+              properties:
+                ibanAccredito:
+                  type: string
+                  example: IT60X0542811101000000123456
+                bicAccredito:
+                  type: string
+                  example: DABAIE2D
+                ibanAppoggio:
+                  type: string
+                  example: IT60X0542811101000000123456
+                bicAppoggio:
+                  type: string
+                  example: DABAIE2D
+                tipoContabilita:
+                  description: Tipologia di codifica del capitolo di bilancio
+                  type: string
+                  enum:
+                    - Entrata
+                    - Speciale
+                    - SIOPE
+                    - Altro
+                  example: SIOPE
+                codiceContabilita:
+                  description: Codifica del capitolo di bilancio
+                  type: string
+                  example: 3321
+            - description: Definisce i dati di un bollo telematico
+              type: object
+              required:
+                - tipoBollo
+                - hashDocumento
+                - provinciaResidenza
+              properties:
+                tipoBollo:
+                  description: Tipologia di Bollo digitale
+                  type: string
+                  enum:
+                    - Imposta di bollo
+                hashDocumento:
+                  description: >-
+                    Digest in base64 del documento informatico associato
+                    alla marca da bollo
+                  type: string
+                provinciaResidenza:
+                  description: >-
+                    Sigla automobilistica della provincia di residenza del
+                    soggetto pagatore
+                  type: string                
+    soggetto:
+      description: dati anagrafici di un versante o pagatore.
+      type: object
+      required:
+        - tipo
+        - identificativo
+      properties:
+        tipo:
+          description: >-
+            tipologia di soggetto, se persona fisica (F) o giuridica
+            (G)
+          type: string
+          enum:
+            - G
+            - F
+          example: F
+        identificativo:
+          description: codice fiscale o partita iva del soggetto
+          type: string
+          example: RSSMRA30A01H501I
+        anagrafica:
+          description: nome e cognome o altra ragione sociale del soggetto
+          type: string
+          example: Mario Rossi
+        indirizzo:
+          type: string
+          example: Piazza della Vittoria
+        civico:
+          type: string
+          example: 10/A
+        cap:
+          type: string
+          example: 0
+        localita:
+          type: string
+          example: Roma
+        provincia:
+          type: string
+          example: Roma
+        nazione:
+          type: string
+          example: IT
+        email:
+          type: string
+          example: mario.rossi@host.eu
+        cellulare:
+          type: string
+          example: +39 000-1234567        
+    notifica:
+      type: object
+      properties:
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: A2A-12345
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: abcdef12345
+        rpt:
+          type: object
+          description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
+          example:
+            versioneOggetto: "6.2"
+            dominio: "--[OMISSIS]--"
+            identificativoMessaggioRichiesta: "3014931b62ab4333be07164c2fda6fa3"
+            dataOraMessaggioRichiesta: "2018-06-01"
+            autenticazioneSoggetto: "N_A"
+            soggettoVersante: "--[OMISSIS]--"
+            soggettoPagatore: "--[OMISSIS]--"
+            enteBeneficiario: "--[OMISSIS]--"
+            datiVersamento: "--[OMISSIS]--"
+        rt:
+          type: object
+          description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica" 
+          example:
+            versioneOggetto: "6.2"
+            dominio: "--[OMISSIS]--"
+            identificativoMessaggioRicevuta: "3014931b62ab4333be07164c2fda6fa3"
+            dataOraMessaggioRicevuta: "2018-06-01"
+            riferimentoMessaggioRichiesta: "3014931b62ab4333be07164c2fda6fa3"
+            riferimentoDataRichiesta: "2018-06-01"
+            istitutoAttestante: "--[OMISSIS]--"
+            enteBeneficiario: "--[OMISSIS]--"
+            soggettoVersante: "--[OMISSIS]--"
+            soggettoPagatore: "--[OMISSIS]--"
+            datiPagamento: "--[OMISSIS]--"
+        riscossioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/riscossione'
+    riscossione:
+      type: object
+      required:
+        - idDominio
+        - iuv
+        - iur
+        - indice
+        - idVocePendenza
+        - stato
+        - tipo
+        - importo
+        - data
+      properties:
+        idDominio:
+          type: string
+          description: Identificativo ente creditore
+          example: 01234567890
+        iuv:
+          type: string
+          description: Identificativo univoco di versamento
+          example: RF23567483937849450550875
+        iur:
+          type: string
+          description: Identificativo univoco di riscossione.
+          example: '1234acdc'
+        indice:
+          type: number
+          description: indice posizionale della voce pendenza riscossa
+          example: 1
+        idVocePendenza:
+          type: string
+          description: >-
+            Identificativo della voce di pedenza,interno alla pendenza, nel gestionale
+            proprietario a cui si riferisce la riscossione
+          example: abcdef12345_1
+        rpp:
+          type: string
+          description: location dove reperire la richiesta di pagamento che ha determinato la ricossione
+        stato:
+          type: string
+          enum:
+            - RISCOSSA
+            - INCASSATA
+        tipo:
+          $ref: '#/components/schemas/tipoRiscossione'
+        importo:
+          type: number
+          description: >-
+            Importo riscosso. 
+          example: 10.01
+        data:
+          type: string
+          format: date
+          description: Data di esecuzione della riscossione
+          example: '2020-12-31'
+        commissioni:
+          type: number
+          description: Importo delle commissioni applicate al pagamento dal PSP
+          example: 1.5
+        allegato:
+          $ref: '#/components/schemas/allegato'        
+    tipoRiscossione:
+      description: > 
+        Tipologia della voce riscossa
+         * ENTRATA: Entrata in tesoreria
+         * MBT: Marca da bollo telematica
+      type: string
+      enum:
+        - ENTRATA
+        - MBT
+    allegato:
+      type: object
+      required:
+        - tipo
+        - testo
+      properties:
+        tipo:
+          description: Tipologia di allegato
+          type: string
+          enum:
+            - Esito pagamento
+            - Marca da bollo
+        testo:
+          description: allegato codificato in base64
+          type: string

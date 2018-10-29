@@ -152,11 +152,9 @@ public class OperazioneFactory {
 		switch(versamentoModel.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoEnum.ANNULLATO;
 			break;
-		case ANOMALO: statoPendenza = StatoEnum.NON_PAGATO;
-			break;
 		case ESEGUITO: statoPendenza = StatoEnum.PAGATO;
 			break;
-		case ESEGUITO_SENZA_RPT:  statoPendenza = StatoEnum.PAGATO;
+		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoEnum.PAGATO;
 			break;
 		case NON_ESEGUITO: if(versamentoModel.getDataScadenza() != null && versamentoModel.getDataScadenza().before(new Date())) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
 			break;

@@ -19,6 +19,8 @@
  */
 package it.govpay.core.utils.client;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ import javax.xml.namespace.QName;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.resources.Charset;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -60,17 +63,17 @@ public class NotificaClient extends BasicClient {
 	private Tipo tipo;
 	private Versione versione;
 	private static ObjectFactory objectFactory;
-	
+
 	public NotificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.NOTIFICA);
 		this.versione = applicazione.getConnettoreNotifica().getVersione();
 		this.tipo = applicazione.getConnettoreNotifica().getTipo();
-		
+
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}
 	}
-	
+
 	/**
 	 * Business utilizzati da precaricare:
 	 * notifica.getApplicazione
@@ -89,9 +92,9 @@ public class NotificaClient extends BasicClient {
 	 * @throws NdpException 
 	 */
 	public void invoke(Notifica notifica, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException {
-		
+
 		log.debug("Spedisco la notifica di " + notifica.getTipo() + ((notifica.getIdRr() == null) ? " PAGAMENTO" : " STORNO") + " della transazione (" + notifica.getRpt(null).getCodDominio() + ")(" + notifica.getRpt(null).getIuv() + ")(" + notifica.getRpt(null).getCcp() + ") in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
-		
+
 		switch (this.tipo) {
 		case SOAP:
 			if(notifica.getIdRr() == null) {
@@ -101,7 +104,7 @@ public class NotificaClient extends BasicClient {
 				paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(bd).getCodVersamentoEnte());
 				paNotificaTransazione.setTransazione(Gp25Utils.toTransazione(rpt, bd));
 				paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
-				
+
 				QName qname = new QName("http://www.govpay.it/servizi/pa/", "paNotificaTransazione");
 				this.sendSoap("paNotificaTransazione", new JAXBElement<>(qname, PaNotificaTransazione.class, paNotificaTransazione), null, false);
 				return;
@@ -128,50 +131,83 @@ public class NotificaClient extends BasicClient {
 				this.sendSoap("paNotificaStorno", new JAXBElement<>(qname, PaNotificaStorno.class, paNotificaStorno), null, false);
 				return;
 			}
-			case REST:
-				List<Property> headerProperties = new ArrayList<>();
-				headerProperties.add(new Property("Accept", "application/json"));
-				String jsonBody = "";
-				String path = "";
-				
-				if(notifica.getIdRr() == null) {
-					Rpt rpt = notifica.getRpt(null);
-					path = "/pagamenti/" + rpt.getCodDominio() + "/"+ rpt.getIuv();
-					
-					it.govpay.core.rs.v1.beans.client.Notifica notificaRsModel = new it.govpay.core.rs.v1.beans.client.Notifica();
-					notificaRsModel.setIdA2A(notifica.getApplicazione(bd).getCodApplicazione());
-					notificaRsModel.setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
-					// rpt
-					notificaRsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt())); 
-					// rt
-					if(rpt.getXmlRt() != null) {
-						CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
-						notificaRsModel.setRt(rt);
-					}
-					// elenco pagamenti
-					if(rpt.getPagamenti(bd) != null && rpt.getPagamenti(bd).size() > 0) {
-						List<Riscossione> riscossioni = new ArrayList<>();
-						int indice = 1;
-						String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(notifica.getApplicazione(bd).getCodApplicazione(), rpt.getVersamento(bd).getCodVersamentoEnte());
-						String urlRpt = UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
-						for(Pagamento pagamento : rpt.getPagamenti(bd)) {
-							riscossioni.add(Gp21Utils.toRiscossione(pagamento, bd, indice, urlPendenza, urlRpt));
-							indice ++;
-						}
-						notificaRsModel.setRiscossioni(riscossioni);
-					}
-					
-					jsonBody = notificaRsModel.toJSON(null);
-					
-				} else {
-					throw new ServiceException("Notifica Storno REST non implementata!");
+		case REST:
+			List<Property> headerProperties = new ArrayList<>();
+			headerProperties.add(new Property("Accept", "application/json"));
+			String jsonBody = "";
+			String path = "";
+
+			if(notifica.getIdRr() == null) {
+				Rpt rpt = notifica.getRpt(null);
+				path = "/pagamenti/" + rpt.getCodDominio() + "/"+ rpt.getIuv();
+
+				boolean amp = false;
+				if(rpt.getCodSessione() != null) {
+					amp = true;
+					path += "?idSession=" + encode(rpt.getCodSessione());
 				}
-				this.sendJson(path, jsonBody, headerProperties);
-				break;
+
+				if(rpt.getCodSessionePortale() != null) {
+					if(amp) {
+						path += "?idSessionePortale=" + encode(rpt.getCodSessionePortale());
+						amp = true;
+					} else {
+						path += "&idSessionePortale=" + encode(rpt.getCodSessionePortale());
+					}
+
+				}
+
+				if(rpt.getCodCarrello() != null) {
+					if(amp) {
+						path += "?idCarrello=" + encode(rpt.getCodCarrello());
+						amp = true;
+					} else {
+						path += "&idCarrello=" + encode(rpt.getCodCarrello());
+					}
+				}
+
+				it.govpay.core.rs.v1.beans.client.Notifica notificaRsModel = new it.govpay.core.rs.v1.beans.client.Notifica();
+				notificaRsModel.setIdA2A(notifica.getApplicazione(bd).getCodApplicazione());
+				notificaRsModel.setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
+				// rpt
+				notificaRsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt())); 
+				// rt
+				if(rpt.getXmlRt() != null) {
+					CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
+					notificaRsModel.setRt(rt);
+				}
+				// elenco pagamenti
+				if(rpt.getPagamenti(bd) != null && rpt.getPagamenti(bd).size() > 0) {
+					List<Riscossione> riscossioni = new ArrayList<>();
+					int indice = 1;
+					String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(notifica.getApplicazione(bd).getCodApplicazione(), rpt.getVersamento(bd).getCodVersamentoEnte());
+					String urlRpt = UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
+					for(Pagamento pagamento : rpt.getPagamenti(bd)) {
+						riscossioni.add(Gp21Utils.toRiscossione(pagamento, bd, indice, urlPendenza, urlRpt));
+						indice ++;
+					}
+					notificaRsModel.setRiscossioni(riscossioni);
+				}
+
+				jsonBody = notificaRsModel.toJSON(null);
+
+			} else {
+				throw new ServiceException("Notifica Storno REST non implementata!");
+			}
+			this.sendJson(path, jsonBody, headerProperties);
+			break;
 		}
-		
+
 	}
-	
+
+	private String encode(String value) {
+		try {
+			return URLEncoder.encode(value, Charset.UTF_8.getValue());
+		} catch (UnsupportedEncodingException e) {
+			return "";
+		}
+	}
+
 	public class SendEsitoResponse {
 
 		private int responseCode;

@@ -63,7 +63,7 @@ public class VersamentoIncasso extends Versamento{
 	private BigDecimal importoIncassato;
 	private StatoPagamento statoPagamento;
 	private List<Nota> note;
-	
+	private String iuvPagamento;
 	
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -113,5 +113,11 @@ public class VersamentoIncasso extends Versamento{
 
 	public void setNote(List<Nota> note) {
 		this.note = note;
+	}
+	public String getIuvPagamento() {
+		return iuvPagamento;
+	}
+	public void setIuvPagamento(String iuvPagamento) {
+		this.iuvPagamento = iuvPagamento;
 	}
 }

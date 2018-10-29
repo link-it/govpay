@@ -30,6 +30,7 @@ public class FindIbanDTO extends BasicFindRequestDTO {
 	public FindIbanDTO(IAutorizzato user, String codDominio) {
 		super(user);
 		this.codDominio = codDominio;
+		this.addSortField("ibanAccredito", it.govpay.orm.IbanAccredito.model().COD_IBAN);
 	}
 	
 	public String getCodDominio(){

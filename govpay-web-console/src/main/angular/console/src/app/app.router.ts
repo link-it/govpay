@@ -5,12 +5,12 @@ import { ListViewComponent } from './elements/list-view/list-view.component';
 import { DetailViewComponent } from './elements/detail-view/detail-view.component';
 import { UtilService } from './services/util.service';
 import { ProfiloComponent } from './elements/profilo/profilo.component';
-// import { DashboardViewComponent } from './elements/detail-view/views/dashboard-view/dashboard-view.component';
+import { AuthGuardService } from './services/auth-guard.service';
+import { DashboardViewComponent } from './elements/detail-view/views/dashboard-view/dashboard-view.component';
 
 const _routes: Routes = [
-  { path: '', redirectTo: UtilService.ROUTE(UtilService.URL_PENDENZE), pathMatch: 'full' },
-  // { path: '', redirectTo: UtilService.ROUTE(UtilService.URL_DASHBOARD), pathMatch: 'full' },
-  // { path: UtilService.ROUTE(UtilService.URL_DASHBOARD), component: DashboardViewComponent, data: { type: null, title: UtilService.TXT_DASHBOARD, search: false, back: false, actions: false, info: null, reuse: false } },
+  { path: '', redirectTo: UtilService.ROUTE(UtilService.URL_DASHBOARD), pathMatch: 'full' },
+  { path: UtilService.ROUTE(UtilService.URL_DASHBOARD), component: DashboardViewComponent, data: { type: null, title: UtilService.TXT_DASHBOARD, search: false, back: false, actions: false, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_PENDENZE), component: ListViewComponent, data: { type: UtilService.PENDENZE, title: UtilService.TXT_PENDENZE, search: true, back: false, actions: true, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_PENDENZE)+UtilService.URL_DETTAGLIO, component: DetailViewComponent, data: { type: UtilService.PENDENZE, title: '', search: false, back: true, actions: true, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_PAGAMENTI), component: ListViewComponent, data: { type: UtilService.PAGAMENTI, title: UtilService.TXT_PAGAMENTI, search: true, back: false, actions: true, info: null, reuse: false } },
@@ -37,6 +37,10 @@ const _routes: Routes = [
   { path: UtilService.ROUTE(UtilService.URL_RPPS)+UtilService.URL_DETTAGLIO, component: DetailViewComponent, data: { type: UtilService.RPPS, title: '', search: false, back: true, actions: false, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_RUOLI), component: ListViewComponent, data: { type: UtilService.RUOLI, title: UtilService.TXT_RUOLI, search: true, back: false, actions: false, info: null, reuse: false } },
   { path: UtilService.ROUTE(UtilService.URL_RUOLI)+UtilService.URL_DETTAGLIO, component: DetailViewComponent, data: { type: UtilService.RUOLI, title: '', search: false, back: true, actions: false, info: null, reuse: false } },
+  //Restricted
+  { path: UtilService.ROUTE(UtilService.URL_TRACCIATI), component: ListViewComponent, canActivate: [ AuthGuardService ], data: { type: UtilService.TRACCIATI, title: UtilService.TXT_TRACCIATI, search: true, back: false, actions: false, info: null, reuse: false } },
+  { path: UtilService.ROUTE(UtilService.URL_TRACCIATI)+UtilService.URL_DETTAGLIO, component: DetailViewComponent, data: { type: UtilService.TRACCIATI, title: '', search: false, back: true, actions: true, info: null, reuse: false } },
+  //Profile
   { path: UtilService.ROUTE(UtilService.URL_PROFILO), component: ProfiloComponent, data: { type: null, title: UtilService.TXT_PROFILO, search: false, back: false, actions: false, info: null, reuse: false } },
   { path: '**', redirectTo: UtilService.ROUTE(UtilService.URL_DASHBOARD) }
 ];

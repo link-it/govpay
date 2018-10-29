@@ -40,13 +40,21 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 
 public class EntrateDAO extends BaseDAO{
+	
+	public EntrateDAO() {
+		super();
+	}
+
+	public EntrateDAO(boolean useCacheData) {
+		super(useCacheData);
+	}
 
 	public PutEntrataDTOResponse createOrUpdateEntrata(PutEntrataDTO putTipoTributoDTO) throws ServiceException,TipoTributoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutEntrataDTOResponse intermediarioDTOResponse = new PutEntrataDTOResponse();
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(putTipoTributoDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd); 
 			TipiTributoBD intermediariBD = new TipiTributoBD(bd);
 			TipoTributoFilter filter = intermediariBD.newFilter(false);
@@ -73,7 +81,7 @@ public class EntrateDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(findEntrateDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 
 			TipiTributoBD stazioneBD = new TipiTributoBD(bd);
@@ -102,7 +110,7 @@ public class EntrateDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(getEntrataDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 			response = new GetEntrataDTOResponse(AnagraficaManager.getTipoTributo(bd, getEntrataDTO.getCodTipoTributo()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

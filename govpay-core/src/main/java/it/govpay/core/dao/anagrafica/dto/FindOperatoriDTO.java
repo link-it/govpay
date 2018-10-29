@@ -30,7 +30,7 @@ public class FindOperatoriDTO extends BasicFindRequestDTO {
 	public FindOperatoriDTO(IAutorizzato user) throws ServiceException {
 		super(user);
 		this.addSortField("principal", it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL);
-		this.addSortField("anagrafica", it.govpay.orm.Operatore.model().NOME);
+		this.addSortField("ragioneSociale", it.govpay.orm.Operatore.model().NOME);
 	}
 
 	public Boolean getAbilitato() {

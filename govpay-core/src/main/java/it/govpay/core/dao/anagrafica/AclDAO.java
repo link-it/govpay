@@ -24,6 +24,14 @@ import it.govpay.model.Acl.Servizio;
 
 public class AclDAO extends BaseDAO{
 	
+	public AclDAO() {
+		super();
+	}
+	
+	public AclDAO(boolean useCacheData) {
+		super(useCacheData);
+	}
+	
 	public ListaAclDTOResponse leggiAclRuoloRegistratoSistema(String ruolo) throws ServiceException {
 		ListaAclDTO listaAclDTO = new ListaAclDTO(null);
 		listaAclDTO.setForceRuolo(true);
@@ -41,7 +49,7 @@ public class AclDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(listaAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
 			return this._listaAcl(listaAclDTO, bd);
 		} finally {
@@ -54,7 +62,7 @@ public class AclDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			return this._listaAcl(listaAclDTO, bd);
 		} finally {
 			if(bd != null)
@@ -62,7 +70,7 @@ public class AclDAO extends BaseDAO{
 		}
 	}
 
-	private ListaAclDTOResponse _listaAcl(ListaAclDTO listaAclDTO ,BasicBD bd ) throws ServiceException {
+	private ListaAclDTOResponse _listaAcl(ListaAclDTO listaAclDTO, BasicBD bd) throws ServiceException {
 		AclBD aclBD = new AclBD(bd);
 		AclFilter filter = aclBD.newFilter();
 
@@ -98,7 +106,7 @@ public class AclDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(leggiAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd); 
 
 			AclBD aclBD = new AclBD(bd);
@@ -122,7 +130,7 @@ public class AclDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(postAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd); 
 
 			AclBD aclBD = new AclBD(bd);
@@ -155,7 +163,7 @@ public class AclDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(deleteAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd); 
 
 			new AclBD(bd).deleteAcl(deleteAclDTO.getIdAcl());

@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { LinkService } from './services/link.service';
 import { GovpayService } from './services/govpay.service';
 import { UtilService } from './services/util.service';
+import { AuthGuardService } from './services/auth-guard.service';
 
 import { RoutingClass } from './app.router';
 import { RouteReuseStrategy } from '@angular/router';
@@ -46,6 +47,8 @@ import { DialogViewComponent } from './elements/detail-view/views/dialog-view/di
 import { DialogBlueViewComponent } from './elements/detail-view/views/dialog-view/dialog-blue-view.component';
 import { LogoComponent } from './elements/logo/logo.component';
 import { DashboardViewComponent } from './elements/detail-view/views/dashboard-view/dashboard-view.component';
+import { BadgeCardComponent } from './elements/badge-card/badge-card.component';
+import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/nota-view/nota-view.component';
 
 
 @NgModule({
@@ -70,7 +73,9 @@ import { DashboardViewComponent } from './elements/detail-view/views/dashboard-v
     ProgressComponent,
     LinkScrollDirective,
     LogoComponent,
-    TimepickerScrollDirective
+    TimepickerScrollDirective,
+    BadgeCardComponent,
+    NotaViewComponent
   ],
   imports: [
     BrowserModule,
@@ -101,7 +106,7 @@ import { DashboardViewComponent } from './elements/detail-view/views/dashboard-v
   entryComponents: [ EntryListComponents, DialogViewComponent ],
   providers: [ { provide: RouteReuseStrategy, useClass: ListReuseStrategy },
     MediaMatcher, LinkService, GovpayService, UtilService,
-    { provide: DateAdapter, useClass: DateFormat }
+    { provide: DateAdapter, useClass: DateFormat }, AuthGuardService
   ],
   bootstrap: [ AppComponent ]
 })

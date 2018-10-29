@@ -32,6 +32,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Nota;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
@@ -354,17 +356,27 @@ public class Versamento extends BasicBD {
 			this.enableSelectForUpdate();
 			
 			try {
+				
+				
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
-			
-				// Se è già ESEGUITO_SENZA_RPT non devo far nulla.
-				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
-					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") gia' pagato senza rpt. Aggiornamento non necessario.");
+				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE)) {
+					log.info("Notifica di pagamento extra pagoPA [" + applicazione.getCodApplicazione() + " " + versamentoLetto.getCodVersamentoEnte() + "] duplicata.");
 					return;
 				}
 				
-				// Se è in stato NON_ESEGUITO lo eseguo senza RPT //TODO aggiungere uno stato opportuno
+				versamentoLetto.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento eseguito extra-pagoPA", "Notificato esecuzione del pagamento fuori dal circuito pagoPA", applicazione.getPrincipal(), applicazione.getCodApplicazione()));
+				
+				// Se è già ESEGUITO segnalo che e' un pagamento duplicato
+				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ESEGUITO)) {
+					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") gia' pagato senza rpt. Aggiornamento non necessario.");
+					versamentoLetto.setAnomalo(true);
+					versamentoLetto.setDescrizioneStato("Pagamento duplicato");
+					return;
+				}
+				
+				// Se è in stato NON_ESEGUITO lo eseguo senza RPT
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) || versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
-					versamentoLetto.setStatoVersamento(StatoVersamento.ESEGUITO_SENZA_RPT);
+					versamentoLetto.setStatoVersamento(StatoVersamento.ESEGUITO_ALTRO_CANALE);
 					versamentiBD.updateVersamento(versamentoLetto);
 					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") pagato senza rpt.");
 					return;

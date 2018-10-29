@@ -8,13 +8,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.Utilities;
 import org.slf4j.Logger;
 
 public class RicevutaPagamentoProperties {
 
-public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPagamento.className";
+	public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPagamento.className";
 	
 	private static final String PROPERTIES_FILE = "/ricevutaPagamento.properties";
 	public static final String DEFAULT_PROPS = "default";
@@ -178,5 +179,49 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 		}
 		
 		return mappaProperties; 
+	}
+	
+	public Properties getPropertiesPerDominio(String codDominio,Logger log) throws Exception {
+		return this.getPropertiesPerDominioTributo(codDominio, null, log);
+	}
+
+	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws Exception {
+		Properties p = null;
+		String key = null;
+	
+		// 1. ricerca delle properties per la chiave "codDominio.codTributo";
+		if(StringUtils.isNotEmpty(codTributo) && StringUtils.isNotEmpty(codDominio)) {
+			key = codDominio + "." + codTributo;
+			try{
+				log.debug("Ricerca delle properties per la chiave ["+key+"]");
+				p = this.getProperties(key);
+			}catch(Exception e){
+				log.debug("Non sono state trovate properties per la chiave ["+key+"]: " + e.getMessage());
+			}
+		}
+
+		// 2 . ricerca per codDominio
+		if(StringUtils.isNotEmpty(codDominio)) {
+			if(p == null){
+				key = codDominio;
+				try{
+					log.debug("Ricerca delle properties per la chiave ["+key+"]");
+					p = this.getProperties(key);
+				}catch(Exception e){
+					log.debug("Non sono state trovate properties per la chiave ["+key+"]: " + e.getMessage());
+				}
+			}
+		}
+
+		// utilizzo le properties di default
+		try{
+			log.debug("Ricerca delle properties di default");
+			p = this.getProperties(null);
+		}catch(Exception e){
+			log.debug("Non sono state trovate properties di default: " + e.getMessage());
+			throw e;
+		}
+
+		return p;
 	}
 }

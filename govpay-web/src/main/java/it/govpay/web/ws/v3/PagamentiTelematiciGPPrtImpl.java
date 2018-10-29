@@ -136,7 +136,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			dto.setAutenticazione(bodyrichiesta.getAutenticazione().value());
 			dto.setCanale(Canale.canaleUniversale);
 			dto.setIbanAddebito(bodyrichiesta.getIbanAddebito());
-			dto.setApplicazione(applicazioneAutenticata);
+			dto.setUtente(applicazioneAutenticata.getUtenza());
 			dto.setUrlRitorno(bodyrichiesta.getUrlRitorno());
 			dto.setVersamentoOrVersamentoRef(bodyrichiesta.getVersamentoOrVersamentoRef());
 			dto.setVersante(bodyrichiesta.getVersante());

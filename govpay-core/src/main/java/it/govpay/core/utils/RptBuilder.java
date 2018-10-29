@@ -39,7 +39,6 @@ import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.IbanAccredito;
@@ -76,7 +75,6 @@ public class RptBuilder {
 				versamento,
 				iuv,
 				ccp,
-				null,
 				codIntermediarioPsp,
 				codPsp,
 				codCanale,
@@ -97,7 +95,6 @@ public class RptBuilder {
 			Canale canale,
 			String iuv, 
 			String ccp, 
-			Applicazione portale, 
 			Anagrafica versante, 
 			String autenticazione, 
 			String ibanAddebito, 
@@ -109,7 +106,6 @@ public class RptBuilder {
 				versamento,
 				iuv,
 				ccp,
-				portale,
 				it.govpay.model.Rpt.codIntermediarioPspWISP20,
 				it.govpay.model.Rpt.codPspWISP20,
 				it.govpay.model.Rpt.codCanaleWISP20,
@@ -130,7 +126,6 @@ public class RptBuilder {
 			Versamento versamento, 
 			String iuv, 
 			String ccp, 
-			Applicazione portale, 
 			String codIntermediarioPsp, 
 			String codPsp, 
 			String codCanale, 

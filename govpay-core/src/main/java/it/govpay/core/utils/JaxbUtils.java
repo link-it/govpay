@@ -45,6 +45,7 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.xml.sax.SAXException;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
+import it.gov.agenziaentrate._2014.marcadabollo.TipoMarcaDaBollo;
 import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
@@ -57,8 +58,9 @@ import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVers
 
 public class JaxbUtils {
 
-	private static JAXBContext jaxbContext, jaxbContextCodes, jaxbContextIntestazioneCarrelloPPT;
-	public static Schema RPT_RT_schema, RR_ER_schema, GP_PA_schema;
+	private static JAXBContext jaxbContext, jaxbContextCodes, jaxbContextIntestazioneCarrelloPPT, jaxbBolloContext;
+	private static Schema RPT_RT_schema, RR_ER_schema;
+	public static Schema  GP_PA_schema;
 	private static GpEventHandler gpEventHandler;
 
 	public static void init() throws JAXBException, SAXException {
@@ -68,6 +70,8 @@ public class JaxbUtils {
 			Source[] GP_PA_sources = {new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/govpay_commons.xsd")), new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/govpay_pa.xsd"))};
 			GP_PA_schema = schemaFactory.newSchema(GP_PA_sources); 
 			RR_ER_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/RR_ER_1_0_0.xsd"))); 
+			
+			jaxbBolloContext = JAXBContext.newInstance("it.gov.agenziaentrate._2014.marcadabollo");
 			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.pagamenti.revoche:it.gov.digitpa.schemas._2011.ws.paa:it.gov.digitpa.schemas._2011.psp:gov.telematici.pagamenti.ws.ppthead:it.govpay.servizi.pa");
 			jaxbContextCodes = JAXBContext.newInstance("it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr");
 			jaxbContextIntestazioneCarrelloPPT = JAXBContext.newInstance(IntestazioneCarrelloPPT.class);
@@ -239,6 +243,13 @@ public class JaxbUtils {
 				return false;
 			}
 		}
+	}
+	
+	public static TipoMarcaDaBollo toMarcaDaBollo(byte[] marca) throws JAXBException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbBolloContext.createUnmarshaller();
+	    JAXBElement<TipoMarcaDaBollo> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(marca)), TipoMarcaDaBollo.class);
+		return root.getValue();
 	}
 
 }

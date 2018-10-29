@@ -10,9 +10,7 @@ public class AnagraficaConverter {
 		if(anagrafica == null) return null;
 		Soggetto rsModel = new Soggetto();
 
-		if(anagrafica.getTipo() != null)
-			rsModel.setTipo(TipoEnum.fromValue(anagrafica.getTipo().toString()));
-
+		rsModel.setTipo(TipoEnum.fromValue(anagrafica.getTipo().toString()));
 		rsModel.setIdentificativo(anagrafica.getCodUnivoco());
 		rsModel.setAnagrafica(anagrafica.getRagioneSociale());
 		rsModel.setIndirizzo(anagrafica.getIndirizzo());

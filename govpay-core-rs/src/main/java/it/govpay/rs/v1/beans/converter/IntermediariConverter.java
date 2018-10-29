@@ -4,6 +4,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.core.rs.v1.beans.base.Intermediario;
+import it.govpay.core.rs.v1.beans.base.IntermediarioIndex;
 import it.govpay.core.rs.v1.beans.base.IntermediarioPost;
 import it.govpay.model.IAutorizzato;
 
@@ -44,6 +45,15 @@ public class IntermediariConverter {
 		
 		if(i.getConnettoreSftp()!=null)
 			rsModel.setServizioFtp(ConnettoreSftpConverter.toRsModel(i.getConnettoreSftp()));
+		
+		return rsModel;
+	}
+	
+	public static IntermediarioIndex toRsModelIndex(it.govpay.model.Intermediario i) throws ServiceException {
+		IntermediarioIndex rsModel = new IntermediarioIndex();
+		rsModel.abilitato(i.isAbilitato())
+		.denominazione(i.getDenominazione())
+		.idIntermediario(i.getCodIntermediario());
 		
 		return rsModel;
 	}

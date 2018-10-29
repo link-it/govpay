@@ -3,7 +3,6 @@ package it.govpay.core.rs.v1.beans.base;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;

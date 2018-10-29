@@ -1,6 +1,7 @@
 package it.govpay.core.business;
 
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.AvvisiPagamentoBD;
 import it.govpay.bd.pagamento.filters.AvvisoPagamentoFilter;
 import it.govpay.core.business.model.InserisciAvvisoDTO;
@@ -25,9 +27,11 @@ import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Intermediario;
+import it.govpay.model.IbanAccredito;
 import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 import it.govpay.model.avvisi.AvvisoPagamentoInput;
+import it.govpay.model.avvisi.InfoEnte;
+import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoPdf;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 
@@ -109,7 +113,7 @@ public class AvvisoPagamento extends BasicBD {
 		AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
 		try {
 			it.govpay.model.avvisi.AvvisoPagamento avvisoPagamentoResponse  = AvvisoPagamentoPdf.getInstance().creaAvviso(log, input, avvisoPagamento, avProperties);
-			
+
 			if(update) {
 				log.info("Salvataggio PDF Avviso Pagamento [Dominio: " + avvisoPagamento.getCodDominio() +" | IUV: " + avvisoPagamento.getIuv() + "] sul db in corso...");
 				// aggiornamento della entry sul db
@@ -133,47 +137,65 @@ public class AvvisoPagamento extends BasicBD {
 
 		this.impostaAnagraficaDebitore(versamento, input);
 
-		Intermediario intermediario = dominio.getStazione().getIntermediario(this);
-		if(intermediario != null) {
-			// visualizzao l'ente partner solo se non coincide con il dominio
-			if(!intermediario.getCodIntermediario().equals(dominio.getCodDominio()))
-				input.setEntePartner(intermediario.getDenominazione());
-		}
-
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
 
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(this);
+		SingoloVersamento sv = singoliVersamenti.get(0);
+
+		String causaleVersamento = "";
 		if(versamento.getCausaleVersamento() != null) {
 			try {
-				input.setAvvisoCausale(versamento.getCausaleVersamento().getSimple());
+				causaleVersamento = versamento.getCausaleVersamento().getSimple();
+
+				if(causaleVersamento.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_CAUSALE) {
+					String causaleTroncata = causaleVersamento.substring(0, AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_CAUSALE);
+					input.setOggettoDelPagamento(causaleTroncata);
+					input.setOggettoDelPagamentoRata(causaleTroncata);
+					input.setOggettoDelPagamentoBollettino(causaleTroncata);
+				} else {
+					input.setOggettoDelPagamento(causaleVersamento);
+					input.setOggettoDelPagamentoRata(causaleVersamento);
+					input.setOggettoDelPagamentoBollettino(causaleVersamento);
+				}
 			}catch (UnsupportedEncodingException e) {
 				throw new ServiceException(e);
 			}
 		}
-		
-		// avviso_mav 
-		input.setAvvisoMav(false);
-		
+
+		IbanAccredito postale = null;
+
+		if(sv.getIbanAccredito(this) != null && sv.getIbanAccredito(this).isPostale())
+			postale = sv.getIbanAccredito(this);
+		else if(sv.getIbanAppoggio(this) != null && sv.getIbanAppoggio(this).isPostale())
+			postale = sv.getIbanAppoggio(this);
+
+
+		if(postale != null) {
+			input.setDiPoste(AvvisoPagamentoCostanti.DI_POSTE);
+			input.setDataMatrix(this.creaDataMatrix(versamento.getNumeroAvviso(), this.getNumeroCCDaIban(postale.getCodIban()), 
+					versamento.getImportoTotale().doubleValue(),
+					dominio.getCodDominio(),
+					input.getCfDestinatario(),
+					input.getNomeCognomeDestinatario(),
+					causaleVersamento));
+			input.setNumeroCcPostale(this.getNumeroCCDaIban(postale.getCodIban()));
+			input.setIntestatarioContoCorrentePostale(dominio.getRagioneSociale());
+		} else {
+			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
+		}
+
 		if(versamento.getImportoTotale() != null)
-			input.setAvvisoImporto(versamento.getImportoTotale().doubleValue());
-		
-		if(versamento.getDataScadenza() != null)
-			input.setAvvisoScadenza(this.sdfDataScadenza.format(versamento.getDataScadenza()));
-		
+			input.setImporto(versamento.getImportoTotale().doubleValue());
+
+		if(versamento.getDataValidita() != null)
+			input.setData(this.sdfDataScadenza.format(versamento.getDataValidita()));
+
 		if(iuvGenerato.getNumeroAvviso() != null) {
-			input.setAvvisoNumero(iuvGenerato.getNumeroAvviso());
-			input.setAvvisoNumeroSplit(this.splitString(iuvGenerato.getNumeroAvviso()));
+			input.setCodiceAvviso(iuvGenerato.getNumeroAvviso());
 		}
-		
-		if(iuvGenerato.getIuv() != null) {
-			input.setAvvisoIuv(iuvGenerato.getIuv());
-			input.setAvvisoIuvSplit(this.splitString(iuvGenerato.getIuv()));
-		}
-		
-		if(iuvGenerato.getBarCode() != null)
-			input.setAvvisoBarcode(new String(iuvGenerato.getBarCode()));
-		
+
 		if(iuvGenerato.getQrCode() != null)
-		input.setAvvisoQrcode(new String(iuvGenerato.getQrCode()));
+			input.setQrCode(new String(iuvGenerato.getQrCode()));
 
 		return input;
 	}
@@ -183,18 +205,24 @@ public class AvvisoPagamento extends BasicBD {
 		Dominio dominio = versamento.getUo(this).getDominio(this);
 		String codDominio = dominio.getCodDominio();
 		Anagrafica anagraficaDominio = dominio.getAnagrafica();
-		
-		input.setEnteDenominazione(dominio.getRagioneSociale());
-		input.setEnteIdentificativo(codDominio);
-		input.setEnteIdentificativoSplit(this.splitString(codDominio));
-		input.setEnteCbill(dominio.getCbill());
-		
+
+		input.setEnteCreditore(dominio.getRagioneSociale());
+		input.setCfEnte(codDominio);
+		input.setCbill(dominio.getCbill() != null ? dominio.getCbill()  : " ");
+
+		InfoEnte infoEnte = new InfoEnte();
 		if(anagraficaDominio != null) {
-			input.setEnteArea(anagraficaDominio.getArea());
-			input.setEnteUrl(anagraficaDominio.getUrlSitoWeb());
-			input.setEntePeo(anagraficaDominio.getEmail());
-			input.setEntePec(anagraficaDominio.getPec());
+			input.setSettoreEnte(anagraficaDominio.getArea());
+			infoEnte.setWeb(anagraficaDominio.getUrlSitoWeb());
+			infoEnte.setEmail(anagraficaDominio.getEmail());
+			infoEnte.setPec(anagraficaDominio.getPec());
 		}
+
+		input.setAutorizzazione(dominio.getAutStampaPoste());
+		input.setInfoEnte(infoEnte);
+		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
+		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
+			input.setLogoEnte(new String(dominio.getLogo()));
 		return dominio;
 	}
 
@@ -208,40 +236,161 @@ public class AvvisoPagamento extends BasicBD {
 			String provinciaDebitore = StringUtils.isNotEmpty(anagraficaDebitore.getProvincia()) ? (" (" +anagraficaDebitore.getProvincia() +")" ) : "";
 			String indirizzoCivicoDebitore = indirizzoDebitore + " " + civicoDebitore;
 			String capCittaDebitore = capDebitore + " " + localitaDebitore + provinciaDebitore;
+
+			String indirizzoDestinatario = indirizzoCivicoDebitore + ",";
+			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
+			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco());
 			
-			input.setIntestatarioDenominazione(anagraficaDebitore.getRagioneSociale());
-			input.setIntestatarioIdentificativo(anagraficaDebitore.getCodUnivoco());
-			input.setIntestatarioIndirizzo1(indirizzoCivicoDebitore);
-			input.setIntestatarioIndirizzo2(capCittaDebitore);
+			if(indirizzoDestinatario.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
+				input.setIndirizzoDestinatario1(indirizzoDestinatario);
+			}else {
+				input.setIndirizzoDestinatario1(indirizzoDestinatario);
+			}
+			
+			if(capCittaDebitore.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
+				input.setIndirizzoDestinatario2(capCittaDebitore);
+			}else {
+				input.setIndirizzoDestinatario2(capCittaDebitore);
+			}
 		}
 	}
-	
+
 	public String splitString(String start) {
 		if(start == null || start.length() <= 4)
 			return start;
-		
+
 		int length = start.length();
 		int bonusSpace = length / 4;
 		int charCount = 0;
 		int iteration = 1;
 		char [] tmp = new char[length + bonusSpace];
-		
+
 		for (int i = length -1; i >= 0; i --) {
 			char c = start.charAt(i);
 			tmp[charCount ++] = c;
-			
+
 			if(iteration % 4 == 0) {
 				tmp[charCount ++] = ' ';
 			}
-			
+
 			iteration ++;
 		}
 		if(length % 4 == 0)
 			charCount --;
-		
+
 		String toRet = new String(tmp, 0, charCount); 
 		toRet = StringUtils.reverse(toRet);
-		
+
 		return toRet;
+	}
+
+
+	private String creaDataMatrix(String numeroAvviso, String numeroCC, double importo, String codDominio, String cfDebitore, String denominazioneDebitore, String causale) {
+
+		String importoInCentesimi = getImportoInCentesimi(importo);
+		String codeLine = createCodeLine(numeroAvviso, numeroCC, importoInCentesimi);
+		//		log.debug("CodeLine ["+codeLine+"] Lunghezza["+codeLine.length()+"]");
+		String cfDebitoreFilled = getCfDebitoreFilled(cfDebitore);
+		String denominazioneDebitoreFilled = getDenominazioneDebitoreFilled(denominazioneDebitore);
+		String causaleFilled = getCausaleFilled(causale);
+
+		String dataMatrix = MessageFormat.format(AvvisoPagamentoCostanti.PATTERN_DATAMATRIX, codeLine, codDominio, cfDebitoreFilled, denominazioneDebitoreFilled, causaleFilled, AvvisoPagamentoCostanti.FILLER_DATAMATRIX);
+		//		log.debug("DataMatrix ["+dataMatrix+"] Lunghezza["+dataMatrix.length()+"]"); 
+		return dataMatrix;
+	}
+
+	private String createCodeLine(String numeroAvviso, String numeroCC, String importoInCentesimi) {
+		return MessageFormat.format(AvvisoPagamentoCostanti.PATTERN_CODELINE, numeroAvviso,numeroCC,importoInCentesimi);
+	}
+
+	private String fillSx(String start, String charToFillWith, int lunghezza) {
+		int iterazioni = lunghezza - start.length();
+
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < iterazioni; i++) {
+			sb.append(charToFillWith);
+		}
+		sb.append(start);
+
+		return sb.toString();
+	}
+
+	private String fillDx(String start, String charToFillWith, int lunghezza) {
+		int iterazioni = lunghezza - start.length();
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(start);
+		for (int i = 0; i < iterazioni; i++) {
+			sb.append(charToFillWith);
+		}
+
+		return sb.toString();
+	}
+
+	private String getNumeroCCDaIban(String iban) {
+		return iban.substring(iban.length() - 12, iban.length());
+	}
+
+	private String getImportoInCentesimi(double importo) {
+		int tmpImporto = (int) (importo  * 100);
+		String stringImporto = Integer.toString(tmpImporto);
+
+		if(stringImporto.length() == AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_IMPORTO)
+			return stringImporto.toUpperCase();
+
+		if(stringImporto.length() > AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_IMPORTO) {
+			return stringImporto.substring(0, AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_IMPORTO).toUpperCase();
+		}
+
+
+		return fillSx(stringImporto, "0", AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_IMPORTO).toUpperCase();
+	}
+
+	private String getCfDebitoreFilled(String cfDebitore) {
+		if(cfDebitore.length() == AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CF_DEBITORE)
+			return cfDebitore.toUpperCase();
+
+		if(cfDebitore.length() > AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CF_DEBITORE) {
+			return cfDebitore.substring(0, AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CF_DEBITORE).toUpperCase();
+		}
+
+
+		return fillDx(cfDebitore, " ", AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CF_DEBITORE).toUpperCase();
+	}
+
+	/***
+	 * numero caratteri denominazione debitore 40
+	 * @param denominazioneDebitore
+	 * @return
+	 */
+	private String getDenominazioneDebitoreFilled(String denominazioneDebitore) {
+		if(denominazioneDebitore.length() == AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_ANAGRAFICA_DEBITORE)
+			return denominazioneDebitore.toUpperCase();
+
+		if(denominazioneDebitore.length() > AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_ANAGRAFICA_DEBITORE) {
+			return denominazioneDebitore.substring(0, AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_ANAGRAFICA_DEBITORE).toUpperCase();
+		}
+
+
+		return fillDx(denominazioneDebitore, " ", AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_ANAGRAFICA_DEBITORE).toUpperCase();
+	}
+
+	/**
+	 * numero caratteri del campo causale 110
+	 * @param causale
+	 * @return
+	 */
+	private String getCausaleFilled(String causale) {
+		if(causale.length() == AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CAUSALE)
+			return causale.toUpperCase();
+
+		if(causale.length() > AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CAUSALE) {
+			return causale.substring(0, AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CAUSALE).toUpperCase();
+		}
+
+
+		return fillDx(causale, " ", AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CAUSALE).toUpperCase();
 	}
 }

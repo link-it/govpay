@@ -162,7 +162,7 @@ public class Rendicontazioni extends BasicBD {
 						} catch (Exception e) {
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + e + ".");
-							log.error("Richiesta flusso  rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + e);
+							log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + e);
 							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", e.getMessage());
 							errori = true;
 							continue;

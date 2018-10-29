@@ -372,11 +372,14 @@ public class RrUtils extends NdpValidationUtils {
 				pagamentiBD.updatePagamento(pagamento);
 				
 				sv = pagamento.getSingoloVersamento(bd);
-				versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.ANOMALO);
-				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), StatoSingoloVersamento.ANOMALO.toString());
+				
+				// TODO gestire lo storno di un pagamento doppio o storno parziale
+				
+				versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.NON_ESEGUITO);
+				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), StatoSingoloVersamento.NON_ESEGUITO.toString());
 			}
-			versamentiBD.updateStatoVersamento(v.getId(), StatoVersamento.ANOMALO, "Pagamenti stornati");
-			v.setStatoVersamento(StatoVersamento.ANOMALO);
+			versamentiBD.updateStatoVersamento(v.getId(), StatoVersamento.NON_ESEGUITO, "Pagamenti stornati");
+			v.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 		}
 		
 		Notifica notifica = new Notifica(rr, TipoNotifica.RICEVUTA, bd);

@@ -14,6 +14,12 @@
        <normal><![CDATA[fonts/TitilliumWeb-Bold.ttf]]></normal>
        <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
    </fontFamily>
+   
+   
+   <fontFamily name="TitilliumWeb-Black">
+       <normal><![CDATA[fonts/TitilliumWeb-Black.ttf]]></normal>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
 
 
 </fontFamilies>

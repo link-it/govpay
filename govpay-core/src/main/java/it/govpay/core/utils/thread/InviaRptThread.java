@@ -20,9 +20,6 @@
 package it.govpay.core.utils.thread;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -75,10 +72,8 @@ public class InviaRptThread implements Runnable {
 			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", this.rpt.getCcp()));
 			
 			ctx.log("pagamento.invioRptAttivata");
-			
-			List<Rpt> rpts = new ArrayList<>();
-			rpts.add(this.rpt);
-			Risposta risposta = RptUtils.inviaCarrelloRPT(this.rpt.getIntermediario(bd), this.rpt.getStazione(bd), rpts, bd);
+				
+			Risposta risposta = RptUtils.inviaRPT(rpt, bd);
 
 			if(bd == null) {
 				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

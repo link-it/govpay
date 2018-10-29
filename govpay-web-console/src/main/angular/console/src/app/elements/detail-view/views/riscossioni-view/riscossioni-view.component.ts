@@ -47,7 +47,7 @@ export class RiscossioniViewComponent implements IModalDialog, OnInit {
     _dettaglio.push(new Dato({ label: Voce.IUV, value: this.json.iuv }));
     _dettaglio.push(new Dato({ label: Voce.IUR, value: this.json.iur }));
     _dettaglio.push(new Dato({ label: Voce.IMPORTO, value: this.us.currencyFormat(this.json.importo) }));
-    let _date = UtilService.defaultDisplay({ value: moment(this.json.data).format('DD/MM/YYYY [ore] HH:mm') });
+    let _date = this.json.data?moment(this.json.data).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
     _dettaglio.push(new Dato({ label: Voce.DATA_ESECUZIONE_RISCOSSIONE, value: _date }));
     _dettaglio.push(new Dato({ label: Voce.ID_PENDENZA, value: this.json.idVocePendenza }));
     _dettaglio.push(new Dato({ label: Voce.INDICE_PENDENZA, value: this.json.indice }));

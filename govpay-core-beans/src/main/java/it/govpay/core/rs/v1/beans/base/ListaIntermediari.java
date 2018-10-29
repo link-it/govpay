@@ -5,9 +5,9 @@ import java.util.List;
 
 import it.govpay.core.rs.v1.beans.Lista;
 
-public class ListaIntermediari extends Lista<Intermediario> {
+public class ListaIntermediari extends Lista<IntermediarioIndex> {
 	
-	public ListaIntermediari(List<Intermediario> incassi, URI requestUri, long count, long offset, long limit) {
+	public ListaIntermediari(List<IntermediarioIndex> incassi, URI requestUri, long count, long offset, long limit) {
 		super(incassi, requestUri, count, offset, limit);
 	}
 	

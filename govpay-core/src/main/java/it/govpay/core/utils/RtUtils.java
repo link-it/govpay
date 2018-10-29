@@ -42,11 +42,13 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -308,12 +310,15 @@ public class RtUtils extends NdpValidationUtils {
 		
 		boolean irregolare = false;
 		String irregolarita = null; 
+		String pagamentiNote = "";
 		for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
 
 			// Se non e' stato completato un pagamento, non faccio niente.
 			if(ctDatiSingoloPagamentoRT.getSingoloImportoPagato().compareTo(BigDecimal.ZERO) == 0)
 				continue;
+			
+			pagamentiNote += "[" +(indice+1) + "/" + ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione() + "/" + ctDatiSingoloPagamentoRT.getSingoloImportoPagato() + "]";
 			
 			SingoloVersamento singoloVersamento = singoliVersamenti.get(indice);
 			
@@ -360,90 +365,100 @@ public class RtUtils extends NdpValidationUtils {
 			
 			// Se ho solo aggiornato un pagamento che gia' c'era, non devo fare altro.
 			// Se gli importi corrispondono e lo stato era da pagare, il singoloVersamento e' eseguito. Altrimenti irregolare.
+			
 			if(insert) {
 				if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO) && singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) == 0)
 				    singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ESEGUITO);
 				else {
 					List<String> anomalie = new ArrayList<>();
 					
-					if(!singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO)) {
-						irregolarita = "La voce del versamento [CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento e' in stato [" + singoloVersamento.getStatoSingoloVersamento().toString() + "].";
+					if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.ESEGUITO)) {
+						irregolarita = "Acquisito pagamento duplicato";
 						anomalie.add(irregolarita);
 						log.warn(irregolarita);
 					}
 					
 					if(singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) != 0) {
-						irregolarita = "La voce del versamento [CodSingoloVersamentoEnte:" + singoloVersamento.getCodSingoloVersamentoEnte() + "] a cui riferisce il pagamento presenta un importo [" + singoloVersamento.getImportoSingoloVersamento() + "] che non corrisponde a quanto pagato [" + pagamento.getImportoPagato() + "].";
+						irregolarita = "L'importo pagato non corrisponde all'importo dovuto.";
 						anomalie.add(irregolarita);
 						log.warn(irregolarita);
 					}
 					ctx.log("pagamento.acquisizionePagamentoAnomalo", ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), StringUtils.join(anomalie,"\n"));
 					
-					singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ANOMALO);
 					irregolare = true;
 					
 				}
 				ctx.log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
 				versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 				pagamentiBD.insertPagamento(pagamento);
-				
-				switch (rpt.getEsitoPagamento()) {
-				case PAGAMENTO_ESEGUITO:
-					switch (versamento.getStatoVersamento()) {
-					case ANNULLATO:
-					case NON_ESEGUITO:
-						if(!irregolare) {
-							versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
-							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-						} else {
-							versamento.setStatoVersamento(StatoVersamento.ANOMALO);
-							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), irregolarita);
-						}
-						break;
-					case ANOMALO:
-						break;
-					default:
-						versamento.setStatoVersamento(StatoVersamento.ANOMALO);
-						if(irregolare)
-							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), irregolarita);
-						else
-							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), "Acquisita una RT di PAGAMENTO_ESEGUITO (ccp:"+rpt.getCcp()+") con il versamento in stato " + versamento.getStatoVersamento().name());
-						break;
-					}
-					break;
-					
-				case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-				case DECORRENZA_TERMINI_PARZIALE:
-					switch (versamento.getStatoVersamento()) {
-					case ANNULLATO:
-					case NON_ESEGUITO:
-						if(!irregolare) {
-							versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
-							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-						} else {
-							versamento.setStatoVersamento(StatoVersamento.ANOMALO);
-							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), irregolarita);
-						}
-					case ANOMALO:
-						break;
-					default:
-						versamento.setStatoVersamento(StatoVersamento.ANOMALO);
-						if(irregolare)
-							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), irregolarita);
-						else
-							versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), "Acquisita una RT di PAGAMENTO_ESEGUITO (ccp:"+rpt.getCcp()+") con il versamento in stato " + versamento.getStatoVersamento().name());
-						break;
-					}
-					break;
-				case DECORRENZA_TERMINI:
-				case PAGAMENTO_NON_ESEGUITO:
-					break;
-				}	
 			}
 			else 
 				ctx.log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 				pagamentiBD.updatePagamento(pagamento);
 		}
+		
+		switch (rpt.getEsitoPagamento()) {
+		case PAGAMENTO_ESEGUITO:
+			versamento.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento eseguito", "Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote));
+			
+			switch (versamento.getStatoVersamento()) {
+				case ANNULLATO:
+				case NON_ESEGUITO:
+					versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
+					if(irregolare) {
+						versamento.setAnomalo(true);
+						versamento.setDescrizioneStato(irregolarita);
+					}
+					break;
+				default:
+					versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
+					if(irregolare) {
+						versamento.setDescrizioneStato(irregolarita);
+					}
+					versamento.setAnomalo(true);
+			}
+			
+			try { 
+				versamentiBD.updateVersamento(versamento);
+			} catch (NotFoundException nfe) {
+				// Impossibile, l'ho trovato prima
+			}
+			break;
+			
+		case PAGAMENTO_PARZIALMENTE_ESEGUITO:
+		case DECORRENZA_TERMINI_PARZIALE:
+			versamento.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento parzialmente eseguito", "Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote));
+			
+			switch (versamento.getStatoVersamento()) {
+				case ANNULLATO:
+				case NON_ESEGUITO:
+					versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
+					if(irregolare) {
+						versamento.setAnomalo(true);
+						versamento.setDescrizioneStato(irregolarita);
+					}
+					break;
+				default:
+					versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
+					if(irregolare) {
+						versamento.setDescrizioneStato(irregolarita);
+					}
+					versamento.setAnomalo(true);
+			}
+			
+			try { 
+				versamentiBD.updateVersamento(versamento);
+			} catch (NotFoundException nfe) {
+				// Impossibile, l'ho trovato prima
+			}
+			break;
+			
+		case DECORRENZA_TERMINI:
+		case PAGAMENTO_NON_ESEGUITO:
+			break;
+		}	
+		
+		
 		
 		// Aggiornamento dello stato del pagamento portale associato all'RPT
 		Long idPagamentoPortale = rpt.getIdPagamentoPortale();

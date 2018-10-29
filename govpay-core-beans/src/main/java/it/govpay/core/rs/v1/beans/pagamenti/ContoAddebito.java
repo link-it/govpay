@@ -111,7 +111,7 @@ public class ContoAddebito extends JSONSerializable implements IValidable {
 public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
 	  vf.getValidator("iban", this.iban).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
-	  vf.getValidator("iban", this.iban).pattern("[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}");
+	  vf.getValidator("bic", this.bic).pattern("[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}");
   }
   
 }

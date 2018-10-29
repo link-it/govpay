@@ -241,7 +241,7 @@ public enum EsitoOperazione {
      * 
      */
     PAG_010,
-
+    
     /**
      * Nessun pagamento da stornare
      * 
@@ -252,6 +252,12 @@ public enum EsitoOperazione {
      * 
      */
     PAG_012,
+    
+    /**
+     * Utilizzo del gateway senza URL di ritorno
+     * 
+     */
+    PAG_013,
 
     /**
      * Portale inesistente

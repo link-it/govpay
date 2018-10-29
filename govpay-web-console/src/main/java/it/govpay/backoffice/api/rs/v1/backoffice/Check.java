@@ -49,6 +49,7 @@ import it.govpay.backoffice.api.rs.v1.backoffice.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.ElencoSonde;
 import it.govpay.backoffice.api.rs.v1.backoffice.sonde.SommarioSonda;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.business.Operazioni;
 
@@ -61,31 +62,42 @@ public class Check {
 	public Response verificaSonde() {
 		BasicBD bd = null;
 		Logger log = LoggerWrapperFactory.getLogger(Check.class);
+		
 		try {
+			
+			ElencoSonde elenco = new ElencoSonde();
+			
+			
+		
 			try {
 				bd = BasicBD.newInstance(UUID.randomUUID().toString());
+				new IntermediariBD(bd).getIntermediari();
+				SommarioSonda dettaglioSonda = new SommarioSonda();
+				dettaglioSonda.setStato(0);
+				dettaglioSonda.setDescrizioneStato("Servizio database raggiungibile");
+				dettaglioSonda.setNome("check-db");
+				elenco.getItems().add(dettaglioSonda);
 				
 				List<Sonda> sonde = SondaFactory.findAll(bd.getConnection(), bd.getJdbcProperties().getDatabase());
-				
-				ElencoSonde elenco = new ElencoSonde();
+
 				for(Sonda sonda: sonde) {
 					sonda.getStatoSonda();
 					SommarioSonda sommarioSonda = new SommarioSonda();
 					StatoSonda statoSonda = sonda.getStatoSonda();
 					ParametriSonda parametri = sonda.getParam();
 					parametri.getDatiCheck();
-					
+
 					try (
 							StringWriter writer  = new StringWriter();
 							PrintWriter printWriter = new PrintWriter(writer); 	
-						){
+							){
 						parametri.getDatiCheck().list(printWriter);
 						StringBuffer sb = new StringBuffer(parametri.getNome());
 						sb.append(": ").append(writer.getBuffer().toString());
 						String msg = sb.toString();
 						log.info(msg);
 					}
-					
+
 					sommarioSonda.setNome(parametri.getNome());
 					try {
 						sommarioSonda.setStato(statoSonda.getStato());
@@ -97,18 +109,22 @@ public class Check {
 					}
 					elenco.getItems().add(sommarioSonda);
 				}
-				return Response.ok(elenco).build();
 			} catch(ServiceException e) {
+				SommarioSonda dettaglioSonda = new SommarioSonda();
+				dettaglioSonda.setStato(2);
+				dettaglioSonda.setDescrizioneStato("Servizio database non disponibile: " + e.getMessage());
+				dettaglioSonda.setNome("check-db");
+				elenco.getItems().add(dettaglioSonda);
 				log.error("Errore durante la verifica delle sonde", e);
-				throw new Exception("Errore durante la verifica delle sonde");
 			} finally {
 				if(bd!= null) bd.closeConnection();
 			}
+			return Response.ok(elenco).build();
 		} catch (Exception e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		} 
 	}
-	
+
 	private Sonda getSonda(BasicBD bd, CheckSonda checkSonda) throws SondaException, ServiceException, NotFoundException {
 		Sonda sonda = SondaFactory.get(checkSonda.getName(), bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		if(sonda == null)
@@ -123,36 +139,58 @@ public class Check {
 		}
 		return sonda;
 	}
-	
+
 	@GET
 	@Path("/{nome}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response verificaSonda(@PathParam(value = "nome") String nome) {
 		BasicBD bd = null;
 		Logger log = LoggerWrapperFactory.getLogger(Check.class);
+		
+		if(nome.equals("check-db")) {
+			DettaglioSonda dettaglioSonda = new DettaglioSonda(TipoSonda.Sconosciuto);
+			dettaglioSonda.setNome("check-db");
+			dettaglioSonda.setDataUltimoCheck(new Date());
+			try {
+				bd = BasicBD.newInstance(UUID.randomUUID().toString());
+				new IntermediariBD(bd).getIntermediari();
+				
+				dettaglioSonda.setStato(0);
+				dettaglioSonda.setDescrizioneStato("Servizio database raggiungibile");
+				
+				return Response.ok(dettaglioSonda).build();
+			} catch(Exception e) {
+				dettaglioSonda.setStato(2);
+				dettaglioSonda.setDescrizioneStato("Servizio database non disponibile: " + e.getMessage());
+				dettaglioSonda.setNome("check-db");
+				return Response.ok(dettaglioSonda).build();
+			} finally {
+				if(bd!= null) bd.closeConnection();
+			}
+		}
 		try {
 			try {
 				bd = BasicBD.newInstance(UUID.randomUUID().toString());
 				CheckSonda checkSonda = CheckSonda.getCheckSonda(nome);
-				
+
 				if(checkSonda == null)
 					return Response.status(404).entity("Sonda con nome ["+nome+"] non configurata").build();
-				
+
 				DettaglioSonda dettaglioSonda = null;
 				try {
 					Sonda sonda = this.getSonda(bd, checkSonda);
 					dettaglioSonda = new DettaglioSonda(sonda.getClass());
 					ParametriSonda param = sonda.getParam();
 					dettaglioSonda.setNome(param.getNome());
-					
+
 					StatoSonda statoSonda = sonda.getStatoSonda();
 					dettaglioSonda.setStato(statoSonda.getStato());
 					dettaglioSonda.setDescrizioneStato(statoSonda.getDescrizione());
-					
+
 					if(statoSonda.getStato() == 0) dettaglioSonda.setDurataStato(param.getDataOk());
 					if(statoSonda.getStato() == 1) dettaglioSonda.setDurataStato(param.getDataWarn());
 					if(statoSonda.getStato() == 2) dettaglioSonda.setDurataStato(param.getDataError());
-					
+
 					dettaglioSonda.setDataUltimoCheck(param.getDataUltimoCheck());
 					dettaglioSonda.setSogliaError(param.getSogliaError());
 					dettaglioSonda.setSogliaWarn(param.getSogliaWarn());
@@ -204,7 +242,7 @@ public class Check {
 		public void setUltimo_aggiornamento(Date ultimo_aggiornamento) {
 			this.ultimo_aggiornamento = ultimo_aggiornamento;
 		}
-		
+
 		@Override
 		public String toString() {
 			if(this.codice_stato == 0) return "OK";
@@ -213,6 +251,6 @@ public class Check {
 			return "ERRORE!!";
 		}
 	}
-	
+
 }
 

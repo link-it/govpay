@@ -3,6 +3,7 @@ import { Standard } from './standard';
 export class StandardCollapse extends Standard {
 
   motivo: string = null;
+  elenco: any[] = null;
 
   constructor (_data?: any) {
 

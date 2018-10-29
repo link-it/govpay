@@ -56,6 +56,8 @@ public class UoModel extends AbstractModel<Uo> {
 		this.UO_URL_SITO_WEB = new Field("uoUrlSitoWeb",java.lang.String.class,"Uo",Uo.class);
 		this.UO_EMAIL = new Field("uoEmail",java.lang.String.class,"Uo",Uo.class);
 		this.UO_PEC = new Field("uoPec",java.lang.String.class,"Uo",Uo.class);
+		this.UO_TEL = new Field("uoTel",java.lang.String.class,"Uo",Uo.class);
+		this.UO_FAX = new Field("uoFax",java.lang.String.class,"Uo",Uo.class);
 	
 	}
 	
@@ -78,6 +80,8 @@ public class UoModel extends AbstractModel<Uo> {
 		this.UO_URL_SITO_WEB = new ComplexField(father,"uoUrlSitoWeb",java.lang.String.class,"Uo",Uo.class);
 		this.UO_EMAIL = new ComplexField(father,"uoEmail",java.lang.String.class,"Uo",Uo.class);
 		this.UO_PEC = new ComplexField(father,"uoPec",java.lang.String.class,"Uo",Uo.class);
+		this.UO_TEL = new ComplexField(father,"uoTel",java.lang.String.class,"Uo",Uo.class);
+		this.UO_FAX = new ComplexField(father,"uoFax",java.lang.String.class,"Uo",Uo.class);
 	
 	}
 	
@@ -112,6 +116,10 @@ public class UoModel extends AbstractModel<Uo> {
 	public IField UO_EMAIL = null;
 	 
 	public IField UO_PEC = null;
+	 
+	public IField UO_TEL = null;
+	 
+	public IField UO_FAX = null;
 	 
 
 	@Override

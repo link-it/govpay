@@ -18,7 +18,7 @@ tags:
   - name: Operatori
     description: Anagrafica degli Operatori    
   - name: Ruoli
-    description: Ruoli autorizzativi previsti in GovPay     
+    description: Ruoli autorizzativi previsti in GovPay
   - name: Pagamenti
     description: Pagamenti gestiti dalla piattaforma
   - name: Pendenze
@@ -39,6 +39,8 @@ tags:
     description: Operazioni per l'utente autenticato
   - name: Tracciati
     description: Operazioni sui tracciati
+  - name: Info
+    description: Informazioni di configurazione del cruscotto
 security:
   - basicAuth: []    
 paths:
@@ -1607,6 +1609,24 @@ paths:
           $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
+  '/info':
+    get:
+      summary: Informazioni sul prodotto Govpay
+      tags:
+        - Info
+      responses:
+        '200':
+          description: Informazioni sull'installazione corrente di Govpay
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/infoGovPay'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
   '/pagamenti':
     get:
       summary: Lista dei pagamenti
@@ -1787,6 +1807,7 @@ paths:
               $ref: '#/components/schemas/tracciatoPendenzePost'
           multipart/form-data:
             schema:
+              type: object
               properties:
                 fileName:
                   type: string
@@ -1960,16 +1981,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-              - stato
-              properties:
-                stato:
-                  $ref: '#/components/schemas/statoPendenza'
-                descrizioneStato:
-                  description: Causale del cambio di stato.
-                  example: Annullata
-                  type: string
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
       responses:
         '200':
           description: Pendenza aggiornata con successo
@@ -3216,6 +3231,14 @@ components:
           type: boolean
           description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
           example: 'true'
+        autStampaPosteItaliane:
+          type: string
+          description: numero di autorizzazione per la stampa in proprio rilasciato da poste italiane
+          example: AUT. DB/xxxx/xxx xxxxx DEL xx/xx/xxxx
+        area:
+          type: string
+          description: Nome dell'area di competenza del dominio
+          example: Affari generali e istituzionali 
     dominioIndex:
       type: object
       allOf:
@@ -3896,8 +3919,12 @@ components:
           example: 10.01
         numeroAvviso:
           type: string
-          description: Identificativo univoco versamento, assegnato se pagabile da psp
-          example: 123456789012345678
+          description: Numero avviso, assegnato se pagabile da psp
+          example: 001000000000012345
+        iuvAvviso:
+          type: string
+          description: Iuv avviso, assegnato se pagabile da psp
+          example: 000000000012345
         dataCaricamento:
           type: string
           format: date
@@ -3930,6 +3957,10 @@ components:
           example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/tassonomiaAvviso'
+        iuvPagamento:
+          type: string
+          description: Iuv dell'ultimo pagamento eseguito con successo 
+          example: 000000000012345
     pendenzaPut:
       type: object
       allOf:
@@ -4360,6 +4391,9 @@ components:
         testo:
           description: allegato codificato in base64
           type: string
+        contenuto:
+          description: allegato decodificato, se previsto
+          type: object
     flussoRendicontazioneIndex:
       type: object
       required:
@@ -5305,7 +5339,6 @@ components:
             - $ref: '#/components/schemas/annullamentoPendenza'
         risposta:
           $ref: '#/components/schemas/esitoOperazionePendenza'
-          
     tracciatoPendenzePost:
       type: object
       required:
@@ -5407,3 +5440,28 @@ components:
           oneOf:
             - $ref: '#/components/schemas/avviso'
             - $ref: '#/components/schemas/faultBean'
+    infoGovPay:
+      type: object
+      required:
+        - appName
+        - versione
+        - build
+        - ambiente
+      properties:
+        appName:
+          type: string
+          description: Nome da visualizzare sul browser
+          example: "GovPay"
+        versione:
+          type: string
+          description: Versione di Govpay installata
+          example: "3.0.0"
+        build:
+          type: string
+          description: Numero build di Govpay installata
+          example: "Numero Build: 3dfre546"
+        ambiente:
+          type: string
+          description: ambiente destinazione del Govpay
+          example: "produzione"
+      

@@ -2,16 +2,21 @@ package it.govpay.rs.v1.beans.converter;
 
 import java.math.BigDecimal;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.xml.sax.SAXException;
 
+import it.gov.agenziaentrate._2014.marcadabollo.TipoMarcaDaBollo;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.core.rs.v1.beans.base.Allegato;
 import it.govpay.core.rs.v1.beans.base.Allegato.TipoEnum;
 import it.govpay.core.rs.v1.beans.base.Riscossione;
 import it.govpay.core.rs.v1.beans.base.StatoRiscossione;
 import it.govpay.core.rs.v1.beans.base.TipoRiscossione;
+import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
@@ -54,7 +59,16 @@ public class RiscossioniConverter {
 			Allegato allegato = new Allegato();
 			allegato.setTesto(Base64.encodeBase64String(input.getAllegato()));
 			if(input.getTipoAllegato() != null)
-				allegato.setTipo(TipoEnum.fromValue(input.getTipoAllegato().toString()));
+				allegato.setTipo(TipoEnum.fromCodifica(input.getTipoAllegato().toString()));
+			
+			if(allegato.getTipo() != null && allegato.getTipo().equals(TipoEnum.MARCA_DA_BOLLO)) {
+				byte[] xmlMarca = input.getAllegato();
+				try {
+					allegato.setContenuto(JaxbUtils.toMarcaDaBollo(xmlMarca));
+				} catch (JAXBException | SAXException e) {
+					allegato.setContenuto(new TipoMarcaDaBollo());
+				}
+			}
 			rsModel.setAllegato(allegato);
 			
 			if(input.getIncasso(null)!=null)
