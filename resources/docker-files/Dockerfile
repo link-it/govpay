@@ -8,7 +8,7 @@ ENV JBOSS_USER gpadmin
 ENV JBOSS_PASSWORD secret
 
 # Set GovPay version
-ENV GP_VERSION 3.0.0-RC1
+ENV GP_VERSION 3.0.0-RC2
 
 # Set JDBC Driver version
 ENV JDBC_VERSION 42.0.0.jre7
