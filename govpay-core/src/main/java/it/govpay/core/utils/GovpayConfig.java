@@ -89,7 +89,6 @@ public class GovpayConfig {
 	private IConservazione conservazionePlugin;
 	
 	private String urlGovpayWC = null;
-	private String urlWISP = null;
 	
 	private boolean validazioneAPIRest;
 	private boolean dumpAPIRestGETResponse;
@@ -138,9 +137,8 @@ public class GovpayConfig {
 
 			try {
 				this.resourceDir = getProperty("it.govpay.resource.path", props1, false, true, null);
-
 				if(this.resourceDir != null) {
-					File resourceDirFile = new File(this.resourceDir);
+					File resourceDirFile = new File(escape(this.resourceDir));
 					if(!resourceDirFile.isDirectory())
 						throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
 
@@ -198,16 +196,6 @@ public class GovpayConfig {
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePool = 10;
-			}
-
-			String urlPddVerificaProperty = getProperty("it.govpay.check.urlVerificaPDD", this.props, false, log);
-
-			if(urlPddVerificaProperty != null) {
-				try {
-					this.urlPddVerifica = new URL(urlPddVerificaProperty.trim());
-				} catch (Exception e) {
-					log.warn("Valore ["+urlPddVerificaProperty.trim()+"] non consentito per la property \"it.govpay.check.urlVerificaPDD\": " +e.getMessage());
-				}
 			}
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", this.props, false, log);
@@ -309,8 +297,6 @@ public class GovpayConfig {
 			}
 			
 			this.urlGovpayWC = getProperty("it.govpay.wc.url", this.props, false, log);
-			this.urlWISP = getProperty("it.govpay.wisp.url", this.props, false, log);
-			
 
 			String batchAvvisiPagamentoStampaAvvisiString = getProperty("it.govpay.batch.avvisiPagamento.stampaAvvisiPagamento", this.props, false, log);
 			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
@@ -402,6 +388,10 @@ public class GovpayConfig {
 		else 
 			return null;
 	}
+	
+	private String escape(String string) {
+		return string.replaceAll("\\", "\\\\");
+	}
 
 	public VersioneAvviso getVersioneAvviso() {
 		return this.versioneAvviso;
@@ -487,10 +477,6 @@ public class GovpayConfig {
 		return this.urlGovpayWC;
 	}
 
-	public String getUrlWISP() {
-		return this.urlWISP;
-	}
-	
 	public boolean isBatchAvvisiPagamento() {
 		return this.batchAvvisiPagamento;
 	}
