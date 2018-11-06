@@ -1,4 +1,4 @@
-VERSION=3.0.0-RC2
+VERSION=3.0.0-RC3-SNAPSHOT
 
 mvn -f ../../pom.xml -Denv=installer_template clean install
 
