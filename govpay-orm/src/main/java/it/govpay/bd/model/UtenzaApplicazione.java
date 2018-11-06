@@ -29,11 +29,6 @@ public class UtenzaApplicazione extends Utenza {
 		return TIPO_UTENZA.APPLICAZIONE;
 	}
 
-	@Override
-	public String getIdentificativo() {
-		return this.getCodApplicazione();
-	}
-
 	private static final long serialVersionUID = 1L;
 	
 	private transient String codApplicazione;
@@ -42,8 +37,8 @@ public class UtenzaApplicazione extends Utenza {
 		return codApplicazione;
 	}
 
-	public void setCodApplicazione(String codApplicazione) {
-		this.codApplicazione = codApplicazione;
-	}
+//	public void setCodApplicazione(String codApplicazione) {
+//		this.codApplicazione = codApplicazione;
+//	}
 
 }
