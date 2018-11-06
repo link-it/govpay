@@ -223,13 +223,22 @@ CREATE TABLE tipi_tributo
 	tipo_contabilita VARCHAR2(1 CHAR),
 	cod_contabilita VARCHAR2(255 CHAR),
 	cod_tributo_iuv VARCHAR2(4 CHAR),
+	online VARCHAR2(4 CHAR) NOT NULL,
+	paga_terzi VARCHAR2(4 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	-- check constraints
+	CONSTRAINT chk_tipi_tributo_1 CHECK (online IN ('SI','NO')),
+	CONSTRAINT chk_tipi_tributo_2 CHECK (paga_terzi IN ('SI','NO')),
 	-- unique constraints
 	CONSTRAINT unique_tipi_tributo_1 UNIQUE (cod_tributo),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_tipi_tributo PRIMARY KEY (id)
 );
+
+
+ALTER TABLE tipi_tributo MODIFY online DEFAULT 'NO';
+ALTER TABLE tipi_tributo MODIFY paga_terzi DEFAULT 'NO';
 
 CREATE TRIGGER trg_tipi_tributo
 BEFORE
@@ -253,12 +262,17 @@ CREATE TABLE tributi
 	tipo_contabilita VARCHAR2(1 CHAR),
 	codice_contabilita VARCHAR2(255 CHAR),
 	cod_tributo_iuv VARCHAR2(4 CHAR),
+        online VARCHAR2(4 CHAR),
+	paga_terzi VARCHAR2(4 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
 	id_iban_accredito NUMBER,
 	id_iban_appoggio NUMBER,
 	id_tipo_tributo NUMBER NOT NULL,
+	-- check constraints
+	CONSTRAINT chk_tributi_1 CHECK (online IN ('SI','NO')),
+	CONSTRAINT chk_tributi_2 CHECK (paga_terzi IN ('SI','NO')),
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
@@ -636,7 +650,6 @@ CREATE SEQUENCE seq_pagamenti_portale MINVALUE 1 MAXVALUE 9223372036854775807 ST
 
 CREATE TABLE pagamenti_portale
 (
-	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
 	cod_canale VARCHAR2(35 CHAR),
 	nome VARCHAR2(255 CHAR) NOT NULL,
 	importo BINARY_DOUBLE NOT NULL,
@@ -662,6 +675,8 @@ CREATE TABLE pagamenti_portale
 	ack NUMBER NOT NULL,
 	note CLOB,
 	tipo NUMBER NOT NULL,
+	principal VARCHAR2(4000 CHAR) NOT NULL,
+	tipo_utenza VARCHAR2(35 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints

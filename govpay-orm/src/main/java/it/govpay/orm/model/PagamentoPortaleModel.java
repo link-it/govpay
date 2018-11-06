@@ -41,7 +41,6 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	
 		super();
 	
-		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.COD_CANALE = new Field("codCanale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.NOME = new Field("nome",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.IMPORTO = new Field("importo",double.class,"PagamentoPortale",PagamentoPortale.class);
@@ -67,6 +66,8 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.ACK = new Field("ack",boolean.class,"PagamentoPortale",PagamentoPortale.class);
 		this.NOTE = new Field("note",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.TIPO = new Field("tipo",int.class,"PagamentoPortale",PagamentoPortale.class);
+		this.PRINCIPAL = new Field("principal",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.TIPO_UTENZA = new Field("tipo_utenza",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 	
 	}
 	
@@ -74,7 +75,6 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	
 		super(father);
 	
-		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.COD_CANALE = new ComplexField(father,"codCanale",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.IMPORTO = new ComplexField(father,"importo",double.class,"PagamentoPortale",PagamentoPortale.class);
@@ -100,13 +100,13 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.ACK = new ComplexField(father,"ack",boolean.class,"PagamentoPortale",PagamentoPortale.class);
 		this.NOTE = new ComplexField(father,"note",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.TIPO = new ComplexField(father,"tipo",int.class,"PagamentoPortale",PagamentoPortale.class);
+		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
+		this.TIPO_UTENZA = new ComplexField(father,"tipo_utenza",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 	
 	}
 	
 	
 
-	public IField COD_APPLICAZIONE = null;
-	 
 	public IField COD_CANALE = null;
 	 
 	public IField NOME = null;
@@ -156,6 +156,10 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	public IField NOTE = null;
 	 
 	public IField TIPO = null;
+	 
+	public IField PRINCIPAL = null;
+	 
+	public IField TIPO_UTENZA = null;
 	 
 
 	@Override

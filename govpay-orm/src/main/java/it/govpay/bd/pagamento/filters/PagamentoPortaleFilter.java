@@ -45,6 +45,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private String idSessionePsp;
 	private List<String> codDomini;
 	private Boolean ack;
+	private String cfCittadino;
 	
 	public enum SortFields {
 		DATA
@@ -114,7 +115,25 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 			}
 			
 			if(this.ack!=null) {
+				if(addAnd)
+					newExpression.and();
 				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ACK, this.ack);
+				
+				addAnd = true;
+			}
+			
+			if(this.cfCittadino!= null) {
+				if(addAnd)
+					newExpression.and();
+				
+				IExpression cfExpr = this.newExpression();
+				
+				cfExpr.equals(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.cfCittadino).or()
+					.equals(it.govpay.orm.PagamentoPortale.model().PRINCIPAL, this.cfCittadino);
+				
+				newExpression.and(cfExpr);
+				
+				addAnd = true;
 			}
 			
 			return newExpression;
@@ -213,6 +232,14 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 	public void setIdSessionePsp(String idSessionePsp) {
 		this.idSessionePsp = idSessionePsp;
+	}
+
+	public String getCfCittadino() {
+		return cfCittadino;
+	}
+
+	public void setCfCittadino(String cfCittadino) {
+		this.cfCittadino = cfCittadino;
 	}
 
 }

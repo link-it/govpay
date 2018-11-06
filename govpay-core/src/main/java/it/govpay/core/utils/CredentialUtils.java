@@ -19,8 +19,10 @@
  */
 package it.govpay.core.utils;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,19 +38,41 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaApplicazione;
+import it.govpay.bd.model.UtenzaCittadino;
+import it.govpay.model.Acl;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 
 public class CredentialUtils {
 	
 	public static Utenza getUser(HttpServletRequest request, Logger log) {
 		HttpServletCredential credential = new HttpServletCredential(request, log);
-		return getUser(credential); 
+		
+		String headerAuth = GovpayConfig.getInstance().getHeaderAuth();
+		if(headerAuth != null && request.getHeader(headerAuth) != null) {
+			String cf = request.getHeader(headerAuth);
+			Utenza user = new UtenzaCittadino(cf);
+			List<Acl> aclPrincipal = new ArrayList<>();
+			Acl acl = new Acl();
+			acl.setPrincipal(cf);
+			acl.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.SCRITTURA.getCodifica() + Diritti.ESECUZIONE.getCodifica());
+			acl.setServizio(Servizio.PAGAMENTI_E_PENDENZE); 
+			acl.getProprieta().put(AclEngine.CODICE_FISCALE_CITTADINO, cf);
+			aclPrincipal.add(acl);
+			user.setAclPrincipal(aclPrincipal);
+			user.setAbilitato(true);
+			user.setCheckSubject(false);
+			user.setPrincipalOriginale(cf);
+			user.setPrincipal(cf);
+			return user;
+		}
+		else {
+			return getUser(credential);
+		}
 	}
 
-	public static Utenza getUser(HttpServletCredential credential) {
+	private static Utenza getUser(HttpServletCredential credential) {
 		Utenza user = new UtenzaApplicazione();
-		
-
-		
 		
 		if(credential.getSubject() != null) {
 			user.setPrincipal(credential.getSubject());

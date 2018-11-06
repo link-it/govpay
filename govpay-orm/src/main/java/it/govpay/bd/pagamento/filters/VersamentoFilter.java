@@ -59,6 +59,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private Long idTracciato; 
 	private Boolean tracciatoNull; 
 	private Boolean daAvvisare; 
+	private String cfCittadino;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -156,6 +157,15 @@ public class VersamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				newExpression.ilike(Versamento.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.cfCittadino!= null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Versamento.model().DEBITORE_IDENTIFICATIVO, this.cfCittadino);
+				
 				addAnd = true;
 			}
 
@@ -461,5 +471,13 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setDaAvvisare(Boolean daAvvisare) {
 		this.daAvvisare = daAvvisare;
+	}
+	
+	public String getCfCittadino() {
+		return cfCittadino;
+	}
+
+	public void setCfCittadino(String cfCittadino) {
+		this.cfCittadino = cfCittadino;
 	}
 }

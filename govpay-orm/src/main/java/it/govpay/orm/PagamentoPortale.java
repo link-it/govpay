@@ -35,7 +35,6 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="PagamentoPortale">
  * 		&lt;sequence>
- * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importo" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
@@ -61,6 +60,8 @@ import java.io.Serializable;
  * 			&lt;element name="ack" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipo_utenza" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -75,7 +76,6 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PagamentoPortale", 
   propOrder = {
-  	"codApplicazione",
   	"codCanale",
   	"nome",
   	"importo",
@@ -100,7 +100,9 @@ import java.io.Serializable;
   	"multiBeneficiario",
   	"ack",
   	"note",
-  	"tipo"
+  	"tipo",
+  	"principal",
+  	"tipoUtenza"
   }
 )
 
@@ -122,14 +124,6 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 		this.id=id;
 	else
 		this.id=new Long(-1);
-  }
-
-  public java.lang.String getCodApplicazione() {
-    return this.codApplicazione;
-  }
-
-  public void setCodApplicazione(java.lang.String codApplicazione) {
-    this.codApplicazione = codApplicazione;
   }
 
   public java.lang.String getCodCanale() {
@@ -336,6 +330,22 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
     this.tipo = tipo;
   }
 
+  public java.lang.String getPrincipal() {
+    return this.principal;
+  }
+
+  public void setPrincipal(java.lang.String principal) {
+    this.principal = principal;
+  }
+
+  public java.lang.String getTipoUtenza() {
+    return this.tipoUtenza;
+  }
+
+  public void setTipoUtenza(java.lang.String tipoUtenza) {
+    this.tipoUtenza = tipoUtenza;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -354,10 +364,6 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
 	  return it.govpay.orm.PagamentoPortale.modelStaticInstance;
   }
 
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codApplicazione",required=true,nillable=false)
-  protected java.lang.String codApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codCanale",required=false,nillable=false)
@@ -459,5 +465,13 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="int")
   @XmlElement(name="tipo",required=true,nillable=false)
   protected int tipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="principal",required=true,nillable=false)
+  protected java.lang.String principal;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipo_utenza",required=true,nillable=false)
+  protected java.lang.String tipoUtenza;
 
 }

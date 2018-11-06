@@ -23,6 +23,15 @@ import it.govpay.core.utils.UriBuilderUtils;
 
 public class PendenzeConverter {
 	
+	public static Pendenza toRsModelConInfoIncasso(it.govpay.bd.viste.model.VersamentoIncasso versamento) throws ServiceException {
+		Pendenza rsModel = toRsModel(versamento);
+		
+		rsModel.setDataPagamento(versamento.getDataPagamento());
+		rsModel.setIuvPagamento(versamento.getIuvPagamento());
+		rsModel.setIuvAvviso(versamento.getIuvVersamento());
+		return rsModel;
+	}
+	
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		Pendenza rsModel = new Pendenza();
 		
@@ -101,6 +110,16 @@ public class PendenzeConverter {
 			list.add(a);
 		}
 		return list;
+	}
+	
+	public static PendenzaIndex toRsModelIndexConInfoIncasso(it.govpay.bd.viste.model.VersamentoIncasso versamento) throws ServiceException {
+		PendenzaIndex pIndex = toRsModelIndex(versamento);
+		pIndex.setDataPagamento(versamento.getDataPagamento());
+		pIndex.setIuvPagamento(versamento.getIuvPagamento());
+		pIndex.setIuvAvviso(versamento.getIuvVersamento());
+		pIndex.setIuvPagamento(versamento.getIuvPagamento());
+		
+		return pIndex;
 	}
 
 	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento) throws ServiceException {

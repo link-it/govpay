@@ -16,7 +16,7 @@ public enum TipoTributoOnline {
   
   
   
-  SI("SI"),
+  TRUE("true"),
   
   
   FALSE("false");

@@ -11,13 +11,8 @@ public class UtenzaOperatore extends Utenza {
 	}
 
 	@Override
-	public String getTipoUtenza() {
-		return "operatore";
-	}
-
-	@Override
-	public String getIdentificativo() {
-		return super.getPrincipal();
+	public TIPO_UTENZA getTipoUtenza() {
+		return TIPO_UTENZA.OPERATORE;
 	}
 
 	public String getNome() {
@@ -27,5 +22,4 @@ public class UtenzaOperatore extends Utenza {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
 }

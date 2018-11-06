@@ -12,6 +12,8 @@ import it.govpay.model.Acl;
 import it.govpay.model.IAutorizzato;
 
 public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
+	
+	
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,13 +23,11 @@ public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 	protected transient List<Acl> aclRuoli;
 	protected List<String> ruoli;
 
-	public String getTipoUtenza() { 
-		// TODO ABSTRACT 
-		return "";
+	public TIPO_UTENZA getTipoUtenza() { 
+		return TIPO_UTENZA.DEFAULT;
 	}
 	public String getIdentificativo() {
-		// TODO ABSTRACT 
-		return "";
+		return this.getPrincipal();
 	}
 
 	@Override

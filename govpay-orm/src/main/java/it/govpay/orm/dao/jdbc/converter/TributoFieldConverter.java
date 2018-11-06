@@ -158,11 +158,39 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tributo_iuv";
 			}
 		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.ONLINE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".online";
+			}else{
+				return "online";
+			}
+		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.PAGA_TERZI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".paga_terzi";
+			}else{
+				return "paga_terzi";
+			}
+		}
 		if(field.equals(Tributo.model().COD_TRIBUTO_IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_tributo_iuv";
 			}else{
 				return "cod_tributo_iuv";
+			}
+		}
+		if(field.equals(Tributo.model().ONLINE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".online";
+			}else{
+				return "online";
+			}
+		}
+		if(field.equals(Tributo.model().PAGA_TERZI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".paga_terzi";
+			}else{
+				return "paga_terzi";
 			}
 		}
 
@@ -217,7 +245,19 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV)){
 			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
 		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.ONLINE)){
+			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
+		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.PAGA_TERZI)){
+			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
+		}
 		if(field.equals(Tributo.model().COD_TRIBUTO_IUV)){
+			return this.toTable(Tributo.model(), returnAlias);
+		}
+		if(field.equals(Tributo.model().ONLINE)){
+			return this.toTable(Tributo.model(), returnAlias);
+		}
+		if(field.equals(Tributo.model().PAGA_TERZI)){
 			return this.toTable(Tributo.model(), returnAlias);
 		}
 

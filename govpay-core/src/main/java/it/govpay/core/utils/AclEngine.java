@@ -13,6 +13,8 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 
 public class AclEngine {
 	
+	public static final String CODICE_FISCALE_CITTADINO = "cf_cittadino";
+	
 	public static NotAuthorizedException toNotAuthorizedException(IAutorizzato user) {
 		StringBuilder sb = new StringBuilder();
 		String utenza = user != null ? user.getPrincipal() : null;
@@ -132,24 +134,34 @@ public class AclEngine {
 		boolean authorized = isAuthorized(user, servizio, listaDiritti); 
 		
 		if(authorized) {
-			if(codDominio != null) {
-				List<String> dominiAutorizzati = getDominiAutorizzati((Utenza) user, servizio, listaDiritti);
+			switch (user.getTipoUtenza()) {
+			case CITTADINO:
+				// cittadino autorizzato in maniera diversa rispetto ad applicazioni e operatori.	
+				break;
+			case APPLICAZIONE:
+			case DEFAULT:
+			case OPERATORE:
+			default:
+				if(codDominio != null) {
+					List<String> dominiAutorizzati = getDominiAutorizzati((Utenza) user, servizio, listaDiritti);
+					
+					if(dominiAutorizzati == null) 
+						return false;
+					
+					if(!dominiAutorizzati.isEmpty())
+						authorized = authorized && dominiAutorizzati.contains(codDominio);
+				}
 				
-				if(dominiAutorizzati == null) 
-					return false;
-				
-				if(!dominiAutorizzati.isEmpty())
-					authorized = authorized && dominiAutorizzati.contains(codDominio);
-			}
-			
-			if(codTributo != null) {
-				List<String> tributiAutorizzati = getTributiAutorizzati((Utenza) user, servizio, listaDiritti);
-				
-				if(tributiAutorizzati == null) 
-					return false;
-				
-				if(!tributiAutorizzati.isEmpty())
-					authorized = authorized && tributiAutorizzati.contains(codTributo);
+				if(codTributo != null) {
+					List<String> tributiAutorizzati = getTributiAutorizzati((Utenza) user, servizio, listaDiritti);
+					
+					if(tributiAutorizzati == null) 
+						return false;
+					
+					if(!tributiAutorizzati.isEmpty())
+						authorized = authorized && tributiAutorizzati.contains(codTributo);
+				}
+				break;
 			}
 		}
 		

@@ -2075,7 +2075,20 @@ components:
             segnalazioni:
               type: array
               items: 
-                $ref: '#/components/schemas/segnalazione'          
+                $ref: '#/components/schemas/segnalazione'     
+            iuvAvviso:
+              type: string
+              description: Iuv avviso, assegnato se pagabile da psp
+              example: 000000000012345
+            iuvPagamento:
+              type: string
+              description: Iuv dell'ultimo pagamento eseguito con successo 
+              example: 000000000012345
+            dataPagamento:
+              type: string
+              format: date
+              description: Data di pagamento della pendenza
+              example: '2018-12-31'
         - $ref: '#/components/schemas/pendenzaBase'   
         - type: object
           required:
@@ -2117,7 +2130,20 @@ components:
             segnalazioni:
               type: array
               items: 
-                $ref: '#/components/schemas/segnalazione'          
+                $ref: '#/components/schemas/segnalazione'
+            iuvAvviso:
+              type: string
+              description: Iuv avviso, assegnato se pagabile da psp
+              example: 000000000012345
+            iuvPagamento:
+              type: string
+              description: Iuv dell'ultimo pagamento eseguito con successo 
+              example: 000000000012345
+            dataPagamento:
+              type: string
+              format: date
+              description: Data di pagamento della pendenza
+              example: '2018-12-31'
         - $ref: '#/components/schemas/pendenzaBase'   
         - type: object
           required:

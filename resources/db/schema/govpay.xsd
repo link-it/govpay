@@ -831,6 +831,8 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codTributoIuv" type="String4" minOccurs="0"/>
+			<xsd:element name="online" type="CustomBooleanType" minOccurs="0" />
+			<xsd:element name="pagaTerzi" type="CustomBooleanType" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -856,6 +858,8 @@
 			<xsd:element name="tipoContabilita" type="String1" minOccurs="0"/>
 			<xsd:element name="codContabilita" type="String255" minOccurs="0"/>
 			<xsd:element name="codTributoIuv" type="String4" minOccurs="0"/>
+			<xsd:element name="online" type="CustomBooleanType" default="NO" />
+			<xsd:element name="pagaTerzi" type="CustomBooleanType" default="NO" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1762,7 +1766,6 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="codApplicazione" type="String35"/>
 			<xsd:element name="codCanale" type="String35" minOccurs="0"/>
 			<xsd:element name="nome" type="String255" />
 			<xsd:element name="importo" type="xsd:double" />
@@ -1812,6 +1815,8 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="tipo" type="xsd:int" />
+			<xsd:element name="principal" type="String4000" />
+			<xsd:element name="tipo_utenza" type="String35" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2460,6 +2465,13 @@
 			<xsd:enumeration value="NON_VALIDO" />
 			<xsd:enumeration value="ESEGUITO_OK" />
 			<xsd:enumeration value="ESEGUITO_KO" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="CustomBooleanType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SI" />
+			<xsd:enumeration value="NO" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	

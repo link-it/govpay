@@ -54,8 +54,6 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 				PagamentoPortale object = new PagamentoPortale();
 				this.setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setCodApplicazione", PagamentoPortale.model().COD_APPLICAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", PagamentoPortale.model().COD_APPLICAZIONE.getFieldType()));
 				this.setParameter(object, "setCodCanale", PagamentoPortale.model().COD_CANALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_canale", PagamentoPortale.model().COD_CANALE.getFieldType()));
 				this.setParameter(object, "setNome", PagamentoPortale.model().NOME.getFieldType(),
@@ -106,6 +104,10 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "note", PagamentoPortale.model().NOTE.getFieldType()));
 				this.setParameter(object, "setTipo", PagamentoPortale.model().TIPO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo", PagamentoPortale.model().TIPO.getFieldType()));
+				setParameter(object, "setPrincipal", PagamentoPortale.model().PRINCIPAL.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "principal", PagamentoPortale.model().PRINCIPAL.getFieldType()));
+				setParameter(object, "setTipoUtenza", PagamentoPortale.model().TIPO_UTENZA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_utenza", PagamentoPortale.model().TIPO_UTENZA.getFieldType()));
 				return object;
 			}
 			
@@ -128,8 +130,6 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 				PagamentoPortale object = new PagamentoPortale();
 				this.setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setCodApplicazione", PagamentoPortale.model().COD_APPLICAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"codApplicazione"));
 				this.setParameter(object, "setCodCanale", PagamentoPortale.model().COD_CANALE.getFieldType(),
 					this.getObjectFromMap(map,"codCanale"));
 				this.setParameter(object, "setNome", PagamentoPortale.model().NOME.getFieldType(),
@@ -180,6 +180,10 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"note"));
 				this.setParameter(object, "setTipo", PagamentoPortale.model().TIPO.getFieldType(),
 					this.getObjectFromMap(map,"tipo"));
+				setParameter(object, "setPrincipal", PagamentoPortale.model().PRINCIPAL.getFieldType(),
+					this.getObjectFromMap(map,"principal"));
+				setParameter(object, "setTipoUtenza", PagamentoPortale.model().TIPO_UTENZA.getFieldType(),
+					this.getObjectFromMap(map,"tipo_utenza"));
 				return object;
 			}
 			

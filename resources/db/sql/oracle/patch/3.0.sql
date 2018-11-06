@@ -544,3 +544,25 @@ alter table domini add column aut_stampa_poste VARCHAR2(255 CHAR);
 
 ALTER TABLE uo ADD uo_tel VARCHAR2(255 CHAR);
 ALTER TABLE uo ADD uo_fax VARCHAR2(255 CHAR);
+
+ALTER TABLE tipi_tributo ADD COLUMN online VARCHAR2(4 CHAR) DEFAULT 'NO';
+ALTER TABLE tipi_tributo ADD CONSTRAINT chk_tipi_tributo_1 CHECK (online IN ('SI','NO'));
+alter table tipi_tributo MODIFY (online NOT NULL);
+ALTER TABLE tipi_tributo ADD COLUMN paga_terzi VARCHAR2(4 CHAR) DEFAULT 'NO';
+ALTER TABLE tipi_tributo ADD CONSTRAINT chk_tipi_tributo_2 CHECK (paga_terzi IN ('SI','NO'));
+alter table tipi_tributo MODIFY (paga_terzi NOT NULL);
+
+ALTER TABLE tributi ADD COLUMN online VARCHAR2(4 CHAR);
+ALTER TABLE tributi ADD CONSTRAINT chk_tributi_1 CHECK (online IN ('SI','NO'));
+ALTER TABLE tributi ADD COLUMN paga_terzi VARCHAR2(4 CHAR);
+ALTER TABLE tributi ADD CONSTRAINT chk_tributi_2 CHECK (paga_terzi IN ('SI','NO'));
+
+alter table pagamenti_portale add column principal VARCHAR2(4000 CHAR);
+update pagamenti_portale pp set principal = (select u.principal from utenze u, applicazioni a where u.id = a.id_utenza and a.cod_applicazione = pp.cod_applicazione);
+alter table pagamenti_portale MODIFY (principal NOT NULL);
+
+alter table pagamenti_portale add column tipo_utenza VARCHAR2(35 CHAR);
+update pagamenti_portale set tipo_utenza = 'APPLICAZIONE';
+alter table pagamenti_portale MODIFY (tipo_utenza not null);
+
+alter table pagamenti_portale drop column cod_applicazione;
