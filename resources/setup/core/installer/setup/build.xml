@@ -55,18 +55,22 @@
 			  if (workf.endsWith(sep) ) {
 			        workf= workf.substring(0,workf.length() - 1);
 			  }
-			  project.setProperty('antinstaller_work_folder_noendsep', workf);
+			  project.setUserProperty('antinstaller_work_folder_noendsep', workf);
 
 			  var logf = project.getProperty('antinstaller_log_folder');
 			  if (logf.endsWith(sep) ) {
 			        logf= logf.substring(0,logf.length() - 1);
 			  }
-			  project.setProperty('antinstaller_log_folder_noendsep', logf);
+			  project.setUserProperty('antinstaller_log_folder_noendsep', logf);
 
 			  /* impostazioni URL statiche */
-			  project.setProperty('protocollo', 'https');
-			  project.setProperty('autenticazione', 'ssl');
+			  project.setUserProperty('protocollo', 'https');
+			  if (project.getUserProperty('protocollo') === 'https') {
+				project.setUserProperty('autenticazione', 'ssl');
+			  } else {
 
+				project.setUserProperty('autenticazione', 'basic');
+			  }
 		 </script>
 
 
@@ -92,8 +96,6 @@
 		<antcall target="govpay_logger_properties_settings">
 			<param name="file" value="${tmp_dir}/govpay/properties/log4j2.xml"/>
 		</antcall>
-
-		<properties-filler template="${tmp_dir}/govpay/properties/govpay-api-pagamento.yaml" />
 
 		<antcall target="dos2unix">
 			<param name="dir" value="${tmp_dir}/govpay/properties"/>
