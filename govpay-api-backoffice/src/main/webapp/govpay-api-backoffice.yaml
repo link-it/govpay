@@ -3628,6 +3628,10 @@ components:
           type: string
           description: Cifra identificativa negli IUV
           example: 01
+        online:
+          $ref: '#/components/schemas/tipoTributoOnline'
+        pagaTerzi:
+          $ref: '#/components/schemas/tipoTributoPagaTerzi'
     tipoEntrata:
       type: object
       allOf:
@@ -3660,6 +3664,10 @@ components:
           type: string
           description: Cifra identificativa negli IUV
           example: 01
+        online:
+          $ref: '#/components/schemas/tipoTributoOnline'
+        pagaTerzi:
+          $ref: '#/components/schemas/tipoTributoPagaTerzi'
         abilitato:
           type: boolean
           description: Indicazione l'entrata e' abilitata
@@ -3921,10 +3929,6 @@ components:
           type: string
           description: Numero avviso, assegnato se pagabile da psp
           example: 001000000000012345
-        iuvAvviso:
-          type: string
-          description: Iuv avviso, assegnato se pagabile da psp
-          example: 000000000012345
         dataCaricamento:
           type: string
           format: date
@@ -3957,10 +3961,6 @@ components:
           example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/tassonomiaAvviso'
-        iuvPagamento:
-          type: string
-          description: Iuv dell'ultimo pagamento eseguito con successo 
-          example: 000000000012345
     pendenzaPut:
       type: object
       allOf:
@@ -4031,6 +4031,32 @@ components:
               type: array
               items: 
                 $ref: '#/components/schemas/segnalazione'
+            iuvAvviso:
+              type: string
+              description: Iuv avviso, assegnato se pagabile da psp
+              example: 000000000012345
+            dataUltimoAggiornamento:
+              type: string
+              format: date
+              description: Data di ultimo aggiornamento della pendenza
+              example: '2018-12-31'
+            dataPagamento:
+              type: string
+              format: date
+              description: Data di pagamento della pendenza
+              example: '2018-12-31'
+            importoPagato:
+              type: number
+              description: Importo Pagato.
+              example: 10.01
+            importoIncassato:
+              type: number
+              description: Importo Incassato.
+              example: 10.01
+            iuvPagamento:
+              type: string
+              description: Iuv dell'ultimo pagamento eseguito con successo 
+              example: 000000000012345
             anomalo:
               type: boolean
               description: indicazione se sono presenti eventuali anomalie
@@ -4087,6 +4113,10 @@ components:
               type: array
               items: 
                 $ref: '#/components/schemas/segnalazione'
+            iuvAvviso:
+              type: string
+              description: Iuv avviso, assegnato se pagabile da psp
+              example: 000000000012345
             dataUltimoAggiornamento:
               type: string
               format: date
@@ -4105,6 +4135,10 @@ components:
               type: number
               description: Importo Incassato.
               example: 10.01
+            iuvPagamento:
+              type: string
+              description: Iuv dell'ultimo pagamento eseguito con successo 
+              example: 000000000012345
             anomalo:
               type: boolean
               description: indicazione se sono presenti eventuali anomalie
@@ -4375,7 +4409,21 @@ components:
         - SPECIALE
         - SIOPE
         - ALTRO
-      example: SIOPE        
+      example: SIOPE 
+    tipoTributoOnline: 
+      description: Indica se l'entrata spontanea e' pagabile online
+      type: string
+      enum:
+        - TRUE
+        - FALSE
+      example: TRUE
+    tipoTributoPagaTerzi: 
+      description: Indica se l'entrata e' pagabile da soggetti terzi
+      type: string
+      enum:
+        - TRUE
+        - FALSE
+      example: TRUE
     allegato:
       type: object
       required:

@@ -39,6 +39,7 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.viste.model.VersamentoIncasso.StatoPagamento;
 import it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento;
+import it.govpay.orm.Versamento;
 import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoIncassoFieldConverter;
@@ -61,6 +62,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private Long idTracciato; 
 	private Boolean tracciatoNull; 
 	private Boolean daAvvisare; 
+	private String cfCittadino;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -169,6 +171,16 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				newExpression.ilike(VersamentoIncasso.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
+			
+			if(this.cfCittadino!= null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Versamento.model().DEBITORE_IDENTIFICATIVO, this.cfCittadino);
+				
+				addAnd = true;
+			}
+
 
 			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
 				if(addAnd)
@@ -454,5 +466,12 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 	public void setDaAvvisare(Boolean daAvvisare) {
 		this.daAvvisare = daAvvisare;
+	}
+	public String getCfCittadino() {
+		return cfCittadino;
+	}
+
+	public void setCfCittadino(String cfCittadino) {
+		this.cfCittadino = cfCittadino;
 	}
 }

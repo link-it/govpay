@@ -36,6 +36,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.IAutorizzato;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class BaseDAO {
 	
@@ -53,17 +54,21 @@ public class BaseDAO {
 		if(user == null || user.getPrincipal() == null)
 			throw AclEngine.toNotAuthenticatedException(user);
 
-		try {
-			Applicazione applicazione = this.getApplicazioneFromUser(user, bd);
-			user.merge(applicazione.getUtenza());
-			return applicazione.getPrincipal();
-		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
+		if(user.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			return user.getIdentificativo();
+		} else {
 			try {
-				Operatore operatore = this.getOperatoreFromUser(user, bd);
-				user.merge(operatore.getUtenza());
-				return operatore.getNome();
-			} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
-				throw AclEngine.toNotAuthorizedException(user);					
+				Applicazione applicazione = this.getApplicazioneFromUser(user, bd);
+				user.merge(applicazione.getUtenza());
+				return applicazione.getPrincipal();
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
+				try {
+					Operatore operatore = this.getOperatoreFromUser(user, bd);
+					user.merge(operatore.getUtenza());
+					return operatore.getNome();
+				} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
+					throw AclEngine.toNotAuthorizedException(user);					
+				}
 			}
 		}
 	}

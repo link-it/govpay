@@ -1,6 +1,5 @@
 package it.govpay.core.rs.v1.beans.pagamenti;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -370,7 +369,7 @@ public class PagamentoPost extends JSONSerializable implements IValidable {
 		vf.getValidator("pendenze", this.pendenze).notNull().minItems(1).validateObjects();
 		vf.getValidator("urlRitorno", this.urlRitorno).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
 		vf.getValidator("contoAddebito", this.contoAddebito).validateFields();
-		vf.getValidator("dataEsecuzionePagamento", this.dataEsecuzionePagamento).after(LocalDate.now()).inside(Duration.ofDays(30));
+		vf.getValidator("dataEsecuzionePagamento", this.dataEsecuzionePagamento).after(LocalDate.now()).insideDays(30);
 		vf.getValidator("credenzialiPagatore", this.credenzialiPagatore).minLength(1).maxLength(35);
 		vf.getValidator("soggettoVersante", this.soggettoVersante).validateFields();
 		vf.getValidator("autenticazioneSoggetto", this.autenticazioneSoggetto).notNull();

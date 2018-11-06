@@ -27,6 +27,28 @@ public class Tributo extends TipoTributo {
 	
 	public static final String BOLLOT = "BOLLOT";
 	
+	public enum CustomBooleanType {
+		SI("SI"),
+	    NO("NO");
+	    
+		private String codifica;
+
+		CustomBooleanType(String codifica) {
+			this.codifica = codifica;
+		}
+		public String getCodifica() {
+			return this.codifica;
+		}
+		
+		public static CustomBooleanType toEnum(String codifica) throws ServiceException {
+			for(CustomBooleanType p : CustomBooleanType.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			throw new ServiceException("Codifica inesistente per CustomBooleanType. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(CustomBooleanType.values()));
+		}
+	}
+	
 	public enum TipoContabilita {
 	    CAPITOLO("0"),
 	    SPECIALE("1"),
@@ -59,6 +81,8 @@ public class Tributo extends TipoTributo {
 	private TipoContabilita tipoContabilitaCustom;
 	private String codContabilitaCustom;
 	private String codTributoIuvCustom;
+	private CustomBooleanType onlineCustom;
+	private CustomBooleanType pagaTerziCustom;
 	
 	public Long getIdIbanAccredito() {
 		return this.idIbanAccredito;
@@ -109,4 +133,18 @@ public class Tributo extends TipoTributo {
 	public void setIdIbanAppoggio(Long idIbanAppoggio) {
 		this.idIbanAppoggio = idIbanAppoggio;
 	}
+	public CustomBooleanType getOnlineCustom() {
+		return onlineCustom;
+	}
+	public void setOnlineCustom(CustomBooleanType onlineCustom) {
+		this.onlineCustom = onlineCustom;
+	}
+	public CustomBooleanType getPagaTerziCustom() {
+		return pagaTerziCustom;
+	}
+	public void setPagaTerziCustom(CustomBooleanType pagaTerziCustom) {
+		this.pagaTerziCustom = pagaTerziCustom;
+	}
+	 
+	
 }

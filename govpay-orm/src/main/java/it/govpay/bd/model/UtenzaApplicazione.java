@@ -25,8 +25,8 @@ public class UtenzaApplicazione extends Utenza {
 	}
 
 	@Override
-	public String getTipoUtenza() {
-		return "applicazione";
+	public TIPO_UTENZA getTipoUtenza() {
+		return TIPO_UTENZA.APPLICAZIONE;
 	}
 
 	@Override

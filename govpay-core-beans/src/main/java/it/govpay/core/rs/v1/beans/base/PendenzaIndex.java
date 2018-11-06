@@ -17,7 +17,6 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "soggettoPagatore",
 "importo",
 "numeroAvviso",
-"iuvAvviso",
 "dataCaricamento",
 "dataValidita",
 "dataScadenza",
@@ -31,19 +30,18 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "dominio",
 "unitaOperativa",
 "stato",
-"descrizioneStato",
 "segnalazioni",
+"iuvAvviso",
 "dataUltimoAggiornamento",
 "dataPagamento",
 "importoPagato",
 "importoIncassato",
+"iuvPagamento",
 "anomalo",
 "verificato",
 "note",
-"voci",
 "rpp",
 "pagamenti",
-"iuvPagamento",
 })
 public class PendenzaIndex extends JSONSerializable {
   
@@ -61,9 +59,6 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-
-  @JsonProperty("iuvAvviso")
-  private String iuvAvviso = null;  
   
   @JsonProperty("dataCaricamento")
   private Date dataCaricamento = null;
@@ -104,11 +99,11 @@ public class PendenzaIndex extends JSONSerializable {
   @JsonProperty("stato")
   private StatoPendenza stato = null;
   
-  @JsonProperty("descrizioneStato")
-  private String descrizioneStato = null;
-  
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
+  
+  @JsonProperty("iuvAvviso")
+  private String iuvAvviso = null;
   
   @JsonProperty("dataUltimoAggiornamento")
   private Date dataUltimoAggiornamento = null;
@@ -121,6 +116,9 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("importoIncassato")
   private BigDecimal importoIncassato = null;
+  
+  @JsonProperty("iuvPagamento")
+  private String iuvPagamento = null;
   
   @JsonProperty("anomalo")
   private Boolean anomalo = null;
@@ -136,9 +134,6 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("pagamenti")
   private String pagamenti = null;
-  
-  @JsonProperty("iuvPagamento")
-  private String iuvPagamento = null;
   
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -218,22 +213,6 @@ public class PendenzaIndex extends JSONSerializable {
   public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
   }
-  
-  /**
-   * Identificativo univoco versamento, assegnato se pagabile da psp
-   **/
-  public PendenzaIndex iuvAvviso(String iuvAvviso) {
-    this.iuvAvviso = iuvAvviso;
-    return this;
-  }
-
-  @JsonProperty("iuvAvviso")
-  public String getIuvAvviso() {
-    return this.iuvAvviso;
-  }
-  public void setIuvAvviso(String iuvAvviso) {
-    this.iuvAvviso = iuvAvviso;
-  }  
 
   /**
    * Data di emissione della pendenza
@@ -452,21 +431,6 @@ public class PendenzaIndex extends JSONSerializable {
   
   /**
    **/
-  public PendenzaIndex descrizioneStato(String descrizioneStato) {
-    this.descrizioneStato = descrizioneStato;
-    return this;
-  }
-
-  @JsonProperty("descrizioneStato")
-  public String getDescrizioneStato() {
-    return this.descrizioneStato;
-  }
-  public void setDescrizioneStato(String descrizioneStato) {
-    this.descrizioneStato = descrizioneStato;
-  }
-
-  /**
-   **/
   public PendenzaIndex segnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
     return this;
@@ -478,6 +442,22 @@ public class PendenzaIndex extends JSONSerializable {
   }
   public void setSegnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
+  }
+
+  /**
+   * Iuv avviso, assegnato se pagabile da psp
+   **/
+  public PendenzaIndex iuvAvviso(String iuvAvviso) {
+    this.iuvAvviso = iuvAvviso;
+    return this;
+  }
+
+  @JsonProperty("iuvAvviso")
+  public String getIuvAvviso() {
+    return iuvAvviso;
+  }
+  public void setIuvAvviso(String iuvAvviso) {
+    this.iuvAvviso = iuvAvviso;
   }
 
   /**
@@ -542,6 +522,22 @@ public class PendenzaIndex extends JSONSerializable {
   }
   public void setImportoIncassato(BigDecimal importoIncassato) {
     this.importoIncassato = importoIncassato;
+  }
+
+  /**
+   * Iuv dell'ultimo pagamento eseguito con successo
+   **/
+  public PendenzaIndex iuvPagamento(String iuvPagamento) {
+    this.iuvPagamento = iuvPagamento;
+    return this;
+  }
+
+  @JsonProperty("iuvPagamento")
+  public String getIuvPagamento() {
+    return iuvPagamento;
+  }
+  public void setIuvPagamento(String iuvPagamento) {
+    this.iuvPagamento = iuvPagamento;
   }
 
   /**
@@ -622,19 +618,6 @@ public class PendenzaIndex extends JSONSerializable {
   public void setPagamenti(String pagamenti) {
     this.pagamenti = pagamenti;
   }
-  
-  public PendenzaIndex iuvPagamento(String iuvPagamento) {
-    this.iuvPagamento = iuvPagamento;
-    return this;
-  }
-
-  @JsonProperty("iuvPagamento")
-  public String getIuvPagamento() {
-    return this.iuvPagamento;
-  }
-  public void setIuvPagamento(String iuvPagamento) {
-    this.iuvPagamento = iuvPagamento;
-  }
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -650,7 +633,6 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(this.soggettoPagatore, pendenzaIndex.soggettoPagatore) &&
         Objects.equals(this.importo, pendenzaIndex.importo) &&
         Objects.equals(this.numeroAvviso, pendenzaIndex.numeroAvviso) &&
-        Objects.equals(this.iuvAvviso, pendenzaIndex.iuvAvviso) &&
         Objects.equals(this.dataCaricamento, pendenzaIndex.dataCaricamento) &&
         Objects.equals(this.dataValidita, pendenzaIndex.dataValidita) &&
         Objects.equals(this.dataScadenza, pendenzaIndex.dataScadenza) &&
@@ -664,23 +646,23 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(this.dominio, pendenzaIndex.dominio) &&
         Objects.equals(this.unitaOperativa, pendenzaIndex.unitaOperativa) &&
         Objects.equals(this.stato, pendenzaIndex.stato) &&
-        Objects.equals(this.descrizioneStato, pendenzaIndex.descrizioneStato) &&
         Objects.equals(this.segnalazioni, pendenzaIndex.segnalazioni) &&
+        Objects.equals(iuvAvviso, pendenzaIndex.iuvAvviso) &&
         Objects.equals(this.dataUltimoAggiornamento, pendenzaIndex.dataUltimoAggiornamento) &&
         Objects.equals(this.dataPagamento, pendenzaIndex.dataPagamento) &&
         Objects.equals(this.importoPagato, pendenzaIndex.importoPagato) &&
         Objects.equals(this.importoIncassato, pendenzaIndex.importoIncassato) &&
+        Objects.equals(iuvPagamento, pendenzaIndex.iuvPagamento) &&
         Objects.equals(this.anomalo, pendenzaIndex.anomalo) &&
         Objects.equals(this.verificato, pendenzaIndex.verificato) &&
         Objects.equals(this.note, pendenzaIndex.note) &&
         Objects.equals(this.rpp, pendenzaIndex.rpp) &&
-        Objects.equals(this.pagamenti, pendenzaIndex.pagamenti) &&
-        Objects.equals(this.iuvPagamento, pendenzaIndex.iuvPagamento);
+        Objects.equals(this.pagamenti, pendenzaIndex.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, iuvAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, anomalo, verificato, note, rpp, pagamenti, iuvPagamento);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, segnalazioni, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, note, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -702,7 +684,6 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
     sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
     sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
-    sb.append("    iuvAvviso: ").append(this.toIndentedString(this.iuvAvviso)).append("\n");
     sb.append("    dataCaricamento: ").append(this.toIndentedString(this.dataCaricamento)).append("\n");
     sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
@@ -716,18 +697,18 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    dominio: ").append(this.toIndentedString(this.dominio)).append("\n");
     sb.append("    unitaOperativa: ").append(this.toIndentedString(this.unitaOperativa)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
-    sb.append("    descrizioneStato: ").append(this.toIndentedString(this.descrizioneStato)).append("\n");
     sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
+    sb.append("    iuvAvviso: ").append(toIndentedString(iuvAvviso)).append("\n");
     sb.append("    dataUltimoAggiornamento: ").append(this.toIndentedString(this.dataUltimoAggiornamento)).append("\n");
     sb.append("    dataPagamento: ").append(this.toIndentedString(this.dataPagamento)).append("\n");
     sb.append("    importoPagato: ").append(this.toIndentedString(this.importoPagato)).append("\n");
     sb.append("    importoIncassato: ").append(this.toIndentedString(this.importoIncassato)).append("\n");
+    sb.append("    iuvPagamento: ").append(toIndentedString(iuvPagamento)).append("\n");
     sb.append("    anomalo: ").append(toIndentedString(anomalo)).append("\n");
     sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
     sb.append("    note: ").append(toIndentedString(note)).append("\n");
     sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
     sb.append("    pagamenti: ").append(this.toIndentedString(this.pagamenti)).append("\n");
-    sb.append("    iuvPagamento: ").append(this.toIndentedString(this.iuvPagamento)).append("\n");
     sb.append("}");
     return sb.toString();
   }

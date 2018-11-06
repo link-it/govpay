@@ -6,6 +6,8 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.rs.v1.beans.base.TipoEntrata;
 import it.govpay.core.rs.v1.beans.base.TipoContabilita;
 import it.govpay.core.rs.v1.beans.base.TipoEntrataPost;
+import it.govpay.core.rs.v1.beans.base.TipoTributoOnline;
+import it.govpay.core.rs.v1.beans.base.TipoTributoPagaTerzi;
 import it.govpay.model.IAutorizzato;
 
 public class EntrateConverter {
@@ -40,6 +42,31 @@ public class EntrateConverter {
 
 		entrataDTO.setCodTributo(idEntrata);
 		entrataDTO.setTipoTributo(tipoTributo);
+		
+		if(entrataPost.getOnline() != null) {
+			switch (entrataPost.getOnline()) {
+			case TRUE:
+				tipoTributo.setOnlineDefault(it.govpay.model.Tributo.CustomBooleanType.SI);
+				break;
+			case FALSE:
+			default:
+				tipoTributo.setOnlineDefault(it.govpay.model.Tributo.CustomBooleanType.NO);				
+				break;
+			}
+		}
+		
+		if(entrataPost.getPagaTerzi() != null) {
+			switch (entrataPost.getPagaTerzi()) {
+			case TRUE:
+				tipoTributo.setPagaTerziDefault(it.govpay.model.Tributo.CustomBooleanType.SI);
+				break;
+			case FALSE:
+			default:
+				tipoTributo.setPagaTerziDefault(it.govpay.model.Tributo.CustomBooleanType.NO);				
+				break;
+			}
+		}
+		
 		return entrataDTO;		
 	}
 	
@@ -64,6 +91,30 @@ public class EntrateConverter {
 				break;
 			case SPECIALE:
 				rsModel.tipoContabilita(TipoContabilita.SPECIALE);
+				break;
+			}
+		}
+		
+		if(tributo.getOnlineDefault() != null) {
+			switch (tributo.getOnlineDefault()) {
+			case SI:
+				rsModel.setOnline(TipoTributoOnline.TRUE);
+				break;
+			case NO:
+			default:
+				rsModel.setOnline(TipoTributoOnline.FALSE);
+				break;
+			}
+		}
+		
+		if(tributo.getPagaTerziDefault() != null) {
+			switch (tributo.getPagaTerziDefault()) {
+			case SI:
+				rsModel.setPagaTerzi(TipoTributoPagaTerzi.TRUE);
+				break;
+			case NO:
+			default:
+				rsModel.setPagaTerzi(TipoTributoPagaTerzi.FALSE);
 				break;
 			}
 		}

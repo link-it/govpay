@@ -18,6 +18,7 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.BasicModel;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.orm.IdVersamento;
 
 public class PagamentoPortale extends BasicModel {
@@ -70,7 +71,6 @@ public class PagamentoPortale extends BasicModel {
 	}
 
 	private VersioneInterfacciaWISP versioneInterfacciaWISP = VersioneInterfacciaWISP.WISP_2_0;
-	private String codApplicazione = null;
 	private String nome = null;
 	private String versanteIdentificativo = null;
 	private String idSessione = null;
@@ -100,18 +100,14 @@ public class PagamentoPortale extends BasicModel {
 	
 	private Double importo = null; 
 	private String multiBeneficiario = null;
+	private String principal = null;
+	private TIPO_UTENZA tipoUtenza = null;
 
 	private int tipo;
 	private boolean ack;
 	private List<Nota> note;
 	
 	
-	public String getCodApplicazione() {
-		return this.codApplicazione;
-	}
-	public void setCodApplicazione(String codApplicazione) {
-		this.codApplicazione = codApplicazione;
-	}
 	public String getIdSessione() {
 		return this.idSessione;
 	}
@@ -320,6 +316,18 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
+	}
+	public String getPrincipal() {
+		return principal;
+	}
+	public void setPrincipal(String principal) {
+		this.principal = principal;
+	}
+	public TIPO_UTENZA getTipoUtenza() {
+		return tipoUtenza;
+	}
+	public void setTipoUtenza(TIPO_UTENZA tipoUtenza) {
+		this.tipoUtenza = tipoUtenza;
 	}
 
 }

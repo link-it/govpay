@@ -30,6 +30,9 @@ import it.govpay.core.rs.v1.beans.JSONSerializable;
 "unitaOperativa",
 "stato",
 "segnalazioni",
+"iuvAvviso",
+"iuvPagamento",
+"dataPagamento",
 "rpp",
 "pagamenti",
 })
@@ -91,6 +94,15 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
+  
+  @JsonProperty("iuvAvviso")
+  private String iuvAvviso = null;
+  
+  @JsonProperty("iuvPagamento")
+  private String iuvPagamento = null;
+  
+  @JsonProperty("dataPagamento")
+  private Date dataPagamento = null;
   
   @JsonProperty("rpp")
   private String rpp = null;
@@ -397,6 +409,54 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   * Iuv avviso, assegnato se pagabile da psp
+   **/
+  public PendenzaIndex iuvAvviso(String iuvAvviso) {
+    this.iuvAvviso = iuvAvviso;
+    return this;
+  }
+
+  @JsonProperty("iuvAvviso")
+  public String getIuvAvviso() {
+    return iuvAvviso;
+  }
+  public void setIuvAvviso(String iuvAvviso) {
+    this.iuvAvviso = iuvAvviso;
+  }
+
+  /**
+   * Iuv dell'ultimo pagamento eseguito con successo
+   **/
+  public PendenzaIndex iuvPagamento(String iuvPagamento) {
+    this.iuvPagamento = iuvPagamento;
+    return this;
+  }
+
+  @JsonProperty("iuvPagamento")
+  public String getIuvPagamento() {
+    return iuvPagamento;
+  }
+  public void setIuvPagamento(String iuvPagamento) {
+    this.iuvPagamento = iuvPagamento;
+  }
+
+  /**
+   * Data di pagamento della pendenza
+   **/
+  public PendenzaIndex dataPagamento(Date dataPagamento) {
+    this.dataPagamento = dataPagamento;
+    return this;
+  }
+
+  @JsonProperty("dataPagamento")
+  public Date getDataPagamento() {
+    return dataPagamento;
+  }
+  public void setDataPagamento(Date dataPagamento) {
+    this.dataPagamento = dataPagamento;
+  }
+
+  /**
    * Url per l'elenco delle rpp emesse per la pendenza
    **/
   public PendenzaIndex rpp(String rpp) {
@@ -456,13 +516,16 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(this.unitaOperativa, pendenzaIndex.unitaOperativa) &&
         Objects.equals(this.stato, pendenzaIndex.stato) &&
         Objects.equals(this.segnalazioni, pendenzaIndex.segnalazioni) &&
+        Objects.equals(iuvAvviso, pendenzaIndex.iuvAvviso) &&
+        Objects.equals(iuvPagamento, pendenzaIndex.iuvPagamento) &&
+        Objects.equals(dataPagamento, pendenzaIndex.dataPagamento) &&
         Objects.equals(this.rpp, pendenzaIndex.rpp) &&
         Objects.equals(this.pagamenti, pendenzaIndex.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idA2A, this.idPendenza, this.dominio, this.unitaOperativa, this.stato, this.segnalazioni, this.rpp, this.pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -498,6 +561,9 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    unitaOperativa: ").append(this.toIndentedString(this.unitaOperativa)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
+    sb.append("    iuvAvviso: ").append(toIndentedString(iuvAvviso)).append("\n");
+    sb.append("    iuvPagamento: ").append(toIndentedString(iuvPagamento)).append("\n");
+    sb.append("    dataPagamento: ").append(toIndentedString(dataPagamento)).append("\n");
     sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
     sb.append("    pagamenti: ").append(this.toIndentedString(this.pagamenti)).append("\n");
     sb.append("}");
@@ -514,7 +580,6 @@ public class PendenzaIndex extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
 }
 
 

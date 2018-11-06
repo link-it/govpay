@@ -9,6 +9,8 @@ public class Utenza extends BasicModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	public enum TIPO_UTENZA { DEFAULT, CITTADINO, APPLICAZIONE, OPERATORE };
+	
 	protected Long id;
 	protected String principal;
 	protected String principalOriginale;

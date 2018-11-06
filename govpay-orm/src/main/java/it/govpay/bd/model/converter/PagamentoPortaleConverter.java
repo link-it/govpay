@@ -28,6 +28,7 @@ import org.openspcoop2.utils.serialization.IOException;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
 public class PagamentoPortaleConverter {
@@ -44,7 +45,8 @@ public class PagamentoPortaleConverter {
 		PagamentoPortale dto = new PagamentoPortale();
 
 		dto.setId(vo.getId());
-		dto.setCodApplicazione(vo.getCodApplicazione());
+		dto.setPrincipal(vo.getPrincipal());
+		dto.setTipoUtenza(TIPO_UTENZA.valueOf(vo.getTipoUtenza()));
 		dto.setVersanteIdentificativo(vo.getVersanteIdentificativo());
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setIdSessione(vo.getIdSessione());
@@ -83,7 +85,8 @@ public class PagamentoPortaleConverter {
 		it.govpay.orm.PagamentoPortale vo = new it.govpay.orm.PagamentoPortale();
 
 		vo.setId(dto.getId());
-		vo.setCodApplicazione(dto.getCodApplicazione());
+		vo.setPrincipal(dto.getPrincipal());
+		vo.setTipoUtenza(dto.getTipoUtenza().toString());
 		vo.setVersanteIdentificativo(dto.getVersanteIdentificativo());
 		vo.setCodCanale(dto.getCodCanale());
 		vo.setIdSessione(dto.getIdSessione());

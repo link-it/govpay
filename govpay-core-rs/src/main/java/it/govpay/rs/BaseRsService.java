@@ -101,7 +101,7 @@ public abstract class BaseRsService {
 	
 	protected IAutorizzato getUser() {
 		HttpServletCredential credential = new HttpServletCredential(this.request, this.log);
-		Utenza user = CredentialUtils.getUser(credential);
+		Utenza user = CredentialUtils.getUser(this.request, this.log);
 		
 		user.setRuoli(this.getListaRuoli(credential));
 		List<Acl> aclDaRuoliContainer = new ArrayList<>();

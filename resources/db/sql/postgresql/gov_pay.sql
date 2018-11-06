@@ -151,8 +151,13 @@ CREATE TABLE tipi_tributo
 	tipo_contabilita VARCHAR(1),
 	cod_contabilita VARCHAR(255),
 	cod_tributo_iuv VARCHAR(4),
+	online VARCHAR(4) NOT NULL DEFAULT 'NO',
+	paga_terzi VARCHAR(4) NOT NULL DEFAULT 'NO',
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_tributo') NOT NULL,
+	-- check constraints
+	CONSTRAINT chk_tipi_tributo_1 CHECK (online IN ('SI','NO')),
+	CONSTRAINT chk_tipi_tributo_2 CHECK (paga_terzi IN ('SI','NO')),
 	-- unique constraints
 	CONSTRAINT unique_tipi_tributo_1 UNIQUE (cod_tributo),
 	-- fk/pk keys constraints
@@ -170,12 +175,17 @@ CREATE TABLE tributi
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
 	cod_tributo_iuv VARCHAR(4),
+	online VARCHAR(4),
+	paga_terzi VARCHAR(4),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tributi') NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	id_iban_accredito BIGINT,
 	id_iban_appoggio BIGINT,
 	id_tipo_tributo BIGINT NOT NULL,
+	-- check constraints
+	CONSTRAINT chk_tributi_1 CHECK (online IN ('SI','NO')),
+	CONSTRAINT chk_tributi_2 CHECK (paga_terzi IN ('SI','NO')),
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
@@ -443,7 +453,6 @@ CREATE SEQUENCE seq_pagamenti_portale start 1 increment 1 maxvalue 9223372036854
 
 CREATE TABLE pagamenti_portale
 (
-	cod_applicazione VARCHAR(35) NOT NULL,
 	cod_canale VARCHAR(35),
 	nome VARCHAR(255) NOT NULL,
 	importo DOUBLE PRECISION NOT NULL,
@@ -469,6 +478,8 @@ CREATE TABLE pagamenti_portale
 	ack BOOLEAN NOT NULL,
 	note TEXT,
 	tipo INT NOT NULL,
+	principal VARCHAR(4000) NOT NULL,
+	tipo_utenza VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_pagamenti_portale') NOT NULL,
 	-- unique constraints

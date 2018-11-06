@@ -340,13 +340,15 @@ public class Tracciati extends BasicBD {
 			VersamentiBD versamentiBD = new VersamentiBD(this);
 			OperazioneCaricamento operazioneCaricamento = new OperazioneCaricamento(operazione);
 			try {
-				Versamento versamento = versamentiBD.getVersamento(operazione.getIdApplicazione(), operazione.getCodVersamentoEnte());
-				versamento.getSingoliVersamenti(this);
-				versamento.getDominio(this);
-				versamento.getUo(this);
-				versamento.getApplicazione(this);
-				versamento.getIuv(this);
-				operazioneCaricamento.setVersamento(versamento);
+				if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
+					Versamento versamento = versamentiBD.getVersamento(operazione.getIdApplicazione(), operazione.getCodVersamentoEnte());
+					versamento.getSingoliVersamenti(this);
+					versamento.getDominio(this);
+					versamento.getUo(this);
+					versamento.getApplicazione(this);
+					versamento.getIuv(this);
+					operazioneCaricamento.setVersamento(versamento);
+				}
 			}catch(NotFoundException e) {
 				// do nothing
 			}

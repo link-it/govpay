@@ -69,6 +69,8 @@ public class PagamentiController extends it.govpay.rs.BaseController {
 			PagamentoPost pagamentiPortaleRequest= JSONSerializable.parse(jsonRequest, PagamentoPost.class);
 			pagamentiPortaleRequest.validate();
 			
+			
+			
 			String idSession = transactionId.replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale);
 			

@@ -203,6 +203,8 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			fields.add(Tributo.model().TIPO_CONTABILITA);
 			fields.add(Tributo.model().CODICE_CONTABILITA);
 			fields.add(Tributo.model().COD_TRIBUTO_IUV);
+			fields.add(Tributo.model().ONLINE);
+			fields.add(Tributo.model().PAGA_TERZI);
 			AliasField tipoTributoId = new AliasField(new CustomField("tipoTributo.id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)), this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)+"_id");
 			fields.add(tipoTributoId);
 			AliasField tipoContabilitaAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA);
@@ -211,8 +213,13 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			fields.add(codiceContabilitaAlias);
 			AliasField codiceTributoIuvAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV);
 			fields.add(codiceTributoIuvAlias);
+			AliasField onlineAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.ONLINE);
+			fields.add(onlineAlias);
+			AliasField pagaTerziAlias = this.getAliasField(Tributo.model().TIPO_TRIBUTO.PAGA_TERZI);
+			fields.add(pagaTerziAlias);
 			fields.add(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 			fields.add(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE);
+			
 
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getTributoFieldConverter().toTable(Tributo.model())));

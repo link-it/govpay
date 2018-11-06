@@ -106,7 +106,7 @@ public class GpContext {
 			else 
 				client.setInterfaceName("<Unknown>");
 			
-			Utenza user = CredentialUtils.getUser(new HttpServletCredential((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST), null));
+			Utenza user = CredentialUtils.getUser((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST), null);
 			if(user != null)
 				client.setPrincipal(user.getPrincipal());
 			
@@ -158,7 +158,7 @@ public class GpContext {
 			
 			client.setInterfaceName(nomeServizio);
 			
-			Utenza user = CredentialUtils.getUser(new HttpServletCredential(request, null));
+			Utenza user = CredentialUtils.getUser(request, null);
 			if(user != null)
 				client.setPrincipal(user.getPrincipal());
 			

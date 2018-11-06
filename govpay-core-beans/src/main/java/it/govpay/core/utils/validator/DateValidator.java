@@ -55,6 +55,13 @@ public class DateValidator {
 		return this;
 	}
 	
+	public DateValidator insideDays(long days) throws ValidationException {
+		if(this.fieldValue != null && (this.fieldValue.isAfter(LocalDate.now().plusDays(days)) || this.fieldValue.isBefore(LocalDate.now().minusDays(days)))) {
+			throw new ValidationException("Il campo " + this.fieldName + " deve avere una data entro " + days + " giorni .");
+		}
+		return this;
+	}
+	
 	public DateValidator outside(TemporalAmount temporalAmount) throws ValidationException {
 		if(this.fieldValue != null && !(this.fieldValue.isAfter(LocalDate.now().plus(temporalAmount)) || this.fieldValue.isBefore(LocalDate.now().minus(temporalAmount)))) {
 			throw new ValidationException("Il campo " + this.fieldName + " deve avere una data oltre " + temporalAmount + ".");

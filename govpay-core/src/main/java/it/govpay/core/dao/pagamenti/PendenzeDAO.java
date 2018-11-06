@@ -70,6 +70,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.avvisi.AvvisoPagamento;
@@ -147,6 +148,9 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
 		filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
 		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
+		if(listaPendenzaDTO.getUser().getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			filter.setCfCittadino(listaPendenzaDTO.getUser().getIdentificativo()); 
+		}
 
 		long count = versamentiBD.count(filter);
 
@@ -227,6 +231,9 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
 		filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
 		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
+		if(listaPendenzaDTO.getUser().getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			filter.setCfCittadino(listaPendenzaDTO.getUser().getIdentificativo()); 
+		}
 
 		long count = versamentiBD.count(filter);
 

@@ -67,13 +67,6 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(PagamentoPortale.model().COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
-			}
-		}
 		if(field.equals(PagamentoPortale.model().COD_CANALE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_canale";
@@ -249,6 +242,20 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "tipo";
 			}
 		}
+		if(field.equals(PagamentoPortale.model().PRINCIPAL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal";
+			}else{
+				return "principal";
+			}
+		}
+		if(field.equals(PagamentoPortale.model().TIPO_UTENZA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_utenza";
+			}else{
+				return "tipo_utenza";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -262,9 +269,6 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(PagamentoPortale.model().COD_APPLICAZIONE)){
-			return this.toTable(PagamentoPortale.model(), returnAlias);
-		}
 		if(field.equals(PagamentoPortale.model().COD_CANALE)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
@@ -338,6 +342,12 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().TIPO)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().PRINCIPAL)){
+			return this.toTable(PagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(PagamentoPortale.model().TIPO_UTENZA)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 

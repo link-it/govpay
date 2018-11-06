@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.model.Utenza.TIPO_UTENZA;
+
+
 public interface IAutorizzato {
 	
 	public void setCheckSubject(boolean checkSubject);
@@ -27,4 +30,7 @@ public interface IAutorizzato {
 //	public void setAcls(List<Acl> acls);
 
 	public void merge(IAutorizzato src) throws ServiceException; 
+	
+	public TIPO_UTENZA getTipoUtenza();
+	public String getIdentificativo();
 }

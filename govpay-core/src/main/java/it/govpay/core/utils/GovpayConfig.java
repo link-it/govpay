@@ -95,6 +95,8 @@ public class GovpayConfig {
 	
 	private String appName;
 	private String ambienteDeploy;
+	
+	private String headerAuth;
 
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -124,6 +126,8 @@ public class GovpayConfig {
 		this.appName = null;
 		this.ambienteDeploy = null;
 
+		this.headerAuth = null;
+		
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -330,6 +334,7 @@ public class GovpayConfig {
 			
 			this.appName = getProperty("it.govpay.backoffice.gui.appName", this.props, false, log);
 			this.ambienteDeploy = getProperty("it.govpay.backoffice.gui.ambienteDeploy", this.props, false, log);
+			this.headerAuth = getProperty("it.govpay.autenticazione.nomeHeader", this.props, false, log);
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -517,4 +522,7 @@ public class GovpayConfig {
 		return ambienteDeploy;
 	}
 
+	public String getHeaderAuth() {
+		return headerAuth;
+	}
 }

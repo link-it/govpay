@@ -581,7 +581,28 @@ public enum EsitoOperazione {
      * Iuv generato non rispetta il pattern previsto per l'applicazione 
      * 
      */
-    VER_030;
+    VER_030,
+    /**
+     * Utenza di tipo cittadino non autorizzata a effettuare dei pagamenti portale senza specificare il tributo da pagare. 
+     * 
+     */
+    CIT_001,
+    /**
+     * Utenza di tipo cittadino non autorizzata a effettuare il pagamento di un tributo non spontaneo.
+     * 
+     */
+    CIT_002,
+    /**
+     * Utenza di tipo cittadino non autorizzata a effettuare dei pagamenti portale dove il debitore non e' lui. 
+     * 
+     */
+    CIT_003,
+    /**
+     * Utenza di tipo cittadino non autorizzata a effettuare dei pagamenti portale dove il versante non e' lui.  
+     * 
+     */
+    CIT_004;
+	
 
     public String value() {
         return this.name();

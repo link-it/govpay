@@ -19,7 +19,9 @@
  */
 package it.govpay.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -57,6 +59,7 @@ public class Acl extends BasicModel {
 	private Servizio servizio;
 	private Set<Diritti> listaDiritti= null;
 	private long id;
+	private Map<String, String> proprieta = null;
 
 	private static final long serialVersionUID = 1L;
 	public enum Servizio {
@@ -163,5 +166,10 @@ public class Acl extends BasicModel {
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+	public Map<String, String> getProprieta() { 
+		if(this.proprieta == null)
+			this.proprieta = new HashMap<>();
+		
+		return this.proprieta;
+	}
 }

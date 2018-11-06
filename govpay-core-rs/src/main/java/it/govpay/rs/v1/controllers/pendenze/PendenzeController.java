@@ -26,7 +26,6 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.rs.v1.beans.JSONSerializable;
 import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.core.rs.v1.beans.base.PatchOp.OpEnum;
-import it.govpay.core.rs.v1.beans.pendenze.Avviso;
 import it.govpay.core.rs.v1.beans.pendenze.FaultBean;
 import it.govpay.core.rs.v1.beans.pendenze.FaultBean.CategoriaEnum;
 import it.govpay.core.rs.v1.beans.pendenze.ListaPendenze;

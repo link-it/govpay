@@ -1,5 +1,6 @@
 package it.govpay.model;
 
+import it.govpay.model.Tributo.CustomBooleanType;
 import it.govpay.model.Tributo.TipoContabilita;
 
 public class TipoTributo extends BasicModel {
@@ -11,6 +12,8 @@ public class TipoTributo extends BasicModel {
 	private TipoContabilita tipoContabilitaDefault;
 	private String codContabilitaDefault;
 	private String codTributoIuvDefault;
+	private CustomBooleanType onlineDefault;
+	private CustomBooleanType pagaTerziDefault;
 	
 	@Override
 	public Long getId() {
@@ -49,6 +52,16 @@ public class TipoTributo extends BasicModel {
 	public void setCodTributoIuvDefault(String codTributoIuvDefault) {
 		this.codTributoIuvDefault = codTributoIuvDefault;
 	}
-
-
+	public CustomBooleanType getOnlineDefault() {
+		return onlineDefault;
+	}
+	public void setOnlineDefault(CustomBooleanType onlineDefault) {
+		this.onlineDefault = onlineDefault;
+	}
+	public CustomBooleanType getPagaTerziDefault() {
+		return pagaTerziDefault;
+	}
+	public void setPagaTerziDefault(CustomBooleanType pagaTerziDefault) {
+		this.pagaTerziDefault = pagaTerziDefault;
+	}
 }

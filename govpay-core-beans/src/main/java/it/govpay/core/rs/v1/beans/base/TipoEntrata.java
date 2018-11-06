@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "tipoContabilita",
 "codiceContabilita",
 "codificaIUV",
+"online",
+"pagaTerzi",
 "idEntrata",
 })
 public class TipoEntrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
@@ -26,6 +28,12 @@ public class TipoEntrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
   @JsonProperty("codificaIUV")
   private String codificaIUV = null;
   
+  @JsonProperty("online")
+  private TipoTributoOnline online = null;
+  
+  @JsonProperty("pagaTerzi")
+  private TipoTributoPagaTerzi pagaTerzi = null;
+  
   @JsonProperty("idEntrata")
   private String idEntrata = null;
   
@@ -38,7 +46,7 @@ public class TipoEntrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   @JsonProperty("descrizione")
   public String getDescrizione() {
-    return this.descrizione;
+    return descrizione;
   }
   public void setDescrizione(String descrizione) {
     this.descrizione = descrizione;
@@ -94,6 +102,36 @@ public class TipoEntrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
 
   /**
    **/
+  public TipoEntrata online(TipoTributoOnline online) {
+    this.online = online;
+    return this;
+  }
+
+  @JsonProperty("online")
+  public TipoTributoOnline getOnline() {
+    return online;
+  }
+  public void setOnline(TipoTributoOnline online) {
+    this.online = online;
+  }
+
+  /**
+   **/
+  public TipoEntrata pagaTerzi(TipoTributoPagaTerzi pagaTerzi) {
+    this.pagaTerzi = pagaTerzi;
+    return this;
+  }
+
+  @JsonProperty("pagaTerzi")
+  public TipoTributoPagaTerzi getPagaTerzi() {
+    return pagaTerzi;
+  }
+  public void setPagaTerzi(TipoTributoPagaTerzi pagaTerzi) {
+    this.pagaTerzi = pagaTerzi;
+  }
+
+  /**
+   **/
   public TipoEntrata idEntrata(String idEntrata) {
     this.idEntrata = idEntrata;
     return this;
@@ -120,12 +158,14 @@ public class TipoEntrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
         Objects.equals(this.tipoContabilita, tipoEntrata.tipoContabilita) &&
         Objects.equals(this.codiceContabilita, tipoEntrata.codiceContabilita) &&
         Objects.equals(this.codificaIUV, tipoEntrata.codificaIUV) &&
+        Objects.equals(online, tipoEntrata.online) &&
+        Objects.equals(pagaTerzi, tipoEntrata.pagaTerzi) &&
         Objects.equals(this.idEntrata, tipoEntrata.idEntrata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.descrizione, this.tipoContabilita, this.codiceContabilita, this.codificaIUV, this.idEntrata);
+    return Objects.hash(this.descrizione, this.tipoContabilita, this.codiceContabilita, this.codificaIUV, this.online, pagaTerzi, this.idEntrata);
   }
 
   public static TipoEntrata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -146,6 +186,8 @@ public class TipoEntrata extends it.govpay.core.rs.v1.beans.JSONSerializable {
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
     sb.append("    codificaIUV: ").append(this.toIndentedString(this.codificaIUV)).append("\n");
+    sb.append("    online: ").append(toIndentedString(online)).append("\n");
+    sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    idEntrata: ").append(this.toIndentedString(this.idEntrata)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -1,9 +1,16 @@
 package it.govpay.bd.model;
 
+import java.util.ArrayList;
+
 public class UtenzaCittadino extends Utenza {
 
-	public UtenzaCittadino() {
+	public UtenzaCittadino(String codIdentificativo) {
 		super();
+		this.setCodIdentificativo(codIdentificativo); 
+		this.setIdDomini(new ArrayList<>());
+		this.setIdTributi(new ArrayList<>());
+		this.setDomini(new ArrayList<>());
+		this.setTributi(new ArrayList<>());
 	}
 	
 	private static final long serialVersionUID = 1L;
@@ -19,8 +26,8 @@ public class UtenzaCittadino extends Utenza {
 	}
 	
 	@Override
-	public String getTipoUtenza() {
-		return "cittadino";
+	public TIPO_UTENZA getTipoUtenza() {
+		return TIPO_UTENZA.CITTADINO;
 	}
 
 	@Override

@@ -96,6 +96,7 @@ import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
@@ -327,7 +328,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 				
 				PagamentoPortale pagamentoPortale = new PagamentoPortale();
-				pagamentoPortale.setCodApplicazione(AnagraficaManager.getApplicazione(bd, rpt.getVersamento(bd).getIdApplicazione()).getCodApplicazione());
+				it.govpay.bd.model.Applicazione applicazione = AnagraficaManager.getApplicazione(bd, rpt.getVersamento(bd).getIdApplicazione());
+				pagamentoPortale.setPrincipal(applicazione.getPrincipal());
+				pagamentoPortale.setTipoUtenza(TIPO_UTENZA.APPLICAZIONE);
 				pagamentoPortale.setCodCanale(rpt.getCodCanale());
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
 				pagamentoPortale.setCodPsp(rpt.getCodPsp());
