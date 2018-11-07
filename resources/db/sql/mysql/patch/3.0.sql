@@ -416,15 +416,11 @@ alter table domini add column aut_stampa_poste VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_tel VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_fax VARCHAR(255);
 
-ALTER TABLE tipi_tributo ADD COLUMN online VARCHAR(4) NOT NULL DEFAULT 'NO';
-ALTER TABLE tipi_tributo ADD CONSTRAINT chk_tipi_tributo_1 CHECK (online IN ('SI','NO'));
-ALTER TABLE tipi_tributo ADD COLUMN paga_terzi VARCHAR(4) NOT NULL DEFAULT 'NO';
-ALTER TABLE tipi_tributo ADD CONSTRAINT chk_tipi_tributo_2 CHECK (paga_terzi IN ('SI','NO'));
+ALTER TABLE tipi_tributo ADD COLUMN online BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_tributo ADD COLUMN paga_terzi BOOLEAN NOT NULL DEFAULT false;
 
-ALTER TABLE tributi ADD COLUMN online VARCHAR(4);
-ALTER TABLE tributi ADD CONSTRAINT chk_tributi_1 CHECK (online IN ('SI','NO'));
-ALTER TABLE tributi ADD COLUMN paga_terzi VARCHAR(4);
-ALTER TABLE tributi ADD CONSTRAINT chk_tributi_2 CHECK (paga_terzi IN ('SI','NO'));
+ALTER TABLE tributi ADD COLUMN online BOOLEAN;
+ALTER TABLE tributi ADD COLUMN paga_terzi BOOLEAN;
 
 alter table pagamenti_portale add column principal VARCHAR(4000);
 update pagamenti_portale pp set principal = (select u.principal from utenze u, applicazioni a where u.id = a.id_utenza and a.cod_applicazione = pp.cod_applicazione);

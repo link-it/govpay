@@ -19,8 +19,6 @@ import it.govpay.core.rs.v1.beans.base.DominioPost;
 import it.govpay.core.rs.v1.beans.base.Entrata;
 import it.govpay.core.rs.v1.beans.base.EntrataPost;
 import it.govpay.core.rs.v1.beans.base.TipoContabilita;
-import it.govpay.core.rs.v1.beans.base.TipoTributoOnline;
-import it.govpay.core.rs.v1.beans.base.TipoTributoPagaTerzi;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativa;
 import it.govpay.core.rs.v1.beans.base.UnitaOperativaPost;
 import it.govpay.core.utils.UriBuilderUtils;
@@ -57,28 +55,12 @@ public class DominiConverter {
 			}
 		}
 		
-		if(entrataRequest.getOnline() != null) {
-			switch (entrataRequest.getOnline()) {
-			case TRUE:
-				tributo.setOnlineCustom(it.govpay.model.Tributo.CustomBooleanType.SI);
-				break;
-			case FALSE:
-			default:
-				tributo.setOnlineCustom(it.govpay.model.Tributo.CustomBooleanType.NO);				
-				break;
-			}
+		if(entrataRequest.Online() != null) {
+			tributo.setOnlineCustom(entrataRequest.Online());
 		}
 		
-		if(entrataRequest.getPagaTerzi() != null) {
-			switch (entrataRequest.getPagaTerzi()) {
-			case TRUE:
-				tributo.setPagaTerziCustom(it.govpay.model.Tributo.CustomBooleanType.SI);
-				break;
-			case FALSE:
-			default:
-				tributo.setPagaTerziCustom(it.govpay.model.Tributo.CustomBooleanType.NO);				
-				break;
-			}
+		if(entrataRequest.PagaTerzi() != null) {
+			tributo.setPagaTerziCustom(entrataRequest.PagaTerzi());
 		}
 		
 		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccredito());
@@ -351,29 +333,8 @@ public class DominiConverter {
 		if(tributo.getCodTributoIuv()!=null)
 			rsModel.codificaIUV(tributo.getCodTributoIuv());
 		
-		if(tributo.getOnline() != null) {
-			switch (tributo.getOnline()) {
-			case SI:
-				rsModel.setOnline(TipoTributoOnline.TRUE);
-				break;
-			case NO:
-			default:
-				rsModel.setOnline(TipoTributoOnline.FALSE);
-				break;
-			}
-		}
-		
-		if(tributo.getPagaTerzi() != null) {
-			switch (tributo.getPagaTerzi()) {
-			case SI:
-				rsModel.setPagaTerzi(TipoTributoPagaTerzi.TRUE);
-				break;
-			case NO:
-			default:
-				rsModel.setPagaTerzi(TipoTributoPagaTerzi.FALSE);
-				break;
-			}
-		}
+		rsModel.setOnline(tributo.getOnline());
+		rsModel.setPagaTerzi(tributo.getPagaTerzi());
 		
 		return rsModel;
 	}

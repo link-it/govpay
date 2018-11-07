@@ -831,8 +831,20 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codTributoIuv" type="String4" minOccurs="0"/>
-			<xsd:element name="online" type="CustomBooleanType" minOccurs="0" />
-			<xsd:element name="pagaTerzi" type="CustomBooleanType" minOccurs="0" />
+			<xsd:element name="online" minOccurs="0">
+			     <xsd:simpleType>
+			          <xsd:restriction base="xsd:string">
+			               <xsd:pattern value="true|false"/>
+			          </xsd:restriction>
+			     </xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="pagaTerzi" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -858,8 +870,8 @@
 			<xsd:element name="tipoContabilita" type="String1" minOccurs="0"/>
 			<xsd:element name="codContabilita" type="String255" minOccurs="0"/>
 			<xsd:element name="codTributoIuv" type="String4" minOccurs="0"/>
-			<xsd:element name="online" type="CustomBooleanType" default="NO" />
-			<xsd:element name="pagaTerzi" type="CustomBooleanType" default="NO" />
+			<xsd:element name="online" type="xsd:boolean" default="false" />
+			<xsd:element name="pagaTerzi" type="xsd:boolean" default="false" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2465,13 +2477,6 @@
 			<xsd:enumeration value="NON_VALIDO" />
 			<xsd:enumeration value="ESEGUITO_OK" />
 			<xsd:enumeration value="ESEGUITO_KO" />
-		</xsd:restriction>
-	</xsd:simpleType>
-	
-	<xsd:simpleType name="CustomBooleanType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="SI" />
-			<xsd:enumeration value="NO" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	

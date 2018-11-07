@@ -56,6 +56,7 @@ public class EntrateController extends it.govpay.rs.BaseController {
 			
 			String jsonRequest = baos.toString();
 			TipoEntrataPost entrataRequest= JSONSerializable.parse(jsonRequest, TipoEntrataPost.class);
+			entrataRequest.validate();
 			
 			PutEntrataDTO putIntermediarioDTO = EntrateConverter.getPutEntrataDTO(entrataRequest, idEntrata, user);
 			

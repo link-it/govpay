@@ -25,7 +25,6 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.TipoTributo;
-import it.govpay.model.Tributo.CustomBooleanType;
 import it.govpay.model.Tributo.TipoContabilita;
 
 public class TipoTributoConverter {
@@ -49,10 +48,8 @@ public class TipoTributoConverter {
 			dto.setTipoContabilitaDefault(TipoContabilita.toEnum(vo.getTipoContabilita()));
 		dto.setCodContabilitaDefault(vo.getCodContabilita());
 		dto.setCodTributoIuvDefault(vo.getCodTributoIuv());
-		if(vo.getOnline() != null)
-			dto.setOnlineDefault(CustomBooleanType.toEnum(vo.get_value_online()));
-		if(vo.getPagaTerzi() != null)
-			dto.setPagaTerziDefault(CustomBooleanType.toEnum(vo.get_value_pagaTerzi()));
+		dto.setOnlineDefault(vo.isOnline());
+		dto.setPagaTerziDefault(vo.isPagaTerzi());
 		return dto;
 	}
 
@@ -65,10 +62,8 @@ public class TipoTributoConverter {
 			vo.setTipoContabilita(dto.getTipoContabilitaDefault().getCodifica());
 		vo.setCodContabilita(dto.getCodContabilitaDefault());
 		vo.setCodTributoIuv(dto.getCodTributoIuvDefault());
-		if(dto.getOnlineDefault() != null)
-			vo.set_value_online(dto.getOnlineDefault().getCodifica()); 
-		if(dto.getPagaTerziDefault() != null)
-			vo.set_value_pagaTerzi(dto.getPagaTerziDefault().getCodifica()); 
+		vo.setOnline(dto.getOnlineDefault());
+		vo.setPagaTerzi(dto.getPagaTerziDefault());
 		return vo;
 	}
 

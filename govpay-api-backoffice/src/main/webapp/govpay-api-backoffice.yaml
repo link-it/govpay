@@ -3629,9 +3629,15 @@ components:
           description: Cifra identificativa negli IUV
           example: 01
         online:
-          $ref: '#/components/schemas/tipoTributoOnline'
+          type: boolean
+          description: Indica se l'entrata spontanea e' pagabile online
+          example: true
+          default: false
         pagaTerzi:
-          $ref: '#/components/schemas/tipoTributoPagaTerzi'
+          type: boolean
+          description: Indica se l'entrata e' pagabile da soggetti terzi
+          example: true
+          default: false
     tipoEntrata:
       type: object
       allOf:
@@ -3665,14 +3671,22 @@ components:
           description: Cifra identificativa negli IUV
           example: 01
         online:
-          $ref: '#/components/schemas/tipoTributoOnline'
+          type: boolean
+          description: Indica se l'entrata spontanea e' pagabile online
+          example: true
+          default: false
         pagaTerzi:
-          $ref: '#/components/schemas/tipoTributoPagaTerzi'
+          type: boolean
+          description: Indica se l'entrata e' pagabile da soggetti terzi
+          example: true
+          default: false
+          nullable: true
         abilitato:
           type: boolean
           description: Indicazione l'entrata e' abilitata
           example: true
           default: true
+          nullable: true
     entrata:
       type: object
       allOf:
@@ -4410,20 +4424,6 @@ components:
         - SIOPE
         - ALTRO
       example: SIOPE 
-    tipoTributoOnline: 
-      description: Indica se l'entrata spontanea e' pagabile online
-      type: string
-      enum:
-        - TRUE
-        - FALSE
-      example: TRUE
-    tipoTributoPagaTerzi: 
-      description: Indica se l'entrata e' pagabile da soggetti terzi
-      type: string
-      enum:
-        - TRUE
-        - FALSE
-      example: TRUE
     allegato:
       type: object
       required:

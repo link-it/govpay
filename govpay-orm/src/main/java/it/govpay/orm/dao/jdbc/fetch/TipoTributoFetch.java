@@ -64,10 +64,10 @@ public class TipoTributoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_contabilita", TipoTributo.model().COD_CONTABILITA.getFieldType()));
 				this.setParameter(object, "setCodTributoIuv", TipoTributo.model().COD_TRIBUTO_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_tributo_iuv", TipoTributo.model().COD_TRIBUTO_IUV.getFieldType()));
-				this.setParameter(object, "set_value_online", String.class,
-					jdbcParameterUtilities.readParameter(rs, "online", TipoTributo.model().ONLINE.getFieldType())+"");
-				this.setParameter(object, "set_value_pagaTerzi", String.class,
-					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoTributo.model().PAGA_TERZI.getFieldType())+"");
+				setParameter(object, "setOnline", TipoTributo.model().ONLINE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "online", TipoTributo.model().ONLINE.getFieldType()));
+				setParameter(object, "setPagaTerzi", TipoTributo.model().PAGA_TERZI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoTributo.model().PAGA_TERZI.getFieldType()));
 				return object;
 			}
 			
@@ -100,9 +100,9 @@ public class TipoTributoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codContabilita"));
 				this.setParameter(object, "setCodTributoIuv", TipoTributo.model().COD_TRIBUTO_IUV.getFieldType(),
 					this.getObjectFromMap(map,"codTributoIuv"));
-				this.setParameter(object, "set_value_online", String.class,
+				setParameter(object, "setOnline", TipoTributo.model().ONLINE.getFieldType(),
 					this.getObjectFromMap(map,"online"));
-				this.setParameter(object, "set_value_pagaTerzi", String.class,
+				setParameter(object, "setPagaTerzi", TipoTributo.model().PAGA_TERZI.getFieldType(),
 					this.getObjectFromMap(map,"pagaTerzi"));
 				return object;
 			}

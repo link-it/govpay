@@ -33,10 +33,10 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   private String codificaIUV = null;
   
   @JsonProperty("online")
-  private TipoTributoOnline online = null;
+  private Boolean online = false;
   
   @JsonProperty("pagaTerzi")
-  private TipoTributoPagaTerzi pagaTerzi = null;
+  private Boolean pagaTerzi = false;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
@@ -119,32 +119,34 @@ public class EntrataPost extends it.govpay.core.rs.v1.beans.JSONSerializable {
   }
 
   /**
+   * Indica se l'entrata spontanea e' pagabile online
    **/
-  public EntrataPost online(TipoTributoOnline online) {
+  public EntrataPost online(Boolean online) {
     this.online = online;
     return this;
   }
 
   @JsonProperty("online")
-  public TipoTributoOnline getOnline() {
+  public Boolean Online() {
     return online;
   }
-  public void setOnline(TipoTributoOnline online) {
+  public void setOnline(Boolean online) {
     this.online = online;
   }
 
   /**
+   * Indica se l'entrata e' pagabile da soggetti terzi
    **/
-  public EntrataPost pagaTerzi(TipoTributoPagaTerzi pagaTerzi) {
+  public EntrataPost pagaTerzi(Boolean pagaTerzi) {
     this.pagaTerzi = pagaTerzi;
     return this;
   }
 
   @JsonProperty("pagaTerzi")
-  public TipoTributoPagaTerzi getPagaTerzi() {
+  public Boolean PagaTerzi() {
     return pagaTerzi;
   }
-  public void setPagaTerzi(TipoTributoPagaTerzi pagaTerzi) {
+  public void setPagaTerzi(Boolean pagaTerzi) {
     this.pagaTerzi = pagaTerzi;
   }
 

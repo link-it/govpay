@@ -230,13 +230,10 @@ CREATE TABLE tipi_tributo
 	tipo_contabilita VARCHAR2(1 CHAR),
 	cod_contabilita VARCHAR2(255 CHAR),
 	cod_tributo_iuv VARCHAR2(4 CHAR),
-	online VARCHAR2(4 CHAR) NOT NULL,
-	paga_terzi VARCHAR2(4 CHAR) NOT NULL,
+	online NUMBER NOT NULL,
+	paga_terzi NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	-- check constraints
-	CONSTRAINT chk_tipi_tributo_1 CHECK (online IN ('SI','NO')),
-	CONSTRAINT chk_tipi_tributo_2 CHECK (paga_terzi IN ('SI','NO')),
 	-- unique constraints
 	CONSTRAINT unique_tipi_tributo_1 UNIQUE (cod_tributo),
 	-- fk/pk keys constraints
@@ -244,8 +241,8 @@ CREATE TABLE tipi_tributo
 );
 
 
-ALTER TABLE tipi_tributo MODIFY online DEFAULT 'NO';
-ALTER TABLE tipi_tributo MODIFY paga_terzi DEFAULT 'NO';
+ALTER TABLE tipi_tributo MODIFY online DEFAULT 0;
+ALTER TABLE tipi_tributo MODIFY paga_terzi DEFAULT 0;
 
 CREATE TRIGGER trg_tipi_tributo
 BEFORE
@@ -269,17 +266,14 @@ CREATE TABLE tributi
 	tipo_contabilita VARCHAR2(1 CHAR),
 	codice_contabilita VARCHAR2(255 CHAR),
 	cod_tributo_iuv VARCHAR2(4 CHAR),
-        online VARCHAR2(4 CHAR),
-	paga_terzi VARCHAR2(4 CHAR),
+        online NUMBER,
+	paga_terzi NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
 	id_iban_accredito NUMBER,
 	id_iban_appoggio NUMBER,
 	id_tipo_tributo NUMBER NOT NULL,
-	-- check constraints
-	CONSTRAINT chk_tributi_1 CHECK (online IN ('SI','NO')),
-	CONSTRAINT chk_tributi_2 CHECK (paga_terzi IN ('SI','NO')),
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints

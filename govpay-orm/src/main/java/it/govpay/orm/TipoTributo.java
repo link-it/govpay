@@ -19,7 +19,6 @@
  */
 package it.govpay.orm;
 
-import it.govpay.orm.constants.CustomBooleanType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -41,8 +40,8 @@ import java.io.Serializable;
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codTributoIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="online" type="{http://www.govpay.it/orm}CustomBooleanType" minOccurs="1" maxOccurs="1" default="NO"/>
- * 			&lt;element name="pagaTerzi" type="{http://www.govpay.it/orm}CustomBooleanType" minOccurs="1" maxOccurs="1" default="NO"/>
+ * 			&lt;element name="online" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
+ * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -127,43 +126,27 @@ public class TipoTributo extends org.openspcoop2.utils.beans.BaseBean implements
     this.codTributoIuv = codTributoIuv;
   }
 
-  public void set_value_online(String value) {
-    this.online = (CustomBooleanType) CustomBooleanType.toEnumConstantFromString(value);
-  }
-
-  public String get_value_online() {
-    if(this.online == null){
-    	return null;
-    }else{
-    	return this.online.toString();
-    }
-  }
-
-  public it.govpay.orm.constants.CustomBooleanType getOnline() {
+  public boolean isOnline() {
     return this.online;
   }
 
-  public void setOnline(it.govpay.orm.constants.CustomBooleanType online) {
+  public boolean getOnline() {
+    return this.online;
+  }
+
+  public void setOnline(boolean online) {
     this.online = online;
   }
 
-  public void set_value_pagaTerzi(String value) {
-    this.pagaTerzi = (CustomBooleanType) CustomBooleanType.toEnumConstantFromString(value);
-  }
-
-  public String get_value_pagaTerzi() {
-    if(this.pagaTerzi == null){
-    	return null;
-    }else{
-    	return this.pagaTerzi.toString();
-    }
-  }
-
-  public it.govpay.orm.constants.CustomBooleanType getPagaTerzi() {
+  public boolean isPagaTerzi() {
     return this.pagaTerzi;
   }
 
-  public void setPagaTerzi(it.govpay.orm.constants.CustomBooleanType pagaTerzi) {
+  public boolean getPagaTerzi() {
+    return this.pagaTerzi;
+  }
+
+  public void setPagaTerzi(boolean pagaTerzi) {
     this.pagaTerzi = pagaTerzi;
   }
 
@@ -206,16 +189,12 @@ public class TipoTributo extends org.openspcoop2.utils.beans.BaseBean implements
   @XmlElement(name="codTributoIuv",required=false,nillable=false)
   protected java.lang.String codTributoIuv;
 
-  @XmlTransient
-  protected java.lang.String _value_online;
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="online",required=true,nillable=false,defaultValue="false")
+  protected boolean online = false;
 
-  @XmlElement(name="online",required=true,nillable=false,defaultValue="NO")
-  protected CustomBooleanType online = (CustomBooleanType) CustomBooleanType.toEnumConstantFromString("NO");
-
-  @XmlTransient
-  protected java.lang.String _value_pagaTerzi;
-
-  @XmlElement(name="pagaTerzi",required=true,nillable=false,defaultValue="NO")
-  protected CustomBooleanType pagaTerzi = (CustomBooleanType) CustomBooleanType.toEnumConstantFromString("NO");
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="pagaTerzi",required=true,nillable=false,defaultValue="false")
+  protected boolean pagaTerzi = false;
 
 }

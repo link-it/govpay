@@ -150,13 +150,10 @@ CREATE TABLE tipi_tributo
 	tipo_contabilita VARCHAR(1),
 	cod_contabilita VARCHAR(255),
 	cod_tributo_iuv VARCHAR(4),
-	online VARCHAR(4) NOT NULL DEFAULT 'NO',
-	paga_terzi VARCHAR(4) NOT NULL DEFAULT 'NO',
+	online BOOLEAN NOT NULL DEFAULT false,
+	paga_terzi BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	-- check constraints
-	CONSTRAINT chk_tipi_tributo_1 CHECK (online IN ('SI','NO')),
-	CONSTRAINT chk_tipi_tributo_2 CHECK (paga_terzi IN ('SI','NO')),
 	-- unique constraints
 	CONSTRAINT unique_tipi_tributo_1 UNIQUE (cod_tributo),
 	-- fk/pk keys constraints
@@ -174,17 +171,14 @@ CREATE TABLE tributi
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
 	cod_tributo_iuv VARCHAR(4),
-	online VARCHAR(4),
-	paga_terzi VARCHAR(4),
+	online BOOLEAN,
+	paga_terzi BOOLEAN,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,
 	id_iban_accredito BIGINT,
 	id_iban_appoggio BIGINT,
 	id_tipo_tributo BIGINT NOT NULL,
-	-- check constraints
-	CONSTRAINT chk_tributi_1 CHECK (online IN ('SI','NO')),
-	CONSTRAINT chk_tributi_2 CHECK (paga_terzi IN ('SI','NO')),
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
