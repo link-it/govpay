@@ -163,7 +163,8 @@ public class TracciatiConverter {
 	public static OperazionePendenza toOperazioneTracciatoPendenzaRsModel(it.govpay.bd.model.Operazione operazione) throws ServiceException {
 		OperazionePendenza rsModel = new OperazionePendenza();
 		
-		rsModel.setApplicazione(operazione.getApplicazione(null).getCodApplicazione());
+		if(operazione.getApplicazione(null) != null)
+			rsModel.setApplicazione(operazione.getApplicazione(null).getCodApplicazione());
 		rsModel.setNumero(BigDecimal.valueOf(operazione.getLineaElaborazione()));  
 		
 		switch (operazione.getStato()) {
@@ -231,7 +232,7 @@ public class TracciatiConverter {
 		rsModel.setDescrizioneStato(opAnnullamento.getMotivoAnnullamento());
 		
 		try {
-			if(opAnnullamento.getCodDominio() != null)
+			if(opAnnullamento.getDominio(null) != null)
 				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(opAnnullamento.getDominio(null)));
 		} catch (NotFoundException e) {
 		}
@@ -246,7 +247,7 @@ public class TracciatiConverter {
 		rsModel.setDescrizioneStato(opCaricamento.getDettaglioEsito()); 
 		
 		try {
-			if(opCaricamento.getCodDominio() != null)
+			if(opCaricamento.getDominio(null) != null)
 				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(opCaricamento.getDominio(null)));
 		} catch (NotFoundException e) {
 		}
