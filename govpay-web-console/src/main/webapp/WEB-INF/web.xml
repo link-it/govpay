@@ -19,7 +19,10 @@
 		<servlet-name>logoutServlet</servlet-name>
 		<url-pattern>/logout</url-pattern>
 	</servlet-mapping>
-
+	<error-page>
+		<error-code>404</error-code>
+		<location>/private/index.html</location>
+	</error-page>
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Resources-Unprotected</web-resource-name>
