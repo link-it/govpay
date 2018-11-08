@@ -9,6 +9,6 @@ public class ListaRuoliDTO extends BasicFindRequestDTO{
 
 	public ListaRuoliDTO(IAutorizzato user) {
 		super(user);
-		this.setDefaultSort(ACL.model().RUOLO,SortOrder.DESC);
+		this.addDefaultSort(ACL.model().RUOLO,SortOrder.DESC);
 	}
 }

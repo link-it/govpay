@@ -147,7 +147,12 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
 		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
 		filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
+		
 		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
+		if(!listaPendenzaDTO.isOrderEnabled()) {
+			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
+		}
+		
 		if(listaPendenzaDTO.getUser().getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 			filter.setCfCittadino(listaPendenzaDTO.getUser().getIdentificativo()); 
 		}
@@ -230,7 +235,11 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
 		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
 		filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
+		
 		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
+		if(!listaPendenzaDTO.isOrderEnabled()) {
+			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
+		}
 		if(listaPendenzaDTO.getUser().getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 			filter.setCfCittadino(listaPendenzaDTO.getUser().getIdentificativo()); 
 		}

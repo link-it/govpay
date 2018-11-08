@@ -674,6 +674,7 @@ paths:
              * dataScadenza
              * dataValidita
              * stato
+             * smart (solo se attivo il filtro 'idDebitore')
           required: false
           schema:
             type: string
@@ -693,7 +694,7 @@ paths:
             type: string
         - name: idDebitore
           in: query
-          description: filtro per codice fiscale o p. iva del soggetoto debitore
+          description: filtro per codice fiscale o p. iva del soggetto debitore
           required: false
           schema:
             type: string

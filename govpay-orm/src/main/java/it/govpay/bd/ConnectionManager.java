@@ -62,6 +62,7 @@ public class ConnectionManager {
 		
 		try{
 			ConnectionManager.ds = DataSourceFactory.newInstance(GovpayConfig.getInstance().getDataSourceJNDIName(), new Properties(), dsParams);
+			log.info("DataSource [" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] inizializzato con successo.");
 		} catch(Exception e) {
 			 if(e instanceof UtilsAlreadyExistsException){
 				 log.debug("DataSource [" + GovpayConfig.getInstance().getDataSourceJNDIName() +"] gia' inizializzato.");

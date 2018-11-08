@@ -24,7 +24,7 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	
 	public ListaTracciatiDTO(IAutorizzato user) {
 		super(user);
-		this.setDefaultSort(Tracciato.model().DATA_CARICAMENTO,SortOrder.DESC);
+		this.addDefaultSort(Tracciato.model().DATA_CARICAMENTO,SortOrder.DESC);
 	}
 
 	public List<TIPO_TRACCIATO> getTipoTracciato() {

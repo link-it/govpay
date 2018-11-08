@@ -30,7 +30,6 @@ import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.dao.pagamenti.exception.AvvisoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;

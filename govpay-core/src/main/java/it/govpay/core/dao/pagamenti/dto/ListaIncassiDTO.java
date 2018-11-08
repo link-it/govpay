@@ -31,7 +31,7 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	
 	public ListaIncassiDTO(IAutorizzato user) {
 		super(user);
-		this.setDefaultSort(Incasso.model().DATA_ORA_INCASSO,SortOrder.DESC);
+		this.addDefaultSort(Incasso.model().DATA_ORA_INCASSO,SortOrder.DESC);
 	}
 
 	private Date inizio;

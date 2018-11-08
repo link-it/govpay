@@ -22,13 +22,15 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	private List<FilterSortWrapper> fieldsSort;
 	private Map<String, IField> fieldMap;
 	private int pagina;
-	private FilterSortWrapper defaultSort = null;
+	private List<FilterSortWrapper> defaultSort = null;
+	
 
 	public BasicFindRequestDTO(IAutorizzato user) {
 		super(user);
 		this.setLimit(50);
 		this.setPagina(1);
 		this.fieldsSort = new ArrayList<>();
+		this.defaultSort = new ArrayList<>();
 		this.fieldMap = new HashMap<>();
 	}
 
@@ -73,23 +75,28 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		this.simpleSearch = simpleSearch;
 	}
 	
-	public FilterSortWrapper getDefaultSort() {
+	public List<FilterSortWrapper> getDefaultSort() {
 		return this.defaultSort;
 	}
 
-	public void setDefaultSort(IField field, SortOrder sortOrder) {
-		this.defaultSort = new FilterSortWrapper(field, sortOrder);
+	public void addDefaultSort(IField field, SortOrder sortOrder) {
+		this.defaultSort.add(new FilterSortWrapper(field, sortOrder));
 	}
 
-	protected void addSort(IField field, SortOrder sortOrder) {
+	private void addSort(IField field, SortOrder sortOrder) {
+		this.fieldsSort.add(new FilterSortWrapper(field, sortOrder));
+	}
+	
+	public void addSortField(IField field, SortOrder sortOrder) {
 		this.fieldsSort.add(new FilterSortWrapper(field, sortOrder));
 	}
 	
 	public List<FilterSortWrapper> getFieldSortList(){
-		return (this.fieldsSort.size() == 0 && this.defaultSort != null) ? Arrays.asList(this.defaultSort) : this.fieldsSort;
+		return this.fieldsSort.isEmpty() ? this.defaultSort : this.fieldsSort;
 	}
 
 	public void setOrderBy(String orderBy) throws RequestParamException, InternalException {
+		resetSort();
 		
 		if(orderBy==null || orderBy.trim().isEmpty()) return;
 
@@ -123,4 +130,14 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 				throw new RequestParamException(FaultType.PARAMETRO_ORDERBY_NON_VALIDO, "Il campo " + fieldname + " non e' valido per ordinare la ricerca in corso. Campi consentiti: " + Arrays.toString(this.fieldMap.keySet().toArray()));
 		}
 	}
+
+	public void resetSort() {
+		this.fieldsSort = new ArrayList<>();
+	}
+
+	public boolean isOrderEnabled() {
+		return !this.fieldsSort.isEmpty();
+	}
+	
+	
 }

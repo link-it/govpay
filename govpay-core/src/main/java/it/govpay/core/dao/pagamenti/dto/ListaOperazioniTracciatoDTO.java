@@ -12,7 +12,7 @@ public class ListaOperazioniTracciatoDTO extends BasicFindRequestDTO{
 	
 	public ListaOperazioniTracciatoDTO(IAutorizzato user) {
 		super(user);
-		this.setDefaultSort(Operazione.model().LINEA_ELABORAZIONE,SortOrder.ASC);
+		this.addDefaultSort(Operazione.model().LINEA_ELABORAZIONE,SortOrder.ASC);
 	}
 
 	public Long getIdTracciato() {

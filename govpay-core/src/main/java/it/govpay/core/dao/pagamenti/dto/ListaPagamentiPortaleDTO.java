@@ -14,7 +14,7 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 		super(user);
 		this.addSortField("dataRichiestaPagamento", PagamentoPortale.model().DATA_RICHIESTA);
 		this.addSortField("stato", PagamentoPortale.model().STATO);
-		this.setDefaultSort(PagamentoPortale.model().DATA_RICHIESTA,SortOrder.DESC);
+		this.addDefaultSort(PagamentoPortale.model().DATA_RICHIESTA,SortOrder.DESC);
 	}
 	private Date dataA;
 	private Date dataDa;

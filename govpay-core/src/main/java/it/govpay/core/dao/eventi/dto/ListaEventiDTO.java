@@ -10,7 +10,7 @@ public class ListaEventiDTO extends BasicFindRequestDTO{
 
 	public ListaEventiDTO(IAutorizzato user) {
 		super(user);
-		this.addSort(Evento.model().DATA_1, SortOrder.ASC);
+		this.addDefaultSort(Evento.model().DATA_1, SortOrder.ASC);
 	}
 
 	private String idDominio;

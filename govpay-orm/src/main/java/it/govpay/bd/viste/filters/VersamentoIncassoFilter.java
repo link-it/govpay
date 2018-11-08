@@ -168,7 +168,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 			if(this.codUnivocoDebitore != null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(VersamentoIncasso.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore,LikeMode.ANYWHERE);
+				newExpression.equals(VersamentoIncasso.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore);
 				addAnd = true;
 			}
 			

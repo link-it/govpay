@@ -15,7 +15,7 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 		super(user);
 		this.addSortField("dataRichiesta", RPT.model().DATA_MSG_RICHIESTA);
 		this.addSortField("stato", RPT.model().STATO);
-		this.setDefaultSort(RPT.model().DATA_MSG_RICHIESTA,SortOrder.DESC);
+		this.addDefaultSort(RPT.model().DATA_MSG_RICHIESTA,SortOrder.DESC);
 	}
 	private Date dataA;
 	private Date dataDa;

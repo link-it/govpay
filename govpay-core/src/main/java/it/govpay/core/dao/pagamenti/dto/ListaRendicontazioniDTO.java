@@ -13,7 +13,7 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	public ListaRendicontazioniDTO(IAutorizzato user) {
 		super(user);
 		this.addSortField("data", FR.model().DATA_ACQUISIZIONE);
-		this.setDefaultSort(FR.model().DATA_ACQUISIZIONE,SortOrder.DESC);
+		this.addDefaultSort(FR.model().DATA_ACQUISIZIONE,SortOrder.DESC);
 	}
 	private String idDominio;
 	private Date dataDa;

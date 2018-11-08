@@ -86,6 +86,10 @@ public abstract class AbstractFilter implements IFilter {
 	public void setFilterSortList(List<FilterSortWrapper> filterSortList) {
 		this.filterSortList = filterSortList;
 	}
+	
+	public void addFilterSort(FilterSortWrapper filterSort) {
+		this.filterSortList.add(filterSort);
+	}
 
 	protected IExpression newExpression() throws ServiceException, NotImplementedException {
 		return this.expressionConstructor.newExpression();
@@ -187,19 +191,21 @@ public abstract class AbstractFilter implements IFilter {
 	protected FilterSortWrapper getDefaultFilterSortWrapper() throws ServiceException {
 		try {
 			CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
-			FilterSortWrapper wrapper = new FilterSortWrapper();
-			wrapper.setField(baseField);
-			wrapper.setSortOrder(SortOrder.ASC);
+			FilterSortWrapper wrapper = new FilterSortWrapper(baseField,SortOrder.ASC);
 			return wrapper;
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
 	
-	public FilterSortWrapper getDefaultFilterSortWrapperDesc() throws ExpressionException, ServiceException {
-		CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
-		FilterSortWrapper fsw = new FilterSortWrapper(baseField, SortOrder.DESC);
-		return fsw;
+	public FilterSortWrapper getDefaultFilterSortWrapperDesc() throws ServiceException {
+		try {
+			CustomField baseField = new CustomField("id", Long.class, "id", this.getRootTable());
+			FilterSortWrapper fsw = new FilterSortWrapper(baseField, SortOrder.DESC);
+			return fsw;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
 	}
 	
 	protected boolean setFiltroAbilitato(IExpression newExpression, boolean addAnd) throws ExpressionNotImplementedException, ExpressionException {
