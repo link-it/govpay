@@ -22,6 +22,7 @@ package it.govpay.core.dao.commons;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -32,6 +33,7 @@ import it.govpay.bd.model.Operatore;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AclEngine;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -51,10 +53,10 @@ public class BaseDAO {
 	}
 
 	public String populateUser(IAutorizzato user, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		if(user == null || user.getPrincipal() == null)
+		if(user == null) // || user.getPrincipal() == null)
 			throw AclEngine.toNotAuthenticatedException(user);
 
-		if(user.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+		if(user.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || user.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) { 
 			return user.getIdentificativo();
 		} else {
 			try {
@@ -84,29 +86,41 @@ public class BaseDAO {
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+		this.autorizzaRichiesta(user, servizio, diritti, false); 
+	}
+
+	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti, boolean accessoAnonimo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
-		this.autorizzaRichiesta(user, servizio, listaDiritti);
+		this.autorizzaRichiesta(user, servizio, listaDiritti, accessoAnonimo);
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, Diritti diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
-		List<Diritti> listaDiritti = new ArrayList<>();
+		this.autorizzaRichiesta(user, servizio, diritti,false,bd);
+	}	
+
+	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, Diritti diritti, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+	List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
-		this.autorizzaRichiesta(user, servizio, listaDiritti, bd);
+		this.autorizzaRichiesta(user, servizio, listaDiritti, accessoAnonimo, bd);
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user, List<Servizio> servizio, Diritti diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
-		List<Diritti> listaDiritti = new ArrayList<>();
-		listaDiritti.add(diritti);
-		this.autorizzaRichiesta(user, servizio, listaDiritti, bd);
+		this.autorizzaRichiesta(user, servizio, diritti,false,bd); 
 	}
 
-	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, List<Diritti> diritti) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public void autorizzaRichiesta(IAutorizzato user, List<Servizio> servizio, Diritti diritti, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(diritti);
+		this.autorizzaRichiesta(user, servizio, listaDiritti, accessoAnonimo, bd);
+	}
+
+	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(user, servizio, diritti, bd); 
+			this.autorizzaRichiesta(user, servizio, diritti, accessoAnonimo, bd); 
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -114,67 +128,91 @@ public class BaseDAO {
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, List<Diritti> diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+		this.autorizzaRichiesta(user, servizio, diritti,false,bd);
+	}
+
+	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		// 1. integro le informazioni dell'utente
 		this.populateUser(user, bd);
 
 		// 2. invocazione acl engine
-		boolean authorized = AclEngine.isAuthorized(user, servizio, diritti);
+		boolean authorized = AclEngine.isAuthorized(user, servizio, diritti, accessoAnonimo);
 
 		if(!authorized)
-			throw AclEngine.toNotAuthorizedException(user, servizio, diritti);
+			throw AclEngine.toNotAuthorizedException(user, servizio, diritti, accessoAnonimo);
 	}
 
-	public void autorizzaRichiesta(IAutorizzato user, List<Servizio> servizi, List<Diritti> diritti, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+	public void autorizzaRichiesta(IAutorizzato user, List<Servizio> servizi, List<Diritti> diritti, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		// 1. integro le informazioni dell'utente
 		this.populateUser(user, bd);
 
 		// 2. invocazione acl engine
 		boolean authorized = false;
 		for(Servizio servizio : servizi) {
-			authorized = AclEngine.isAuthorized(user, servizio, diritti);
+			authorized = AclEngine.isAuthorized(user, servizio, diritti, accessoAnonimo);
 			if(authorized)
 				break;
 		}
 
 		if(!authorized)
-			throw AclEngine.toNotAuthorizedException(user, servizi, diritti);
+			throw AclEngine.toNotAuthorizedException(user, servizi, diritti, accessoAnonimo);
 	}
 
 
 
-	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti, String codDominio, String codTributo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, Diritti diritti, String codDominio, String codTributo, boolean accessoAnonimo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
-		this.autorizzaRichiesta(user, servizio, listaDiritti, codDominio, codTributo);
+		this.autorizzaRichiesta(user, servizio, listaDiritti, codDominio, codTributo, accessoAnonimo);
 	}
 
 	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, Diritti diritti, String codDominio, String codTributo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+		autorizzaRichiesta(user, servizio, diritti, codDominio, codTributo, false, bd);
+	}
+
+	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, Diritti diritti, String codDominio, String codTributo, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
-		this.autorizzaRichiesta(user, servizio, listaDiritti, codDominio, codTributo, bd); 
+		this.autorizzaRichiesta(user, servizio, listaDiritti, codDominio, codTributo, accessoAnonimo, bd); 
 	}
 
 
-	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, List<Diritti> diritti, String codDominio, String codTributo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public void autorizzaRichiesta(IAutorizzato user,Servizio servizio, List<Diritti> diritti, String codDominio, String codTributo, boolean accessoAnonimo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(user, servizio, diritti, codDominio, codTributo, bd); 
+			this.autorizzaRichiesta(user, servizio, diritti, codDominio, codTributo, accessoAnonimo, bd); 
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
 		}
 	}
 
-	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, List<Diritti> diritti, String codDominio, String codTributo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+	public void autorizzaRichiesta(IAutorizzato user, Servizio servizio, List<Diritti> diritti, String codDominio, String codTributo, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		// 1. integro le informazioni dell'utente
 		this.populateUser(user, bd);
 
 		// 2. invocazione acl engine
-		boolean authorized = AclEngine.isAuthorized(user, servizio, codDominio, codTributo, diritti);
+		boolean authorized = AclEngine.isAuthorized(user, servizio, codDominio, codTributo, diritti, accessoAnonimo);
 
 		if(!authorized)
-			throw AclEngine.toNotAuthorizedException(user, servizio, diritti, codDominio, codTributo);
+			throw AclEngine.toNotAuthorizedException(user, servizio, diritti, accessoAnonimo, codDominio, codTributo);
+	}
+	
+	public void autorizzaAccessoAnonimoVersamento(IAutorizzato user, Servizio servizio, Diritti diritti, boolean accessoAnonimo, String cfToCheck, String idDebitore) throws NotAuthorizedException{
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(diritti);
+		this.autorizzaAccessoAnonimoVersamento(user, servizio, listaDiritti, accessoAnonimo, cfToCheck, idDebitore);
+	}
+	
+	public void autorizzaAccessoAnonimoVersamento(IAutorizzato user, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo, String cfToCheck, String idDebitore) throws NotAuthorizedException{
+		if(user.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			if(GovpayConfig.getInstance().isCheckCfDebitore()) {
+				if(StringUtils.isEmpty(cfToCheck) || !cfToCheck.equalsIgnoreCase(idDebitore)) {
+					throw AclEngine.toNotAuthorizedException(user, servizio, diritti, accessoAnonimo);
+				}
+			}
+		}
 	}
 }

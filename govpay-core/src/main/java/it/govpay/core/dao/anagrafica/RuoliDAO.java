@@ -42,8 +42,7 @@ public class RuoliDAO extends BaseDAO{
 		LeggiRuoloDTOResponse response = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA, leggiRuoliDTO.getRuolo(), null, bd);
+			this.autorizzaRichiesta(leggiRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA, bd);
 
 			AclBD aclBD = new AclBD(bd);
 			AclFilter filter = aclBD.newFilter();

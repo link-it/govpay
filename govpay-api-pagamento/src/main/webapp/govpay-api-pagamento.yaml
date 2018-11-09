@@ -1021,6 +1021,13 @@ paths:
           required: true
           schema:
             type: string
+        - name: idDebitore
+          in: query
+          description: Identificativo del soggetto debitore della pendenza riferita dall'avviso
+          required: false
+          schema:
+            type: string
+          example: 'RSSMRA30A01H501I'
       responses:
         '200':
           description: Avviso di pagamento
@@ -1714,6 +1721,12 @@ components:
                       Numero avviso della pendenza, assegnato se
                       pagabile da psp
                     example: 123456789012345678
+                  idDebitore:
+                    type: string
+                    description: >- 
+                      Identificativo del soggetto debitore 
+                      della pendenza riferita dall'avviso
+                    example: 'RSSMRA30A01H501I'
               - $ref: '#/components/schemas/pendenzaPost'
         urlRitorno:
           type: string

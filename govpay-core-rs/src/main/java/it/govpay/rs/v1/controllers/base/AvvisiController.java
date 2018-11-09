@@ -46,7 +46,7 @@ public class AvvisiController extends it.govpay.rs.BaseController {
 
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(user, idDominio, iuv);
 			
-			String accept = null;
+			String accept = "";
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
 			}

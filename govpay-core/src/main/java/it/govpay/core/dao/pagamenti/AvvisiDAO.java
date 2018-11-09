@@ -27,6 +27,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.dao.anagrafica.UtentiDAO.TipoUtenza;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -119,15 +120,17 @@ public class AvvisiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			// controllo che l'utenza sia autorizzata per il dominio scelto
-			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.getCodDominio(), null, bd);
+			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.getCodDominio(), null, getAvvisoDTO.isAccessoAnonimo(), bd);
 			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamento = versamentiBD.getVersamento(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getIuv());
 			
 			Dominio dominio = versamento.getDominio(versamentiBD);
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), null, bd);
+			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), null, getAvvisoDTO.isAccessoAnonimo(), bd);
 			
+			// controllo eventuali accessi anonimi al servizio di lettura avviso
+			this.autorizzaAccessoAnonimoVersamento(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.isAccessoAnonimo(), getAvvisoDTO.getCfDebitore(), versamento.getAnagraficaDebitore().getCodUnivoco());
 			
 			GetAvvisoDTOResponse response = new GetAvvisoDTOResponse();
 			switch(getAvvisoDTO.getFormato()) {

@@ -83,6 +83,7 @@ public class PagamentiPortaleConverter {
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
 					ref.setIdDominio(pendenza.getIdDominio());
 					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
+					ref.setIdDebitore(pendenza.getIdDebitore());
 					listRefs.add(ref);
 
 				} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {

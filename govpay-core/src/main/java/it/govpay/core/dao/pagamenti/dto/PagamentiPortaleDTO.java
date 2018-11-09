@@ -103,6 +103,7 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 
 		private String idDominio;
 		private String numeroAvviso;
+		private String idDebitore;
 		
 		public String getIdDominio() {
 			return this.idDominio;
@@ -115,6 +116,12 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 		}
 		public void setNumeroAvviso(String numeroAvviso) {
 			this.numeroAvviso = numeroAvviso;
+		}
+		public String getIdDebitore() {
+			return idDebitore;
+		}
+		public void setIdDebitore(String idDebitore) {
+			this.idDebitore = idDebitore;
 		}
 	}
 

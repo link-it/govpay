@@ -37,6 +37,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.UtenzaAnonima;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.model.Acl;
@@ -67,30 +68,32 @@ public class CredentialUtils {
 			return user;
 		}
 		else {
-			return getUser(credential);
+			Utenza user = new UtenzaApplicazione();
+			
+			if(credential.getSubject() != null) {
+				user.setPrincipal(credential.getSubject());
+				user.setCheckSubject(true); 
+			} else if(credential.getPrincipal() != null) {
+				user.setPrincipal(credential.getPrincipal());
+				user.setCheckSubject(false); 
+			} else {
+				user = new UtenzaAnonima();
+				List<Acl> aclPrincipal = new ArrayList<>();
+				Acl acl = new Acl();
+				acl.setPrincipal(null);
+				acl.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.SCRITTURA.getCodifica() + Diritti.ESECUZIONE.getCodifica());
+				acl.setServizio(Servizio.PAGAMENTI_E_PENDENZE); 
+				acl.getProprieta().put(AclEngine.UTENZA_ANONIMA, "true");
+				aclPrincipal.add(acl);
+				user.setAclPrincipal(aclPrincipal);
+				user.setAbilitato(true);
+				user.setCheckSubject(false);
+				user.setPrincipalOriginale(null);
+				user.setPrincipal(null);
+			}
+			
+			return user;
 		}
-	}
-
-	private static Utenza getUser(HttpServletCredential credential) {
-		Utenza user = new UtenzaApplicazione();
-		
-		if(credential.getSubject() != null) {
-			user.setPrincipal(credential.getSubject());
-			user.setCheckSubject(true); 
-		} else if(credential.getPrincipal() != null) {
-			user.setPrincipal(credential.getPrincipal());
-			user.setCheckSubject(false); 
-		} else {
-			user.setPrincipal(null);
-		}
-		
-		return user;
-	}
-	
-	public static Applicazione getApplicazione(HttpServletRequest request, Logger log,BasicBD bd) throws ServiceException, NotFoundException {
-		HttpServletCredential credential = new HttpServletCredential(request, log);
-		Utenza user = getUser(credential); 
-		return getApplicazione(bd, user);
 	}
 
 	public static Applicazione getApplicazione(BasicBD bd, Utenza user) throws ServiceException, NotFoundException {

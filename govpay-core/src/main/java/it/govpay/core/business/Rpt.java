@@ -20,8 +20,6 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Utenza;
-import it.govpay.bd.model.UtenzaApplicazione;
-import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.NotificheBD;
@@ -94,7 +92,7 @@ public class Rpt extends BasicBD{
 					List<Diritti> diritti = new ArrayList<>(); 
 					diritti.add(Diritti.ESECUZIONE);
 
-					if(!AclEngine.isAuthorized(utenza, Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti)) {
+					if(!AclEngine.isAuthorized(utenza, Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti,true)) {
 						log.warn("Non autorizzato " + utenza.getTipoUtenza() + " [" + utenza.getIdentificativo() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
 						throw new GovPayException(EsitoOperazione.APP_003, utenza.getIdentificativo(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 					}

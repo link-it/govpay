@@ -33,6 +33,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 	"voci",
 	"idA2A",
 	"idPendenza",
+	"idDebitore",
 })
 public class PendenzaPost extends JSONSerializable implements IValidable {
 	
@@ -104,6 +105,9 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("idPendenza")
 	private String idPendenza = null;
+
+	@JsonProperty("idDebitore")
+	private String idDebitore = null;
 
 	/**
 	 * Identificativo del dominio creditore
@@ -408,6 +412,22 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 		this.idPendenza = idPendenza;
 	}
 
+  /**
+   * Identificativo del soggetto debitore  della pendenza riferita dall'avviso
+   **/
+  public PendenzaPost idDebitore(String idDebitore) {
+    this.idDebitore = idDebitore;
+    return this;
+  }
+
+  @JsonProperty("idDebitore")
+  public String getIdDebitore() {
+    return idDebitore;
+  }
+  public void setIdDebitore(String idDebitore) {
+    this.idDebitore = idDebitore;
+  }
+
 	@Override
 	public boolean equals(java.lang.Object o) {
 		if (this == o) {
@@ -434,12 +454,13 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				Objects.equals(this.tassonomiaAvviso, pendenzaPost.tassonomiaAvviso) &&
 				Objects.equals(this.voci, pendenzaPost.voci) &&
 				Objects.equals(this.idA2A, pendenzaPost.idA2A) &&
-				Objects.equals(this.idPendenza, pendenzaPost.idPendenza);
+				Objects.equals(this.idPendenza, pendenzaPost.idPendenza) &&
+				Objects.equals(idDebitore, pendenzaPost.idDebitore);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.idDominio, this.idUnitaOperativa, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.voci, this.idA2A, this.idPendenza);
+		return Objects.hash(this.idDominio, this.idUnitaOperativa, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.voci, this.idA2A, this.idPendenza, this.idDebitore);
 	}
 
 	public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -474,6 +495,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 		sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
 		sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
 		sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
+		sb.append("    idDebitore: ").append(toIndentedString(idDebitore)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}

@@ -86,7 +86,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			ctx.getContext().getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
 
 			ctx.log("ws.ricevutaRichiesta");
-			this.autorizzaRichiesta(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA); 
+			this.autorizzaRichiesta(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA,true); 
 			ctx.log("ws.autorizzazione");
 
 			String codDominio = null;
@@ -130,9 +130,14 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					}
 				}  else if(v instanceof RefVersamentoAvviso) {
 					String idDominio = ((RefVersamentoAvviso)v).getIdDominio();
+					String cfToCheck = ((RefVersamentoAvviso)v).getIdDebitore();
 					try {
 						Dominio dominio = dominiBD.getDominio(idDominio);
 						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v,dominio);
+
+						// controllo che l'utenza anonima possa effettuare il pagamento dell'avviso	
+						this.autorizzaAccessoAnonimoVersamento(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, true, cfToCheck, versamentoModel.getAnagraficaDebitore().getCodUnivoco());
+						
 					}catch(NotFoundException e) {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio non disponibile [Dominio:"+idDominio+"].", EsitoOperazione.DOM_000, idDominio);
 					}

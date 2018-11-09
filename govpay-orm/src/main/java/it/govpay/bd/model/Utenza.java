@@ -24,7 +24,7 @@ public class Utenza extends it.govpay.model.Utenza implements IAutorizzato {
 	protected List<String> ruoli;
 
 	public TIPO_UTENZA getTipoUtenza() { 
-		return TIPO_UTENZA.DEFAULT;
+		return TIPO_UTENZA.ANONIMO;
 	}
 	public String getIdentificativo() {
 		return this.getPrincipal();

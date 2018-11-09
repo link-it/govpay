@@ -401,7 +401,7 @@ public class Incassi extends BasicBD {
 		List<String> domini = null;
 		List<Diritti> diritti = new ArrayList<>(); 
 		diritti.add(Diritti.LETTURA);
-		domini = AclEngine.getDominiAutorizzati((Utenza) listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
+		domini = AclEngine.getDominiAutorizzati(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti); 
 		if(domini == null) {
 			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
 		}
@@ -434,7 +434,7 @@ public class Incassi extends BasicBD {
 			
 			List<Diritti> diritti = new ArrayList<>();
 			diritti.add(Diritti.LETTURA);
-			List<String> domini = AclEngine.getDominiAutorizzati((Utenza) leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
+			List<String> domini = AclEngine.getDominiAutorizzati(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
 			if(domini == null || (domini.size() > 0 && !domini.contains(incasso.getCodDominio()))) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per il dominio " + incasso.getCodDominio());
 			}

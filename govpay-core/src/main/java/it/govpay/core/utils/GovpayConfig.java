@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.logger.constants.Severity;
@@ -97,6 +98,7 @@ public class GovpayConfig {
 	private String ambienteDeploy;
 	
 	private String headerAuth;
+	private boolean checkCfDebitore;
 
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -127,6 +129,7 @@ public class GovpayConfig {
 		this.ambienteDeploy = null;
 
 		this.headerAuth = null;
+		this.checkCfDebitore = true;
 		
 		try {
 
@@ -336,6 +339,11 @@ public class GovpayConfig {
 			this.ambienteDeploy = getProperty("it.govpay.backoffice.gui.ambienteDeploy", this.props, false, log);
 			this.headerAuth = getProperty("it.govpay.autenticazione.nomeHeader", this.props, false, log);
 			
+			String checkCFDebitoreString = getProperty("it.govpay.autenticazione.utenzaAnonima.disabilitaCheckCfDebitore", props, false, log);
+			if(StringUtils.isNotEmpty(checkCFDebitoreString) && !checkCFDebitoreString.equalsIgnoreCase("false")) {
+				this.checkCfDebitore = false;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -524,5 +532,9 @@ public class GovpayConfig {
 
 	public String getHeaderAuth() {
 		return headerAuth;
+	}
+
+	public boolean isCheckCfDebitore() {
+		return checkCfDebitore;
 	}
 }
