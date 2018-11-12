@@ -26,7 +26,6 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.IFilter;
 import it.govpay.bd.model.converter.EventoConverter;
 import it.govpay.bd.pagamento.filters.EventiFilter;
 import it.govpay.model.Evento;
@@ -56,7 +55,7 @@ public class EventiBD extends BasicBD {
 		return new EventiFilter(this.getEventoService(),simpleSearch);
 	}
 
-	public long count(IFilter filter) throws ServiceException {
+	public long count(EventiFilter filter) throws ServiceException {
 		try {
 			return this.getEventoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
@@ -64,7 +63,7 @@ public class EventiBD extends BasicBD {
 		}
 	}
 
-	public List<Evento> findAll(IFilter filter) throws ServiceException {
+	public List<Evento> findAll(EventiFilter filter) throws ServiceException {
 		try {
 			List<Evento> eventoLst = new ArrayList<>();
 			List<it.govpay.orm.Evento> eventoVOLst = this.getEventoService().findAll(filter.toPaginatedExpression()); 

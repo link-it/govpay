@@ -14,7 +14,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.pagamenti.ProfiloController;
 
 
-@Path("/profilo")
+@Path("/v1/profilo")
 
 public class Profilo extends BaseRsServiceV1{
 

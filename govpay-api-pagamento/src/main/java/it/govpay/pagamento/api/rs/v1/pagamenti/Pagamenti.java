@@ -20,7 +20,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.pagamenti.PagamentiController;
 
 
-@Path("/pagamenti")
+@Path("/v1/pagamenti")
 
 public class Pagamenti extends BaseRsServiceV1{
 

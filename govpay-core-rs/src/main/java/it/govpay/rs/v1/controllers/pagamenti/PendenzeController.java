@@ -52,13 +52,12 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			leggiPendenzaDTO.setCodA2A(idA2A);
 			leggiPendenzaDTO.setCodPendenza(idPendenza);
-			leggiPendenzaDTO.setInfoIncasso(true); 
 			
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 			
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza =  PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso());
+			Pendenza pendenza =  PendenzeConverter.toRsModel(ricevutaDTOResponse.getVersamento());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -82,7 +81,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			// Parametri - > DTO Input
 			
-			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user,true);
+			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
 			
 			listaPendenzeDTO.setPagina(pagina);
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
@@ -112,7 +111,7 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 			
 			List<it.govpay.core.rs.v1.beans.pagamenti.PendenzaIndex> results = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndexConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso());
+				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento());
 				results.add(rsModel);
 			}
 			

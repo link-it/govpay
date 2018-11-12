@@ -16,7 +16,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.pagamenti.AvvisiController;
 
 
-@Path("/avvisi")
+@Path("/v1/avvisi")
 
 public class Avvisi extends BaseRsServiceV1{
 

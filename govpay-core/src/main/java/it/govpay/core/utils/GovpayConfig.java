@@ -153,6 +153,9 @@ public class GovpayConfig {
 
 					if(log4j2ConfigFile.exists()) {
 						this.log4j2Config = log4j2ConfigFile.toURI();
+						LoggerWrapperFactory.getLogger("boot").info("Individuata configurazione log4j: " + this.log4j2Config);
+					} else {
+						LoggerWrapperFactory.getLogger("boot").info("Individuata configurazione log4j interna.");
 					}
 				}
 			} catch (Exception e) {
@@ -403,7 +406,7 @@ public class GovpayConfig {
 	}
 	
 	private String escape(String string) {
-		return string.replaceAll("\\", "\\\\");
+		return string.replaceAll("\\\\", "\\\\\\\\");
 	}
 
 	public VersioneAvviso getVersioneAvviso() {

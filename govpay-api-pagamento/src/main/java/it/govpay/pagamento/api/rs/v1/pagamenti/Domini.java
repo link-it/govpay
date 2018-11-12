@@ -18,7 +18,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.pagamenti.DominiController;
 
 
-@Path("/domini")
+@Path("/v1/domini")
 
 public class Domini extends BaseRsServiceV1{
 

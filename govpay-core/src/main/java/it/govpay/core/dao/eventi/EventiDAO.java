@@ -8,7 +8,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
@@ -44,14 +46,23 @@ public class EventiDAO extends BaseDAO {
 
 			filter.setOffset(listaEventiDTO.getOffset());
 			filter.setLimit(listaEventiDTO.getLimit());
+			
 			filter.setCodDominio(listaEventiDTO.getIdDominio());
 			filter.setIuv(listaEventiDTO.getIuv());
 			
+			if(listaEventiDTO.getIdA2A()!=null && listaEventiDTO.getIdPendenza() != null) {
+				VersamentiBD versamentiBD = new VersamentiBD(bd);
+				Versamento versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, listaEventiDTO.getIdA2A()).getId(), listaEventiDTO.getIdPendenza());
+				
+				filter.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
+				filter.setIuv(versamento.getIuvVersamento());
+				
+			} else {
 			if(listaEventiDTO.getIdA2A()!=null)
 				filter.setIdApplicazione(AnagraficaManager.getApplicazione(bd, listaEventiDTO.getIdA2A()).getId());
-			
 			filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());
-			filter.setIuv(listaEventiDTO.getIuv());
+			}
+			
 			filter.setFilterSortList(listaEventiDTO.getFieldSortList());
 
 			long count = eventiBD.count(filter);

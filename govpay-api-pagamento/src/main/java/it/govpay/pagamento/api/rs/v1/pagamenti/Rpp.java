@@ -18,7 +18,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.pagamenti.RppController;
 
 
-@Path("/rpp")
+@Path("/v1/rpp")
 
 public class Rpp extends BaseRsServiceV1{
 

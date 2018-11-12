@@ -18,7 +18,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.rs.v1.controllers.pagamenti.PendenzeController;
 
 
-@Path("/pendenze")
+@Path("/v1/pendenze")
 
 public class Pendenze extends BaseRsServiceV1{
 
