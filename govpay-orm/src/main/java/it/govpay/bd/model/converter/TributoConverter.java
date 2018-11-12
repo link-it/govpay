@@ -61,14 +61,14 @@ public class TributoConverter {
 			dto.setTipoContabilitaCustom(TipoContabilita.toEnum(vo.getTipoContabilita()));
 		dto.setCodContabilitaCustom(vo.getCodiceContabilita());
 		dto.setCodTributoIuvCustom(vo.getCodTributoIuv());
-		dto.setOnlineCustom(vo.getOnline());
+		dto.setOnlineCustom(vo.getOnLine());
 		dto.setPagaTerziCustom(vo.getPagaTerzi());
 		
 		if(vo.getTipoTributo().getTipoContabilita() != null) 
 			dto.setTipoContabilitaDefault(TipoContabilita.toEnum(vo.getTipoTributo().getTipoContabilita()));
 		dto.setCodContabilitaDefault(vo.getTipoTributo().getCodContabilita());
 		dto.setCodTributoIuvDefault(vo.getTipoTributo().getCodTributoIuv());
-		dto.setOnlineDefault(vo.getTipoTributo().isOnline());
+		dto.setOnlineDefault(vo.getTipoTributo().isOnLine());
 		dto.setPagaTerziDefault(vo.getTipoTributo().isPagaTerzi());
 		
 		return dto;
@@ -89,12 +89,12 @@ public class TributoConverter {
 			vo.setTipoContabilita(dto.getTipoContabilitaCustom().getCodifica());
 		vo.setCodiceContabilita(dto.getCodContabilitaCustom());
 		vo.setCodTributoIuv(dto.getCodTributoIuvCustom());
-		vo.setOnline(dto.getOnlineCustom());
+		vo.setOnLine(dto.getOnlineCustom());
 		vo.setPagaTerzi(dto.getPagaTerziCustom());
 		
 		if(dto.getTipoContabilitaDefault() != null)
 			tipoTributo.setTipoContabilita(dto.getTipoContabilitaDefault().getCodifica());
-		tipoTributo.setOnline(dto.getOnlineDefault());
+		tipoTributo.setOnLine(dto.getOnlineDefault());
 		tipoTributo.setPagaTerzi(dto.getPagaTerziDefault());
 		
 		tipoTributo.setCodContabilita(dto.getCodContabilitaDefault());

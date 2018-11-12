@@ -158,11 +158,11 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tributo_iuv";
 			}
 		}
-		if(field.equals(Tributo.model().TIPO_TRIBUTO.ONLINE)){
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.ON_LINE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".online";
+				return this.toAliasTable(field)+".on_line";
 			}else{
-				return "online";
+				return "on_line";
 			}
 		}
 		if(field.equals(Tributo.model().TIPO_TRIBUTO.PAGA_TERZI)){
@@ -179,11 +179,11 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tributo_iuv";
 			}
 		}
-		if(field.equals(Tributo.model().ONLINE)){
+		if(field.equals(Tributo.model().ON_LINE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".online";
+				return this.toAliasTable(field)+".on_line";
 			}else{
-				return "online";
+				return "on_line";
 			}
 		}
 		if(field.equals(Tributo.model().PAGA_TERZI)){
@@ -245,7 +245,7 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV)){
 			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
 		}
-		if(field.equals(Tributo.model().TIPO_TRIBUTO.ONLINE)){
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.ON_LINE)){
 			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
 		}
 		if(field.equals(Tributo.model().TIPO_TRIBUTO.PAGA_TERZI)){
@@ -254,7 +254,7 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Tributo.model().COD_TRIBUTO_IUV)){
 			return this.toTable(Tributo.model(), returnAlias);
 		}
-		if(field.equals(Tributo.model().ONLINE)){
+		if(field.equals(Tributo.model().ON_LINE)){
 			return this.toTable(Tributo.model(), returnAlias);
 		}
 		if(field.equals(Tributo.model().PAGA_TERZI)){

@@ -48,7 +48,7 @@ public class TipoTributoConverter {
 			dto.setTipoContabilitaDefault(TipoContabilita.toEnum(vo.getTipoContabilita()));
 		dto.setCodContabilitaDefault(vo.getCodContabilita());
 		dto.setCodTributoIuvDefault(vo.getCodTributoIuv());
-		dto.setOnlineDefault(vo.isOnline());
+		dto.setOnlineDefault(vo.isOnLine());
 		dto.setPagaTerziDefault(vo.isPagaTerzi());
 		return dto;
 	}
@@ -62,7 +62,7 @@ public class TipoTributoConverter {
 			vo.setTipoContabilita(dto.getTipoContabilitaDefault().getCodifica());
 		vo.setCodContabilita(dto.getCodContabilitaDefault());
 		vo.setCodTributoIuv(dto.getCodTributoIuvDefault());
-		vo.setOnline(dto.getOnlineDefault());
+		vo.setOnLine(dto.getOnlineDefault());
 		vo.setPagaTerzi(dto.getPagaTerziDefault());
 		return vo;
 	}

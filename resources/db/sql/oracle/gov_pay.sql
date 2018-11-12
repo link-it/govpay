@@ -230,7 +230,7 @@ CREATE TABLE tipi_tributo
 	tipo_contabilita VARCHAR2(1 CHAR),
 	cod_contabilita VARCHAR2(255 CHAR),
 	cod_tributo_iuv VARCHAR2(4 CHAR),
-	online NUMBER NOT NULL,
+	on_line NUMBER NOT NULL,
 	paga_terzi NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -241,7 +241,7 @@ CREATE TABLE tipi_tributo
 );
 
 
-ALTER TABLE tipi_tributo MODIFY online DEFAULT 0;
+ALTER TABLE tipi_tributo MODIFY on_line DEFAULT 0;
 ALTER TABLE tipi_tributo MODIFY paga_terzi DEFAULT 0;
 
 CREATE TRIGGER trg_tipi_tributo
@@ -266,7 +266,7 @@ CREATE TABLE tributi
 	tipo_contabilita VARCHAR2(1 CHAR),
 	codice_contabilita VARCHAR2(255 CHAR),
 	cod_tributo_iuv VARCHAR2(4 CHAR),
-        online NUMBER,
+        on_line NUMBER,
 	paga_terzi NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,

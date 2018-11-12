@@ -102,11 +102,11 @@ public class TipoTributoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tributo_iuv";
 			}
 		}
-		if(field.equals(TipoTributo.model().ONLINE)){
+		if(field.equals(TipoTributo.model().ON_LINE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".online";
+				return this.toAliasTable(field)+".on_line";
 			}else{
-				return "online";
+				return "on_line";
 			}
 		}
 		if(field.equals(TipoTributo.model().PAGA_TERZI)){
@@ -144,7 +144,7 @@ public class TipoTributoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(TipoTributo.model().COD_TRIBUTO_IUV)){
 			return this.toTable(TipoTributo.model(), returnAlias);
 		}
-		if(field.equals(TipoTributo.model().ONLINE)){
+		if(field.equals(TipoTributo.model().ON_LINE)){
 			return this.toTable(TipoTributo.model(), returnAlias);
 		}
 		if(field.equals(TipoTributo.model().PAGA_TERZI)){

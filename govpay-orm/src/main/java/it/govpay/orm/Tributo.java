@@ -43,7 +43,7 @@ import java.io.Serializable;
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoTributo" type="{http://www.govpay.it/orm}TipoTributo" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codTributoIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="online" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="onLine" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -67,7 +67,7 @@ import java.io.Serializable;
   	"codiceContabilita",
   	"tipoTributo",
   	"codTributoIuv",
-  	"online",
+  	"onLine",
   	"pagaTerzi"
   }
 )
@@ -160,12 +160,12 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.codTributoIuv = codTributoIuv;
   }
 
-  public Boolean getOnline() {
-    return this.online;
+  public Boolean getOnLine() {
+    return this.onLine;
   }
 
-  public void setOnline(Boolean online) {
-    this.online = online;
+  public void setOnLine(Boolean onLine) {
+    this.onLine = onLine;
   }
 
   public Boolean getPagaTerzi() {
@@ -224,8 +224,8 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
   protected java.lang.String codTributoIuv;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="online",required=false,nillable=false)
-  protected Boolean online;
+  @XmlElement(name="onLine",required=false,nillable=false)
+  protected Boolean onLine;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagaTerzi",required=false,nillable=false)

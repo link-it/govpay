@@ -62,8 +62,8 @@ public class TributoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "codice_contabilita", Tributo.model().CODICE_CONTABILITA.getFieldType()));
 				this.setParameter(object, "setCodTributoIuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_tributo_iuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType()));
-				this.setParameter(object, "setOnline", Tributo.model().ONLINE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "online", Tributo.model().ONLINE.getFieldType()));
+				this.setParameter(object, "setOnLine", Tributo.model().ON_LINE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "on_line", Tributo.model().ON_LINE.getFieldType()));
 				this.setParameter(object, "setPagaTerzi", Tributo.model().PAGA_TERZI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", Tributo.model().PAGA_TERZI.getFieldType()));
 				return object;
@@ -81,8 +81,8 @@ public class TributoFetch extends AbstractJDBCFetch {
 		                 jdbcParameterUtilities.readParameter(rs, "cod_tributo_iuv", Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV.getFieldType()));
 		         this.setParameter(object, "setTipoContabilita", Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA.getFieldType(),
 		                 jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA.getFieldType()));
-		         this.setParameter(object, "setOnline", Tributo.model().TIPO_TRIBUTO.ONLINE.getFieldType(),
-						jdbcParameterUtilities.readParameter(rs, "online", Tributo.model().TIPO_TRIBUTO.ONLINE.getFieldType()));
+		         this.setParameter(object, "setOnLine", Tributo.model().TIPO_TRIBUTO.ON_LINE.getFieldType(),
+							jdbcParameterUtilities.readParameter(rs, "on_line", Tributo.model().TIPO_TRIBUTO.ON_LINE.getFieldType()));
 				 this.setParameter(object, "setPagaTerzi", Tributo.model().TIPO_TRIBUTO.PAGA_TERZI.getFieldType(),
 						jdbcParameterUtilities.readParameter(rs, "paga_terzi", Tributo.model().TIPO_TRIBUTO.PAGA_TERZI.getFieldType()));
 		         return object;
@@ -115,8 +115,8 @@ public class TributoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codiceContabilita"));
 				this.setParameter(object, "setCodTributoIuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType(),
 					this.getObjectFromMap(map,"codTributoIuv"));
-				this.setParameter(object, "setOnline", Tributo.model().ONLINE.getFieldType(),
-					this.getObjectFromMap(map,"online"));
+				this.setParameter(object, "setOnLine", Tributo.model().ON_LINE.getFieldType(),
+					this.getObjectFromMap(map,"onLine"));
 				this.setParameter(object, "setPagaTerzi", Tributo.model().PAGA_TERZI.getFieldType(),
 					this.getObjectFromMap(map,"pagaTerzi"));
 				return object;
@@ -134,9 +134,9 @@ public class TributoFetch extends AbstractJDBCFetch {
 		                        this.getObjectFromMap(map,"tipoTributo.codTributoIuv"));
 		        this.setParameter(object, "setTipoContabilita", Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA.getFieldType(),
 		                        this.getObjectFromMap(map,"tipoTributo.tipoContabilita"));
-		        this.setParameter(object, "setOnline", Tributo.model().TIPO_TRIBUTO.ONLINE.getFieldType(),
-						this.getObjectFromMap(map,"tipoTributo.online"));
-					this.setParameter(object, "setPagaTerzi", Tributo.model().TIPO_TRIBUTO.PAGA_TERZI.getFieldType(),
+		        this.setParameter(object, "setOnLine", Tributo.model().TIPO_TRIBUTO.ON_LINE.getFieldType(),
+						this.getObjectFromMap(map,"tipoTributo.onLine"));
+				this.setParameter(object, "setPagaTerzi", Tributo.model().TIPO_TRIBUTO.PAGA_TERZI.getFieldType(),
 						this.getObjectFromMap(map,"tipoTributo.pagaTerzi"));
 		        return object;
 

@@ -40,7 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codTributoIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="online" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
+ * 			&lt;element name="onLine" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -61,7 +61,7 @@ import java.io.Serializable;
   	"tipoContabilita",
   	"codContabilita",
   	"codTributoIuv",
-  	"online",
+  	"onLine",
   	"pagaTerzi"
   }
 )
@@ -126,16 +126,16 @@ public class TipoTributo extends org.openspcoop2.utils.beans.BaseBean implements
     this.codTributoIuv = codTributoIuv;
   }
 
-  public boolean isOnline() {
-    return this.online;
+  public boolean isOnLine() {
+    return this.onLine;
   }
 
-  public boolean getOnline() {
-    return this.online;
+  public boolean getOnLine() {
+    return this.onLine;
   }
 
-  public void setOnline(boolean online) {
-    this.online = online;
+  public void setOnLine(boolean onLine) {
+    this.onLine = onLine;
   }
 
   public boolean isPagaTerzi() {
@@ -190,8 +190,8 @@ public class TipoTributo extends org.openspcoop2.utils.beans.BaseBean implements
   protected java.lang.String codTributoIuv;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="online",required=true,nillable=false,defaultValue="false")
-  protected boolean online = false;
+  @XmlElement(name="onLine",required=true,nillable=false,defaultValue="false")
+  protected boolean onLine = false;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="pagaTerzi",required=true,nillable=false,defaultValue="false")

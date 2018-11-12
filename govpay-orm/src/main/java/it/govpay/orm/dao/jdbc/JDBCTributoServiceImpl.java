@@ -146,7 +146,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().TIPO_CONTABILITA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().CODICE_CONTABILITA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO_IUV,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().ONLINE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().ON_LINE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().PAGA_TERZI,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_iban_accredito","?");
@@ -160,7 +160,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getTipoContabilita(),Tributo.model().TIPO_CONTABILITA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getCodiceContabilita(),Tributo.model().CODICE_CONTABILITA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getCodTributoIuv(),Tributo.model().COD_TRIBUTO_IUV.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getOnline(),Tributo.model().ONLINE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getOnLine(),Tributo.model().ON_LINE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getPagaTerzi(),Tributo.model().PAGA_TERZI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ibanAccredito,Long.class),
@@ -308,8 +308,8 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		lstObjects_tributo.add(new JDBCObject(tributo.getCodiceContabilita(), Tributo.model().CODICE_CONTABILITA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO_IUV,false), "?");
 		lstObjects_tributo.add(new JDBCObject(tributo.getCodTributoIuv(), Tributo.model().COD_TRIBUTO_IUV.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().ONLINE,false), "?");
-		lstObjects_tributo.add(new JDBCObject(tributo.getOnline(), Tributo.model().ONLINE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().ON_LINE,false), "?");
+		lstObjects_tributo.add(new JDBCObject(tributo.getOnLine(), Tributo.model().ON_LINE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().PAGA_TERZI,false), "?");
 		lstObjects_tributo.add(new JDBCObject(tributo.getPagaTerzi(), Tributo.model().PAGA_TERZI.getFieldType()));
 		if(setIdMappingResolutionBehaviour){

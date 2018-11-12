@@ -151,7 +151,7 @@ CREATE TABLE tipi_tributo
 	tipo_contabilita VARCHAR(1),
 	cod_contabilita VARCHAR(255),
 	cod_tributo_iuv VARCHAR(4),
-	online BOOLEAN NOT NULL DEFAULT false,
+	on_line BOOLEAN NOT NULL DEFAULT false,
 	paga_terzi BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_tributo') NOT NULL,
@@ -172,7 +172,7 @@ CREATE TABLE tributi
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
 	cod_tributo_iuv VARCHAR(4),
-	online BOOLEAN,
+	on_line BOOLEAN,
 	paga_terzi BOOLEAN,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tributi') NOT NULL,

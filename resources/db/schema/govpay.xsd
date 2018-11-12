@@ -831,7 +831,7 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codTributoIuv" type="String4" minOccurs="0"/>
-			<xsd:element name="online" minOccurs="0">
+			<xsd:element name="onLine" minOccurs="0">
 			     <xsd:simpleType>
 			          <xsd:restriction base="xsd:string">
 			               <xsd:pattern value="true|false"/>
@@ -870,7 +870,7 @@
 			<xsd:element name="tipoContabilita" type="String1" minOccurs="0"/>
 			<xsd:element name="codContabilita" type="String255" minOccurs="0"/>
 			<xsd:element name="codTributoIuv" type="String4" minOccurs="0"/>
-			<xsd:element name="online" type="xsd:boolean" default="false" />
+			<xsd:element name="onLine" type="xsd:boolean" default="false" />
 			<xsd:element name="pagaTerzi" type="xsd:boolean" default="false" />
 		</xsd:sequence>
 	</xsd:complexType>

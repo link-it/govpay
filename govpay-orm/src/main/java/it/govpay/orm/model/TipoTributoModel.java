@@ -46,7 +46,7 @@ public class TipoTributoModel extends AbstractModel<TipoTributo> {
 		this.TIPO_CONTABILITA = new Field("tipoContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
 		this.COD_CONTABILITA = new Field("codContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
 		this.COD_TRIBUTO_IUV = new Field("codTributoIuv",java.lang.String.class,"TipoTributo",TipoTributo.class);
-		this.ONLINE = new Field("online",boolean.class,"TipoTributo",TipoTributo.class);
+		this.ON_LINE = new Field("onLine",boolean.class,"TipoTributo",TipoTributo.class);
 		this.PAGA_TERZI = new Field("pagaTerzi",boolean.class,"TipoTributo",TipoTributo.class);
 	
 	}
@@ -60,7 +60,7 @@ public class TipoTributoModel extends AbstractModel<TipoTributo> {
 		this.TIPO_CONTABILITA = new ComplexField(father,"tipoContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
 		this.COD_CONTABILITA = new ComplexField(father,"codContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
 		this.COD_TRIBUTO_IUV = new ComplexField(father,"codTributoIuv",java.lang.String.class,"TipoTributo",TipoTributo.class);
-		this.ONLINE = new ComplexField(father,"online",boolean.class,"TipoTributo",TipoTributo.class);
+		this.ON_LINE = new ComplexField(father,"onLine",boolean.class,"TipoTributo",TipoTributo.class);
 		this.PAGA_TERZI = new ComplexField(father,"pagaTerzi",boolean.class,"TipoTributo",TipoTributo.class);
 	
 	}
@@ -77,7 +77,7 @@ public class TipoTributoModel extends AbstractModel<TipoTributo> {
 	 
 	public IField COD_TRIBUTO_IUV = null;
 	 
-	public IField ONLINE = null;
+	public IField ON_LINE = null;
 	 
 	public IField PAGA_TERZI = null;
 	 

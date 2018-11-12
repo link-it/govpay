@@ -484,10 +484,12 @@ alter table domini add column aut_stampa_poste VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_tel VARCHAR(255);
 ALTER TABLE uo ADD COLUMN uo_fax VARCHAR(255);
 
-ALTER TABLE tipi_tributo ADD COLUMN online BOOLEAN NOT NULL DEFAULT false;
+-- 3.0.0-RC3
+
+ALTER TABLE tipi_tributo ADD COLUMN on_line BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE tipi_tributo ADD COLUMN paga_terzi BOOLEAN NOT NULL DEFAULT false;
 
-ALTER TABLE tributi ADD COLUMN online BOOLEAN;
+ALTER TABLE tributi ADD COLUMN on_line BOOLEAN;
 ALTER TABLE tributi ADD COLUMN paga_terzi BOOLEAN;
 
 alter table pagamenti_portale add column principal VARCHAR(4000);

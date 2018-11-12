@@ -545,12 +545,14 @@ alter table domini add column aut_stampa_poste VARCHAR2(255 CHAR);
 ALTER TABLE uo ADD uo_tel VARCHAR2(255 CHAR);
 ALTER TABLE uo ADD uo_fax VARCHAR2(255 CHAR);
 
-ALTER TABLE tipi_tributo ADD COLUMN online NUMBER NOT NULL;
-alter table tipi_tributo MODIFY (online DEFAULT 0);
+-- 3.0.0-RC3
+
+ALTER TABLE tipi_tributo ADD COLUMN on_line NUMBER NOT NULL;
+alter table tipi_tributo MODIFY (on_line DEFAULT 0);
 ALTER TABLE tipi_tributo ADD COLUMN paga_terzi NUMBER NOT NULL;
 alter table tipi_tributo MODIFY (paga_terzi DEFAULT 0);
 
-ALTER TABLE tributi ADD COLUMN online NUMBER;
+ALTER TABLE tributi ADD COLUMN on_line NUMBER;
 ALTER TABLE tributi ADD COLUMN paga_terzi NUMBER;
 
 alter table pagamenti_portale add column principal VARCHAR2(4000 CHAR);

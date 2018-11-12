@@ -64,8 +64,8 @@ public class TipoTributoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_contabilita", TipoTributo.model().COD_CONTABILITA.getFieldType()));
 				this.setParameter(object, "setCodTributoIuv", TipoTributo.model().COD_TRIBUTO_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_tributo_iuv", TipoTributo.model().COD_TRIBUTO_IUV.getFieldType()));
-				setParameter(object, "setOnline", TipoTributo.model().ONLINE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "online", TipoTributo.model().ONLINE.getFieldType()));
+				setParameter(object, "setOnLine", TipoTributo.model().ON_LINE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "on_line", TipoTributo.model().ON_LINE.getFieldType()));
 				setParameter(object, "setPagaTerzi", TipoTributo.model().PAGA_TERZI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoTributo.model().PAGA_TERZI.getFieldType()));
 				return object;
@@ -100,8 +100,8 @@ public class TipoTributoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codContabilita"));
 				this.setParameter(object, "setCodTributoIuv", TipoTributo.model().COD_TRIBUTO_IUV.getFieldType(),
 					this.getObjectFromMap(map,"codTributoIuv"));
-				setParameter(object, "setOnline", TipoTributo.model().ONLINE.getFieldType(),
-					this.getObjectFromMap(map,"online"));
+				setParameter(object, "setOnLine", TipoTributo.model().ON_LINE.getFieldType(),
+					this.getObjectFromMap(map,"onLine"));
 				setParameter(object, "setPagaTerzi", TipoTributo.model().PAGA_TERZI.getFieldType(),
 					this.getObjectFromMap(map,"pagaTerzi"));
 				return object;
