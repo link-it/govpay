@@ -34,12 +34,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Nota;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.viste.VersamentiIncassiBD;
@@ -70,11 +70,11 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.IAutorizzato;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.avvisi.AvvisoPagamento;
-import it.govpay.model.avvisi.AvvisoPagamentoInput;
+import it.govpay.stampe.model.AvvisoPagamentoInput;
 
 public class PendenzeDAO extends BaseDAO{
 

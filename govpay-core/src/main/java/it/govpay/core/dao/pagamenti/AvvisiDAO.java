@@ -27,7 +27,6 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
-import it.govpay.core.dao.anagrafica.UtentiDAO.TipoUtenza;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -39,7 +38,7 @@ import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.avvisi.AvvisoPagamento;
-import it.govpay.model.avvisi.AvvisoPagamentoInput;
+import it.govpay.stampe.model.AvvisoPagamentoInput;
 
 public class AvvisiDAO extends BaseDAO{
 

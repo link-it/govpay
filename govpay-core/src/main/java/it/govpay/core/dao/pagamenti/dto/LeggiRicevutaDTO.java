@@ -14,6 +14,7 @@ import it.govpay.model.IAutorizzato;
  */
 public class LeggiRicevutaDTO extends BasicCreateRequestDTO {
 
+	public enum FormatoRicevuta  {PDF, JSON, XML, RAW};
 	/*
 	 * @param user
 	 */
@@ -24,6 +25,8 @@ public class LeggiRicevutaDTO extends BasicCreateRequestDTO {
 	private String idDominio;
 	private String iuv;
 	private String ccp;
+	private FormatoRicevuta formato;
+	
 	public String getIdDominio() {
 		return this.idDominio;
 	}
@@ -41,5 +44,13 @@ public class LeggiRicevutaDTO extends BasicCreateRequestDTO {
 	}
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
+	}
+
+	public FormatoRicevuta getFormato() {
+		return formato;
+	}
+
+	public void setFormato(FormatoRicevuta formato) {
+		this.formato = formato;
 	}
 }

@@ -18,6 +18,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
@@ -36,7 +37,6 @@ import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.rs.BaseController;
 import it.govpay.rs.v1.beans.pendenze.converter.PendenzeConverter;
 import it.govpay.rs.v1.beans.pendenze.converter.RptConverter;
-import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 
 
 
@@ -119,7 +119,7 @@ public class RppController extends BaseController {
 		this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 
-		String accept = null;
+		String accept = "";
 		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
 		}
@@ -139,32 +139,36 @@ public class RppController extends BaseController {
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
-			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+			LeggiRicevutaDTOResponse ricevutaDTOResponse = null; 
 
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
+				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.RAW);
+				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+				
 				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 				this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
 			} else {
-				CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt());
-
 				if(accept.toLowerCase().contains("application/pdf")) {
-					ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
-					String auxDigit = ricevutaDTOResponse.getDominio().getAuxDigit() + "";
-					String applicationCode = String.format("%02d", ricevutaDTOResponse.getDominio().getStazione().getApplicationCode());
-					RicevutaPagamentoUtils.getPdfRicevutaPagamento(ricevutaDTOResponse.getDominio().getLogo(), ricevutaDTOResponse.getVersamento().getCausaleVersamento(), rt, null, auxDigit, applicationCode, baos1, this.log);
+					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.PDF);
+					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 					String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
-
-					byte[] b = baos1.toByteArray();
+					byte[] b = ricevutaDTOResponse.getPdf(); 
 
 					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
 					this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
 				} else if(accept.toLowerCase().contains("application/json")) {
+					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
+					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt());
 					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 					this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
 				} else {
+					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
+					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt());
 					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 					this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(rt),transactionId).build();

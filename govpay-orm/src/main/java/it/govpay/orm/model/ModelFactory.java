@@ -99,5 +99,11 @@ public class ModelFactory {
 	
 	public static VersamentoIncassoModel VERSAMENTO_INCASSO = new VersamentoIncassoModel();
 	
+	public static VistaRiscossioniSenzaRptModel VISTA_RISCOSSIONI_SENZA_RPT = new VistaRiscossioniSenzaRptModel();
+	
+	public static VistaRiscossioniConRptModel VISTA_RISCOSSIONI_CON_RPT = new VistaRiscossioniConRptModel();
+	
+	public static VistaRiscossioniModel VISTA_RISCOSSIONI = new VistaRiscossioniModel();
+	
 
 }

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.model.avvisi;
+package it.govpay.orm;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,16 +28,16 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for InfoEnte complex type.
+/** <p>Java class for id-vista-riscossione complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="InfoEnte">
+ * &lt;complexType name="id-vista-riscossione">
  * 		&lt;sequence>
- * 			&lt;element name="web" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="email" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="pec" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -50,18 +50,18 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "InfoEnte", 
+@XmlType(name = "id-vista-riscossione", 
   propOrder = {
-  	"web",
-  	"email",
-  	"pec"
+  	"codDominio",
+  	"iuv",
+  	"indiceDati"
   }
 )
 
-@XmlRootElement(name = "InfoEnte")
+@XmlRootElement(name = "id-vista-riscossione")
 
-public class InfoEnte extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public InfoEnte() {
+public class IdVistaRiscossione extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public IdVistaRiscossione() {
   }
 
   public Long getId() {
@@ -78,28 +78,28 @@ public class InfoEnte extends org.openspcoop2.utils.beans.BaseBean implements Se
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getWeb() {
-    return this.web;
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
   }
 
-  public void setWeb(java.lang.String web) {
-    this.web = web;
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
   }
 
-  public java.lang.String getEmail() {
-    return this.email;
+  public java.lang.String getIuv() {
+    return this.iuv;
   }
 
-  public void setEmail(java.lang.String email) {
-    this.email = email;
+  public void setIuv(java.lang.String iuv) {
+    this.iuv = iuv;
   }
 
-  public java.lang.String getPec() {
-    return this.pec;
+  public java.lang.Integer getIndiceDati() {
+    return this.indiceDati;
   }
 
-  public void setPec(java.lang.String pec) {
-    this.pec = pec;
+  public void setIndiceDati(java.lang.Integer indiceDati) {
+    this.indiceDati = indiceDati;
   }
 
   private static final long serialVersionUID = 1L;
@@ -110,15 +110,15 @@ public class InfoEnte extends org.openspcoop2.utils.beans.BaseBean implements Se
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="web",required=true,nillable=false)
-  protected java.lang.String web;
+  @XmlElement(name="codDominio",required=true,nillable=false)
+  protected java.lang.String codDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="email",required=true,nillable=false)
-  protected java.lang.String email;
+  @XmlElement(name="iuv",required=true,nillable=false)
+  protected java.lang.String iuv;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="pec",required=true,nillable=false)
-  protected java.lang.String pec;
+  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @XmlElement(name="indiceDati",required=true,nillable=false)
+  protected java.lang.Integer indiceDati;
 
 }

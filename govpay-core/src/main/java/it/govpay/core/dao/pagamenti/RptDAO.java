@@ -6,6 +6,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -19,14 +20,18 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Versamento.Causale;
+import it.govpay.stampe.pdf.rt.RicevutaTelematicaPdf;
 
 public class RptDAO extends BaseDAO{
 
@@ -83,10 +88,13 @@ public class RptDAO extends BaseDAO{
 
 			if(rpt.getXmlRt() == null)
 				throw new RicevutaNonTrovataException(null);
-
+			
+			if(leggiRicevutaDTO.getFormato().equals(FormatoRicevuta.PDF)) {
+				it.govpay.core.business.RicevutaTelematica avvisoBD = new it.govpay.core.business.RicevutaTelematica(bd);
+				response = avvisoBD.creaPdfRicevuta(leggiRicevutaDTO,rpt);
+			}
+			
 			response.setRpt(rpt);
-			response.setDominio(rpt.getDominio(bd));
-			response.setVersamento(rpt.getVersamento(bd));
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {

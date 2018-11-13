@@ -14,10 +14,13 @@ import it.govpay.bd.model.Versamento;
  * 
  */
 public class LeggiRicevutaDTOResponse {
+	
+	
 
 	private Rpt rpt;
 	private Dominio dominio;
 	private Versamento versamento;
+	private byte[] pdf;
 
 	public Dominio getDominio() {
 		return this.dominio;
@@ -41,5 +44,13 @@ public class LeggiRicevutaDTOResponse {
 
 	public void setRpt(Rpt rpt) {
 		this.rpt = rpt;
+	}
+
+	public byte[] getPdf() {
+		return pdf;
+	}
+
+	public void setPdf(byte[] pdf) {
+		this.pdf = pdf;
 	}
 }

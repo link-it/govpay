@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+ 
+	<xsd:element name="AvvisoPagamentoInput" type="AvvisoPagamentoInput" />
+    <xsd:element name="InfoEnte" type="InfoEnte" /> 
+    <xsd:element name="RicevutaTelematicaInput" type="RicevutaTelematicaInput" />
+    
+    <xsd:complexType name="AvvisoPagamentoInput">
+		<xsd:sequence>
+			<xsd:element name="logo_ente" type="xsd:string"/>
+			<xsd:element name="logo_pagopa" type="xsd:string"/>
+			<xsd:element name="logo_app" type="xsd:string"/>
+			<xsd:element name="logo_place" type="xsd:string"/>
+			<xsd:element name="logo_posta" type="xsd:string"/>
+			<xsd:element name="logo_scissors" type="xsd:string"/>
+			<xsd:element name="logo_euro" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento_rata" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento_bollettino" type="xsd:string"/>
+			<xsd:element name="cf_ente" type="xsd:string"/>
+			<xsd:element name="cf_destinatario" type="xsd:string"/>
+			<xsd:element name="nome_cognome_destinatario" type="xsd:string"/>
+			<xsd:element name="ente_creditore" type="xsd:string"/>
+			<xsd:element name="settore_ente" type="xsd:string"/>
+			<xsd:element name="indirizzo_destinatario_1" type="xsd:string"/>
+			<xsd:element name="indirizzo_destinatario_2" type="xsd:string"/>
+			<xsd:element name="info_ente" type="InfoEnte"/>
+			<xsd:element name="del_tuo_ente" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="di_poste" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="importo" type="xsd:double"/>
+			<xsd:element name="data" type="xsd:string"/>
+			<xsd:element name="qr_code" type="xsd:string"/>
+			<xsd:element name="cbill" type="xsd:string"/>
+			<xsd:element name="codice_avviso" type="xsd:string"/>
+			<xsd:element name="numero_cc_postale" type="xsd:string"/>
+			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
+			<xsd:element name="autorizzazione" type="xsd:string"/>
+			<xsd:element name="data_matrix" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+    
+   	<xsd:complexType name="InfoEnte">
+		<xsd:sequence>
+			<xsd:element name="web" type="xsd:string"/>
+			<xsd:element name="email" type="xsd:string"/>
+			<xsd:element name="pec" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="RicevutaTelematicaInput">
+		<xsd:sequence>
+			<xsd:element name="logo_ente" type="xsd:string"/>
+			<xsd:element name="logo_pagopa" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
+			<xsd:element name="ente_denominazione" type="xsd:string"/>
+			<xsd:element name="indirizzo_ente" type="xsd:string"/>
+			<xsd:element name="luogo_ente" type="xsd:string"/>
+			<xsd:element name="cf_ente" type="xsd:string"/>
+			<xsd:element name="istituto" type="xsd:string"/>
+			<xsd:element name="importo" type="xsd:double"/>
+			<xsd:element name="data" type="xsd:string"/>
+			<xsd:element name="stato" type="xsd:string"/>
+			<xsd:element name="IUV" type="xsd:string"/>
+			<xsd:element name="CCP" type="xsd:string"/>
+			<xsd:element name="elenco_voci">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="voce" type="VoceRicevutaTelematicaInput" minOccurs="1" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element> 
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="VoceRicevutaTelematicaInput">
+		<xsd:sequence>
+			<xsd:element name="descrizione" type="xsd:string"/>
+			<xsd:element name="id_riscossione" type="xsd:string"/>
+			<xsd:element name="importo" type="xsd:double"/>
+			<xsd:element name="stato" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+</xsd:schema>

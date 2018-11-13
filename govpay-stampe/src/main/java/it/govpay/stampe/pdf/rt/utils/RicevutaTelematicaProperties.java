@@ -13,38 +13,36 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.Utilities;
 import org.slf4j.Logger;
 
-public class RicevutaPagamentoProperties {
-
-	public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPagamento.className";
+public class RicevutaTelematicaProperties {
 	
-	private static final String PROPERTIES_FILE = "/ricevutaPagamento.properties";
+	private static final String PROPERTIES_FILE = "/ricevutaTelematica.properties";
 	public static final String DEFAULT_PROPS = "default";
 
-	private static RicevutaPagamentoProperties instance;
+	private static RicevutaTelematicaProperties instance;
 
-	private static Logger log = LoggerWrapperFactory.getLogger(RicevutaPagamentoProperties.class);
+	private static Logger log = LoggerWrapperFactory.getLogger(RicevutaTelematicaProperties.class);
 
 	private String govpayResourceDir = null;
 
 	private Map<String, Properties> propMap = new HashMap<>();
 
-	public static RicevutaPagamentoProperties getInstance() {
+	public static RicevutaTelematicaProperties getInstance() {
 		return instance;
 	}
 
-	public static synchronized RicevutaPagamentoProperties newInstance(String govpayResourceDir) throws Exception {
+	public static synchronized RicevutaTelematicaProperties newInstance(String govpayResourceDir) throws Exception {
 		if(instance == null)
-			instance = new RicevutaPagamentoProperties(govpayResourceDir);
+			instance = new RicevutaTelematicaProperties(govpayResourceDir);
 		return instance;
 	}
 
 	private Properties[] props  = null;
 
-	public RicevutaPagamentoProperties(String govpayResourceDir) {
+	public RicevutaTelematicaProperties(String govpayResourceDir) {
 		try {
 
 			// Recupero il property all'interno dell'EAR/WAR
-			InputStream is = RicevutaPagamentoProperties.class.getResourceAsStream(PROPERTIES_FILE);
+			InputStream is = RicevutaTelematicaProperties.class.getResourceAsStream(PROPERTIES_FILE);
 			Properties props1 = new Properties();
 			props1.load(is);
 
@@ -84,16 +82,16 @@ public class RicevutaPagamentoProperties {
 			if(this.govpayResourceDir != null) {
 				File resourceDirFile = new File(this.govpayResourceDir);
 				for(File f : resourceDirFile.listFiles()) {
-					if(!(f.getName().startsWith("ricevutaPagamento") && f.getName().endsWith("properties"))) {
+					if(!f.getName().startsWith("ricevutaTelematica") && !f.getName().endsWith("properties")) {
 						// Non e' un file di properties. lo salto
 						continue;
 					}
 					Properties p = new Properties();
 					p.load(new FileInputStream(f));
 					String key = f.getName().replaceAll(".properties", "");
-					key = key.replaceAll("ricevutaPagamento.", "");
+					key = key.replaceAll("ricevutaTelematica.", "");
 					// la configurazione di defaut e' gia'stata caricata
-					if(!key.equals("ricevutaPagamento")) {
+					if(!key.equals("ricevutaTelematica")) {
 						log.info("Caricata configurazione avviso di pagamento con chiave " + key);
 						this.propMap.put(key, p);
 					}
@@ -157,30 +155,26 @@ public class RicevutaPagamentoProperties {
 
 		return p;
 	}
-	
-	public String getDefaultImplClassName() throws Exception{
-		return this.getPropertyEnte(DEFAULT_PROPS, RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY);
-	}
-	
+
 	public Properties getProperties(Properties props, String prefix) throws Exception {
-        Properties toRet = Utilities.readProperties(prefix+".", props);
-        return toRet;
+		Properties toRet = Utilities.readProperties(prefix+".", props);
+		return toRet;
 	}
-	
-	
+
+
 	public TreeMap<String, String> getPropertiesAsMap(Properties props, String prefix) throws Exception {
 		TreeMap<String, String> mappaProperties = new TreeMap<>();
-		
+
 		Properties p = this.getProperties(props, prefix);
-		
+
 		for (Object pKeyObj: p.keySet()) {
 			Object pValObj = p.get(pKeyObj);
 			mappaProperties.put((String)pKeyObj, (String)pValObj);
 		}
-		
+
 		return mappaProperties; 
 	}
-	
+
 	public Properties getPropertiesPerDominio(String codDominio,Logger log) throws Exception {
 		return this.getPropertiesPerDominioTributo(codDominio, null, log);
 	}

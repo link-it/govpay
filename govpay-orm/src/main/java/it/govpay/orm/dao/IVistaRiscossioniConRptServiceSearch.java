@@ -17,15 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-/**
+package it.govpay.orm.dao;
+
+import it.govpay.orm.VistaRiscossioniConRpt;
+import org.openspcoop2.generic_project.dao.IServiceSearchWithId;
+import it.govpay.orm.IdVistaRiscossione;
+
+
+/** 
+* Service can be used for research objects on the backend of type it.govpay.orm.VistaRiscossioniConRpt  
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
-*/
+ */
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "",
-	elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
- 	attributeFormDefault = javax.xml.bind.annotation.XmlNsForm.UNQUALIFIED)
-package it.govpay.model.avvisi;
+public interface IVistaRiscossioniConRptServiceSearch extends IServiceSearchWithId<VistaRiscossioniConRpt, IdVistaRiscossione> {
+}

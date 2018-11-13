@@ -8,14 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
+
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.beans.WriteToSerializerType;
 import org.slf4j.Logger;
 
 import it.govpay.model.avvisi.AvvisoPagamento;
-import it.govpay.model.avvisi.AvvisoPagamentoInput;
-import it.govpay.model.avvisi.InfoEnte;
+import it.govpay.stampe.model.AvvisoPagamentoInput;
+import it.govpay.stampe.model.InfoEnte;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -29,6 +34,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 public class AvvisoPagamentoPdf {
 
 	private static AvvisoPagamentoPdf _instance = null;
+	private static JAXBContext jaxbContext = null;
 
 	public static AvvisoPagamentoPdf getInstance() {
 		if(_instance == null)
@@ -40,10 +46,17 @@ public class AvvisoPagamentoPdf {
 	public static synchronized void init() {
 		if(_instance == null)
 			_instance = new AvvisoPagamentoPdf();
+		
+		if(jaxbContext == null) {
+			try {
+				jaxbContext = JAXBContext.newInstance(AvvisoPagamentoInput.class);
+			} catch (JAXBException e) {
+				LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durtante l'inizializzazione JAXB", e); 
+			}
+		}
 	}
 
 	public AvvisoPagamentoPdf() {
-
 	}
 
 
@@ -77,11 +90,14 @@ public class AvvisoPagamentoPdf {
 		return avvisoPagamento;
 	}
 
-	public JRDataSource creaXmlDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException {
-		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		input.writeTo(os, serType);
-		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(os.toByteArray()),AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
+	public JRDataSource creaXmlDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException, JAXBException {
+//		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", "input"), AvvisoPagamentoInput.class, null, input);
+		jaxbMarshaller.marshal(jaxbElement, baos);
+		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
 		return dataSource;
 	}
 

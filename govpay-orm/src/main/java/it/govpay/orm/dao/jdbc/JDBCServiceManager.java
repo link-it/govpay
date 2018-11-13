@@ -99,6 +99,10 @@ import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
 import it.govpay.orm.dao.IEsitoAvvisaturaServiceSearch;
 import it.govpay.orm.dao.IEsitoAvvisaturaService;
+import it.govpay.orm.dao.IVistaRiscossioniSenzaRptServiceSearch;
+import it.govpay.orm.dao.IVistaRiscossioniConRptServiceSearch;
+import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
+
 /**     
  * Manager that allows you to obtain the services of research and management of objects
  *
@@ -1303,6 +1307,70 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() throws ServiceException,NotImplementedException{
 		return new JDBCVersamentoIncassoServiceSearch(this);
 	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaRiscossioniSenzaRpt type:VistaRiscossioniSenzaRpt
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioniSenzaRpt}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioniSenzaRpt}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaRiscossioniSenzaRptServiceSearch getVistaRiscossioniSenzaRptServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaRiscossioniSenzaRptServiceSearch(this);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaRiscossioniConRpt type:VistaRiscossioniConRpt
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioniConRpt}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioniConRpt}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaRiscossioniConRptServiceSearch getVistaRiscossioniConRptServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaRiscossioniConRptServiceSearch(this);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaRiscossioni type:VistaRiscossioni
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioni}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioni}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaRiscossioniServiceSearch getVistaRiscossioniServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaRiscossioniServiceSearch(this);
+	}
+	
 	
 	
 	

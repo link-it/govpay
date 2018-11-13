@@ -1,7 +1,7 @@
 package it.govpay.core.business.model;
 
 import it.govpay.model.avvisi.AvvisoPagamento;
-import it.govpay.model.avvisi.AvvisoPagamentoInput;
+import it.govpay.stampe.model.AvvisoPagamentoInput;
 
 public class PrintAvvisoDTO {
 

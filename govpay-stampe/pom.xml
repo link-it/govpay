@@ -118,5 +118,27 @@
 				</includes>
 			</resource>
 		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions>
+	                <execution>
+	                    <id>xjc1</id>
+	                    <goals>
+                            <goal>xjc</goal>
+	                    </goals>
+	                    <configuration>
+                            <target>2.1</target>
+                            <sources>
+	                            <source>src/main/resources/schemi/xsd/govpayStampe.xsd</source>
+                           </sources>
+                            <packageName>it.govpay.stampe.model</packageName>
+                            <clearOutputDir>false</clearOutputDir>
+	                    </configuration>
+          	    	</execution>
+            	</executions>
+			</plugin>
+		</plugins>
 	</build>
 </project>

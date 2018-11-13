@@ -501,3 +501,32 @@ update pagamenti_portale set tipo_utenza = 'APPLICAZIONE';
 alter table pagamenti_portale alter column tipo_utenza set not null;
 
 alter table pagamenti_portale drop column cod_applicazione;
+
+
+-- VISTE REPORTISTICA
+
+CREATE VIEW riscossioni_senza_rpt AS
+SELECT fr.cod_dominio AS cod_dominio,
+    rendicontazioni.iuv AS iuv,
+    rendicontazioni.iur AS iur,
+    fr.cod_flusso AS cod_flusso,
+    fr.iur AS fr_iur,
+    fr.data_regolamento AS data_regolamento,
+    fr.importo_totale_pagamenti AS importo_totale_pagamenti,
+    fr.numero_pagamenti AS numero_pagamenti,
+    rendicontazioni.importo_pagato AS importo_pagato,
+    rendicontazioni.data AS data,
+    singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
+    rendicontazioni.indice_dati AS indice_dati,
+    versamenti.cod_versamento_ente AS cod_versamento_ente,
+    versamenti.id_applicazione AS id_applicazione
+   FROM fr
+     JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
+     JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
+     JOIN domini ON versamenti.id_dominio = domini.id
+     JOIN singoli_versamenti ON singoli_versamenti.id_versamento = versamenti.id
+  WHERE rendicontazioni.esito = 9;
+
+
+
+
