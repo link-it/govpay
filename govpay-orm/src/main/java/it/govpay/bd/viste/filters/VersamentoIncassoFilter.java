@@ -39,7 +39,6 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.viste.model.VersamentoIncasso.StatoPagamento;
 import it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento;
-import it.govpay.orm.Versamento;
 import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoIncassoFieldConverter;
@@ -176,7 +175,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(Versamento.model().DEBITORE_IDENTIFICATIVO, this.cfCittadino);
+				newExpression.equals(VersamentoIncasso.model().DEBITORE_IDENTIFICATIVO, this.cfCittadino);
 				
 				addAnd = true;
 			}
