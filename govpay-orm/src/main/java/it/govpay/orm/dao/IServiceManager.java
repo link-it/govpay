@@ -923,43 +923,7 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:VistaRiscossioniSenzaRpt type:VistaRiscossioniSenzaRpt
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioniSenzaRpt}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioniSenzaRpt}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IVistaRiscossioniSenzaRptServiceSearch getVistaRiscossioniSenzaRptServiceSearch() throws ServiceException,NotImplementedException;
-	
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:VistaRiscossioniConRpt type:VistaRiscossioniConRpt
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioniConRpt}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioniConRpt}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IVistaRiscossioniConRptServiceSearch getVistaRiscossioniConRptServiceSearch() throws ServiceException,NotImplementedException;
-	
+
 	
 	
 	
