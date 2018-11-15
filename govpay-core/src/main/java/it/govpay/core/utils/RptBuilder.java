@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class RptBuilder {
@@ -311,18 +312,32 @@ public class RptBuilder {
 			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
 		}
 		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
-		datiSingoloVersamento.setCausaleVersamento(this.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento()));
+		datiSingoloVersamento.setCausaleVersamento(this.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione()));
 		return datiSingoloVersamento;
 	}
 
 	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
 
-	private String buildCausaleSingoloVersamento(String iuv, BigDecimal importoTotale) {
+	private String buildCausaleSingoloVersamento(String iuv, BigDecimal importoTotale, String descrizione) {
+		StringBuilder sb = new StringBuilder();
 		//Controllo se lo IUV che mi e' stato passato e' ISO11640:2011
-		if(IuvUtils.checkISO11640(iuv))
-			return "/RFS/" + iuv + "/" + nFormatter.format(importoTotale);
-		else 
-			return "/RFB/" + iuv + "/" + nFormatter.format(importoTotale);
+		if(IuvUtils.checkISO11640(iuv)) {
+			sb.append("/RFS/");
+		}else { 
+			sb.append("/RFB/");
+		}
+		
+		sb.append(iuv);
+		sb.append("/");
+		sb.append(nFormatter.format(importoTotale));
+		if(StringUtils.isNotEmpty(descrizione)) {
+			sb.append("/TXT/").append(descrizione);
+		}
+		
+		if(sb.toString().length() > 140)
+			return sb.toString().substring(0, 140);
+		
+		return sb.toString();
 	}
 
 	private Anagrafica toOrm(CtSoggettoVersante soggettoVersante) {

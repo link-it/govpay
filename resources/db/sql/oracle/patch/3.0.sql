@@ -483,7 +483,7 @@ versamenti.id as id,
 MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,
 MAX(versamenti.nome) as nome,
 MAX(versamenti.importo_totale) as importo_totale,
-MAX(versamenti.stato_versamento) as stato_versamento,
+versamenti.stato_versamento as stato_versamento,
 MAX(versamenti.descrizione_stato) as descrizione_stato,
 MAX(CASE WHEN versamenti.aggiornabile = 1 THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
 MAX(versamenti.data_creazione) as data_creazione,
@@ -492,7 +492,7 @@ MAX(versamenti.data_scadenza) as data_scadenza,
 MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
 MAX(versamenti.causale_versamento) as causale_versamento,
 MAX(versamenti.debitore_tipo) as debitore_tipo,
-MAX(versamenti.debitore_identificativo) as debitore_identificativo,
+versamenti.debitore_identificativo as debitore_identificativo,
 MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,
 MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,
 MAX(versamenti.debitore_civico) as debitore_civico,
@@ -535,7 +535,7 @@ MAX(CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_v
 MIN(ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
 FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
 WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0
-GROUP BY versamenti.id;
+GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 
 -- FIX bug che non valorizzava il tipo debitore
 update versamenti set debitore_tipo = 'F';
@@ -564,3 +564,101 @@ update pagamenti_portale set tipo_utenza = 'APPLICAZIONE';
 alter table pagamenti_portale MODIFY (tipo_utenza not null);
 
 alter table pagamenti_portale drop column cod_applicazione;
+
+
+-- VISTE REPORTISTICA
+
+CREATE VIEW v_riscossioni_senza_rpt AS
+SELECT fr.cod_dominio AS cod_dominio,
+    rendicontazioni.iuv AS iuv,
+    rendicontazioni.iur AS iur,
+    fr.cod_flusso AS cod_flusso,
+    fr.iur AS fr_iur,
+    fr.data_regolamento AS data_regolamento,
+    fr.importo_totale_pagamenti AS importo_totale_pagamenti,
+    fr.numero_pagamenti AS numero_pagamenti,
+    rendicontazioni.importo_pagato AS importo_pagato,
+    rendicontazioni.data AS data,
+    singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
+    rendicontazioni.indice_dati AS indice_dati,
+    versamenti.cod_versamento_ente AS cod_versamento_ente,
+    versamenti.id_applicazione AS id_applicazione
+   FROM fr
+     JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
+     JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
+     JOIN domini ON versamenti.id_dominio = domini.id
+     JOIN singoli_versamenti ON singoli_versamenti.id_versamento = versamenti.id
+  WHERE rendicontazioni.esito = 9;
+
+CREATE VIEW v_riscossioni_con_rpt AS
+SELECT pagamenti.cod_dominio AS cod_dominio,
+    pagamenti.iuv AS iuv,
+    pagamenti.iur AS iur,
+    fr.cod_flusso AS cod_flusso,
+    fr.iur AS fr_iur,
+    fr.data_regolamento AS data_regolamento,
+    fr.importo_totale_pagamenti AS importo_totale_pagamenti,
+    fr.numero_pagamenti AS numero_pagamenti,
+    pagamenti.importo_pagato AS importo_pagato,
+    pagamenti.data_pagamento AS data_pagamento,
+    singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
+    singoli_versamenti.indice_dati AS indice_dati,
+    versamenti.cod_versamento_ente AS cod_versamento_ente,
+    versamenti.id_applicazione AS id_applicazione
+   FROM pagamenti
+     LEFT JOIN rendicontazioni ON rendicontazioni.id_pagamento = pagamenti.id
+     LEFT JOIN fr ON rendicontazioni.id_fr = fr.id
+     JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id
+     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id; 
+
+CREATE VIEW v_riscossioni AS
+ SELECT a.cod_dominio,
+    a.iuv,
+    a.iur,
+    a.cod_flusso,
+    a.fr_iur,
+    a.data_regolamento,
+    a.importo_totale_pagamenti,
+    a.numero_pagamenti,
+    a.importo_pagato,
+    a.data,
+    a.cod_singolo_versamento_ente,
+    a.indice_dati,
+    a.cod_versamento_ente,
+    applicazioni.cod_applicazione
+   FROM ( SELECT v_riscossioni_senza_rpt.cod_dominio,
+            v_riscossioni_senza_rpt.iuv,
+            v_riscossioni_senza_rpt.iur,
+            v_riscossioni_senza_rpt.cod_flusso,
+            v_riscossioni_senza_rpt.fr_iur,
+            v_riscossioni_senza_rpt.data_regolamento,
+            v_riscossioni_senza_rpt.importo_totale_pagamenti,
+            v_riscossioni_senza_rpt.numero_pagamenti,
+            v_riscossioni_senza_rpt.importo_pagato,
+            v_riscossioni_senza_rpt.data,
+            v_riscossioni_senza_rpt.cod_singolo_versamento_ente,
+            v_riscossioni_senza_rpt.indice_dati,
+            v_riscossioni_senza_rpt.cod_versamento_ente,
+            v_riscossioni_senza_rpt.id_applicazione
+           FROM v_riscossioni_senza_rpt
+        UNION
+         SELECT v_riscossioni_con_rpt.cod_dominio,
+            v_riscossioni_con_rpt.iuv,
+            v_riscossioni_con_rpt.iur,
+            v_riscossioni_con_rpt.cod_flusso,
+            v_riscossioni_con_rpt.fr_iur,
+            v_riscossioni_con_rpt.data_regolamento,
+            v_riscossioni_con_rpt.importo_totale_pagamenti,
+            v_riscossioni_con_rpt.numero_pagamenti,
+            v_riscossioni_con_rpt.importo_pagato,
+            v_riscossioni_con_rpt.data_pagamento,
+            v_riscossioni_con_rpt.cod_singolo_versamento_ente,
+            v_riscossioni_con_rpt.indice_dati,
+            v_riscossioni_con_rpt.cod_versamento_ente,
+            v_riscossioni_con_rpt.id_applicazione
+           FROM v_riscossioni_con_rpt) a
+     JOIN applicazioni ON a.id_applicazione = applicazioni.id;
+
+
+
+

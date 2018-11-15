@@ -370,7 +370,7 @@ CREATE VIEW versamenti_incassi AS
     max(versamenti.cod_versamento_ente::text) AS cod_versamento_ente,
     max(versamenti.nome::text) AS nome,
     max(versamenti.importo_totale) AS importo_totale,
-    max(versamenti.stato_versamento::text) AS stato_versamento,
+    versamenti.stato_versamento::text AS stato_versamento,
     max(versamenti.descrizione_stato::text) AS descrizione_stato,
     max(
         CASE
@@ -457,7 +457,7 @@ CREATE VIEW versamenti_incassi AS
      LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento
      LEFT JOIN pagamenti ON singoli_versamenti.id = pagamenti.id_singolo_versamento
   WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0::double precision
-  GROUP BY versamenti.id, versamenti.debitore_identificativo;
+  GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 
 
 
