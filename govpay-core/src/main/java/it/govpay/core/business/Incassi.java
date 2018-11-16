@@ -40,7 +40,6 @@ import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.Utenza;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;

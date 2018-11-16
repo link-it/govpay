@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -12,7 +11,7 @@
 	<artifactId>govpay-stampe</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay Stampe</name>
-	
+
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
@@ -22,85 +21,85 @@
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-orm-beans</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-core-beans</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 
-		 <dependency>
-            <groupId>net.sourceforge.dynamicreports</groupId>
-            <artifactId>dynamicreports-core</artifactId>
-            <version>4.1.1</version>
-            <exclusions>
-                    <exclusion>
-                            <artifactId>core</artifactId>
-                            <groupId>com.google.zxing</groupId>
-                    </exclusion>
-                    <exclusion>
-                            <artifactId>bcprov-jdk14</artifactId>
-                            <groupId>bouncycastle</groupId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>com.fasterxml.jackson.core</groupId>
-                    	<artifactId>jackson-databind</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>com.fasterxml.jackson.core</groupId>
-                    	<artifactId>jackson-annotations</artifactId>
-                    </exclusion>
-                    <exclusion>
-                    	<groupId>com.fasterxml.jackson.core</groupId>
-                    	<artifactId>jackson-core</artifactId>
-                    </exclusion>
-            </exclusions>
-    	</dependency>
-    	
-	    <dependency>
-	        <groupId>com.google.zxing</groupId>
-	        <artifactId>javase</artifactId>
-	        <version>2.2</version>
-		</dependency>
-		
 		<dependency>
-		  <groupId>org.iban4j</groupId>
-		  <artifactId>iban4j</artifactId>
-		  <version>3.2.1</version>
+			<groupId>net.sourceforge.dynamicreports</groupId>
+			<artifactId>dynamicreports-core</artifactId>
+			<version>4.1.1</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>core</artifactId>
+					<groupId>com.google.zxing</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcprov-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.apache.xmlgraphics</groupId>
-		    <artifactId>xmlgraphics-commons</artifactId>
-		    <version>2.1</version>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>2.2</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.codehaus.groovy</groupId>
-		    <artifactId>groovy-all</artifactId>
-		    <version>2.4.5</version>
+			<groupId>org.iban4j</groupId>
+			<artifactId>iban4j</artifactId>
+			<version>3.2.1</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>net.sourceforge.barbecue</groupId>
-		    <artifactId>barbecue</artifactId>
-		    <version>1.5-beta1</version>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>xmlgraphics-commons</artifactId>
+			<version>2.1</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>xalan</groupId>
-		    <artifactId>xalan</artifactId>
-		    <version>2.7.1</version>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>2.4.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.barbecue</groupId>
+			<artifactId>barbecue</artifactId>
+			<version>1.5-beta1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
+			<version>2.7.1</version>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<filters>
-			<filter>../resources/filters/${env}.filter.properties</filter>	
+			<filter>../resources/filters/${env}.filter.properties</filter>
 		</filters>
 		<resources>
 			<resource>
@@ -114,30 +113,30 @@
 				<directory>src/main/resources</directory>
 				<filtering>false</filtering>
 				<includes>
-					<include>*.jasper</include>				
+					<include>*.jasper</include>
 				</includes>
 			</resource>
 		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <executions>
-	                <execution>
-	                    <id>xjc1</id>
-	                    <goals>
-                            <goal>xjc</goal>
-	                    </goals>
-	                    <configuration>
-                            <target>2.1</target>
-                            <sources>
-	                            <source>src/main/resources/schemi/xsd/govpayStampe.xsd</source>
-                           </sources>
-                            <packageName>it.govpay.stampe.model</packageName>
-                            <clearOutputDir>false</clearOutputDir>
-	                    </configuration>
-          	    	</execution>
-            	</executions>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>xjc1</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<target>2.1</target>
+							<sources>
+								<source>src/main/resources/schemi/xsd/govpayStampe.xsd</source>
+							</sources>
+							<packageName>it.govpay.stampe.model</packageName>
+							<clearOutputDir>false</clearOutputDir>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
