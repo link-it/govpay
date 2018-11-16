@@ -99,6 +99,8 @@ public class GovpayConfig {
 	
 	private String headerAuth;
 	private boolean checkCfDebitore;
+	
+	private int numeroMassimoEntriesProspettoRiscossione;
 
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -130,6 +132,7 @@ public class GovpayConfig {
 
 		this.headerAuth = null;
 		this.checkCfDebitore = true;
+		this.numeroMassimoEntriesProspettoRiscossione = 5000;
 		
 		try {
 
@@ -347,6 +350,11 @@ public class GovpayConfig {
 				this.checkCfDebitore = false;
 			}
 			
+			String numeroMassimoEntriesProspettoRiscossioneString = getProperty("it.govpay.reportistica.prospettoRiscossione.numeroMassimoEntries", props, false, log);
+			if(StringUtils.isNotEmpty(numeroMassimoEntriesProspettoRiscossioneString)) {
+				this.numeroMassimoEntriesProspettoRiscossione = Integer.parseInt(numeroMassimoEntriesProspettoRiscossioneString);;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -539,5 +547,9 @@ public class GovpayConfig {
 
 	public boolean isCheckCfDebitore() {
 		return checkCfDebitore;
+	}
+
+	public int getNumeroMassimoEntriesProspettoRiscossione() {
+		return numeroMassimoEntriesProspettoRiscossione;
 	}
 }

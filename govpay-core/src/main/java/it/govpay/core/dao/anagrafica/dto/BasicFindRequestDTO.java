@@ -24,10 +24,12 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	private int pagina;
 	private List<FilterSortWrapper> defaultSort = null;
 	
+	public final static int DEFAULT_LIMIT = 50;
+	
 
 	public BasicFindRequestDTO(IAutorizzato user) {
 		super(user);
-		this.setLimit(50);
+		this.setLimit(DEFAULT_LIMIT);
 		this.setPagina(1);
 		this.fieldsSort = new ArrayList<>();
 		this.defaultSort = new ArrayList<>();

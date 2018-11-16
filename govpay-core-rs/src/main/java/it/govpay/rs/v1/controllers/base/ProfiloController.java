@@ -25,7 +25,7 @@ import it.govpay.rs.v1.beans.converter.ProfiloConverter;
 public class ProfiloController extends BaseController {
 
      public ProfiloController(String nomeServizio,Logger log) {
- 		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
+ 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
     public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders) {

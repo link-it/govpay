@@ -158,7 +158,7 @@ public class RppController extends BaseController {
 					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
 					this.log.info(MessageFormat.format(it.govpay.rs.BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
-				} else if(accept.toLowerCase().contains("application/json")) {
+				} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt());

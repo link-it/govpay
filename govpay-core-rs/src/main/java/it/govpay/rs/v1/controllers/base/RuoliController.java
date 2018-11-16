@@ -45,7 +45,7 @@ import it.govpay.rs.v1.beans.converter.RuoliConverter;
 public class RuoliController extends BaseController {
 
      public RuoliController(String nomeServizio,Logger log) {
- 		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
+ 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
     public Response ruoliGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {

@@ -45,6 +45,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String idPagamento;
 	private String idDebitore;
 	private String idA2A;
+	private String idPendenza;
 	private boolean infoIncasso;
 	
 	public Date getDataA() {
@@ -95,7 +96,13 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	public void setInfoIncasso(boolean infoIncasso) {
 		this.infoIncasso = infoIncasso;
 	}
-	
+	public String getIdPendenza() {
+		return idPendenza;
+	}
+	public void setIdPendenza(String idPendenza) {
+		this.idPendenza = idPendenza;
+	}
+
 	@Override
 	public void setOrderBy(String orderBy) throws RequestParamException, InternalException {
 		this.resetSort();

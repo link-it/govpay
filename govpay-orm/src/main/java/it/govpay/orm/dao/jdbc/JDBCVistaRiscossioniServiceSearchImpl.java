@@ -19,47 +19,37 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.util.List;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import java.sql.Connection;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-
-import it.govpay.orm.IdVersamento;
-import it.govpay.orm.IdVistaRiscossione;
-import it.govpay.orm.VersamentoIncasso;
-
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import it.govpay.orm.IdVistaRiscossione;
+import it.govpay.orm.VistaRiscossioni;
 import it.govpay.orm.dao.jdbc.converter.VistaRiscossioniFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.VistaRiscossioniFetch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-
-import it.govpay.orm.VistaRiscossioni;
 
 /**     
  * JDBCVistaRiscossioniServiceSearchImpl
@@ -117,10 +107,16 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	
 		return idVistaRiscossioni;
 	}
+
+	protected IdVistaRiscossione convertObjectIdToId(Object objectId) throws ServiceException{
+		if(!(objectId instanceof IdVistaRiscossione)) 
+			throw new ServiceException("objectId has wrong type. Expected type: IdVistaRiscossione");
+		return (IdVistaRiscossione) objectId;
+	}
 	
 	@Override
 	public VistaRiscossioni get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
-		Long id_vistaRiscossioni = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdVistaRiscossioni(jdbcProperties, log, connection, sqlQueryObject, id, true));
+		Object id_vistaRiscossioni = this.findIdVistaRiscossioni(jdbcProperties, log, connection, sqlQueryObject, id, true);
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_vistaRiscossioni,idMappingResolutionBehaviour);
 		
 		
@@ -129,8 +125,8 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-		Long id_vistaRiscossioni = this.findIdVistaRiscossioni(jdbcProperties, log, connection, sqlQueryObject, id, false);
-		return id_vistaRiscossioni != null && id_vistaRiscossioni > 0;
+		Object id_vistaRiscossioni = this.findIdVistaRiscossioni(jdbcProperties, log, connection, sqlQueryObject, id, false);
+		return id_vistaRiscossioni != null;	
 		
 	}
 	
@@ -138,11 +134,6 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	public List<IdVistaRiscossione> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
 		List<IdVistaRiscossione> list = new ArrayList<IdVistaRiscossione>();
-		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
 
 		try{
 			List<IField> fields = new ArrayList<>();
@@ -165,16 +156,9 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	public List<VistaRiscossioni> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
         List<VistaRiscossioni> list = new ArrayList<VistaRiscossioni>();
-        
-        // default behaviour (id-mapping)
- 		if(idMappingResolutionBehaviour==null){
- 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
- 		}
- 		try{
+
+        try{
  			List<IField> fields = new ArrayList<>();
- 			IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(VersamentoIncasso.model()));
- 	
- 			fields.add(idField);
  			fields.add(VistaRiscossioni.model().COD_APPLICAZIONE);
  			fields.add(VistaRiscossioni.model().COD_DOMINIO);
  			fields.add(VistaRiscossioni.model().COD_FLUSSO);
@@ -206,9 +190,9 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	public VistaRiscossioni find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-        long id = this.findTableId(jdbcProperties, log, connection, sqlQueryObject, expression);
-        if(id>0){
-        	return this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour);
+        Object id = this._findObjectId(jdbcProperties, log, connection, sqlQueryObject, expression);
+        if(id!=null){
+        	return this._get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour);
         }else{
         	throw new NotFoundException("Entry with id["+id+"] not found");
         }
@@ -221,7 +205,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getVistaRiscossioniFieldConverter(), VistaRiscossioni.model());
 		
-		sqlQueryObject.addSelectCountField(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField("tot");
 		
 		_join(expression,sqlQueryObject);
 		
@@ -232,7 +216,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	@Override
 	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
 		
-		Long id_vistaRiscossioni = this.findIdVistaRiscossioni(jdbcProperties, log, connection, sqlQueryObject, id, true);
+		Object id_vistaRiscossioni = this.findIdVistaRiscossioni(jdbcProperties, log, connection, sqlQueryObject, id, true);
         return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_vistaRiscossioni);
 		
 	}
@@ -482,10 +466,10 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	
 	@Override
 	public VistaRiscossioni get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
+		throw new NotImplementedException("Table without long id column PK");
 	}
 	
-	private VistaRiscossioni _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	protected VistaRiscossioni _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Object objectId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
@@ -499,12 +483,12 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 				
 		VistaRiscossioni vistaRiscossioni = new VistaRiscossioni();
 		
+		IdVistaRiscossione convertObjectIdToId = this.convertObjectIdToId(objectId);
 
 		// Object vistaRiscossioni
 		ISQLQueryObject sqlQueryObjectGet_vistaRiscossioni = sqlQueryObjectGet.newSQLQueryObject();
 		sqlQueryObjectGet_vistaRiscossioni.setANDLogicOperator(true);
 		sqlQueryObjectGet_vistaRiscossioni.addFromTable(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model()));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField("id");
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUR,true));
@@ -519,103 +503,64 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_VERSAMENTO_ENTE,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_APPLICAZIONE,true));
-		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition("id=?");
+
+		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true) + "=?");
+		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true) + "=?");
+		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true) + "=?");
 
 		// Get vistaRiscossioni
 		vistaRiscossioni = (VistaRiscossioni) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_vistaRiscossioni.createSQLQuery(), jdbcProperties.isShowSql(), VistaRiscossioni.model(), this.getVistaRiscossioniFetch(),
-			new JDBCObject(tableId,Long.class));
+			new JDBCObject(convertObjectIdToId.getCodDominio(),convertObjectIdToId.getCodDominio().getClass()),
+			new JDBCObject(convertObjectIdToId.getIuv(),convertObjectIdToId.getIuv().getClass()),
+			new JDBCObject(convertObjectIdToId.getIndiceDati(),convertObjectIdToId.getIndiceDati().getClass()));
 
-
-
-		
         return vistaRiscossioni;  
 	
 	} 
 	
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
-		return this._exists(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
+		throw new NotImplementedException("Table without long id column PK");
 	}
 	
-	private boolean _exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
+	protected boolean _exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Object objectId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 				
 		boolean existsVistaRiscossioni = false;
+		
+		IdVistaRiscossione convertObjectIdToId = this.convertObjectIdToId(objectId);
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model()));
 		sqlQueryObject.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true));
-		sqlQueryObject.addWhereCondition("id=?");
-
+		
+		sqlQueryObject.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true) + "=?");
+		sqlQueryObject.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true) + "=?");
+		sqlQueryObject.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true) + "=?");
 
 		// Exists vistaRiscossioni
 		existsVistaRiscossioni = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
-			new JDBCObject(tableId,Long.class));
+				new JDBCObject(convertObjectIdToId.getCodDominio(),convertObjectIdToId.getCodDominio().getClass()),
+				new JDBCObject(convertObjectIdToId.getIuv(),convertObjectIdToId.getIuv().getClass()),
+				new JDBCObject(convertObjectIdToId.getIndiceDati(),convertObjectIdToId.getIndiceDati().getClass()));
 
-		
         return existsVistaRiscossioni;
 	
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
-		/* 
-		 * TODO: implement code that implement the join condition
-		*/
-		/*
-		if(expression.inUseModel(VistaRiscossioni.model().XXXX,false)){
-			String tableName1 = this.getVistaRiscossioniFieldConverter().toAliasTable(VistaRiscossioni.model());
-			String tableName2 = this.getVistaRiscossioniFieldConverter().toAliasTable(VistaRiscossioni.model().XXX);
-			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_table1");
-		}
-		*/
-		
-		/* 
-         * TODO: implementa il codice che aggiunge la condizione FROM Table per le condizioni di join di oggetti annidati dal secondo livello in poi 
-         *       La addFromTable deve essere aggiunta solo se l'oggetto del livello precedente non viene utilizzato nella espressione 
-         *		 altrimenti il metodo sopra 'toSqlForPreparedStatementWithFromCondition' si occupa gia' di aggiungerla
-        */
-        /*
-        if(expression.inUseModel(VistaRiscossioni.model().LEVEL1.LEVEL2,false)){
-			if(expression.inUseModel(VistaRiscossioni.model().LEVEL1,false)==false){
-				sqlQueryObject.addFromTable(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model().LEVEL1));
-			}
-		}
-		...
-		if(expression.inUseModel(VistaRiscossioni.model()....LEVELN.LEVELN+1,false)){
-			if(expression.inUseModel(VistaRiscossioni.model().LEVELN,false)==false){
-				sqlQueryObject.addFromTable(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model().LEVELN));
-			}
-		}
-		*/
-		
-		// Delete this line when you have implemented the join condition
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the join condition
         
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-        // TODO: Define the column values used to identify the primary key
-		Long longId = this.findIdVistaRiscossioni(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
-		rootTableIdValues.add(longId);
-        
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
-        
+		Object objectId = this.findIdVistaRiscossioni(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
+		rootTableIdValues.add(objectId);
         return rootTableIdValues;
 	}
 	
@@ -625,22 +570,9 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
-		// TODO: Define the columns used to identify the primary key
-		//		  If a table doesn't have a primary key, don't add it to this map
-
 		// VistaRiscossioni.model()
 		mapTableToPKColumn.put(converter.toTable(VistaRiscossioni.model()),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(VistaRiscossioni.model()))
-			));
-
-
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
+			utilities.newList(VistaRiscossioni.model().COD_DOMINIO, VistaRiscossioni.model().IUV, VistaRiscossioni.model().INDICE_DATI));
         
         return mapTableToPKColumn;		
 	}
@@ -648,45 +580,80 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	@Override
 	public List<Long> findAllTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
 		
-		List<Long> list = new ArrayList<Long>();
+		throw new NotImplementedException("Table without long id column PK");
+		
+	}
+	public List<Object> _findAllObjectIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression paginatedExpression) throws ServiceException, NotImplementedException, Exception {
+		
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model())+".id");
-		Class<?> objectIdClass = Long.class;
+
+		sqlQueryObject.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true));
+		sqlQueryObject.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true));
+		sqlQueryObject.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true));
+		
+		List<Class<?>> objectIdClass = new ArrayList<>();
+		objectIdClass.add(VistaRiscossioni.model().COD_DOMINIO.getClassType());
+		objectIdClass.add(VistaRiscossioni.model().IUV.getClassType());
+		objectIdClass.add(VistaRiscossioni.model().INDICE_DATI.getClassType());
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 												this.getVistaRiscossioniFieldConverter(), VistaRiscossioni.model());
 		
 		_join(paginatedExpression,sqlQueryObject);
 		
-		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
+		List<List<Object>> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
 																			this.getVistaRiscossioniFieldConverter(), VistaRiscossioni.model(), objectIdClass, listaQuery);
-		for(Object object: listObjects) {
-			list.add((Long)object);
+		
+		List<Object> ids = new ArrayList<>();
+		for (List<Object> id_vistaRiscossioni : listObjects) {
+			IdVistaRiscossione idToRet = new IdVistaRiscossione();
+			idToRet.setCodDominio((String) id_vistaRiscossioni.get(0));
+			idToRet.setIuv((String) id_vistaRiscossioni.get(1));
+			idToRet.setIndiceDati((Integer) id_vistaRiscossioni.get(2));
+			
+			ids.add(idToRet);
 		}
-
-        return list;
+		
+        return ids;
 		
 	}
 	
 	@Override
 	public long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException, Exception {
 	
+		throw new NotImplementedException("Table without long id column PK");
+		
+	}
+	
+	public Object _findObjectId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException, Exception {
+		
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model())+".id");
-		Class<?> objectIdClass = Long.class;
+		
+		sqlQueryObject.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true));
+		sqlQueryObject.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true));
+		sqlQueryObject.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true));
+		
+		List<Class<?>> objectIdClass = new ArrayList<>();
+		objectIdClass.add(VistaRiscossioni.model().COD_DOMINIO.getClassType());
+		objectIdClass.add(VistaRiscossioni.model().IUV.getClassType());
+		objectIdClass.add(VistaRiscossioni.model().INDICE_DATI.getClassType());
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
 												this.getVistaRiscossioniFieldConverter(), VistaRiscossioni.model());
 		
 		_join(expression,sqlQueryObject);
 
-		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
+		List<Object> id_vistaRiscossioni = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
 														this.getVistaRiscossioniFieldConverter(), VistaRiscossioni.model(), objectIdClass, listaQuery);
-		if(res!=null && (((Long) res).longValue()>0) ){
-			return ((Long) res).longValue();
+		if(id_vistaRiscossioni !=null){
+			IdVistaRiscossione idToRet = new IdVistaRiscossione();
+			idToRet.setCodDominio((String) id_vistaRiscossioni.get(0));
+			idToRet.setIuv((String) id_vistaRiscossioni.get(1));
+			idToRet.setIndiceDati((Integer) id_vistaRiscossioni.get(2));
+			return idToRet;
 		}
 		else{
 			throw new NotFoundException("Not Found");
@@ -696,24 +663,13 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 
 	@Override
 	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws ServiceException, NotFoundException, NotImplementedException, Exception {
-		return this._inUse(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
+		throw new NotImplementedException("Table without long id column PK");
 	}
 
-	private InUse _inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId) throws ServiceException, NotFoundException, NotImplementedException, Exception {
+	protected InUse _inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Object objectId) throws ServiceException, NotFoundException, NotImplementedException, Exception {
 
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
-		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the method
 
         return inUse;
 
@@ -723,57 +679,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	public IdVistaRiscossione findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-
-		/* 
-		 * TODO: implement code that returns the object identified by the id
-		*/
-
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
- 		// Delete this line when you have implemented the method                
-
-		// Object _vistaRiscossioni
-		//TODO Implementare la ricerca dell'id
-		sqlQueryObjectGet.addFromTable(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model()));
-		// TODO select field for identify ObjectId
-		//sqlQueryObjectGet.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().NOME_COLONNA_1,true));
-		//...
-		//sqlQueryObjectGet.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().NOME_COLONNA_N,true));
-		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.addWhereCondition("id=?");
-
-		// Recupero _vistaRiscossioni
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_vistaRiscossioni = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
-		};
-		List<Class<?>> listaFieldIdReturnType_vistaRiscossioni = new ArrayList<Class<?>>();
-		//listaFieldIdReturnType_vistaRiscossioni.add(Id1.class);
-		//...
-		//listaFieldIdReturnType_vistaRiscossioni.add(IdN.class);
-		it.govpay.orm.IdVistaRiscossione id_vistaRiscossioni = null;
-		List<Object> listaFieldId_vistaRiscossioni = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-				listaFieldIdReturnType_vistaRiscossioni, searchParams_vistaRiscossioni);
-		if(listaFieldId_vistaRiscossioni==null || listaFieldId_vistaRiscossioni.size()<=0){
-			if(throwNotFound){
-				throw new NotFoundException("Not Found");
-			}
-		}
-		else{
-			// set _vistaRiscossioni
-			id_vistaRiscossioni = new it.govpay.orm.IdVistaRiscossione();
-			// id_vistaRiscossioni.setId1(listaFieldId_vistaRiscossioni.get(0));
-			// ...
-			// id_vistaRiscossioni.setIdN(listaFieldId_vistaRiscossioni.get(N-1));
-		}
-		
-		return id_vistaRiscossioni;
+		throw new NotImplementedException("Table without long id column PK");
 		
 	}
 
@@ -781,7 +687,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 	
-		return this.findIdVistaRiscossioni(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
+		throw new NotImplementedException("Table without long id column PK");
 			
 	}
 	
@@ -794,57 +700,52 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 														
 	}
 	
-	protected Long findIdVistaRiscossioni(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
+	protected Object findIdVistaRiscossioni(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-		/* 
-		 * TODO: implement code that returns the object identified by the id
-		*/
-
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
- 		// Delete this line when you have implemented the method                
-
 		// Object _vistaRiscossioni
-		//TODO Implementare la ricerca dell'id
 		sqlQueryObjectGet.addFromTable(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model()));
-		sqlQueryObjectGet.addSelectField("id");
+
+		sqlQueryObjectGet.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true));
+		sqlQueryObjectGet.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true));
+		sqlQueryObjectGet.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true));
+
 		// Devono essere mappati nella where condition i metodi dell'oggetto id.getXXX
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.setSelectDistinct(true);
-		//sqlQueryObjectGet.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().NOME_COLONNA_1,true)+"=?");
-		// ...
-		//sqlQueryObjectGet.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().NOME_COLONNA_N,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true)+"=?");
 
 		// Recupero _vistaRiscossioni
-		// TODO Aggiungere i valori dei parametri di ricerca sopra definiti recuperandoli con i metodi dell'oggetto id.getXXX
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_vistaRiscossioni = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			//new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(object,object.class),
-			//...
-			//new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(object,object.class)
+				new JDBCObject(id.getCodDominio(),id.getCodDominio().getClass()),
+				new JDBCObject(id.getIuv(),id.getIuv().getClass()),
+				new JDBCObject(id.getIndiceDati(),id.getIndiceDati().getClass()) 
 		};
-		Long id_vistaRiscossioni = null;
-		try{
-			id_vistaRiscossioni = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-						Long.class, searchParams_vistaRiscossioni);
-		}catch(NotFoundException notFound){
-			if(throwNotFound){
-				throw new NotFoundException(notFound);
-			}
-		}
-		if(id_vistaRiscossioni==null || id_vistaRiscossioni<=0){
+	
+		List<Class<?>> id_vistaRiscossioni_classType = new ArrayList<>();
+		id_vistaRiscossioni_classType.add(VistaRiscossioni.model().COD_DOMINIO.getClassType());
+		id_vistaRiscossioni_classType.add(VistaRiscossioni.model().IUV.getClassType());
+		id_vistaRiscossioni_classType.add(VistaRiscossioni.model().INDICE_DATI.getClassType());
+		
+		List<Object> id_vistaRiscossioni = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(), id_vistaRiscossioni_classType, searchParams_vistaRiscossioni);
+		
+		if(id_vistaRiscossioni==null){
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
 		}
 		
-		return id_vistaRiscossioni;
+		IdVistaRiscossione idToRet = new IdVistaRiscossione();
+		idToRet.setCodDominio((String) id_vistaRiscossioni.get(0));
+		idToRet.setIuv((String) id_vistaRiscossioni.get(1));
+		idToRet.setIndiceDati((Integer) id_vistaRiscossioni.get(2));
+		
+		return idToRet;
 	}
 }

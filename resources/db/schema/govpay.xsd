@@ -2582,64 +2582,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:element name="VistaRiscossioniSenzaRpt" type="VistaRiscossioniSenzaRpt"/>
-	<xsd:complexType name="VistaRiscossioniSenzaRpt">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="false" id="id-vista-riscossione"/>
-					<linkit:sql-table-mapping generate-sql="false" name="v_riscossioni_senza_rpt" on-delete-cascade="false">
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="codDominio" type="String35" />
-			<xsd:element name="iuv" type="String35" />
-			<xsd:element name="iur" type="String35" />
-			<xsd:element name="cod_flusso" type="String35" />
-			<xsd:element name="fr_iur" type="String35" />
-			<xsd:element name="dataRegolamento" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="numeroPagamenti" type="xsd:long" minOccurs="0"/>
-			<xsd:element name="importoTotalePagamenti" type="xsd:decimal" minOccurs="0"/>
-			<xsd:element name="importoPagato" type="xsd:decimal" minOccurs="0"/>
-			<xsd:element name="data" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="codSingoloVersamentoEnte" type="String70"/>
-			<xsd:element name="indiceDati" type="xsd:positiveInteger"/>
-			<xsd:element name="codVersamentoEnte" type="String35"/>
-			<xsd:element name="idApplicazione" type="xsd:long" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:element name="VistaRiscossioniConRpt" type="VistaRiscossioniConRpt"/>
-	<xsd:complexType name="VistaRiscossioniConRpt">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="false" id="id-vista-riscossione"/>
-					<linkit:sql-table-mapping generate-sql="false" name="v_riscossioni_con_rpt" on-delete-cascade="false">
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="codDominio" type="String35" />
-			<xsd:element name="iuv" type="String35" />
-			<xsd:element name="iur" type="String35" />
-			<xsd:element name="cod_flusso" type="String35" />
-			<xsd:element name="fr_iur" type="String35" />
-			<xsd:element name="dataRegolamento" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="numeroPagamenti" type="xsd:long" minOccurs="0"/>
-			<xsd:element name="importoTotalePagamenti" type="xsd:decimal" minOccurs="0"/>
-			<xsd:element name="importoPagato" type="xsd:decimal" minOccurs="0"/>
-			<xsd:element name="data" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="codSingoloVersamentoEnte" type="String70"/>
-			<xsd:element name="indiceDati" type="xsd:positiveInteger"/>
-			<xsd:element name="codVersamentoEnte" type="String35"/>
-			<xsd:element name="idApplicazione" type="xsd:long" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
 	<xsd:element name="VistaRiscossioni" type="VistaRiscossioni"/>
 	<xsd:complexType name="VistaRiscossioni">
 		<xsd:annotation>
@@ -2647,6 +2589,11 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="false" id="id-vista-riscossione"/>
 					<linkit:sql-table-mapping generate-sql="false" name="v_riscossioni" on-delete-cascade="false">
+						<linkit:sql-table-primary-key generate-id="false" create-index="true">
+							<linkit:sql-table-pk-field name="codDominio"/>
+							<linkit:sql-table-pk-field name="iuv"/>
+							<linkit:sql-table-pk-field name="indiceDati"/>
+						</linkit:sql-table-primary-key>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>

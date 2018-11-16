@@ -41,6 +41,13 @@ public class RicevutaTelematicaPdf{
 
 		return _instance;
 	}
+	
+	public static JAXBContext getJAXBContextInstance() {
+		if(jaxbContext == null)
+			init();
+
+		return jaxbContext;
+	}
 
 	public static synchronized void init() {
 		if(_instance == null)
@@ -93,14 +100,11 @@ public class RicevutaTelematicaPdf{
 	
 	public JRDataSource creaXmlDataSource(Logger log,RicevutaTelematicaInput input) throws UtilsException, JRException, JAXBException {
 //		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
-		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		Marshaller jaxbMarshaller = getJAXBContextInstance().createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		JAXBElement<RicevutaTelematicaInput> jaxbElement = new JAXBElement<RicevutaTelematicaInput>(new QName("", "root"), RicevutaTelematicaInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);
-		
-		log.debug(baos.toString());
-		
 		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),RicevutaTelematicaCostanti.RICEVUTA_TELEMATICA_ROOT_ELEMENT_NAME);
 		return dataSource;
 	}

@@ -457,7 +457,7 @@ ALTER TABLE versamenti ADD note CLOB;
 ALTER TABLE versamenti ADD anomalo NUMBER DEFAULT 0;
 ALTER TABLE versamenti MODIFY (anomalo NOT NULL);
 
-alter table singoli_versamenti add column indice_dati NUMBER;
+alter table singoli_versamenti add indice_dati NUMBER;
 update singoli_versamenti sv set indice_dati = (select sb1.indice_dati from (select sv1.id as id , sv1.id_versamento as id_versamento, row_number() over (partition by sv1.id_versamento) as indice_dati from singoli_versamenti sv1) as sb1 where sb1.id = sv.id);
 alter table singoli_versamenti MODIFY (indice_dati NOT NULL);
 
@@ -547,19 +547,19 @@ ALTER TABLE uo ADD uo_fax VARCHAR2(255 CHAR);
 
 -- 3.0.0-RC3
 
-ALTER TABLE tipi_tributo ADD COLUMN on_line NUMBER NOT NULL;
-alter table tipi_tributo MODIFY (on_line DEFAULT 0);
-ALTER TABLE tipi_tributo ADD COLUMN paga_terzi NUMBER NOT NULL;
-alter table tipi_tributo MODIFY (paga_terzi DEFAULT 0);
+ALTER TABLE tipi_tributo ADD on_line NUMBER DEFAULT 0;
+alter table tipi_tributo MODIFY (on_line NOT NULL);
+ALTER TABLE tipi_tributo ADD  paga_terzi NUMBER DEFAULT 0;
+alter table tipi_tributo MODIFY (paga_terzi NOT NULL);
 
-ALTER TABLE tributi ADD COLUMN on_line NUMBER;
-ALTER TABLE tributi ADD COLUMN paga_terzi NUMBER;
+ALTER TABLE tributi ADD on_line NUMBER;
+ALTER TABLE tributi ADD paga_terzi NUMBER;
 
-alter table pagamenti_portale add column principal VARCHAR2(4000 CHAR);
+alter table pagamenti_portale add principal VARCHAR2(4000 CHAR);
 update pagamenti_portale pp set principal = (select u.principal from utenze u, applicazioni a where u.id = a.id_utenza and a.cod_applicazione = pp.cod_applicazione);
 alter table pagamenti_portale MODIFY (principal NOT NULL);
 
-alter table pagamenti_portale add column tipo_utenza VARCHAR2(35 CHAR);
+alter table pagamenti_portale add tipo_utenza VARCHAR2(35 CHAR);
 update pagamenti_portale set tipo_utenza = 'APPLICAZIONE';
 alter table pagamenti_portale MODIFY (tipo_utenza not null);
 
@@ -600,7 +600,7 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     pagamenti.importo_pagato AS importo_pagato,
-    pagamenti.data_pagamento AS data_pagamento,
+    pagamenti.data_pagamento AS data,
     singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
     singoli_versamenti.indice_dati AS indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
@@ -651,7 +651,7 @@ CREATE VIEW v_riscossioni AS
             v_riscossioni_con_rpt.importo_totale_pagamenti,
             v_riscossioni_con_rpt.numero_pagamenti,
             v_riscossioni_con_rpt.importo_pagato,
-            v_riscossioni_con_rpt.data_pagamento,
+            v_riscossioni_con_rpt.data,
             v_riscossioni_con_rpt.cod_singolo_versamento_ente,
             v_riscossioni_con_rpt.indice_dati,
             v_riscossioni_con_rpt.cod_versamento_ente,

@@ -44,8 +44,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.rs.v1.BaseRsServiceV1;
-import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
-import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
+import it.govpay.stampe.utils.GovpayStampe;
 
 public class StartupUtils {
 
@@ -165,8 +164,7 @@ public class StartupUtils {
 			AnagraficaManager.newInstance(dominioAnagraficaManager);
 			JaxbUtils.init();
 			ThreadExecutorManager.setup();
-			AvvisoPagamentoProperties.newInstance(gpConfig.getResourceDir());
-			RicevutaTelematicaProperties.newInstance(gpConfig.getResourceDir());
+			GovpayStampe.init(log, gpConfig.getResourceDir());
 			AclCache.newInstance(log);
 		} catch (Exception e) {
 			throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita.", e);

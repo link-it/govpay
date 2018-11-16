@@ -73,7 +73,7 @@ public abstract class BaseController {
 	private boolean validate;
 	private String name;
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
-
+	
 	public BaseController(String nomeServizio, Logger log, String name) {
 		this(nomeServizio, log, name, true);
 	}

@@ -52,8 +52,6 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 
 			if(model.equals(VistaRiscossioni.model())){
 				VistaRiscossioni object = new VistaRiscossioni();
-				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodDominio", VistaRiscossioni.model().COD_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", VistaRiscossioni.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setIuv", VistaRiscossioni.model().IUV.getFieldType(),
@@ -102,8 +100,6 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 
 			if(model.equals(VistaRiscossioni.model())){
 				VistaRiscossioni object = new VistaRiscossioni();
-				setParameter(object, "setId", Long.class,
-					this.getObjectFromMap(map,"id"));
 				setParameter(object, "setCodDominio", VistaRiscossioni.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
 				setParameter(object, "setIuv", VistaRiscossioni.model().IUV.getFieldType(),

@@ -117,6 +117,7 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setLimit(listaPendenzaDTO.getLimit());
 		filter.setDataInizio(listaPendenzaDTO.getDataDa());
 		filter.setDataFine(listaPendenzaDTO.getDataA());
+		filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
 		if(listaPendenzaDTO.getStato()!=null) {
 			try {
 				StatoVersamento statoVersamento = null;
@@ -235,6 +236,7 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
 		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
 		filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
+		filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
 		
 		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
 		if(!listaPendenzaDTO.isOrderEnabled()) {

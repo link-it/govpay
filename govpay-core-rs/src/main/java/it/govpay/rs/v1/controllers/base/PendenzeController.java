@@ -124,11 +124,11 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 		}
 	}
 
-	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
-		return pendenzeGET(user, uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, false);
+	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza) {
+		return pendenzeGET(user, uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, idPendenza, false);
 	}
 
-	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, boolean addInfoIncasso) {
+	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, boolean addInfoIncasso) {
 		GpContext ctx = null;
 		String transactionId = null;
 
@@ -158,6 +158,9 @@ public class PendenzeController extends it.govpay.rs.BaseController {
 
 			if(idPagamento != null)
 				listaPendenzeDTO.setIdPagamento(idPagamento);
+			
+			if(idPendenza != null)
+				listaPendenzeDTO.setIdPendenza(idPendenza);
 
 			if(ordinamento != null)
 				listaPendenzeDTO.setOrderBy(ordinamento);

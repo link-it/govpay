@@ -31,7 +31,7 @@ import it.govpay.rs.v1.beans.converter.TracciatiConverter;
 public class TracciatiController extends BaseController {
 
      public TracciatiController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
+		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
 
