@@ -661,4 +661,15 @@ CREATE VIEW v_riscossioni AS
 
 
 
+-- Principal Intermediario
+alter table intermediari add principal VARCHAR(4000);
+update intermediari set principal = (select valore from connettori where connettori.cod_proprieta = 'PRINCIPAL' and connettori.cod_connettore = intermediari.cod_connettore_pdd);
+alter table intermediari MODIFY (principal NOT NULL);
+
+alter table intermediari add principal_originale VARCHAR(4000);
+update intermediari set principal_originale = (select valore from connettori where connettori.cod_proprieta = 'PRINCIPAL' and connettori.cod_connettore = intermediari.cod_connettore_pdd);
+alter table intermediari MODIFY (principal_originale NOT NULL);
+
+delete from connettori where cod_proprieta = 'PRINCIPAL';
+
 

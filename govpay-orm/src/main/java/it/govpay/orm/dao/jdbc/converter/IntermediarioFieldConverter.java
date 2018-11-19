@@ -95,6 +95,20 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 				return "denominazione";
 			}
 		}
+		if(field.equals(Intermediario.model().PRINCIPAL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal";
+			}else{
+				return "principal";
+			}
+		}
+		if(field.equals(Intermediario.model().PRINCIPAL_ORIGINALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal_originale";
+			}else{
+				return "principal_originale";
+			}
+		}
 		if(field.equals(Intermediario.model().ABILITATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".abilitato";
@@ -125,6 +139,12 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().DENOMINAZIONE)){
+			return this.toTable(Intermediario.model(), returnAlias);
+		}
+		if(field.equals(Intermediario.model().PRINCIPAL)){
+			return this.toTable(Intermediario.model(), returnAlias);
+		}
+		if(field.equals(Intermediario.model().PRINCIPAL_ORIGINALE)){
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().ABILITATO)){

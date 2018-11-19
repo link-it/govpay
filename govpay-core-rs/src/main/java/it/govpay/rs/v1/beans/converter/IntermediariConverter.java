@@ -11,7 +11,7 @@ import it.govpay.model.IAutorizzato;
 public class IntermediariConverter {
 
 	public static PutIntermediarioDTO getPutIntermediarioDTO(IntermediarioPost intermediarioPost, String idIntermediario, IAutorizzato user) throws ServiceException {
-		PutIntermediarioDTO dominioDTO = new PutIntermediarioDTO(user);
+		PutIntermediarioDTO putIntermediarioDTO = new PutIntermediarioDTO(user);
 		
 		it.govpay.model.Intermediario intermediario = new it.govpay.model.Intermediario();
 		if(intermediarioPost.isAbilitato()!=null)
@@ -20,7 +20,6 @@ public class IntermediariConverter {
 		intermediario.setCodIntermediario(idIntermediario);
 		if(intermediarioPost.getServizioPagoPa() != null) {
 			intermediario.setConnettorePdd(ConnettorePagopaConverter.getConnettore(intermediarioPost.getServizioPagoPa()));
-			intermediario.getConnettorePdd().setPrincipal(intermediarioPost.getPrincipalPagoPa());
 
 		}
 		intermediario.setDenominazione(intermediarioPost.getDenominazione());
@@ -29,9 +28,13 @@ public class IntermediariConverter {
 			intermediario.setConnettoreSftp(ConnettoreSftpConverter.getConnettore(intermediarioPost.getServizioFtp(), idIntermediario));
 		}
 		
-		dominioDTO.setIntermediario(intermediario);
-		dominioDTO.setIdIntermediario(idIntermediario);
-		return dominioDTO;		
+		intermediario.setPrincipal(intermediarioPost.getPrincipalPagoPa());
+		intermediario.setPrincipalOriginale(intermediarioPost.getPrincipalPagoPa()); 
+		
+		putIntermediarioDTO.setIntermediario(intermediario);
+		putIntermediarioDTO.setIdIntermediario(idIntermediario);
+		
+		return putIntermediarioDTO;		
 	}
 	
 	
@@ -40,7 +43,7 @@ public class IntermediariConverter {
 		rsModel.abilitato(i.isAbilitato())
 		.denominazione(i.getDenominazione())
 		.idIntermediario(i.getCodIntermediario())
-		.principalPagoPa(i.getConnettorePdd().getPrincipal())
+		.principalPagoPa(i.getPrincipalOriginale())
 		.servizioPagoPa(ConnettorePagopaConverter.toRsModel(i.getConnettorePdd()));
 		
 		if(i.getConnettoreSftp()!=null)

@@ -22,6 +22,8 @@ package it.govpay.bd.model.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.utils.Utilities;
+
 import it.govpay.model.Intermediario;
 
 public class IntermediarioConverter {
@@ -42,6 +44,8 @@ public class IntermediarioConverter {
 		dto.setId(vo.getId());
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setDenominazione(vo.getDenominazione());
+		dto.setPrincipal(vo.getPrincipal());
+		dto.setPrincipalOriginale(vo.getPrincipalOriginale());
 		return dto; 
 	}
 
@@ -59,6 +63,13 @@ public class IntermediarioConverter {
 		
 		if(dto.getConnettoreSftp()!=null)
 			vo.setCodConnettoreFtp(dto.getConnettoreSftp().getIdConnettore());
+		
+		try {
+			vo.setPrincipal(Utilities.formatSubject(dto.getPrincipal()));
+		} catch (Exception e) {
+			vo.setPrincipal(dto.getPrincipal());
+		}
+		vo.setPrincipalOriginale(dto.getPrincipalOriginale());
 		
 		return vo;
 	}

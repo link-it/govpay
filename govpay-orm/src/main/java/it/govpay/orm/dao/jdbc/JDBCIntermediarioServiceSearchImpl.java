@@ -164,6 +164,8 @@ public class JDBCIntermediarioServiceSearchImpl implements IJDBCServiceSearchWit
 			fields.add(Intermediario.model().COD_CONNETTORE_PDD);
 			fields.add(Intermediario.model().COD_CONNETTORE_FTP);
 			fields.add(Intermediario.model().DENOMINAZIONE);
+			fields.add(Intermediario.model().PRINCIPAL);
+			fields.add(Intermediario.model().PRINCIPAL_ORIGINALE);
 			fields.add(Intermediario.model().ABILITATO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));

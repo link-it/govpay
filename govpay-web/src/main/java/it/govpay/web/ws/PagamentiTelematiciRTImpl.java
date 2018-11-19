@@ -142,9 +142,9 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					
 					if(user.isCheckSubject()) {
 						// check tra subject
-						authOk = CredentialUtils.checkSubject(intermediario.getConnettorePdd().getPrincipal(), user.getPrincipal());
+						authOk = CredentialUtils.checkSubject(intermediario.getPrincipal(), user.getPrincipal());
 					} else {
-						authOk = user.getPrincipal().equals(intermediario.getConnettorePdd().getPrincipal());
+						authOk = user.getPrincipal().equals(intermediario.getPrincipal());
 					}
 					
 					if(!authOk) {
@@ -277,14 +277,14 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					
 					if(user.isCheckSubject()) {
 						// check tra subject
-						authOk = CredentialUtils.checkSubject(intermediario.getConnettorePdd().getPrincipal(), user.getPrincipal());
+						authOk = CredentialUtils.checkSubject(intermediario.getPrincipal(), user.getPrincipal());
 					} else {
-						authOk = user.getPrincipal().equals(intermediario.getConnettorePdd().getPrincipal());
+						authOk = user.getPrincipal().equals(intermediario.getPrincipal());
 					}
 					
 					if(!authOk) {
 					ctx.log("rt.erroreAutorizzazione", user.getPrincipal());
-					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + user.getPrincipal() + ") non corrisponde all'intermediario " + header.getIdentificativoIntermediarioPA() + ". Atteso [" + intermediario.getConnettorePdd().getPrincipal() + "]");
+					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + user.getPrincipal() + ") non corrisponde all'intermediario " + header.getIdentificativoIntermediarioPA() + ". Atteso [" + intermediario.getPrincipal() + "]");
 					}
 				}
 

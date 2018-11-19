@@ -39,6 +39,8 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettorePdd" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreFtp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="principalOriginale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -58,6 +60,8 @@ import java.io.Serializable;
   	"codConnettorePdd",
   	"codConnettoreFtp",
   	"denominazione",
+  	"principal",
+  	"principalOriginale",
   	"abilitato"
   }
 )
@@ -114,6 +118,22 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
     this.denominazione = denominazione;
   }
 
+  public java.lang.String getPrincipal() {
+    return this.principal;
+  }
+
+  public void setPrincipal(java.lang.String principal) {
+    this.principal = principal;
+  }
+
+  public java.lang.String getPrincipalOriginale() {
+    return this.principalOriginale;
+  }
+
+  public void setPrincipalOriginale(java.lang.String principalOriginale) {
+    this.principalOriginale = principalOriginale;
+  }
+
   public boolean isAbilitato() {
     return this.abilitato;
   }
@@ -160,6 +180,14 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="denominazione",required=true,nillable=false)
   protected java.lang.String denominazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="principal",required=true,nillable=false)
+  protected java.lang.String principal;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="principalOriginale",required=true,nillable=false)
+  protected java.lang.String principalOriginale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)

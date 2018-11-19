@@ -4,6 +4,8 @@ CREATE TABLE intermediari
 	cod_connettore_pdd VARCHAR(35) NOT NULL,
 	cod_connettore_ftp VARCHAR(35),
 	denominazione VARCHAR(255) NOT NULL,
+	principal VARCHAR(756) NOT NULL,
+	principal_originale VARCHAR(756) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,

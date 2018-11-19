@@ -183,9 +183,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					if(user.isCheckSubject()) {
 						// check tra subject
-						authOk = CredentialUtils.checkSubject(intermediario.getConnettorePdd().getPrincipal(), user.getPrincipal());
+						authOk = CredentialUtils.checkSubject(intermediario.getPrincipal(), user.getPrincipal());
 					} else {
-						authOk = user.getPrincipal().equals(intermediario.getConnettorePdd().getPrincipal());
+						authOk = user.getPrincipal().equals(intermediario.getPrincipal());
 					}
 					
 					if(!authOk) {
@@ -526,9 +526,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					if(user.isCheckSubject()) {
 						// check tra subject
-						authOk = CredentialUtils.checkSubject(intermediario.getConnettorePdd().getPrincipal(), user.getPrincipal());
+						authOk = CredentialUtils.checkSubject(intermediario.getPrincipal(), user.getPrincipal());
 					} else {
-						authOk = user.getPrincipal().equals(intermediario.getConnettorePdd().getPrincipal());
+						authOk = user.getPrincipal().equals(intermediario.getPrincipal());
 					}
 					
 					if(!authOk) {

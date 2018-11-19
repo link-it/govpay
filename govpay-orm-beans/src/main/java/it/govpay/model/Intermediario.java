@@ -29,6 +29,9 @@ public class Intermediario extends BasicModel{
     private ConnettoreSftp connettoreSftp;
     private boolean abilitato;
     
+    private String principal;
+    private String principalOriginale;
+    
     public Intermediario() {}
         
 	@Override
@@ -77,6 +80,8 @@ public class Intermediario extends BasicModel{
 				equals(this.denominazione, intermediario.getDenominazione()) &&
 				equals(this.connettorePdd, intermediario.getConnettorePdd()) &&
 				equals(this.connettoreSftp, intermediario.getConnettoreSftp()) &&
+				equals(this.principal, intermediario.getPrincipal()) &&
+				equals(this.principalOriginale, intermediario.getPrincipalOriginale()) &&
 				this.abilitato == intermediario.isAbilitato();
 		
 		return equal;
@@ -88,6 +93,22 @@ public class Intermediario extends BasicModel{
 
 	public void setConnettoreSftp(ConnettoreSftp connettoreSftp) {
 		this.connettoreSftp = connettoreSftp;
+	}
+
+	public String getPrincipal() {
+		return principal;
+	}
+
+	public void setPrincipal(String principal) {
+		this.principal = principal;
+	}
+
+	public String getPrincipalOriginale() {
+		return principalOriginale;
+	}
+
+	public void setPrincipalOriginale(String principalOriginale) {
+		this.principalOriginale = principalOriginale;
 	}
 
 }

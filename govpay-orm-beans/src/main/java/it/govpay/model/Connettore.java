@@ -36,7 +36,6 @@ public class Connettore extends Versionabile {
 	public static final String P_HTTPPASSW_NAME = "HTTPPASSW";
 	public static final String P_URL_NAME = "URL";
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
-	public static final String P_PRINCIPAL_NAME = "PRINCIPAL";
     public static final String P_VERSIONE = "VERSIONE";
 	
 	public enum EnumAuthType {
@@ -66,8 +65,6 @@ public class Connettore extends Versionabile {
 	private String httpPassw;
 	private String url;
 	private boolean azioneInUrl;
-	
-	private String principal;
 	
 	public Connettore() {
 	}
@@ -161,12 +158,6 @@ public class Connettore extends Versionabile {
 	}
 	public void setAzioneInUrl(boolean azioneInUrl) {
 		this.azioneInUrl = azioneInUrl;
-	}
-	public String getPrincipal() {
-		return this.principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
 	}
 	public Tipo getTipo() {
 		return Tipo.valueOf(super.getVersione().getApi());

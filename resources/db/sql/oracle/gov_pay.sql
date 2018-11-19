@@ -13,6 +13,8 @@ CREATE TABLE intermediari
 	cod_connettore_pdd VARCHAR2(35 CHAR) NOT NULL,
 	cod_connettore_ftp VARCHAR2(35 CHAR),
 	denominazione VARCHAR2(255 CHAR) NOT NULL,
+	principal VARCHAR2(4000 CHAR) NOT NULL,
+	principal_originale VARCHAR2(4000 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,

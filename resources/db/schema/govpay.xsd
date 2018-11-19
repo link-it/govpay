@@ -646,6 +646,8 @@
 			<xsd:element name="codConnettorePdd" type="String35"/>
 			<xsd:element name="codConnettoreFtp" type="String35" minOccurs="0"/>
 			<xsd:element name="denominazione" type="xsd:string"/>
+			<xsd:element name="principal" type="String4000"/>
+			<xsd:element name="principalOriginale" type="String4000"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
