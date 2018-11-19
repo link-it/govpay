@@ -3,6 +3,5 @@
 /.classpath
 /.project
 /.settings/
-/resources/filters/*.filter.properties
-/govpay-ejb/
+/src/main/resources/filters/*.filter.properties
 pom.xml.versionsBackup

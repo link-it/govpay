@@ -2,27 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
-	<artifactId>govpay</artifactId>
-	<version>3.0.0-RC3-SNAPSHOT</version>
+	<artifactId>bom</artifactId>
+	<version>3.0.0-RC3</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
 	<modules>
-		<module>govpay-orm-beans</module>
-		<module>govpay-orm</module>
-		<module>govpay-core-beans</module>
-		<module>govpay-stampe-fonts-TitilliumWeb</module>
-		<module>govpay-stampe</module>
-		<module>govpay-core-rs</module>
-		<module>govpay-core</module>
-		<module>govpay-web</module>
-		<module>govpay-wc</module>
-		<module>govpay-api-pagamento</module>
-		<module>govpay-api-pendenze</module>
-		<module>govpay-api-ragioneria</module>
-		<module>govpay-api-backoffice</module>
-		<module>govpay-ear</module>
-		<module>govpay-web-console</module>
+		<module>jars</module>
+		<module>wars</module>
+		<module>ear</module>
 	</modules>
 
 	<profiles>
@@ -45,6 +33,7 @@
 		<openspcoop2.version>3.0.3</openspcoop2.version>
 		<logger.version>2.6.2</logger.version>
 		<rel-to-parent>.</rel-to-parent>
+		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
 	</properties>
 
 	<dependencyManagement>
@@ -243,158 +232,156 @@
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
-			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache sql jdbc datasource xml id logger
-				transport csv sonde rest openapi xml2json date resources jmx mime
-			-->
+			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache sql jdbc datasource xml id logger transport csv sonde rest openapi xml2json date resources jmx mime -->
 			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-core</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency> 
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-beans</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency> 
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-json</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency> 
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-serialization</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-jaxb</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency> 
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-cache</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency> 
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-sql</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-jdbc</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency> 
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-datasource</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-xml</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-id</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-logger</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-transport</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-csv</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-sonde</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-rest</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-openapi</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-xml2json</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-date</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-resources</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-jmx</artifactId>
-			    <version>${openspcoop2.version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>org.openspcoop2.utils</groupId>
-			    <artifactId>openspcoop2_utils-mime</artifactId>
-			    <version>${openspcoop2.version}</version>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-core</artifactId>
+				<version>${openspcoop2.version}</version>
 			</dependency>
 
-                <dependency>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-core</artifactId>
-                        <version>2.9.1</version>
-                </dependency>
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-beans</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
 
-                <dependency>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-annotations</artifactId>
-                        <version>2.9.1</version>
-                </dependency>
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-json</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
 
-                <dependency>
-                        <groupId>org.apache.httpcomponents</groupId>
-                        <artifactId>httpclient</artifactId>
-                        <version>4.5.6</version>
-                </dependency>
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-serialization</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-jaxb</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-cache</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-sql</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-jdbc</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-datasource</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-xml</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-id</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-logger</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-transport</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-csv</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-sonde</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-rest</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-openapi</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-xml2json</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-date</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-resources</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-jmx</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-mime</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>2.9.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>2.9.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.5.6</version>
+			</dependency>
 
 
 			<dependency>
@@ -459,18 +446,95 @@
 				<artifactId>json-schema-validator</artifactId>
 				<version>2.2.6</version>
 			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.5</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.networknt</groupId>
+				<artifactId>json-schema-validator</artifactId>
+				<version>0.1.11</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>20171018</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.codehaus.jettison</groupId>
+				<artifactId>jettison</artifactId>
+				<version>1.4.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>2.11.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jaxb-annotations</artifactId>
+				<version>2.9.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>eu.medsea.mimeutil</groupId>
+				<artifactId>mime-util</artifactId>
+				<version>2.1.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.xml.security</groupId>
+				<artifactId>xml-security-impl</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.freemarker</groupId>
+				<artifactId>freemarker</artifactId>
+				<version>2.3.23</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-csv</artifactId>
+				<version>1.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>soap</groupId>
+				<artifactId>soap</artifactId>
+				<version>2.3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.santuario</groupId>
+				<artifactId>xmlsec</artifactId>
+				<version>2.0.7</version>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+			<dependency>
+				<groupId>com.jcraft</groupId>
+				<artifactId>jsch</artifactId>
+				<version>0.1.54</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-api</artifactId>
+				<version>2.7.11</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
-		<filters>
-			<filter>${rel-to-parent}/resources/filters/${env}.filter.properties</filter>
-		</filters>
-		<resources>
-			<resource>
-				<directory>resources/setup/</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -484,7 +548,7 @@
 						</goals>
 						<configuration>
 							<files>
-								<file>${rel-to-parent}/resources/filters/${env}.filter.properties</file>
+								<file>${filter-file}</file>
 							</files>
 						</configuration>
 					</execution>

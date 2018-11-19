@@ -3,7 +3,7 @@ Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Par
 
 | Versione&nbsp;&nbsp;&nbsp; | Documentazione&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Novità principali  |
 |:--------:|:-----------------------------------------|:-------------------|
-| [3.0.0-RC1](https://github.com/link-it/GovPay/releases/tag/3.0.0-rc1) | [Manuale di Installazione](./resources/doc/pdf/GovPay-ManualeInstallazione.pdf)<br/>[Manuale di Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)<br/>[Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf) | Nuove API REST di integrazione, revisione completo dei cruscotti di gestione e monitoraggio<br>Per maggiori informazioni, consulta le [note di rilascio](https://github.com/link-it/GovPay/releases/tag/3.0.0-rc1)
+| [3.0.0-RC3](https://github.com/link-it/GovPay/releases/tag/3.0.0-rc3) | [Manuale di Installazione](./resources/doc/pdf/GovPay-ManualeInstallazione.pdf)<br/>[Manuale di Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)<br/>[Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf) | Nuove API REST di integrazione, revisione completo dei cruscotti di gestione e monitoraggio<br>Per maggiori informazioni, consulta le [note di rilascio](https://github.com/link-it/GovPay/releases/tag/3.0.0-rc3)
 | [2.5.7](https://github.com/link-it/GovPay/releases/tag/2.5.7) | [Manuale di Installazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeInstallazione.pdf)<br/>[Manuale di Integrazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)<br/>[Manuale Utente](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeUtente.pdf) | Supporto WISP 2.0.<br><br>Per maggiori informazioni, consulta le [note di rilascio](https://github.com/link-it/GovPay/releases/tag/2.5.7)
 
 ## Contatti
@@ -18,7 +18,7 @@ Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Par
 * Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3.1 
 * Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.1  
 * Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
-* Avviso di pagamento analogico nel sistema pagoPA, v1.2.3
+* Avviso di pagamento analogico nel sistema pagoPA, v2.1
 
 ### Configurabilità
 
