@@ -1106,24 +1106,19 @@ CREATE TABLE eventi
 	cod_dominio VARCHAR2(35 CHAR),
 	iuv VARCHAR2(35 CHAR),
 	ccp VARCHAR2(35 CHAR),
-	cod_psp VARCHAR2(35 CHAR),
-	tipo_versamento VARCHAR2(10 CHAR),
-	componente VARCHAR2(4 CHAR),
 	categoria_evento VARCHAR2(1 CHAR),
 	tipo_evento VARCHAR2(35 CHAR),
 	sottotipo_evento VARCHAR2(35 CHAR),
-	erogatore VARCHAR2(35 CHAR),
-	fruitore VARCHAR2(35 CHAR),
-	cod_stazione VARCHAR2(35 CHAR),
-	cod_canale VARCHAR2(35 CHAR),
-	parametri_1 VARCHAR2(512 CHAR),
-	parametri_2 VARCHAR2(512 CHAR),
-	esito VARCHAR2(35 CHAR),
-	data_1 TIMESTAMP,
-	data_2 TIMESTAMP,
+	data TIMESTAMP,
+	intervallo NUMBER,
+	dettaglio CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_versamento NUMBER,
+	id_pagamento_portale NUMBER,
 	-- fk/pk keys constraints
+	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 );
 

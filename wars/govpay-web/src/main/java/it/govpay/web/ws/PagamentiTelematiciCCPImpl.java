@@ -57,21 +57,24 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Nota;
+import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
+import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoNota;
+import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.core.business.Applicazione;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.core.business.Applicazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -91,8 +94,6 @@ import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Canale.TipoVersamento;
-import it.govpay.model.Evento;
-import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
@@ -129,6 +130,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		String ccp = header.getCodiceContestoPagamento();
+		
+		Long idVersamentoLong = null;
+		Long idPagamentoPortaleLong = null;
 
 		GpContext ctx = GpThreadLocal.get();
 		ctx.setCorrelationId(codDominio + iuv + ccp);
@@ -154,7 +158,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		PaaAttivaRPTRisposta response = new PaaAttivaRPTRisposta();
 		log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
 
-		Evento evento = new Evento();
+		EventoCooperazione evento = new EventoCooperazione();
 		evento.setCodStazione(codStazione);
 		evento.setCodDominio(codDominio);
 		evento.setIuv(iuv);
@@ -320,9 +324,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			bd.setAutoCommit(false);
 			bd.enableSelectForUpdate();
 
+			idVersamentoLong = versamento.getId();
 			// Controllo se gia' non esiste la RPT (lo devo fare solo adesso per essere in transazione con l'inserimento)
 			try {
 				Rpt oldrpt = rptBD.getRpt(codDominio, iuv, ccp);
+				idPagamentoPortaleLong = oldrpt.getIdPagamentoPortale();
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "RTP attivata in data " + oldrpt.getDataMsgRichiesta() + " [idMsgRichiesta: " + oldrpt.getCodMsgRichiesta() + "]");
 			} catch (NotFoundException e2) {
 
@@ -364,11 +370,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					pagamentoPortale.setVersanteIdentificativo(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante().getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
 
 				PagamentiPortaleBD ppbd = new PagamentiPortaleBD(bd);
+				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
 				
 				ppbd.insertPagamento(pagamentoPortale);
 				
 				// imposto l'id pagamento all'rpt
 				rpt.setIdPagamentoPortale(pagamentoPortale.getId());
+				idPagamentoPortaleLong = pagamentoPortale.getId();
 				
 				try {
 					// 	L'RPT non esiste, procedo
@@ -377,11 +385,27 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					bd.rollback();
 					bd.disableSelectForUpdate();
 					// update della entry pagamento portale
-					PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, "Creazione RPT non completata.", TipoNota.SISTEMA_FATAL, e.getMessage(), false);
+					Nota nota = PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, "Creazione RPT non completata.", TipoNota.SISTEMA_FATAL, e.getMessage(), false);
 					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 					pagamentoPortale.setStato(STATO.FALLITO);
 					pagamentoPortale.setDescrizioneStato(e.getMessage());
 					ppbd.updatePagamento(pagamentoPortale, true);
+					
+					EventoNota eventoNota = new EventoNota();
+					eventoNota.setAutore(nota.getAutore());
+					eventoNota.setOggetto(nota.getOggetto());
+					eventoNota.setTesto(nota.getTesto());
+					eventoNota.setPrincipal(nota.getPrincipal());
+					eventoNota.setData(nota.getData());
+					eventoNota.setTipoEvento(nota.getTipo() != null  ? nota.getTipo().name() : it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo.name()); 
+					eventoNota.setCodDominio(codDominio);
+					eventoNota.setIuv(iuv);
+					eventoNota.setCcp(ccp);
+					eventoNota.setIdPagamentoPortale(idPagamentoPortaleLong);
+					eventoNota.setIdVersamento(idVersamentoLong);					
+					eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+					giornaleEventi.registraEventoNota(eventoNota);
+					
 					ppbd.commit();
 					throw e;
 				}
@@ -447,7 +471,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					GiornaleEventi ge = new GiornaleEventi(bd);
 					evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());
 					evento.setDataRisposta(new Date());
-					ge.registraEvento(evento);
+					
+					evento.setIdVersamento(idVersamentoLong);
+					evento.setIdPagamentoPortale(idPagamentoPortaleLong);
+					
+					ge.registraEventoCooperazione(evento);
 				}
 			}catch(Exception e){
 				log.error(e.getMessage(),e);
@@ -474,6 +502,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String ccp = header.getCodiceContestoPagamento();
 		String psp = bodyrichiesta.getIdentificativoPSP();
 		
+		Long idVersamentoLong = null;
+		Long idPagamentoPortaleLong = null;
+		
 		GpContext ctx = GpThreadLocal.get();
 		ctx.setCorrelationId(codDominio + iuv + ccp);
 
@@ -498,7 +529,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		BasicBD bd = null;
 		PaaVerificaRPTRisposta response = new PaaVerificaRPTRisposta();
 
-		Evento evento = new Evento();
+		EventoCooperazione evento = new EventoCooperazione();
 		evento.setCodStazione(codStazione);
 		evento.setCodDominio(codDominio);
 		evento.setIuv(iuv);
@@ -560,6 +591,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
 			try {
 				versamento = versamentiBD.getVersamento(codDominio, iuv);
+				idVersamentoLong = versamento.getId();
 				ctx.log("ccp.iuvPresente", versamento.getCodVersamentoEnte());
 			}catch (NotFoundException e) {
 				applicazioneGestisceIuv = new Applicazione(bd).getApplicazioneDominio(dominio,iuv); 
@@ -637,6 +669,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiMins() * 60000);
 				
 				for(Rpt rpt_pendente : rpt_pendenti) {
+					idPagamentoPortaleLong = rpt_pendente.getIdPagamentoPortale();
 					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
 					if(GovpayConfig.getInstance().getTimeoutPendentiMins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
@@ -707,7 +740,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						GiornaleEventi ge = new GiornaleEventi(bd);
 						evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());
 						evento.setDataRisposta(new Date());
-						ge.registraEvento(evento);
+						
+						evento.setIdVersamento(idVersamentoLong);
+						evento.setIdPagamentoPortale(idPagamentoPortaleLong);
+						
+						ge.registraEventoCooperazione(evento);
 					}catch(Exception e){log.error(e.getMessage(),e);}
 				}
 

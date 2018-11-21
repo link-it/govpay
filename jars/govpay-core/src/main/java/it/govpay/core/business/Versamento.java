@@ -34,6 +34,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Nota.TipoNota;
+import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
@@ -351,6 +352,7 @@ public class Versamento extends BasicBD {
 	public void notificaPagamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte) throws GovPayException {
 		try {
 			VersamentiBD versamentiBD = new VersamentiBD(this);
+			GiornaleEventi giornaleEventi = new GiornaleEventi(this);
 			
 			this.setAutoCommit(false);
 			this.enableSelectForUpdate();
@@ -363,8 +365,20 @@ public class Versamento extends BasicBD {
 					log.info("Notifica di pagamento extra pagoPA [" + applicazione.getCodApplicazione() + " " + versamentoLetto.getCodVersamentoEnte() + "] duplicata.");
 					return;
 				}
-				
+
+				// TODO Eliminare
 				versamentoLetto.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento eseguito extra-pagoPA", "Notificato esecuzione del pagamento fuori dal circuito pagoPA", applicazione.getPrincipal(), applicazione.getCodApplicazione()));
+				
+				EventoNota eventoNota = new EventoNota();
+				eventoNota.setAutore(applicazione.getCodApplicazione());
+				eventoNota.setCodDominio(versamentoLetto.getUo(this).getDominio(this).getCodDominio());
+				eventoNota.setIdVersamento(versamentoLetto.getId());
+				eventoNota.setIuv(versamentoLetto.getIuvVersamento());
+				eventoNota.setOggetto("Pagamento eseguito extra-pagoPA");
+				eventoNota.setPrincipal(applicazione.getPrincipal());
+				eventoNota.setTesto("Notificato esecuzione del pagamento fuori dal circuito pagoPA");
+				eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+				giornaleEventi.registraEventoNota(eventoNota );
 				
 				// Se è già ESEGUITO segnalo che e' un pagamento duplicato
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ESEGUITO)) {

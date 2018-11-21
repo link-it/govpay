@@ -70,7 +70,7 @@ public class EventiController extends it.govpay.rs.BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<it.govpay.core.rs.v1.beans.base.Evento> results = new ArrayList<>();
-			for(it.govpay.model.Evento evento: listaEventiDTOResponse.getResults()) {
+			for(it.govpay.bd.model.Evento evento: listaEventiDTOResponse.getResults()) {
 				results.add(EventiConverter.toRsModel(evento));
 			}
 			

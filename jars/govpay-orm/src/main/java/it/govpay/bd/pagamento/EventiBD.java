@@ -28,7 +28,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.EventoConverter;
 import it.govpay.bd.pagamento.filters.EventiFilter;
-import it.govpay.model.Evento;
+import it.govpay.bd.model.Evento;
 
 public class EventiBD extends BasicBD {
 

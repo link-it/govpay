@@ -26,7 +26,9 @@ public class EventiFilter extends AbstractFilter{
 	private String iuv;
 	private String ccp;
 	private Long idApplicazione;
+	private String codApplicazione;
 	private String codVersamentoEnte;
+	private String idSessione;
 	private Date datainizio;
 	private Date dataFine;
 	private List<Long> idEventi= null;
@@ -86,7 +88,7 @@ public class EventiFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(Evento.model().DATA_1, this.datainizio,this.dataFine);
+				newExpression.between(Evento.model().DATA, this.datainizio,this.dataFine);
 				addAnd = true;
 			}
 			
@@ -106,6 +108,23 @@ public class EventiFilter extends AbstractFilter{
 				newExpression.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE, this.codVersamentoEnte);
 				addAnd = true;
 			}
+			
+			if(this.codApplicazione!= null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				addAnd = true;
+			}
+			
+			if(this.idSessione!= null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.idSessione);
+				addAnd = true;
+			}
+			
 			
 			
 			if(this.idEventi != null && !this.idEventi.isEmpty()){
@@ -196,5 +215,20 @@ public class EventiFilter extends AbstractFilter{
 		this.codDomini = codDomini;
 	}
 
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
 	
 }

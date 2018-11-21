@@ -39,6 +39,7 @@ import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Nota.TipoNota;
+import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
@@ -166,6 +167,7 @@ public class Incassi extends BasicBD {
 			}
 			
 			IncassiBD incassiBD = new IncassiBD(this);
+			GiornaleEventi giornaleEventi = new GiornaleEventi(this);
 			
 			// Controllo se l'idf o lo iuv sono gia' stati incassati in precedenti incassi
 			IncassoFilter incassoFilter = incassiBD.newFilter();
@@ -306,6 +308,7 @@ public class Incassi extends BasicBD {
 								pagamentiBD.insertPagamento(pagamento);
 								rendicontazione.setIdPagamento(pagamento.getId());
 									
+								// TODO eliminare
 								versamento.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento eseguito senza RPT", "Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "]."));
 
 								//Aggiorno lo stato del versamento:
@@ -321,6 +324,16 @@ public class Incassi extends BasicBD {
 								}
 								
 								versamentiBD.updateVersamento(versamento);
+								
+								EventoNota eventoNota = new EventoNota();
+								eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
+								eventoNota.setCodDominio(versamento.getUo(this).getDominio(this).getCodDominio());
+								eventoNota.setIdVersamento(versamento.getId());
+								eventoNota.setIuv(versamento.getIuvVersamento());
+								eventoNota.setOggetto("Pagamento eseguito senza RPT");
+								eventoNota.setTesto("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
+								eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+								giornaleEventi.registraEventoNota(eventoNota);
 							} catch (MultipleResultException e) {
 								GpThreadLocal.get().log("incasso.frAnomala", idf);
 								throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");

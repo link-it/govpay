@@ -390,7 +390,10 @@ public class Rpt extends BasicBD{
 		case RPT_ERRORE_INVIO_A_PSP:
 		case RPT_RIFIUTATA_PSP:
 			// Casi di rifiuto. Rendo l'errore
-			throw new GovPayException(EsitoOperazione.NDP_000, e);
+			if(e!= null)
+				throw new GovPayException(EsitoOperazione.NDP_000, e);
+			else 
+				throw new GovPayException(EsitoOperazione.NDP_000);
 		default:
 
 			String codSessione = rpts.get(0).getCodSessione();

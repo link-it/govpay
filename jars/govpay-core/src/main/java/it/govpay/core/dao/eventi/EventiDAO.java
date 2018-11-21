@@ -21,7 +21,7 @@ import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Evento;
+import it.govpay.bd.model.Evento;
 
 public class EventiDAO extends BaseDAO {
 
@@ -58,9 +58,8 @@ public class EventiDAO extends BaseDAO {
 				filter.setIuv(versamento.getIuvVersamento());
 				
 			} else {
-			if(listaEventiDTO.getIdA2A()!=null)
-				filter.setIdApplicazione(AnagraficaManager.getApplicazione(bd, listaEventiDTO.getIdA2A()).getId());
-			filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());
+				filter.setCodApplicazione(listaEventiDTO.getIdA2A());
+				filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());
 			}
 			
 			filter.setFilterSortList(listaEventiDTO.getFieldSortList());

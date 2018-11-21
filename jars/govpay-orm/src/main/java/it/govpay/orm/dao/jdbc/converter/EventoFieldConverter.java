@@ -88,27 +88,6 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "ccp";
 			}
 		}
-		if(field.equals(Evento.model().COD_PSP)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_psp";
-			}else{
-				return "cod_psp";
-			}
-		}
-		if(field.equals(Evento.model().TIPO_VERSAMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo_versamento";
-			}else{
-				return "tipo_versamento";
-			}
-		}
-		if(field.equals(Evento.model().COMPONENTE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".componente";
-			}else{
-				return "componente";
-			}
-		}
 		if(field.equals(Evento.model().CATEGORIA_EVENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".categoria_evento";
@@ -130,67 +109,25 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "sottotipo_evento";
 			}
 		}
-		if(field.equals(Evento.model().EROGATORE)){
+		if(field.equals(Evento.model().DATA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".erogatore";
+				return this.toAliasTable(field)+".data";
 			}else{
-				return "erogatore";
+				return "data";
 			}
 		}
-		if(field.equals(Evento.model().FRUITORE)){
+		if(field.equals(Evento.model().INTERVALLO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".fruitore";
+				return this.toAliasTable(field)+".intervallo";
 			}else{
-				return "fruitore";
+				return "intervallo";
 			}
 		}
-		if(field.equals(Evento.model().COD_STAZIONE)){
+		if(field.equals(Evento.model().DETTAGLIO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_stazione";
+				return this.toAliasTable(field)+".dettaglio";
 			}else{
-				return "cod_stazione";
-			}
-		}
-		if(field.equals(Evento.model().COD_CANALE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_canale";
-			}else{
-				return "cod_canale";
-			}
-		}
-		if(field.equals(Evento.model().PARAMETRI_1)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".parametri_1";
-			}else{
-				return "parametri_1";
-			}
-		}
-		if(field.equals(Evento.model().PARAMETRI_2)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".parametri_2";
-			}else{
-				return "parametri_2";
-			}
-		}
-		if(field.equals(Evento.model().ESITO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".esito";
-			}else{
-				return "esito";
-			}
-		}
-		if(field.equals(Evento.model().DATA_1)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_1";
-			}else{
-				return "data_1";
-			}
-		}
-		if(field.equals(Evento.model().DATA_2)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_2";
-			}else{
-				return "data_2";
+				return "dettaglio";
 			}
 		}
 		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
@@ -256,6 +193,13 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "stato_versamento";
 			}
 		}
+		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_sessione";
+			}else{
+				return "id_sessione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -278,15 +222,6 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().CCP)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().COD_PSP)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().TIPO_VERSAMENTO)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().COMPONENTE)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
 		if(field.equals(Evento.model().CATEGORIA_EVENTO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
@@ -296,31 +231,13 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().SOTTOTIPO_EVENTO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().EROGATORE)){
+		if(field.equals(Evento.model().DATA)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().FRUITORE)){
+		if(field.equals(Evento.model().INTERVALLO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().COD_STAZIONE)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().COD_CANALE)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().PARAMETRI_1)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().PARAMETRI_2)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().ESITO)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().DATA_1)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().DATA_2)){
+		if(field.equals(Evento.model().DETTAGLIO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
@@ -350,6 +267,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
 			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
+			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -371,6 +291,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Evento.model().ID_PAGAMENTO_PORTALE)){
+			return "pagamenti_portale";
 		}
 
 

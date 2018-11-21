@@ -54,6 +54,8 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RrBD;
@@ -68,9 +70,7 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.model.Evento;
 import it.govpay.model.Evento.CategoriaEvento;
-import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -238,7 +238,7 @@ public class RrUtils extends NdpValidationUtils {
 		rpt.getStazione(bd);
 		
 		if(bd != null) bd.closeConnection();
-		Evento evento = new Evento();
+		EventoCooperazione evento = new EventoCooperazione();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
 			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
@@ -260,23 +260,23 @@ public class RrUtils extends NdpValidationUtils {
 				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			GiornaleEventi giornale = new GiornaleEventi(bd);
-			buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaRichiestaStorno, bd);
-			giornale.registraEvento(evento);
+			buildEventoCooperazione(evento, rpt, risposta, TipoEvento.nodoInviaRichiestaStorno, bd);
+			giornale.registraEventoCooperazione(evento);
 		}
 	}
 	
-	private static void buildEvento(Evento evento, Rpt rpt, Risposta risposta, TipoEvento tipoEvento, BasicBD bd) throws ServiceException {
+	private static void buildEventoCooperazione(EventoCooperazione evento, Rpt rpt, Risposta risposta, TipoEvento tipoEvento, BasicBD bd) throws ServiceException {
 		evento.setAltriParametriRichiesta(null);
 		evento.setAltriParametriRisposta(null);
-		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA);
+		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
 		evento.setCcp(rpt.getCcp());
 		evento.setCodCanale(rpt.getCodCanale());
 		evento.setCodDominio(rpt.getCodDominio());
 		evento.setCodPsp(rpt.getCodPsp());
 		evento.setCodStazione(rpt.getStazione(bd).getCodStazione());
-		evento.setComponente(Evento.COMPONENTE);
+		evento.setComponente(EventoCooperazione.COMPONENTE);
 		evento.setDataRisposta(new Date());
-		evento.setErogatore(Evento.NDP);
+		evento.setErogatore(EventoCooperazione.NDP);
 		if(risposta != null)
 			evento.setEsito(risposta.getEsito());
 		else
@@ -286,6 +286,17 @@ public class RrUtils extends NdpValidationUtils {
 		evento.setSottotipoEvento(null);
 		evento.setTipoEvento(tipoEvento);
 		evento.setTipoVersamento(rpt.getTipoVersamento());
+		
+		if(rpt.getVersamento(bd) != null) {
+			evento.setIdVersamento(rpt.getVersamento(bd).getId());
+		}
+		
+		try {
+			if(rpt.getPagamentoPortale(bd) != null) {
+				evento.setIdPagamentoPortale(rpt.getPagamentoPortale(bd).getId());
+			}
+		} catch (NotFoundException e) {
+		}
 	}
 
 	public static Rr acquisisciEr(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] er, BasicBD bd) throws NdpException, ServiceException {

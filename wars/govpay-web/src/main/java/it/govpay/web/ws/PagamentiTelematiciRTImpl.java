@@ -50,6 +50,8 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -61,8 +63,6 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.RtUtils;
-import it.govpay.model.Evento;
-import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.Intermediario;
 
 @WebService(serviceName = "PagamentiTelematiciRTservice",
@@ -115,7 +115,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 		BasicBD bd = null;
 
-		Evento evento = new Evento();
+		EventoCooperazione evento = new EventoCooperazione();
 		evento.setCodStazione(identificativoStazioneIntermediarioPA);
 		evento.setCodDominio(identificativoDominio);
 		evento.setIuv(identificativoUnivocoVersamento);
@@ -182,6 +182,9 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			}
 
 			Rr rr = RrUtils.acquisisciEr(identificativoDominio, identificativoUnivocoVersamento, codiceContestoPagamento, er, bd);
+			
+			evento.setIdVersamento(rr.getRpt(bd).getVersamento(bd).getId());
+			evento.setIdPagamentoPortale(rr.getRpt(bd).getIdPagamentoPortale());
 			evento.setCodCanale(rr.getRpt(bd).getCodCanale());
 			evento.setTipoVersamento(rr.getRpt(bd).getTipoVersamento());
 			response.setEsito("OK");
@@ -203,7 +206,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					GiornaleEventi ge = new GiornaleEventi(bd);
 					evento.setEsito(response.getEsito());
 					evento.setDataRisposta(new Date());
-					ge.registraEvento(evento);
+					ge.registraEventoCooperazione(evento);
 				}
 
 				if(ctx != null) {
@@ -225,6 +228,9 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		String ccp = header.getCodiceContestoPagamento();
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
+		
+		Long idVersamentoLong = null;
+		Long idPagamentoPortaleLong = null;
 
 		GpContext ctx = GpThreadLocal.get();
 
@@ -250,7 +256,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 		BasicBD bd = null;
 
-		Evento evento = new Evento();
+		EventoCooperazione evento = new EventoCooperazione();
 		evento.setCodStazione(header.getIdentificativoStazioneIntermediarioPA());
 		evento.setCodDominio(codDominio);
 		evento.setIuv(iuv);
@@ -317,6 +323,9 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 			Rpt rpt = RtUtils.acquisisciRT(codDominio, iuv, ccp, bodyrichiesta.getTipoFirma(), bodyrichiesta.getRt(), bd);
 			
+			idVersamentoLong = rpt.getVersamento(bd).getId();
+			idPagamentoPortaleLong = rpt.getIdPagamentoPortale();
+			
 			ctx.getContext().getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 			ctx.log("pagamento.acquisizioneRtOk");
 			
@@ -344,7 +353,11 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					GiornaleEventi ge = new GiornaleEventi(bd);
 					evento.setEsito(response.getPaaInviaRTRisposta().getEsito());
 					evento.setDataRisposta(new Date());
-					ge.registraEvento(evento);
+					
+					evento.setIdVersamento(idVersamentoLong);
+					evento.setIdPagamentoPortale(idPagamentoPortaleLong);
+					
+					ge.registraEventoCooperazione(evento);
 				}
 
 

@@ -23,8 +23,11 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.converter.EventoConverter;
+import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.EventiBD;
-import it.govpay.model.Evento;
 
 public class GiornaleEventi extends BasicBD {
 	
@@ -34,7 +37,7 @@ public class GiornaleEventi extends BasicBD {
 		super(basicBD);
 	}
 
-	public void registraEvento(Evento evento) {
+	private void _registraEvento(Evento evento) {
 		try {
 			EventiBD eventiBD = new EventiBD(this);
 			eventiBD.insertEvento(evento);
@@ -43,4 +46,19 @@ public class GiornaleEventi extends BasicBD {
 		}
 	}
 	
+	public void registraEventoCooperazione(EventoCooperazione eventoCooperazione) {
+		try {
+			this._registraEvento(EventoConverter.fromEventoCooperazionetoEvento(eventoCooperazione));
+		} catch (Exception e) {
+			log.error("Errore nella registrazione degli eventi", e);
+		}
+	}
+	
+	public void registraEventoNota(EventoNota eventoNota) {
+		try {
+			this._registraEvento(EventoConverter.fromEventoNotatoEvento(eventoNota));
+		} catch (Exception e) {
+			log.error("Errore nella registrazione degli eventi", e);
+		}
+	}
 }

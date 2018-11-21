@@ -20,6 +20,7 @@ import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
+import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
@@ -27,6 +28,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
+import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
@@ -61,6 +63,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.orm.IdVersamento;
 import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.v2_5.gpprt.GpAvviaTransazionePagamentoResponse;
+import it.govpay.servizi.v2_5.gpprt.GpAvviaTransazionePagamentoResponse.RifTransazione;
 
 public class PagamentiPortaleDAO extends BaseDAO {
 	
@@ -79,6 +82,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 			DominiBD dominiBD = new DominiBD(bd);
+			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
 			List<Versamento> versamenti = new ArrayList<>();
 
 			// Aggiungo il codSessionePortale al PaymentContext
@@ -282,13 +286,63 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						idVersamento.add(idV);
 					}
 				}
-				PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, e, false);
+				Nota nota = PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, e, false);
 				
 				pagamentoPortale.setIdVersamento(idVersamento); 
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true);
+				
+				List<EventoNota> listaEventoNota = new ArrayList<>();
+				
+				if(!transazioneResponse.getRifTransazione().isEmpty()) {
+					for(RifTransazione rifTransazione: transazioneResponse.getRifTransazione()) {
+						EventoNota eventoNota = new EventoNota();
+						eventoNota.setAutore(nota.getAutore());
+						eventoNota.setOggetto(nota.getOggetto());
+						eventoNota.setTesto(nota.getTesto());
+						eventoNota.setPrincipal(nota.getPrincipal());
+						eventoNota.setData(nota.getData());
+						eventoNota.setTipoEvento(nota.getTipo() != null  ? nota.getTipo().name() : it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo.name()); 
+						eventoNota.setCodDominio(rifTransazione.getCodDominio());
+						eventoNota.setIuv(rifTransazione.getIuv());
+						eventoNota.setCcp(rifTransazione.getCcp());
+						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
+						
+						for(Versamento versamentoModel: versamenti) {
+							if(rifTransazione.getCodApplicazione().equals(versamentoModel.getApplicazione(bd).getCodApplicazione()) 
+									&& rifTransazione.getCodVersamentoEnte().equals(versamentoModel.getCodVersamentoEnte()))  {
+								eventoNota.setIdVersamento(versamentoModel.getId());
+								break;
+							}
+						}
+						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+						listaEventoNota.add(eventoNota);
+					}
+				} else {
+					for(Versamento versamentoModel: versamenti) {
+						EventoNota eventoNota = new EventoNota();
+						eventoNota.setAutore(nota.getAutore());
+						eventoNota.setOggetto(nota.getOggetto());
+						eventoNota.setTesto(nota.getTesto());
+						eventoNota.setPrincipal(nota.getPrincipal());
+						eventoNota.setData(nota.getData());
+						eventoNota.setTipoEvento(nota.getTipo() != null  ? nota.getTipo().name() : it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo.name()); 
+						eventoNota.setCodDominio(versamentoModel.getUo(bd).getDominio(bd).getCodDominio());
+						eventoNota.setIuv(versamentoModel.getIuvVersamento());
+						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
+						eventoNota.setIdVersamento(versamentoModel.getId());					
+						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+						listaEventoNota.add(eventoNota);
+					}
+				}
+				
+				for (EventoNota eventoNota : listaEventoNota) {
+					giornaleEventi.registraEventoNota(eventoNota);	
+				}
+				
+				
 				e.setParam(pagamentoPortale);
 				throw e;
 			} catch (Exception e) {
@@ -301,12 +355,61 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						idVersamento.add(idV);
 					}
 				}
-				PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, transazioneResponse.getDescrizioneEsito(), TipoNota.SISTEMA_FATAL, transazioneResponse.getDettaglioEsito(), false); 
+				Nota nota = PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, transazioneResponse.getDescrizioneEsito(), TipoNota.SISTEMA_FATAL, transazioneResponse.getDettaglioEsito(), false); 
 				pagamentoPortale.setIdVersamento(idVersamento); 
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true);
+				
+				List<EventoNota> listaEventoNota = new ArrayList<>();
+				
+				if(!transazioneResponse.getRifTransazione().isEmpty()) {
+					for(RifTransazione rifTransazione: transazioneResponse.getRifTransazione()) {
+						EventoNota eventoNota = new EventoNota();
+						eventoNota.setAutore(nota.getAutore());
+						eventoNota.setOggetto(nota.getOggetto());
+						eventoNota.setTesto(nota.getTesto());
+						eventoNota.setPrincipal(nota.getPrincipal());
+						eventoNota.setData(nota.getData());
+						eventoNota.setTipoEvento(nota.getTipo() != null  ? nota.getTipo().name() : it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo.name()); 
+						eventoNota.setCodDominio(rifTransazione.getCodDominio());
+						eventoNota.setIuv(rifTransazione.getIuv());
+						eventoNota.setCcp(rifTransazione.getCcp());
+						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
+						
+						for(Versamento versamentoModel: versamenti) {
+							if(rifTransazione.getCodApplicazione().equals(versamentoModel.getApplicazione(bd).getCodApplicazione()) 
+									&& rifTransazione.getCodVersamentoEnte().equals(versamentoModel.getCodVersamentoEnte()))  {
+								eventoNota.setIdVersamento(versamentoModel.getId());
+								break;
+							}
+						}
+						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+						listaEventoNota.add(eventoNota);
+					}
+				} else {
+					for(Versamento versamentoModel: versamenti) {
+						EventoNota eventoNota = new EventoNota();
+						eventoNota.setAutore(nota.getAutore());
+						eventoNota.setOggetto(nota.getOggetto());
+						eventoNota.setTesto(nota.getTesto());
+						eventoNota.setPrincipal(nota.getPrincipal());
+						eventoNota.setData(nota.getData());
+						eventoNota.setTipoEvento(nota.getTipo() != null  ? nota.getTipo().name() : it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo.name()); 
+						eventoNota.setCodDominio(versamentoModel.getUo(bd).getDominio(bd).getCodDominio());
+						eventoNota.setIuv(versamentoModel.getIuvVersamento());
+						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
+						eventoNota.setIdVersamento(versamentoModel.getId());					
+						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+						listaEventoNota.add(eventoNota);
+					}
+				}
+				
+				for (EventoNota eventoNota : listaEventoNota) {
+					giornaleEventi.registraEventoNota(eventoNota);	
+				}
+				
 				throw e;
 			}
 			
@@ -522,13 +625,28 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
 			leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 
+			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
+			List<EventoNota> listaNote = new ArrayList<>();
 			for(PatchOp op: patchDTO.getOp()) {
 				
 				if(PATH_NOTA.equals(op.getPath())) {
 					switch(op.getOp()) {
 					case ADD: 
 						Nota nota = UtenzaPatchUtils.getNotaFromPatch(patchDTO.getUser(), this.getOperatoreFromUser(patchDTO.getUser(), bd), op, bd); 
+						// TODO eliminare
 						pagamentoPortale.getNote().add(0,nota);
+						
+						EventoNota eventoNota = new EventoNota();
+						eventoNota.setAutore(nota.getAutore());
+						eventoNota.setOggetto(nota.getOggetto());
+						eventoNota.setTesto(nota.getTesto());
+						eventoNota.setPrincipal(nota.getPrincipal());
+						eventoNota.setData(nota.getData());
+						eventoNota.setTipoEvento(nota.getTipo() != null  ? nota.getTipo().name() : it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo.name()); 
+						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
+						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+						listaNote.add(eventoNota);
+						
 						break;
 					default: throw new ServiceException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
 					}
@@ -547,6 +665,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false);
 			
+			for (EventoNota eventoNota : listaNote) {
+				giornaleEventi.registraEventoNota(eventoNota);
+			}
 			
 			
 			return leggiPagamentoPortaleDTOResponse;

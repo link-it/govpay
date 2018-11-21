@@ -25,25 +25,24 @@ import java.util.Date;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.model.Canale.TipoVersamento;
-
 public class Evento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
-	public enum TipoEvento {
-		nodoInviaRPT,
-		nodoInviaCarrelloRPT, 
-		nodoChiediStatoRPT, 
-		paaInviaRT, 
-		nodoChiediCopiaRT, 
-		paaVerificaRPT, 
-		paaAttivaRPT,
-		nodoInviaRichiestaStorno,
-		paaInviaEsitoStorno;
-	}
+	private Long id;
+	private Long idVersamento;
+	private Long idPagamentoPortale;
+	private String codDominio;
+	private String iuv;
+	private String ccp;
+	private CategoriaEvento categoriaEvento;
+	private String tipoEvento;
+	private String sottotipoEvento;
+	private Long intervallo;
+	private Date data;
+	private String dettaglio;
 	
 	public enum CategoriaEvento {
-		INTERNO ("B"), INTERFACCIA ("F");
+		INTERNO ("B"), INTERFACCIA_COOPERAZIONE ("C"), INTERFACCIA_INTEGRAZIONE ("I"), UTENTE ("U");
 		
 		private String codifica;
 
@@ -63,38 +62,16 @@ public class Evento extends BasicModel {
 			
 			throw new ServiceException("Codifica inesistente per CategoriaEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(CategoriaEvento.values()));
 		}
+		
+		@Override
+		public String toString() {
+			return String.valueOf(this.codifica);
+		}
 	}
 	
-	public static final String COMPONENTE = "FESP";
-	public static final String NDP = "NodoDeiPagamentiSPC";
-	
-	private Long id;
-	private Date dataRichiesta;
-	private Date dataRisposta;
-	private String codDominio;
-	private String iuv;
-	private String ccp;
-	private String codPsp;
-	private TipoVersamento tipoVersamento;
-	private String componente;
-	private CategoriaEvento categoriaEvento;
-	private TipoEvento tipoEvento;
-	private String sottotipoEvento;
-	private String fruitore;
-	private String erogatore;
-	private String codStazione;
-	private String codCanale;
-	private String altriParametriRichiesta;
-	private String altriParametriRisposta;
-	private String esito;
-	
 	public Evento() {
-		this.categoriaEvento = CategoriaEvento.INTERFACCIA;
-		this.dataRichiesta = new Date();
-		this.componente = COMPONENTE;
-		this.codPsp = Rpt.codPspWISP20;
-		this.codCanale = Rpt.codCanaleWISP20;
-		this.tipoVersamento = Rpt.tipoVersamentoWISP20;
+		this.categoriaEvento = CategoriaEvento.INTERFACCIA_COOPERAZIONE;
+		this.data  = new Date();
 	}
 	
 	@Override
@@ -103,18 +80,6 @@ public class Evento extends BasicModel {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public Date getDataRichiesta() {
-		return this.dataRichiesta;
-	}
-	public void setDataRichiesta(Date data_richiesta) {
-		this.dataRichiesta = data_richiesta;
-	}
-	public Date getDataRisposta() {
-		return this.dataRisposta;
-	}
-	public void setDataRisposta(Date data_risposta) {
-		this.dataRisposta = data_risposta;
 	}
 	public String getCodDominio() {
 		return this.codDominio;
@@ -134,35 +99,11 @@ public class Evento extends BasicModel {
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
 	}
-	public String getCodPsp() {
-		return this.codPsp;
-	}
-	public void setCodPsp(String codPsp) {
-		this.codPsp = codPsp;
-	}
-	public TipoVersamento getTipoVersamento() {
-		return this.tipoVersamento;
-	}
-	public void setTipoVersamento(TipoVersamento tipoVersamento) {
-		this.tipoVersamento = tipoVersamento;
-	}
-	public String getComponente() {
-		return this.componente;
-	}
-	public void setComponente(String componente) {
-		this.componente = componente;
-	}
 	public CategoriaEvento getCategoriaEvento() {
 		return this.categoriaEvento;
 	}
 	public void setCategoriaEvento(CategoriaEvento categoriaEvento) {
 		this.categoriaEvento = categoriaEvento;
-	}
-	public TipoEvento getTipoEvento() {
-		return this.tipoEvento;
-	}
-	public void setTipoEvento(TipoEvento tipoEvento) {
-		this.tipoEvento = tipoEvento;
 	}
 	public String getSottotipoEvento() {
 		return this.sottotipoEvento;
@@ -170,47 +111,53 @@ public class Evento extends BasicModel {
 	public void setSottotipoEvento(String sottotipoEvento) {
 		this.sottotipoEvento = sottotipoEvento;
 	}
-	public String getFruitore() {
-		return this.fruitore;
+
+	public Long getIdVersamento() {
+		return idVersamento;
 	}
-	public void setFruitore(String fruitore) {
-		this.fruitore = fruitore;
+
+	public void setIdVersamento(Long idVersamento) {
+		this.idVersamento = idVersamento;
 	}
-	public String getErogatore() {
-		return this.erogatore;
+
+	public Long getIdPagamentoPortale() {
+		return idPagamentoPortale;
 	}
-	public void setErogatore(String erogatore) {
-		this.erogatore = erogatore;
+
+	public void setIdPagamentoPortale(Long idPagamentoPortale) {
+		this.idPagamentoPortale = idPagamentoPortale;
 	}
-	public String getCodStazione() {
-		return this.codStazione;
+
+	public String getTipoEvento() {
+		return tipoEvento;
 	}
-	public void setCodStazione(String codStazione) {
-		this.codStazione = codStazione;
+
+	public void setTipoEvento(String tipoEvento) {
+		this.tipoEvento = tipoEvento;
 	}
-	public String getCodCanale() {
-		return this.codCanale;
+
+	public Long getIntervallo() {
+		return intervallo;
 	}
-	public void setCodCanale(String codCanale) {
-		this.codCanale = codCanale;
+
+	public void setIntervallo(Long intervallo) {
+		this.intervallo = intervallo;
 	}
-	public String getAltriParametriRichiesta() {
-		return this.altriParametriRichiesta;
+
+	public Date getData() {
+		return data;
 	}
-	public void setAltriParametriRichiesta(String altriParametriRichiesta) {
-		this.altriParametriRichiesta = altriParametriRichiesta;
+
+	public void setData(Date data) {
+		this.data = data;
 	}
-	public String getAltriParametriRisposta() {
-		return this.altriParametriRisposta;
+
+	public String getDettaglio() {
+		return dettaglio;
 	}
-	public void setAltriParametriRisposta(String altriParametriRisposta) {
-		this.altriParametriRisposta = altriParametriRisposta;
-	}
-	public String getEsito() {
-		return this.esito;
-	}
-	public void setEsito(String esito) {
-		this.esito = esito;
+
+	public void setDettaglio(String dettaglio) {
+		this.dettaglio = dettaglio;
 	}
 
 }
