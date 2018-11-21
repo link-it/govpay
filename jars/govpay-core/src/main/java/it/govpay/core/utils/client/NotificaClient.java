@@ -33,6 +33,8 @@ import org.openspcoop2.utils.resources.Charset;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
@@ -40,6 +42,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.client.v1.NotificaConverter;
+import it.govpay.ec.v1.utils.JacksonJsonProviderUtil;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.pa.ObjectFactory;
 
@@ -113,8 +116,12 @@ public class NotificaClient extends BasicClient {
 					}
 				}
 
-				it.govpay.core.beans.ente.v1.Notifica notificaRsModel = new NotificaConverter().toRsModel(notifica, rpt, bd);
-				jsonBody = notificaRsModel.toJSON(null);
+				it.govpay.ec.v1.beans.Notifica notificaRsModel = new NotificaConverter().toRsModel(notifica, rpt, bd);
+				try {
+					jsonBody = JacksonJsonProviderUtil.write(notificaRsModel);
+				} catch (JsonProcessingException e) {
+					throw new ServiceException("Errore nella costruzone della richiesta di verifica al servizio dell'Ente Creditore", e);
+				}
 
 			} else {
 				throw new ServiceException("Notifica Storno REST non implementata!");

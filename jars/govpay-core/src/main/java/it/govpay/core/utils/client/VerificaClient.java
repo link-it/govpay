@@ -36,9 +36,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.beans.ente.v1.PendenzaVerificata;
-import it.govpay.core.beans.ente.v1.StatoPendenzaVerificata;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
@@ -49,6 +46,9 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.v1.VerificaConverter;
+import it.govpay.ec.v1.beans.PendenzaVerificata;
+import it.govpay.ec.v1.beans.StatoPendenzaVerificata;
+import it.govpay.ec.v1.utils.JacksonJsonProviderUtil;
 import it.govpay.model.Connettore.Tipo;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.pa.ObjectFactory;
@@ -177,7 +177,7 @@ public class VerificaClient extends BasicClient {
 				try {
 					try {
 						jsonResponse = new String(this.getJson(path, headerProperties));
-						pendenzaVerificata = JSONSerializable.parse(jsonResponse, PendenzaVerificata.class); 
+						pendenzaVerificata = JacksonJsonProviderUtil.readPendenzaVerificata(jsonResponse);
 					}catch(ClientException e) {
 						String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 						ctx.log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);

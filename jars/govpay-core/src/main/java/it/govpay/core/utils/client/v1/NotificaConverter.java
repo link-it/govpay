@@ -26,6 +26,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.codec.binary.Base64;
+import org.joda.time.LocalDate;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.xml.sax.SAXException;
 
@@ -33,12 +34,12 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
-import it.govpay.core.beans.ente.v1.Allegato;
-import it.govpay.core.beans.ente.v1.Allegato.TipoEnum;
-import it.govpay.core.beans.ente.v1.Notifica;
-import it.govpay.core.beans.ente.v1.Riscossione;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.ec.v1.beans.Allegato;
+import it.govpay.ec.v1.beans.Allegato.TipoEnum;
+import it.govpay.ec.v1.beans.Notifica;
+import it.govpay.ec.v1.beans.Riscossione;
 
 public class NotificaConverter {
 	
@@ -76,7 +77,7 @@ public class NotificaConverter {
 		if(pagamento.getAllegato() != null) {
 			Allegato allegato = new Allegato();
 			allegato.setTesto(Base64.encodeBase64String(pagamento.getAllegato()));
-			allegato.setTipo(TipoEnum.fromCodifica(pagamento.getTipoAllegato().toString()));
+			allegato.setTipo(TipoEnum.fromValue(pagamento.getTipoAllegato().toString()));
 			riscossione.setAllegato(allegato);
 		}
 		
@@ -85,12 +86,9 @@ public class NotificaConverter {
 		riscossione.setIuv(pagamento.getIuv()); 
 		riscossione.setIdVocePendenza(pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
 		riscossione.setCommissioni(pagamento.getCommissioniPsp());
-		riscossione.setData(pagamento.getDataPagamento());
+		riscossione.setData(new LocalDate(pagamento.getDataPagamento()));
 		riscossione.setImporto(pagamento.getImportoPagato());
 		riscossione.setIur(pagamento.getIur());
-		riscossione.setPendenza(urlPendenza); 
-		riscossione.setRpp(urlRpt);
-		
 		return riscossione;
 	}
 	

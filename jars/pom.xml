@@ -20,6 +20,7 @@
 		<module>govpay-core-beans</module>
 		<module>govpay-core-rs</module>
 		<module>govpay-core</module>
+		<module>govpay-ec-client</module>
 	</modules>
 </project>
 

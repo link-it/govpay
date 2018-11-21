@@ -21,6 +21,7 @@ tags:
 paths:
   '/avvisi/{idDomino}/{iuv}':
     get:
+      operationId: getAvviso
       summary: Verifica di una pendenza da avviso
       tags:
         - Verifica
@@ -54,6 +55,7 @@ paths:
           $ref: '#/components/responses/500'             
   '/pagamenti/{idDominio}/{iuv}':
     post:
+      operationId: addPagamento
       summary: Notifica di un pagamento
       tags:
         - Notifica
@@ -268,7 +270,9 @@ components:
       example: 
         Ticket e prestazioni sanitarie             
     vocePendenza:
+      type: object
       allOf:
+        - $ref: '#/components/schemas/datiEntrata'     
         - type: object
           required:
             - idVocePendenza
@@ -298,68 +302,74 @@ components:
               description: >-
                 Dati applicativi allegati dal gestionale secondo un
                 formato proprietario.
-        - oneOf:
-            - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
-              type: object
-              required:
-                - codEntrata
-              properties:
-                codEntrata:
-                  type: string
-            - description: Definisce i dettagli di incasso.
-              type: object
-              required:
-                - ibanAccredito
-                - tipoContabilita
-                - codiceContabilita
-              properties:
-                ibanAccredito:
-                  type: string
-                  example: IT60X0542811101000000123456
-                bicAccredito:
-                  type: string
-                  example: DABAIE2D
-                ibanAppoggio:
-                  type: string
-                  example: IT60X0542811101000000123456
-                bicAppoggio:
-                  type: string
-                  example: DABAIE2D
-                tipoContabilita:
-                  description: Tipologia di codifica del capitolo di bilancio
-                  type: string
-                  enum:
-                    - Entrata
-                    - Speciale
-                    - SIOPE
-                    - Altro
-                  example: SIOPE
-                codiceContabilita:
-                  description: Codifica del capitolo di bilancio
-                  type: string
-                  example: 3321
-            - description: Definisce i dati di un bollo telematico
-              type: object
-              required:
-                - tipoBollo
-                - hashDocumento
-                - provinciaResidenza
-              properties:
-                tipoBollo:
-                  description: Tipologia di Bollo digitale
-                  type: string
-                  enum:
-                    - Imposta di bollo
-                hashDocumento:
-                  description: >-
-                    Digest in base64 del documento informatico associato
-                    alla marca da bollo
-                  type: string
-                provinciaResidenza:
-                  description: >-
-                    Sigla automobilistica della provincia di residenza del
-                    soggetto pagatore
-                  type: string                
+        
+    datiEntrata:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/datiEntrataCodice'          
+        - $ref: '#/components/schemas/datiEntrataInline'
+        - $ref: '#/components/schemas/datiEntrataBollo'
+        
+    datiEntrataCodice:
+      description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+      type: object
+      required:
+        - codEntrata
+      properties:
+        codEntrata:
+          type: string
+          
+    datiEntrataInline:
+      description: Definisce i dettagli di incasso.
+      type: object
+      required:
+        - ibanAccredito
+        - tipoContabilita
+        - codiceContabilita
+      properties:
+        ibanAccredito:
+          type: string
+          example: IT60X0542811101000000123456
+        bicAccredito:
+          type: string
+          example: DABAIE2D
+        ibanAppoggio:
+          type: string
+          example: IT60X0542811101000000123456
+        bicAppoggio:
+          type: string
+          example: DABAIE2D
+        tipoContabilita:
+          $ref: '#/components/schemas/tipoContabilita'
+        codiceContabilita:
+          description: Codifica del capitolo di bilancio
+          type: string
+          example: 3321
+          
+    datiEntrataBollo:
+      description: Definisce i dati di un bollo telematico
+      type: object
+      required:
+        - tipoBollo
+        - hashDocumento
+        - provinciaResidenza
+      properties:
+        tipoBollo:
+          description: Tipologia di Bollo digitale
+          type: string
+          enum:
+            - Imposta di bollo
+        hashDocumento:
+          description: >-
+            Digest in base64 del documento informatico associato
+            alla marca da bollo
+          type: string
+        provinciaResidenza:
+          description: >-
+            Sigla automobilistica della provincia di residenza del
+            soggetto pagatore
+          type: string   
+                                                
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object
@@ -368,14 +378,7 @@ components:
         - identificativo
       properties:
         tipo:
-          description: >-
-            tipologia di soggetto, se persona fisica (F) o giuridica
-            (G)
-          type: string
-          enum:
-            - G
-            - F
-          example: F
+          $ref: '#/components/schemas/tipoSoggetto'          
         identificativo:
           description: codice fiscale o partita iva del soggetto
           type: string
@@ -407,7 +410,16 @@ components:
           example: mario.rossi@host.eu
         cellulare:
           type: string
-          example: +39 000-1234567        
+          example: +39 000-1234567     
+    tipoSoggetto:
+      description: >-
+        tipologia di soggetto, se persona fisica (F) o giuridica
+        (G)
+      type: string
+      enum:
+        - G
+        - F
+      example: F             
     notifica:
       type: object
       properties:
@@ -536,3 +548,12 @@ components:
         testo:
           description: allegato codificato in base64
           type: string
+    tipoContabilita:
+      description: Tipologia di codifica del capitolo di bilancio
+      type: string
+      enum:
+        - ENTRATA
+        - SPECIALE
+        - SIOPE
+        - ALTRO
+      example: SIOPE          

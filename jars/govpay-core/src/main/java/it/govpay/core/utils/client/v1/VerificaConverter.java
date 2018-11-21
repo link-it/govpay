@@ -22,9 +22,9 @@ package it.govpay.core.utils.client.v1;
 import java.util.Date;
 import java.util.List;
 
-import it.govpay.core.beans.ente.v1.PendenzaVerificata;
-import it.govpay.core.beans.ente.v1.Soggetto;
-import it.govpay.core.beans.ente.v1.VocePendenza;
+import it.govpay.ec.v1.beans.PendenzaVerificata;
+import it.govpay.ec.v1.beans.Soggetto;
+import it.govpay.ec.v1.beans.VocePendenza;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
@@ -41,13 +41,11 @@ public class VerificaConverter {
 		versamento.setCodDominio(pendenzaVerificata.getIdDominio());
 		versamento.setCodUnitaOperativa(pendenzaVerificata.getIdUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
-		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza());
-		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
-		versamento.setDataCaricamento(pendenzaVerificata.getDataCaricamento() != null ? pendenzaVerificata.getDataCaricamento() : new Date());
+		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza().toDate());
+		versamento.setDataValidita(pendenzaVerificata.getDataValidita().toDate());
+		versamento.setDataCaricamento(pendenzaVerificata.getDataCaricamento() != null ? pendenzaVerificata.getDataCaricamento().toDate() : new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));;
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
-	
-		versamento.setDataCaricamento(pendenzaVerificata.getDataCaricamento()); 
 		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
 		versamento.setDatiAllegati(pendenzaVerificata.getDatiAllegati());
 		
@@ -58,9 +56,6 @@ public class VerificaConverter {
 		
 		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 		versamento.setNumeroAvviso(pendenzaVerificata.getNumeroAvviso());
-//		versamento.setIuv(pendenzaVerificata.getNumeroAvviso());
-		
-//		versamento.setAnomalie(pendenzaVerificata.getAnomalie()); 
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenzaVerificata.getVoci());
