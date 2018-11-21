@@ -9,7 +9,7 @@
 	
 	<filter>
 		<filter-name>OriginFilter</filter-name>
-		<filter-class>it.govpay.rs.filter.OriginFilter</filter-class>
+		<filter-class>it.govpay.rs.OriginFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>OriginFilter</filter-name>

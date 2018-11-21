@@ -70,10 +70,6 @@ public class StartupEjb {
 				Map<String, String> map = new HashMap<String, String>();
 				map.put(GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
 				map.put(GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
-				
-				for(String k : map.keySet()) {
-					StartupUtils.initValidator(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, k, StartupEjb.class.getResourceAsStream(map.get(k)));				
-				}
 			}
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);

@@ -144,19 +144,6 @@ public class StartupUtils {
 		return ctx;
 	}
 	
-	public static synchronized GpContext initValidator(Logger log, String warName, String govpayVersion, String buildVersion, GpContext ctx, String name, InputStream swaggerfile) throws RuntimeException {
-		
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			IOUtils.copy(swaggerfile, baos);
-			BaseRsServiceV1.initValidator(log, baos.toByteArray(), name);
-		} catch (Exception e) {
-			throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita.", e);
-		}
-		
-		return ctx;
-	}
-	
 	public static synchronized GpContext startupServices(Logger log, String warName, String govpayVersion, String buildVersion, GpContext ctx,
 			String dominioAnagraficaManager,GovpayConfig gpConfig) throws RuntimeException {
 		

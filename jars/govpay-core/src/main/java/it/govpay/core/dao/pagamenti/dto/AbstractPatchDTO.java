@@ -6,8 +6,8 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.List;
 
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
-import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.model.IAutorizzato;
+import it.govpay.model.PatchOp;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

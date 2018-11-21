@@ -77,17 +77,6 @@ public abstract class BaseRsService {
 		this.request = request;
 	}
 
-//	@OPTIONS
-//	@Path("{path : .*}")
-//	public Response optionsAll(@PathParam("path") String path) {
-//		return Response.status(Response.Status.NO_CONTENT)
-//				.header("Access-Control-Allow-Origin", "*")
-//				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
-//				.header("Access-Control-Allow-Credentials", "true")
-//				.header("Access-Control-Allow-Methods", "OPTIONS, GET, PUT, POST")
-//				.build();
-//	}
-
 	protected List<String> getListaRuoli(HttpServletCredential credential){
 		List<String> listaRuoliPosseduti = new ArrayList<>();
 		// caricamento dei ruoli ricevuti nella richiesta http
@@ -127,29 +116,6 @@ public abstract class BaseRsService {
 
 		return res;
 	}
-
-//	public static Response getBadRequestResponse(String msg){
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//		JSONObject jsonObject = new JSONObject();
-//		jsonObject.put("esito", "KO");
-//		jsonObject.put("descrizione", msg);
-//
-//		ByteArrayInputStream bais = new ByteArrayInputStream(jsonObject.toString().getBytes());
-//		try{
-//			BaseRsService.copy(bais, baos);
-//
-//			baos.flush();
-//			baos.close();
-//		}catch(Exception e){}
-//
-//
-//		Response res =	Response.status(Response.Status.BAD_REQUEST)
-//				.header("Access-Control-Allow-Origin", "*")
-//				.entity(baos.toString())
-//				.build();
-//
-//		return res;
-//	}
 
 	public void invalidateSession(Logger log){
 		if(log!= null)

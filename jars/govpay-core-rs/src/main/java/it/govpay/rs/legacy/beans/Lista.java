@@ -8,8 +8,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.core.rs.v1.beans.JSONSerializable;
-import it.govpay.core.rs.v1.costanti.Costanti;
+import it.govpay.core.beans.Costanti;
+import it.govpay.core.beans.JSONSerializable;
 
 @JsonFilter(value="lista") 
 public class Lista<T extends JSONSerializable> extends JSONSerializable {

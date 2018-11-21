@@ -1,0 +1,7 @@
+/target/
+/bin/
+/.classpath
+/.project
+/.settings/
+/src/main/resources/filters/*.filter.properties
+pom.xml.versionsBackup

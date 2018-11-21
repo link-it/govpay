@@ -5,8 +5,8 @@ import java.util.List;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.core.rs.v1.beans.base.StatoTracciatoPendenza;
 import it.govpay.model.IAutorizzato;
+import it.govpay.model.StatoTracciatoPendenza;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.orm.Tracciato;

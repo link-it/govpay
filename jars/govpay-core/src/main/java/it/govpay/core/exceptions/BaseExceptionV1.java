@@ -19,31 +19,57 @@
  */
 package it.govpay.core.exceptions;
 
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
-
 public abstract class BaseExceptionV1 extends BaseException {
-	
+
 	transient private static final long serialVersionUID = 1L;
+
+	public enum CategoriaEnum {
+		AUTORIZZAZIONE("AUTORIZZAZIONE"),
+		UNMARSHALL("UNMARSHALL"),
+		RICHIESTA("RICHIESTA"),
+		OPERAZIONE("OPERAZIONE"),
+		PAGOPA("PAGOPA"),
+		INTERNO("INTERNO");
+
+		private String value;
+
+		CategoriaEnum(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.value);
+		}
+
+		public static CategoriaEnum fromValue(String text) {
+			for (CategoriaEnum b : CategoriaEnum.values()) {
+				if (String.valueOf(b.value).equals(text)) {
+					return b;
+				}
+			}
+			return null;
+		}
+	}
+
 	private CategoriaEnum categoria;
-	
+
 	public BaseExceptionV1(String message, String subCode, String description, CategoriaEnum categoria) {
 		super(message, subCode, description);
 		this.categoria = categoria;
 	}
-	
+
 	public BaseExceptionV1(String message, String subCode, String description, CategoriaEnum categoria, Throwable t) {
 		super(message, subCode, description, t);
 		this.categoria = categoria;
 	}
-	
+
 	public CategoriaEnum getCategoria() {
 		return this.categoria;
 	}
 	public void setCategoria(CategoriaEnum categoria) {
 		this.categoria = categoria;
 	}
-	
-	
-	
-	
+
+
 }

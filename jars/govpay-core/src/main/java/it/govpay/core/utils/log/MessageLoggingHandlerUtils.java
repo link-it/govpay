@@ -43,7 +43,7 @@ import org.openspcoop2.utils.logger.beans.proxy.Server;
 import org.openspcoop2.utils.logger.constants.MessageType;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
-import it.govpay.core.rs.v1.costanti.Costanti;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;

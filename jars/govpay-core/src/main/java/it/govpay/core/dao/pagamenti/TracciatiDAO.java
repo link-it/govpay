@@ -43,7 +43,7 @@ import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
-import it.govpay.core.beans.tracciati.Pendenza;
+import it.govpay.core.beans.tracciati.TracciatoPendenza;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoDTO;
@@ -246,7 +246,7 @@ public class TracciatiDAO extends BaseDAO{
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			
 			Operatore operatoreFromUser = this.getOperatoreFromUser(postTracciatoDTO.getUser(),bd);
-			it.govpay.core.beans.tracciati.Pendenza beanDati = new Pendenza();
+			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
 			
 			Tracciato tracciato = new Tracciato();

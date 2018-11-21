@@ -63,7 +63,7 @@ import gov.telematici.pagamenti.ws.StTipoIdentificativoUnivocoPersFG;
 import gov.telematici.pagamenti.ws.StTipoOperazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.core.rs.v1.beans.base.TassonomiaAvviso;
+import it.govpay.core.beans.tracciati.TassonomiaAvviso;
 import it.govpay.model.Anagrafica.TIPO;
 
 public class AvvisaturaUtils {

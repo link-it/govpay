@@ -4,7 +4,6 @@
 package it.govpay.core.dao.commons.exception;
 
 import it.govpay.core.exceptions.BaseExceptionV1;
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

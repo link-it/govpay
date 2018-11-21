@@ -35,16 +35,15 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.rs.v1.beans.base.PendenzaPost;
-import it.govpay.core.rs.v1.beans.base.Soggetto;
-import it.govpay.core.rs.v1.beans.base.VocePendenza;
-import it.govpay.core.rs.v1.beans.client.PendenzaVerificata;
-import it.govpay.core.rs.v1.costanti.EsitoOperazione;
+import it.govpay.core.utils.AclEngine;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.model.Acl.Diritti;
@@ -71,7 +70,10 @@ public class VersamentoUtils {
     public final static QName _VersamentoKeyBundlekey_QNAME = new QName("", "bundlekey");
     public final static QName _VersamentoKeyIuv_QNAME = new QName("", "iuv");
 
-    public static void validazioneSemantica(Versamento versamento, boolean generaIuv, BasicBD bd) throws GovPayException, ServiceException {
+	public static void validazioneSemantica(Versamento versamento, boolean generaIuv, BasicBD bd) throws GovPayException, ServiceException {
+		if(generaIuv && versamento.getSingoliVersamenti(bd).size() != 1) {
+			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte());
+		}
 		
 		BigDecimal somma = BigDecimal.ZERO;
 		List<String> codSingoliVersamenti = new ArrayList<>();
@@ -153,7 +155,7 @@ public class VersamentoUtils {
 		return model;
 	}
 	
-	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.servizi.commons.Versamento.SingoloVersamento singoloVersamento, int index , BasicBD bd) throws ServiceException, GovPayException {
+	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.servizi.commons.Versamento.SingoloVersamento singoloVersamento, int index, BasicBD bd) throws ServiceException, GovPayException {
 		SingoloVersamento model = new SingoloVersamento();
 		model.setVersamento(versamento);
 		model.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
@@ -199,6 +201,8 @@ public class VersamentoUtils {
 			
 			try {
 				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(bd, versamento.getUo(bd).getDominio(bd).getId(), singoloVersamento.getTributo().getIbanAccredito()));
+				if(singoloVersamento.getTributo().getIbanAppoggio() != null)
+					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, versamento.getUo(bd).getDominio(bd).getId(), singoloVersamento.getTributo().getIbanAppoggio()));
 				model.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
 				model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
 			} catch (NotFoundException e) {
@@ -316,7 +320,7 @@ public class VersamentoUtils {
 		if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {
 			throw new VersamentoScadutoException(versamento.getDataScadenza());
 		}else {
-			if(versamento.getDataValidita() != null && DateUtils.isDataScaduta(versamento.getDataValidita())) {
+			if(versamento.getDataValidita() != null && versamento.getDataValidita().before(new Date())) {
 				GpContext ctx = GpThreadLocal.get();
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();
@@ -384,170 +388,6 @@ public class VersamentoUtils {
 		return versamento;
 	}
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) {
-		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
-
-		if(pendenza.getAnnoRiferimento() != null)
-			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
-
-		versamento.setCausale(pendenza.getCausale());
-		versamento.setCodApplicazione(ida2a);
-
-		versamento.setCodDominio(pendenza.getIdDominio());
-		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
-		versamento.setCodVersamentoEnte(idPendenza);
-		versamento.setDataScadenza(pendenza.getDataScadenza());
-		versamento.setDataValidita(pendenza.getDataValidita());
-		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
-		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
-		versamento.setImportoTotale(pendenza.getImporto());
-		versamento.setTassonomia(pendenza.getTassonomia());
-		if(pendenza.getTassonomiaAvviso() != null)
-			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
-		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
-		
-//		versamento.setIncasso(pendenza.getIncasso()); //TODO
-//		versamento.setAnomalie(pendenza.getAnomalie()); 
-
-		// voci pagamento
-		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
-
-		return versamento;
-	}
-	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) {
-		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
-		
-		if(pendenzaVerificata.getAnnoRiferimento() != null)
-			versamento.setAnnoTributario(pendenzaVerificata.getAnnoRiferimento().intValue());
-
-		versamento.setCausale(pendenzaVerificata.getCausale());
-		versamento.setCodApplicazione(pendenzaVerificata.getIdA2A());
-
-		versamento.setCodDominio(pendenzaVerificata.getIdDominio());
-		versamento.setCodUnitaOperativa(pendenzaVerificata.getIdUnitaOperativa());
-		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
-		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza());
-		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
-		versamento.setDataCaricamento(pendenzaVerificata.getDataCaricamento() != null ? pendenzaVerificata.getDataCaricamento() : new Date());
-		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));
-		versamento.setImportoTotale(pendenzaVerificata.getImporto());
-	
-		versamento.setDataCaricamento(pendenzaVerificata.getDataCaricamento()); 
-		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
-		versamento.setDatiAllegati(pendenzaVerificata.getDatiAllegati());
-		
-		versamento.setTassonomia(pendenzaVerificata.getTassonomia());
-		if(pendenzaVerificata.getTassonomiaAvviso() != null)
-			versamento.setTassonomiaAvviso(pendenzaVerificata.getTassonomiaAvviso().toString());
-		versamento.setNome(pendenzaVerificata.getNome());
-		
-		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
-		versamento.setNumeroAvviso(pendenzaVerificata.getNumeroAvviso());
-//		versamento.setIuv(pendenzaVerificata.getNumeroAvviso());
-		
-//		versamento.setIncasso(pendenza.getIncasso()); //TODO
-//		versamento.setAnomalie(pendenzaVerificata.getAnomalie()); 
-
-		// voci pagamento
-		fillSingoliVersamentiFromVociPendenza(versamento, pendenzaVerificata.getVoci());
-		
-		return versamento;
-	}
-	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) {
-		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
-
-		if(pendenza.getAnnoRiferimento() != null)
-			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
-
-		versamento.setCausale(pendenza.getCausale());
-		versamento.setCodApplicazione(pendenza.getIdA2A());
-
-		versamento.setCodDominio(pendenza.getIdDominio());
-		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
-		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
-		versamento.setDataScadenza(pendenza.getDataScadenza());
-		versamento.setDataValidita(pendenza.getDataValidita());
-		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
-		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
-		versamento.setImportoTotale(pendenza.getImporto());
-	
-		versamento.setNome(pendenza.getNome());
-		versamento.setTassonomia(pendenza.getTassonomia());
-		if(pendenza.getTassonomiaAvviso() != null)
-			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
-		
-		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
-//		if(pendenza.getNumeroAvviso()!=null)
-//			versamento.setIuv(pendenza.getNumeroAvviso());
-		
-//		versamento.setIncasso(pendenza.getIncasso()); //TODO
-//		versamento.setAnomalie(pendenza.getAnomalie()); 
-
-		// voci pagamento
-		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
-
-		return versamento;
-		
-		
-	}
-
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) {
-
-		if(voci != null && voci.size() > 0) {
-			for (VocePendenza vocePendenza : voci) {
-				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
-
-				//sv.setCodTributo(value); ??
-
-				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
-				sv.setDatiAllegati(vocePendenza.getDatiAllegati());
-				sv.setDescrizione(vocePendenza.getDescrizione());
-				sv.setImporto(vocePendenza.getImporto());
-
-				// Definisce i dati di un bollo telematico
-				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
-					it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico();
-					bollo.setHash(vocePendenza.getHashDocumento());
-					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
-					bollo.setTipo(vocePendenza.getTipoBollo());
-					sv.setBolloTelematico(bollo);
-				} else if(vocePendenza.getCodEntrata() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
-					sv.setCodTributo(vocePendenza.getCodEntrata());
-
-				} else { // Definisce i dettagli di incasso della singola entrata.
-					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
-					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
-					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
-					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
-					sv.setTributo(tributo);
-				}
-
-				versamento.getSingoloVersamento().add(sv);
-			}
-		}
-	}
-	
-	public static it.govpay.core.dao.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
-		it.govpay.core.dao.commons.Anagrafica anagraficaCommons = null;
-		if(anagraficaRest != null) {
-			anagraficaCommons = new it.govpay.core.dao.commons.Anagrafica();
-			anagraficaCommons.setCap(anagraficaRest.getCap());
-			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
-			anagraficaCommons.setCivico(anagraficaRest.getCivico());
-			anagraficaCommons.setCodUnivoco(anagraficaRest.getIdentificativo());
-			anagraficaCommons.setEmail(anagraficaRest.getEmail());
-			anagraficaCommons.setIndirizzo(anagraficaRest.getIndirizzo());
-			anagraficaCommons.setLocalita(anagraficaRest.getLocalita());
-			anagraficaCommons.setNazione(anagraficaRest.getNazione());
-			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
-			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
-			anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
-		}
-
-		return anagraficaCommons;
-	}
 	
 	public static String getIuvFromNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode) throws GovPayException {
 		if(numeroAvviso == null)
@@ -589,5 +429,4 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.VER_017, numeroAvviso);
 //		return numeroAvviso;
 	}
-	
 }

@@ -22,11 +22,11 @@ import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Utenza;
-import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.IAutorizzato;
+import it.govpay.model.PatchOp;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

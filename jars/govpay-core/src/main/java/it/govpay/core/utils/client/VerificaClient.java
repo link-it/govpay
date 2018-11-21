@@ -35,19 +35,20 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.beans.ente.v1.PendenzaVerificata;
+import it.govpay.core.beans.ente.v1.StatoPendenzaVerificata;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.rs.v1.beans.JSONSerializable;
-import it.govpay.core.rs.v1.beans.client.PendenzaVerificata;
-import it.govpay.core.rs.v1.beans.client.StatoPendenzaVerificata;
-import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.client.v1.VerificaConverter;
 import it.govpay.model.Connettore.Tipo;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.pa.ObjectFactory;
@@ -172,7 +173,6 @@ public class VerificaClient extends BasicClient {
 					path = "/avvisi/" + codDominio + "/" + iuv;
 				}
 				
-				StatoPendenzaVerificata stato = null;
 				PendenzaVerificata pendenzaVerificata = null;
 				try {
 					try {
@@ -191,12 +191,12 @@ public class VerificaClient extends BasicClient {
 					bd.setupConnection(GpThreadLocal.get().getTransactionId());
 				}
 				
-				stato = pendenzaVerificata.getStato();
+				StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
 				switch (stato) {
 					case NON_ESEGUITA: // CASO OK su
 						ctx.log("verifica.avvio", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 						try {
-							return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VersamentoUtils.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
+							return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
 						} catch (GovPayException e) {
 							ctx.log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
 							throw e;

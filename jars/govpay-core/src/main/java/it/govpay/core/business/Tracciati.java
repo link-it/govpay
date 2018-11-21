@@ -48,22 +48,22 @@ import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
+import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
+import it.govpay.core.beans.tracciati.DettaglioTracciatoPendenzeEsito;
+import it.govpay.core.beans.tracciati.EsitoOperazionePendenza;
+import it.govpay.core.beans.tracciati.PendenzaPost;
+import it.govpay.core.beans.tracciati.TracciatoPendenzePost;
+import it.govpay.core.business.model.tracciati.CostantiCaricamento;
+import it.govpay.core.business.model.tracciati.operazioni.AbstractOperazioneResponse;
+import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoRequest;
+import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoResponse;
+import it.govpay.core.business.model.tracciati.operazioni.CaricamentoRequest;
+import it.govpay.core.business.model.tracciati.operazioni.CaricamentoResponse;
+import it.govpay.core.business.model.tracciati.operazioni.OperazioneFactory;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiOperazioneDTOResponse;
-import it.govpay.core.rs.v1.beans.JSONSerializable;
-import it.govpay.core.rs.v1.beans.base.AnnullamentoPendenza;
-import it.govpay.core.rs.v1.beans.base.DettaglioTracciatoPendenzeEsito;
-import it.govpay.core.rs.v1.beans.base.EsitoOperazionePendenza;
-import it.govpay.core.rs.v1.beans.base.PendenzaPost;
-import it.govpay.core.rs.v1.beans.base.TracciatoPendenzePost;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.core.utils.tracciati.CostantiCaricamento;
-import it.govpay.core.utils.tracciati.operazioni.AbstractOperazioneResponse;
-import it.govpay.core.utils.tracciati.operazioni.AnnullamentoRequest;
-import it.govpay.core.utils.tracciati.operazioni.AnnullamentoResponse;
-import it.govpay.core.utils.tracciati.operazioni.CaricamentoRequest;
-import it.govpay.core.utils.tracciati.operazioni.CaricamentoResponse;
-import it.govpay.core.utils.tracciati.operazioni.OperazioneFactory;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
@@ -98,7 +98,7 @@ public class Tracciati extends BasicBD {
 			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 
-			it.govpay.core.beans.tracciati.Pendenza beanDati = (it.govpay.core.beans.tracciati.Pendenza) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.Pendenza.class);
+			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = (it.govpay.core.beans.tracciati.TracciatoPendenza) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoPendenza.class);
 
 			TracciatoPendenzePost tracciatoPendenzeRequest = JSONSerializable.parse(new String(tracciato.getRawRichiesta()), TracciatoPendenzePost.class);
 
@@ -127,7 +127,7 @@ public class Tracciati extends BasicBD {
 				PendenzaPost pendenzaPost = inserimenti.get((int) linea);
 				String jsonPendenza = pendenzaPost.toJSON(null);
 
-				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.VersamentoUtils.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 
 				// inserisco l'identificativo del dominio
 				versamentoToAdd.setCodDominio(codDominio);
@@ -237,7 +237,7 @@ public class Tracciati extends BasicBD {
 		}
 	}
 
-	private void aggiornaCountOperazioniAdd(it.govpay.core.beans.tracciati.Pendenza beanDati, CaricamentoResponse caricamentoResponse,
+	private void aggiornaCountOperazioniAdd(it.govpay.core.beans.tracciati.TracciatoPendenza beanDati, CaricamentoResponse caricamentoResponse,
 			Operazione operazione) {
 		if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
 			beanDati.setNumAddOk(beanDati.getNumAddOk()+1);
@@ -247,7 +247,7 @@ public class Tracciati extends BasicBD {
 		}
 	}
 
-	private void aggiornaCountOperazioniDel(it.govpay.core.beans.tracciati.Pendenza beanDati, AnnullamentoResponse annullamentoResponse,
+	private void aggiornaCountOperazioniDel(it.govpay.core.beans.tracciati.TracciatoPendenza beanDati, AnnullamentoResponse annullamentoResponse,
 			Operazione operazione) {
 		if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
 			beanDati.setNumDelOk(beanDati.getNumDelOk()+1);
@@ -257,7 +257,7 @@ public class Tracciati extends BasicBD {
 		}
 	}
 
-	private void setStatoDettaglioTracciato(it.govpay.core.beans.tracciati.Pendenza beanDati) {
+	private void setStatoDettaglioTracciato(it.govpay.core.beans.tracciati.TracciatoPendenza beanDati) {
 		if((beanDati.getNumAddKo() + beanDati.getNumDelKo()) > 0) {
 			beanDati.setStepElaborazione(StatoTracciatoType.CARICAMENTO_KO.getValue());
 		} else {
@@ -265,7 +265,7 @@ public class Tracciati extends BasicBD {
 		}
 	}
 
-	private void setStatoTracciato(Tracciato tracciato, it.govpay.core.beans.tracciati.Pendenza beanDati) {
+	private void setStatoTracciato(Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati) {
 		if((beanDati.getNumAddKo() + beanDati.getNumDelKo()) == (beanDati.getNumAddTotali() + beanDati.getNumDelTotali()))
 			tracciato.setStato(STATO_ELABORAZIONE.SCARTATO);
 		else 

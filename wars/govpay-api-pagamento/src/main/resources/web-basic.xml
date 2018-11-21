@@ -4,12 +4,12 @@
 	<display-name>govpay-api-pagamento</display-name>
     
     <listener>
-	    <listener-class>it.govpay.pagamento.api.listener.InitListener</listener-class>
+	    <listener-class>it.govpay.pagamento.listener.InitListener</listener-class>
 	</listener>
 	
 	<filter>
 		<filter-name>OriginFilter</filter-name>
-		<filter-class>it.govpay.rs.filter.OriginFilter</filter-class>
+		<filter-class>it.govpay.rs.OriginFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>OriginFilter</filter-name>

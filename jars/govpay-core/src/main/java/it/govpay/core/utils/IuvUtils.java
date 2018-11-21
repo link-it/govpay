@@ -35,9 +35,9 @@ import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVers
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 
 public class IuvUtils {
 

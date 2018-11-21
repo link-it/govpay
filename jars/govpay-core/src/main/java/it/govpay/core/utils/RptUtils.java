@@ -51,12 +51,11 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.pagamento.RptBD;
-
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
-import it.govpay.core.rs.v1.costanti.EsitoOperazione;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;

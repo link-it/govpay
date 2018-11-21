@@ -19,8 +19,6 @@
  */
 package it.govpay.core.exceptions;
 
-import it.govpay.core.rs.v1.beans.base.FaultBean.CategoriaEnum;
-
 public class NotAuthenticatedException extends BaseExceptionV1 {
 
 	private static final long serialVersionUID = 1L;

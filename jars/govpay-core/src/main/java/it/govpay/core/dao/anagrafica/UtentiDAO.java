@@ -50,11 +50,11 @@ import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.rs.v1.beans.base.PatchOp;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.IAutorizzato;
+import it.govpay.model.PatchOp;
 
 
 public class UtentiDAO extends BaseDAO{
