@@ -38,6 +38,12 @@
 			<artifactId>govpay-ec-client</artifactId>
 			<type>jar</type>
 		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>pagopa-beans</artifactId>
+			<type>jar</type>
+		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>

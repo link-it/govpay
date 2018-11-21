@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0.6">
+	<xs:annotation>
+		<xs:documentation>Quadratura dei Flussi di traffico per PA</xs:documentation>
+        <xs:documentation>24/10/2015 - allineamento a versione 1.7 dell'Allegato B</xs:documentation>
+    </xs:annotation>
+    
+    <xs:simpleType name="stText16">
+		<xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="16"/>
+        </xs:restriction>
+	</xs:simpleType>
+	
+    <xs:simpleType name="stText35">
+		<xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="35"/>
+        </xs:restriction>
+	</xs:simpleType>
+    
+  	<xs:simpleType name="stTotaleImporti">
+		<xs:restriction base="xs:decimal">
+			<xs:minInclusive value="0.00"/>
+			<xs:maxInclusive value="99999999.99"/>
+			<xs:fractionDigits value="2"/>
+			<xs:totalDigits value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stTotaleOggetti">
+		<xs:restriction base="xs:nonNegativeInteger">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="999999999"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+    <xs:element name="flussoQuadraturaPA" type="ctFlussoQuadraturaPA"/>
+    
+    <xs:complexType name="ctSoggettoRichiedenteFlusso">
+		<xs:sequence>
+			<xs:element type="xs:string" name="identificativoIntermediarioPA" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctTotali">
+		<xs:sequence>
+			<xs:element type="stTotaleImporti" name="totaleImporti"/>
+			<xs:element type="stTotaleOggetti" name="totaleOggetti"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctTotaliAggregatiRPT">
+		<xs:sequence>
+			<xs:element type="stText35" name="identificativoDominioMittente"/>
+			<xs:element type="stText35" name="identificativoStazioneIntermediarioPAMittente"/>
+			<xs:element type="stText35" name="identificativoIntermediarioPSPDestinatario"/>
+			<xs:element type="ctTotali" name="totaliInAttesa"/>
+			<xs:element type="ctTotali" name="totaliConsegnate"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctTotaliAggregatiRT">
+		<xs:sequence>
+			<xs:element type="stText35" name="identificativoIntermediarioPSPMittente"/>
+			<xs:element type="stText35" name="identificativoDominioDestinatario"/>
+			<xs:element type="stText35" name="identificativoStazioneIntermediarioPADestinatario"/>
+			<xs:element type="ctTotali" name="totaliInAttesa"/>
+			<xs:element type="ctTotali" name="totaliConsegnate"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctListaTotaliRPT">
+		<xs:sequence>
+			<xs:element type="ctTotaliAggregatiRPT" name="totaliAggregati" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctListaTotaliRT">
+		<xs:sequence>
+			<xs:element type="ctTotaliAggregatiRT" name="totaliAggregati" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctQuadraturaRPT">
+		<xs:sequence>
+			<xs:element type="ctListaTotaliRPT" name="listaTotali"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctQuadraturaRT">
+		<xs:sequence>
+			<xs:element type="ctListaTotaliRT" name="listaTotali"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctFlussoQuadraturaPA">
+		<xs:sequence>
+			<xs:element type="stText16" name="versioneOggetto"/>
+			<xs:element type="stText35" name="identificativoFlusso"/>
+			<xs:element type="xs:dateTime" name="dataOraFlusso"/>
+			<xs:element type="ctSoggettoRichiedenteFlusso" name="soggettoRichiedenteFlusso"/>
+			<xs:element type="xs:dateTime" name="dataInizioPeriodo"/>
+			<xs:element type="xs:dateTime" name="dataFinePeriodo"/>
+			<xs:element type="ctQuadraturaRPT" name="quadraturaRPT"/>
+			<xs:element type="ctQuadraturaRT" name="quadraturaRT"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
+
+

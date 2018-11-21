@@ -21,6 +21,7 @@
 		<module>govpay-core-rs</module>
 		<module>govpay-core</module>
 		<module>govpay-ec-client</module>
+		<module>pagopa-beans</module>
 	</modules>
 </project>
 

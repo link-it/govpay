@@ -155,6 +155,13 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
+				<artifactId>pagopa-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
 				<artifactId>govpay-api-ragioneria</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
@@ -568,7 +575,7 @@
 				<artifactId>swagger-annotations</artifactId>
 				<version>${swagger.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.swagger</groupId>
 				<artifactId>swagger-jaxrs</artifactId>
@@ -580,13 +587,13 @@
 				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
 				<version>${cxf.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-rs-service-description</artifactId>
 				<version>${cxf.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-rs-client</artifactId>

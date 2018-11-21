@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0.3">
+    <xsd:annotation>
+		<xsd:documentation>= 12/4/2013 - documento base "Specifiche attuative dei codici identificativi di versamento, riversamento e rendicontazione</xsd:documentation>
+		<xsd:documentation>= 12/11/2013 - correzione refuso su stNumeroTotalePagamenti</xsd:documentation>
+		<xsd:documentation>= 12/11/2013 - inserita enumerazione 9 su codiceEsitoSingoloPagamento</xsd:documentation>
+		<xsd:documentation>24/10/2015 - allineamento a versione 1.2 dell'Allegato A</xsd:documentation>
+    </xsd:annotation>
+
+
+	<!-- **** BEGIN: tipi semplici ****-->
+
+	<xsd:simpleType name="stISODate">
+		<xsd:restriction base="xsd:date"/>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stISODateTime">
+		<xsd:restriction base="xsd:dateTime"/>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stVersioneOggetto">
+		<xsd:restriction base="xsd:string">
+ <xsd:minLength value="1"/>
+ <xsd:maxLength value="16"/>
+ <xsd:enumeration value="1.0"/><!-- Valore ammesso -->
+ <xsd:enumeration value="1.1"/><!-- Valore ammesso -->
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stNumeroTotalePagamenti">
+		<xsd:restriction base="xsd:decimal">
+			<xsd:minInclusive value="1"/>
+			<xsd:fractionDigits value="0"/>
+			<xsd:totalDigits value="15"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+    <xsd:simpleType name="stImportoTotalePagamenti">
+		<xsd:restriction base="xsd:decimal">
+			<xsd:fractionDigits value="2"/>
+			<xsd:totalDigits value="18"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stImporto">
+		<xsd:restriction base="xsd:decimal">
+			<xsd:fractionDigits value="2"/>
+			<xsd:totalDigits value="12"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stText35">
+ <xsd:restriction base="xsd:string">
+ <xsd:minLength value="1"/>
+ <xsd:maxLength value="35"/>
+ </xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stText70">
+ <xsd:restriction base="xsd:string">
+ <xsd:minLength value="3"/>
+ <xsd:maxLength value="70"/>
+ </xsd:restriction>
+	</xsd:simpleType>
+
+ 	<xsd:simpleType name="stTipoIdentificativoUnivoco">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="G"/><!-- Persona Giuridica -->
+			<xsd:enumeration value="A"/><!-- Codice ABI -->
+			<xsd:enumeration value="B"/><!-- Codice BIC -->
+ <xsd:length value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stTipoIdentificativoUnivocoPersG">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="G"/><!-- Persona Giuridica -->
+ <xsd:length value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stCodiceEsitoPagamento">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[0-9]{1,1}"/>
+ <xsd:enumeration value="0"/><!-- Pagamento eseguito -->
+ <xsd:enumeration value="3"/><!-- Pagamento revocato -->
+ <xsd:enumeration value="9"/><!-- Pagamento eseguito in assenza di RPT -->
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stIndice">
+           <xsd:restriction base="xsd:integer">
+                 <xsd:minInclusive value="1"/>
+                 <xsd:maxInclusive value="5"/>
+           </xsd:restriction>
+	</xsd:simpleType>
+
+ <!-- **** END: tipi semplici ****-->
+
+	<!-- **** BEGIN: tipi complessi ****-->
+
+ <!-- **** BEGIN: Identificativi univoci dei soggetti -->
+ <xsd:complexType name="ctIdentificativoUnivoco">
+		<xsd:sequence>
+			<xsd:element name="tipoIdentificativoUnivoco" type="pay_i:stTipoIdentificativoUnivoco" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Campo alfanumerico che indica la natura del soggetto, può assumere i seguenti valori:</xsd:documentation>
+ 					<xsd:documentation>G - Persona Giuridica</xsd:documentation>
+					<xsd:documentation>A - Codice ABI</xsd:documentation>
+					<xsd:documentation>B - Codice BIC</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="codiceIdentificativoUnivoco" type="pay_i:stText35" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Campo alfanumerico che può contenere il codice fiscale o la partita IVA, il codice ABI o il codice BIC</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+ <xsd:complexType name="ctIdentificativoUnivocoPersonaG">
+		<xsd:sequence>
+			<xsd:element name="tipoIdentificativoUnivoco" type="pay_i:stTipoIdentificativoUnivocoPersG" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Campo alfanumerico che indica la natura del soggetto. Può assumere i seguenti valori:</xsd:documentation>
+					<xsd:documentation>G - Persona Giuridica</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="codiceIdentificativoUnivoco" type="pay_i:stText35" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Campo alfanumerico che può contenere il codice fiscale o la partita IVA, il codice ABI o il codice BIC del prestatore di servizi di pagamento mittente, in funzione del dato tipoIdentificativoUnivoco.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+ <!-- **** END: Identificativi univoci dei soggetti-->
+
+ <!-- **** BEGIN: Soggetti-->
+
+	<!-- Istituto Mittente-->
+	<xsd:complexType name="ctIstitutoMittente">
+		<xsd:sequence>
+			<xsd:element name="identificativoUnivocoMittente" type="pay_i:ctIdentificativoUnivoco" minOccurs="1">
+ <xsd:annotation>
+					<xsd:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione dell’Istituto mittente del flusso.</xsd:documentation>
+ 				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="denominazioneMittente" type="pay_i:stText70" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Contiene la denominazione del prestatore di servizi di pagamento mittente che genera il flusso.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- Istituto Ricevente -->
+	<xsd:complexType name="ctIstitutoRicevente">
+		<xsd:sequence>
+			<xsd:element name="identificativoUnivocoRicevente" type="pay_i:ctIdentificativoUnivocoPersonaG" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione fiscale dell’ente creditore che riceve il flusso.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="denominazioneRicevente" type="pay_i:stText70" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Contiene la denominazione dell’ente creditore che riceve il flusso.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- **** END: Soggetti -->
+
+	<!-- Dati singoli pagamenti contenuti nel flusso di rendicontazione -->
+	<xsd:complexType name="ctDatiSingoliPagamenti">
+		<xsd:sequence>
+			<xsd:element name="identificativoUnivocoVersamento" type="pay_i:stText35" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Riporta il dato codice IUV cui si riferisce il pagamento rendicontato nel flusso.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="identificativoUnivocoRiscossione" type="pay_i:stText35" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Riferimento univoco dell’operazione assegnato al pagamento dal Prestatore dei servizi di Pagamento. Può coincidere con il CRO ovvero TRN nel caso di Bonifico Bancario o con il CODELINE nel caso di versamento su c/c  postale.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="indiceDatiSingoloPagamento" type="pay_i:stIndice" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Indice dell’occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.</xsd:documentation>
+                </xsd:annotation>
+			</xsd:element>
+			<xsd:element name="singoloImportoPagato" type="pay_i:stImporto" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Campo numerico indicante l’importo relativo alla somma pagata. Deve essere diverso da 0</xsd:documentation>
+					<xsd:documentation>Qualora il singolo importo pagato è riferito ad un pagamento revocato (dato codiceEsitoPagamento = 3) deve assumere un valore negativo.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="codiceEsitoSingoloPagamento" type="pay_i:stCodiceEsitoPagamento" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Campo numerico indicante l’esito del pagamento. Può assumere i seguenti valori:</xsd:documentation>
+ <xsd:documentation>0=Pagamento eseguito</xsd:documentation>
+					<xsd:documentation>3=Pagamento revocato</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+ <xsd:element name="dataEsitoSingoloPagamento" type="pay_i:stISODate" minOccurs="1">
+				<xsd:annotation>
+				 <xsd:documentation>Indica la data di esecuzione del pagamento, nel formato ISO 8601 [YYYY]-[MM]-[DD].</xsd:documentation>
+ 			</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- Flusso di Rendicontazione -->
+ <xsd:complexType name="ctFlussoRiversamento">
+		<xsd:sequence>
+			<xsd:element name="versioneOggetto" type="pay_i:stVersioneOggetto" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Versione che identifica l’oggetto scambiato.</xsd:documentation>
+					<xsd:documentation>Valore ammesso "1.0"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="identificativoFlusso" type="pay_i:stText35" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Identificativo legato alla trasmissione del flusso di riconciliazione.</xsd:documentation>
+					<xsd:documentation>Deve essere univoco nell’ambito dell’anno di riferimento delle operazioni di pagamento cui si riferisce il flusso.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="dataOraFlusso" type="pay_i:stISODateTime" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Indica la data e ora di creazione del flusso, secondo il formato ISO 8601 [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss].</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="identificativoUnivocoRegolamento" type="pay_i:stText35" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Riferimento. assegnato dal prestatore di servizi di pagamento all’operazione di trasferimento fondi con la quale viene regolato contabilmente il riversamento delle somme incassate.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+            <xsd:element name="dataRegolamento" type="pay_i:stISODate" minOccurs="1">
+				<xsd:annotation>
+			        <xsd:documentation>Indica la data di esecuzione dell’operazione di trasferimento fondi con la quale viene regolato contabilmente il riversamento delle somme incassate, nel formato ISO 8601 [YYYY]-[MM]-[DD].</xsd:documentation>
+                </xsd:annotation>
+			</xsd:element>
+			<xsd:element name="istitutoMittente" type="pay_i:ctIstitutoMittente" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Aggregazione relativa al Prestatore di servizi di Pagamento che genera il presente flusso. </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+            <xsd:element name="codiceBicBancaDiRiversamento" type="pay_i:stText35" minOccurs="0">
+				<xsd:annotation>
+			        <xsd:documentation>Contiene il codice BIC del PSP che ha generato il SEPA Credit Transfer di riversamento. Corrisponde al dato AT-09 del SCT.</xsd:documentation>
+                                </xsd:annotation>
+			</xsd:element>
+			<xsd:element name="istitutoRicevente" type="pay_i:ctIstitutoRicevente" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Aggregazione relativa all’ente creditore destinatario del flusso.</xsd:documentation>
+ 		</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="numeroTotalePagamenti" type="pay_i:stNumeroTotalePagamenti" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Numero dei pagamenti presenti nel flusso.</xsd:documentation>
+					<xsd:documentation>Deve essere maggiore di 1</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="importoTotalePagamenti" type="pay_i:stImportoTotalePagamenti" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Importo totale dei pagamenti presenti nel flusso. Deve coincidere con la somma dei dati singoloImportoPagato presenti nel flusso.</xsd:documentation>
+					<xsd:documentation>Il totale è senza decimali, quindi i singoli importi, prima di essere sommati, devono essere moltiplicati per 100.</xsd:documentation>
+					<xsd:documentation>Deve essere maggiore di 1</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="datiSingoliPagamenti" type="pay_i:ctDatiSingoliPagamenti" minOccurs="1" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Aggregazione con un numero di occorrenze pari all’elemento numeroTotalePagamenti.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+ <!-- **** END: tipi complessi ****-->
+
+
+	<!-- **** BEGIN: elementi ****-->
+	<xsd:element name="FlussoRiversamento" type="pay_i:ctFlussoRiversamento">
+		<xsd:annotation>
+			<xsd:documentation>Flusso di Riversamento che i prestatori dei servizi di pagamento devono mettere a disposizione degli enti creditori loro clienti</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!-- **** END: elementi ****-->
+</xsd:schema>
+
+

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema attributeFormDefault="unqualified"
+            elementFormDefault="qualified"
+            version="1.0"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:sac="http://ws.pagamenti.telematici.gov/"
+            targetNamespace="http://ws.pagamenti.telematici.gov/">
+
+    <xsd:include schemaLocation="sac-common-types-1.0.xsd"  />
+
+	<xsd:simpleType name="stTassonomiaAvviso">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]{2,2}" />
+			<xsd:enumeration value="00"/> <!--cartelle esattoriali -->
+            <xsd:enumeration value="01"/> <!--diritti e concessioni -->
+            <xsd:enumeration value="02"/> <!--imposte e tasse -->
+            <xsd:enumeration value="03"/> <!--imu tasi e altre tasse comunali -->
+            <xsd:enumeration value="04"/> <!--ingressi a mostre e musei -->
+            <xsd:enumeration value="05"/> <!--multe e sanzioni amministrative -->
+            <xsd:enumeration value="06"/> <!--previdenza e infortuni -->
+            <xsd:enumeration value="07"/> <!--servizi erogati dal comune -->
+            <xsd:enumeration value="08"/> <!--servizi erogati da altri enti -->
+            <xsd:enumeration value="09"/> <!--servizi scolastici -->
+            <xsd:enumeration value="10"/> <!--tassa automobilistica -->
+            <xsd:enumeration value="11"/> <!--ticket e prestazioni sanitarie -->
+            <xsd:enumeration value="12"/> <!--trasporti, mobilità e parcheggi -->
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!-- AVVISI -->
+    <xsd:complexType name="ctAvvisoDigitale">
+        <xsd:sequence>
+            <xsd:element name="identificativoDominio" type="sac:stText35"/>
+            <xsd:element name="anagraficaBeneficiario" type="sac:stText35"/>
+            <xsd:element name="identificativoMessaggioRichiesta" type="sac:stIdentificativoMessaggioRichiesta"/>
+            <xsd:element name="tassonomiaAvviso" type="sac:stTassonomiaAvviso"/>
+            <xsd:element name="codiceAvviso" type="sac:stCodiceAvviso"/>
+            <xsd:element name="soggettoPagatore" type="sac:ctSoggettoPagatore"/>
+            <xsd:element name="dataScadenzaPagamento" type="sac:stISODate"/>
+            <xsd:element name="dataScadenzaAvviso" type="sac:stISODate"/>
+            <xsd:element name="importoAvviso" type="sac:stImporto"/>
+            <xsd:element name="eMailSoggetto" type="sac:stEMail" minOccurs="0" />
+            <xsd:element name="cellulareSoggetto" type="sac:stCellulareSoggetto" minOccurs="0" />
+            <xsd:element name="descrizionePagamento" type="sac:stText140"/>
+            <xsd:element name="urlAvviso" type="sac:stText140" minOccurs="0"/>
+			<xsd:element name="datiSingoloVersamento" type="sac:ctDatiSingoloVersamento" maxOccurs="5"/>
+			<xsd:element name="tipoPagamento" type="sac:stTipoPagamento"/>
+			<xsd:element name="tipoOperazione" type="sac:stTipoOperazione"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- Root Element -->
+    <xsd:element name="listaAvvisiDigitali">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="versioneOggetto" type="sac:stText16" />
+                <xsd:element name="avvisoDigitale" type="sac:ctAvvisoDigitale" minOccurs="1" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <!-- ESITI AVVISI -->
+    <xsd:simpleType name="stCodiceEsito">
+        <xsd:restriction base="xsd:integer">
+            <xsd:minInclusive value="0" />
+            <xsd:maxInclusive value="99999" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stTipoCanaleEsito">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]{1,1}" />
+            <xsd:enumeration value="0"/><!-- nessun canale -->
+            <xsd:enumeration value="1"/><!-- SMS -->
+            <xsd:enumeration value="2"/><!-- e-mail -->
+            <xsd:enumeration value="3"/><!-- mobile payment -->
+            <xsd:enumeration value="4"/><!-- altro canale PSP -->
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="ctEsitoAvvisatura">
+        <xsd:sequence>
+            <xsd:element name="tipoCanaleEsito" type="sac:stTipoCanaleEsito" />
+            <xsd:element name="identificativoCanale" type="sac:stText35" minOccurs="0" />
+            <xsd:element name="dataEsito" type="sac:stISODate" />
+            <xsd:element name="codiceEsito" type="sac:stCodiceEsito" />
+            <xsd:element name="descrizioneEsito" type="sac:stText140" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ctEsitoAvvisoDigitale">
+        <xsd:sequence>
+            <xsd:element name="identificativoDominio" type="sac:stText35" />
+            <xsd:element name="identificativoMessaggioRichiesta" type="sac:stIdentificativoMessaggioRichiesta" />
+            <xsd:element name="esitoAvvisatura" type="sac:ctEsitoAvvisatura" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="listaEsitoAvvisiDigitali">
+        <xsd:sequence>
+            <xsd:element name="versioneOggetto" type="sac:stText16" />
+            <xsd:element name="identificativoFlusso" type="sac:stIdentificativoFlusso" />
+            <xsd:element name="esitoAvvisoDigitale" type="sac:ctEsitoAvvisoDigitale" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+	
+	<xsd:complexType name="ctDatiSingoloVersamento">
+        <xsd:sequence>
+            <xsd:element name="ibanAccredito" type="sac:stIBANIdentifier" minOccurs="0"/>
+            <xsd:element name="ibanAppoggio" type="sac:stIBANIdentifier" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+	
+		<xsd:simpleType name="stTipoOperazione">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="1"/>
+            <xsd:enumeration value="C"/><!-- Creazione di un nuovo avviso-->
+            <xsd:enumeration value="U"/><!-- Modifica di un avviso esistente -->
+            <xsd:enumeration value="D"/><!-- Cancellazione di un avviso esistente -->
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!-- Root Element -->
+    <xsd:element name="listaEsitoAvvisiDigitali" type="sac:listaEsitoAvvisiDigitali" />
+</xsd:schema>

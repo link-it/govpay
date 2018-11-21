@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Questo WSDL rappresenta l'interfaccia esposta dalla PAA per la verifica 
+	dei pagamenti in attesa. -->
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead"
+	xmlns:ppt="http://ws.pagamenti.telematici.gov/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/RichiestaAvvisi"
+	xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" name="PPT"
+	targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/RichiestaAvvisi">
+	<wsdl:types>
+		<!-- schema header -->
+		<xsd:schema version="2.1.3"
+			targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
+			<xsd:simpleType name="stText35">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="35" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:element name="intestazionePPT"
+				xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="identificativoIntermediarioPA"
+							type="ppthead:stText35" />
+						<xsd:element name="identificativoStazioneIntermediarioPA"
+							type="ppthead:stText35" />
+						<xsd:element name="identificativoDominio" type="ppthead:stText35" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+		<!-- schema body -->
+		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/">
+			<xsd:import schemaLocation="./src/main/resources/xsd/comuni/PagInf_RPT_RT_6_2_0.xsd" namespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" />
+
+			<!-- simple types -->
+			<xsd:simpleType name="stIdentificativoServizio">
+				<xsd:restriction base="xsd:string">
+					<xsd:length value="5" />
+				</xsd:restriction>
+			</xsd:simpleType>
+
+			<xsd:simpleType name="stText18">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="18" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="stText25">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="25" />
+				</xsd:restriction>
+			</xsd:simpleType>
+
+			<xsd:simpleType name="stCodIUV">
+				<xsd:restriction base="xsd:string">
+					<xsd:pattern value="[0-9]{5,15}|[0-9]{17}" />
+				</xsd:restriction>
+			</xsd:simpleType>
+
+			<xsd:simpleType name="stAuxDigit">
+				<xsd:restriction base="xsd:string">
+					<xsd:length value="1" />
+					<xsd:pattern value="[0-9]" />
+				</xsd:restriction>
+			</xsd:simpleType>
+
+			<xsd:simpleType name="stApplicationCode">
+				<xsd:restriction base="xsd:string">
+					<xsd:pattern value="[0-9]{2}" />
+				</xsd:restriction>
+			</xsd:simpleType>
+
+			<!-- complex types -->
+			<xsd:complexType name="ctNumeroAvviso">
+				<xsd:sequence>
+					<xsd:element type="ppt:stAuxDigit" name="auxDigit" />
+					<xsd:element type="ppt:stApplicationCode" name="applicationCode" minOccurs="0"/>
+					<xsd:element type="ppt:stCodIUV" name="IUV" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ctFaultBean">
+				<xsd:sequence>
+					<xsd:element name="faultCode" type="xsd:string" />
+					<xsd:element name="faultString" type="xsd:string" />
+					<xsd:element name="id" type="xsd:string" />
+					<xsd:element name="description" type="xsd:string"
+						minOccurs="0" />
+					<xsd:element name="serial" type="xsd:int" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ctRisposta">
+				<xsd:sequence>
+					<xsd:element name="fault" type="ppt:ctFaultBean"
+						minOccurs="0" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ctSpezzoniCausaleVersamento">
+				<xsd:sequence minOccurs="1" maxOccurs="6">
+					<xsd:choice>
+						<xsd:element type="pay_i:stText35" name="spezzoneCausaleVersamento" />
+						<xsd:element type="ppt:ctSpezzoneStrutturatoCausaleVersamento" name="spezzoneStrutturatoCausaleVersamento" />
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ctSpezzoneStrutturatoCausaleVersamento">
+				<xsd:sequence>
+					<xsd:element type="ppt:stText25" name="causaleSpezzone" />
+					<xsd:element type="pay_i:stImporto" name="importoSpezzone" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ctDatiPagamentoPA">
+				<xsd:sequence>
+					<xsd:element name="importoSingoloVersamento" type="pay_i:stImporto" />
+					<xsd:element name="ibanAccredito" type="pay_i:stIBANIdentifier" />
+					<xsd:element name="bicAccredito" type="pay_i:stBICIdentifier" minOccurs="0" />
+					<xsd:element name="enteBeneficiario" type="pay_i:ctEnteBeneficiario" minOccurs="0" />
+					<xsd:element name="credenzialiPagatore" type="pay_i:stText35" minOccurs="0" />
+					<xsd:choice>
+						<xsd:element name="causaleVersamento" type="pay_i:stText140" />
+						<xsd:element name="spezzoniCausaleVersamento" type="ppt:ctSpezzoniCausaleVersamento" />
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="ctEsitoChiediNumeroAvviso">
+				<xsd:complexContent>
+					<xsd:extension base="ppt:ctRisposta">
+						<xsd:sequence>
+							<xsd:element name="esito" type="xsd:string" minOccurs="1" />
+							<xsd:element name="numeroAvviso" type="ppt:ctNumeroAvviso" minOccurs="0" />
+							<xsd:element name="datiPagamentoPA" type="ppt:ctDatiPagamentoPA" minOccurs="0" />
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
+
+			<xsd:complexType name="paaChiediNumeroAvviso">
+				<xsd:sequence>
+					<xsd:element name="identificativoPSP" type="pay_i:stText35" />
+					<xsd:element name="datiSpecificiServizio" type="xsd:base64Binary" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="paaChiediNumeroAvvisoRisposta">
+				<xsd:sequence>
+					<xsd:element name="paaChiediNumeroAvvisoRisposta" type="ppt:ctEsitoChiediNumeroAvviso" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<!-- Wrapper Elements -->
+			<xsd:element name="paaChiediNumeroAvviso" type="ppt:paaChiediNumeroAvviso" />
+			<xsd:element name="paaChiediNumeroAvvisoRisposta" type="ppt:paaChiediNumeroAvvisoRisposta" />
+
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="paaChiediNumeroAvviso">
+		<wsdl:part name="bodyrichiesta" element="ppt:paaChiediNumeroAvviso" />
+		<wsdl:part name="header" element="ppthead:intestazionePPT" />
+	</wsdl:message>
+	<wsdl:message name="paaChiediNumeroAvvisoRisposta">
+		<wsdl:part name="bodyrisposta" element="ppt:paaChiediNumeroAvvisoRisposta" />
+	</wsdl:message>
+
+	<wsdl:portType name="GenerazioneAvvisi">
+		<wsdl:operation name="paaChiediNumeroAvviso">
+			<wsdl:input message="tns:paaChiediNumeroAvviso"
+				wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaChiediNumeroAvvisoRichiesta" />
+			<wsdl:output message="tns:paaChiediNumeroAvvisoRisposta"
+				wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaChiediNumeroAvvisoRisposta" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="GenerazioneAvvisibinding" type="tns:GenerazioneAvvisi">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="paaChiediNumeroAvviso">
+			<soap:operation soapAction="paaChiediNumeroAvviso" />
+			<wsdl:input>
+				<soap:header message="tns:paaChiediNumeroAvviso" part="header" use="literal" />
+				<soap:body parts="bodyrichiesta" use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="GenerazioneAvvisiservice">
+		<wsdl:port name="PPTPort" binding="tns:GenerazioneAvvisibinding">
+			<soap:address location="http://NodoPagamentiSPC.spcoop.gov.it/" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

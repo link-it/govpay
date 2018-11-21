@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema attributeFormDefault="unqualified"
+            elementFormDefault="qualified"
+            version="1.0"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:sac="http://ws.pagamenti.telematici.gov/"
+            targetNamespace="http://ws.pagamenti.telematici.gov/">
+
+    <xsd:include schemaLocation="sac-common-types-1.0.xsd"/>
+
+    <xsd:simpleType name="stCodiceEsitoPresaInCarico">
+        <xsd:restriction base="xsd:integer">
+            <xsd:enumeration value="0"/><!-- Preso in carico -->
+            <xsd:enumeration value="1"/><!-- File compresso illeggibile -->
+            <xsd:enumeration value="2"/><!-- Errori di parsing file XML -->
+            <xsd:enumeration value="3"/><!-- Errore di validazione con XSD -->
+            <xsd:enumeration value="4"/><!-- Errore di validazione extra XSD -->
+            <xsd:enumeration value="5"/><!-- Invio duplicato -->
+            <xsd:enumeration value="6"/><!-- Altri errori -->
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="ctEsitoPresaInCarico">
+        <xsd:sequence>
+            <xsd:element name="identificativoFlusso" type="sac:stIdentificativoFlusso"/>
+            <xsd:element name="codiceEsitoPresaInCarico" type="sac:stCodiceEsitoPresaInCarico"/>
+            <xsd:element name="descrizioneEsitoPresaInCarico" type="sac:stText140" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="esitoPresaInCarico" type="sac:ctEsitoPresaInCarico"/>
+</xsd:schema>

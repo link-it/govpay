@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ta="http://PuntoAccessoPSP.spcoop.gov.it/TassaAuto"
+	targetNamespace="http://PuntoAccessoPSP.spcoop.gov.it/TassaAuto">
+
+	<xsd:simpleType name="stRegioneResidenza">
+		<xsd:restriction base="xsd:string">
+			<xsd:length value="11" />
+			<xsd:enumeration value="00390090215" />
+			<!-- Provincia Autonoma di Bolzano -->
+			<xsd:enumeration value="00337460224" />
+			<!-- Provincia Autonoma di Trento -->
+			<xsd:enumeration value="80003170661" />
+			<!-- Regione Abruzzo -->
+			<xsd:enumeration value="80002870923" />
+			<!-- Regione Autonoma della Sardegna -->
+			<xsd:enumeration value="80014930327" />
+			<!-- Regione Autonoma Friuli-Venezia Giulia -->
+			<xsd:enumeration value="80003690221" />
+			<!-- Regione Autonoma Trentino-Alto Adige/Suedtirol -->
+			<xsd:enumeration value="80002270074" />
+			<!-- Regione Autonoma Valle D'Aosta -->
+			<xsd:enumeration value="80002950766" />
+			<!-- Regione Basilicata -->
+			<xsd:enumeration value="02205340793" />
+			<!-- Regione Calabria -->
+			<xsd:enumeration value="80011990639" />
+			<!-- Regione Campania -->
+			<xsd:enumeration value="80062590379" />
+			<!-- Regione Emilia-Romagna -->
+			<xsd:enumeration value="80143490581" />
+			<!-- Regione Lazio -->
+			<xsd:enumeration value="00849050109" />
+			<!-- Regione Liguria -->
+			<xsd:enumeration value="80050050154" />
+			<!-- Regione Lombardia -->
+			<xsd:enumeration value="80008630420" />
+			<!-- Regione Marche -->
+			<xsd:enumeration value="00169440708" />
+			<!-- Regione Molise -->
+			<xsd:enumeration value="80087670016" />
+			<!-- Regione Piemonte -->
+			<xsd:enumeration value="80017210727" />
+			<!-- Regione Puglia -->
+			<xsd:enumeration value="80012000826" />
+			<!-- Regione Siciliana -->
+			<xsd:enumeration value="01386030488" />
+			<!-- Regione Toscana -->
+			<xsd:enumeration value="80000130544" />
+			<!-- Regione Umbria -->
+			<xsd:enumeration value="80007580279" />
+			<!-- Regione Veneto -->
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stText16">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1" />
+			<xsd:maxLength value="16" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stText17">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1" />
+			<xsd:maxLength value="17" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stTipoVeicoloTarga">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="1" /> <!-- autoveicoli -->
+			<xsd:enumeration value="2" /> <!-- rimorchi -->
+			<xsd:enumeration value="4" /> <!-- motoveicolo -->
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stTarga">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="7" />
+			<xsd:maxLength value="8" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="stTipoVeicoloTelaio">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="3" /> <!-- ciclomotori -->
+			<xsd:enumeration value="7" /> <!-- quadriciclo -->
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="ctVeicoloConTelaio">
+		<xsd:sequence>
+			<xsd:element name="tipoVeicoloTelaio" type="ta:stTipoVeicoloTelaio" />
+			<xsd:element name="numeroTelaioVeicolo" type="ta:stText17" />
+			<xsd:element name="intestatarioVeicolo" type="ta:stText16" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ctVeicoloConTarga">
+		<xsd:sequence>
+			<xsd:element name="tipoVeicoloTarga" type="ta:stTipoVeicoloTarga" />
+			<xsd:element name="veicoloTarga" type="ta:stTarga" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ctTassaAuto">
+		<xsd:sequence>
+			<xsd:element name="regioneResidenza" type="ta:stRegioneResidenza" minOccurs="0"/>
+			<xsd:choice>
+				<xsd:element name="veicoloConTarga" type="ta:ctVeicoloConTarga" />
+				<xsd:element name="veicoloConTelaio" type="ta:ctVeicoloConTelaio" />
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- Wrapper elements -->
+	<xsd:element name="tassaAuto" type="ta:ctTassaAuto" />
+
+</xsd:schema>
