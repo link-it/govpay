@@ -33,7 +33,7 @@
 
         <xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/">
 
-            <xsd:include schemaLocation="./src/main/resources/xsd/comuni/avvisi-digitali-1.0.xsd"/>
+            <xsd:include schemaLocation="jars/pagopa-beans/src/main/resources/xsd/comuni/avvisi-digitali-1.0.xsd"/>
 
             <xsd:complexType name="ctNodoInviaAvvisoDigitale">
                 <xsd:sequence>

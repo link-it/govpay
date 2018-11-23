@@ -38,7 +38,7 @@
 				</xsd:appinfo>
 			</xsd:annotation>
 
-			<xsd:import schemaLocation="./src/main/resources/xsd/comuni/PagInf_RPT_RT_6_2_0.xsd" namespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/"/>
+			<xsd:import schemaLocation="jars/pagopa-beans/src/main/resources/xsd/comuni/PagInf_RPT_RT_6_2_0.xsd" namespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/"/>
 		
 			<xsd:simpleType name="stText25">
 				<xsd:restriction base="xsd:string">

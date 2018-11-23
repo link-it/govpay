@@ -11,7 +11,7 @@
     <wsdl:types>
         <xsd:schema version="2.1" targetNamespace="http://ws.pagamenti.telematici.gov/">
 
-            <xsd:include schemaLocation="./src/main/resources/xsd/comuni/avvisi-digitali-1.0.xsd"/>
+            <xsd:include schemaLocation="jars/pagopa-beans/src/main/resources/xsd/comuni/avvisi-digitali-1.0.xsd"/>
 
             <xsd:element name="intestazionePPT" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
                 <xsd:complexType>
