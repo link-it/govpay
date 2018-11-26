@@ -541,4 +541,29 @@ alter table intermediari MODIFY column principal_originale VARCHAR(756) NOT NULL
 
 delete from connettori where cod_proprieta = 'PRINCIPAL';
 
+-- Eventi
+drop table eventi;
+
+CREATE TABLE eventi
+(
+        cod_dominio VARCHAR(35),
+        iuv VARCHAR(35),
+        ccp VARCHAR(35),
+        categoria_evento VARCHAR(1),
+        tipo_evento VARCHAR(35),
+        sottotipo_evento VARCHAR(35),
+        -- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+        -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE
+        data TIMESTAMP(3),
+        intervallo BIGINT,
+        dettaglio LONGTEXT,
+        -- fk/pk columns
+        id BIGINT AUTO_INCREMENT,
+        id_versamento BIGINT,
+        id_pagamento_portale BIGINT,
+        -- fk/pk keys constraints
+        CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+        CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+        CONSTRAINT pk_eventi PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 

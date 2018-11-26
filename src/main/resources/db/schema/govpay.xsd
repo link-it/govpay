@@ -1305,29 +1305,39 @@
 			<xsd:element name="codDominio" type="String35" minOccurs="0"/>
 			<xsd:element name="iuv" type="String35" minOccurs="0"/>
 			<xsd:element name="ccp" type="String35" minOccurs="0"/>
-			<xsd:element name="codPsp" type="String35" minOccurs="0"/>
-			<xsd:element name="tipoVersamento" type="String10" minOccurs="0"/>
-			<xsd:element name="componente" type="String4" minOccurs="0"/>
 			<xsd:element name="categoriaEvento" type="String1" minOccurs="0"/>
 			<xsd:element name="tipoEvento" type="String35" minOccurs="0"/>
-			<xsd:element name="sottotipoEvento" type="String35" minOccurs="0"/>
-			<xsd:element name="erogatore" type="String35" minOccurs="0"/>
-			<xsd:element name="fruitore" type="String35" minOccurs="0"/>
-			<xsd:element name="codStazione" type="String35" minOccurs="0"/>
-			<xsd:element name="codCanale" type="String35" minOccurs="0"/>
-			<xsd:element name="parametri1" type="String512" minOccurs="0"/>
-			<xsd:element name="parametri2" type="String512" minOccurs="0"/>
-			<xsd:element name="esito" type="String35" minOccurs="0"/>
+			<xsd:element name="sottotipoEvento" type="String35" minOccurs="0" />
+			<xsd:element name="data" type="xsd:dateTime" minOccurs="0" />
+			<xsd:element name="intervallo" type="xsd:long" minOccurs="0" />
+			<xsd:element name="dettaglio" type="xsd:string" minOccurs="0">
+            	<xsd:annotation>
+	            	<xsd:appinfo>
+                    	<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+                        	<linkit:sql-column-mapping long-text="true"/>
+                      	</linkit:generator>
+                	</xsd:appinfo>
+	            </xsd:annotation>
+            </xsd:element>
 
-			<xsd:element name="data1" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="data2" type="xsd:dateTime" minOccurs="0"/>
 			
-			<xsd:element name="idVersamento" type="id-versamento">
+			<xsd:element name="idVersamento" type="id-versamento" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="Versamento" object-type="Versamento"
-								relationship="none"/>
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idPagamentoPortale" type="id-pagamento-portale" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="PagamentoPortale" object-type="PagamentoPortale"
+								relationship="reversed"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>

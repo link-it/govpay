@@ -49,10 +49,12 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Nota.TipoNota;
+import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.thread.InviaNotificaThread;
@@ -302,6 +304,7 @@ public class RtUtils extends NdpValidationUtils {
 		
 		Versamento versamento = rpt.getVersamento(bd);
 		VersamentiBD versamentiBD = new VersamentiBD(bd);
+		GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
 
 		List<CtDatiSingoloPagamentoRT> datiSingoliPagamenti = ctRt.getDatiPagamento().getDatiSingoloPagamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
@@ -396,10 +399,22 @@ public class RtUtils extends NdpValidationUtils {
 				ctx.log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 				pagamentiBD.updatePagamento(pagamento);
 		}
-		
+		EventoNota eventoNota = null;
 		switch (rpt.getEsitoPagamento()) {
 		case PAGAMENTO_ESEGUITO:
+			//TODO Eliminare
 			versamento.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento eseguito", "Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote));
+			
+			eventoNota = new EventoNota();
+			eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
+			eventoNota.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
+			eventoNota.setIdVersamento(versamento.getId());
+			eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
+			eventoNota.setIuv(versamento.getIuvVersamento());
+			eventoNota.setOggetto("Pagamento eseguito");
+			eventoNota.setTesto("Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote);
+			eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+			
 			
 			switch (versamento.getStatoVersamento()) {
 				case ANNULLATO:
@@ -427,7 +442,18 @@ public class RtUtils extends NdpValidationUtils {
 			
 		case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 		case DECORRENZA_TERMINI_PARZIALE:
+			//TODO Eliminare
 			versamento.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento parzialmente eseguito", "Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote));
+			
+			eventoNota = new EventoNota();
+			eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
+			eventoNota.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
+			eventoNota.setIdVersamento(versamento.getId());
+			eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
+			eventoNota.setIuv(versamento.getIuvVersamento());
+			eventoNota.setOggetto("Pagamento parzialmente eseguito");
+			eventoNota.setTesto("Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote);
+			eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
 			
 			switch (versamento.getStatoVersamento()) {
 				case ANNULLATO:
@@ -458,7 +484,10 @@ public class RtUtils extends NdpValidationUtils {
 			break;
 		}	
 		
-		
+		// inserimento di una eventuale nota
+		if(eventoNota != null) {
+			giornaleEventi.registraEventoNota(eventoNota);
+		}
 		
 		// Aggiornamento dello stato del pagamento portale associato all'RPT
 		Long idPagamentoPortale = rpt.getIdPagamentoPortale();

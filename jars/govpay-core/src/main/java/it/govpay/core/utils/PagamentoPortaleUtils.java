@@ -93,7 +93,7 @@ public class PagamentoPortaleUtils {
 		}
 	}
 	
-	public static void addNota(PagamentoPortale pagamentoPortale, String autore, String oggetto, TipoNota tipo, String testo, Boolean ack) {
+	public static Nota addNota(PagamentoPortale pagamentoPortale, String autore, String oggetto, TipoNota tipo, String testo, Boolean ack) {
 		Nota nota = new Nota();
 		nota.setAutore(autore);
 		nota.setData(new Date());
@@ -103,9 +103,11 @@ public class PagamentoPortaleUtils {
 		pagamentoPortale.getNote().add(0, nota);
 		if(ack != null)
 			pagamentoPortale.setAck(ack.booleanValue());
+		
+		return nota;
 	}
 	
-	public static void addNota(PagamentoPortale pagamentoPortale, String autore, GovPayException e, Boolean ack) {
-		addNota(pagamentoPortale, autore, e.getDescrizioneEsito(), e.getTipoNota(), e.getMessageNota(), ack);
+	public static Nota addNota(PagamentoPortale pagamentoPortale, String autore, GovPayException e, Boolean ack) {
+		return addNota(pagamentoPortale, autore, e.getDescrizioneEsito(), e.getTipoNota(), e.getMessageNota(), ack);
 	}
 }

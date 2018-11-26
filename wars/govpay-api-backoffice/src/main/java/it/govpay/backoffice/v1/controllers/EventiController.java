@@ -18,6 +18,7 @@ import it.govpay.backoffice.v1.beans.converter.EventiConverter;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
+import it.govpay.backoffice.v1.beans.Evento;
 import it.govpay.backoffice.v1.beans.ListaEventi;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -69,8 +70,8 @@ public class EventiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.backoffice.v1.beans.Evento> results = new ArrayList<>();
-			for(it.govpay.model.Evento evento: listaEventiDTOResponse.getResults()) {
+			List<Evento> results = new ArrayList<>();
+			for(it.govpay.bd.model.Evento evento: listaEventiDTOResponse.getResults()) {
 				results.add(EventiConverter.toRsModel(evento));
 			}
 			

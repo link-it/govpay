@@ -38,22 +38,14 @@ import java.io.Serializable;
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="componente" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="categoriaEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="sottotipoEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="erogatore" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="fruitore" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codStazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="parametri1" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="parametri2" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="esito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="data1" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="data2" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="intervallo" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dettaglio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -71,22 +63,14 @@ import java.io.Serializable;
   	"codDominio",
   	"iuv",
   	"ccp",
-  	"codPsp",
-  	"tipoVersamento",
-  	"componente",
   	"categoriaEvento",
   	"tipoEvento",
   	"sottotipoEvento",
-  	"erogatore",
-  	"fruitore",
-  	"codStazione",
-  	"codCanale",
-  	"parametri1",
-  	"parametri2",
-  	"esito",
-  	"data1",
-  	"data2",
-  	"idVersamento"
+  	"data",
+  	"intervallo",
+  	"dettaglio",
+  	"idVersamento",
+  	"idPagamentoPortale"
   }
 )
 
@@ -134,30 +118,6 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.ccp = ccp;
   }
 
-  public java.lang.String getCodPsp() {
-    return this.codPsp;
-  }
-
-  public void setCodPsp(java.lang.String codPsp) {
-    this.codPsp = codPsp;
-  }
-
-  public java.lang.String getTipoVersamento() {
-    return this.tipoVersamento;
-  }
-
-  public void setTipoVersamento(java.lang.String tipoVersamento) {
-    this.tipoVersamento = tipoVersamento;
-  }
-
-  public java.lang.String getComponente() {
-    return this.componente;
-  }
-
-  public void setComponente(java.lang.String componente) {
-    this.componente = componente;
-  }
-
   public java.lang.String getCategoriaEvento() {
     return this.categoriaEvento;
   }
@@ -182,76 +142,28 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.sottotipoEvento = sottotipoEvento;
   }
 
-  public java.lang.String getErogatore() {
-    return this.erogatore;
+  public java.util.Date getData() {
+    return this.data;
   }
 
-  public void setErogatore(java.lang.String erogatore) {
-    this.erogatore = erogatore;
+  public void setData(java.util.Date data) {
+    this.data = data;
   }
 
-  public java.lang.String getFruitore() {
-    return this.fruitore;
+  public long getIntervallo() {
+    return this.intervallo;
   }
 
-  public void setFruitore(java.lang.String fruitore) {
-    this.fruitore = fruitore;
+  public void setIntervallo(long intervallo) {
+    this.intervallo = intervallo;
   }
 
-  public java.lang.String getCodStazione() {
-    return this.codStazione;
+  public java.lang.String getDettaglio() {
+    return this.dettaglio;
   }
 
-  public void setCodStazione(java.lang.String codStazione) {
-    this.codStazione = codStazione;
-  }
-
-  public java.lang.String getCodCanale() {
-    return this.codCanale;
-  }
-
-  public void setCodCanale(java.lang.String codCanale) {
-    this.codCanale = codCanale;
-  }
-
-  public java.lang.String getParametri1() {
-    return this.parametri1;
-  }
-
-  public void setParametri1(java.lang.String parametri1) {
-    this.parametri1 = parametri1;
-  }
-
-  public java.lang.String getParametri2() {
-    return this.parametri2;
-  }
-
-  public void setParametri2(java.lang.String parametri2) {
-    this.parametri2 = parametri2;
-  }
-
-  public java.lang.String getEsito() {
-    return this.esito;
-  }
-
-  public void setEsito(java.lang.String esito) {
-    this.esito = esito;
-  }
-
-  public java.util.Date getData1() {
-    return this.data1;
-  }
-
-  public void setData1(java.util.Date data1) {
-    this.data1 = data1;
-  }
-
-  public java.util.Date getData2() {
-    return this.data2;
-  }
-
-  public void setData2(java.util.Date data2) {
-    this.data2 = data2;
+  public void setDettaglio(java.lang.String dettaglio) {
+    this.dettaglio = dettaglio;
   }
 
   public IdVersamento getIdVersamento() {
@@ -260,6 +172,14 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
 
   public void setIdVersamento(IdVersamento idVersamento) {
     this.idVersamento = idVersamento;
+  }
+
+  public IdPagamentoPortale getIdPagamentoPortale() {
+    return this.idPagamentoPortale;
+  }
+
+  public void setIdPagamentoPortale(IdPagamentoPortale idPagamentoPortale) {
+    this.idPagamentoPortale = idPagamentoPortale;
   }
 
   private static final long serialVersionUID = 1L;
@@ -294,18 +214,6 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   protected java.lang.String ccp;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codPsp",required=false,nillable=false)
-  protected java.lang.String codPsp;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="tipoVersamento",required=false,nillable=false)
-  protected java.lang.String tipoVersamento;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="componente",required=false,nillable=false)
-  protected java.lang.String componente;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="categoriaEvento",required=false,nillable=false)
   protected java.lang.String categoriaEvento;
 
@@ -317,45 +225,23 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @XmlElement(name="sottotipoEvento",required=false,nillable=false)
   protected java.lang.String sottotipoEvento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="erogatore",required=false,nillable=false)
-  protected java.lang.String erogatore;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="fruitore",required=false,nillable=false)
-  protected java.lang.String fruitore;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codStazione",required=false,nillable=false)
-  protected java.lang.String codStazione;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codCanale",required=false,nillable=false)
-  protected java.lang.String codCanale;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="parametri1",required=false,nillable=false)
-  protected java.lang.String parametri1;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="parametri2",required=false,nillable=false)
-  protected java.lang.String parametri2;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="esito",required=false,nillable=false)
-  protected java.lang.String esito;
-
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="data1",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date data1;
+  @XmlElement(name="data",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date data;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="data2",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date data2;
+  @javax.xml.bind.annotation.XmlSchemaType(name="long")
+  @XmlElement(name="intervallo",required=false,nillable=false)
+  protected long intervallo;
 
-  @XmlElement(name="idVersamento",required=true,nillable=false)
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="dettaglio",required=false,nillable=false)
+  protected java.lang.String dettaglio;
+
+  @XmlElement(name="idVersamento",required=false,nillable=false)
   protected IdVersamento idVersamento;
+
+  @XmlElement(name="idPagamentoPortale",required=false,nillable=false)
+  protected IdPagamentoPortale idPagamentoPortale;
 
 }

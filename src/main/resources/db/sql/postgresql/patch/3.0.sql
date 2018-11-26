@@ -609,4 +609,32 @@ alter table intermediari alter column principal_originale set NOT NULL;
 
 delete from connettori where cod_proprieta = 'PRINCIPAL';
 
+-- Eventi
+drop table eventi;
+
+drop sequence seq_eventi;
+
+CREATE SEQUENCE seq_eventi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE eventi
+(
+	cod_dominio VARCHAR(35),
+	iuv VARCHAR(35),
+	ccp VARCHAR(35),
+	categoria_evento VARCHAR(1),
+	tipo_evento VARCHAR(35),
+	sottotipo_evento VARCHAR(35),
+	data TIMESTAMP,
+	intervallo BIGINT,
+	dettaglio TEXT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
+	id_versamento BIGINT,
+	id_pagamento_portale BIGINT,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT pk_eventi PRIMARY KEY (id)
+);
+
 

@@ -10,7 +10,7 @@
 
 	<artifactId>govpay-api-pagamento</artifactId>
 	<packaging>war</packaging>
-	<name>GovPay - wars - RS API Pagamento</name>
+	<name>GovPay - wars - REST API Pagamento</name>
 
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
