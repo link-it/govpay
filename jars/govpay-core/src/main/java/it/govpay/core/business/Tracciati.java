@@ -77,7 +77,7 @@ public class Tracciati extends BasicBD {
 		super(basicBD);
 	}
 
-	public void elaboraTracciato(ElaboraTracciatoDTO elaboraTracciatoDTO) throws ServiceException {
+	public void elaboraTracciatoPendenze(ElaboraTracciatoDTO elaboraTracciatoDTO) throws ServiceException {
 
 		boolean wasAutocommit = this.isAutoCommit();
 

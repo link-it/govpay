@@ -348,9 +348,9 @@ CREATE TABLE tracciati
         data_completamento TIMESTAMP NOT NULL,
         bean_dati CLOB,
         file_name_richiesta VARCHAR2(256 CHAR),
-        raw_richiesta BLOB NOT NULL,
+        raw_richiesta BLOB,
         file_name_esito VARCHAR2(256 CHAR),
-        raw_esito BLOB NOT NULL,
+        raw_esito BLOB ,
         -- fk/pk columns
         id NUMBER NOT NULL,
 	id_operatore NUMBER,

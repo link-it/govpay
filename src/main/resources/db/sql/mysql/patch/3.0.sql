@@ -268,9 +268,9 @@ CREATE TABLE tracciati
 	data_completamento TIMESTAMP(3) NOT NULL DEFAULT 0,
 	bean_dati LONGTEXT,
 	file_name_richiesta VARCHAR(256),
-	raw_richiesta MEDIUMBLOB NOT NULL,
+	raw_richiesta MEDIUMBLOB ,
 	file_name_esito VARCHAR(256),
-	raw_esito MEDIUMBLOB NOT NULL,
+	raw_esito MEDIUMBLOB,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_operatore BIGINT,

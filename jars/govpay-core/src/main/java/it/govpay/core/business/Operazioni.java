@@ -1035,7 +1035,7 @@ public class Operazioni{
 		}
 	}
 
-	public static String elaborazioneTracciati(String serviceName){
+	public static String elaborazioneTracciatiPendenze(String serviceName){
 		BasicBD bd = null;
 		GpContext ctx = null;
 		boolean wasAutoCommit = false;
@@ -1075,7 +1075,7 @@ public class Operazioni{
 						log.info("Avvio elaborazione tracciato "  + tracciato.getId());
 						ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
 						elaboraTracciatoDTO.setTracciato(tracciato);
-						tracciatiBusiness.elaboraTracciato(elaboraTracciatoDTO);
+						tracciatiBusiness.elaboraTracciatoPendenze(elaboraTracciatoDTO);
 						log.info("Elaborazione tracciato "  + tracciato.getId() + " completata");
 					}
 					
