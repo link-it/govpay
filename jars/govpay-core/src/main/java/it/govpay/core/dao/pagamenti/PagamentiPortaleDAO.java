@@ -59,8 +59,8 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.orm.IdVersamento;
-import it.govpay.servizi.v2_3.commons.Mittente;
-import it.govpay.servizi.v2_5.gpprt.GpAvviaTransazionePagamentoResponse;
+import it.govpay.servizi.commons.GpAvviaTransazionePagamentoResponse;
+import it.govpay.servizi.commons.Mittente;
 
 public class PagamentiPortaleDAO extends BaseDAO {
 	

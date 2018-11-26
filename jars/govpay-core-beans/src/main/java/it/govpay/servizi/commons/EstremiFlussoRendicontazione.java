@@ -3,86 +3,17 @@ package it.govpay.servizi.commons;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.w3._2001.xmlschema.Adapter1;
-import org.w3._2001.xmlschema.Adapter2;
-import org.w3._2001.xmlschema.Adapter4;
-import org.w3._2001.xmlschema.Adapter5;
 
-
-/**
- * <p>Classe Java per estremiFlussoRendicontazione complex type.
- * 
- * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
- * 
- * <pre>
- * &lt;complexType name="estremiFlussoRendicontazione"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="codFlusso" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *         &lt;element name="codBicRiversamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}gYear"/&gt;
- *         &lt;element name="codPsp" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *         &lt;element name="dataFlusso" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
- *         &lt;element name="dataRegolamento" type="{http://www.w3.org/2001/XMLSchema}date"/&gt;
- *         &lt;element name="iur" type="{http://www.govpay.it/servizi/commons/}string35"/&gt;
- *         &lt;element name="numeroPagamenti" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
- *         &lt;element name="importoTotale" type="{http://www.govpay.it/servizi/commons/}importo18" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "estremiFlussoRendicontazione", propOrder = {
-    "codFlusso",
-    "codBicRiversamento",
-    "annoRiferimento",
-    "codPsp",
-    "dataFlusso",
-    "dataRegolamento",
-    "iur",
-    "numeroPagamenti",
-    "importoTotale"
-})
-@XmlSeeAlso({
-    FlussoRendicontazione.class
-})
 public class EstremiFlussoRendicontazione {
 
-    @XmlElement(required = true)
     protected String codFlusso;
     protected String codBicRiversamento;
-    @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter5 .class)
-    @XmlSchemaType(name = "gYear")
     protected Integer annoRiferimento;
-    @XmlElement(required = true)
     protected String codPsp;
-    @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
-    @XmlSchemaType(name = "dateTime")
     protected Date dataFlusso;
-    @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter4 .class)
-    @XmlSchemaType(name = "date")
     protected Date dataRegolamento;
-    @XmlElement(required = true)
     protected String iur;
     protected Long numeroPagamenti;
-    @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
-    @XmlSchemaType(name = "decimal")
     protected BigDecimal importoTotale;
 
     /**

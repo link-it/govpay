@@ -3,106 +3,19 @@ package it.govpay.servizi.commons;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.w3._2001.xmlschema.Adapter1;
-import org.w3._2001.xmlschema.Adapter4;
 
-
-/**
- * <p>Classe Java per pagamento complex type.
- * 
- * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
- * 
- * <pre>
- * &lt;complexType name="pagamento"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *         &lt;element name="importoPagato" type="{http://www.govpay.it/servizi/commons/}importo"/&gt;
- *         &lt;element name="iur" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *         &lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}date"/&gt;
- *         &lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0"/&gt;
- *         &lt;element name="commissioniPsp" type="{http://www.govpay.it/servizi/commons/}importo" minOccurs="0"/&gt;
- *         &lt;element name="allegato" minOccurs="0"&gt;
- *           &lt;complexType&gt;
- *             &lt;complexContent&gt;
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *                 &lt;sequence&gt;
- *                   &lt;element name="tipo" type="{http://www.govpay.it/servizi/commons/}tipoAllegato"/&gt;
- *                   &lt;element name="testo" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/&gt;
- *                 &lt;/sequence&gt;
- *               &lt;/restriction&gt;
- *             &lt;/complexContent&gt;
- *           &lt;/complexType&gt;
- *         &lt;/element&gt;
- *         &lt;element name="dataAcquisizioneRevoca" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0"/&gt;
- *         &lt;element name="causaleRevoca" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="datiRevoca" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="importoRevocato" type="{http://www.govpay.it/servizi/commons/}importo" minOccurs="0"/&gt;
- *         &lt;element name="esitoRevoca" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="datiEsitoRevoca" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "pagamento", propOrder = {
-    "codSingoloVersamentoEnte",
-    "importoPagato",
-    "iur",
-    "dataPagamento",
-    "dataAcquisizione",
-    "commissioniPsp",
-    "allegato",
-    "dataAcquisizioneRevoca",
-    "causaleRevoca",
-    "datiRevoca",
-    "importoRevocato",
-    "esitoRevoca",
-    "datiEsitoRevoca"
-})
 public class Pagamento {
 
-    @XmlElement(required = true)
     protected String codSingoloVersamentoEnte;
-    @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
-    @XmlSchemaType(name = "decimal")
     protected BigDecimal importoPagato;
-    @XmlElement(required = true)
     protected String iur;
-    @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter4 .class)
-    @XmlSchemaType(name = "date")
     protected Date dataPagamento;
-    @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter4 .class)
-    @XmlSchemaType(name = "date")
     protected Date dataAcquisizione;
-    @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
-    @XmlSchemaType(name = "decimal")
     protected BigDecimal commissioniPsp;
     protected Pagamento.Allegato allegato;
-    @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter4 .class)
-    @XmlSchemaType(name = "date")
     protected Date dataAcquisizioneRevoca;
     protected String causaleRevoca;
     protected String datiRevoca;
-    @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
-    @XmlSchemaType(name = "decimal")
     protected BigDecimal importoRevocato;
     protected String esitoRevoca;
     protected String datiEsitoRevoca;
@@ -420,37 +333,9 @@ public class Pagamento {
     }
 
 
-    /**
-     * <p>Classe Java per anonymous complex type.
-     * 
-     * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
-     * 
-     * <pre>
-     * &lt;complexType&gt;
-     *   &lt;complexContent&gt;
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
-     *       &lt;sequence&gt;
-     *         &lt;element name="tipo" type="{http://www.govpay.it/servizi/commons/}tipoAllegato"/&gt;
-     *         &lt;element name="testo" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/&gt;
-     *       &lt;/sequence&gt;
-     *     &lt;/restriction&gt;
-     *   &lt;/complexContent&gt;
-     * &lt;/complexType&gt;
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "tipo",
-        "testo"
-    })
     public static class Allegato {
 
-        @XmlElement(required = true)
-        @XmlSchemaType(name = "string")
         protected TipoAllegato tipo;
-        @XmlElement(required = true)
         protected byte[] testo;
 
         /**

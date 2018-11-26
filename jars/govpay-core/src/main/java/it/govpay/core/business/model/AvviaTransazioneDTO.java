@@ -24,7 +24,6 @@ import java.util.List;
 
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Utenza;
-import it.govpay.bd.model.Applicazione;
 
 public class AvviaTransazioneDTO {
 

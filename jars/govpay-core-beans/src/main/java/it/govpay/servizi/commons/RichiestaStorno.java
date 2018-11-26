@@ -3,69 +3,15 @@ package it.govpay.servizi.commons;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.w3._2001.xmlschema.Adapter1;
-import org.w3._2001.xmlschema.Adapter2;
 
-
-/**
- * <p>Classe Java per richiestaStorno complex type.
- * 
- * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
- * 
- * <pre>
- * &lt;complexType name="richiestaStorno"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="codRichiesta" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *         &lt;element name="dataRichiesta" type="{http://www.w3.org/2001/XMLSchema}dateTime"/&gt;
- *         &lt;element name="stato" type="{http://www.govpay.it/servizi/commons/}statoRevoca"/&gt;
- *         &lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="rr" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/&gt;
- *         &lt;element name="er" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/&gt;
- *         &lt;element name="importoStornato" type="{http://www.govpay.it/servizi/commons/}importo" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "richiestaStorno", propOrder = {
-    "codRichiesta",
-    "dataRichiesta",
-    "stato",
-    "descrizioneStato",
-    "rr",
-    "er",
-    "importoStornato"
-})
 public class RichiestaStorno {
 
-    @XmlElement(required = true)
     protected String codRichiesta;
-    @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
-    @XmlSchemaType(name = "dateTime")
     protected Date dataRichiesta;
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "string")
     protected StatoRevoca stato;
     protected String descrizioneStato;
-    @XmlElement(required = true)
     protected byte[] rr;
     protected byte[] er;
-    @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
-    @XmlSchemaType(name = "decimal")
     protected BigDecimal importoStornato;
 
     /**

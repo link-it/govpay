@@ -13,6 +13,7 @@
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
 	<modules>
+		<module>pagopa-beans</module>
 		<module>govpay-stampe-fonts-TitilliumWeb</module>
 		<module>govpay-stampe</module>
 		<module>govpay-orm-beans</module>
@@ -21,7 +22,6 @@
 		<module>govpay-core-rs</module>
 		<module>govpay-core</module>
 		<module>govpay-ec-client</module>
-		<module>pagopa-beans</module>
 	</modules>
 </project>
 

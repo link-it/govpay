@@ -25,9 +25,9 @@ import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.servizi.commons.GpResponse;
+import it.govpay.servizi.commons.Mittente;
 import it.govpay.bd.model.Nota.TipoNota;
-import it.govpay.servizi.v2_3.commons.GpResponse;
-import it.govpay.servizi.v2_3.commons.Mittente;
 
 public class GovPayException extends Exception {
 

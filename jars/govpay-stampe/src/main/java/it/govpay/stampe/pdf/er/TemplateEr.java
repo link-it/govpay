@@ -14,7 +14,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.ER;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Dominio;
 import it.govpay.stampe.pdf.Costanti;
@@ -27,7 +27,7 @@ public class TemplateEr {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createTitleComponent(String pathLoghi, CtEsitoRevoca er,Dominio dominio, Anagrafica anagraficaDominio, List<String> errList,Logger log) {
+	public static ComponentBuilder<?, ?> createTitleComponent(String pathLoghi, ER er,Dominio dominio, Anagrafica anagraficaDominio, List<String> errList,Logger log) {
 		try{
 			StringBuilder errMsg = new StringBuilder();
 			List<ComponentBuilder<?, ?>> lst = new ArrayList<>();

@@ -9,7 +9,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.xml.sax.SAXException;
 
-import it.gov.agenziaentrate._2014.marcadabollo.TipoMarcaDaBollo;
+import it.gov.agenziaentrate._2014.marcadabollo.MarcaDaBollo;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.backoffice.v1.beans.Allegato;
 import it.govpay.backoffice.v1.beans.Allegato.TipoEnum;
@@ -66,7 +66,7 @@ public class RiscossioniConverter {
 				try {
 					allegato.setContenuto(JaxbUtils.toMarcaDaBollo(xmlMarca));
 				} catch (JAXBException | SAXException e) {
-					allegato.setContenuto(new TipoMarcaDaBollo());
+					allegato.setContenuto(new MarcaDaBollo());
 				}
 			}
 			rsModel.setAllegato(allegato);

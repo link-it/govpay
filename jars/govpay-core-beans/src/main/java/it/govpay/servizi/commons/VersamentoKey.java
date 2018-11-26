@@ -3,62 +3,10 @@ package it.govpay.servizi.commons;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementRefs;
-import javax.xml.bind.annotation.XmlType;
-
-
-/**
- * <p>Classe Java per versamentoKey complex type.
- * 
- * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
- * 
- * <pre>
- * &lt;complexType name="versamentoKey"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;choice&gt;
- *         &lt;sequence&gt;
- *           &lt;element name="codApplicazione" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *           &lt;choice&gt;
- *             &lt;element name="codVersamentoEnte" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *             &lt;sequence&gt;
- *               &lt;element name="codDominio" type="{http://www.govpay.it/servizi/commons/}cod35" minOccurs="0"/&gt;
- *               &lt;element name="codUnivocoDebitore" type="{http://www.govpay.it/servizi/commons/}string35" minOccurs="0"/&gt;
- *               &lt;element name="bundlekey" type="{http://www.govpay.it/servizi/commons/}string256"/&gt;
- *             &lt;/sequence&gt;
- *           &lt;/choice&gt;
- *           &lt;element name="iuv" type="{http://www.govpay.it/servizi/commons/}cod35" minOccurs="0"/&gt;
- *         &lt;/sequence&gt;
- *         &lt;sequence&gt;
- *           &lt;element name="codDominio" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *           &lt;element name="iuv" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *         &lt;/sequence&gt;
- *       &lt;/choice&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "versamentoKey", propOrder = {
-    "content"
-})
 public class VersamentoKey {
 
-    @XmlElementRefs({
-        @XmlElementRef(name = "codUnivocoDebitore", type = JAXBElement.class),
-        @XmlElementRef(name = "bundlekey", type = JAXBElement.class),
-        @XmlElementRef(name = "iuv", type = JAXBElement.class),
-        @XmlElementRef(name = "codDominio", type = JAXBElement.class),
-        @XmlElementRef(name = "codVersamentoEnte", type = JAXBElement.class),
-        @XmlElementRef(name = "codApplicazione", type = JAXBElement.class)
-    })
     protected List<JAXBElement<String>> content;
 
     /**

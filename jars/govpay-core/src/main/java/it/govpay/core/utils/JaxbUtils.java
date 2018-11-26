@@ -33,7 +33,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
@@ -45,20 +44,18 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.xml.sax.SAXException;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
-import it.gov.agenziaentrate._2014.marcadabollo.TipoMarcaDaBollo;
-import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
+import it.gov.agenziaentrate._2014.marcadabollo.MarcaDaBollo;
+import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.digitpa.schemas._2011.pagamenti.ObjectFactory;
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtRichiestaRevoca;
-import it.gov.digitpa.schemas._2011.psp.InformativaContoAccredito;
-import it.gov.digitpa.schemas._2011.psp.InformativaControparte;
-import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.ER;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.RR;
+import it.gov.digitpa.schemas._2011.pagamenti.informativa.InformativaContoAccredito;
 
 public class JaxbUtils {
 
-	private static JAXBContext jaxbContext, jaxbContextCodes, jaxbContextIntestazioneCarrelloPPT, jaxbBolloContext;
+	private static JAXBContext jaxbContext, jaxbContextIntestazioneCarrelloPPT, jaxbBolloContext;
 	private static Schema RPT_RT_schema, RR_ER_schema;
 	public static Schema  GP_PA_schema;
 	private static GpEventHandler gpEventHandler;
@@ -73,7 +70,6 @@ public class JaxbUtils {
 			
 			jaxbBolloContext = JAXBContext.newInstance("it.gov.agenziaentrate._2014.marcadabollo");
 			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.pagamenti.revoche:it.gov.digitpa.schemas._2011.ws.paa:it.gov.digitpa.schemas._2011.psp:gov.telematici.pagamenti.ws.ppthead:it.govpay.servizi.pa");
-			jaxbContextCodes = JAXBContext.newInstance("it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr");
 			jaxbContextIntestazioneCarrelloPPT = JAXBContext.newInstance(IntestazioneCarrelloPPT.class);
 			gpEventHandler = new JaxbUtils().new GpEventHandler();
 		}
@@ -88,21 +84,21 @@ public class JaxbUtils {
 		return baos.toByteArray();
 	}
 	
-	public static byte[] toByte(InformativaControparte informativa) throws JAXBException, SAXException, XMLStreamException, IOException  {
-		init();
-        ByteArrayOutputStream baos = null;
-        try {
-        	baos = new ByteArrayOutputStream();
-	        JAXBElement<InformativaControparte> informativaj = new JAXBElement<>(new QName("informativaControparte"), InformativaControparte.class, informativa);
-	        marshal(informativaj, baos);
-			return baos.toByteArray();
-        } finally {
-        	if(baos != null) {
-    	        baos.flush();
-    	        baos.close();
-        	} 
-        }
-	}
+//	public static byte[] toByte(InformativaControparte informativa) throws JAXBException, SAXException, XMLStreamException, IOException  {
+//		init();
+//        ByteArrayOutputStream baos = null;
+//        try {
+//        	baos = new ByteArrayOutputStream();
+//	        JAXBElement<InformativaControparte> informativaj = new JAXBElement<>(new QName("informativaControparte"), InformativaControparte.class, informativa);
+//	        marshal(informativaj, baos);
+//			return baos.toByteArray();
+//        } finally {
+//        	if(baos != null) {
+//    	        baos.flush();
+//    	        baos.close();
+//        	} 
+//        }
+//	}
 	
 	public static byte[] toByte(InformativaContoAccredito informativa) throws JAXBException, SAXException, XMLStreamException, IOException  {
 		init();
@@ -119,12 +115,12 @@ public class JaxbUtils {
         }
 	}
 	
-	public static byte[] toByte(CtRichiestaRevoca rr) throws JAXBException, SAXException  {
+	public static byte[] toByte(RR rr) throws JAXBException, SAXException  {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		jaxbMarshaller.marshal(new it.gov.digitpa.schemas._2011.pagamenti.revoche.ObjectFactory().createRR(rr), baos);
+		jaxbMarshaller.marshal(rr, baos);
 		return baos.toByteArray();
 	}
 	
@@ -198,40 +194,29 @@ public class JaxbUtils {
 		return root.getValue();
 	}
 	
-	public static CtRichiestaRevoca toRR(byte[] rr) throws JAXBException, SAXException {
+	public static RR toRR(byte[] rr) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		jaxbUnmarshaller.setSchema(RR_ER_schema);
-		JAXBElement<CtRichiestaRevoca> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rr)), CtRichiestaRevoca.class);
+		JAXBElement<RR> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rr)), RR.class);
 		return root.getValue();
 	}
 	
-	public static CtEsitoRevoca toER(byte[] er) throws JAXBException, SAXException {
+	public static ER toER(byte[] er) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		jaxbUnmarshaller.setSchema(RR_ER_schema);
-		JAXBElement<CtEsitoRevoca> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(er)), CtEsitoRevoca.class);
+		JAXBElement<ER> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(er)), ER.class);
 		return root.getValue();
 	}
 	
-	public static CtFlussoRiversamento toFR(byte[] fr) throws JAXBException, SAXException {
+	public static FlussoRiversamento toFR(byte[] fr) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		jaxbUnmarshaller.setSchema(RPT_RT_schema);
-		JAXBElement<CtFlussoRiversamento> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(fr)), CtFlussoRiversamento.class);
+		JAXBElement<FlussoRiversamento> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(fr)), FlussoRiversamento.class);
 		return root.getValue();
 	}
-	
-	public static byte[] toByte(InformazioniVersamento numeroAvviso) throws JAXBException, SAXException {
-		init();
-		Marshaller jaxbMarshaller = jaxbContextCodes.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		jaxbMarshaller.marshal(numeroAvviso, baos);
-		return baos.toByteArray();
-	}
-	
 	
 	public class GpEventHandler implements ValidationEventHandler {
 		@Override
@@ -245,10 +230,10 @@ public class JaxbUtils {
 		}
 	}
 	
-	public static TipoMarcaDaBollo toMarcaDaBollo(byte[] marca) throws JAXBException, SAXException {
+	public static MarcaDaBollo toMarcaDaBollo(byte[] marca) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbBolloContext.createUnmarshaller();
-	    JAXBElement<TipoMarcaDaBollo> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(marca)), TipoMarcaDaBollo.class);
+	    JAXBElement<MarcaDaBollo> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(marca)), MarcaDaBollo.class);
 		return root.getValue();
 	}
 

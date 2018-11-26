@@ -1,48 +1,13 @@
 
 package it.govpay.servizi.commons;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
-
-/**
- * <p>Classe Java per gpResponse complex type.
- * 
- * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
- * 
- * <pre>
- * &lt;complexType name="gpResponse"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="codOperazione" type="{http://www.govpay.it/servizi/commons/}uuid"/&gt;
- *         &lt;element name="codEsitoOperazione" type="{http://www.govpay.it/servizi/commons/}esitoOperazione"/&gt;
- *         &lt;element name="descrizioneEsitoOperazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "gpResponse", propOrder = {
-    "codOperazione",
-    "codEsitoOperazione",
-    "descrizioneEsitoOperazione"
-})
 public class GpResponse {
 
-    @XmlElement(required = true)
     protected String codOperazione;
-    @XmlElement(required = true)
-    @XmlSchemaType(name = "string")
-    protected EsitoOperazione codEsitoOperazione;
-    protected String descrizioneEsitoOperazione;
+    protected Mittente mittente;
+    protected String codEsito;
+    protected String descrizioneEsito;
+    protected String dettaglioEsito;
 
     /**
      * Recupera il valore della proprietà codOperazione.
@@ -69,51 +34,99 @@ public class GpResponse {
     }
 
     /**
-     * Recupera il valore della proprietà codEsitoOperazione.
+     * Recupera il valore della proprietà mittente.
      * 
      * @return
      *     possible object is
-     *     {@link EsitoOperazione }
+     *     {@link Mittente }
      *     
      */
-    public EsitoOperazione getCodEsitoOperazione() {
-        return this.codEsitoOperazione;
+    public Mittente getMittente() {
+        return this.mittente;
     }
 
     /**
-     * Imposta il valore della proprietà codEsitoOperazione.
+     * Imposta il valore della proprietà mittente.
      * 
      * @param value
      *     allowed object is
-     *     {@link EsitoOperazione }
+     *     {@link Mittente }
      *     
      */
-    public void setCodEsitoOperazione(EsitoOperazione value) {
-        this.codEsitoOperazione = value;
+    public void setMittente(Mittente value) {
+        this.mittente = value;
     }
 
     /**
-     * Recupera il valore della proprietà descrizioneEsitoOperazione.
+     * Recupera il valore della proprietà codEsito.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDescrizioneEsitoOperazione() {
-        return this.descrizioneEsitoOperazione;
+    public String getCodEsito() {
+        return this.codEsito;
     }
 
     /**
-     * Imposta il valore della proprietà descrizioneEsitoOperazione.
+     * Imposta il valore della proprietà codEsito.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDescrizioneEsitoOperazione(String value) {
-        this.descrizioneEsitoOperazione = value;
+    public void setCodEsito(String value) {
+        this.codEsito = value;
+    }
+
+    /**
+     * Recupera il valore della proprietà descrizioneEsito.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDescrizioneEsito() {
+        return this.descrizioneEsito;
+    }
+
+    /**
+     * Imposta il valore della proprietà descrizioneEsito.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDescrizioneEsito(String value) {
+        this.descrizioneEsito = value;
+    }
+
+    /**
+     * Recupera il valore della proprietà dettaglioEsito.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDettaglioEsito() {
+        return this.dettaglioEsito;
+    }
+
+    /**
+     * Imposta il valore della proprietà dettaglioEsito.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDettaglioEsito(String value) {
+        this.dettaglioEsito = value;
     }
 
 }

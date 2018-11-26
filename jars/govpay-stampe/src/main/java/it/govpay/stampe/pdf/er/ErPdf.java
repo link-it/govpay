@@ -12,9 +12,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.ER;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiEsitoRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiSingoloEsitoRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Dominio;
 import it.govpay.stampe.pdf.Costanti;
@@ -29,7 +29,7 @@ import net.sf.dynamicreports.report.constant.PageType;
 
 public class ErPdf {
 
-	public static String getPdfEsitoRevoca(String pathLoghi, CtEsitoRevoca er,Dominio dominio, Anagrafica anagraficaDominio,String  causale,OutputStream os ,Logger log) throws Exception {
+	public static String getPdfEsitoRevoca(String pathLoghi, ER er,Dominio dominio, Anagrafica anagraficaDominio,String  causale,OutputStream os ,Logger log) throws Exception {
 		String msg = null;
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 		JasperReportBuilder report = report();
@@ -58,7 +58,7 @@ public class ErPdf {
 		return msg;
 	}
 
-	private static ComponentBuilder<?, ?> createRicevutaPagamentoList(String label , CtEsitoRevoca er, String causale) {
+	private static ComponentBuilder<?, ?> createRicevutaPagamentoList(String label , ER er, String causale) {
 		HorizontalListBuilder list = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10));
 		CtDatiEsitoRevoca datiPagamento = er.getDatiRevoca(); 
 		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_CAUSALE, causale);
@@ -67,7 +67,7 @@ public class ErPdf {
 		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_CF_PIVA_DEBITORE, er.getSoggettoPagatore().getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
 		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IUV, datiPagamento.getIdentificativoUnivocoVersamento());
 
-		List<CtDatiSingoloEsitoRevoca> datiSingoloPagamento = datiPagamento.getDatiSingolaRevoca();
+		List<CtDatiSingoloEsitoRevoca> datiSingoloPagamento = datiPagamento.getDatiSingolaRevocas();
 		if(datiSingoloPagamento != null && datiSingoloPagamento.size() > 0) {
 			CtDatiSingoloEsitoRevoca ctDatiSingoloPagamentoRT = datiSingoloPagamento.get(0); 
 

@@ -44,21 +44,15 @@ import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.client.v1.NotificaConverter;
 import it.govpay.ec.v1.utils.JacksonJsonProviderUtil;
 import it.govpay.model.Versionabile.Versione;
-import it.govpay.servizi.pa.ObjectFactory;
 
 public class NotificaClient extends BasicClient {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(NotificaClient.class);
 	private Versione versione;
-	private static ObjectFactory objectFactory;
 
 	public NotificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.NOTIFICA);
 		this.versione = applicazione.getConnettoreNotifica().getVersione();
-
-		if(objectFactory == null || log == null ){
-			objectFactory = new ObjectFactory();
-		}
 	}
 
 	/**

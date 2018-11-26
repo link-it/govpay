@@ -42,6 +42,7 @@ import it.gov.digitpa.schemas._2011.ws.nodo.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRT;
 import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRTRisposta;
 import it.gov.digitpa.schemas._2011.ws.nodo.TipoInviaEsitoStornoRisposta;
+import it.gov.digitpa.schemas._2011.ws.nodo.TipoInviaRichiestaRevocaRisposta;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -409,5 +410,20 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			throw new GovPayException(EsitoOperazione.AUT_001, this.wsCtxt.getUserPrincipal().getName());
 		}
 		return user;
+	}
+
+	@Override
+	public TipoInviaRichiestaRevocaRisposta paaInviaRichiestaRevoca(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] rr) {
+		TipoInviaRichiestaRevocaRisposta risposta = new TipoInviaRichiestaRevocaRisposta();
+		
+		FaultBean fault = new FaultBean();
+		fault.setId(identificativoDominio);
+		fault.setFaultCode(FaultPa.PAA_SYSTEM_ERROR.name());
+		fault.setFaultString(FaultPa.PAA_SYSTEM_ERROR.getFaultString());
+		fault.setDescription("Non implementato");
+		
+		risposta.setFault(fault);
+		// TODO Auto-generated method stub
+		return risposta;
 	}
 }

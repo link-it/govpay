@@ -24,7 +24,7 @@
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core-beans</artifactId>
+			<artifactId>pagopa-beans</artifactId>
 		</dependency>
 
 		<dependency>

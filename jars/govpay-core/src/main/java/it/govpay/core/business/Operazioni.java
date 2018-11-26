@@ -62,7 +62,7 @@ import com.jcraft.jsch.SftpException;
 
 import gov.telematici.pagamenti.ws.CtEsitoAvvisatura;
 import gov.telematici.pagamenti.ws.CtEsitoAvvisoDigitale;
-import gov.telematici.pagamenti.ws.CtEsitoPresaInCarico;
+import gov.telematici.pagamenti.ws.presa_in_carico.EsitoPresaInCarico;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -604,7 +604,7 @@ public class Operazioni{
 
 											esitoAvvisatura.setTipoCanale(Integer.parseInt(ctEsitoAvvisatura.getTipoCanaleEsito()));
 											esitoAvvisatura.setCodCanale(ctEsitoAvvisatura.getIdentificativoCanale());
-											esitoAvvisatura.setData(ctEsitoAvvisatura.getDataEsito().toGregorianCalendar().getTime());
+											esitoAvvisatura.setData(ctEsitoAvvisatura.getDataEsito());
 											esitoAvvisatura.setCodEsito(ctEsitoAvvisatura.getCodiceEsito());
 											esitoAvvisatura.setDescrizioneEsito(ctEsitoAvvisatura.getDescrizioneEsito());
 											esitoAvvisatura.setIdTracciato(tracciato.getId());
@@ -683,7 +683,7 @@ public class Operazioni{
 								zipOutputStreamFileRichiesta = new ZipOutputStream(outputStreamFileRichiesta);
 								zipOutputStreamFileRichiesta.putNextEntry(new ZipEntry(tracciato.getFileNameEsito().replaceAll("zip", "xml")));
 
-								CtEsitoPresaInCarico esito = new CtEsitoPresaInCarico();
+								EsitoPresaInCarico esito = new EsitoPresaInCarico();
 								esito.setCodiceEsitoPresaInCarico(BigInteger.valueOf(beanDati.getCodiceEsitoPresaInCarico()));
 								esito.setDescrizioneEsitoPresaInCarico(beanDati.getDescrizioneEsitoPresaInCarico());
 								esito.setIdentificativoFlusso(tracciato.getFileNameEsito().replace(".zip", ""));
@@ -923,7 +923,7 @@ public class Operazioni{
 
 								zis.getNextEntry();
 								
-								CtEsitoPresaInCarico esitoPresaInCaricoAvvisoDigitale = AvvisaturaUtils.leggiEsitoPresaInCaricoAvvisoDigitale(zis);
+								EsitoPresaInCarico esitoPresaInCaricoAvvisoDigitale = AvvisaturaUtils.leggiEsitoPresaInCaricoAvvisoDigitale(zis);
 
 								avvisatura.setStepElaborazione("ACKATO");
 								avvisatura.setDescrizioneStepElaborazione(null);

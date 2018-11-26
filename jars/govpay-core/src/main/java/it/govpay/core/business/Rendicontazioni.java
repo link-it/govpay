@@ -40,8 +40,8 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoliPagamenti;
-import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
+import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtDatiSingoliPagamenti;
+import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazione;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazioneRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazione;
@@ -188,7 +188,7 @@ public class Rendicontazioni extends BasicBD {
 								continue;
 							}
 
-							CtFlussoRiversamento flussoRendicontazione = null;
+							FlussoRiversamento flussoRendicontazione = null;
 							try {
 								flussoRendicontazione = JaxbUtils.toFR(tracciato);
 							} catch (Exception e) {
@@ -199,7 +199,7 @@ public class Rendicontazioni extends BasicBD {
 								continue;
 							}
 
-							log.info("Ricevuto flusso rendicontazione per " + flussoRendicontazione.getDatiSingoliPagamenti().size() + " singoli pagamenti");
+							log.info("Ricevuto flusso rendicontazione per " + flussoRendicontazione.getDatiSingoliPagamentis().size() + " singoli pagamenti");
 
 							this.setupConnection(GpThreadLocal.get().getTransactionId());
 
@@ -244,7 +244,7 @@ public class Rendicontazioni extends BasicBD {
 							PagamentiBD pagamentiBD = new PagamentiBD(this);
 							VersamentiBD versamentiBD = new VersamentiBD(this);
 							IuvBD iuvBD = new IuvBD(this);
-							for(CtDatiSingoliPagamenti dsp : flussoRendicontazione.getDatiSingoliPagamenti()) {
+							for(CtDatiSingoliPagamenti dsp : flussoRendicontazione.getDatiSingoliPagamentis()) {
 
 								String iur = dsp.getIdentificativoUnivocoRiscossione();
 								String iuv = dsp.getIdentificativoUnivocoVersamento();
@@ -417,15 +417,15 @@ public class Rendicontazioni extends BasicBD {
 							}
 
 							try {
-								if(flussoRendicontazione.getDatiSingoliPagamenti().size() != flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()) {
+								if(flussoRendicontazione.getDatiSingoliPagamentis().size() != flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()) {
 									GpThreadLocal.get().log("rendicontazioni.numeroRendicontazioniErrato");
-									log.info("Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamenti().size()+"] non corrisponde al totale indicato nella testata del flusso [" + flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()  + "]");
-									fr.addAnomalia("007107", "Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamenti().size()+"] non corrisponde al totale indicato nella testata del flusso [" + flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()  + "]");
+									log.info("Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamentis().size()+"] non corrisponde al totale indicato nella testata del flusso [" + flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()  + "]");
+									fr.addAnomalia("007107", "Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamentis().size()+"] non corrisponde al totale indicato nella testata del flusso [" + flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()  + "]");
 								}	
 							} catch (Exception e) {
 								GpThreadLocal.get().log("rendicontazioni.numeroRendicontazioniErrato");
-								log.info("Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamenti().size()+"] non corrisponde al totale indicato nella testata del flusso [????]");
-								fr.addAnomalia("007107", "Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamenti().size()+"] non corrisponde al totale indicato nella testata del flusso [????]");
+								log.info("Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamentis().size()+"] non corrisponde al totale indicato nella testata del flusso [????]");
+								fr.addAnomalia("007107", "Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamentis().size()+"] non corrisponde al totale indicato nella testata del flusso [????]");
 							}
 
 							// Decido lo stato del FR

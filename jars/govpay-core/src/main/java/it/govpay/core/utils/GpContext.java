@@ -27,7 +27,6 @@ import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.beans.proxy.Transaction;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
-import org.openspcoop2.utils.transport.http.HttpServletCredential;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
 import it.govpay.bd.model.Utenza;
@@ -35,7 +34,6 @@ import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.model.Rpt;
 import it.govpay.model.Versionabile.Versione;
-import it.govpay.servizi.PagamentiTelematiciPAService;
 import it.govpay.servizi.commons.GpResponse;
 
 public class GpContext {
@@ -269,7 +267,7 @@ public class GpContext {
 		from.setType(TIPO_SERVIZIO_GOVPAY);
 		GpThreadLocal.get().getTransaction().setFrom(from);
 		
-		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, PagamentiTelematiciPAService.SERVICE.getLocalPart(), azione, versione.getVersione());
+		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, "", azione, versione.getVersione());
 		
 		Server server = new Server();
 		server.setName(codApplicazione);
@@ -322,34 +320,21 @@ public class GpContext {
 	}
 
 	public void setResult(GpResponse response) {
-		if(response == null || response.getCodEsitoOperazione() == null) {
+		if(response == null || response.getCodEsito() == null) {
 			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
 			return;
 		}
-		switch (response.getCodEsitoOperazione()) {
-		case OK:
+		switch (response.getCodEsito()) {
+		case "OK":
 			this.getContext().getTransaction().setResult(Result.SUCCESS);
 			break;
-		case INTERNAL:
+		case "INTERNAL":
 			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
 			break;
 		default:
 			this.getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
 			break;
 		}
-	}
-	
-	public void setResult(it.govpay.servizi.v2_3.commons.GpResponse response) {
-		if(response == null || response.getCodEsito() == null) {
-			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
-			return;
-		}
-		if(response.getCodEsito().equals("OK")) 
-			this.getContext().getTransaction().setResult(Result.SUCCESS);
-		else if(response.getCodEsito().equals("INTERNAL"))
-			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
-		else
-			this.getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
 	}
 	
 	public void setResult(String faultCode) {

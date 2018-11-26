@@ -34,9 +34,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -54,11 +51,10 @@ import org.xml.sax.SAXException;
 import gov.telematici.pagamenti.ws.CtAvvisoDigitale;
 import gov.telematici.pagamenti.ws.CtDatiSingoloVersamento;
 import gov.telematici.pagamenti.ws.CtEsitoAvvisoDigitale;
-import gov.telematici.pagamenti.ws.CtEsitoPresaInCarico;
+import gov.telematici.pagamenti.ws.presa_in_carico.EsitoPresaInCarico;
 import gov.telematici.pagamenti.ws.CtIdentificativoUnivocoPersonaFG;
 import gov.telematici.pagamenti.ws.CtSoggettoPagatore;
 import gov.telematici.pagamenti.ws.ListaEsitoAvvisiDigitali;
-import gov.telematici.pagamenti.ws.ObjectFactory;
 import gov.telematici.pagamenti.ws.StTipoIdentificativoUnivocoPersFG;
 import gov.telematici.pagamenti.ws.StTipoOperazione;
 import it.govpay.bd.model.SingoloVersamento;
@@ -77,7 +73,7 @@ public class AvvisaturaUtils {
 
 	public static void scriviVersamentoTracciatoAvvisatura(OutputStream out, Versamento versamento) throws Exception {
 		
-		CtAvvisoDigitale avviso = new ObjectFactory().createCtAvvisoDigitale();
+		CtAvvisoDigitale avviso = new CtAvvisoDigitale();
 		avviso.setIdentificativoDominio(versamento.getDominio(null).getCodDominio());
 		avviso.setAnagraficaBeneficiario(versamento.getDominio(null).getRagioneSociale());
 		avviso.setIdentificativoMessaggioRichiesta(versamento.getCodAvvisatura());
@@ -148,15 +144,15 @@ public class AvvisaturaUtils {
 		Date defaultDate = gregorianCalendar.getTime();
 		
 		if(versamento.getDataValidita()!=null) {
-			avviso.setDataScadenzaPagamento(toXmlGregorianCalendar(versamento.getDataValidita()));
+			avviso.setDataScadenzaPagamento(versamento.getDataValidita());
 		} else {
-			avviso.setDataScadenzaPagamento(toXmlGregorianCalendar(defaultDate));
+			avviso.setDataScadenzaPagamento(defaultDate);
 		}
 		
 		if(versamento.getDataScadenza()!=null) {
-			avviso.setDataScadenzaAvviso(toXmlGregorianCalendar(versamento.getDataScadenza()));
+			avviso.setDataScadenzaAvviso(versamento.getDataScadenza());
 		} else {
-			avviso.setDataScadenzaAvviso(toXmlGregorianCalendar(defaultDate));
+			avviso.setDataScadenzaAvviso(defaultDate);
 		}
 		
 		avviso.setImportoAvviso(versamento.getImportoTotale());
@@ -187,7 +183,7 @@ public class AvvisaturaUtils {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		jaxbMarshaller.marshal(new ObjectFactory().createCtAvvisoDigitale(avviso), out);
+		jaxbMarshaller.marshal(avviso, out);
 	}
 
 	private static void init() throws JAXBException, SAXException {
@@ -197,12 +193,6 @@ public class AvvisaturaUtils {
 			schema = schemaFactory.newSchema(new StreamSource(AvvisaturaUtils.class.getResourceAsStream("/xsd/avvisi-digitali-1.0.xsd"))); 
 		}
 		
-	}
-
-	private static XMLGregorianCalendar toXmlGregorianCalendar(Date data) throws DatatypeConfigurationException {
-		GregorianCalendar c = new GregorianCalendar();
-		c.setTime(data);
-		return DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
 	}
 
 	public static void scriviTailTracciatoAvvisatura(OutputStream out) throws IOException {
@@ -250,17 +240,17 @@ public class AvvisaturaUtils {
 	}
 
 
-	public static void scriviEsitoPresaInCarico(CtEsitoPresaInCarico esito, OutputStream os) throws JAXBException, IOException, SAXException {
+	public static void scriviEsitoPresaInCarico(EsitoPresaInCarico esito, OutputStream os) throws JAXBException, IOException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-		jaxbMarshaller.marshal(new ObjectFactory().createEsitoPresaInCarico(esito), os);
+		jaxbMarshaller.marshal(esito, os);
 	}
 
-	public static CtEsitoPresaInCarico leggiEsitoPresaInCaricoAvvisoDigitale(InputStream is) throws JAXBException, IOException, SAXException {
+	public static EsitoPresaInCarico leggiEsitoPresaInCaricoAvvisoDigitale(InputStream is) throws JAXBException, IOException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		jaxbUnmarshaller.setSchema(schema);
-		JAXBElement<CtEsitoPresaInCarico> root = jaxbUnmarshaller.unmarshal(new StreamSource(is), CtEsitoPresaInCarico.class);
+		JAXBElement<EsitoPresaInCarico> root = jaxbUnmarshaller.unmarshal(new StreamSource(is), EsitoPresaInCarico.class);
 		return root.getValue();
 	}
 }

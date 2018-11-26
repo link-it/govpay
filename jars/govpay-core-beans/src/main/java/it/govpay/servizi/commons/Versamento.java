@@ -5,148 +5,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.w3._2001.xmlschema.Adapter1;
-import org.w3._2001.xmlschema.Adapter2;
-
-
-/**
- * <p>Classe Java per versamento complex type.
- * 
- * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
- * 
- * <pre>
- * &lt;complexType name="versamento"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="codApplicazione" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *         &lt;element name="codVersamentoEnte" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *         &lt;element name="iuv" type="{http://www.govpay.it/servizi/commons/}cod35" minOccurs="0"/&gt;
- *         &lt;element name="codDominio" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *         &lt;element name="codUnitaOperativa" type="{http://www.govpay.it/servizi/commons/}cod35" minOccurs="0"/&gt;
- *         &lt;element name="debitore" type="{http://www.govpay.it/servizi/commons/}anagrafica"/&gt;
- *         &lt;element name="importoTotale" type="{http://www.govpay.it/servizi/commons/}importo"/&gt;
- *         &lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
- *         &lt;element name="aggiornabile" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
- *         &lt;element name="codDebito" type="{http://www.govpay.it/servizi/commons/}cod35" minOccurs="0"/&gt;
- *         &lt;element name="annoTributario" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="bundlekey" type="{http://www.govpay.it/servizi/commons/}string256" minOccurs="0"/&gt;
- *         &lt;choice&gt;
- *           &lt;element name="causale" type="{http://www.govpay.it/servizi/commons/}string140"/&gt;
- *           &lt;element name="spezzoneCausale" type="{http://www.govpay.it/servizi/commons/}string35" maxOccurs="6"/&gt;
- *           &lt;element name="spezzoneCausaleStrutturata" maxOccurs="6"&gt;
- *             &lt;complexType&gt;
- *               &lt;complexContent&gt;
- *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *                   &lt;sequence&gt;
- *                     &lt;element name="causale" type="{http://www.govpay.it/servizi/commons/}string20"/&gt;
- *                     &lt;element name="importo" type="{http://www.govpay.it/servizi/commons/}importo10"/&gt;
- *                   &lt;/sequence&gt;
- *                 &lt;/restriction&gt;
- *               &lt;/complexContent&gt;
- *             &lt;/complexType&gt;
- *           &lt;/element&gt;
- *         &lt;/choice&gt;
- *         &lt;element name="singoloVersamento" maxOccurs="5"&gt;
- *           &lt;complexType&gt;
- *             &lt;complexContent&gt;
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *                 &lt;sequence&gt;
- *                   &lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *                   &lt;element name="importo" type="{http://www.govpay.it/servizi/commons/}importo"/&gt;
- *                   &lt;element name="note" type="{http://www.govpay.it/servizi/commons/}string512" minOccurs="0"/&gt;
- *                   &lt;choice&gt;
- *                     &lt;element name="codTributo" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *                     &lt;element name="bolloTelematico"&gt;
- *                       &lt;complexType&gt;
- *                         &lt;complexContent&gt;
- *                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *                             &lt;sequence&gt;
- *                               &lt;element name="tipo" type="{http://www.govpay.it/servizi/commons/}tipoBollo"/&gt;
- *                               &lt;element name="hash" type="{http://www.govpay.it/servizi/commons/}string70"/&gt;
- *                               &lt;element name="provincia" type="{http://www.govpay.it/servizi/commons/}string2"/&gt;
- *                             &lt;/sequence&gt;
- *                           &lt;/restriction&gt;
- *                         &lt;/complexContent&gt;
- *                       &lt;/complexType&gt;
- *                     &lt;/element&gt;
- *                     &lt;element name="tributo"&gt;
- *                       &lt;complexType&gt;
- *                         &lt;complexContent&gt;
- *                           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *                             &lt;sequence&gt;
- *                               &lt;element name="ibanAccredito" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
- *                               &lt;element name="tipoContabilita" type="{http://www.govpay.it/servizi/commons/}tipoContabilita"/&gt;
- *                               &lt;element name="codContabilita"&gt;
- *                                 &lt;simpleType&gt;
- *                                   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
- *                                     &lt;pattern value="\S{3,138}"/&gt;
- *                                   &lt;/restriction&gt;
- *                                 &lt;/simpleType&gt;
- *                               &lt;/element&gt;
- *                             &lt;/sequence&gt;
- *                           &lt;/restriction&gt;
- *                         &lt;/complexContent&gt;
- *                       &lt;/complexType&gt;
- *                     &lt;/element&gt;
- *                   &lt;/choice&gt;
- *                 &lt;/sequence&gt;
- *               &lt;/restriction&gt;
- *             &lt;/complexContent&gt;
- *           &lt;/complexType&gt;
- *         &lt;/element&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
- * </pre>
- * 
- * 
- */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "versamento", propOrder = {
-    "codApplicazione",
-    "codVersamentoEnte",
-    "iuv",
-    "codDominio",
-    "codUnitaOperativa",
-    "debitore",
-    "importoTotale",
-    "dataScadenza",
-    "aggiornabile",
-    "codDebito",
-    "annoTributario",
-    "bundlekey",
-    "causale",
-    "spezzoneCausale",
-    "spezzoneCausaleStrutturata",
-    "singoloVersamento"
-})
 public class Versamento {
 
-    @XmlElement(required = true)
     protected String codApplicazione;
-    @XmlElement(required = true)
     protected String codVersamentoEnte;
     protected String iuv;
-    @XmlElement(required = true)
     protected String codDominio;
     protected String codUnitaOperativa;
-    @XmlElement(required = true)
     protected Anagrafica debitore;
-    @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
-    @XmlSchemaType(name = "decimal")
     protected BigDecimal importoTotale;
-    @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
-    @XmlSchemaType(name = "dateTime")
     protected Date dataScadenza;
     protected Boolean aggiornabile;
     protected String codDebito;
@@ -155,7 +22,6 @@ public class Versamento {
     protected String causale;
     protected List<String> spezzoneCausale;
     protected List<Versamento.SpezzoneCausaleStrutturata> spezzoneCausaleStrutturata;
-    @XmlElement(required = true)
     protected List<Versamento.SingoloVersamento> singoloVersamento;
 
     /**
@@ -558,78 +424,9 @@ public class Versamento {
     }
 
 
-    /**
-     * <p>Classe Java per anonymous complex type.
-     * 
-     * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
-     * 
-     * <pre>
-     * &lt;complexType&gt;
-     *   &lt;complexContent&gt;
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
-     *       &lt;sequence&gt;
-     *         &lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
-     *         &lt;element name="importo" type="{http://www.govpay.it/servizi/commons/}importo"/&gt;
-     *         &lt;element name="note" type="{http://www.govpay.it/servizi/commons/}string512" minOccurs="0"/&gt;
-     *         &lt;choice&gt;
-     *           &lt;element name="codTributo" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
-     *           &lt;element name="bolloTelematico"&gt;
-     *             &lt;complexType&gt;
-     *               &lt;complexContent&gt;
-     *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
-     *                   &lt;sequence&gt;
-     *                     &lt;element name="tipo" type="{http://www.govpay.it/servizi/commons/}tipoBollo"/&gt;
-     *                     &lt;element name="hash" type="{http://www.govpay.it/servizi/commons/}string70"/&gt;
-     *                     &lt;element name="provincia" type="{http://www.govpay.it/servizi/commons/}string2"/&gt;
-     *                   &lt;/sequence&gt;
-     *                 &lt;/restriction&gt;
-     *               &lt;/complexContent&gt;
-     *             &lt;/complexType&gt;
-     *           &lt;/element&gt;
-     *           &lt;element name="tributo"&gt;
-     *             &lt;complexType&gt;
-     *               &lt;complexContent&gt;
-     *                 &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
-     *                   &lt;sequence&gt;
-     *                     &lt;element name="ibanAccredito" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
-     *                     &lt;element name="tipoContabilita" type="{http://www.govpay.it/servizi/commons/}tipoContabilita"/&gt;
-     *                     &lt;element name="codContabilita"&gt;
-     *                       &lt;simpleType&gt;
-     *                         &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
-     *                           &lt;pattern value="\S{3,138}"/&gt;
-     *                         &lt;/restriction&gt;
-     *                       &lt;/simpleType&gt;
-     *                     &lt;/element&gt;
-     *                   &lt;/sequence&gt;
-     *                 &lt;/restriction&gt;
-     *               &lt;/complexContent&gt;
-     *             &lt;/complexType&gt;
-     *           &lt;/element&gt;
-     *         &lt;/choice&gt;
-     *       &lt;/sequence&gt;
-     *     &lt;/restriction&gt;
-     *   &lt;/complexContent&gt;
-     * &lt;/complexType&gt;
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "codSingoloVersamentoEnte",
-        "importo",
-        "note",
-        "codTributo",
-        "bolloTelematico",
-        "tributo"
-    })
     public static class SingoloVersamento {
 
-        @XmlElement(required = true)
         protected String codSingoloVersamentoEnte;
-        @XmlElement(required = true, type = String.class)
-        @XmlJavaTypeAdapter(Adapter1 .class)
-        @XmlSchemaType(name = "decimal")
         protected BigDecimal importo;
         protected String note;
         protected String codTributo;
@@ -781,40 +578,10 @@ public class Versamento {
         }
 
 
-        /**
-         * <p>Classe Java per anonymous complex type.
-         * 
-         * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
-         * 
-         * <pre>
-         * &lt;complexType&gt;
-         *   &lt;complexContent&gt;
-         *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
-         *       &lt;sequence&gt;
-         *         &lt;element name="tipo" type="{http://www.govpay.it/servizi/commons/}tipoBollo"/&gt;
-         *         &lt;element name="hash" type="{http://www.govpay.it/servizi/commons/}string70"/&gt;
-         *         &lt;element name="provincia" type="{http://www.govpay.it/servizi/commons/}string2"/&gt;
-         *       &lt;/sequence&gt;
-         *     &lt;/restriction&gt;
-         *   &lt;/complexContent&gt;
-         * &lt;/complexType&gt;
-         * </pre>
-         * 
-         * 
-         */
-        @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "tipo",
-            "hash",
-            "provincia"
-        })
         public static class BolloTelematico {
 
-            @XmlElement(required = true)
             protected String tipo;
-            @XmlElement(required = true)
             protected String hash;
-            @XmlElement(required = true)
             protected String provincia;
 
             /**
@@ -892,49 +659,11 @@ public class Versamento {
         }
 
 
-        /**
-         * <p>Classe Java per anonymous complex type.
-         * 
-         * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
-         * 
-         * <pre>
-         * &lt;complexType&gt;
-         *   &lt;complexContent&gt;
-         *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
-         *       &lt;sequence&gt;
-         *         &lt;element name="ibanAccredito" type="{http://www.govpay.it/servizi/commons/}cod35"/&gt;
-         *         &lt;element name="tipoContabilita" type="{http://www.govpay.it/servizi/commons/}tipoContabilita"/&gt;
-         *         &lt;element name="codContabilita"&gt;
-         *           &lt;simpleType&gt;
-         *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
-         *               &lt;pattern value="\S{3,138}"/&gt;
-         *             &lt;/restriction&gt;
-         *           &lt;/simpleType&gt;
-         *         &lt;/element&gt;
-         *       &lt;/sequence&gt;
-         *     &lt;/restriction&gt;
-         *   &lt;/complexContent&gt;
-         * &lt;/complexType&gt;
-         * </pre>
-         * 
-         * 
-         */
-        @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {
-            "ibanAccredito",
-            "ibanAppoggio",
-            "tipoContabilita",
-            "codContabilita"
-        })
         public static class Tributo {
 
-            @XmlElement(required = true)
             protected String ibanAccredito;
             private String ibanAppoggio;
-            @XmlElement(required = true)
-            @XmlSchemaType(name = "string")
             protected TipoContabilita tipoContabilita;
-            @XmlElement(required = true)
             protected String codContabilita;
 
             /**
@@ -1022,38 +751,9 @@ public class Versamento {
     }
 
 
-    /**
-     * <p>Classe Java per anonymous complex type.
-     * 
-     * <p>Il seguente frammento di schema specifica il contenuto previsto contenuto in questa classe.
-     * 
-     * <pre>
-     * &lt;complexType&gt;
-     *   &lt;complexContent&gt;
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
-     *       &lt;sequence&gt;
-     *         &lt;element name="causale" type="{http://www.govpay.it/servizi/commons/}string20"/&gt;
-     *         &lt;element name="importo" type="{http://www.govpay.it/servizi/commons/}importo10"/&gt;
-     *       &lt;/sequence&gt;
-     *     &lt;/restriction&gt;
-     *   &lt;/complexContent&gt;
-     * &lt;/complexType&gt;
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "causale",
-        "importo"
-    })
     public static class SpezzoneCausaleStrutturata {
 
-        @XmlElement(required = true)
         protected String causale;
-        @XmlElement(required = true, type = String.class)
-        @XmlJavaTypeAdapter(Adapter1 .class)
-        @XmlSchemaType(name = "decimal")
         protected BigDecimal importo;
 
         /**

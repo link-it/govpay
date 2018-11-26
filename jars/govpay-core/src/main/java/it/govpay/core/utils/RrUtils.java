@@ -39,9 +39,9 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiSingolaRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiSingoloEsitoRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDominio;
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.ER;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIstitutoAttestante;
-import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtRichiestaRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.RR;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoPagatore;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivoco;
@@ -94,7 +94,7 @@ public class RrUtils extends NdpValidationUtils {
 			throw new ServiceException(e);
 		}
 		
-		CtRichiestaRevoca ctRr = buildCtRr(ctRt, pagamenti, bd);
+		RR ctRr = buildCtRr(ctRt, pagamenti, bd);
 		
 		byte[] xmlRr;
 		try {
@@ -122,8 +122,8 @@ public class RrUtils extends NdpValidationUtils {
 		return rr;
 	}
 
-	private static CtRichiestaRevoca buildCtRr(CtRicevutaTelematica ctRt, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException {
-		CtRichiestaRevoca ctRr = new CtRichiestaRevoca();
+	private static RR buildCtRr(CtRicevutaTelematica ctRt, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException {
+		RR ctRr = new RR();
 		ctRr.setVersioneOggetto(ctRt.getVersioneOggetto());
 		ctRr.setDominio(toDominio(ctRt.getDominio()));
 		ctRr.setIdentificativoMessaggioRevoca(buildUUID35());
@@ -225,7 +225,7 @@ public class RrUtils extends NdpValidationUtils {
 			singolaRevoca.setIdentificativoUnivocoRiscossione(pagamento.getIur());
 			singolaRevoca.setSingoloImportoRevocato(pagamento.getImportoPagato());
 			importoTotaleRevocato = importoTotaleRevocato.add(pagamento.getImportoPagato());
-			datiRevoca.getDatiSingolaRevoca().add(singolaRevoca);
+			datiRevoca.getDatiSingolaRevocas().add(singolaRevoca);
 		}
 		
 		datiRevoca.setImportoTotaleRevocato(importoTotaleRevocato);
@@ -294,7 +294,7 @@ public class RrUtils extends NdpValidationUtils {
 		
 		GpContext ctx = GpThreadLocal.get();
 		
-		CtEsitoRevoca ctEr = null;
+		ER ctEr = null;
 		// Validazione Sintattica
 		try {
 			ctEr = JaxbUtils.toER(er);
@@ -397,7 +397,7 @@ public class RrUtils extends NdpValidationUtils {
 		return rr;
 	}
 
-	private static EsitoValidazione validaSemantica(Rr rr, CtRichiestaRevoca ctRr, CtEsitoRevoca ctEr, BasicBD bd) throws ServiceException {
+	private static EsitoValidazione validaSemantica(Rr rr, RR ctRr, ER ctEr, BasicBD bd) throws ServiceException {
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
 		validaSemantica(ctRr.getIstitutoAttestante(),ctEr.getIstitutoAttestante(), esito); 
 		validaSemantica(ctRr.getSoggettoPagatore(),ctEr.getSoggettoPagatore(), esito);
@@ -410,7 +410,7 @@ public class RrUtils extends NdpValidationUtils {
 		valida(datiRr.getIdentificativoUnivocoVersamento(), datiEr.getIdentificativoUnivocoVersamento(), esito, "IdentificativoUnivocoVersamento non corrisponde", true);
 		
 		int indiceDati = 1;
-		for(CtDatiSingoloEsitoRevoca singolaRevoca : datiEr.getDatiSingolaRevoca()) {
+		for(CtDatiSingoloEsitoRevoca singolaRevoca : datiEr.getDatiSingolaRevocas()) {
 			
 			if(singolaRevoca.getSingoloImportoRevocato().compareTo(BigDecimal.ZERO) == 0) {
 				//Importo non revocato. Non faccio niente

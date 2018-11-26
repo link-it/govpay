@@ -25,13 +25,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.xml.bind.JAXBException;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.xml.sax.SAXException;
 
-import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.CtNumeroAvviso;
-import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
@@ -41,20 +37,7 @@ import it.govpay.core.exceptions.GovPayException;
 
 public class IuvUtils {
 
-	private static byte[] buildQrCode001(String codDominio, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) throws JAXBException, SAXException {
-		InformazioniVersamento info = new InformazioniVersamento();
-		info.setCodiceIdentificativoEnte(codDominio);
-		info.setImportoVersamento(importoTotale);
-		CtNumeroAvviso numeroAvviso = new CtNumeroAvviso();
-		numeroAvviso.setAuxDigit(Integer.toString(auxDigit));
-		numeroAvviso.setApplicationCode(String.format("%02d", applicationCode));
-		numeroAvviso.setIUV(iuv);
-		info.setNumeroAvviso(numeroAvviso);
-		byte[] infoByte = JaxbUtils.toByte(info);
-		return infoByte;
-	}
-
-	private static byte[] buildQrCode002(String codDominio, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) throws JAXBException, SAXException {
+	private static byte[] buildQrCode002(String codDominio, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) {
 		// Da "L’Avviso di pagamento analogico nel sistema pagoPA" par. 2.1
 		String qrCode = null; 
 		if(auxDigit == 3)
@@ -91,18 +74,7 @@ public class IuvUtils {
 		else
 			iuvGenerato.setNumeroAvviso(iuv.getAuxDigit() + iuv.getIuv());
 		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale).getBytes());
-		try {
-			switch (GovpayConfig.getInstance().getVersioneAvviso()) {
-			case v001:
-				iuvGenerato.setQrCode(buildQrCode001(dominio.getCodDominio(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
-				break;
-			case v002:
-				iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
-				break;
-			}
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
+		iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
 
 		return iuvGenerato;
 	}
@@ -138,18 +110,7 @@ public class IuvUtils {
 		else
 			iuvGenerato.setNumeroAvviso(dominio.getAuxDigit() + versamento.getIuvVersamento());
 		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()).getBytes());
-		try {
-			switch (GovpayConfig.getInstance().getVersioneAvviso()) {
-			case v001:
-				iuvGenerato.setQrCode(buildQrCode001(dominio.getCodDominio(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()));
-				break;
-			case v002:
-				iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()));
-				break;
-			}
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
+		iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()));
 
 		return iuvGenerato;
 	}

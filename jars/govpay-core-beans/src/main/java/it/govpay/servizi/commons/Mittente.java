@@ -1,15 +1,14 @@
 
 package it.govpay.servizi.commons;
 
-public enum TipoAutenticazione {
+public enum Mittente {
 
-    CNS("CNS"),
-    USR("USR"),
-    OTH("OTH"),
-    N_A("N/A");
+    NODO_DEI_PAGAMENTI_SPC("NodoDeiPagamentiSPC"),
+    PSP("PSP"),
+    GOV_PAY("GovPay");
     private final String value;
 
-    TipoAutenticazione(String v) {
+    Mittente(String v) {
         this.value = v;
     }
 
@@ -17,8 +16,8 @@ public enum TipoAutenticazione {
         return this.value;
     }
 
-    public static TipoAutenticazione fromValue(String v) {
-        for (TipoAutenticazione c: TipoAutenticazione.values()) {
+    public static Mittente fromValue(String v) {
+        for (Mittente c: Mittente.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

@@ -23,7 +23,6 @@
 		<jxb:javaType name="java.math.BigDecimal" xmlType="xs:decimal"
 			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapter.parseImporto"
 			printMethod="it.govpay.core.utils.adapter.DataTypeAdapter.printImporto" />
-			
 	</jxb:globalBindings>
 	
 </jxb:bindings>

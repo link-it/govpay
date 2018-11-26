@@ -7,7 +7,7 @@
             targetNamespace="http://ws.pagamenti.telematici.gov/">
 
     <xsd:include schemaLocation="sac-common-types-1.0.xsd"  />
-
+    
 	<xsd:simpleType name="stTassonomiaAvviso">
         <xsd:restriction base="xsd:string">
             <xsd:pattern value="[0-9]{2,2}" />
