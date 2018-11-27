@@ -13,15 +13,15 @@
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
 	<modules>
+                <module>fonts-titilliumWeb</module>
 		<module>pagopa-beans</module>
-		<module>govpay-stampe-fonts-TitilliumWeb</module>
-		<module>govpay-stampe</module>
-		<module>govpay-orm-beans</module>
-		<module>govpay-orm</module>
-		<module>govpay-core-beans</module>
-		<module>govpay-core-rs</module>
-		<module>govpay-core</module>
-		<module>govpay-ec-client</module>
+                <module>orm-beans</module>
+                <module>orm</module>
+                <module>core-beans</module>
+		<module>stampe</module>
+                <module>core</module>
+		<module>api-commons</module>
+		<module>client-api-ente</module>
 	</modules>
 </project>
 

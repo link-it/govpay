@@ -3,9 +3,7 @@
   Questo WSDL rappresenta l'interfaccia esposta dalla PAA
   per la verifica dei pagamenti in attesa.
 -->
-<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ppt="http://ws.pagamenti.telematici.gov/" xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciCCP" xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" name="PPT" targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciCCP"
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
-	jaxb:version="2.0">
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ppt="http://ws.pagamenti.telematici.gov/" xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciCCP" xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" name="PPT" targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciCCP">
 	<wsdl:types>
 		<xsd:schema version="2.1.3" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
 
@@ -31,9 +29,9 @@
 
 		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/">
 			<xsd:annotation>
-				<xsd:appinfo>
+				<xsd:appinfo xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
 					<jaxb:schemaBindings>
-						<jaxb:package name="it.gov.digitpa.schemas._2011.ws.psp" />
+						<jaxb:package name="gov.telematici.pagamenti.ws.ccp" />
 					</jaxb:schemaBindings>
 				</xsd:appinfo>
 			</xsd:annotation>

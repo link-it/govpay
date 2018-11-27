@@ -33,6 +33,15 @@
 		</xsd:schema>
 		<!-- schema body -->
 		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/">
+		
+			<xsd:annotation>
+				<xsd:appinfo xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
+					<jaxb:schemaBindings>
+						<jaxb:package name="gov.telematici.pagamenti.ws.richiesta_avvisi" />
+					</jaxb:schemaBindings>
+				</xsd:appinfo>
+			</xsd:annotation>
+			
 			<xsd:import schemaLocation="jars/pagopa-beans/src/main/resources/xsd/comuni/PagInf_RPT_RT_6_2_0.xsd" namespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" />
 
 			<!-- simple types -->

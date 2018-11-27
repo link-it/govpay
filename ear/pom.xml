@@ -8,7 +8,7 @@
 		<version>3.0.0-RC3</version>
 	</parent>
 
-	<artifactId>govpay-ear</artifactId>
+	<artifactId>ear</artifactId>
 	<packaging>ear</packaging>
 	<name>GovPay - ear</name>
 
@@ -19,104 +19,104 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-web</artifactId>
+			<artifactId>api-pagopa</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-web</artifactId>
+			<artifactId>api-pagopa</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-pagamento</artifactId>
+			<artifactId>api-pagamento</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-pagamento</artifactId>
+			<artifactId>api-pagamento</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-wc</artifactId>
+			<artifactId>web-connector</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-wc</artifactId>
+			<artifactId>web-connector</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-pendenze</artifactId>
+			<artifactId>api-pendenze</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-pendenze</artifactId>
+			<artifactId>api-pendenze</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-backoffice</artifactId>
+			<artifactId>api-backoffice</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-backoffice</artifactId>
+			<artifactId>api-backoffice</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-ragioneria</artifactId>
+			<artifactId>api-ragioneria</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-ragioneria</artifactId>
+			<artifactId>api-ragioneria</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core-rs</artifactId>
+			<artifactId>api-commons</artifactId>
 			<type>jar</type>
 		</dependency>
+		
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core-rs</artifactId>
+			<artifactId>api-commons</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-web-console</artifactId>
+			<artifactId>web-console</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-web-console</artifactId>
+			<artifactId>web-console</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-stampe-fonts-TitilliumWeb</artifactId>
-			<version>${project.version}</version>
+			<artifactId>fonts-TitilliumWeb</artifactId>
 		</dependency>
 
 	</dependencies>
@@ -147,37 +147,37 @@
 					<modules>
 						<webModule>
 							<groupId>it.govpay</groupId>
-							<artifactId>govpay-web</artifactId>
+							<artifactId>api-pagopa</artifactId>
 							<contextRoot>/govpay/frontend/api/pagopa</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
-							<artifactId>govpay-api-pagamento</artifactId>
+							<artifactId>api-pagamento</artifactId>
 							<contextRoot>/govpay/frontend/api/pagamento</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
-							<artifactId>govpay-wc</artifactId>
+							<artifactId>web-connector</artifactId>
 							<contextRoot>/govpay/frontend/web/connector</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
-							<artifactId>govpay-api-pendenze</artifactId>
+							<artifactId>api-pendenze</artifactId>
 							<contextRoot>/govpay/backend/api/pendenze</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
-							<artifactId>govpay-api-ragioneria</artifactId>
+							<artifactId>api-ragioneria</artifactId>
 							<contextRoot>/govpay/backend/api/ragioneria</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
-							<artifactId>govpay-api-backoffice</artifactId>
+							<artifactId>api-backoffice</artifactId>
 							<contextRoot>/govpay/backend/api/backoffice</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
-							<artifactId>govpay-web-console</artifactId>
+							<artifactId>web-console</artifactId>
 							<contextRoot>/govpay/backend/gui/backoffice</contextRoot>
 						</webModule>
 					</modules>
