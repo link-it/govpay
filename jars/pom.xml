@@ -13,14 +13,14 @@
 		<rel-to-parent>..</rel-to-parent>
 	</properties>
 	<modules>
+                <module>fonts-titilliumWeb</module>
 		<module>pagopa-beans</module>
-		<module>fonts-titilliumWeb</module>
+                <module>orm-beans</module>
+                <module>orm</module>
+                <module>core-beans</module>
 		<module>stampe</module>
-		<module>orm-beans</module>
-		<module>orm</module>
-		<module>core-beans</module>
+                <module>core</module>
 		<module>api-commons</module>
-		<module>core</module>
 		<module>client-api-ente</module>
 	</modules>
 </project>

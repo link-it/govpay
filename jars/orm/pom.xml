@@ -10,7 +10,7 @@
 		<version>3.0.0-RC3</version>
 	</parent>
 
-	<artifactId>govpay-orm</artifactId>
+	<artifactId>orm</artifactId>
 	<packaging>jar</packaging>
 
 	<name>GovPay - jars - ORM</name>
@@ -22,13 +22,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-orm-beans</artifactId>
+			<artifactId>orm-beans</artifactId>
 			<type>jar</type>
 		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core-beans</artifactId>
+			<artifactId>core-beans</artifactId>
 			<type>jar</type>
 		</dependency>
 

@@ -11,7 +11,7 @@
 		<version>3.0.0-RC3</version>
 	</parent>
 
-	<artifactId>govpay-core</artifactId>
+	<artifactId>core</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay - jars - Core</name>
 
@@ -29,25 +29,25 @@
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-orm</artifactId>
+			<artifactId>orm</artifactId>
 			<type>jar</type>
 		</dependency>
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-ente-client</artifactId>
+			<artifactId>client-api-ente</artifactId>
 			<type>jar</type>
 		</dependency>
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>pagopa-beans</artifactId>
+			<artifactId>core-beans</artifactId>
 			<type>jar</type>
 		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-stampe</artifactId>
+			<artifactId>stampe</artifactId>
 			<type>jar</type>
 		</dependency>
 

@@ -10,7 +10,7 @@
 		<version>3.0.0-RC3</version>
 	</parent>
 
-	<artifactId>govpay-api-commons</artifactId>
+	<artifactId>api-commons</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay - jars - API Commons</name>
 
@@ -21,7 +21,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core</artifactId>
+			<artifactId>core</artifactId>
 			<type>jar</type>
 		</dependency>
 

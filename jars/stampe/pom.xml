@@ -8,7 +8,7 @@
 		<version>3.0.0-RC3</version>
 	</parent>
 
-	<artifactId>govpay-stampe</artifactId>
+	<artifactId>stampe</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay - jars - Stampe</name>
 
@@ -19,13 +19,18 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-orm-beans</artifactId>
+			<artifactId>orm-beans</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>pagopa-beans</artifactId>
+			<artifactId>core-beans</artifactId>
 		</dependency>
+
+                <dependency>
+                        <groupId>it.govpay</groupId>
+                        <artifactId>pagopa-beans</artifactId>
+                </dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>

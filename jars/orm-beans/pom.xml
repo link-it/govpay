@@ -9,7 +9,7 @@
 		<version>3.0.0-RC3</version>
 	</parent>
 
-	<artifactId>govpay-orm-beans</artifactId>
+	<artifactId>orm-beans</artifactId>
 	<packaging>jar</packaging>
 
 	<name>GovPay - jars - ORM Beans</name>

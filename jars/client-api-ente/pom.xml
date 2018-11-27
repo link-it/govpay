@@ -8,7 +8,7 @@
 		<version>3.0.0-RC3</version>
 	</parent>
 
-	<artifactId>govpay-api-ente-client</artifactId>
+	<artifactId>client-api-ente</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay - jars - Client EC</name>
 

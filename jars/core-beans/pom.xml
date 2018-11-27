@@ -8,7 +8,7 @@
 		<version>3.0.0-RC3</version>
 	</parent>
 
-	<artifactId>govpay-core-beans</artifactId>
+	<artifactId>core-beans</artifactId>
 	<packaging>jar</packaging>
 
 	<name>GovPay - jars - Core beans</name>

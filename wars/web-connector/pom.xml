@@ -20,7 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-api-commons</artifactId>
+			<artifactId>api-commons</artifactId>
 			<type>jar</type>
 		</dependency>
 
