@@ -20,6 +20,8 @@
 package it.govpay.bd.anagrafica;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -155,6 +157,60 @@ public class UtenzeBD extends BasicBD {
 
 		utenza.setAclPrincipal(aclDB.findAll(filter));
 		return utenza;
+	}
+	
+	/**
+	 * Recupera l'utenza identificato dalla chiave logica
+	 * 
+	 * @param principal
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public Utenza getUtenzaByPrincipal(String principal) throws NotFoundException, MultipleResultException, ServiceException {
+		try {
+			IExpression expr = this.getUtenzaService().newExpression();
+			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL, principal);
+			
+			it.govpay.orm.Utenza utenzaVO = this.getUtenzaService().find(expr);
+			return this.getUtenza(utenzaVO);
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	/**
+	 * Recupera l'utenza identificato dalla chiave logica
+	 * 
+	 * @param principal
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public Utenza getUtenzaBySubject(String principal) throws NotFoundException, MultipleResultException, ServiceException {
+		try {
+			IExpression expr = this.getUtenzaService().newExpression();
+
+			Hashtable<String, String> hashSubject = null;
+			try {
+			  hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			}catch(UtilsException e) {
+				throw new NotFoundException("Utenza" + principal + "non autorizzata");
+			}
+			Enumeration<String> keys = hashSubject.keys();
+			while(keys.hasMoreElements()){
+				String key = keys.nextElement();
+				String value = hashSubject.get(key);
+				expr.like(it.govpay.orm.Utenza.model().PRINCIPAL, "/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/", LikeMode.ANYWHERE);
+			}
+			
+			it.govpay.orm.Utenza utenzaVO = this.getUtenzaService().find(expr);
+			return this.getUtenza(utenzaVO);
+		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	public long count(IExpression expr) throws ServiceException {
