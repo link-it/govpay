@@ -8,7 +8,7 @@
 		<version>3.0.0-RC3</version>
 	</parent>
 
-	<artifactId>govpay-ear</artifactId>
+	<artifactId>ear</artifactId>
 	<packaging>ear</packaging>
 	<name>GovPay - ear</name>
 
@@ -19,12 +19,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-web</artifactId>
+			<artifactId>govpay-api-pagopa</artifactId>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-web</artifactId>
+			<artifactId>govpay-api-pagopa</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
@@ -91,12 +91,13 @@
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core-rs</artifactId>
+			<artifactId>govpay-api-commons</artifactId>
 			<type>jar</type>
 		</dependency>
+		
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-core-rs</artifactId>
+			<artifactId>govpay-api-commons</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
@@ -115,8 +116,7 @@
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-stampe-fonts-TitilliumWeb</artifactId>
-			<version>${project.version}</version>
+			<artifactId>fonts-TitilliumWeb</artifactId>
 		</dependency>
 
 	</dependencies>
@@ -147,7 +147,7 @@
 					<modules>
 						<webModule>
 							<groupId>it.govpay</groupId>
-							<artifactId>govpay-web</artifactId>
+							<artifactId>govpay-api-pagopa</artifactId>
 							<contextRoot>/govpay/frontend/api/pagopa</contextRoot>
 						</webModule>
 						<webModule>

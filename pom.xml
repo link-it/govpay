@@ -51,7 +51,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-core-beans</artifactId>
+				<artifactId>core-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -59,7 +59,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-core-rs</artifactId>
+				<artifactId>api-commons</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -67,7 +67,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-core</artifactId>
+				<artifactId>core</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -75,7 +75,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-ear</artifactId>
+				<artifactId>ear</artifactId>
 				<version>${project.version}</version>
 				<type>ear</type>
 				<scope>compile</scope>
@@ -83,7 +83,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-web</artifactId>
+				<artifactId>api-pagopa</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
@@ -91,7 +91,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-orm-beans</artifactId>
+				<artifactId>orm-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -99,7 +99,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-orm</artifactId>
+				<artifactId>orm</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -107,7 +107,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-stampe</artifactId>
+				<artifactId>stampe</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -115,7 +115,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-wc</artifactId>
+				<artifactId>web-connector</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
@@ -123,7 +123,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-ec-client</artifactId>
+				<artifactId>client-api-ente</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -131,7 +131,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-api-pagamento</artifactId>
+				<artifactId>api-pagamento</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
@@ -139,7 +139,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-api-pendenze</artifactId>
+				<artifactId>api-pendenze</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
@@ -147,7 +147,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-api-gestione</artifactId>
+				<artifactId>api-gestione</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
@@ -162,7 +162,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-api-ragioneria</artifactId>
+				<artifactId>api-ragioneria</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
@@ -170,7 +170,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-api-backoffice</artifactId>
+				<artifactId>api-backoffice</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
@@ -178,11 +178,18 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-web-console</artifactId>
+				<artifactId>web-console</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
+
+	                <dependency>
+        	                <groupId>it.govpay</groupId>
+                	        <artifactId>fonts-TitilliumWeb</artifactId>
+				<version>${project.version}</version>
+	                </dependency>
+
 
 			<dependency>
 				<groupId>org.slf4j</groupId>
