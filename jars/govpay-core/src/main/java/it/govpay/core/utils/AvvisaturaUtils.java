@@ -82,7 +82,7 @@ public class AvvisaturaUtils {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-//		jaxbMarshaller.marshal(new ObjectFactory().createCtAvvisoDigitale(avviso), out);
+		jaxbMarshaller.marshal(avviso, out);
 	}
 
 	public static CtAvvisoDigitale toCtAvvisoDigitale(Versamento versamento)

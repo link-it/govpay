@@ -29,6 +29,7 @@ import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
+import it.gov.spcoop.puntoaccessopa.servizi.avvisidigitali.NodoInviaAvvisoDigitaleService;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
@@ -233,6 +234,14 @@ public class GpContext {
 	}
 	
 	public void setupNodoClient(String codStazione, String codDominio, Azione azione) {
+		this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
+	}
+	
+	public void setupNodoClient(String codStazione, String codDominio, it.govpay.core.utils.client.AvvisaturaClient.Azione azione) {
+		this._setupNodoClient(codStazione, codDominio, NodoInviaAvvisoDigitaleService.SERVICE.getLocalPart(), azione.toString(), 1);
+	}
+	
+	private void _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
 		Actor to = new Actor();
 		to.setName(NodoDeiPagamentiSPC);
 		to.setType(TIPO_SOGGETTO_NDP);
@@ -243,7 +252,7 @@ public class GpContext {
 		from.setType(TIPO_SOGGETTO_STAZIONE);
 		GpThreadLocal.get().getTransaction().setFrom(from);
 		
-		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_NDP, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
+		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_NDP, servizio, azione, versione);
 		
 		Server server = new Server();
 		server.setName(NodoDeiPagamentiSPC);
