@@ -42,11 +42,11 @@ import org.slf4j.Logger;
 
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtDatiSingoliPagamenti;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazione;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazioneRisposta;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazione;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazioneRisposta;
-import it.gov.digitpa.schemas._2011.ws.paa.TipoIdRendicontazione;
+import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazione;
+import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazioneRisposta;
+import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazione;
+import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazioneRisposta;
+import gov.telematici.pagamenti.ws.rpt.TipoIdRendicontazione;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;

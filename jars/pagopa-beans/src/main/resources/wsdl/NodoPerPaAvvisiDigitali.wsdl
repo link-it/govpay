@@ -34,7 +34,15 @@
         <xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/">
 
             <xsd:include schemaLocation="jars/pagopa-beans/src/main/resources/xsd/comuni/avvisi-digitali-1.0.xsd"/>
-
+            
+            <xsd:annotation>
+				<xsd:appinfo xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
+					<jaxb:schemaBindings>
+						<jaxb:package name="gov.telematici.pagamenti.ws.avvisi_digitali" />
+					</jaxb:schemaBindings>
+				</xsd:appinfo>
+			</xsd:annotation>
+            
             <xsd:complexType name="ctNodoInviaAvvisoDigitale">
                 <xsd:sequence>
                     <xsd:element name="password" type="sac:stText35"/>

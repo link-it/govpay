@@ -60,8 +60,8 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
-import gov.telematici.pagamenti.ws.CtEsitoAvvisatura;
-import gov.telematici.pagamenti.ws.CtEsitoAvvisoDigitale;
+import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisatura;
+import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisoDigitale;
 import gov.telematici.pagamenti.ws.presa_in_carico.EsitoPresaInCarico;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.GovpayConfig;

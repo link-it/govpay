@@ -9,8 +9,8 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 
-import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
+import gov.telematici.pagamenti.ws.rpt.FaultBean;
+import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;

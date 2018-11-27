@@ -23,10 +23,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPTRisposta;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRPTRisposta;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStornoRisposta;
+import gov.telematici.pagamenti.ws.rpt.FaultBean;
+import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPTRisposta;
+import gov.telematici.pagamenti.ws.rpt.NodoInviaRPTRisposta;
+import gov.telematici.pagamenti.ws.rpt.NodoInviaRichiestaStornoRisposta;
+
 
 public class Risposta  {
 

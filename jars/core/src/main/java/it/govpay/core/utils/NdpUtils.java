@@ -19,23 +19,24 @@
  */
 package it.govpay.core.utils;
 
+
 public class NdpUtils {
 
-	public static String toCausaString(it.gov.digitpa.schemas._2011.ws.nodo.FaultBean fb) {
+	public static String toCausaString(gov.telematici.pagamenti.ws.rpt.FaultBean fb) {
 		if(fb == null) {
 			return "[-- FaultBean vuoto --]";
 		}
 		return toCausaString(fb.getFaultCode(), fb.getFaultString(), fb.getId(), fb.getSerial(), fb.getDescription());
 	}
 	
-	public static String toCausaString(it.gov.digitpa.schemas._2011.ws.paa.FaultBean fb) {
+	public static String toCausaString(gov.telematici.pagamenti.ws.rt.FaultBean fb) {
 		if(fb == null) {
 			return "[-- FaultBean vuoto --]";
 		}
 		return toCausaString(fb.getFaultCode(), fb.getFaultString(), fb.getId(), fb.getSerial(), fb.getDescription());
 	}
 	
-	public static String toCausaString(it.gov.digitpa.schemas._2011.ws.psp.FaultBean fb) {
+	public static String toCausaString(gov.telematici.pagamenti.ws.ccp.FaultBean fb) {
 		if(fb == null) {
 			return "[-- FaultBean vuoto --]";
 		}

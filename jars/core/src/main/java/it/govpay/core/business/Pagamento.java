@@ -39,10 +39,10 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 
-import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPT;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPTRisposta;
-import it.gov.digitpa.schemas._2011.ws.paa.TipoRPTPendente;
+import gov.telematici.pagamenti.ws.rpt.FaultBean;
+import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPT;
+import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPTRisposta;
+import gov.telematici.pagamenti.ws.rpt.TipoRPTPendente;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;

@@ -33,7 +33,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoVersamento;
-import it.gov.digitpa.schemas._2011.ws.psp.PaaTipoDatiPagamentoPSP;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.model.Anagrafica;
@@ -60,6 +59,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+
+import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPSP;
 
 public class RptBuilder {
 	

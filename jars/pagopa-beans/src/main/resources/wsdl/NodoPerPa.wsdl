@@ -16,8 +16,6 @@
         xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
         name="PagamentiTelematiciRPTservice"
         targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRPT"
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
-	jaxb:version="2.0"
 >
 	<wsdl:types>
 		<xsd:schema version="2.1.2" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
@@ -55,9 +53,9 @@
 		</xsd:schema>
 		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/">
 			<xsd:annotation>
-				<xsd:appinfo>
+				<xsd:appinfo xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
 					<jaxb:schemaBindings>
-						<jaxb:package name="it.gov.digitpa.schemas._2011.ws.paa" />
+						<jaxb:package name="gov.telematici.pagamenti.ws.rpt" />
 					</jaxb:schemaBindings>
 				</xsd:appinfo>
 			</xsd:annotation>

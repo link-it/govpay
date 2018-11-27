@@ -26,7 +26,7 @@ import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
-import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
+import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;

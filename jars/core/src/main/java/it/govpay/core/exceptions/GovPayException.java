@@ -21,7 +21,7 @@ package it.govpay.core.exceptions;
 
 import org.slf4j.Logger;
 
-import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
+import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;

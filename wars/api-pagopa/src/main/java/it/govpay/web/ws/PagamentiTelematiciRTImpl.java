@@ -37,12 +37,12 @@ import org.openspcoop2.utils.logger.beans.proxy.Actor;
 import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
-import it.gov.digitpa.schemas._2011.ws.nodo.EsitoPaaInviaRT;
-import it.gov.digitpa.schemas._2011.ws.nodo.FaultBean;
-import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRT;
-import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRTRisposta;
-import it.gov.digitpa.schemas._2011.ws.nodo.TipoInviaEsitoStornoRisposta;
-import it.gov.digitpa.schemas._2011.ws.nodo.TipoInviaRichiestaRevocaRisposta;
+import gov.telematici.pagamenti.ws.rt.EsitoPaaInviaRT;
+import gov.telematici.pagamenti.ws.rt.FaultBean;
+import gov.telematici.pagamenti.ws.rt.PaaInviaRT;
+import gov.telematici.pagamenti.ws.rt.PaaInviaRTRisposta;
+import gov.telematici.pagamenti.ws.rt.TipoInviaEsitoStornoRisposta;
+import gov.telematici.pagamenti.ws.rt.TipoInviaRichiestaRevocaRisposta;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;

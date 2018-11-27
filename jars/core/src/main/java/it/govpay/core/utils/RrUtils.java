@@ -46,7 +46,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoPagatore;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivoco;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivocoPersFG;
-import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStorno;
+import gov.telematici.pagamenti.ws.rpt.NodoInviaRichiestaStorno;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
