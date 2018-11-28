@@ -20,6 +20,13 @@
 	<wsdl:types>
 		<xsd:schema version="2.1.2" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
 			<xsd:import schemaLocation="http://schemas.xmlsoap.org/soap/envelope/" namespace="http://schemas.xmlsoap.org/soap/envelope/" />
+			<xsd:annotation>
+				<xsd:appinfo xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
+					<jaxb:schemaBindings>
+						<jaxb:package name="gov.telematici.pagamenti.ws.rpt.ppthead" />
+					</jaxb:schemaBindings>
+				</xsd:appinfo>
+			</xsd:annotation>
 			<xsd:simpleType name="stText35">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />

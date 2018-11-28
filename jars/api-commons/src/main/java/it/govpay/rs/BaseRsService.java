@@ -34,6 +34,7 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -134,37 +135,6 @@ public abstract class BaseRsService {
 		return lista.isEmpty();
 	}
 
-	// copy method from From E.R. Harold's book "Java I/O"
-	public static void copy(InputStream in, OutputStream out) 
-			throws IOException {
-
-		// do not allow other threads to read from the
-		// input or write to the output while copying is
-		// taking place
-
-		synchronized (in) {
-			synchronized (out) {
-
-				byte[] buffer = new byte[256];
-				while (true) {
-					int bytesRead = in.read(buffer);
-					if (bytesRead == -1) break;
-					out.write(buffer, 0, bytesRead);
-				}
-			}
-		}
-	}
-	
-	public int getVersione() {
-		return 1;
-	}
-	
-	public static Date convertJsonStringToDate(String dateJson) throws Exception{
-		if(StringUtils.isNotEmpty(dateJson)){
-			String []datPat = SimpleDateFormatUtils.datePatterns.toArray(new String[SimpleDateFormatUtils.datePatterns.size()]);
-			return DateUtils.parseDate(dateJson, datPat);
-		}
-		return null;
-	}
+	public abstract int getVersione();
 }
 

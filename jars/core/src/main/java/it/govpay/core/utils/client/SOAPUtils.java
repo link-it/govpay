@@ -19,7 +19,6 @@
  */
 package it.govpay.core.utils.client;
 
-import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
 import it.govpay.core.utils.JaxbUtils;
 
 import java.io.IOException;
@@ -44,15 +43,11 @@ public class SOAPUtils {
 		baos.write("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">".getBytes());
 		if(header != null) {
 			baos.write("<soap:Header>".getBytes());
-			if(header instanceof IntestazioneCarrelloPPT) {
-				JaxbUtils.marshalIntestazioneCarrelloPPT((IntestazioneCarrelloPPT)header, baos);
-			} else {
-				JaxbUtils.marshal(header, baos);
-			}
+			JaxbUtils.marshalRptService(header, baos);
 			baos.write("</soap:Header>".getBytes());
 		}
 		baos.write("<soap:Body>".getBytes());
-		JaxbUtils.marshal(body, baos);
+		JaxbUtils.marshalRptService(body, baos);
 		baos.write("</soap:Body>".getBytes());
 		baos.write("</soap:Envelope>".getBytes());
 	}
@@ -75,7 +70,7 @@ public class SOAPUtils {
         	// Body vuoto
         	return null;
         } else {
-        	return JaxbUtils.unmarshal(xsr, schema);
+        	return JaxbUtils.unmarshalRptService(xsr, schema);
         }
 	}
 	

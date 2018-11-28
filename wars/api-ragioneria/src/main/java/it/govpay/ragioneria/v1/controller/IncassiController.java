@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -29,7 +30,6 @@ import it.govpay.ragioneria.v1.beans.IncassoIndex;
 import it.govpay.ragioneria.v1.beans.IncassoPost;
 import it.govpay.ragioneria.v1.beans.ListaIncassiIndex;
 import it.govpay.ragioneria.v1.beans.converter.IncassiConverter;
-import it.govpay.rs.BaseRsService;
 
 
 
@@ -142,7 +142,7 @@ public class IncassiController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();

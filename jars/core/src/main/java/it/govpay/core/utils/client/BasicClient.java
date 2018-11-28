@@ -301,7 +301,7 @@ public class BasicClient {
 			if(soap) {
 				SOAPUtils.writeMessage(body, header, baos);
 			} else {
-				JaxbUtils.marshal(body, baos);
+				JaxbUtils.marshalRptService(body, baos);
 			}
 
 			integrationCtx.setMsg(baos.toByteArray());

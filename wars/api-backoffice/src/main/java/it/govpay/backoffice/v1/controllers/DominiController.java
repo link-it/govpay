@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -57,9 +58,6 @@ import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.rs.BaseRsService;
-
-
 
 public class DominiController extends BaseController {
 
@@ -448,7 +446,7 @@ public class DominiController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
@@ -486,7 +484,7 @@ public class DominiController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
@@ -524,7 +522,7 @@ public class DominiController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
@@ -562,7 +560,7 @@ public class DominiController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();

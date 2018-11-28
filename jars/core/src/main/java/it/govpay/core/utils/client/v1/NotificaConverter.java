@@ -30,12 +30,12 @@ import org.joda.time.LocalDate;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.xml.sax.SAXException;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.core.utils.rawutils.RawObject;
 import it.govpay.ec.v1.beans.Allegato;
 import it.govpay.ec.v1.beans.Allegato.TipoEnum;
 import it.govpay.ec.v1.beans.Notifica;
@@ -48,11 +48,10 @@ public class NotificaConverter {
 		notificaRsModel.setIdA2A(notifica.getApplicazione(bd).getCodApplicazione());
 		notificaRsModel.setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
 		// rpt
-		notificaRsModel.setRpt(JaxbUtils.toRPT(rpt.getXmlRpt())); 
+		notificaRsModel.setRpt(new RawObject(ConverterUtils.getRptJson(rpt))); 
 		// rt
 		if(rpt.getXmlRt() != null) {
-			CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
-			notificaRsModel.setRt(rt);
+			notificaRsModel.setRt(new RawObject(ConverterUtils.getRtJson(rpt)));
 		}
 		// elenco pagamenti
 		if(rpt.getPagamenti(bd) != null && rpt.getPagamenti(bd).size() > 0) {

@@ -134,7 +134,7 @@
 						<xjbSource>${basedir}/src/main/resources/xsd/global.xjb</xjbSource>
 					</xjbSources>
 					<clearOutputDir>false</clearOutputDir>
-					                            <generateEpisode>false</generateEpisode>
+					<generateEpisode>false</generateEpisode>
 				</configuration>
 			</plugin>
 
@@ -157,6 +157,38 @@
 								</bindingFiles>
 							</defaultOptions>
 							<sourceRoot>${project.build.directory}/generated-sources/jaxb</sourceRoot>
+							<wsdlOptions>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/NodoPerPa.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/NodoPerPa.wsdl</wsdlLocation>
+								</wsdlOption>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/NodoPerPaAvvisiDigitali.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/NodoPerPaAvvisiDigitali.wsdl</wsdlLocation>
+								</wsdlOption>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodo.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/PaPerNodo.wsdl</wsdlLocation>
+								</wsdlOption>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoChiediElencoAvvisiDigitali.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/PaPerNodoChiediElencoAvvisiDigitali.wsdl</wsdlLocation>
+								</wsdlOption>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoPagamentoPsp.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/PaPerNodoPagamentoPsp.wsdl</wsdlLocation>
+								</wsdlOption>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoRichiestaAvvisi.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/PaPerNodoRichiestaAvvisi.wsdl</wsdlLocation>
+								</wsdlOption>
+							</wsdlOptions>
 						</configuration>
 						<goals>
 							<goal>wsdl2java</goal>

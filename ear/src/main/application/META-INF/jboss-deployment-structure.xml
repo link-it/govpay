@@ -16,7 +16,7 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</dependencies>
 	</deployment>
-	<sub-deployment name="govpay-web-${project.version}.war">
+	<sub-deployment name="api-pagopa-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.log4j" />
 			<module name="org.slf4j" />
@@ -31,7 +31,7 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</dependencies>
 	</sub-deployment>
-	<sub-deployment name="govpay-wc-${project.version}.war">
+	<sub-deployment name="web-connector-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.log4j" />
 			<module name="org.slf4j" />
@@ -46,7 +46,7 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</dependencies>
 	</sub-deployment>
-	<sub-deployment name="govpay-api-pagamento-${project.version}.war">
+	<sub-deployment name="api-pagamento-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.log4j" />
 			<module name="org.slf4j" />
@@ -61,7 +61,7 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</dependencies>
 	</sub-deployment>
-	<sub-deployment name="govpay-api-pendenze-${project.version}.war">
+	<sub-deployment name="api-pendenze-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.log4j" />
 			<module name="org.slf4j" />
@@ -76,7 +76,7 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</dependencies>
 	</sub-deployment>
-	<sub-deployment name="govpay-api-ragioneria-${project.version}.war">
+	<sub-deployment name="api-ragioneria-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.log4j" />
 			<module name="org.slf4j" />
@@ -91,7 +91,7 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</dependencies>
 	</sub-deployment>
-	<sub-deployment name="govpay-api-backoffice-${project.version}.war">
+	<sub-deployment name="api-backoffice-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.log4j" />
 			<module name="org.slf4j" />
@@ -106,7 +106,7 @@
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
 		</dependencies>
 	</sub-deployment>
-	<sub-deployment name="govpay-web-console-${project.version}.war">
+	<sub-deployment name="web-console-${project.version}.war">
 		<exclusions>
 			<module name="org.apache.log4j" />
 			<module name="org.slf4j" />

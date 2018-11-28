@@ -1,10 +1,9 @@
-package it.govpay.rs.v1;
+package it.govpay.core.utils.rawutils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.xml2json.Xml2JsonFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -34,12 +33,7 @@ public class ConverterUtils {
 					.replaceAll("emailVersante", "e-mailVersante")
 					.replaceAll("N_A", "N/A");
 		} catch (Exception e) {
-			try {
-				String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRpt()));
-				return s.substring(7, s.length() - 1);
-			} catch (Exception ee) {
-				throw new ServiceException(ee);
-			}
+			throw new ServiceException(e);
 		}
 	}
 
@@ -55,12 +49,7 @@ public class ConverterUtils {
 					.replaceAll("emailVersante", "e-mailVersante")
 					.replaceAll("N_A", "N/A");
 		} catch (Exception e) {
-			try {
-				String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRt()));
-				return s.substring(6, s.length() - 1);
-			} catch (Exception ee) {
-				throw new ServiceException(ee);
-			}
+			throw new ServiceException(e);
 		}
 	}
 }

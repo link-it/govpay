@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import eu.medsea.mimeutil.MimeUtil;
-import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
@@ -34,27 +33,17 @@ import it.govpay.core.dao.anagrafica.dto.GetTributoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
-import it.govpay.core.dao.anagrafica.dto.PutDominioDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
-import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
-import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.pagamento.v1.beans.ContiAccredito;
-import it.govpay.pagamento.v1.beans.ContiAccreditoPost;
-import it.govpay.pagamento.v1.beans.DominioPost;
 import it.govpay.pagamento.v1.beans.Entrata;
 import it.govpay.pagamento.v1.beans.ListaDominiIndex;
 import it.govpay.pagamento.v1.beans.ListaEntrate;
 import it.govpay.pagamento.v1.beans.ListaIbanAccredito;
 import it.govpay.pagamento.v1.beans.ListaUnitaOperative;
 import it.govpay.pagamento.v1.beans.UnitaOperativa;
-import it.govpay.pagamento.v1.beans.UnitaOperativaPost;
 import it.govpay.pagamento.v1.beans.converter.DominiConverter;
-import it.govpay.rs.BaseRsService;
 
 
 
@@ -435,163 +424,6 @@ public class DominiController extends BaseController {
 			if(ctx != null) ctx.log();
 		}
     }
-
-
-
-    public Response dominiIdDominioIbanAccreditoIbanAccreditoPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
-    	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
-		GpContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			String jsonRequest = baos.toString();
-			ContiAccreditoPost ibanAccreditoRequest= JSONSerializable.parse(jsonRequest, ContiAccreditoPost.class);
-			
-			PutIbanAccreditoDTO putibanAccreditoDTO = DominiConverter.getPutIbanAccreditoDTO(ibanAccreditoRequest, idDominio, ibanAccredito, user);
-			
-			DominiDAO dominiDAO = new DominiDAO();
-			
-			PutIbanAccreditoDTOResponse putIbanAccreditoDTOResponse = dominiDAO.createOrUpdateIbanAccredito(putibanAccreditoDTO);
-			
-			Status responseStatus = putIbanAccreditoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-
-
-    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
-    	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
-		GpContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			String jsonRequest = baos.toString();
-			UnitaOperativaPost unitaOperativaRequest= JSONSerializable.parse(jsonRequest, UnitaOperativaPost.class);
-			
-			PutUnitaOperativaDTO putUnitaOperativaDTO = DominiConverter.getPutUnitaOperativaDTO(unitaOperativaRequest, idDominio, idUnitaOperativa, user);
-			
-			DominiDAO dominiDAO = new DominiDAO();
-			
-			PutUnitaOperativaDTOResponse putUnitaOperativaDTOResponse = dominiDAO.createOrUpdateUnitaOperativa(putUnitaOperativaDTO);
-			
-			Status responseStatus = putUnitaOperativaDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-
-
-//    public Response dominiIdDominioEntrateIdEntrataPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
-//    	String methodName = "dominiIdDominioEntrateIdEntrataPUT";  
-//		GpContext ctx = null;
-//		String transactionId = null;
-//		ByteArrayOutputStream baos= null;
-//		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-//		try{
-//			baos = new ByteArrayOutputStream();
-//			// salvo il json ricevuto
-//			BaseRsService.copy(is, baos);
-//			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-//			
-//			ctx =  GpThreadLocal.get();
-//			transactionId = ctx.getTransactionId();
-//			
-//			String jsonRequest = baos.toString();
-//			JsonConfig jsonConfig = new JsonConfig();
-//			Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
-//			jsonConfig.setClassMap(classMap);
-//			EntrataPost entrataRequest= (EntrataPost) EntrataPost.parse(jsonRequest, EntrataPost.class, jsonConfig);
-//			
-//			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
-//			
-//			DominiDAO dominiDAO = new DominiDAO();
-//			
-//			PutEntrataDominioDTOResponse putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
-//			
-//			Status responseStatus = putEntrataDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-//			
-//			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-//			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-//			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
-//		}catch (Exception e) {
-//			return handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-//		} finally {
-//			if(ctx != null) ctx.log();
-//		}
-//    }
-
-
-
-    public Response dominiIdDominioPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
-    	String methodName = "dominiIdDominioPUT";  
-		GpContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			String jsonRequest = baos.toString();
-			DominioPost dominioRequest= JSONSerializable.parse(jsonRequest, DominioPost.class);
-			
-			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 
-			
-			DominiDAO dominiDAO = new DominiDAO();
-			
-			PutDominioDTOResponse putDominioDTOResponse = dominiDAO.createOrUpdate(putDominioDTO);
-			
-			Status responseStatus = putDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-    }
-
-
 
     public Response dominiIdDominioContiAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento) {
     	String methodName = "dominiIdDominioIbanAccreditoGET";  
