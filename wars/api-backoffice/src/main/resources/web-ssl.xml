@@ -4,7 +4,7 @@
 	<display-name>govpay-api-backoffice</display-name>
     
     <listener>
-	    <listener-class>it.govpay.backoffice.api.listener.InitListener</listener-class>
+	    <listener-class>it.govpay.backoffice.listener.InitListener</listener-class>
 	</listener>
 	
 	<filter>

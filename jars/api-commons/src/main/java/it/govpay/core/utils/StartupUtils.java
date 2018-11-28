@@ -43,7 +43,6 @@ import org.slf4j.MDC;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.cache.AclCache;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.stampe.utils.GovpayStampe;
 
 public class StartupUtils {

@@ -233,7 +233,7 @@ public class RtUtils extends NdpValidationUtils {
 		try {
 			// Validazione Sintattica
 			try {
-				ctRt = JaxbUtils.toRT(rtByte);
+				ctRt = JaxbUtils.toRT(rtByte, true);
 			} catch (Exception e) {
 				log.warn("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
 				if(e.getCause() != null)
@@ -255,7 +255,7 @@ public class RtUtils extends NdpValidationUtils {
 		// Validazione Semantica
 		RtUtils.EsitoValidazione esito = null;
 		try {
-			ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt());
+			ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 			esito = RtUtils.validaSemantica(ctRpt, ctRt);
 		} catch (JAXBException e) {
 			throw new ServiceException(e);

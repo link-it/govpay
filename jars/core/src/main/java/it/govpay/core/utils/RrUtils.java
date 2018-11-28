@@ -89,7 +89,7 @@ public class RrUtils extends NdpValidationUtils {
 		CtRicevutaTelematica ctRt = null;
 		
 		try {
-			ctRt = JaxbUtils.toRT(rpt.getXmlRt());
+			ctRt = JaxbUtils.toRT(rpt.getXmlRt(), true);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}

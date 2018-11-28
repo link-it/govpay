@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.mime.MimeMultipart;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -72,7 +73,6 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.IAutorizzato;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
-import it.govpay.rs.BaseRsService;
 
 
 public class PendenzeController extends BaseController {
@@ -211,7 +211,7 @@ public class PendenzeController extends BaseController {
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			ctx =  GpThreadLocal.get();
@@ -322,7 +322,7 @@ public class PendenzeController extends BaseController {
 					}
 
 					if(fileInputStream != null) {
-						BaseRsService.copy(fileInputStream, baos);
+						IOUtils.copy(fileInputStream, baos);
 					}
 				}
 			}catch(Exception e) {
@@ -331,7 +331,7 @@ public class PendenzeController extends BaseController {
 
 			if(fileInputStream == null) {
 				// salvo il json ricevuto
-				BaseRsService.copy(is, baos);
+				IOUtils.copy(is, baos);
 			}
 
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);

@@ -4,7 +4,7 @@
 	<display-name>govpay-api-ragioneria</display-name>
     
     <listener>
-	    <listener-class>it.govpay.ragioneria.api.listener.InitListener</listener-class>
+	    <listener-class>it.govpay.ragioneria.listener.InitListener</listener-class>
 	</listener>
 	
 	<filter>

@@ -66,7 +66,7 @@ public class RicevutaTelematica  extends BasicBD {
 		this.impostaAnagraficaEnteCreditore(rpt, input);
 		Versamento versamento = rpt.getVersamento(this);
 
-		CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
+		CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt(), false);
 		
 		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
 		

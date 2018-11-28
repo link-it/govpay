@@ -6,120 +6,15 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Tributo;
-import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
-import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
-import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.model.Anagrafica;
-import it.govpay.model.IAutorizzato;
 import it.govpay.pagamento.v1.beans.ContiAccredito;
-import it.govpay.pagamento.v1.beans.ContiAccreditoPost;
 import it.govpay.pagamento.v1.beans.Dominio;
 import it.govpay.pagamento.v1.beans.DominioIndex;
-import it.govpay.pagamento.v1.beans.DominioPost;
 import it.govpay.pagamento.v1.beans.Entrata;
 import it.govpay.pagamento.v1.beans.TipoContabilita;
 import it.govpay.pagamento.v1.beans.UnitaOperativa;
-import it.govpay.pagamento.v1.beans.UnitaOperativaPost;
 
 public class DominiConverter {
-	
-	public static PutIbanAccreditoDTO getPutIbanAccreditoDTO(ContiAccreditoPost ibanAccreditoPost, String idDominio, String idIbanAccredito, IAutorizzato user) {
-		PutIbanAccreditoDTO ibanAccreditoDTO = new PutIbanAccreditoDTO(user);
-		
-		it.govpay.bd.model.IbanAccredito iban = new it.govpay.bd.model.IbanAccredito();
-		
-		iban.setAbilitato(ibanAccreditoPost.isAbilitato());
-		iban.setAttivatoObep(ibanAccreditoPost.isMybank());
-		iban.setCodBic(ibanAccreditoPost.getBic());
-		iban.setCodIban(idIbanAccredito);
-		iban.setPostale(ibanAccreditoPost.isPostale());
-		
-		ibanAccreditoDTO.setIban(iban);
-		ibanAccreditoDTO.setIdDominio(idDominio);
-		ibanAccreditoDTO.setIbanAccredito(idIbanAccredito);
-				
-		return ibanAccreditoDTO;		
-	}
-	
-	public static PutUnitaOperativaDTO getPutUnitaOperativaDTO(UnitaOperativaPost uoPost, String idDominio, String idUo, IAutorizzato user) {
-		PutUnitaOperativaDTO uoDTO = new PutUnitaOperativaDTO(user);
-		
-		it.govpay.bd.model.UnitaOperativa uo = new it.govpay.bd.model.UnitaOperativa();
-		uo.setAbilitato(uoPost.isAbilitato());
-		Anagrafica anagrafica = new Anagrafica();
-		anagrafica.setCap(uoPost.getCap());
-		anagrafica.setCivico(uoPost.getCivico());
-		anagrafica.setCodUnivoco(idUo);
-		anagrafica.setEmail(uoPost.getEmail());
-		anagrafica.setPec(uoPost.getPec());
-		anagrafica.setFax(uoPost.getFax());
-		anagrafica.setIndirizzo(uoPost.getIndirizzo());
-		anagrafica.setLocalita(uoPost.getLocalita());
-		anagrafica.setNazione(uoPost.getNazione());
-		anagrafica.setProvincia(uoPost.getProvincia());
-		anagrafica.setRagioneSociale(uoPost.getRagioneSociale());
-		anagrafica.setTelefono(uoPost.getTel());
-		anagrafica.setUrlSitoWeb(uoPost.getWeb());
-		anagrafica.setArea(uoPost.getArea());
-		
-		uo.setAnagrafica(anagrafica);
-		uo.setCodUo(idUo);
-		
-		uoDTO.setUo(uo );
-		uoDTO.setIdDominio(idDominio);
-		uoDTO.setIdUo(idUo);
-				
-		return uoDTO;		
-	}
-
-	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, IAutorizzato user) {
-		PutDominioDTO dominioDTO = new PutDominioDTO(user);
-		
-		it.govpay.bd.model.Dominio dominio = new it.govpay.bd.model.Dominio();
-		dominio.setAbilitato(dominioPost.isAbilitato());
-		Anagrafica anagrafica = new Anagrafica();
-		anagrafica.setCap(dominioPost.getCap());
-		anagrafica.setCivico(dominioPost.getCivico());
-		anagrafica.setCodUnivoco(idDominio);
-		anagrafica.setEmail(dominioPost.getEmail());
-		anagrafica.setPec(dominioPost.getPec());
-		anagrafica.setFax(dominioPost.getFax());
-		anagrafica.setIndirizzo(dominioPost.getIndirizzo());
-		anagrafica.setLocalita(dominioPost.getLocalita());
-		anagrafica.setNazione(dominioPost.getNazione());
-		anagrafica.setProvincia(dominioPost.getProvincia());
-		anagrafica.setRagioneSociale(dominioPost.getRagioneSociale());
-		anagrafica.setTelefono(dominioPost.getTel());
-		anagrafica.setUrlSitoWeb(dominioPost.getWeb());
-		
-		dominio.setAnagrafica(anagrafica );
-		if(dominioPost.getAuxDigit() != null)
-			dominio.setAuxDigit(Integer.parseInt(dominioPost.getAuxDigit()));
-		dominio.setCbill(dominioPost.getCbill());
-		dominio.setCodDominio(idDominio);
-		dominio.setGln(dominioPost.getGln());
-		dominio.setIdApplicazioneDefault(null);
-		
-		dominio.setIuvPrefix(dominioPost.getIuvPrefix());
-		if(dominioPost.getLogo() != null)
-			dominio.setLogo(dominioPost.getLogo().getBytes());
-		dominio.setNdpData(null);
-		dominio.setNdpDescrizione(null);
-		dominio.setNdpOperazione(null);
-		dominio.setNdpStato(null);
-		dominio.setRagioneSociale(dominioPost.getRagioneSociale());
-		if(dominioPost.getSegregationCode() != null)
-			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
-		
-		
-		dominioDTO.setDominio(dominio);
-		dominioDTO.setIdDominio(idDominio);
-		dominioDTO.setCodStazione(dominioPost.getStazione());
-		return dominioDTO;		
-	}
-	
-	
 	
 	public static DominioIndex toRsModelIndex(it.govpay.bd.model.Dominio dominio) throws ServiceException {
 		DominioIndex rsModel = new DominioIndex();

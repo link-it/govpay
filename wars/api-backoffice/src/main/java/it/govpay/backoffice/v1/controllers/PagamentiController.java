@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
@@ -32,7 +33,6 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.BaseRsService;
 
 
 
@@ -157,7 +157,7 @@ public class PagamentiController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();

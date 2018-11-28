@@ -24,8 +24,7 @@ import javax.xml.bind.JAXBElement;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
-import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
-import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
+import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazionePPT;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRT;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazione;
@@ -44,6 +43,7 @@ import gov.telematici.pagamenti.ws.rpt.NodoInviaRichiestaStorno;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRichiestaStornoRisposta;
 import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import gov.telematici.pagamenti.ws.rpt.Risposta;
+import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazioneCarrelloPPT;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;

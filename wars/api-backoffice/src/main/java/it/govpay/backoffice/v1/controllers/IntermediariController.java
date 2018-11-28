@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
 import it.govpay.backoffice.v1.beans.converter.IntermediariConverter;
@@ -40,7 +41,6 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
-import it.govpay.rs.BaseRsService;
 
 
 
@@ -117,7 +117,7 @@ public class IntermediariController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();
@@ -208,7 +208,7 @@ public class IntermediariController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();

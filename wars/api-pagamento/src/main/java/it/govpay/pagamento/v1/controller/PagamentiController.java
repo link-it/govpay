@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.PagamentoPortale;
@@ -40,7 +41,6 @@ import it.govpay.pagamento.v1.beans.FaultBeanEsteso.CategoriaEnum;
 import it.govpay.pagamento.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.pagamento.v1.beans.converter.PendenzeConverter;
 import it.govpay.pagamento.v1.beans.converter.RptConverter;
-import it.govpay.rs.BaseRsService;
 
 
 
@@ -60,7 +60,7 @@ public class PagamentiController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
-			BaseRsService.copy(is, baos);
+			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
 			ctx =  GpThreadLocal.get();

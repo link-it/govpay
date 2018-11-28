@@ -4,7 +4,7 @@
 	<display-name>govpay-api-pendenze</display-name>
     
     <listener>
-	    <listener-class>it.govpay.pendenze.api.listener.InitListener</listener-class>
+	    <listener-class>it.govpay.pendenze.listener.InitListener</listener-class>
 	</listener>
 
 	<filter>
