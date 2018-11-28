@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
-import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.Stazione;
 import it.govpay.backoffice.v1.beans.StazioneIndex;
 import it.govpay.backoffice.v1.beans.StazionePost;
+import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.model.IAutorizzato;
 
 public class StazioniConverter {
 
-	public static PutStazioneDTO getPutStazioneDTO(StazionePost stazionePost, String idIntermediario, String idStazione, IAutorizzato user) throws ServiceException {
+	public static PutStazioneDTO getPutStazioneDTO(StazionePost stazionePost, String idIntermediario, String idStazione, Authentication user) throws ServiceException {
 		PutStazioneDTO stazioneDTO = new PutStazioneDTO(user);
 		
 		it.govpay.bd.model.Stazione stazione = new it.govpay.bd.model.Stazione();

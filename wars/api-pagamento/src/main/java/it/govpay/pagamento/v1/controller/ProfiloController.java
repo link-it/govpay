@@ -9,13 +9,13 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 import it.govpay.pagamento.v1.beans.Profilo;
 import it.govpay.pagamento.v1.beans.converter.ProfiloConverter;
 
@@ -27,7 +27,7 @@ public class ProfiloController extends BaseController {
 
 
 
-    public Response profiloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders) {
+    public Response profiloGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
     	String methodName = "profiloGET";  
 		GpContext ctx = null;
 		String transactionId = null;

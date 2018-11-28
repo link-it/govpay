@@ -22,14 +22,15 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.Date;
 
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.model.IAutorizzato;
 import it.govpay.orm.Incasso;
 
 public class ListaIncassiDTO extends BasicFindRequestDTO {
 	
-	public ListaIncassiDTO(IAutorizzato user) {
+	public ListaIncassiDTO(Authentication user) {
 		super(user);
 		this.addDefaultSort(Incasso.model().DATA_ORA_INCASSO,SortOrder.DESC);
 	}
@@ -51,7 +52,7 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 		this.fine = fine;
 	}
 	public String getPrincipal() {
-		return this.getUser() != null ? this.getUser().getPrincipal() : this.principal;
+		return AutorizzazioneUtils.getPrincipal(this.getUser()) != null ? AutorizzazioneUtils.getPrincipal(this.getUser()) : this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;

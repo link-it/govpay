@@ -1,15 +1,16 @@
 package it.govpay.core.dao.pagamenti.dto;
 
-import it.govpay.core.dao.commons.Versamento;
+import org.springframework.security.core.Authentication;
+
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
-import it.govpay.model.IAutorizzato;
+import it.govpay.core.dao.commons.Versamento;
 
 public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	
 	private Versamento versamento;
 	private boolean stampaAvviso;
 	private boolean avvisaturaDigitale;
-	public PutPendenzaDTO(IAutorizzato user) {
+	public PutPendenzaDTO(Authentication user) {
 		super(user);
 	}
 

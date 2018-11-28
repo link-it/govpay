@@ -22,12 +22,13 @@ package it.govpay.core.business.model;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Utenza;
 
 public class AvviaTransazioneDTO {
 
-	private Utenza utente;
+	private Authentication user;
 	private List<Object> versamentoOrVersamentoRef;
 	private it.govpay.core.beans.Anagrafica versante;
 	private String ibanAddebito;
@@ -78,11 +79,10 @@ public class AvviaTransazioneDTO {
 	public void setCanale(Canale canale) {
 		this.canale = canale;
 	}
-	public Utenza getUtente() {
-		return utente;
+	public Authentication getUser() {
+		return user;
 	}
-	public void setUtente(Utenza utente) {
-		this.utente = utente;
+	public void setUser(Authentication user) {
+		this.user = user;
 	}
-
 }

@@ -5,8 +5,9 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.PatchOp;
 
 /**
@@ -19,7 +20,7 @@ public class AbstractPatchDTO extends BasicCreateRequestDTO {
 
 	private List<PatchOp> op;
 	
-	public AbstractPatchDTO(IAutorizzato user) {
+	public AbstractPatchDTO(Authentication user) {
 		super(user);
 	}
 	public List<PatchOp> getOp() {

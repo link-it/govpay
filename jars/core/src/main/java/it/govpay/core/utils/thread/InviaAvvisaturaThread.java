@@ -11,9 +11,9 @@ import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
-import gov.telematici.pagamenti.ws.CtAvvisoDigitale;
-import gov.telematici.pagamenti.ws.CtNodoInviaAvvisoDigitale;
-import gov.telematici.pagamenti.ws.CtNodoInviaAvvisoDigitaleRisposta;
+import gov.telematici.pagamenti.ws.avvisi_digitali.CtAvvisoDigitale;
+import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitale;
+import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitaleRisposta;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;

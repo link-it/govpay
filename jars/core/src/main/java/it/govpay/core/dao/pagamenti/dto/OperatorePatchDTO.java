@@ -3,7 +3,7 @@
  */
 package it.govpay.core.dao.pagamenti.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -15,7 +15,7 @@ public class OperatorePatchDTO extends AbstractPatchDTO {
 
 	private String idOperatore;
 	
-	public OperatorePatchDTO(IAutorizzato user) {
+	public OperatorePatchDTO(Authentication user) {
 		super(user);
 	}
 

@@ -2,8 +2,9 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.model.Acl.Diritti;
-import it.govpay.model.IAutorizzato;
 import it.govpay.orm.ACL;
 
 public class ListaAclDTO extends BasicFindRequestDTO{
@@ -76,7 +77,7 @@ public class ListaAclDTO extends BasicFindRequestDTO{
 	}
 
 
-	public ListaAclDTO(IAutorizzato user) {
+	public ListaAclDTO(Authentication user) {
 		super(user);
 		this.addSortField("principal", ACL.model().PRINCIPAL);
 		this.addSortField("ruolo", ACL.model().RUOLO);

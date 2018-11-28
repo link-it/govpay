@@ -1,7 +1,8 @@
 package it.govpay.core.dao.anagrafica.dto;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.bd.model.IbanAccredito;
-import it.govpay.model.IAutorizzato;
 
 public class PutIbanAccreditoDTO extends BasicCreateRequestDTO  {
 	
@@ -9,7 +10,7 @@ public class PutIbanAccreditoDTO extends BasicCreateRequestDTO  {
 	private String idDominio;
 	private String ibanAccredito;
 	
-	public PutIbanAccreditoDTO(IAutorizzato user) {
+	public PutIbanAccreditoDTO(Authentication user) {
 		super(user);
 	}
 

@@ -1,10 +1,10 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class GetStazioneDTO extends BasicRequestDTO {
 	
-	public GetStazioneDTO(IAutorizzato user, String codIntermediario, String codStazione) {
+	public GetStazioneDTO(Authentication user, String codIntermediario, String codStazione) {
 		super(user);
 		this.codIntermediario = codIntermediario;
 		this.codStazione = codStazione;

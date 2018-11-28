@@ -2,8 +2,9 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.bd.model.Applicazione;
-import it.govpay.model.IAutorizzato;
 
 public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 	
@@ -29,7 +30,7 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 		this.idTributi = idTributi;
 	}
 
-	public PutApplicazioneDTO(IAutorizzato user) {
+	public PutApplicazioneDTO(Authentication user) {
 		super(user);
 	}
 

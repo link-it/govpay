@@ -3,8 +3,9 @@
  */
 package it.govpay.core.dao.anagrafica.dto;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.model.Canale.TipoVersamento;
-import it.govpay.model.IAutorizzato;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -15,7 +16,7 @@ import it.govpay.model.IAutorizzato;
 public class LeggiStazioneDTO extends BasicCreateRequestDTO {
 
 
-	public LeggiStazioneDTO(IAutorizzato user) {
+	public LeggiStazioneDTO(Authentication user) {
 		super(user);
 	}
 	

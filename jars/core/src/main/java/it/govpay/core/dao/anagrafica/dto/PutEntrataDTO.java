@@ -1,6 +1,7 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
+
 import it.govpay.model.TipoTributo;
 
 public class PutEntrataDTO extends BasicCreateRequestDTO  {
@@ -9,7 +10,7 @@ public class PutEntrataDTO extends BasicCreateRequestDTO  {
 	private TipoTributo tipoTributo;
 	private String codTributo;
 	
-	public PutEntrataDTO(IAutorizzato user) {
+	public PutEntrataDTO(Authentication user) {
 		super(user);
 	}
 

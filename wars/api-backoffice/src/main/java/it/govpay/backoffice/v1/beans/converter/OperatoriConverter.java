@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Tributo;
-import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.Operatore;
 import it.govpay.backoffice.v1.beans.OperatorePost;
 import it.govpay.backoffice.v1.beans.TipoEntrata;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Tributo;
+import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Acl;
-import it.govpay.model.IAutorizzato;
 
 public class OperatoriConverter {
 
-	public static PutOperatoreDTO getPutOperatoreDTO(OperatorePost operatoreRequest, String principal,	IAutorizzato user) throws NotAuthorizedException, ServiceException{
+	public static PutOperatoreDTO getPutOperatoreDTO(OperatorePost operatoreRequest, String principal,	Authentication user) throws NotAuthorizedException, ServiceException{
 		PutOperatoreDTO putOperatoreDTO = new PutOperatoreDTO(user);
 		
 		it.govpay.bd.model.Operatore operatore = new it.govpay.bd.model.Operatore();

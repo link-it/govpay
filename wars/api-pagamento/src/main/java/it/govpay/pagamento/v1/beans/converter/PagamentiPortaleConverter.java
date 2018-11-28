@@ -7,23 +7,23 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.model.IAutorizzato;
 import it.govpay.pagamento.v1.beans.ContoAddebito;
 import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.v1.beans.Pagamento;
 import it.govpay.pagamento.v1.beans.PagamentoIndex;
 import it.govpay.pagamento.v1.beans.PagamentoPost;
+import it.govpay.pagamento.v1.beans.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.pagamento.v1.beans.PendenzaPost;
 import it.govpay.pagamento.v1.beans.Soggetto;
 import it.govpay.pagamento.v1.beans.StatoPagamento;
 import it.govpay.pagamento.v1.beans.VocePendenza;
-import it.govpay.pagamento.v1.beans.PagamentoPost.AutenticazioneSoggettoEnum;
 
 public class PagamentiPortaleConverter {
 
@@ -45,7 +45,7 @@ public class PagamentiPortaleConverter {
 		return json;
 	}
 
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, IAutorizzato user, String idSessione, String idSessionePortale) throws Exception {
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, String idSessionePortale) throws Exception {
 
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
 

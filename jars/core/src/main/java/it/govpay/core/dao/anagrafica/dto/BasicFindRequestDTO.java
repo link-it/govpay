@@ -8,12 +8,12 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.exceptions.RequestParamException.FaultType;
-import it.govpay.model.IAutorizzato;
 
 public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	
@@ -27,8 +27,8 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	public final static int DEFAULT_LIMIT = 50;
 	
 
-	public BasicFindRequestDTO(IAutorizzato user) {
-		super(user);
+	public BasicFindRequestDTO(Authentication authentication) {
+		super(authentication);
 		this.setLimit(DEFAULT_LIMIT);
 		this.setPagina(1);
 		this.fieldsSort = new ArrayList<>();

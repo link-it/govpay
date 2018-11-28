@@ -10,4 +10,6 @@ public class Costanti {
 	
 	
 	public static final String HEADER_NAME_OUTPUT_TRANSACTION_ID = "X-Govpay-IdTransazione";
+	
+	public static final String GOVPAY = "GovPay";
 }

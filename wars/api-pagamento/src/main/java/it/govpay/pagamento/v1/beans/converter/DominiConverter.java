@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
@@ -11,7 +12,6 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.IAutorizzato;
 import it.govpay.pagamento.v1.beans.ContiAccredito;
 import it.govpay.pagamento.v1.beans.ContiAccreditoPost;
 import it.govpay.pagamento.v1.beans.Dominio;
@@ -24,7 +24,7 @@ import it.govpay.pagamento.v1.beans.UnitaOperativaPost;
 
 public class DominiConverter {
 	
-	public static PutIbanAccreditoDTO getPutIbanAccreditoDTO(ContiAccreditoPost ibanAccreditoPost, String idDominio, String idIbanAccredito, IAutorizzato user) {
+	public static PutIbanAccreditoDTO getPutIbanAccreditoDTO(ContiAccreditoPost ibanAccreditoPost, String idDominio, String idIbanAccredito, Authentication user) {
 		PutIbanAccreditoDTO ibanAccreditoDTO = new PutIbanAccreditoDTO(user);
 		
 		it.govpay.bd.model.IbanAccredito iban = new it.govpay.bd.model.IbanAccredito();
@@ -42,7 +42,7 @@ public class DominiConverter {
 		return ibanAccreditoDTO;		
 	}
 	
-	public static PutUnitaOperativaDTO getPutUnitaOperativaDTO(UnitaOperativaPost uoPost, String idDominio, String idUo, IAutorizzato user) {
+	public static PutUnitaOperativaDTO getPutUnitaOperativaDTO(UnitaOperativaPost uoPost, String idDominio, String idUo, Authentication user) {
 		PutUnitaOperativaDTO uoDTO = new PutUnitaOperativaDTO(user);
 		
 		it.govpay.bd.model.UnitaOperativa uo = new it.govpay.bd.model.UnitaOperativa();
@@ -73,7 +73,7 @@ public class DominiConverter {
 		return uoDTO;		
 	}
 
-	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, IAutorizzato user) {
+	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, Authentication user) {
 		PutDominioDTO dominioDTO = new PutDominioDTO(user);
 		
 		it.govpay.bd.model.Dominio dominio = new it.govpay.bd.model.Dominio();

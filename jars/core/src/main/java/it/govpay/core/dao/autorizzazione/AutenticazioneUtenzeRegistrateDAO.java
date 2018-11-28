@@ -12,15 +12,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
-import it.govpay.bd.model.Utenza;
-import it.govpay.core.dao.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.utils.GpThreadLocal;
 
 public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
 
 	private boolean checkSubject = false;
-	
+	private boolean checkPassword = false;
 	
 	public AutenticazioneUtenzeRegistrateDAO() {
 		super();
@@ -48,20 +47,24 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDe
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			this.log.info("Lettura delle informazioni per l'utenza ["+username+"] in corso...");
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), this.useCacheData);
 			UtenzeBD utenzeBD = new UtenzeBD(bd);
 
-			Utenza utenza = null;
+			boolean exists = false;
 			
 			if(this.checkSubject)
-				utenza = utenzeBD.getUtenzaBySubject(username);
+				exists = utenzeBD.existsBySubject(username);
 			else 
-				utenza = utenzeBD.getUtenzaByPrincipal(username);
+				exists = utenzeBD.existsByPrincipal(username);
 			
-
-			return AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, utenza, false, checkSubject, authFromPreauth, bd);
+			if(!exists)
+				throw new NotFoundException("Utenza "+username+" non trovata.");
+			
+			this.log.info("Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
+			return AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.checkPassword, this.checkSubject, authFromPreauth, bd);
 		}  catch(NotFoundException e){
-			throw new UsernameNotFoundException("Utenza non trovata.",e);
+			throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile autenticare l'utenza", e);
 		}	finally {
@@ -76,5 +79,13 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDe
 
 	public void setCheckSubject(boolean checkSubject) {
 		this.checkSubject = checkSubject;
+	}
+
+	public boolean isCheckPassword() {
+		return checkPassword;
+	}
+
+	public void setCheckPassword(boolean checkPassword) {
+		this.checkPassword = checkPassword;
 	}
 }

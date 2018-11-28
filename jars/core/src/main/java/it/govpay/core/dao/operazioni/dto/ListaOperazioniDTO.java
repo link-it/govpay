@@ -21,12 +21,14 @@ package it.govpay.core.dao.operazioni.dto;
 
 import java.util.Date;
 
+import org.springframework.security.core.Authentication;
+
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.model.IAutorizzato;
 
 public class ListaOperazioniDTO extends BasicFindRequestDTO {
 	
-	public ListaOperazioniDTO(IAutorizzato user) {
+	public ListaOperazioniDTO(Authentication user) {
 		super(user);
 	}
 
@@ -47,7 +49,7 @@ public class ListaOperazioniDTO extends BasicFindRequestDTO {
 		this.fine = fine;
 	}
 	public String getPrincipal() {
-		return this.getUser() != null ? this.getUser().getPrincipal() : this.principal;
+		return AutorizzazioneUtils.getPrincipal(this.getUser()) != null ? AutorizzazioneUtils.getPrincipal(this.getUser()) : this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;

@@ -22,7 +22,6 @@ package it.govpay.rs;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,15 +38,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.transport.http.HttpServletCredential;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import it.govpay.bd.model.Utenza;
 import it.govpay.core.cache.AclCache;
-import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.model.Acl;
-import it.govpay.model.IAutorizzato;
 
 public abstract class BaseRsService {
 	
@@ -77,28 +73,29 @@ public abstract class BaseRsService {
 		this.request = request;
 	}
 
-	protected List<String> getListaRuoli(HttpServletCredential credential){
-		List<String> listaRuoliPosseduti = new ArrayList<>();
-		// caricamento dei ruoli ricevuti nella richiesta http
-		for (String chiaveRuolo : this.aclCache.getChiaviRuoli()) {
-			if(credential.isUserInRole(chiaveRuolo)){
-				listaRuoliPosseduti.add(this.aclCache.getRuolo(chiaveRuolo));
-			}
-		}
-		return listaRuoliPosseduti;
-	}
+//	protected List<String> getListaRuoli(HttpServletCredential credential){
+//		List<String> listaRuoliPosseduti = new ArrayList<>();
+//		// caricamento dei ruoli ricevuti nella richiesta http
+//		for (String chiaveRuolo : this.aclCache.getChiaviRuoli()) {
+//			if(credential.isUserInRole(chiaveRuolo)){
+//				listaRuoliPosseduti.add(this.aclCache.getRuolo(chiaveRuolo));
+//			}
+//		}
+//		return listaRuoliPosseduti;
+//	}
 	
-	protected IAutorizzato getUser() {
-		HttpServletCredential credential = new HttpServletCredential(this.request, this.log);
-		Utenza user = CredentialUtils.getUser(this.request, this.log);
-		
-		user.setRuoli(this.getListaRuoli(credential));
-		List<Acl> aclDaRuoliContainer = new ArrayList<>();
-		for (String ruolo : user.getRuoli()) {
-			aclDaRuoliContainer.addAll(this.aclCache.getAclsRuolo(ruolo));
-		}
-		user.setAclRuoli(aclDaRuoliContainer);
-		return user;
+	protected Authentication getUser() {
+		return SecurityContextHolder.getContext().getAuthentication();
+//		HttpServletCredential credential = new HttpServletCredential(this.request, this.log);
+//		Utenza user = CredentialUtils.getUser(this.request, this.log);
+//		
+//		user.setRuoli(this.getListaRuoli(credential));
+//		List<Acl> aclDaRuoliContainer = new ArrayList<>();
+//		for (String ruolo : user.getRuoli()) {
+//			aclDaRuoliContainer.addAll(this.aclCache.getAclsRuolo(ruolo));
+//		}
+//		user.setAclRuoli(aclDaRuoliContainer);
+//		return user;
 	}
 
 	protected Response getUnauthorizedResponse(){

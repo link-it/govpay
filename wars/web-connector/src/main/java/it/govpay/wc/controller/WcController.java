@@ -9,13 +9,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.WebControllerDAO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTO;
 import it.govpay.core.dao.pagamenti.dto.RedirectDaPspDTOResponse;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 
 public class WcController  extends BaseController {
 
@@ -23,7 +24,7 @@ public class WcController  extends BaseController {
 		super(nomeServizio, log, null, false);
 	}
 
-	public Response getPsp(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders, String idSession, String esito) {
+	public Response getPsp(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idSession, String esito) {
 		String methodName = "getPsp";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -36,7 +37,7 @@ public class WcController  extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
-			String principal = user != null ? user.getPrincipal() : null;
+			String principal = AutorizzazioneUtils.getPrincipal(user);
 			
 			RedirectDaPspDTO redirectDaPspDTO = new RedirectDaPspDTO();
 			redirectDaPspDTO.setEsito(esito);

@@ -11,18 +11,18 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.ListaTracciati;
 import it.govpay.backoffice.v1.beans.converter.TracciatiConverter;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.core.dao.pagamenti.TracciatiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTOResponse;
-import it.govpay.backoffice.v1.beans.ListaTracciati;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 
 
@@ -35,7 +35,7 @@ public class TracciatiController extends BaseController {
 
 
 
-    public Response tracciatiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response tracciatiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
 		String methodName = "tracciatiGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -85,7 +85,7 @@ public class TracciatiController extends BaseController {
 
 
 
-    public Response tracciatiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
+    public Response tracciatiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
 		String methodName = "tracciatiIdGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -118,7 +118,7 @@ public class TracciatiController extends BaseController {
 
 
 
-    public Response tracciatiIdRichiestaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
+    public Response tracciatiIdRichiestaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
 		String methodName = "tracciatiIdRichiestaGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -149,7 +149,7 @@ public class TracciatiController extends BaseController {
 
 
 
-    public Response tracciatiIdRispostaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
+    public Response tracciatiIdRispostaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
 		String methodName = "tracciatiIdRispostaGET";  
 		GpContext ctx = null;
 		String transactionId = null;

@@ -6,10 +6,10 @@ import javax.xml.namespace.QName;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
-import gov.telematici.pagamenti.ws.CtNodoInviaAvvisoDigitale;
-import gov.telematici.pagamenti.ws.CtNodoInviaAvvisoDigitaleRisposta;
-import gov.telematici.pagamenti.ws.CtRisposta;
-import gov.telematici.pagamenti.ws.ObjectFactory;
+import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitale;
+import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitaleRisposta;
+import gov.telematici.pagamenti.ws.avvisi_digitali.CtRisposta;
+import gov.telematici.pagamenti.ws.avvisi_digitali.ObjectFactory;
 import gov.telematici.pagamenti.ws.sachead.IntestazionePPT;
 import it.govpay.bd.BasicBD;
 import it.govpay.core.exceptions.GovPayException;

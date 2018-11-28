@@ -9,6 +9,25 @@ public class UtenzaOperatore extends Utenza {
 	public UtenzaOperatore() {
 		super();
 	}
+	
+	public UtenzaOperatore(Utenza utenzaBase, String nome) {
+		// dati bd.utenza
+		this.aclPrincipal = utenzaBase.aclPrincipal;
+		this.aclRuoli = utenzaBase.aclRuoli;
+		this.domini = utenzaBase.domini;
+		this.ruoli = utenzaBase.ruoli;
+		this.tributi = utenzaBase.tributi;
+		// dati model
+		this.id = utenzaBase.getId();
+		this.principal = utenzaBase.getPrincipal();
+		this.principalOriginale = utenzaBase.getPrincipalOriginale();
+		this.abilitato = utenzaBase.isAbilitato();
+		this.idDomini = utenzaBase.getIdDomini();
+		this.idTributi = utenzaBase.getIdTributi();
+		this.checkSubject = utenzaBase.isCheckSubject();
+		
+		this.nome = nome;
+	}
 
 	@Override
 	public TIPO_UTENZA getTipoUtenza() {

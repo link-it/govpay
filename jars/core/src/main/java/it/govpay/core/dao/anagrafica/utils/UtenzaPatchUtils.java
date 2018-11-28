@@ -13,6 +13,7 @@ import java.util.Set;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
@@ -20,12 +21,12 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Nota.TipoNota;
-import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Utenza;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.PatchOp;
 
 /**
@@ -224,12 +225,13 @@ public class UtenzaPatchUtils {
 		
 	}
 
-	public static Nota getNotaFromPatch(IAutorizzato user, Operatore operatore, PatchOp op, BasicBD bd) throws ValidationException, ServiceException { 
+	public static Nota getNotaFromPatch(Authentication authentication, PatchOp op, BasicBD bd) throws ValidationException, ServiceException { 
 		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
 		
+		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		Nota nota = new Nota();
-		nota.setPrincipal(user.getPrincipal());
-		nota.setAutore(operatore.getNome());
+		nota.setPrincipal(userDetails.getUtenza().getPrincipal());
+		nota.setAutore(userDetails.getUtenza().getIdentificativo());
 		nota.setData(new Date());
 		nota.setTesto((String)map.get(TESTO_NOTA_KEY));
 		nota.setOggetto((String)map.get(OGGETTO_NOTA_KEY));

@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import eu.medsea.mimeutil.MimeUtil;
 import it.govpay.core.beans.JSONSerializable;
@@ -42,7 +43,6 @@ import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 import it.govpay.pagamento.v1.beans.ContiAccredito;
 import it.govpay.pagamento.v1.beans.ContiAccreditoPost;
 import it.govpay.pagamento.v1.beans.DominioPost;
@@ -66,7 +66,7 @@ public class DominiController extends BaseController {
 
 
 
-    public Response dominiIdDominioContiAccreditoIbanGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
+    public Response dominiIdDominioContiAccreditoIbanGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
     	String methodName = "dominiIdDominioIbanAccreditoIbanAccreditoGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -107,7 +107,7 @@ public class DominiController extends BaseController {
     }
 
 
-    public Response dominiIdDominioLogoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
+    public Response dominiIdDominioLogoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
     	String methodName = "getLogo";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -153,7 +153,7 @@ public class DominiController extends BaseController {
     }
 
 
-    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
+    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -195,7 +195,7 @@ public class DominiController extends BaseController {
 
 
 
-    public Response dominiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idStazione) {
+    public Response dominiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idStazione) {
     	String methodName = "dominiGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -250,7 +250,7 @@ public class DominiController extends BaseController {
 
 
 
-    public Response dominiIdDominioGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
+    public Response dominiIdDominioGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
     	String methodName = "dominiIdDominioGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -290,7 +290,7 @@ public class DominiController extends BaseController {
 		}
     }
 
-    public Response dominiIdDominioEntrateGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response dominiIdDominioEntrateGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "dominiIdDominioEntrateGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -343,7 +343,7 @@ public class DominiController extends BaseController {
 
 
 
-    public Response dominiIdDominioUnitaOperativeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {    	
+    public Response dominiIdDominioUnitaOperativeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {    	
     	String methodName = "dominiIdDominioUnitaOperativeGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -396,7 +396,7 @@ public class DominiController extends BaseController {
 
 
 
-    public Response dominiIdDominioEntrateIdEntrataGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
+    public Response dominiIdDominioEntrateIdEntrataGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
     	String methodName = "dominiIdDominioEntrateIdEntrataGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -438,7 +438,7 @@ public class DominiController extends BaseController {
 
 
 
-    public Response dominiIdDominioIbanAccreditoIbanAccreditoPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
+    public Response dominiIdDominioIbanAccreditoIbanAccreditoPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -476,7 +476,7 @@ public class DominiController extends BaseController {
 
 
 
-    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
+    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -514,7 +514,7 @@ public class DominiController extends BaseController {
 
 
 
-//    public Response dominiIdDominioEntrateIdEntrataPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
+//    public Response dominiIdDominioEntrateIdEntrataPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
 //    	String methodName = "dominiIdDominioEntrateIdEntrataPUT";  
 //		GpContext ctx = null;
 //		String transactionId = null;
@@ -555,7 +555,7 @@ public class DominiController extends BaseController {
 
 
 
-    public Response dominiIdDominioPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+    public Response dominiIdDominioPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
     	String methodName = "dominiIdDominioPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -593,7 +593,7 @@ public class DominiController extends BaseController {
 
 
 
-    public Response dominiIdDominioContiAccreditoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento) {
+    public Response dominiIdDominioContiAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento) {
     	String methodName = "dominiIdDominioIbanAccreditoGET";  
 		GpContext ctx = null;
 		String transactionId = null;

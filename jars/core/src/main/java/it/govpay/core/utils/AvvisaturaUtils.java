@@ -57,6 +57,7 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisoDigitale;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtIdentificativoUnivocoPersonaFG;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtSoggettoPagatore;
 import gov.telematici.pagamenti.ws.avvisi_digitali.ListaEsitoAvvisiDigitali;
+import gov.telematici.pagamenti.ws.avvisi_digitali.ObjectFactory;
 import gov.telematici.pagamenti.ws.avvisi_digitali.StTipoIdentificativoUnivocoPersFG;
 import gov.telematici.pagamenti.ws.avvisi_digitali.StTipoOperazione;
 import gov.telematici.pagamenti.ws.presa_in_carico.EsitoPresaInCarico;

@@ -40,6 +40,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaAnonima;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaCittadino;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -58,7 +59,7 @@ public class CredentialUtils {
 			acl.setPrincipal(cf);
 			acl.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.SCRITTURA.getCodifica() + Diritti.ESECUZIONE.getCodifica());
 			acl.setServizio(Servizio.PAGAMENTI_E_PENDENZE); 
-			acl.getProprieta().put(AclEngine.CODICE_FISCALE_CITTADINO, cf);
+			acl.getProprieta().put(AuthorizationManager.CODICE_FISCALE_CITTADINO, cf);
 			aclPrincipal.add(acl);
 			user.setAclPrincipal(aclPrincipal);
 			user.setAbilitato(true);
@@ -83,7 +84,7 @@ public class CredentialUtils {
 				acl.setPrincipal(null);
 				acl.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.SCRITTURA.getCodifica() + Diritti.ESECUZIONE.getCodifica());
 				acl.setServizio(Servizio.PAGAMENTI_E_PENDENZE); 
-				acl.getProprieta().put(AclEngine.UTENZA_ANONIMA, "true");
+				acl.getProprieta().put(AuthorizationManager.UTENZA_ANONIMA, "true");
 				aclPrincipal.add(acl);
 				user.setAclPrincipal(aclPrincipal);
 				user.setAbilitato(true);

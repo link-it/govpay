@@ -212,6 +212,61 @@ public class UtenzeBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	
+	/**
+	 * Check esistenza utenza censita per principal
+	 * 
+	 * @param idUtenza
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public boolean existsByPrincipal(String principal) throws ServiceException {
+		try {
+			IExpression expr = this.getUtenzaService().newExpression();
+			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL, principal);
+			return this.count(expr) > 0 ;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException | ExpressionException  e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	/**
+	 * Check esistenza utenza censita col certificato
+	 * 
+	 * @param idUtenza
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public boolean existsBySubject(String principal) throws ServiceException {
+		try {
+			IExpression expr = this.getUtenzaService().newExpression();
+			Hashtable<String, String> hashSubject = null;
+			try {
+			  hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			}catch(UtilsException e) {
+				throw new ServiceException("Servizio check Utenza non disponibile.");
+			}
+			Enumeration<String> keys = hashSubject.keys();
+			while(keys.hasMoreElements()){
+				String key = keys.nextElement();
+				String value = hashSubject.get(key);
+				expr.like(it.govpay.orm.Utenza.model().PRINCIPAL, "/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/", LikeMode.ANYWHERE);
+			}
+			
+			return this.count(expr) > 0 ;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException | ExpressionException  e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 
 	public long count(IExpression expr) throws ServiceException {
 		try {

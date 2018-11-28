@@ -38,11 +38,13 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.Tracciato;
-import it.govpay.bd.model.Utenza;
 import it.govpay.bd.pagamento.OperazioniBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.tracciati.TracciatoPendenza;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -57,7 +59,6 @@ import it.govpay.core.dao.pagamenti.exception.TracciatoNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Acl.Diritti;
@@ -81,7 +82,7 @@ public class TracciatiDAO extends BaseDAO{
 			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 			if(listaDominiFiltro == null) {
 				throw new NotAuthorizedException("L'utenza autenticata ["+leggiTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
 			}
@@ -109,7 +110,7 @@ public class TracciatiDAO extends BaseDAO{
 			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 			if(listaDominiFiltro == null) {
 				throw new NotAuthorizedException("L'utenza autenticata ["+leggiTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
 			}
@@ -141,7 +142,7 @@ public class TracciatiDAO extends BaseDAO{
 			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 			if(listaDominiFiltro == null) {
 				throw new NotAuthorizedException("L'utenza autenticata ["+leggiTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
 			}
@@ -183,7 +184,7 @@ public class TracciatiDAO extends BaseDAO{
 		this.autorizzaRichiesta(listaTracciatiDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, listaTracciatiDTO.getIdDominio(), null, bd);
 
 		// Autorizzazione sui domini
-		listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaTracciatiDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaTracciatiDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 		if(listaDominiFiltro == null) {
 			throw new NotAuthorizedException("L'utenza autenticata ["+listaTracciatiDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
 		}
@@ -245,7 +246,10 @@ public class TracciatiDAO extends BaseDAO{
 	
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			
-			Operatore operatoreFromUser = this.getOperatoreFromUser(postTracciatoDTO.getUser(),bd);
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(postTracciatoDTO.getUser());
+			Operatore operatoreFromUser = userDetails.getOperatore();
+			if(operatoreFromUser == null)
+				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser());
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
 			
@@ -259,7 +263,6 @@ public class TracciatiDAO extends BaseDAO{
 			tracciato.setIdOperatore(operatoreFromUser.getId());
 			tracciato.setTipo(TIPO_TRACCIATO.PENDENZA);
 			tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
-			tracciato.setIdOperatore(operatoreFromUser.getId()); 
 			
 			tracciatoBD.insertTracciato(tracciato);
 			
@@ -270,8 +273,6 @@ public class TracciatiDAO extends BaseDAO{
 			
 		} catch (ServiceException | IOException e) {
 			throw new GovPayException(e);
-		} catch (NotFoundException e) {
-			throw AclEngine.toNotAuthorizedException(postTracciatoDTO.getUser());
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -298,7 +299,7 @@ public class TracciatiDAO extends BaseDAO{
 		this.autorizzaRichiesta(listaOperazioniTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
 		// Autorizzazione sui domini
-		listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaOperazioniTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaOperazioniTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 		if(listaDominiFiltro == null) {
 			throw new NotAuthorizedException("L'utenza autenticata ["+listaOperazioniTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
 		}

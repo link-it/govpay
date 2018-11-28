@@ -13,18 +13,18 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.Evento;
+import it.govpay.backoffice.v1.beans.ListaEventi;
 import it.govpay.backoffice.v1.beans.converter.EventiConverter;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
-import it.govpay.backoffice.v1.beans.Evento;
-import it.govpay.backoffice.v1.beans.ListaEventi;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.model.IAutorizzato;
 
 
 
@@ -36,7 +36,7 @@ public class EventiController extends BaseController {
 
 
 
-    public Response eventiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String idA2A, String idPendenza) {
+    public Response eventiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String idA2A, String idPendenza) {
     	String methodName = "eventiGET";  
 		GpContext ctx = null;
 		String transactionId = null;

@@ -19,7 +19,7 @@
  */
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class FindTributiDTO extends BasicFindRequestDTO {
 	
@@ -28,7 +28,7 @@ public class FindTributiDTO extends BasicFindRequestDTO {
 	private String descrizione;
 	private Boolean abilitato;
 	
-	public FindTributiDTO(IAutorizzato user, String codDominio) {
+	public FindTributiDTO(Authentication user, String codDominio) {
 		super(user);
 		this.codDominio = codDominio;
 	}

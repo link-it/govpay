@@ -10,7 +10,11 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.ListaTipiEntrata;
+import it.govpay.backoffice.v1.beans.TipoEntrata;
+import it.govpay.backoffice.v1.beans.TipoEntrataPost;
 import it.govpay.backoffice.v1.beans.converter.EntrateConverter;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.EntrateDAO;
@@ -20,13 +24,9 @@ import it.govpay.core.dao.anagrafica.dto.GetEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.GetEntrataDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
-import it.govpay.backoffice.v1.beans.ListaTipiEntrata;
-import it.govpay.backoffice.v1.beans.TipoEntrata;
-import it.govpay.backoffice.v1.beans.TipoEntrataPost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 
 
@@ -39,7 +39,7 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response entrateIdEntrataPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata, java.io.InputStream is) {
+    public Response entrateIdEntrataPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata, java.io.InputStream is) {
     	String methodName = "entrateIdEntrataPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -78,7 +78,7 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response entrateIdEntrataGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata) {
+    public Response entrateIdEntrataGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idEntrata) {
     	String methodName = "entrateIdEntrataGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -120,7 +120,7 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response entrateGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
+    public Response entrateGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
     	String methodName = "entrateGET";  
 		GpContext ctx = null;
 		String transactionId = null;

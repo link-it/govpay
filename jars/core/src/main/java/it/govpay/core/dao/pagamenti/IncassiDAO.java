@@ -9,6 +9,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
@@ -120,7 +122,10 @@ public class IncassiDAO extends BaseDAO{
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(richiestaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.SCRITTURA);
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
-			Applicazione applicazione = this.getApplicazioneFromUser(richiestaIncassoDTO.getUser(), bd); 
+			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncassoDTO.getUser());
+			Applicazione applicazione = authenticationDetails.getApplicazione();
+			if(applicazione == null)
+				throw new NotFoundException("Applicazione non riconosciuta");
 			richiestaIncassoDTO.setApplicazione(applicazione);
 
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);

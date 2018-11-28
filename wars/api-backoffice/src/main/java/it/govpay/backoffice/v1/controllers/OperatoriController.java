@@ -11,7 +11,13 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.ListaOperatori;
+import it.govpay.backoffice.v1.beans.Operatore;
+import it.govpay.backoffice.v1.beans.OperatorePost;
+import it.govpay.backoffice.v1.beans.PatchOp;
+import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.backoffice.v1.beans.converter.OperatoriConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.core.beans.JSONSerializable;
@@ -24,15 +30,9 @@ import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
-import it.govpay.backoffice.v1.beans.ListaOperatori;
-import it.govpay.backoffice.v1.beans.Operatore;
-import it.govpay.backoffice.v1.beans.OperatorePost;
-import it.govpay.backoffice.v1.beans.PatchOp;
-import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 
 
@@ -45,7 +45,7 @@ public class OperatoriController extends BaseController {
 
 
 
-    public Response operatoriPrincipalPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal, java.io.InputStream is) {
+    public Response operatoriPrincipalPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal, java.io.InputStream is) {
     	String methodName = "operatoriPrincipalPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -83,7 +83,7 @@ public class OperatoriController extends BaseController {
 
 
 
-    public Response operatoriPrincipalDELETE(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
+    public Response operatoriPrincipalDELETE(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
     	String methodName = "aclIdDELETE";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -123,7 +123,7 @@ public class OperatoriController extends BaseController {
 
 
 
-    public Response operatoriPrincipalGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
+    public Response operatoriPrincipalGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
     	String methodName = "intermediariIdIntermediarioGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -166,7 +166,7 @@ public class OperatoriController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response operatoriPrincipalPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
+	public Response operatoriPrincipalPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
     	String methodName = "operatoriPrincipalPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -224,7 +224,7 @@ public class OperatoriController extends BaseController {
 
 
 
-    public Response operatoriGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response operatoriGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "operatoriGET";  
 		GpContext ctx = null;
 		String transactionId = null;

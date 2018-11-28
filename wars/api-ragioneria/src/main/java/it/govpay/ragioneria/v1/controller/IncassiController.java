@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.IncassiDAO;
@@ -23,7 +24,6 @@ import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 import it.govpay.ragioneria.v1.beans.Incasso;
 import it.govpay.ragioneria.v1.beans.IncassoIndex;
 import it.govpay.ragioneria.v1.beans.IncassoPost;
@@ -40,7 +40,7 @@ public class IncassiController extends BaseController {
 	}
 
 
-    public Response incassiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response incassiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
     	String methodName = "incassiGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -91,7 +91,7 @@ public class IncassiController extends BaseController {
     }
 
 
-    public Response incassiIdDominioIdIncassoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
+    public Response incassiIdDominioIdIncassoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
     	String methodName = "incassiIdDominioIdIncassoGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -133,7 +133,7 @@ public class IncassiController extends BaseController {
 		}
     }
 
-    public Response incassiIdDominioPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+    public Response incassiIdDominioPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
     	String methodName = "incassiIdDominioPOST"; 
 		GpContext ctx = null;
 		String transactionId = null;

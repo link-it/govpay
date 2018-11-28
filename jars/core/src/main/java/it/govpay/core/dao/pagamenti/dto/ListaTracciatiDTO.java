@@ -3,9 +3,9 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.List;
 
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.StatoTracciatoPendenza;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
@@ -22,7 +22,7 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	private String idDominio;
 	private String dettaglioStato = null;
 	
-	public ListaTracciatiDTO(IAutorizzato user) {
+	public ListaTracciatiDTO(Authentication user) {
 		super(user);
 		this.addDefaultSort(Tracciato.model().DATA_CARICAMENTO,SortOrder.DESC);
 	}

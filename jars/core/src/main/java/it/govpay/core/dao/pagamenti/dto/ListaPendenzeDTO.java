@@ -4,12 +4,14 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.exceptions.RequestParamException.FaultType;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.VersamentoIncasso;
@@ -17,11 +19,11 @@ import it.govpay.orm.VersamentoIncasso;
 public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	
 	
-	public ListaPendenzeDTO(IAutorizzato user) {
+	public ListaPendenzeDTO(Authentication user) {
 		this(user, false);
 	}
 	
-	public ListaPendenzeDTO(IAutorizzato user, boolean infoIncasso) {
+	public ListaPendenzeDTO(Authentication user, boolean infoIncasso) {
 		super(user);
 		this.infoIncasso = infoIncasso;
 		if(this.infoIncasso) {
@@ -112,7 +114,8 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 		// visualizzazione smart abilitabile solo se ho infoincasso e se sono un cittadino oppure ho scelto un debitore		
 		String fieldname = "smart";
 		if(this.infoIncasso && orderBy.equals(fieldname) ){ 
-			if(this.getUser().getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || StringUtils.isNotEmpty(this.idDebitore)) {
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(this.getUser());
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || StringUtils.isNotEmpty(this.idDebitore)) {
 				this.addSortField(VersamentoIncasso.model().SMART_ORDER_RANK, SortOrder.ASC);
 				this.addSortField(VersamentoIncasso.model().SMART_ORDER_DATE, SortOrder.ASC);
 			} else {

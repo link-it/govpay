@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
 import it.govpay.model.Acl;
@@ -13,11 +14,10 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.pagamento.v1.beans.AclPost;
 import it.govpay.pagamento.v1.beans.AclPost.AutorizzazioniEnum;
 import it.govpay.pagamento.v1.beans.AclPost.ServizioEnum;
-import it.govpay.model.IAutorizzato;
 
 public class AclConverter {
 	
-	public static PostAclDTO getPostAclDTO(AclPost aclPost, IAutorizzato user) throws ServiceException {
+	public static PostAclDTO getPostAclDTO(AclPost aclPost, Authentication user) throws ServiceException {
 		
 		PostAclDTO aclDTO = new PostAclDTO(user);
 		Acl acl = new Acl();

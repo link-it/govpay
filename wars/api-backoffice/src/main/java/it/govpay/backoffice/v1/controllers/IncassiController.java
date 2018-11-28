@@ -11,19 +11,19 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.Incasso;
+import it.govpay.backoffice.v1.beans.ListaIncassiIndex;
 import it.govpay.backoffice.v1.beans.converter.IncassiConverter;
 import it.govpay.core.dao.pagamenti.IncassiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
-import it.govpay.backoffice.v1.beans.Incasso;
-import it.govpay.backoffice.v1.beans.ListaIncassiIndex;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 
 
 
@@ -34,7 +34,7 @@ public class IncassiController extends BaseController {
 	}
 
 
-    public Response incassiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response incassiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
     	String methodName = "incassiGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -85,7 +85,7 @@ public class IncassiController extends BaseController {
     }
 
 
-    public Response incassiIdDominioIdIncassoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
+    public Response incassiIdDominioIdIncassoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
     	String methodName = "incassiIdDominioIdIncassoGET";  
 		GpContext ctx = null;
 		String transactionId = null;

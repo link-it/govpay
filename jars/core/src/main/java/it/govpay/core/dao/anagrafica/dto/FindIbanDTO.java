@@ -19,7 +19,7 @@
  */
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class FindIbanDTO extends BasicFindRequestDTO {
 	
@@ -27,7 +27,7 @@ public class FindIbanDTO extends BasicFindRequestDTO {
 	private String iban;
 	private Boolean abilitato;
 	
-	public FindIbanDTO(IAutorizzato user, String codDominio) {
+	public FindIbanDTO(Authentication user, String codDominio) {
 		super(user);
 		this.codDominio = codDominio;
 		this.addSortField("ibanAccredito", it.govpay.orm.IbanAccredito.model().COD_IBAN);

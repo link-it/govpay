@@ -2,14 +2,15 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.model.Acl;
-import it.govpay.model.IAutorizzato;
 
 public class PutRuoloDTO extends BasicCreateRequestDTO  {
 	
 	private List<Acl> acls;
 	private String idRuolo;
-	public PutRuoloDTO(IAutorizzato user) {
+	public PutRuoloDTO(Authentication user) {
 		super(user);
 	}
 	public String getIdRuolo() {

@@ -3,9 +3,9 @@ package it.govpay.core.dao.reportistica.dto;
 import java.util.Date;
 
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.model.IAutorizzato;
 import it.govpay.orm.VistaRiscossioni;
 
 public class ListaEntratePrevisteDTO extends BasicFindRequestDTO{
@@ -13,7 +13,7 @@ public class ListaEntratePrevisteDTO extends BasicFindRequestDTO{
 	public enum FormatoRichiesto {JSON,PDF}
 	
 	
-	public ListaEntratePrevisteDTO(IAutorizzato user) {
+	public ListaEntratePrevisteDTO(Authentication user) {
 		super(user);
 		this.addSortField("data", VistaRiscossioni.model().DATA);
 		this.addDefaultSort(VistaRiscossioni.model().DATA,SortOrder.ASC);

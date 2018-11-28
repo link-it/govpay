@@ -1,4 +1,4 @@
-package it.govpay.core.dao.autorizzazione.beans;
+package it.govpay.core.autorizzazione.beans;
 
 import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 
@@ -20,7 +20,7 @@ public class GovpayLdapUserDetails extends LdapUserDetailsImpl {
 	private Utenza utenza;
 	
 	public String getIdentificativo() {
-		return this.getDn();
+		return this.utenza != null ? this.utenza.getIdentificativo() : this.getDn();
 	}
 	public TIPO_UTENZA getTipoUtenza() {
 		return tipoUtenza;

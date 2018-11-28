@@ -11,7 +11,16 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.AclPost;
+import it.govpay.backoffice.v1.beans.ListaAcl;
+import it.govpay.backoffice.v1.beans.ListaRuoli;
+import it.govpay.backoffice.v1.beans.PatchOp;
+import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
+import it.govpay.backoffice.v1.beans.Ruolo;
+import it.govpay.backoffice.v1.beans.RuoloIndex;
+import it.govpay.backoffice.v1.beans.RuoloPost;
 import it.govpay.backoffice.v1.beans.converter.AclConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.RuoliConverter;
@@ -22,22 +31,13 @@ import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTO;
-import it.govpay.backoffice.v1.beans.AclPost;
-import it.govpay.backoffice.v1.beans.ListaAcl;
-import it.govpay.backoffice.v1.beans.ListaRuoli;
-import it.govpay.backoffice.v1.beans.PatchOp;
-import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
-import it.govpay.backoffice.v1.beans.Ruolo;
-import it.govpay.backoffice.v1.beans.RuoloIndex;
-import it.govpay.backoffice.v1.beans.RuoloPost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl;
-import it.govpay.model.IAutorizzato;
 import it.govpay.rs.BaseRsService;
 
 
@@ -48,7 +48,7 @@ public class RuoliController extends BaseController {
  		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
-    public Response ruoliGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response ruoliGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
 		String methodName = "ruoliGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -92,7 +92,7 @@ public class RuoliController extends BaseController {
 
 
 
-    public Response ruoliIdRuoloGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo) {
+    public Response ruoliIdRuoloGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo) {
 		String methodName = "ruoliIdRuoloGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -136,7 +136,7 @@ public class RuoliController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response ruoliIdRuoloPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idRuolo) {
+	public Response ruoliIdRuoloPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idRuolo) {
     	String methodName = "ruoliIdRuoloPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -199,7 +199,7 @@ public class RuoliController extends BaseController {
     }
 
 
-    public Response ruoliIdRuoloPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo, java.io.InputStream is) {
+    public Response ruoliIdRuoloPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo, java.io.InputStream is) {
     	String methodName = "ruoliIdRuoloPUT";  
 		GpContext ctx = null;
 		String transactionId = null;

@@ -1,16 +1,16 @@
 package it.govpay.pagamento.v2.beans.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
-import it.govpay.model.IAutorizzato;
 import it.govpay.pagamento.v2.beans.TipoContabilita;
 import it.govpay.pagamento.v2.beans.TipoEntrata;
 import it.govpay.pagamento.v2.beans.TipoEntrataPost;
 
 public class EntrateConverter {
 
-	public static PutEntrataDTO getPutEntrataDTO(TipoEntrataPost entrataPost, String idEntrata, IAutorizzato user) throws ServiceException {
+	public static PutEntrataDTO getPutEntrataDTO(TipoEntrataPost entrataPost, String idEntrata, Authentication user) throws ServiceException {
 		PutEntrataDTO entrataDTO = new PutEntrataDTO(user);
 		
 		it.govpay.model.TipoTributo tipoTributo = new it.govpay.model.TipoTributo();
