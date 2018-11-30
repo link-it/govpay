@@ -21,11 +21,13 @@ package it.govpay.core.dao.commons;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
@@ -35,6 +37,7 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;

@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -90,6 +91,7 @@ public class AutorizzazioneUtils {
 			} 
 		}
 		
+		utenza.setCheckSubject(checkSubject);
 		
 		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
 		userDetails.setApplicazione(applicazione);
@@ -101,7 +103,9 @@ public class AutorizzazioneUtils {
 	}
 
 	public static GovpayLdapUserDetails getUserDetail(String username, String password, String identificativo, List<GrantedAuthority> authorities) {
-		GovpayLdapUserDetails.Essence essence = new GovpayLdapUserDetails.Essence();
+		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
+		
+		LdapUserDetailsImpl.Essence essence = new LdapUserDetailsImpl.Essence();
 		essence.setAccountNonExpired(true);
 		essence.setAccountNonLocked(true);
 		essence.setCredentialsNonExpired(true);
@@ -110,8 +114,10 @@ public class AutorizzazioneUtils {
 		essence.setPassword(password);
 		essence.setAuthorities(authorities);
 		essence.setDn(identificativo);
+		
+		details.setLdapUserDetailsImpl(essence.createUserDetails());
 
-		return (GovpayLdapUserDetails) essence.createUserDetails();
+		return details;
 	}
 
 	public static UserDetails getUserDetailFromUtenzaCittadino(String username, boolean checkPassword, boolean checkSubject, 
@@ -138,9 +144,9 @@ public class AutorizzazioneUtils {
 		aclPrincipal.add(acl);
 		utenza.setAclPrincipal(aclPrincipal);
 		utenza.setAbilitato(true);
-		utenza.setCheckSubject(false);
 		utenza.setPrincipalOriginale(username);
 		utenza.setPrincipal(username);
+		utenza.setCheckSubject(checkSubject);
 		
 		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
 		userDetails.setUtenza(utenza);
@@ -166,16 +172,16 @@ public class AutorizzazioneUtils {
 		utenza.setAclRuoli(aclsRuolo);
 		List<Acl> aclPrincipal = new ArrayList<>();
 		Acl acl = new Acl();
-		acl.setPrincipal(null);
+		acl.setPrincipal(username);
 		acl.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.SCRITTURA.getCodifica() + Diritti.ESECUZIONE.getCodifica());
 		acl.setServizio(Servizio.PAGAMENTI_E_PENDENZE); 
 		acl.getProprieta().put(AuthorizationManager.UTENZA_ANONIMA, "true");
 		aclPrincipal.add(acl);
 		utenza.setAclPrincipal(aclPrincipal);
 		utenza.setAbilitato(true);
-		utenza.setCheckSubject(false);
-		utenza.setPrincipalOriginale(null);
-		utenza.setPrincipal(null);
+		utenza.setPrincipalOriginale(username);
+		utenza.setPrincipal(username);
+		utenza.setCheckSubject(checkSubject);
 		
 		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
 		userDetails.setUtenza(utenza);

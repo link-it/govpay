@@ -1,6 +1,7 @@
 package it.govpay.core.dao.autorizzazione;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +13,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import it.govpay.bd.BasicBD;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.utils.GpThreadLocal;
 
 public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
 
@@ -47,7 +47,8 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetai
 
 		try {
 			this.log.info("Lettura delle informazioni per l'utenza ["+username+"] in corso...");
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			String transactionId = UUID.randomUUID().toString();
+			bd = BasicBD.newInstance(transactionId, this.useCacheData);
 			return AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.checkPassword, this.checkSubject, authFromPreauth, bd);
 //		}  catch(NotFoundException e){
 //			throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);

@@ -2,8 +2,13 @@ package it.govpay.core.autorizzazione;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.utils.Utilities;
+import org.openspcoop2.utils.UtilsException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Utenza;
@@ -20,6 +25,48 @@ public class AuthorizationManager {
 	
 	public static final String CODICE_FISCALE_CITTADINO = "cf_cittadino";
 	public static final String UTENZA_ANONIMA = "utenzaAnonima";
+	
+	
+	public static boolean checkPrincipal(Authentication authentication, String principalToCheck) throws Exception { 
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		Utenza user = details.getUtenza();
+	
+		boolean authOk = false;
+		
+		if(user.isCheckSubject()) {
+			// check tra subject
+			authOk = AuthorizationManager.checkSubject(principalToCheck, user.getPrincipal());
+		} else {
+			authOk = user.getPrincipal().equals(principalToCheck);
+		}
+		
+		return authOk;
+	}
+	
+	public static boolean checkSubject(String principalToCheck, String principalFromRequest) throws Exception{
+		boolean ok = true;
+	
+		Hashtable<String, String> hashSubject = null;
+		try {
+			principalToCheck = Utilities.formatSubject(principalToCheck);
+		}catch(UtilsException e) {
+			throw new NotFoundException("L'utenza registrata non e' un subject valido");
+		}
+		try {
+			principalFromRequest = Utilities.formatSubject(principalFromRequest);
+			hashSubject = Utilities.getSubjectIntoHashtable(principalFromRequest);
+		}catch(UtilsException e) {
+			throw new NotFoundException("Utenza" + principalFromRequest + "non autorizzata");
+		}
+		Enumeration<String> keys = hashSubject.keys();
+		while(keys.hasMoreElements()){
+			String key = keys.nextElement();
+			String value = hashSubject.get(key);
+			ok = ok && principalToCheck.contains("/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/");
+		}
+		
+		return ok;
+	}
 	
 	public static NotAuthorizedException toNotAuthorizedException(Authentication authentication) {
 		StringBuilder sb = new StringBuilder();

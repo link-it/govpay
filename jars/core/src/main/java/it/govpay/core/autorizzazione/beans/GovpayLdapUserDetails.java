@@ -1,13 +1,16 @@
 package it.govpay.core.autorizzazione.beans;
 
-import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.ldap.userdetails.LdapUserDetails;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Utenza;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
-public class GovpayLdapUserDetails extends LdapUserDetailsImpl {
+public class GovpayLdapUserDetails implements LdapUserDetails {
 
 	/**
 	 * 
@@ -18,6 +21,7 @@ public class GovpayLdapUserDetails extends LdapUserDetailsImpl {
 	private Applicazione applicazione;
 	private Operatore operatore;
 	private Utenza utenza;
+	private LdapUserDetails ldapUserDetailsImpl;
 	
 	public String getIdentificativo() {
 		return this.utenza != null ? this.utenza.getIdentificativo() : this.getDn();
@@ -46,6 +50,48 @@ public class GovpayLdapUserDetails extends LdapUserDetailsImpl {
 	public void setUtenza(Utenza utenza) {
 		this.utenza = utenza;
 	}
-
 	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return this.ldapUserDetailsImpl.getAuthorities();
+	}
+	@Override
+	public String getPassword() {
+		return this.ldapUserDetailsImpl.getPassword();
+	}
+	@Override
+	public String getUsername() {
+		return this.ldapUserDetailsImpl.getUsername();
+	}
+	@Override
+	public boolean isAccountNonExpired() {
+		return this.ldapUserDetailsImpl.isAccountNonExpired();
+	}
+	@Override
+	public boolean isAccountNonLocked() {
+		return this.ldapUserDetailsImpl.isAccountNonLocked();
+	}
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return this.ldapUserDetailsImpl.isCredentialsNonExpired();
+	}
+	@Override
+	public boolean isEnabled() {
+		return this.ldapUserDetailsImpl.isEnabled();
+	}
+	@Override
+	public void eraseCredentials() {
+		this.ldapUserDetailsImpl.eraseCredentials();
+	}
+	@Override
+	public String getDn() {
+		return this.ldapUserDetailsImpl.getDn();
+	}
+	
+	public LdapUserDetails getLdapUserDetails() {
+		return ldapUserDetailsImpl;
+	}
+	public void setLdapUserDetailsImpl(LdapUserDetails ldapUserDetailsImpl) {
+		this.ldapUserDetailsImpl = ldapUserDetailsImpl;
+	}
 }

@@ -1,6 +1,7 @@
 package it.govpay.core.dao.autorizzazione;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.springframework.security.core.Authentication;
@@ -14,7 +15,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.utils.GpThreadLocal;
 
 public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
 
@@ -48,7 +48,8 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDe
 
 		try {
 			this.log.info("Lettura delle informazioni per l'utenza ["+username+"] in corso...");
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), this.useCacheData);
+			String transactionId = UUID.randomUUID().toString();
+			bd = BasicBD.newInstance(transactionId, this.useCacheData);
 			UtenzeBD utenzeBD = new UtenzeBD(bd);
 
 			boolean exists = false;

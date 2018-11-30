@@ -69,6 +69,12 @@
 							<directory>src/main/webapp</directory>
 							<filtering>true</filtering>
 						</webResource>
+						<webResource>
+							<directory>src/main/resources/spring-sec</directory>
+							<filtering>true</filtering>
+							<include>applicationContext-security-${govpay-api-pagamento-auth}.xml</include>
+							<targetPath>WEB-INF</targetPath>							
+						</webResource>
 					</webResources>
 					<webXml>src/main/resources/web-${govpay-api-pagamento-auth}.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>

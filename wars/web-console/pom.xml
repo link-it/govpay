@@ -18,6 +18,12 @@
 	
 	<dependencies>
 		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-commons</artifactId>
+			<type>jar</type>
+		</dependency>
+	
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
@@ -37,7 +43,15 @@
 						<webResource>
 							<directory>src/main/webapp</directory>
 						</webResource>
+						<webResource>
+							<directory>src/main/resources/spring-sec</directory>
+							<filtering>true</filtering>
+							<include>applicationContext-security-form.xml</include>
+							<targetPath>WEB-INF</targetPath>							
+						</webResource>
 					</webResources>
+					<webXml>src/main/resources/web-form.xml</webXml>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
 	                <archive>
 	                    <manifest>

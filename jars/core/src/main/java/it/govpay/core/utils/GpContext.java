@@ -27,10 +27,11 @@ import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.beans.proxy.Transaction;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
 import it.gov.spcoop.puntoaccessopa.servizi.avvisidigitali.NodoInviaAvvisoDigitaleService;
-import it.govpay.bd.model.Utenza;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
@@ -105,9 +106,10 @@ public class GpContext {
 			else 
 				client.setInterfaceName("<Unknown>");
 			
-			Utenza user = CredentialUtils.getUser((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST), null);
+			String user = AutorizzazioneUtils.getPrincipal(SecurityContextHolder.getContext().getAuthentication()); 
+			
 			if(user != null)
-				client.setPrincipal(user.getPrincipal());
+				client.setPrincipal(user);
 			
 			transaction.setClient(client);
 			
@@ -157,9 +159,10 @@ public class GpContext {
 			
 			client.setInterfaceName(nomeServizio);
 			
-			Utenza user = CredentialUtils.getUser(request, null);
+			String user = AutorizzazioneUtils.getPrincipal(SecurityContextHolder.getContext().getAuthentication()); 
+			
 			if(user != null)
-				client.setPrincipal(user.getPrincipal());
+				client.setPrincipal(user);
 			
 			transaction.setClient(client);
 			
