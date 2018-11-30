@@ -11,6 +11,10 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class Versamento {
 	
+	public Versamento() {
+		this.dataCaricamento = new Date();
+	}
+	
     public StatoVersamento getStatoVersamento() {
 		return this.statoVersamento;
 	}

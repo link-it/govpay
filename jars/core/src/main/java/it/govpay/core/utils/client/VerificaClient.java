@@ -39,9 +39,9 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.v1.VerificaConverter;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.StatoPendenzaVerificata;
-import it.govpay.ec.v1.utils.JacksonJsonProviderUtil;
 import it.govpay.model.Versionabile.Versione;
 
 public class VerificaClient extends BasicClient {
@@ -101,7 +101,7 @@ public class VerificaClient extends BasicClient {
 			try {
 				try {
 					jsonResponse = new String(this.getJson(path, headerProperties));
-					pendenzaVerificata = JacksonJsonProviderUtil.readPendenzaVerificata(jsonResponse);
+					pendenzaVerificata = ConverterUtils.parse(jsonResponse, PendenzaVerificata.class); 
 				}catch(ClientException e) {
 					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 					ctx.log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);

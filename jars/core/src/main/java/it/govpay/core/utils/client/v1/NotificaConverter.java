@@ -40,6 +40,8 @@ import it.govpay.ec.v1.beans.Allegato;
 import it.govpay.ec.v1.beans.Allegato.TipoEnum;
 import it.govpay.ec.v1.beans.Notifica;
 import it.govpay.ec.v1.beans.Riscossione;
+import it.govpay.ec.v1.beans.Riscossione.StatoEnum;
+import it.govpay.ec.v1.beans.TipoRiscossione;
 
 public class NotificaConverter {
 	
@@ -79,15 +81,19 @@ public class NotificaConverter {
 			allegato.setTipo(TipoEnum.fromValue(pagamento.getTipoAllegato().toString()));
 			riscossione.setAllegato(allegato);
 		}
-		
-		riscossione.setIndice(new BigDecimal(idx));
-		riscossione.setIdDominio(pagamento.getCodDominio());
-		riscossione.setIuv(pagamento.getIuv()); 
-		riscossione.setIdVocePendenza(pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
 		riscossione.setCommissioni(pagamento.getCommissioniPsp());
 		riscossione.setData(new LocalDate(pagamento.getDataPagamento()));
+		riscossione.setIdDominio(pagamento.getCodDominio());
+		riscossione.setIdVocePendenza(pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
 		riscossione.setImporto(pagamento.getImportoPagato());
+		riscossione.setIndice(new BigDecimal(idx));
 		riscossione.setIur(pagamento.getIur());
+		riscossione.setIuv(pagamento.getIuv()); 
+		riscossione.setPendenza(urlPendenza);
+		riscossione.setRpp(urlRpt);
+		riscossione.setStato(StatoEnum.RISCOSSA);
+		riscossione.setTipo(TipoRiscossione.fromValue(pagamento.getTipo().name()));
+		
 		return riscossione;
 	}
 	

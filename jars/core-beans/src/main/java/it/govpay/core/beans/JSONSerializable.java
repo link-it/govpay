@@ -29,7 +29,7 @@ public abstract class JSONSerializable {
 		return this.toJSON(fields, serializationConfig);
 	}
 	
-	public String toJSON(String fields,SerializationConfig serializationConfig) throws ServiceException {
+	public String toJSON(String fields, SerializationConfig serializationConfig) throws ServiceException {
 		try {
 			if(fields != null && !fields.isEmpty()) {
 				serializationConfig.setIncludes(Arrays.asList(fields.split(",")));
@@ -40,7 +40,6 @@ public abstract class JSONSerializable {
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
 			throw new ServiceException("Errore nella serializzazione della risposta.", e);
 		}
-		
 	}
 	
 	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException, ValidationException  {

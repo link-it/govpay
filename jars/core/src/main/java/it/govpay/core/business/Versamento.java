@@ -120,6 +120,7 @@ public class Versamento extends BasicBD {
 				versamento.setDaAvvisare(versamentoLetto.isDaAvvisare());
 				versamento.setAck(versamentoLetto.isAck());
 				versamento.setNote(versamentoLetto.getNote());
+				versamento.setDataCreazione(versamentoLetto.getDataCreazione());
 				
 				// riporto iuv e numero avviso che sono gia' stati assegnati
 				if(versamento.getIuvVersamento() == null) {

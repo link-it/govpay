@@ -45,6 +45,7 @@
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
 		
+		<joda-time.version>2.10</joda-time.version>
 	</properties>
 
 	<dependencyManagement>
@@ -191,12 +192,11 @@
 				<scope>compile</scope>
 			</dependency>
 
-	                <dependency>
-        	                <groupId>it.govpay</groupId>
-                	        <artifactId>fonts-TitilliumWeb</artifactId>
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>fonts-TitilliumWeb</artifactId>
 				<version>${project.version}</version>
-	                </dependency>
-
+			</dependency>
 
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -664,6 +664,12 @@
 	            <artifactId>spring-ldap-core</artifactId>
            		<version>${spring.ldap.version}</version>
         	</dependency>
+
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>${joda-time.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

@@ -113,12 +113,12 @@ public class Rpt extends BasicBD{
 				}
 
 				log.debug("Verifica scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
-				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataScaduta(versamentoModel.getDataScadenza())) {
+				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza())) {
 					log.warn("Scadenza del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] decorsa.");
 					throw new GovPayException(EsitoOperazione.PAG_007, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(), SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(versamentoModel.getDataScadenza()));
 				} else { // versamento non scaduto, controllo data validita'
 					log.debug("Verifica validita' del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
-					if(versamentoModel.getDataValidita() != null && DateUtils.isDataScaduta(versamentoModel.getDataValidita())) {
+					if(versamentoModel.getDataValidita() != null && DateUtils.isDataDecorsa(versamentoModel.getDataValidita())) {
 
 						if(versamentoModel.getId() == null) {
 							// Versamento fornito scaduto. Ritorno errore.
