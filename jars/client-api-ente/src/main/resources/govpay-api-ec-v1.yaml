@@ -470,6 +470,7 @@ components:
         - iuv
         - iur
         - indice
+        - pendenza
         - idVocePendenza
         - stato
         - tipo
@@ -492,6 +493,9 @@ components:
           type: number
           description: indice posizionale della voce pendenza riscossa
           example: 1
+        pendenza:
+          type: string
+          description: location dove reperire il dettaglio della pendenza
         idVocePendenza:
           type: string
           description: >-

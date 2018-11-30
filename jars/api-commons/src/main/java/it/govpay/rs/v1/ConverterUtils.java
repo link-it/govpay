@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.xml2json.Xml2JsonFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
@@ -21,6 +21,7 @@ public class ConverterUtils {
 		map = new HashMap<>();
 		map.put("http://www.digitpa.gov.it/schemas/2011/Pagamenti/", "");
 		mapper = new ObjectMapper();
+		mapper.registerModule(new JaxbAnnotationModule());
 	}
 
 	public static String getRptJson(Rpt rpt) throws ServiceException {
@@ -29,17 +30,9 @@ public class ConverterUtils {
 
 		try {
 			CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
-			return mapper.writeValueAsString(ctRpt)
-					.replaceAll("emailPagatore", "e-mailPagatore")
-					.replaceAll("emailVersante", "e-mailVersante")
-					.replaceAll("N_A", "N/A");
+			return mapper.writeValueAsString(ctRpt);
 		} catch (Exception e) {
-			try {
-				String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRpt()));
-				return s.substring(7, s.length() - 1);
-			} catch (Exception ee) {
-				throw new ServiceException(ee);
-			}
+			throw new ServiceException(e);
 		}
 	}
 
@@ -50,17 +43,9 @@ public class ConverterUtils {
 
 		try {
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
-			return mapper.writeValueAsString(ctRt)
-					.replaceAll("emailPagatore", "e-mailPagatore")
-					.replaceAll("emailVersante", "e-mailVersante")
-					.replaceAll("N_A", "N/A");
+			return mapper.writeValueAsString(ctRt);
 		} catch (Exception e) {
-			try {
-				String s = Xml2JsonFactory.getXml2JsonMapped(map).xml2json(new String(rpt.getXmlRt()));
-				return s.substring(6, s.length() - 1);
-			} catch (Exception ee) {
-				throw new ServiceException(ee);
-			}
+			throw new ServiceException(e);
 		}
 	}
 }

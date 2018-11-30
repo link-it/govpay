@@ -38,6 +38,7 @@
 		<swagger.version>1.5.20</swagger.version>
 		<cxf.version>3.2.5</cxf.version>
 		<jackson.version>2.9.6</jackson.version>
+		<joda-time.version>2.10</joda-time.version>
 	</properties>
 
 	<dependencyManagement>
@@ -184,12 +185,11 @@
 				<scope>compile</scope>
 			</dependency>
 
-	                <dependency>
-        	                <groupId>it.govpay</groupId>
-                	        <artifactId>fonts-TitilliumWeb</artifactId>
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>fonts-TitilliumWeb</artifactId>
 				<version>${project.version}</version>
-	                </dependency>
-
+			</dependency>
 
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -611,6 +611,12 @@
 				<groupId>com.fasterxml.jackson.datatype</groupId>
 				<artifactId>jackson-datatype-joda</artifactId>
 				<version>${jackson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>${joda-time.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

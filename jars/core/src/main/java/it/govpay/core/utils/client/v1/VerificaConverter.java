@@ -19,7 +19,6 @@
  */
 package it.govpay.core.utils.client.v1;
 
-import java.util.Date;
 import java.util.List;
 
 import it.govpay.ec.v1.beans.PendenzaVerificata;
@@ -41,9 +40,10 @@ public class VerificaConverter {
 		versamento.setCodDominio(pendenzaVerificata.getIdDominio());
 		versamento.setCodUnitaOperativa(pendenzaVerificata.getIdUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
-		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza().toDate());
-		versamento.setDataValidita(pendenzaVerificata.getDataValidita().toDate());
-		versamento.setDataCaricamento(pendenzaVerificata.getDataCaricamento() != null ? pendenzaVerificata.getDataCaricamento().toDate() : new Date());
+		if(pendenzaVerificata.getDataScadenza() != null)
+			versamento.setDataScadenza(pendenzaVerificata.getDataScadenza().toDate());
+		if(pendenzaVerificata.getDataValidita() != null)
+			versamento.setDataValidita(pendenzaVerificata.getDataValidita().toDate());
 		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));;
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
 		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());

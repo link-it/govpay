@@ -15,7 +15,7 @@ import java.util.GregorianCalendar;
  */
 public class DateUtils {
 
-	public static boolean isDataScaduta(Date daVerificare) {
+	public static boolean isDataDecorsa(Date daVerificare) {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);

@@ -317,10 +317,10 @@ public class VersamentoUtils {
 			return versamento;
 		
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
-		if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {
+		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza())) {
 			throw new VersamentoScadutoException(versamento.getDataScadenza());
 		}else {
-			if(versamento.getDataValidita() != null && versamento.getDataValidita().before(new Date())) {
+			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita())) {
 				GpContext ctx = GpThreadLocal.get();
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();
