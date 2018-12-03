@@ -28,29 +28,10 @@ paths:
         - Domini
       summary: Elenco dei domini beneficiari censiti
       parameters:
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
+        - $ref: 'components-v3.yaml#/components/parameters/offset'
+        - $ref: 'components-v3.yaml#/components/parameters/limit'
+        - $ref: 'components-v3.yaml#/components/parameters/fields'
+        - $ref: 'components-v3.yaml#/components/parameters/sort'
         - name: abilitato
           in: query
           description: Restrizione ai soli canali abilitati o disabilitati
@@ -90,11 +71,11 @@ paths:
                         items:
                           $ref: '#/components/schemas/dominioIndex' 
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/domini/{idDominio}':
     get:
       tags:
@@ -115,13 +96,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/dominio'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
         '404':
-          $ref: '#/components/responses/404'          
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/404NotFound'          
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/domini/{idDominio}/unitaOperative':
     get:
       tags:
@@ -190,11 +171,11 @@ paths:
                         items:
                           $ref: '#/components/schemas/unitaOperativa'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized' 
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/domini/{idDominio}/unitaOperative/{idUnitaOperativa}':
     get:
       tags:
@@ -221,11 +202,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/unitaOperativa'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'     
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized' 
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'     
   '/domini/{idDominio}/contiAccredito':
     get:
       tags:
@@ -294,11 +275,11 @@ paths:
                         items:
                           $ref: '#/components/schemas/contiAccredito'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized' 
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/domini/{idDominio}/contiAccredito/{iban}':
     get:
       tags:
@@ -325,11 +306,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/contiAccredito'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized' 
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/domini/{idDominio}/entrate':
     get:
       tags:
@@ -398,11 +379,11 @@ paths:
                         items:
                           $ref: '#/components/schemas/entrata'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized' 
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/domini/{idDominio}/entrate/{idEntrata}':
     get:
       tags:
@@ -429,11 +410,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/entrata'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403' 
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized' 
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/pagamenti':
     post:
       summary: Avvio di un pagamento di pendenze
@@ -488,15 +469,15 @@ paths:
                     description: identificativo della sessione di pagamento per la riconciliazione in al ritorno dal psp.
                     example: bdd07392-d90d-11e7-9296-cec278b6b50a
         '400':
-          $ref: '#/components/responses/400'
+          $ref: 'components-v3.yaml#/components/responses/400BadRequest'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
         '502':
-          $ref: '#/components/responses/502'
+          $ref: 'components-v3.yamlcomponents-v3.yaml#/components/responses/502ServiceGatewayBadGateway'
     get:
       summary: Lista dei pagamenti
       tags:
@@ -573,15 +554,15 @@ paths:
                         items:
                           $ref: '#/components/schemas/pagamentoIndex'
         '400':
-          $ref: '#/components/responses/400'
+          $ref: 'components-v3.yaml#/components/responses/400BadRequest'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
         '502':
-          $ref: '#/components/responses/502'
+          $ref: 'components-v3.yaml#/components/responses/502ServiceGateway'
   '/pagamenti/{id}':
     get:
       summary: Dettaglio di un pagamento
@@ -602,13 +583,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/pagamento'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
         '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'      
+          $ref: 'components-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'      
   '/pagamenti/byIdSession/{idSession}':
     get:
       summary: Dettaglio di un pagamento
@@ -629,13 +610,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/pagamento'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
         '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'              
+          $ref: 'components-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'              
   '/pendenze':
     get:
       tags:
@@ -727,11 +708,11 @@ paths:
                         items:
                           $ref: '#/components/schemas/pendenzaIndex'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'      
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'      
   '/pendenze/{idA2A}/{idPendenza}':
     get:
       tags:
@@ -759,13 +740,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/pendenza'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
         '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/rpp':
     get:  
       summary: Lista delle richieste di pagamento pendenza
@@ -865,11 +846,11 @@ paths:
                         items:
                           $ref: '#/components/schemas/rppIndex'            
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/rpp/{idDominio}/{iuv}/{ccp}':
     get:
       summary: Dettaglio di una richiesta di pagamento pendenza
@@ -902,13 +883,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/rpp'            
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
         '404':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'           
+          $ref: 'components-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'           
   '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
     get:
       summary: Acquisizione della richiesta di pagamento pagopa
@@ -946,13 +927,13 @@ paths:
                 type: string
                 example: conversione json della richiesta di pagamento pagopa
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
         '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'                    
+          $ref: 'components-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'                    
   '/rpp/{idDominio}/{iuv}/{ccp}/rt':
     get:
       summary: Acquisizione della ricevuta di pagamento
@@ -995,13 +976,13 @@ paths:
                 type: string
                 example: conversione json della ricevuta
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
         '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'             
+          $ref: 'components-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'             
   '/avvisi/{idDominio}/{iuv}':
     get:
       tags:
@@ -1040,13 +1021,13 @@ paths:
                 type: string
                 format: binary
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
         '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
+          $ref: 'components-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'
   '/profilo':
     get:
       summary: Elenco delle acl associate all'utenza chiamante
@@ -1060,56 +1041,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/profilo'
         '401':
-          $ref: '#/components/responses/401'
+          $ref: 'components-v3.yaml#/components/responses/401NotAuthenticated'
         '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'    
-components:
-  securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-  responses:
-    '400':
-      description: Richiesta non correttamente formata
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/faultBean'
-          example:
-            categoria: RICHIESTA
-            codice: 00001
-            descrizione: Messaggio di richiesta non valido
-            dettaglio: Codice Avviso non conforme alle specifiche pagoPA
-    '401':
-      description: Richiesta non autenticata
-    '403':
-      description: Richiesta non autorizzata
-    '404':
-      description: Risorsa inesistente
-    '500':
-      description: Servizio non disponibile
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/faultBean'
-          example:
-            categoria: INTERNO
-            codice: INTERNO
-            descrizione: Servizio non disponibile
-    '502':
-      description: Rilevato errore con la piattaforma PagoPA
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/faultBeanEsteso'
-          example:
-            categoria: PAGOPA
-            codice: PPT_CANALE_IRRAGGIUNGIBILE
-            descrizione: Errore di connessione verso il canale     
-            id: '12345'
-            location: '/pagamenti/12345'     
+          $ref: 'components-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-v3.yaml#/components/responses/503ServiceUnavailable'    
+components:   
   schemas:
     faultBean:
       type: object
@@ -1687,47 +1624,9 @@ components:
           description: pendenze o riferimenti alle pendenze oggetto del pagamento
           items:
             anyOf:
-              - type: object
-                required:
-                  - idA2A
-                  - idPendenza
-                additionalProperties: false
-                properties:
-                  idA2A:
-                    type: string
-                    description: >-
-                      Identificativo del gestionale responsabile della
-                      pendenza
-                    example: A2A_12345
-                  idPendenza:
-                    type: string
-                    description: >-
-                      Identificativo della pendenza nel gestionale
-                      responsabile
-                    example: abcdef12345
-              - type: object
-                required:
-                  - idDominio
-                  - numeroAvviso
-                additionalProperties: false
-                properties:
-                  idDominio:
-                    type: string
-                    description: Codice fiscale dell'ente creditore
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: >-
-                      Numero avviso della pendenza, assegnato se
-                      pagabile da psp
-                    example: 123456789012345678
-                  idDebitore:
-                    type: string
-                    description: >- 
-                      Identificativo del soggetto debitore 
-                      della pendenza riferita dall'avviso
-                    example: 'RSSMRA30A01H501I'
-              - $ref: '#/components/schemas/pendenzaPost'
+              - $ref: '#/components/schemas/riferimentoPendenza'
+              - $ref: '#/components/schemas/riferimentoAvviso'
+              - $ref: '#/components/schemas/pendenzaPost'              
         urlRitorno:
           type: string
           description: >-
@@ -1751,24 +1650,70 @@ components:
         soggettoVersante:
           $ref: '#/components/schemas/soggetto'
         autenticazioneSoggetto:
-          type: string
-          enum:
-            - CNS
-            - USR
-            - OTH
-            - N/A
-          description: modalita' di autenticazione del soggetto versante
+          $ref: '#/components/schemas/tipoAutenticazioneSoggetto'
         lingua:
+          $ref: '#/components/schemas/tipoLingua'
+    riferimentoAvviso:
+      type: object
+      required:
+        - idDominio
+        - numeroAvviso
+      additionalProperties: false
+      properties:
+        idDominio:
           type: string
-          description: Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
-          enum:
-            - IT
-            - EN
-            - FR
-            - DE
-            - SL
-          default: IT
-          example: IT  
+          description: Codice fiscale dell'ente creditore
+          example: 01234567890
+        numeroAvviso:
+          type: string
+          description: >-
+            Numero avviso della pendenza, assegnato se
+            pagabile da psp
+          example: 123456789012345678
+        idDebitore:
+          type: string
+          description: >- 
+            Identificativo del soggetto debitore 
+            della pendenza riferita dall'avviso
+          example: 'RSSMRA30A01H501I'          
+    riferimentoPendenza:
+      type: object
+      required:
+        - idA2A
+        - idPendenza
+      additionalProperties: false
+      properties:
+        idA2A:
+          type: string
+          description: >-
+            Identificativo del gestionale responsabile della
+            pendenza
+          example: A2A_12345
+        idPendenza:
+          type: string
+          description: >-
+            Identificativo della pendenza nel gestionale
+            responsabile
+          example: abcdef12345          
+    tipoAutenticazioneSoggetto:
+      type: string
+      enum:
+        - CNS
+        - USR
+        - OTH
+        - N/A
+      description: modalita' di autenticazione del soggetto versante
+    tipoLingua:
+      type: string
+      description: Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
+      enum:
+        - IT
+        - EN
+        - FR
+        - DE
+        - SL
+      default: IT
+      example: IT
     pagamentoIndex:
       type: object
       required:
