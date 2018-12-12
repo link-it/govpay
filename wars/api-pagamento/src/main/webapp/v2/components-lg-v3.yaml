@@ -218,27 +218,33 @@ components:
           description: |
             An absolute URI that identifies the specific occurrence of the problem.
             It may or may not yield further information if dereferenced.
-    List:
+    Lista:
       type: object
       required:
         - limit
         - offset
+        - total
       properties:
         limit:
           $ref: '#/components/schemas/Limit'
         offset:
           $ref: '#/components/schemas/Offset'
+        total:
+          description: Number of items matching the filter criteria
+          type: integer
+          format: int32
+          minimum: 0  
         first:
-          description: Relative link to first result page. Null if you are already on first page.
-          type: string
+          description: Link to first result page. Null if you are already on first page.
+          type: string     
         next:
-          description: Relative link to next result page. Null if you are on last page.
+          description: Link to next result page. Null if you are on last page.
           type: string 
         prev:
-          description: Relative link to previous result page. Null if you are on first page.
+          description: Link to previous result page. Null if you are on first page.
           type: string   
         last:
-          description: Relative link to last result page. Null if you are already on last page.
+          description: Link to last result page. Null if you are already on last page.
           type: string      
     Limit:     
       type: integer

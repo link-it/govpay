@@ -1,0 +1,402 @@
+# This file contains reusable openapi-v3 entities for defining
+#   interoperable API behavior by adopting developers.
+#
+# You can reference components via JSON-refs https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03
+#  eg. $ref: 'https://gigantic-server.com/schemas/Monster/schema.json'
+#
+openapi: 3.0.0
+components:
+  schemas:
+    Pendenze:
+      type: object
+      allOf:
+        - $ref: 'components-lg-v3.yaml#/components/schemas/List' 
+        - type: object
+          properties:
+            items:
+              type: array
+              items: 
+                $ref: '#/components/schemas/PendenzaIndex'
+    Pendenza:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PendenzaBase'   
+        - type: object
+          required:
+            - rpps
+            - pagamenti
+          properties:
+            rpps:
+              $ref: 'govpay-rpp-v2.yaml#/components/schemas/Rpps'   
+            pagamenti:
+              $ref: 'govpay-pagamento-v2.yaml#/components/schemas/Pagamenti'         
+    PendenzaIndex:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PendenzaBase'   
+        - type: object
+          required:
+            - href
+            - rpps
+            - pagamenti
+          properties:
+            href: 
+              type: string
+              description: Url della pendenza
+            rpps:
+              type: string
+              description: Url per l'elenco delle rpp emesse per la pendenza
+            pagamenti:
+              type: string
+              description: Url per l'elenco dei pagamenti da portale comprensivi della pendenza
+    PendenzaBase:
+      type: object
+      required:
+        - idA2A
+        - idPendenza
+        - dominio
+        - stato
+        - descrizione
+        - soggettoPagatore
+        - importo
+        - dataCaricamento
+        - voci
+      properties:
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: A2A-12345
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: abcdef12345
+        dominio:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/Dominio'
+        unitaOperativa:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/UnitaOperativa'
+        stato:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/StatoPendenza'
+        segnalazioni:
+          type: array
+          items: 
+            $ref: 'govpay-commons-v2.yaml#/components/schemas/Segnalazione'     
+        iuvAvviso:
+          type: string
+          description: Iuv avviso, assegnato se pagabile da psp
+          example: 000000000012345
+        iuvPagamento:
+          type: string
+          description: Iuv dell'ultimo pagamento eseguito con successo 
+          example: 000000000012345
+        dataPagamento:
+          type: string
+          format: date
+          description: Data di pagamento della pendenza
+          example: '2018-12-31'
+        descrizione:
+          type: string
+          description: Descrizione da inserire nell'avviso di pagamento
+          example: 'Sanzione CdS n. abc00000'
+          maxLength: 140
+        soggettoPagatore:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/Soggetto'
+        importo:
+          type: number
+          description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
+          example: 10.01
+          minimum: 0.00
+          maximum: 99999999.99
+        numeroAvviso:
+          type: string
+          description: Identificativo univoco versamento, assegnato se pagabile da psp
+          example: 123456789012345678
+          pattern: "[0-9]18"
+        dataCaricamento:
+          type: string
+          format: date
+          description: Data di emissione della pendenza
+          example: '2010-12-31'
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+          example: '2019-12-31'
+        dataScadenza:
+          type: string
+          format: date
+          description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        annoRiferimento:
+          type: number
+          description: Anno di riferimento della pendenza
+          example: 2020
+        cartellaPagamento:
+          type: string
+          description: Identificativo della cartella di pagamento a cui afferisce la pendenza
+          example: ABC00000001
+        datiAllegati:
+          type: string
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+        tassonomiaAvviso:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/TassonomiaAvviso'           
+        voci:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/VocePendenza' 
+    NuovaPendenza:  
+      type: object
+      required:
+        - idA2A
+        - idPendenza
+        - idDominio
+        - descrizione
+        - soggettoPagatore
+        - importo
+        - voci
+      properties:
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: A2A-12345
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: abcdef12345
+        idDominio:
+          type: string
+          description: Identificativo del dominio creditore
+          example: 1234567890
+        idUnitaOperativa:
+          type: string
+          description: Identificativo dell'unita' operativa
+          example: UO33132
+        descrizione:
+          type: string
+          description: Descrizione della pendenza
+          example: 'Sanzione CdS n. abc00000'
+          maxLength: 140
+        soggettoPagatore:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/Soggetto'
+        importo:
+          type: number
+          description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
+          example: 10.01
+          minimum: 0.00
+          maximum: 99999999.99
+        numeroAvviso:
+          type: string
+          description: Identificativo univoco versamento, assegnato se pagabile da psp
+          example: 123456789012345678
+          pattern: "[0-9]18"
+        tassonomiaAvviso:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/TassonomiaAvviso'  
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+          example: '2019-12-31'
+        dataScadenza:
+          type: string
+          format: date
+          description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        annoRiferimento:
+          type: number
+          description: Anno di riferimento della pendenza
+          example: 2020
+        cartellaPagamento:
+          type: string
+          description: Identificativo della cartella di pagamento a cui afferisce la pendenza
+          example: ABC00000001
+        datiAllegati:
+          type: object
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
+        voci:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/NuovaVocePendenza'  
+    VocePendenza:
+      allOf:
+        - $ref: "#/components/schemas/NuovaVocePendenza"
+        - type: object
+          required:
+            - indice
+            - stato
+          properties:
+            indice:
+              type: number
+              description: indice di voce all'interno della pendenza
+              example: 1
+            stato:
+              $ref: "govpay-commons-v2.yaml#/components/schemas/StatoVocePendenza"
+    NuovaVocePendenza:
+      allOf:
+        - type: object
+          required:
+            - idVocePendenza
+            - importo
+            - descrizione
+          properties:
+            idVocePendenza:
+              type: string
+              description: Identificativo della voce di pedenza nel gestionale proprietario
+              example: abcdef12345_1
+            importo:
+              type: number
+              description: Importo della voce
+              example: 10.01
+              minimum: 0.00
+              maximum: 99999999.99
+            descrizione:
+              type: string
+              description: descrizione della voce di pagamento
+              example: Sanzione CdS n. abc00000
+            datiAllegati:
+              type: object
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        - oneOf:
+            - $ref: '#/components/schemas/RiferimentoEntrata'
+            - $ref: '#/components/schemas/Entrata'        
+            - $ref: '#/components/schemas/Bollo'   
+    RiferimentoEntrata:
+      description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+      type: object
+      required:
+        - codEntrata
+      properties:
+        codEntrata:
+          type: string    
+    Entrata:
+      description: Definisce i dettagli di una entrata.
+      type: object
+      required:
+        - ibanAccredito
+        - tipoContabilita
+        - codiceContabilita
+      properties:
+        ibanAccredito:
+          type: string
+          example: IT60X0542811101000000123456
+        ibanAppoggio:
+          type: string
+          example: IT60X0542811101000000123456
+        tipoContabilita:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/TipoContabilita'
+        codiceContabilita:
+          description: Codifica del capitolo di bilancio
+          type: string
+          example: 3321      
+    Bollo:
+      description: Definisce i dati di un bollo telematico
+      type: object
+      required:
+        - tipoBollo
+        - hashDocumento
+        - provinciaResidenza
+      properties:
+        tipoBollo:
+          description: Tipologia di Bollo digitale
+          type: string
+          enum:
+            - Imposta di bollo
+        hashDocumento:
+          description: Digest in base64 del documento informatico associato alla marca da bollo
+          type: string
+        provinciaResidenza:
+          description: Sigla automobilistica della provincia di residenza del soggetto pagatore
+          type: string      
+    RiferimentoAvviso:
+      type: object
+      required:
+        - idDominio
+        - numeroAvviso
+      additionalProperties: false
+      properties:
+        idDominio:
+          type: string
+          description: Codice fiscale dell'ente creditore
+          example: 01234567890
+        numeroAvviso:
+          type: string
+          description: >-
+            Numero avviso della pendenza, assegnato se
+            pagabile da psp
+          example: 123456789012345678
+        idDebitore:
+          type: string
+          description: >- 
+            Identificativo del soggetto debitore 
+            della pendenza riferita dall'avviso
+          example: 'RSSMRA30A01H501I'          
+    RiferimentoPendenza:
+      type: object
+      required:
+        - idA2A
+        - idPendenza
+      additionalProperties: false
+      properties:
+        idA2A:
+          type: string
+          description: >-
+            Identificativo del gestionale responsabile della
+            pendenza
+          example: A2A_12345
+        idPendenza:
+          type: string
+          description: >-
+            Identificativo della pendenza nel gestionale
+            responsabile
+          example: abcdef12345
+    Avviso:
+      type: object
+      required:
+        - stato
+        - importo
+        - dominio
+        - numeroAvviso
+        - dataValidita
+        - descrizione
+        - tassonomia
+        - qrcode
+        - barcode
+      properties:
+        stato:
+          $ref: "govpay-commons-v2.yaml#/components/schemas/StatoAvviso"
+        importo:
+          type: number
+          description: Importo della pendenza associata all'avviso.
+          example: 10.01
+        debitore:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/Soggetto'
+        dominio:
+          $ref: "govpay-commons-v2.yaml#/components/schemas/Dominio"
+        numeroAvviso:
+          type: string
+          description: Numero identificativo dell'avviso di pagamento
+          example: 00100000000000012
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati dell'avviso, decorsa la quale l'importo può subire variazioni.
+          example: '2019-12-31'
+        dataScadenza:
+          type: string
+          format: date
+          description: Data di scadenza dell'avviso, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        descrizione:
+          type: string
+          description: Descrizione dell'avviso di pagamento
+          example: 'Sanzione CdS n. abc00000'
+        tassonomia:
+          $ref: 'govpay-commons-v2.yaml#/components/schemas/TassonomiaAvviso'
+        qrcode:
+          type: string
+          description: Testo da codificare nel qr-code dell'avviso
+        barcode:
+          type: string
+          description: Testo da codificare nel bar-code dell'avviso            

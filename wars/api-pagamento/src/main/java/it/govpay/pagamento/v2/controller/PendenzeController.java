@@ -22,7 +22,6 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.IAutorizzato;
 import it.govpay.pagamento.v1.controller.BaseController;
-import it.govpay.pagamento.v2.beans.ListaPendenzeIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
 import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
@@ -35,17 +34,14 @@ public class PendenzeController extends BaseController {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
      }
      
-     public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
-		String methodName = "getByIda2aIdPendenza";  
+     public Pendenza getPendenza(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
+		String methodName = "getPendenza";  
 		GpContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
@@ -59,16 +55,13 @@ public class PendenzeController extends BaseController {
 			
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza =  PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso()); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
+			return PendenzeConverter.toPendenza(ricevutaDTOResponse.getVersamentoIncasso()); 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
 		}
     }
     
-    public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
+    public Response findPendenze(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
     	GpContext ctx = null;
     	String transactionId = null;
 		ByteArrayOutputStream baos= null;

@@ -1,0 +1,459 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: GovPay - API Pagamento
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - url: http://localhost/govpay/frontend/api/pagamento/rs/v1/
+tags:
+  - name: Pagamenti
+    description: Realizzazione e consultazione dei pagamenti delle pendenze
+  - name: Pendenze
+    description: Consultazione delle posizioni debitorie
+  - name: Domini
+    description: Anagrafica degli Enti Creditori    
+  - name: Utenti
+    description: Anagrafica degli Utenti
+security:
+  - basicAuth: []    
+paths:
+  '/pagamenti':
+    post:
+      operationId: addPagamento
+      summary: Avvio di un pagamento di pendenze
+      tags:
+        - Pagamenti  
+      description: >-
+        L'operazione consente di avviare una sessione di pagamento per una o più
+        pendenze. Le pendenze presenti in posizione debitoria possono essere
+        riferite tramite identificativo della pendenza del gestionale proprietario 
+        (_idA2A_ e _idPendenza_) oppure con gli estremi dell'avviso (_idDominio_ 
+        e _iuv_). Nel caso invece di pendenze spontanee, è possibile
+        fornire direttamente i dati costitutivi.
+      parameters:
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idSessionePortale'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'govpay-pagamento-v2.yaml#/components/schemas/NuovoPagamento'
+      responses:
+        '201':
+          description: Pagamento creato
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - location
+                  - redirect
+                properties:
+                  id:
+                    type: string
+                    description: identificativo del pagamento
+                    example: 12345
+                  href:
+                    type: string
+                    description: Url del dettaglio del pagamento
+                    example: /pagamenti/12345
+                  redirect:
+                    type: string
+                    description: url a cui redirigere il navigatore per proseguire nel pagamento.
+                  idSessionePsp:
+                    type: string
+                    description: identificativo della sessione di pagamento assegnato da pagoPA
+                    example: bdd07392-d90d-11e7-9296-cec278b6b50a
+        '400':
+          $ref: 'components-lg-v3.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'
+        '502':
+          $ref: 'components-lg-v3.yaml#/components/responses/502BadGateway'
+    get:
+      summary: Lista dei pagamenti
+      operationId: findPagamenti
+      tags:
+        - Pagamenti  
+      parameters:
+        - $ref: 'components-lg-v3.yaml#/components/parameters/offset'
+        - $ref: 'components-lg-v3.yaml#/components/parameters/limit'
+        - $ref: 'components-lg-v3.yaml#/components/parameters/fields'
+        - $ref: 'components-lg-v3.yaml#/components/parameters/sort'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idSessionePortale'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idSessionePsp'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idVersante'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/statoPagamento'
+      responses:
+        '200':
+          description: Elenco dei pagamenti da portale
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-pagamento-v2.yaml#/components/schemas/Pagamenti'
+        '400':
+          $ref: 'components-lg-v3.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'
+        '502':
+          $ref: 'components-lg-v3.yaml#/components/responses/502BadGateway'
+  '/pagamenti/{id}':
+    get:
+      summary: Dettaglio di un pagamento
+      operationId: getPagamento
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo del pagamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio del pagamento
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-pagamento-v2.yaml#/components/schemas/Pagamento'
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'components-lg-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'      
+  '/pagamenti/byIdSession/{idSession}':
+    get:
+      summary: Dettaglio di un pagamento
+      operationId: getPagamentoByIdSession
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: idSession
+          description: Identificativo di sessione assegnato al pagamento da pagoPA
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio del pagamento
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-pagamento-v2.yaml#/components/schemas/Pagamento'
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'components-lg-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'              
+  '/pendenze':
+    get:
+      tags:
+        - Pendenze
+      summary: Elenco delle pendenze
+      operationId: findPendenze
+      description: Fornisce la lista delle pendenze filtrata ed ordinata.
+      parameters:
+        - $ref: 'components-lg-v3.yaml#/components/parameters/offset'
+        - $ref: 'components-lg-v3.yaml#/components/parameters/limit'
+        - $ref: 'components-lg-v3.yaml#/components/parameters/fields'
+        - $ref: 'components-lg-v3.yaml#/components/parameters/sort'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idDominio'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/iuv'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idA2A'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idPendenza'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idDebitore'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/statoPendenza'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idPagamento'
+      responses:
+        '200':
+          description: Elenco delle pendenze che rispettano i filtri di ricerca
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-pendenza-v2.yaml#/components/schemas/Pendenze'
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'      
+  '/pendenze/{idA2A}/{idPendenza}':
+    get:
+      tags:
+        - Pendenze
+      summary: Dettaglio di una pendenza per identificativo
+      operationId: getPendenza
+      description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      parameters:
+        - in: path
+          name: idA2A
+          description: Identificativo del gestionale
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idPendenza
+          description: Identificativo della pendenza
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Informazioni dettagliate della pendenza
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-pendenza-v2.yaml#/components/schemas/Pendenza'
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'components-lg-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'
+  '/rpp':
+    get:  
+      summary: Lista delle richieste di pagamento pendenza
+      operationId: findRpps
+      tags:
+        - Pagamenti
+      parameters:
+        - $ref: 'components-lg-v3.yaml#/components/parameters/offset'
+        - $ref: 'components-lg-v3.yaml#/components/parameters/limit'
+        - $ref: 'components-lg-v3.yaml#/components/parameters/fields'
+        - $ref: 'components-lg-v3.yaml#/components/parameters/sort'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idDominio'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/iuv'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/ccp'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idA2A'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idPendenza'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idDebitore'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/esitoPagamento'
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idPagamento'
+      responses:
+        '200':
+          description: Lista delle richieste di pagamento pendenza che rispettano i criteri di ricerca
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-rpp-v2.yaml#/components/schemas/Rpps'
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'
+  '/rpp/{idDominio}/{iuv}/{ccp}':
+    get:
+      summary: Dettaglio di una richiesta di pagamento pendenza
+      operationId: getRpp
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Dettaglio della richiesta di pagamento
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-rpp-v2.yaml#/components/schemas/Rpp'          
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'components-lg-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'           
+  '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
+    get:
+      summary: Acquisizione della richiesta di pagamento pagopa
+      operationId: getRpt
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Richiesta di pagamento
+          content:
+            application/xml:
+              schema:
+                type: object
+                example: xml della richiesta di pagamento pagopa
+            application/json:
+              schema:
+                type: object
+                example: conversione json della richiesta di pagamento pagopa
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'components-lg-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'                    
+  '/rpp/{idDominio}/{iuv}/{ccp}/rt':
+    get:
+      operationId: getRt
+      summary: Acquisizione della ricevuta di pagamento
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ricevuta di pagamento
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+                example: stampa della ricevuta
+            application/xml:
+              schema:
+                type: object
+                example: xml della ricevuta
+            application/json:
+              schema:
+                type: object
+                example: conversione json della ricevuta
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'components-lg-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'             
+  '/avvisi/{idDominio}/{iuv}':
+    get:
+      tags:
+        - Pendenze
+      summary: Avviso di pagamento
+      operationId: getAvviso
+      description: Fornisce un avviso di pagamento o la pendenza ad esso associata
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo del versamento
+          required: true
+          schema:
+            type: string
+        - $ref: 'govpay-parameters-v2.yaml#/components/parameters/idDebitore'            
+      responses:
+        '200':
+          description: Avviso di pagamento
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-pendenza-v2.yaml#/components/schemas/Avviso'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'components-lg-v3.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'components-lg-v3.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'
+  '/profilo':
+    get:
+      summary: Elenco delle acl associate all'utenza chiamante
+      tags:
+        - Utenti
+      operationId: getProfilo
+      responses:
+        '200':
+          description: Autorizzazioni dell'utenza chiamante
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-commons-v2.yaml#/components/schemas/Profilo'
+        '401':
+          $ref: 'components-lg-v3.yaml#/components/responses/401NotAuthenticated'
+        '503':
+          $ref: 'components-lg-v3.yaml#/components/responses/503ServiceUnavailable'   
