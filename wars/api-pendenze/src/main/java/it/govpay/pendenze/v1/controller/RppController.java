@@ -165,10 +165,9 @@ public class RppController extends BaseController {
 				} else {
 					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 					this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(rt),transactionId).build();
+					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
 				}
 			}
 		}catch (Exception e) {
@@ -190,22 +189,31 @@ public class RppController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			String accept = "";
+			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
+				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+			}
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
-			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(user);
-			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
-			leggiPagamentoPortaleDTO.setIuv(iuv);
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
+			leggiRptDTO.setIdDominio(idDominio);
+			leggiRptDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
-			leggiPagamentoPortaleDTO.setCcp(ccp);
+			leggiRptDTO.setCcp(ccp);
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
-			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
-			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(ricevutaDTOResponse.getRpt().getXmlRpt(), false);
-			return this.handleResponseOk(Response.status(Status.OK).entity(rpt),transactionId).build();
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
+			}else {
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
+			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

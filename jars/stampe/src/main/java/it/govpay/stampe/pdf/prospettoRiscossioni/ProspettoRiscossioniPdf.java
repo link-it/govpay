@@ -96,8 +96,9 @@ public class ProspettoRiscossioniPdf {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		JAXBElement<ProspettoRiscossioniInput> jaxbElement = new JAXBElement<ProspettoRiscossioniInput>(new QName("", "input"), ProspettoRiscossioniInput.class, null, input);
 		jaxbMarshaller.marshal(jaxbElement, baos);
-		
-//		log.debug(baos.toString());
+
+		// TODO togliere
+		log.debug(baos.toString());
 		
 		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_ROOT_ELEMENT_NAME);
 		return dataSource;

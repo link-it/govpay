@@ -3,6 +3,9 @@ package it.govpay.core.dao.autorizzazione;
 import java.util.Collection;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -14,7 +17,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 
-public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication> {	
+public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication>, AuthenticationDetailsSource<HttpServletRequest, Authentication> {	
 
 	private boolean checkSubject = false;
 	private boolean checkPassword = false;
@@ -74,5 +77,10 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetai
 
 	public void setCheckPassword(boolean checkPassword) {
 		this.checkPassword = checkPassword;
+	}
+	
+	@Override
+	public Authentication buildDetails(HttpServletRequest context) {
+		return null;
 	}
 }

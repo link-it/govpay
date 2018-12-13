@@ -2286,6 +2286,11 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: visualizzaSoggettoDebitore
+          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
+          schema:
+            type: boolean
       responses:
         '200':
           description: Ricevuta di pagamento
@@ -3141,14 +3146,19 @@ components:
     connettoreFtp:
       type: object
       required: 
-        - serverurl
+        - host
+        - porta
         - username
         - password
       properties:
-        serverurl:
+        host:
           type: string
-          description: url del server sftp
+          description: host del server sftp
           example: ftp.pagopa.it
+        porta:
+          type: string
+          description: porta del server sftp
+          example: "22"
         username:
           type: string
           description: nome dell'utenza ftp
@@ -4788,11 +4798,15 @@ components:
     connettorePagopa:
       type: object
       required: 
-        - url
+        - urlRPT
       properties:
-        url: 
+        urlRPT: 
           type: string
-          description: Dati di integrazione ad un servizio web
+          description: Dati di integrazione al servizio web RPT
+          example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
+        urlAvvisatura: 
+          type: string
+          description: Dati di integrazione al servizio web di Avvisatura Digitale
           example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'

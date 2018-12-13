@@ -34,7 +34,8 @@ public class Connettore extends Versionabile {
 	public static final String P_SSLTYPE_NAME = "SSLTYPE";
 	public static final String P_HTTPUSER_NAME = "HTTPUSER";
 	public static final String P_HTTPPASSW_NAME = "HTTPPASSW";
-	public static final String P_URL_NAME = "URL";
+	public static final String P_URL_NAME = "URL"; // utilizzato da applicazioni e da intermediario per il servizio RPT
+	public static final String P_URL_SERVIZI_AVVISATURA_NAME = "URLAVVISI";
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
 	
@@ -64,6 +65,7 @@ public class Connettore extends Versionabile {
 	private String httpUser;
 	private String httpPassw;
 	private String url;
+	private String urlServiziAvvisatura;
 	private boolean azioneInUrl;
 	
 	public Connettore() {
@@ -162,5 +164,10 @@ public class Connettore extends Versionabile {
 	public Tipo getTipo() {
 		return Tipo.valueOf(super.getVersione().getApi());
 	}
-
+	public String getUrlServiziAvvisatura() {
+		return urlServiziAvvisatura;
+	}
+	public void setUrlServiziAvvisatura(String urlServiziAvvisatura) {
+		this.urlServiziAvvisatura = urlServiziAvvisatura;
+	}
 }

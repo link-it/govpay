@@ -22,21 +22,25 @@ package it.govpay.model;
 public class ConnettoreSftp extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
-	public static final String P_URL_NAME_IN = "URL_IN";
+	public static final String P_HOST_NAME_IN = "HOST_IN";
+	public static final String P_PORTA_NAME_IN = "PORTA_IN";
 	public static final String P_USER_NAME_IN = "USER_IN";
 	public static final String P_PASS_NAME_IN = "PASS_IN";
 
-	public static final String P_URL_NAME_OUT = "URL_OUT";
+	public static final String P_HOST_NAME_OUT = "HOST_OUT";
+	public static final String P_PORTA_NAME_OUT = "PORTA_OUT";
 	public static final String P_USER_NAME_OUT = "USER_OUT";
 	public static final String P_PASS_NAME_OUT = "PASS_OUT";
 	
 	private String idConnettore;
 	private String httpUserIn;
 	private String httpPasswIn;
-	private String urlIn;
+	private String hostIn;
+	private String portaIn;
 	private String httpUserOut;
 	private String httpPasswOut;
-	private String urlOut;
+	private String hostOut;
+	private String portaOut;
 	
 	public ConnettoreSftp() {
 	}
@@ -65,12 +69,20 @@ public class ConnettoreSftp extends BasicModel {
 		this.httpPasswIn = httpPasswIn;
 	}
 
-	public String getUrlIn() {
-		return this.urlIn;
+	public String getHostIn() {
+		return hostIn;
 	}
 
-	public void setUrlIn(String urlIn) {
-		this.urlIn = urlIn;
+	public void setHostIn(String hostIn) {
+		this.hostIn = hostIn;
+	}
+
+	public String getPortaIn() {
+		return portaIn;
+	}
+
+	public void setPortaIn(String portaIn) {
+		this.portaIn = portaIn;
 	}
 
 	public String getHttpUserOut() {
@@ -89,12 +101,19 @@ public class ConnettoreSftp extends BasicModel {
 		this.httpPasswOut = httpPasswOut;
 	}
 
-	public String getUrlOut() {
-		return this.urlOut;
+	public String getHostOut() {
+		return hostOut;
 	}
 
-	public void setUrlOut(String urlOut) {
-		this.urlOut = urlOut;
+	public void setHostOut(String hostOut) {
+		this.hostOut = hostOut;
 	}
 
+	public String getPortaOut() {
+		return portaOut;
+	}
+
+	public void setPortaOut(String portaOut) {
+		this.portaOut = portaOut;
+	}
 }

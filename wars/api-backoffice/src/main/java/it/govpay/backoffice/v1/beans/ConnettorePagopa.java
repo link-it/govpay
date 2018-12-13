@@ -8,31 +8,51 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"url",
+"urlRPT",
+"urlAvvisatura",
 "auth",
 })
 public class ConnettorePagopa extends JSONSerializable {
   
-  @JsonProperty("url")
-  private String url = null;
+  @JsonProperty("urlRPT")
+  private String urlRPT = null;
+  
+  @JsonProperty("urlAvvisatura")
+  private String urlAvvisatura = null;
   
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
   
   /**
-   * Dati di integrazione ad un servizio web
+   * Dati di integrazione al servizio web RPT
    **/
-  public ConnettorePagopa url(String url) {
-    this.url = url;
+  public ConnettorePagopa urlRPT(String urlRPT) {
+    this.urlRPT = urlRPT;
     return this;
   }
 
-  @JsonProperty("url")
-  public String getUrl() {
-    return this.url;
+  @JsonProperty("urlRPT")
+  public String getUrlRPT() {
+    return urlRPT;
   }
-  public void setUrl(String url) {
-    this.url = url;
+  public void setUrlRPT(String urlRPT) {
+    this.urlRPT = urlRPT;
+  }
+
+  /**
+   * Dati di integrazione al servizio web di Avvisatura Digitale
+   **/
+  public ConnettorePagopa urlAvvisatura(String urlAvvisatura) {
+    this.urlAvvisatura = urlAvvisatura;
+    return this;
+  }
+
+  @JsonProperty("urlAvvisatura")
+  public String getUrlAvvisatura() {
+    return urlAvvisatura;
+  }
+  public void setUrlAvvisatura(String urlAvvisatura) {
+    this.urlAvvisatura = urlAvvisatura;
   }
 
   /**
@@ -59,13 +79,14 @@ public class ConnettorePagopa extends JSONSerializable {
       return false;
     }
     ConnettorePagopa connettorePagopa = (ConnettorePagopa) o;
-    return Objects.equals(this.url, connettorePagopa.url) &&
+    return Objects.equals(urlRPT, connettorePagopa.urlRPT) &&
+        Objects.equals(urlAvvisatura, connettorePagopa.urlAvvisatura) &&
         Objects.equals(this.auth, connettorePagopa.auth);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.url, this.auth);
+    return Objects.hash(urlRPT, urlAvvisatura, auth);
   }
 
   public static ConnettorePagopa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -82,7 +103,8 @@ public class ConnettorePagopa extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettorePagopa {\n");
     
-    sb.append("    url: ").append(this.toIndentedString(this.url)).append("\n");
+    sb.append("    urlRPT: ").append(toIndentedString(urlRPT)).append("\n");
+    sb.append("    urlAvvisatura: ").append(toIndentedString(urlAvvisatura)).append("\n");
     sb.append("    auth: ").append(this.toIndentedString(this.auth)).append("\n");
     sb.append("}");
     return sb.toString();

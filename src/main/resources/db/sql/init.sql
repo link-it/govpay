@@ -31,7 +31,7 @@ INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Operatore',null,'Gior
 
 -- Censimento Tributo Bollo
 
-INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, descrizione, online, paga_terzi) VALUES ('BOLLOT', '9', 'MBT', 'Marca da Bollo Telematica',false,false);
+INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, descrizione, on_line, paga_terzi) VALUES ('BOLLOT', '9', 'MBT', 'Marca da Bollo Telematica',false,false);
 
 -- Configurazione delle sonde
 

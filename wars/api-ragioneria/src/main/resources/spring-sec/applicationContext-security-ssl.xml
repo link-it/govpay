@@ -40,7 +40,33 @@
                 isAuthenticated()       Returns true if the user is not anonymous
                 isFullyAuthenticated()  Returns true if the user is not an anonymous or a remember-me user
          -->
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="opensiopeX509AuthenticationEntryPoint">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="opensiopeX509AuthenticationEntryPoint" pattern="/rs/ssl/**">
+
+                <csrf disabled="true"/>
+
+                <!-- 
+                        Tutte le altre url dell'applicazione sono accessibili ad utenze che si devono essere autenticati
+                        Eventuali controlli di autorizzazione sono realizzati tramite le ACL
+                 -->
+                <intercept-url pattern="/rs/ssl/**" access="isFullyAuthenticated()" />
+                
+                <intercept-url pattern="/**" access="denyAll" />
+                
+                <!-- Entry Point SSL -->
+                <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenze" />
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        <!-- entry point per l'httpbasic per gestire il contenuto della response nel caso id utenza non autorizzata. -->
+        <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointGenerale" pattern="/**"> 
 
                 <csrf disabled="true"/>
 
@@ -57,10 +83,7 @@
                         Tutte le altre url dell'applicazione sono accessibili ad utenze che si devono essere autenticati
                         Eventuali controlli di autorizzazione sono realizzati tramite le ACL
                  -->
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
-                
-                <!-- Entry Point SSL -->
-                <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenze" />
+               <intercept-url pattern="/**" access="denyAll" />
 
                 <headers>
                         <content-type-options disabled="true"/>

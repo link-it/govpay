@@ -3,9 +3,17 @@
 
 	<display-name>govpay-wc</display-name>
     
+    <context-param>
+    	<param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext-*.xml</param-value>
+    </context-param>
+    
     <listener>
 	    <listener-class>it.govpay.wc.listener.InitListener</listener-class>
 	</listener>
+	<listener>
+    	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
 	
 	<filter>
 		<filter-name>OriginFilter</filter-name>
@@ -15,6 +23,18 @@
 		<filter-name>OriginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<servlet>
+        <servlet-name>CXFServlet</servlet-name>
+        <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+   
+   
+    <servlet-mapping>
+        <servlet-name>CXFServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
 
 <!-- 	<security-constraint> -->
 <!-- 		<web-resource-collection> -->

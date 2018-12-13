@@ -4,17 +4,20 @@
 	<!-- This corresponds to the top level deployment. For a war this is the war's module, for an ear -->
 	<!-- This is the top level ear module, which contains all the classes in the EAR's lib folder -->
 	<deployment>
+		 <exclude-subsystems>
+                <subsystem name="jaxrs" />
+        </exclude-subsystems>
 		<exclusions>
-			<module name="org.slf4j" />
-			<module name="org.apache.log4j" />
-			<module name="org.apache.commons.logging" />
-		</exclusions>
-		<dependencies>
 			<module name="org.apache.cxf" />
-			<module name="org.codehaus.jackson.jackson-xc" />
-			<module name="org.codehaus.jackson.jackson-core-asl" />
-			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</dependencies>
+            <module name="org.springframework.spring" />
+            <module name="org.slf4j" />
+            <module name="org.apache.log4j" />
+            <module name="org.apache.commons.logging"/>
+            <module name="com.fasterxml.jackson.core.jackson-core" />
+            <module name="com.fasterxml.jackson.core.jackson-databind" />
+            <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
+		</exclusions>
 	</deployment>
 	<sub-deployment name="api-pagopa-${project.version}.war">
 		<exclusions>
@@ -33,92 +36,80 @@
 	</sub-deployment>
 	<sub-deployment name="web-connector-${project.version}.war">
 		<exclusions>
-			<module name="org.apache.log4j" />
-			<module name="org.slf4j" />
-			<module name="org.apache.commons.logging" />
-			<module name="org.log4j" />
-			<module name="org.jboss.logging" />
-		</exclusions>
-		<dependencies>
 			<module name="org.apache.cxf" />
-			<module name="org.codehaus.jackson.jackson-xc" />
-			<module name="org.codehaus.jackson.jackson-core-asl" />
-			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</dependencies>
+            <module name="org.springframework.spring" />
+            <module name="org.slf4j" />
+            <module name="org.apache.log4j" />
+            <module name="org.apache.commons.logging"/>
+            <module name="com.fasterxml.jackson.core.jackson-core" />
+            <module name="com.fasterxml.jackson.core.jackson-databind" />
+            <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
+		</exclusions>
 	</sub-deployment>
 	<sub-deployment name="api-pagamento-${project.version}.war">
 		<exclusions>
-			<module name="org.apache.log4j" />
-			<module name="org.slf4j" />
-			<module name="org.apache.commons.logging" />
-			<module name="org.log4j" />
-			<module name="org.jboss.logging" />
-		</exclusions>
-		<dependencies>
 			<module name="org.apache.cxf" />
-			<module name="org.codehaus.jackson.jackson-xc" />
-			<module name="org.codehaus.jackson.jackson-core-asl" />
-			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</dependencies>
+            <module name="org.springframework.spring" />
+            <module name="org.slf4j" />
+            <module name="org.apache.log4j" />
+            <module name="org.apache.commons.logging"/>
+            <module name="com.fasterxml.jackson.core.jackson-core" />
+            <module name="com.fasterxml.jackson.core.jackson-databind" />
+            <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
+		</exclusions>
 	</sub-deployment>
 	<sub-deployment name="api-pendenze-${project.version}.war">
 		<exclusions>
-			<module name="org.apache.log4j" />
-			<module name="org.slf4j" />
-			<module name="org.apache.commons.logging" />
-			<module name="org.log4j" />
-			<module name="org.jboss.logging" />
-		</exclusions>
-		<dependencies>
 			<module name="org.apache.cxf" />
-			<module name="org.codehaus.jackson.jackson-xc" />
-			<module name="org.codehaus.jackson.jackson-core-asl" />
-			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</dependencies>
+            <module name="org.springframework.spring" />
+            <module name="org.slf4j" />
+            <module name="org.apache.log4j" />
+            <module name="org.apache.commons.logging"/>
+            <module name="com.fasterxml.jackson.core.jackson-core" />
+            <module name="com.fasterxml.jackson.core.jackson-databind" />
+            <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
+		</exclusions>
 	</sub-deployment>
 	<sub-deployment name="api-ragioneria-${project.version}.war">
 		<exclusions>
-			<module name="org.apache.log4j" />
-			<module name="org.slf4j" />
-			<module name="org.apache.commons.logging" />
-			<module name="org.log4j" />
-			<module name="org.jboss.logging" />
-		</exclusions>
-		<dependencies>
 			<module name="org.apache.cxf" />
-			<module name="org.codehaus.jackson.jackson-xc" />
-			<module name="org.codehaus.jackson.jackson-core-asl" />
-			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</dependencies>
+            <module name="org.springframework.spring" />
+            <module name="org.slf4j" />
+            <module name="org.apache.log4j" />
+            <module name="org.apache.commons.logging"/>
+            <module name="com.fasterxml.jackson.core.jackson-core" />
+            <module name="com.fasterxml.jackson.core.jackson-databind" />
+            <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
+		</exclusions>
 	</sub-deployment>
 	<sub-deployment name="api-backoffice-${project.version}.war">
 		<exclusions>
-			<module name="org.apache.log4j" />
-			<module name="org.slf4j" />
-			<module name="org.apache.commons.logging" />
-			<module name="org.log4j" />
-			<module name="org.jboss.logging" />
-		</exclusions>
-		<dependencies>
 			<module name="org.apache.cxf" />
-			<module name="org.codehaus.jackson.jackson-xc" />
-			<module name="org.codehaus.jackson.jackson-core-asl" />
-			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</dependencies>
+            <module name="org.springframework.spring" />
+            <module name="org.slf4j" />
+            <module name="org.apache.log4j" />
+            <module name="org.apache.commons.logging"/>
+            <module name="com.fasterxml.jackson.core.jackson-core" />
+            <module name="com.fasterxml.jackson.core.jackson-databind" />
+            <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
+		</exclusions>
 	</sub-deployment>
 	<sub-deployment name="web-console-${project.version}.war">
 		<exclusions>
-			<module name="org.apache.log4j" />
-			<module name="org.slf4j" />
-			<module name="org.apache.commons.logging" />
-			<module name="org.log4j" />
-			<module name="org.jboss.logging" />
-		</exclusions>
-		<dependencies>
 			<module name="org.apache.cxf" />
-			<module name="org.codehaus.jackson.jackson-xc" />
-			<module name="org.codehaus.jackson.jackson-core-asl" />
-			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</dependencies>
+            <module name="org.springframework.spring" />
+            <module name="org.slf4j" />
+            <module name="org.apache.log4j" />
+            <module name="org.apache.commons.logging"/>
+            <module name="com.fasterxml.jackson.core.jackson-core" />
+            <module name="com.fasterxml.jackson.core.jackson-databind" />
+            <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
+		</exclusions>
 	</sub-deployment>
 </jboss-deployment-structure>

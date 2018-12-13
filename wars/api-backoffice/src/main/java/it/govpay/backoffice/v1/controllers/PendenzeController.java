@@ -387,7 +387,8 @@ public class PendenzeController extends BaseController {
 
 			listaTracciatiDTO.setPagina(pagina);
 			listaTracciatiDTO.setLimit(risultatiPerPagina);
-			listaTracciatiDTO.setStatoTracciatoPendenza(it.govpay.model.StatoTracciatoPendenza.fromValue(stato.name()));
+			if(stato != null)
+				listaTracciatiDTO.setStatoTracciatoPendenza(it.govpay.model.StatoTracciatoPendenza.fromValue(stato.name()));
 			List<TIPO_TRACCIATO> tipoTracciato = new ArrayList<>();
 			tipoTracciato.add(TIPO_TRACCIATO.PENDENZA);
 			listaTracciatiDTO.setTipoTracciato(tipoTracciato);

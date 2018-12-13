@@ -68,7 +68,10 @@ public class AutorizzazioneUtils {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
-				aclsRuolo.addAll(AclCache.getInstance().getAclsRuolo(grantedAuthority.getAuthority()));
+				List<Acl> aclsRuolo2 = AclCache.getInstance().getAclsRuolo(grantedAuthority.getAuthority());
+				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
+					aclsRuolo.addAll(aclsRuolo2);
+				
 				authorities.add(grantedAuthority);
 			}
 		}
@@ -128,7 +131,10 @@ public class AutorizzazioneUtils {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
-				aclsRuolo.addAll(AclCache.getInstance().getAclsRuolo(grantedAuthority.getAuthority()));
+				List<Acl> aclsRuolo2 = AclCache.getInstance().getAclsRuolo(grantedAuthority.getAuthority());
+				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
+					aclsRuolo.addAll(aclsRuolo2);
+				
 				authorities.add(grantedAuthority);
 			}
 		}
@@ -156,6 +162,11 @@ public class AutorizzazioneUtils {
 	}
 	
 	public static UserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
+			Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException , ServiceException {
+		return getUserDetailFromUtenzaAnonima(username, checkPassword, checkSubject, authFromPreauth, null);
+	}
+	
+	public static UserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
@@ -163,7 +174,10 @@ public class AutorizzazioneUtils {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
-				aclsRuolo.addAll(AclCache.getInstance().getAclsRuolo(grantedAuthority.getAuthority()));
+				List<Acl> aclsRuolo2 = AclCache.getInstance().getAclsRuolo(grantedAuthority.getAuthority());
+				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
+					aclsRuolo.addAll(aclsRuolo2);
+				
 				authorities.add(grantedAuthority);
 			}
 		}

@@ -180,6 +180,7 @@ public class AvvisoPagamento extends BasicBD {
 					causaleVersamento));
 			input.setNumeroCcPostale(this.getNumeroCCDaIban(postale.getCodIban()));
 			input.setIntestatarioContoCorrentePostale(dominio.getRagioneSociale());
+			input.setCodiceAvvisoPostale(versamento.getNumeroAvviso()); 
 		} else {
 			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
 		}
@@ -190,8 +191,18 @@ public class AvvisoPagamento extends BasicBD {
 		if(versamento.getDataValidita() != null)
 			input.setData(this.sdfDataScadenza.format(versamento.getDataValidita()));
 
-		if(iuvGenerato.getNumeroAvviso() != null) {
-			input.setCodiceAvviso(iuvGenerato.getNumeroAvviso());
+		if(versamento.getNumeroAvviso() != null) {
+			// split del numero avviso a gruppi di 4 cifre
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < versamento.getNumeroAvviso().length(); i++) {
+				if(sb.length() > 0 && (i % 4 == 0)) {
+					sb.append(" ");
+				}
+				
+				sb.append(versamento.getNumeroAvviso().charAt(i));
+			}
+			
+			input.setCodiceAvviso(sb.toString());
 		}
 
 		if(iuvGenerato.getQrCode() != null)

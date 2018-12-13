@@ -1,0 +1,54 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+
+	<display-name>govpay-api-pagopa</display-name>
+	
+	<context-param>
+    	<param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext-security-container.xml</param-value>
+    </context-param>
+    
+    <listener>
+    	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+	
+    <filter>
+	    <filter-name>springSecurityFilterChain</filter-name>
+	    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+	
+	<filter-mapping>
+	    <filter-name>springSecurityFilterChain</filter-name>
+	    <url-pattern>/*</url-pattern>
+	    <dispatcher>FORWARD</dispatcher>
+	    <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Protetto</web-resource-name>
+			<url-pattern>/PagamentiTelematiciCCPservice</url-pattern>
+			<url-pattern>/PagamentiTelematiciRTservice</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>*</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+	    <web-resource-collection>
+	        <web-resource-name>Libero</web-resource-name>
+	        <url-pattern>/PagamentiTelematiciCCPservice?wsdl</url-pattern>
+	        <url-pattern>/PagamentiTelematiciRTservice?wsdl</url-pattern>
+	    </web-resource-collection>
+    </security-constraint>
+
+	<security-role>
+		<role-name>*</role-name>
+	</security-role>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+
+</web-app>

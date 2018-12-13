@@ -25,7 +25,7 @@
 	
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -43,14 +43,8 @@
 						<webResource>
 							<directory>src/main/webapp</directory>
 						</webResource>
-						<webResource>
-							<directory>src/main/resources/spring-sec</directory>
-							<filtering>true</filtering>
-							<include>applicationContext-security-form.xml</include>
-							<targetPath>WEB-INF</targetPath>							
-						</webResource>
 					</webResources>
-					<webXml>src/main/resources/web-form.xml</webXml>
+					<webXml>src/main/resources/web.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
 	                <archive>

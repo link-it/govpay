@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import it.govpay.rs.v1.beans.FaultBean;
+import it.govpay.rs.v1.beans.FaultBean.CategoriaEnum;
 
 /***
  * CodiceEccezione
@@ -16,26 +17,28 @@ import it.govpay.rs.v1.beans.FaultBean;
  */
 public class CodiceEccezione {
 	
-	public static final CodiceEccezione RICHIESTA_NON_VALIDA = new CodiceEccezione(400, "RICHIESTE NON VALIDA", "Richiesta non correttamente formata");
-	public static final CodiceEccezione AUTORIZZAZIONE = new CodiceEccezione(401, "AUTORIZZAZIONE", "Richiesta non autorizzata");
-	public static final CodiceEccezione AUTORIZZAZIONE_ACL = new CodiceEccezione(403, "AUTORIZZAZIONE_ACL", "Richiesta non permessa");
-	public static final CodiceEccezione NOT_FOUND = new CodiceEccezione(404, "NOT_FOUND", "Risorsa non trovata");
-	public static final CodiceEccezione CONFLITTO = new CodiceEccezione(409, "CONFLITTO", "Risorsa già presente");
-	public static final CodiceEccezione PAYLOAD_TROPPO_GRANDE = new CodiceEccezione(413, "PAYLOAD_TROPPO_GRANDE", "Body della richiesta troppo grande");
-	public static final CodiceEccezione SINTASSI = new CodiceEccezione(422, "SINTASSI", "Richiesta non rispetta la sintassi prevista");
-	public static final CodiceEccezione AUTORIZZAZIONE_PA = new CodiceEccezione(460,"AUTORIZZAZIONE PA","Ente non censito sul sistema");
-	public static final CodiceEccezione ERRORE_INTERNO = new CodiceEccezione(500,"ERRORE INTERNO","Errore interno");
+	public static final CodiceEccezione RICHIESTA_NON_VALIDA = new CodiceEccezione(400, "RICHIESTE NON VALIDA", CategoriaEnum.RICHIESTA, "Richiesta non correttamente formata");
+	public static final CodiceEccezione AUTORIZZAZIONE = new CodiceEccezione(401, "AUTORIZZAZIONE", CategoriaEnum.AUTORIZZAZIONE, "Richiesta non autorizzata");
+	public static final CodiceEccezione AUTORIZZAZIONE_ACL = new CodiceEccezione(403, "AUTORIZZAZIONE_ACL", CategoriaEnum.AUTORIZZAZIONE, "Richiesta non permessa");
+	public static final CodiceEccezione NOT_FOUND = new CodiceEccezione(404, "NOT_FOUND", CategoriaEnum.OPERAZIONE, "Risorsa non trovata");
+	public static final CodiceEccezione CONFLITTO = new CodiceEccezione(409, "CONFLITTO", CategoriaEnum.OPERAZIONE, "Risorsa già presente");
+	public static final CodiceEccezione PAYLOAD_TROPPO_GRANDE = new CodiceEccezione(413, "PAYLOAD_TROPPO_GRANDE", CategoriaEnum.RICHIESTA, "Body della richiesta troppo grande");
+	public static final CodiceEccezione SINTASSI = new CodiceEccezione(422, "SINTASSI", CategoriaEnum.RICHIESTA, "Richiesta non rispetta la sintassi prevista");
+	public static final CodiceEccezione AUTORIZZAZIONE_PA = new CodiceEccezione(460,"AUTORIZZAZIONE PA", CategoriaEnum.PAGOPA,"Ente non censito sul sistema");
+	public static final CodiceEccezione ERRORE_INTERNO = new CodiceEccezione(500,"ERRORE INTERNO", CategoriaEnum.INTERNO,"Errore interno");
 
 
+	private CategoriaEnum categoria;
 	private final String name;
 	private final String descrizione;
 	private final int code;
 
-	CodiceEccezione(int code, String name, String descrizione)
+	CodiceEccezione(int code, String name, CategoriaEnum categoria, String descrizione)
 	{
 		this.code = code;
 		this.name = name;
 		this.descrizione = descrizione;
+		this.categoria = categoria;
 	}
 
 	public int getCode() {
@@ -49,13 +52,18 @@ public class CodiceEccezione {
 		return this.descrizione;
 	}
 
+	public CategoriaEnum getCategoria() {
+		return categoria;
+	}
+
 	@Override
 	public String toString() {
 		return this.descrizione;
 	}
 	public FaultBean toFaultBean() {
 		FaultBean faultBean = new FaultBean();
-		faultBean.setCodice(this.name);
+		faultBean.setCategoria(this.categoria);
+		faultBean.setCodice(this.code+"");
 		faultBean.setDescrizione(this.descrizione);
 		return faultBean;
 	}
@@ -77,17 +85,21 @@ public class CodiceEccezione {
 		FaultBean faultBean = this.toFaultBean();
 		ResponseBuilder rb = Response.status(this.code);
 		if(addFaultBean) {
-			rb.entity(faultBean).type(MediaType.APPLICATION_JSON);
+			return setFaultBeanAsEntity(rb, faultBean);
 		}
 		return rb;
 	}
 	public ResponseBuilder toFaultResponseBuilder(String dettaglio) {
 		FaultBean faultBean = this.toFaultBean(dettaglio);
-		return Response.status(this.code).entity(faultBean).type(MediaType.APPLICATION_JSON);
+		return setFaultBeanAsEntity(Response.status(this.code), faultBean).type(MediaType.APPLICATION_JSON);
 	}
 	public ResponseBuilder toFaultResponseBuilder(Exception e) {
 		FaultBean faultBean = this.toFaultBean(e);
-		return Response.status(this.code).entity(faultBean).type(MediaType.APPLICATION_JSON);
+		return setFaultBeanAsEntity(Response.status(this.code), faultBean).type(MediaType.APPLICATION_JSON);
+	}
+	
+	public ResponseBuilder setFaultBeanAsEntity(ResponseBuilder rb, FaultBean faultBean) {
+		return rb.entity(faultBean);
 	}
 
 	public Response toFaultResponse() {

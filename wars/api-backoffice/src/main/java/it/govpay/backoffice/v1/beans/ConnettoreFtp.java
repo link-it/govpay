@@ -10,14 +10,18 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
 @JsonPropertyOrder({
-"serverurl",
+"host",
+"porta",
 "username",
 "password",
 })
 public class ConnettoreFtp extends JSONSerializable {
   
-  @JsonProperty("serverurl")
-  private String serverurl = null;
+  @JsonProperty("host")
+  private String host = null;
+  
+  @JsonProperty("porta")
+  private String porta = null;
   
   @JsonProperty("username")
   private String username = null;
@@ -26,19 +30,35 @@ public class ConnettoreFtp extends JSONSerializable {
   private String password = null;
   
   /**
-   * url del server sftp
+   * host del server sftp
    **/
-  public ConnettoreFtp serverurl(String serverurl) {
-    this.serverurl = serverurl;
+  public ConnettoreFtp host(String host) {
+    this.host = host;
     return this;
   }
 
-  @JsonProperty("serverurl")
-  public String getServerurl() {
-    return this.serverurl;
+  @JsonProperty("host")
+  public String getHost() {
+    return host;
   }
-  public void setServerurl(String serverurl) {
-    this.serverurl = serverurl;
+  public void setHost(String host) {
+    this.host = host;
+  }
+
+  /**
+   * porta del server sftp
+   **/
+  public ConnettoreFtp porta(String porta) {
+    this.porta = porta;
+    return this;
+  }
+
+  @JsonProperty("porta")
+  public String getPorta() {
+    return porta;
+  }
+  public void setPorta(String porta) {
+    this.porta = porta;
   }
 
   /**
@@ -82,14 +102,15 @@ public class ConnettoreFtp extends JSONSerializable {
       return false;
     }
     ConnettoreFtp connettoreFtp = (ConnettoreFtp) o;
-    return Objects.equals(this.serverurl, connettoreFtp.serverurl) &&
+    return Objects.equals(host, connettoreFtp.host) &&
+        Objects.equals(porta, connettoreFtp.porta) &&
         Objects.equals(this.username, connettoreFtp.username) &&
         Objects.equals(this.password, connettoreFtp.password);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.serverurl, this.username, this.password);
+    return Objects.hash(host, porta, username, password);
   }
 
   public static ConnettoreFtp parse(String json) throws ServiceException, ValidationException {
@@ -106,7 +127,8 @@ public class ConnettoreFtp extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettoreFtp {\n");
     
-    sb.append("    serverurl: ").append(this.toIndentedString(this.serverurl)).append("\n");
+    sb.append("    host: ").append(toIndentedString(host)).append("\n");
+    sb.append("    porta: ").append(toIndentedString(porta)).append("\n");
     sb.append("    username: ").append(this.toIndentedString(this.username)).append("\n");
     sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
     sb.append("}");

@@ -8,19 +8,68 @@
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security.xsd">
         
-        
-        <!-- entry point per l'ssl per gestire il contenuto della response nel caso id utenza non autorizzata. -->
-        <b:bean id="opensiopeX509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
-        
         <!-- Abilito gestione della sicurezza tramite annotazioni nel codice Java -->
         <global-method-security
                 secured-annotations="enabled">
         </global-method-security>
         
+        <!-- entry point per l'ssl per gestire il contenuto della response nel caso id utenza non autorizzata. -->
+        <b:bean id="opensiopeX509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
+        
         <!-- Servizio di accesso alla base dati dell'applicazione per il check delle richieste effettuate dalle utenze -->
-        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         	<b:property name="checkSubject" value="true"/>
         </b:bean>
+        
+        <!-- SSL -->
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="opensiopeX509AuthenticationEntryPoint" pattern="/rs/ssl/**">
+
+                <csrf disabled="true"/>
+
+                <!-- 
+                        Tutte le altre url dell'applicazione sono accessibili ad utenze che si devono essere autenticati
+                        Eventuali controlli di autorizzazione sono realizzati tramite le ACL
+                 -->
+                <intercept-url pattern="/rs/ssl/**" access="isFullyAuthenticated()" />
+                
+                <intercept-url pattern="/**" access="denyAll" />
+                
+                <!-- Entry Point SSL -->
+                <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+               	<!-- entry point per l'httpbasic per gestire il contenuto della response nel caso id utenza non autorizzata. -->
+        <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointGenerale" pattern="/**">
+
+                <csrf disabled="true"/>
+                
+                <!-- Le pagine per ottenere l'interfaccia e per provarla sono pubbliche -->
+                <intercept-url pattern="/govpay-api-pagamento-v1.yaml" access="permitAll"/>
+                <intercept-url pattern="/govpay-api-pagamento-v2.yaml" access="permitAll"/>
+                <intercept-url pattern="/index.html" access="permitAll"/>
+                <intercept-url pattern="/*.png" access="permitAll"/>
+                <intercept-url pattern="/*.css" access="permitAll"/>
+                <intercept-url pattern="/*.css.map" access="permitAll"/>
+                <intercept-url pattern="/*.js" access="permitAll"/>
+                <intercept-url pattern="/*.js.map" access="permitAll"/>
+                
+                <intercept-url pattern="/**" access="denyAll" />
+               
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
         
         <!-- Configurazione della sicurezza su tutte le url esposte dall'applicazione
                 create-session="stateless" sta ad indicare che non vogliamo nessuna sessione ed ogni richiesta dovra' essere autorizzata.
@@ -40,34 +89,6 @@
                 isAuthenticated()       Returns true if the user is not anonymous
                 isFullyAuthenticated()  Returns true if the user is not an anonymous or a remember-me user
          -->
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="opensiopeX509AuthenticationEntryPoint">
 
-                <csrf disabled="true"/>
-
-                <!-- Le pagine per ottenere l'interfaccia e per provarla sono pubbliche -->
-                <intercept-url pattern="/govpay-api-pagamento-v1.yaml" access="permitAll"/>
-                <intercept-url pattern="/govpay-api-pagamento-v2.yaml" access="permitAll"/>
-                <intercept-url pattern="/index.html" access="permitAll"/>
-                <intercept-url pattern="/*.png" access="permitAll"/>
-                <intercept-url pattern="/*.css" access="permitAll"/>
-                <intercept-url pattern="/*.css.map" access="permitAll"/>
-                <intercept-url pattern="/*.js" access="permitAll"/>
-                <intercept-url pattern="/*.js.map" access="permitAll"/>
-                
-                <!-- 
-                        Tutte le altre url dell'applicazione sono accessibili ad utenze che si devono essere autenticati
-                        Eventuali controlli di autorizzazione sono realizzati tramite le ACL
-                 -->
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
-                
-                <!-- Entry Point SSL -->
-                <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenze" />
-
-                <headers>
-                        <content-type-options disabled="true"/>
-                        <frame-options disabled="true"/>
-                        <xss-protection disabled="true"/>
-                </headers>
-        </http>
 </b:beans>
         

@@ -76,7 +76,7 @@ public class InitListener implements ServletContextListener{
 		//		log.info("De-registrazione delle cache ...");
 		//		AnagraficaManager.unregister();
 		//		log.info("De-registrazione delle cache completato");
-		//		
+				
 		//		log.info("Shutdown del Connection Manager ...");
 		//		try {
 		//			ConnectionManager.shutdown();
