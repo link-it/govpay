@@ -75,6 +75,14 @@ export class SideNavigatorComponent implements OnInit, AfterContentChecked, Afte
     this.onNavigationMenu.emit({ target: section });
   }
 
+  protected _routerActiveState(link: string): any {
+    const url = this.ls.getRouterUrl();
+    if ((link === url) || (link + UtilService.URL_DETTAGLIO === url)) {
+      return true
+    }
+    return false;
+  }
+
   protected _logout() {
     this.gps.logoutService();
   }

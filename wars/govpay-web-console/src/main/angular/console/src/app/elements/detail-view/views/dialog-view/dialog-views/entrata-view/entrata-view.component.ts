@@ -32,6 +32,8 @@ export class EntrataViewComponent implements IFormComponent,  OnInit, AfterViewI
       this.fGroup.addControl('tipoContabilita_ctrl', new FormControl(''));
       this.fGroup.addControl('codiceContabilita_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('codificaIUV_ctrl', new FormControl(''));
+      this.fGroup.addControl('attivazione_ctrl', new FormControl(false));
+      this.fGroup.addControl('pagaTerzi_ctrl', new FormControl(false));
     }
   }
 
@@ -48,6 +50,8 @@ export class EntrataViewComponent implements IFormComponent,  OnInit, AfterViewI
           this.fGroup.controls['tipoContabilita_ctrl'].setValue((this.json.tipoContabilita)?this.json.tipoContabilita:'');
           this.fGroup.controls['codiceContabilita_ctrl'].setValue((this.json.codiceContabilita)?this.json.codiceContabilita:'');
           this.fGroup.controls['codificaIUV_ctrl'].setValue((this.json.codificaIUV)?this.json.codificaIUV:'');
+          this.fGroup.controls['attivazione_ctrl'].setValue(this.json.online);
+          this.fGroup.controls['pagaTerzi_ctrl'].setValue(this.json.pagaTerzi);
         }
       }
     });
@@ -74,6 +78,8 @@ export class EntrataViewComponent implements IFormComponent,  OnInit, AfterViewI
       _json.tipoContabilita = (_info['tipoContabilita_ctrl'])?_info['tipoContabilita_ctrl']:null;
       _json.codiceContabilita = (_info['codiceContabilita_ctrl'])?_info['codiceContabilita_ctrl']:null;
       _json.codificaIUV = (_info['codificaIUV_ctrl'])?_info['codificaIUV_ctrl']:null;
+      _json.online = _info['attivazione_ctrl'];
+      _json.pagaTerzi = _info['pagaTerzi_ctrl'];
     }
     return _json;
   }

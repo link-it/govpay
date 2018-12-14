@@ -73,7 +73,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
    * @param {boolean} concat
    */
   getList(service?: string, query?: string, concat?: boolean) {
-    service = (service || this.rsc.fullPath); //TODO: HighPriority - Verificare .path vs .fullPath
+    service = (service || this.rsc.fullPath); //TODO: ROUTING - Verificare .path vs .fullPath
     concat = (concat || false);
     if(!this._isLoading) {
       this._isLoading = true;
@@ -109,7 +109,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   private blueDialogBehaviorDataMapper(): ModalBehavior {
     let _mb = new ModalBehavior();
     let _component;
-    switch(this.rsc.fullPath) { //TODO: HighPriority - Verificare .path vs .fullPath
+    switch(this.rsc.fullPath) { //TODO: ROUTING - Verificare .path vs .fullPath
       case UtilService.URL_REGISTRO_INTERMEDIARI:
         _mb.info = {
           dialogTitle: 'Nuovo intermediario',
@@ -285,7 +285,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
 
   protected showFabAction(): boolean {
     let _fabAction: boolean = false;
-    switch(this.rsc.fullPath) { //TODO: HighPriority - Verificare .path vs .fullPath
+    switch(this.rsc.fullPath) { //TODO: ROUTING - Verificare .path vs .fullPath
       case UtilService.URL_REGISTRO_INTERMEDIARI:
       case UtilService.URL_APPLICAZIONI:
       case UtilService.URL_OPERATORI:
@@ -332,10 +332,11 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
     let _st, _date;
-    switch(this.rsc.fullPath) { //TODO: HighPriority - Verificare .path vs .fullPath
+    switch(this.rsc.fullPath) { //TODO: ROUTING - Verificare .path vs .fullPath
       case UtilService.URL_PENDENZE:
+        const _iuv = (item.iuvAvviso)?item.iuvAvviso:item.iuvPagamento;
         _std.titolo = new Dato({ label: '',  value: item.causale });
-        _std.sottotitolo = new Dato({ label: '',  value: Dato.concatStrings([ Voce.ENTE_CREDITORE+': '+item.dominio.ragioneSociale, Voce.IUV+': '+item.numeroAvviso ], ', ') });
+        _std.sottotitolo = new Dato({ label: '',  value: Dato.concatStrings([ item.dominio.ragioneSociale, Voce.IUV+': '+_iuv ], ', ') });
         _std.importo = this.us.currencyFormat(item.importo);
         _std.stato = UtilService.STATI_PENDENZE[item.stato];
         break;
@@ -466,7 +467,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     return _map;
   }
 
-  //TODO: low priority - Decidere se aggiungere un item alle liste in base allo switch o ricaricare i dati
   protected refresh(mb: ModalBehavior) {
     if(mb && mb.info.viewModel) {
       let json = mb.info.viewModel;

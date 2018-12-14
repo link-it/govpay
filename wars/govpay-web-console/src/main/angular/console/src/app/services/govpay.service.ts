@@ -60,9 +60,6 @@ export class GovpayService {
     this.updateSpinner(true);
     let url = UtilService.ROOT_SERVICE + service;
     let headers = new HttpHeaders();
-    if(UtilService.NEED_BASIC_AUTHORIZATION) {
-      headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-    }
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', '*/*');
     let _params = null;
@@ -95,9 +92,6 @@ export class GovpayService {
     method = (method || UtilService.METHODS.PUT);
     let url = UtilService.ROOT_SERVICE + service;
     let headers = new HttpHeaders();
-    if (UtilService.NEED_BASIC_AUTHORIZATION) {
-      headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-    }
     if(!autoHeaders) {
       headers = headers.set('Content-Type', 'application/json');
       headers = headers.set('Accept', '*/*');
@@ -121,9 +115,6 @@ export class GovpayService {
 
   multiGetService(services: string[], properties: any[], content: any) {
     let headers = new HttpHeaders();
-    if(UtilService.NEED_BASIC_AUTHORIZATION) {
-      headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-    }
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', '*/*');
     let methods = services.map((service) => {
@@ -148,9 +139,6 @@ export class GovpayService {
     let methods = services.map((service, index) => {
       let url = UtilService.ROOT_SERVICE + service;
       let headers = new HttpHeaders();
-      if(UtilService.NEED_BASIC_AUTHORIZATION) {
-        headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-      }
       headers = headers.set('Content-Type', contents[index]);
       headers = headers.set('Accept', contents[index]);
       let method;
@@ -179,9 +167,6 @@ export class GovpayService {
    */
   forkService(methods: any[]): Observable<any> {
     let headers = new HttpHeaders();
-    if(UtilService.NEED_BASIC_AUTHORIZATION) {
-      headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-    }
     headers = headers.set('Content-Type', 'application/json');
     let fullMethods: any[] = [];
     methods.forEach((_method) => {

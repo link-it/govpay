@@ -133,8 +133,8 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     };
     if(_info.hasOwnProperty('username_ctrl')) {
       _json.servizioPagoPa['auth'] = {
-        password: _info['username_ctrl'],
-        username: _info['password_ctrl']
+        username: _info['username_ctrl'],
+        password: _info['password_ctrl']
       };
     }
     if(_info.hasOwnProperty('ssl_ctrl')) {

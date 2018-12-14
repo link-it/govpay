@@ -7,21 +7,23 @@ import { FormService } from './form.service';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as moment from 'moment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class UtilService {
 
-  public static NEED_BASIC_AUTHORIZATION: boolean = false;
+  public static APPLICATION_VERSION: any;
 
   public static ROOT_ZIP_FOLDER: string = '-root-'; //Save to zip root folder
 
   public static ROOT_SERVICE: string = UtilService.HTTP_ROOT_SERVICE();
   public static LOGOUT_SERVICE: string = UtilService.HTTP_LOGOUT_SERVICE();
   public static BASE_HREF: string = UtilService.HTTP_BASE_HREF();
+  public static DASHBOARD_CARDS_CONFIG: any = UtilService.CARD_CONFIG();
+  public static JS_URL: string = UtilService.JS_EXT_URL();
 
   public static TIMEOUT: number = 20000; //20 seconds
   public static PROFILO_UTENTE: any;
-  public static AUTHORIZATION: string = 'Z3BhZG1pbjpwYXNzd29yZA==';
   public static METHODS: any = {
     POST: 'post',
     PUT: 'put',
@@ -89,7 +91,8 @@ export class UtilService {
     NON_ESEGUITA: 'Da pagare',
     ESEGUITA_PARZIALE: 'Pagata parzialmente',
     ANNULLATA: 'Annullata',
-    SCADUTA: 'Scaduta'
+    SCADUTA: 'Scaduta',
+    INCASSATA: 'Incassata'
   };
 
   //STATI RPP PAGAMENTI
@@ -240,6 +243,8 @@ export class UtilService {
   public static URL_RECUPERO_RPT_PENDENTI: string = '/recuperoRptPendenti';
 
   public static URL_TRACCIATI: string = '/pendenze/tracciati';
+  public static URL_AVVISI: string = '/avvisi';
+  public static URL_INFO: string = '/info';
 
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
@@ -360,7 +365,7 @@ export class UtilService {
   public static DASHBOARD_LINKS_PARAMS: any = { method: null, params: [] };
 
 
-  constructor(private message: MatSnackBar, private dialog: MatDialog) { }
+  constructor(private message: MatSnackBar, private dialog: MatDialog, private http: HttpClient) { }
 
 
   public static HTTP_ROOT_SERVICE(): string {
@@ -373,6 +378,14 @@ export class UtilService {
 
   public static HTTP_BASE_HREF(): string {
     return window['httpBase']();
+  }
+
+  public static JS_EXT_URL(): string {
+    return window['externalJsProcedure']();
+  }
+
+  public static CARD_CONFIG(): any {
+    return window['cardConfig']();
   }
 
   //Link (Manuale, Copyright, GovPay)
@@ -441,10 +454,10 @@ export class UtilService {
   alert(_message: string, _action: boolean = true, _keep: boolean = false) {
     let _config = { duration: 10000, panelClass: 'overflow-hidden' };
     let _actions = null;
-    if (_keep){
+    if (_keep) {
       _config = null;
     }
-    if (_action){
+    if (_action) {
       _actions = 'Chiudi';
     }
     if(_message) {
@@ -612,12 +625,17 @@ export class UtilService {
     switch(service) {
       case UtilService.PENDENZE:
         _list = [
-          new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
-          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
+          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+                   eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+                   eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
                         type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
                       values: this.statiPendenza() }),
+          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT })
           // new FormInput({ id: 'stato2', label: FormService.FORM_STATO, placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza(),
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })
@@ -694,6 +712,34 @@ export class UtilService {
     }
 
     return _list;
+  }
+
+  /**
+   * Caricamenti asincroni
+   */
+  asyncElencoDominiPendenza(response: any): any[] {
+    let _elenco = [];
+    if(UtilService.PROFILO_UTENTE && UtilService.PROFILO_UTENTE.domini) {
+      if (UtilService.PROFILO_UTENTE.domini.length != 0) {
+        response.risultati = UtilService.PROFILO_UTENTE.domini;
+      }
+      if(response && response.risultati) {
+        _elenco = response.risultati.map((item) => {
+          return { label: item.ragioneSociale, value: item.idDominio };
+        });
+      }
+    }
+    return _elenco;
+  }
+
+  asyncElencoApplicazioniPendenza(response: any): any[] {
+    let _elenco = [];
+    if(response && response.risultati) {
+      _elenco = response.risultati.map((item) => {
+        return { label: item.idA2A, value: item.idA2A };
+      });
+    }
+    return _elenco;
   }
 
   statiPendenza(): any[] {

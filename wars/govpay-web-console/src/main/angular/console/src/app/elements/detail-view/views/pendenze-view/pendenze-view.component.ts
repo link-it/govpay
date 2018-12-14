@@ -81,6 +81,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       stato: UtilService.STATI_PENDENZE[_json.stato],
       extraInfo: []
     });
+    const _iuv = (_json.iuvAvviso)?_json.iuvAvviso:_json.iuvPagamento;
+    this.info.extraInfo.push({ label: Voce.IUV+': ', value: _iuv });
     if(_json.numeroAvviso) {
       this.info.extraInfo.push({ label: Voce.AVVISO+': ', value: _json.numeroAvviso });
     }
@@ -108,22 +110,21 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     if(_json.dataUltimoAggiornamento) {
       this.info.extraInfo.push({ label: Voce.DATA_ULTIMO_AGGIORNAMENTO+': ', value: moment(_json.dataUltimoAggiornamento).format('DD/MM/YYYY') });
     }
-    if(UtilService.STATI_PENDENZE[_json.stato] == UtilService.STATI_PENDENZE.ANNULLATA) {
-      this.info.dataAnnullamento = _json.dataAnnullamento?moment(_json.dataAnnullamento).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
-      this.info.causale = _json.causale;
-      this.info.cancel = true;
-    }
     //Dettaglio importi
     this._paymentsSum = 0;
     this.importi = _json.voci.map(function(item) {
       let _std = new StandardCollapse();
       _std.titolo = new Dato({ value: item.descrizione });
-      _std.sottotitolo = new Dato({ label: Voce.ID_PENDENZA+': ', value: item.idVocePendenza });
+      _std.elenco = [];
+      if(item.tipoBollo) {
+        _std.sottotitolo = Dato.arraysToDato([Voce.ID_PENDENZA, Voce.ID_BOLLO], [item.idVocePendenza, item.tipoBollo], ', ');
+      } else {
+        _std.sottotitolo = new Dato({ label: Voce.ID_PENDENZA+': ', value: item.idVocePendenza });
+        _std.elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([ item.tipoContabilita, item.codiceContabilita ], ', ') });
+        _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito });
+      }
       _std.importo = this.us.currencyFormat(item.importo);
       _std.stato = item.stato;
-      _std.elenco = [];
-      _std.elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([ item.tipoContabilita, item.codiceContabilita ], ', ') });
-      _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito });
       this._paymentsSum += UtilService.defaultDisplay({ value: item.importo, text: 0 });
       let p = new Parameters();
       p.jsonP = item;
@@ -330,12 +331,25 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       // names.push('Dati_pendenza.pdf');
       // contents.push('application/pdf');
       // types.push('blob'); *
+
+      //Pdf Avviso di pagamento
+      if(this.json.iuvAvviso) {
+        if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
+          folders.push(UtilService.ROOT_ZIP_FOLDER);
+        }
+        urls.push(UtilService.URL_AVVISI+'/'+encodeURIComponent(this.json.dominio.idDominio)+'/'+encodeURIComponent(this.json.iuvAvviso));
+        contents.push('application/pdf');
+        names.push(this.json.dominio.idDominio + '_' + this.json.numeroAvviso + '.pdf' + UtilService.ROOT_ZIP_FOLDER);
+        types.push('blob');
+      }
       this.tentativi.forEach((el) => {
         // /rpp/{idDominio}/{iuv}/{ccp}/rpt
         // /rpp/{idDominio}/{iuv}/{ccp}/rt
         let item = el.jsonP;
         _folder = encodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
-        folders.push(_folder);
+        if (folders.indexOf(_folder) == -1) {
+          folders.push(_folder);
+        }
         urls.push('/rpp/'+encodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt');
         names.push('Rpt.xml'+_folder);
         contents.push('application/xml');
@@ -356,11 +370,12 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
         }
       }, this);
       if (this.tentativi.length == 0 && this.eventi.length != 0) {
-        _folder = UtilService.ROOT_ZIP_FOLDER;
-        folders.push(_folder);
+        if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
+          folders.push(UtilService.ROOT_ZIP_FOLDER);
+        }
         urls.push(UtilService.URL_GIORNALE_EVENTI+'?idA2A='+encodeURIComponent(this.json.idA2A)+'&idPendenza='+encodeURIComponent(this.json.idPendenza));
         contents.push('application/json');
-        names.push('Eventi.csv');
+        names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
         types.push('json');
       }
     } catch (error) {
@@ -394,20 +409,19 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
         zfolder = zroot.folder(folder);
       }
       data.forEach((file, ref) => {
-        if (structure.names[ref].indexOf(folder) != -1) {
-          let _name = structure.names[ref].split(folder)[0];
-          let zdata = file.body;
-          if(_name.indexOf('csv') != -1) {
-            zdata = this.jsonToCsv(_name, file.body);
+        let o;
+        if (folder != UtilService.ROOT_ZIP_FOLDER) {
+          if (structure.names[ref].indexOf(folder) != -1) {
+            //folder
+            o = this._elaborate(structure.names[ref].split(folder)[0], file);
+            zfolder.file(o['name'], o['zdata']);
           }
-          zfolder.file(_name, zdata);
         } else {
-          let _name = structure.names[ref].split(UtilService.ROOT_ZIP_FOLDER)[0];
-          let zdata = file.body;
-          if(_name.indexOf('csv') != -1) {
-            zdata = this.jsonToCsv(_name, file.body);
+          if(structure.names[ref].indexOf(UtilService.ROOT_ZIP_FOLDER) != -1) {
+            //root
+            o = this._elaborate(structure.names[ref].split(folder)[0], file);
+            zroot.file(o['name'], o['zdata']);
           }
-          zroot.file(_name, zdata);
         }
       });
     });
@@ -441,5 +455,21 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     }
 
     return _csv;
+  }
+
+  /**
+   * Elaborate structure
+   * @param {string} name
+   * @param {any} file
+   * @returns {any}
+   * @private
+   */
+  protected _elaborate(name: string, file: any): any {
+    let zdata = file.body;
+    if(name.indexOf('csv') != -1) {
+      zdata = this.jsonToCsv(name, file.body);
+    }
+    return { zdata: zdata, name: name };
+
   }
 }

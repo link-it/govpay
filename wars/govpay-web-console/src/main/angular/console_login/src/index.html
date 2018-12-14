@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Ministero del Lavoro</title>
+  <base href="./">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    function logoutCode() {
+      return '';
+      //return 'SESSION_EXPIRED_CODE'; // Sessione scaduta
+      //return 'PROFILO_ERROR_CODE'; // Timeout|Error profilo service
+      //return 'ACCESS_ERROR_CODE'; // Credenziali errate
+    }
+    function hostname() {
+      return window.location.protocol+'//'+window.location.host;
+    }
+    function httpBasePath() {
+      return hostname() + '/govpay/backend/gui/backoffice'; //link menu
+    }
+    function cardConfig() {
+      // Configurazione cards dashboard
+      return {
+        app: 'GovPay',
+        news: true,
+        info: true
+      };
+    }
+  </script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

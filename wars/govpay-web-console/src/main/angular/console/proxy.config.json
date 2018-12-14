@@ -4,5 +4,11 @@
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
+  },
+  "/govpay-plugin/pendenze-massive/*": {
+    "target": "http://fpi.link.it:8080",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
   }
 }

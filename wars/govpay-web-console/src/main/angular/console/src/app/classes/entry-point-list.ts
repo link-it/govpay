@@ -25,7 +25,7 @@ import { StazioneViewComponent } from '../elements/detail-view/views/dialog-view
 import { IntermediarioViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/intermediario-view/intermediario-view.component';
 import { ApplicazioneViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/applicazione-view/applicazione-view.component';
 import { EntrataViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/entrata-view/entrata-view.component';
-import { DominioViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/dominio-view/dominio-view.component';
+import { DominioViewComponent, AlertDialog } from '../elements/detail-view/views/dialog-view/dialog-views/dominio-view/dominio-view.component';
 import { PendenzaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/pendenza-view/pendenza-view.component';
 import { EntrataDominioViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/entrata-dominio-view/entrata-dominio-view.component';
 import { UnitaOperativaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/unita-operativa-view/unita-operativa-view.component';
@@ -70,7 +70,7 @@ export class EntryPointList {
     StazioneViewComponent,
     IncassoViewComponent,
     EntrataViewComponent,
-    DominioViewComponent,
+    DominioViewComponent, AlertDialog,
     EntrataDominioViewComponent,
     UnitaOperativaViewComponent,
     IbanViewComponent,

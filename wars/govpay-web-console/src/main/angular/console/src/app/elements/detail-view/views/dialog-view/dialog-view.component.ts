@@ -31,7 +31,7 @@ export class DialogViewComponent  implements OnInit, OnDestroy, AfterContentChec
   ngOnInit() {
     if(this.data.info.templateName) {
       this._componentRef = this.ls.createComponent(this.data.info.templateName, this.dialogFormElementContainer);
-      this._componentRef.instance.fGroup = this.modalForm;
+      this._componentRef.instance.fGroup = this.modalForm?this.modalForm:this.fb.group({});
       this._componentRef.instance.json = this.data.info.viewModel;
       this._componentRef.instance.parent = this.data.info.parent;
     }

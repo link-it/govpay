@@ -16,9 +16,32 @@ export class SelectViewComponent implements IFormComponent, AfterViewInit {
   constructor() { }
 
   ngAfterViewInit() {
-    if(this.json && this.json.value !== null && this.json.value !== undefined) {
-      //Default selection
-      this.fGroup.controls[this.json.id+'_ctrl'].setValue(this.json.value);
+    if(this.json) {
+      if (this.json.promise && this.json.promise.async) {
+        document.removeEventListener(this.json.promise.eventType, this._asyncLoaded.bind(this));
+        document.addEventListener(this.json.promise.eventType, this._asyncLoaded.bind(this));
+        this.json.asyncValues();
+      }
+      if (this.json.value !== null && this.json.value !== undefined) {
+        //Default selection
+        this.fGroup.controls[this.json.id+'_ctrl'].setValue(this.json.value);
+      }
+    }
+  }
+
+  protected _asyncLoaded() {
+    if(this.json && this.json.promise && this.json.promise.async) {
+      if(this.json.promise.loaded) {
+        this.fGroup.controls[this.json.id+'_ctrl'].enable();
+        if(this.json.promise.preventSelection) {
+          if(this.json.values.length <= 1) {
+            this.fGroup.controls[this.json.id+'_ctrl'].setValue(this.json.values[0].value);
+            this.fGroup.controls[this.json.id+'_ctrl'].disable();
+          }
+        }
+      } else {
+        this.fGroup.controls[this.json.id+'_ctrl'].disable();
+      }
     }
   }
 

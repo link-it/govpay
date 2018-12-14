@@ -23,33 +23,36 @@ export class DashboardViewComponent implements OnInit {
   _PFDiffService: string = '';
 
   protected _LinkBasePath: string = UtilService.LINK_BASE_PATH();
+  protected _dashboardConfig: any = UtilService.DASHBOARD_CARDS_CONFIG;
   protected DASHBOARD: string = UtilService.URL_DASHBOARD;
 
   constructor(private sanitizer: DomSanitizer, private ls: LinkService) {}
 
   ngOnInit() {
     this.initBadges();
-    const url = 'https://api.github.com/repos/link-it/GovPay/releases';
-    const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          this._isLoading = false;
-          this.news = xhr.response?JSON.parse(xhr.response):[];
-          this.news.forEach((_news) => {
-            _news.body_html = this._trustHtml(_news.body_html)
-          });
-        } else {
-          this._isLoading = false;
-          console.log('News Error: ' + xhr.status);
+    if(this._dashboardConfig.news) {
+      const url = 'https://api.github.com/repos/link-it/GovPay/releases';
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            this._isLoading = false;
+            this.news = xhr.response?JSON.parse(xhr.response):[];
+            this.news.forEach((_news) => {
+              _news.body_html = this._trustHtml(_news.body_html)
+            });
+          } else {
+            this._isLoading = false;
+            console.log('News Error: ' + xhr.status);
+          }
         }
-      }
-    }.bind(this);
-    this._isLoading = true;
-    xhr.open('GET', url);
-    xhr.timeout = UtilService.TIMEOUT;
-    xhr.setRequestHeader('Accept', 'application/vnd.github.v3.html+json');
-    xhr.send();
+      }.bind(this);
+      this._isLoading = true;
+      xhr.open('GET', url);
+      xhr.timeout = UtilService.TIMEOUT;
+      xhr.setRequestHeader('Accept', 'application/vnd.github.v3.html+json');
+      xhr.send();
+    }
   }
 
   protected _trustHtml(_html) {

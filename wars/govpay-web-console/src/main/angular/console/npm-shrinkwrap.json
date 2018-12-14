@@ -82,6 +82,11 @@
       "from": "moment@2.21.0",
       "resolved": "https://registry.npmjs.org/moment/-/moment-2.21.0.tgz"
     },
+    "papaparse": {
+      "version": "4.6.1",
+      "from": "papaparse@latest",
+      "resolved": "https://registry.npmjs.org/papaparse/-/papaparse-4.6.1.tgz"
+    },
     "popper.js": {
       "version": "1.12.9",
       "from": "popper.js@latest",

@@ -160,10 +160,17 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     let _service = UtilService.URL_PENDENZE;
 
-    let _formData: FormData = new FormData();
-    _formData.append('file', mb.info.viewModel.file);
+    let _data;
+    let _autoHeaders = true;
+    if (mb.info.viewModel.json) {
+      _autoHeaders = false;
+      _data = mb.info.viewModel.json;
+    } else {
+      _data = new FormData();
+      _data.append('file', mb.info.viewModel.file);
+    }
 
-    this.gps.saveData(_service, _formData, null, UtilService.METHODS.POST, true).subscribe(
+    this.gps.saveData(_service, _data, null, UtilService.METHODS.POST, _autoHeaders).subscribe(
       () => {
         this.gps.updateSpinner(false);
         responseService.next(true);

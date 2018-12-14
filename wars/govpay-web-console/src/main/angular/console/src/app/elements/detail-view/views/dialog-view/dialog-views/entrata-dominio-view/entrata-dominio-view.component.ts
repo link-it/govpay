@@ -50,6 +50,8 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
     this.fGroup.addControl('codiceContabilita_ctrl', new FormControl(''));
     this.fGroup.addControl('codificaIUV_ctrl', new FormControl(''));
     this.fGroup.addControl('abilita_ctrl', new FormControl(false));
+    this.fGroup.addControl('attivazione_ctrl', new FormControl(null));
+    this.fGroup.addControl('pagaTerzi_ctrl', new FormControl(null));
   }
 
   ngAfterViewInit() {
@@ -63,7 +65,10 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
         this.fGroup.controls['codiceContabilita_ctrl'].setValue((this.json.codiceContabilita)?this.json.codiceContabilita:'');
         this.fGroup.controls['codificaIUV_ctrl'].setValue((this.json.codificaIUV)?this.json.codificaIUV:'');
         this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
+        this.fGroup.controls['attivazione_ctrl'].setValue(this.json.online);
+        this.fGroup.controls['pagaTerzi_ctrl'].setValue(this.json.pagaTerzi);
         (this.json.ibanAccredito)?this.fGroup.controls['ibanAppoggio_ctrl'].enable():this.fGroup.controls['ibanAppoggio_ctrl'].disable();
+        this._excludeIbans(this.json.tipoEntrata.idEntrata);
       }
     });
   }
@@ -79,15 +84,24 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
       _mb.closure = this.refresh.bind(this);
       UtilService.dialogBehavior.next(_mb);
     } else {
+      this._excludeIbans(target.value.idEntrata);
       this._resetDefault();
       this._updateValues(target.value);
+    }
+  }
+
+  protected _excludeIbans(value) {
+    if(value && value === 'BOLLOT') {
+      this.fGroup.controls['ibanAccredito_ctrl'].setValue('');
+      this.fGroup.controls['ibanAppoggio_ctrl'].setValue('');
+      this.fGroup.controls['ibanAccredito_ctrl'].disable();
+      this.fGroup.controls['ibanAppoggio_ctrl'].disable();
     }
   }
 
   protected _tipoEntrataComparingFct(option: any, selection: any): boolean {
     return (selection && option.idEntrata == selection.idEntrata);
   }
-
 
   protected _onIbanChangeSelection(_accredito: any, _appoggio: any, isAccredito: boolean) {
     if(isAccredito && _accredito.value) {
@@ -248,12 +262,16 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
       _json.tipoEntrata = this.json.tipoEntrata;
       _json.idEntrata = this.json.idEntrata;
     }
-    _json.ibanAccredito = (_info['ibanAccredito_ctrl'])?_info['ibanAccredito_ctrl']:null;
-    _json.ibanAppoggio = (_info['ibanAppoggio_ctrl'])?_info['ibanAppoggio_ctrl']:null;
+    if(_json.idEntrata !== 'BOLLOT') {
+      _json.ibanAccredito = (_info['ibanAccredito_ctrl'])?_info['ibanAccredito_ctrl']:null;
+      _json.ibanAppoggio = (_info['ibanAppoggio_ctrl'])?_info['ibanAppoggio_ctrl']:null;
+    }
     _json.tipoContabilita = (_info['tipoContabilita_ctrl'])?_info['tipoContabilita_ctrl']:null;
     _json.codiceContabilita = (_info['codiceContabilita_ctrl'])?_info['codiceContabilita_ctrl']:null;
     _json.codificaIUV = (_info['codificaIUV_ctrl'])?_info['codificaIUV_ctrl']:null;
     _json.abilitato = _info['abilita_ctrl'];
+    _json.online = (_info['attivazione_ctrl'] !== undefined)?_info['attivazione_ctrl']:null;
+    _json.pagaTerzi = (_info['pagaTerzi_ctrl'] !== undefined)?_info['pagaTerzi_ctrl']:null;
 
     return _json;
   }

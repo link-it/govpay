@@ -60,7 +60,7 @@ export class FormViewComponent implements OnInit, AfterViewInit {
   }
 
   protected onSubmit(_form) {
-    let _formValues = JSON.parse(JSON.stringify(_form.value));
+    let _formValues = JSON.parse(JSON.stringify(_form.getRawValue()));
     this.fields.forEach((field) => {
       if(field.type == UtilService.DATE_PICKER) {
         _formValues[field.id+'_ctrl'] = '';

@@ -41,6 +41,22 @@
              (input)="_onChange(_phCiuv)" autocomplete="off">
     </mat-form-field>
   </div>
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <mat-select placeholder="Pagamento spontaneo" formControlName="attivazione_ctrl">
+        <mat-option>Default</mat-option>
+        <mat-option [value]="true">Si</mat-option>
+        <mat-option [value]="false">No</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <mat-select placeholder="Pagabile da altri" formControlName="pagaTerzi_ctrl">
+        <mat-option>Default</mat-option>
+        <mat-option [value]="true">Si</mat-option>
+        <mat-option [value]="false">No</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
   <div class="w-100" [formGroup]="fGroup">
     <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
   </div>

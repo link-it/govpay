@@ -23,22 +23,24 @@
   <div class="d-block" *ngFor="let service of services; let i = index">
     <p class="color-gray pt-2 mt-3 mb-2">{{service.title}}</p>
     <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="URL" [formControlName]="'url_ctrl_'+i" autocomplete="off" required>
+      <input #urlCtrl matInput placeholder="URL" [formControlName]="'url_ctrl_'+i" autocomplete="off" [required]="service.required">
     </mat-form-field>
     <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-      <!--<input matInput placeholder="Versione API" [formControlName]="'versioneApi_ctrl_'+i" autocomplete="off">-->
-      <mat-select placeholder="Versione API" [formControlName]="'versioneApi_ctrl_'+i" required>
-        <mat-option *ngFor="let ver of versioni" [value]="ver">{{ver}}</mat-option>
+      <mat-select placeholder="Versione API" [formControlName]="'versioneApi_ctrl_'+i" [required]="service.required || (!service.required && urlCtrl.value.trim() != '')">
+        <mat-option value="" *ngIf="!service.required && (urlCtrl.value.trim() == '')">Nessuna</mat-option>
+        <span *ngIf="(urlCtrl.value.trim() != '')">
+          <mat-option *ngFor="let ver of versioni" [value]="ver">{{ver}}</mat-option>
+        </span>
       </mat-select>
     </mat-form-field>
     <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
       <mat-select #auth placeholder="Tipo autenticazione" [formControlName]="'auth_ctrl_'+i" (selectionChange)="_onAuthChange(auth, i)">
         <mat-option value="">Nessuna</mat-option>
-        <mat-option [value]="BASIC">HTTP Basic</mat-option>
-        <mat-option [value]="SSL">SSL</mat-option>
+        <mat-option [value]="BASIC" *ngIf="(urlCtrl.value.trim() != '')">HTTP Basic</mat-option>
+        <mat-option [value]="SSL" *ngIf="(urlCtrl.value.trim() != '')">SSL</mat-option>
       </mat-select>
     </mat-form-field>
-    <div *ngIf="service.basicAuth">
+    <div *ngIf="service.basicAuth && (urlCtrl.value.trim() != '')">
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
         <input matInput placeholder="Username" [formControlName]="'username_ctrl_'+i" autocomplete="off" required>
       </mat-form-field>
@@ -46,7 +48,7 @@
         <input matInput placeholder="Password" [formControlName]="'password_ctrl_'+i" autocomplete="off" required>
       </mat-form-field>
     </div>
-    <div *ngIf="service.sslAuth">
+    <div *ngIf="service.sslAuth && (urlCtrl.value.trim() != '')">
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
         <mat-select placeholder="SSL Type" [formControlName]="'ssl_ctrl_'+i" required>
           <mat-option [value]="CLIENT">Client</mat-option>

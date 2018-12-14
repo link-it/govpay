@@ -24,9 +24,14 @@ export class AppComponent implements AfterContentChecked {
     //this._headerMenuTitle = !(this.ls.checkLargeMediaMatch().matches);
     this._headerSearchIcon = (this.ls.checkSmallMediaMatch().matches && sub.data.search);
     this._contentMarginTop = this._marginTop();
+    if(this._applicationVersion) {
+      this._once = false;
+      this._facSimile();
+    }
   }
   @ViewChild('matS') matS: MatSidenav;
   @ViewChild('lhm', { read: ElementRef }) linkHead: ElementRef;
+  @ViewChild('facsimile', { read: ElementRef }) facsimile: ElementRef;
 
   _contentMarginTop: number = 0;
   _extraSideNavQueryMatches: MediaQueryList;
@@ -39,7 +44,7 @@ export class AppComponent implements AfterContentChecked {
   _spinner: boolean = false;
   _progress: boolean = false;
   _progressValue: number = 0;
-  _appName: string = 'GovPay';
+  _appName: string = '';
   _headerSubTitle: string = '';
   _notificationTitle: string = 'Govpay sta acquisendo le rendicontazioni';
   _actions: any[] = [];
@@ -47,6 +52,8 @@ export class AppComponent implements AfterContentChecked {
   _showBlueDialog: boolean = false;
   _blueDialogData: ModalBehavior;
 
+  protected _applicationVersion: string;
+  protected _once: boolean = false;
 
   constructor(public router: Router, public ls: LinkService, public gps: GovpayService, private us: UtilService) {
     this._extraSideNavQueryMatches = this.ls.checkLargeMediaMatch();
@@ -59,6 +66,22 @@ export class AppComponent implements AfterContentChecked {
   }
 
   ngOnInit() {
+    this.gps.getDataService(UtilService.URL_INFO).subscribe(
+      (response) => {
+        this.gps.updateSpinner(false);
+         UtilService.APPLICATION_VERSION = response.body;
+         if(UtilService.APPLICATION_VERSION && UtilService.APPLICATION_VERSION.ambiente) {
+           this._applicationVersion = UtilService.APPLICATION_VERSION.ambiente;
+         }
+         if(UtilService.APPLICATION_VERSION && UtilService.APPLICATION_VERSION.appName) {
+           this._appName = UtilService.APPLICATION_VERSION.appName;
+           document.title = UtilService.APPLICATION_VERSION.appName;
+         }
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+    });
     this.gps.multiGetService([ UtilService.URL_SERVIZIACL, UtilService.URL_TIPI_VERSIONE_API ], [ 'SERVIZI', 'TIPI_VERSIONE_API' ], UtilService);
     this._actions = UtilService.HEADER_ACTIONS;
     UtilService.dialogBehavior.subscribe((_mb: ModalBehavior) => {
@@ -84,6 +107,9 @@ export class AppComponent implements AfterContentChecked {
     this._progress = this.gps.progress;
     this._progressValue = this.gps.progressValue;
     this._contentMarginTop = this._marginTop();
+    if(this._applicationVersion && !this._once) {
+      this._facSimile();
+    }
   }
 
   protected updateHead(rscData: any) {
@@ -94,6 +120,18 @@ export class AppComponent implements AfterContentChecked {
     this._headerActionsMenu = rscData.data.actions;
     this._headerSubTitle = rscData.data.title;
     this._actions = this._getHeaderActions(rscData);
+  }
+
+  /**
+   * Internal facsimile text rotation
+   */
+  protected _facSimile() {
+    if(this.facsimile) {
+      this._once = true;
+      const facsimile = this.facsimile.nativeElement;
+      const span = facsimile.querySelector('span');
+      span.style.transform = 'rotate(-' + Math.atan((facsimile.clientHeight/facsimile.clientWidth))*180/Math.PI + 'deg)';
+    }
   }
 
   /**

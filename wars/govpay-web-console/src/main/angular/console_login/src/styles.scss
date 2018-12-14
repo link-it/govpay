@@ -1,0 +1,185 @@
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://www.google.com/design/spec/style/color.html
+$primary-color: mat-palette($mat-indigo);
+$accent-color:  mat-palette($mat-light-green, A700);
+
+// The warn palette is optional (defaults to red).
+$warning-color:    mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$link-theme: mat-light-theme($primary-color, $accent-color, $warning-color);
+
+$card-header-color: rgb(121, 121, 121);
+$link-header-row: mat-palette($mat-indigo, 300);
+$container-color: rgb(250, 250, 250);
+$link-shadow: rgba(33, 33, 33, .2);
+$link-secondary-text: rgb(121, 121, 121);
+$link-primary-text: #212121;
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($link-theme);
+
+/* roboto-regular - latin */
+@font-face {
+  font-family: 'Roboto Font';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/roboto-v18-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Roboto'), local('Roboto-Regular'),
+  url('./fonts/roboto-v18-latin-regular.eot?#iefix') format('embedded-opentype'),
+  url('./fonts/roboto-v18-latin-regular.woff2') format('woff2'),
+  url('./fonts/roboto-v18-latin-regular.woff') format('woff'),
+  url('./fonts/roboto-v18-latin-regular.ttf') format('truetype'),
+  url('./fonts/roboto-v18-latin-regular.svg#Roboto') format('svg');
+}
+
+html {
+  overflow: hidden;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  color: $link-primary-text;
+}
+
+* {
+  font-family: 'Roboto Font', 'Helvetica', 'Arial', sans-serif !important;
+}
+
+.brand {
+  background-color: mat-color($link-header-row) !important;
+}
+
+.toast-banner {
+  position: absolute;
+  bottom: 0;
+  background-color: mat-color($primary-color);
+  padding: 16px;
+  color: white;
+  -webkit-box-shadow: 0 -1px 1px 1px $link-shadow !important;
+  box-shadow: 0 -1px 1px 1px $link-shadow !important;
+}
+
+ul, li {
+  list-style: none;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.accent-text,
+a, a:hover {
+  text-decoration: none;
+  color: mat-color($accent-color);
+}
+
+.mat-toolbar-header {
+  font-size: 24px !important;
+}
+
+.inner-container {
+  position: absolute;
+  overflow: auto;
+  top: 128px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background-color: $container-color;
+}
+
+.regular-16 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.news-title {
+  font-size: 20px;
+}
+
+.news-title a,
+.news-title a:hover {
+  color: initial !important;
+}
+
+.news-body ul {
+  margin: 0 0 16px !important;
+  padding-left: 16px;
+}
+
+.news-body h1,
+.news-body h2,
+.news-body h3,
+.news-body h4,
+.news-body h5,
+.news-body h6 {
+  font-size: 20px;
+  color: mat-color($primary-color);
+}
+
+.news-spinner {
+  position: absolute !important;
+  top: calc(50% - 15px);
+  left: calc(50% - 15px);
+  transform: translate(-50%, -50%);
+}
+
+.mat-elevation-card {
+  -webkit-box-shadow: 0 1px 1px 0 $link-shadow !important;
+  box-shadow: 0 1px 1px 0 $link-shadow !important;
+}
+
+.form-col {
+  max-width: 100%;
+}
+
+@media (min-width: 768px){
+  .form-col {
+    max-width: 300px !important;
+  }
+}
+
+//Material design override
+mat-toolbar-row {
+  min-height: 128px;
+}
+
+mat-form-field {
+  display: block !important;
+}
+
+mat-card {
+  border-radius: 0 !important;
+}
+
+.mat-card-header-text {
+  margin: 0 !important;
+}
+
+.mat-card-title {
+  font-size: 24px !important;
+  color: $card-header-color;
+}
+
+.mat-card-actions {
+  margin: 0 !important;
+}
+
+button,
+button:focus {
+  color: #fff !important;
+  outline: none;
+}
+
+
