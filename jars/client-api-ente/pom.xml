@@ -64,7 +64,7 @@
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>io.swagger</groupId>
+				<groupId>io.swagger.codegen.v3</groupId>
 				<artifactId>swagger-codegen-maven-plugin</artifactId>
 				<version>${swagger.codegen.version}</version>
 				<executions>

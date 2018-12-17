@@ -34,7 +34,7 @@
 		<logger.version>2.6.2</logger.version>
 		<rel-to-parent>.</rel-to-parent>
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
-		<swagger.codegen.version>3.0.0-Linkit-SNAPSHOT</swagger.codegen.version>
+		<swagger.codegen.version>3.0.0-gov4j-1</swagger.codegen.version>
 		<swagger.version>1.5.20</swagger.version>
 		<cxf.version>3.2.5</cxf.version>
 		<jackson.version>2.9.6</jackson.version>
@@ -354,7 +354,7 @@
 				<artifactId>openspcoop2_utils-rest</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-jaxrs</artifactId>
@@ -689,4 +689,14 @@
 			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>openspcoop2-releases</id>
+			<url>http://maven.openspcoop.org/content/repositories/public/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>openspcoop2-snapshots</id>
+			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

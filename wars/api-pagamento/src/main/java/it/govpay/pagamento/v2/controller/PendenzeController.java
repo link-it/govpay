@@ -12,9 +12,12 @@ import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
+import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
@@ -42,18 +45,19 @@ public class PendenzeController extends BaseController {
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
+			// Leggo la pendenza
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
-			
 			leggiPendenzaDTO.setCodA2A(idA2A);
 			leggiPendenzaDTO.setCodPendenza(idPendenza);
 			leggiPendenzaDTO.setInfoIncasso(true); 
-			
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 			
-			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
+			// Leggo i pagamenti della pendenza
+			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
+			// listaPagamentiPortaleDTO.set TODO
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+			ListaPagamentiPortaleDTOResponse listaPagamentiPortaleDTOResponse = pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
 
 			return PendenzeConverter.toPendenza(ricevutaDTOResponse.getVersamentoIncasso()); 
 		}catch (Exception e) {

@@ -22,13 +22,13 @@
 			<artifactId>api-commons</artifactId>
 			<type>jar</type>
 		</dependency>
-		
+
+		<!-- Da rimuovere quando migrato in commons la gestione delle autorizzazioni  -->
 		<dependency>
-    <groupId>org.springframework.security</groupId>
-    <artifactId>spring-security-core</artifactId>
-    <version>5.0.7.RELEASE</version>
-</dependency>
-		
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>5.0.7.RELEASE</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.jboss.spec.javax.ws.rs</groupId>
