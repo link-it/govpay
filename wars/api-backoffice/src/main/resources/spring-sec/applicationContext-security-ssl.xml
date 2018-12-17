@@ -24,6 +24,10 @@
         
         <!-- handler per le chiamate di logout che vanno bene -->
         <b:bean id="logoutSuccessHandler" class="org.openspcoop2.utils.jaxrs.impl.authentication.handler.DefaultLogoutSuccessHandler" />
+        <!-- handler per le chiamate di login che vanno male -->
+        <b:bean id="authFailureHandler" class="it.govpay.rs.v1.authentication.handler.DefaultAuthenticationFailureHandler" />
+        <!-- handler per le chiamate di login che vanno bene -->
+        <b:bean id="authSuccessHandler" class="it.govpay.backoffice.v1.authentication.handler.GovPayAuthenticationSuccessHandler" />
         
         <!-- Configurazione della sicurezza su tutte le url esposte dall'applicazione
                 create-session="stateless" sta ad indicare che non vogliamo nessuna sessione ed ogni richiesta dovra' essere autorizzata.
@@ -80,6 +84,10 @@
                 
                 <!-- Entry Point SSL -->
                 <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenze" />
+                
+                <form-login login-page="/public/index.html" username-parameter="username" authentication-success-handler-ref="authSuccessHandler"
+                        password-parameter="password" authentication-failure-handler-ref="authFailureHandler" 
+                                login-processing-url="/rs/form/login" />
                 
                 <logout logout-url="/rs/form/logout" success-handler-ref="logoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true" />
                 

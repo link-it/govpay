@@ -108,7 +108,7 @@ public class RppController extends BaseController {
 
 
 
-	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
+	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -133,6 +133,9 @@ public class RppController extends BaseController {
 			leggiPagamentoPortaleDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
+			
+			if(visualizzaSoggettoDebitore != null)
+				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
@@ -155,7 +158,7 @@ public class RppController extends BaseController {
 					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
 					this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
-				} else if(accept.toLowerCase().contains("application/json")) {
+				} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
@@ -174,7 +177,8 @@ public class RppController extends BaseController {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
-		}    }
+		}    
+	}
 
 
 

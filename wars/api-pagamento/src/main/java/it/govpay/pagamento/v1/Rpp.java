@@ -60,17 +60,17 @@ public class Rpp extends BaseRsServiceV1{
     @GET
     @Path("/{idDominio}/{iuv}/n/a/rt")
     @Produces({ "application/pdf", "application/xml", "application/json" })
-    public Response rppIdDominioIuvNaRtGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
+    public Response rppIdDominioIuvNaRtGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @QueryParam("visualizzaSoggettoDebitore") Boolean visualizzaSoggettoDebitore){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.rppIdDominioIuvCcpRtGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
+        return this.controller.rppIdDominioIuvCcpRtGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a", visualizzaSoggettoDebitore);
     }
 
     @GET
     @Path("/{idDominio}/{iuv}/{ccp}/rt")
     @Produces({ "application/pdf", "application/xml", "application/json" })
-    public Response rppIdDominioIuvCcpRtGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
+    public Response rppIdDominioIuvCcpRtGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp, @QueryParam("visualizzaSoggettoDebitore") Boolean visualizzaSoggettoDebitore){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.rppIdDominioIuvCcpRtGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
+        return this.controller.rppIdDominioIuvCcpRtGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp, visualizzaSoggettoDebitore);
     }
     
     @GET
@@ -90,8 +90,6 @@ public class Rpp extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.rppIdDominioIuvCcpRptGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
-
-
 }
 
 

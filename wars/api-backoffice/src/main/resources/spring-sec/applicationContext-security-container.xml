@@ -86,6 +86,11 @@
         
         <!-- handler per le chiamate di logout che vanno bene -->
         <b:bean id="logoutSuccessHandler" class="org.openspcoop2.utils.jaxrs.impl.authentication.handler.DefaultLogoutSuccessHandler" />
+        <!-- handler per le chiamate di login che vanno male -->
+        <b:bean id="authFailureHandler" class="it.govpay.rs.v1.authentication.handler.DefaultAuthenticationFailureHandler" />
+        <!-- handler per le chiamate di login che vanno bene -->
+        <b:bean id="authSuccessHandler" class="it.govpay.backoffice.v1.authentication.handler.GovPayAuthenticationSuccessHandler" />
+        
         
         <!-- entry point per l'autenticazione form per gestire il contenuto della response nel caso id utenza non autorizzata. -->
         <http auto-config="false" use-expressions="true" create-session="ifRequired" entry-point-ref="formAuthenticationEntryPoint" pattern="/rs/form/**">
@@ -98,7 +103,13 @@
                  -->
                 <intercept-url pattern="/rs/form/**" access="isFullyAuthenticated()" />
                 
+                <intercept-url pattern="/rs/form/login" access="isAnonymous()" />
+                
                 <intercept-url pattern="/**" access="denyAll" />
+                
+                <form-login login-page="/public/index.html" username-parameter="username" authentication-success-handler-ref="authSuccessHandler"
+                        password-parameter="password" authentication-failure-handler-ref="authFailureHandler" 
+                                login-processing-url="/rs/form/login" />
                 
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilter" />
                 
