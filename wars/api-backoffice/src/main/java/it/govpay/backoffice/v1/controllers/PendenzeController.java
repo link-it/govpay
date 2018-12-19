@@ -23,7 +23,26 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.mime.MimeMultipart;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.Avviso;
+import it.govpay.backoffice.v1.beans.DettaglioTracciatoPendenzeEsito;
+import it.govpay.backoffice.v1.beans.EsitoOperazionePendenza;
+import it.govpay.backoffice.v1.beans.FaultBean;
+import it.govpay.backoffice.v1.beans.FaultBean.CategoriaEnum;
+import it.govpay.backoffice.v1.beans.ListaOperazioniPendenza;
+import it.govpay.backoffice.v1.beans.ListaPendenze;
+import it.govpay.backoffice.v1.beans.ListaTracciatiPendenza;
+import it.govpay.backoffice.v1.beans.OperazionePendenza;
+import it.govpay.backoffice.v1.beans.PatchOp;
+import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
+import it.govpay.backoffice.v1.beans.Pendenza;
+import it.govpay.backoffice.v1.beans.PendenzaIndex;
+import it.govpay.backoffice.v1.beans.StatoOperazionePendenza;
+import it.govpay.backoffice.v1.beans.StatoTracciatoPendenza;
+import it.govpay.backoffice.v1.beans.TracciatoPendenze;
+import it.govpay.backoffice.v1.beans.TracciatoPendenzeEsito;
+import it.govpay.backoffice.v1.beans.TracciatoPendenzePost;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.backoffice.v1.beans.converter.TracciatiConverter;
@@ -48,29 +67,10 @@ import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.backoffice.v1.beans.Avviso;
-import it.govpay.backoffice.v1.beans.DettaglioTracciatoPendenzeEsito;
-import it.govpay.backoffice.v1.beans.EsitoOperazionePendenza;
-import it.govpay.backoffice.v1.beans.FaultBean;
-import it.govpay.backoffice.v1.beans.FaultBean.CategoriaEnum;
-import it.govpay.backoffice.v1.beans.ListaOperazioniPendenza;
-import it.govpay.backoffice.v1.beans.ListaPendenze;
-import it.govpay.backoffice.v1.beans.ListaTracciatiPendenza;
-import it.govpay.backoffice.v1.beans.OperazionePendenza;
-import it.govpay.backoffice.v1.beans.PatchOp;
-import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
-import it.govpay.backoffice.v1.beans.Pendenza;
-import it.govpay.backoffice.v1.beans.PendenzaIndex;
-import it.govpay.backoffice.v1.beans.StatoOperazionePendenza;
-import it.govpay.backoffice.v1.beans.StatoTracciatoPendenza;
-import it.govpay.backoffice.v1.beans.TracciatoPendenze;
-import it.govpay.backoffice.v1.beans.TracciatoPendenzeEsito;
-import it.govpay.backoffice.v1.beans.TracciatoPendenzePost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 
@@ -87,11 +87,11 @@ public class PendenzeController extends BaseController {
 		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 	}
 
-	public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
+	public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
 		return pendenzeIdA2AIdPendenzaGET(user, uriInfo, httpHeaders, idA2A, idPendenza, false);
 	}
 
-	public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean addInfoIncasso) {
+	public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean addInfoIncasso) {
 		String methodName = "getByIda2aIdPendenza";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -125,11 +125,11 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza) {
+	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza) {
 		return pendenzeGET(user, uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, idPendenza, false);
 	}
 
-	public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, boolean addInfoIncasso) {
+	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, boolean addInfoIncasso) {
 		GpContext ctx = null;
 		String transactionId = null;
 
@@ -197,12 +197,12 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
+	public Response pendenzeIdA2AIdPendenzaPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
 		return pendenzeIdA2AIdPendenzaPATCH(user, uriInfo, httpHeaders, idA2A, idPendenza, is, false);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, boolean addInfoIncasso) {
+	public Response pendenzeIdA2AIdPendenzaPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, boolean addInfoIncasso) {
 		String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -284,7 +284,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzePOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+	public Response pendenzePOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
 		String methodName = "pendenzePOST";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -368,7 +368,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeTracciatiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
+	public Response pendenzeTracciatiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
 		GpContext ctx = null;
 		String transactionId = null;
 
@@ -387,7 +387,8 @@ public class PendenzeController extends BaseController {
 
 			listaTracciatiDTO.setPagina(pagina);
 			listaTracciatiDTO.setLimit(risultatiPerPagina);
-			listaTracciatiDTO.setStatoTracciatoPendenza(it.govpay.model.StatoTracciatoPendenza.fromValue(stato.name()));
+			if(stato != null)
+				listaTracciatiDTO.setStatoTracciatoPendenza(it.govpay.model.StatoTracciatoPendenza.fromValue(stato.name()));
 			List<TIPO_TRACCIATO> tipoTracciato = new ArrayList<>();
 			tipoTracciato.add(TIPO_TRACCIATO.PENDENZA);
 			listaTracciatiDTO.setTipoTracciato(tipoTracciato);
@@ -425,7 +426,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeTracciatiIdEsitoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+	public Response pendenzeTracciatiIdEsitoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
 		String methodName = "pendenzeTracciatiIdEsitoGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -461,7 +462,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeTracciatiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+	public Response pendenzeTracciatiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
 		String methodName = "pendenzeTracciatiIdGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -494,7 +495,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeTracciatiIdOperazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
+	public Response pendenzeTracciatiIdOperazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
 		GpContext ctx = null;
 		String transactionId = null;
 
@@ -547,7 +548,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeTracciatiIdStampeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+	public Response pendenzeTracciatiIdStampeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
 		String methodName = "pendenzeTracciatiIdStampeGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -594,7 +595,7 @@ public class PendenzeController extends BaseController {
 
 	}
 
-	private void popolaZip(IAutorizzato user, List<EsitoOperazionePendenza> inserimenti, ZipOutputStream zos)
+	private void popolaZip(Authentication user, List<EsitoOperazionePendenza> inserimenti, ZipOutputStream zos)
 			throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException,
 			IOException {
 		boolean addError = true;

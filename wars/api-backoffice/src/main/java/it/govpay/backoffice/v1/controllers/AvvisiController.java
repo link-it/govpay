@@ -10,6 +10,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
@@ -20,7 +21,6 @@ import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 
 public class AvvisiController extends BaseController {
 
@@ -30,7 +30,7 @@ public class AvvisiController extends BaseController {
 
 
 
-    public Response avvisiIdDominioIuvGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
+    public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
     	String methodName = "avvisiIdDominioIuvGET";  
 		GpContext ctx = null;
 		String transactionId = null;

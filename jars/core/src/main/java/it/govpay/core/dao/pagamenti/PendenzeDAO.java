@@ -29,6 +29,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -38,7 +39,6 @@ import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -46,6 +46,9 @@ import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.viste.VersamentiIncassiBD;
 import it.govpay.bd.viste.filters.VersamentoIncassoFilter;
 import it.govpay.bd.viste.model.VersamentoIncasso;
+import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.business.model.PrintAvvisoDTO;
@@ -64,12 +67,10 @@ import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.StatoPendenza;
@@ -104,10 +105,12 @@ public class PendenzeDAO extends BaseDAO{
 	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 		// Autorizzazione sui domini
-		List<Long> idDomini = AclEngine.getIdDominiAutorizzati((Utenza) listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 		if(idDomini == null) {
 			throw new NotAuthorizedException("L'utenza autenticata ["+listaPendenzaDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
 		}
+		
+		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
 		
 		VersamentiBD versamentiBD = new VersamentiBD(bd);
 		VersamentoFilter filter = versamentiBD.newFilter();
@@ -156,8 +159,8 @@ public class PendenzeDAO extends BaseDAO{
 			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
 		}
 		
-		if(listaPendenzaDTO.getUser().getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-			filter.setCfCittadino(listaPendenzaDTO.getUser().getIdentificativo()); 
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			filter.setCfCittadino(userDetails.getIdentificativo()); 
 		}
 
 		long count = versamentiBD.count(filter);
@@ -192,10 +195,11 @@ public class PendenzeDAO extends BaseDAO{
 	public ListaPendenzeDTOResponse listaPendenzeConInformazioniIncasso(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 		// Autorizzazione sui domini
-		List<Long> idDomini = AclEngine.getIdDominiAutorizzati((Utenza) listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 		if(idDomini == null) {
 			throw new NotAuthorizedException("L'utenza autenticata ["+listaPendenzaDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
 		}
+		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
 		
 		VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
 		VersamentoIncassoFilter filter = versamentiBD.newFilter();
@@ -244,8 +248,8 @@ public class PendenzeDAO extends BaseDAO{
 		if(!listaPendenzaDTO.isOrderEnabled()) {
 			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
 		}
-		if(listaPendenzaDTO.getUser().getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-			filter.setCfCittadino(listaPendenzaDTO.getUser().getIdentificativo()); 
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			filter.setCfCittadino(userDetails.getIdentificativo()); 
 		}
 
 		long count = versamentiBD.count(filter);
@@ -401,6 +405,7 @@ public class PendenzeDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(patchPendenzaDTO.getUser());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
 
@@ -475,8 +480,8 @@ public class PendenzeDAO extends BaseDAO{
 				// ANNULLAMENTO
 				if(PATH_DESCRIZIONE_STATO.equals(op.getPath()) && PATH_STATO.equals(op.getPath()) && this.getNuovoStatoVersamento(op).equals(StatoVersamento.ANNULLATO)) {
 					Nota nota = new Nota();
-					nota.setPrincipal(patchPendenzaDTO.getUser().getPrincipal());
-					nota.setAutore(this.getOperatoreFromUser(patchPendenzaDTO.getUser(), bd).getNome());
+					nota.setPrincipal(userDetails.getUtenza().getPrincipal());
+					nota.setAutore(userDetails.getUtenza().getIdentificativo());
 					nota.setData(new Date());
 					nota.setOggetto("Pendenza annullata");
 					nota.setTipo(TipoNota.SISTEMA_INFO);
@@ -500,8 +505,8 @@ public class PendenzeDAO extends BaseDAO{
 				// RIPRISTINO
 				if(PATH_DESCRIZIONE_STATO.equals(op.getPath()) && PATH_STATO.equals(op.getPath()) && this.getNuovoStatoVersamento(op).equals(StatoVersamento.NON_ESEGUITO)) {
 					Nota nota = new Nota();
-					nota.setPrincipal(patchPendenzaDTO.getUser().getPrincipal());
-					nota.setAutore(this.getOperatoreFromUser(patchPendenzaDTO.getUser(), bd).getNome());
+					nota.setPrincipal(userDetails.getUtenza().getPrincipal());
+					nota.setAutore(userDetails.getUtenza().getIdentificativo());
 					nota.setData(new Date());
 					nota.setTesto(versamentoLetto.getDescrizioneStato());
 					nota.setOggetto("Pendenza ripristinata");
@@ -549,7 +554,7 @@ public class PendenzeDAO extends BaseDAO{
 		versamentoLetto.setDescrizioneStato(descrizioneStato);
 	}
 
-	private Nota patchStato(IAutorizzato iAutorizzato, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, String motivazione, BasicBD bd) throws ValidationException {
+	private Nota patchStato(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, String motivazione, BasicBD bd) throws ValidationException {
 		if(!op.getOp().equals(OpEnum.REPLACE)) {
 			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 		}
@@ -575,17 +580,12 @@ public class PendenzeDAO extends BaseDAO{
 			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, nuovoStato.name()));
 		}
 		
+		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		Nota nota = new Nota();
-		nota.setPrincipal(iAutorizzato.getPrincipal());
-		try {
-			nota.setAutore(this.getOperatoreFromUser(iAutorizzato, bd).getNome());
-		} catch (ServiceException | NotFoundException e) {
-			try {
-				nota.setAutore(this.getApplicazioneFromUser(iAutorizzato, bd).getCodApplicazione());
-			} catch (ServiceException | NotFoundException e2) {
-				nota.setAutore("Anonimo");
-			}
-		}
+		nota.setPrincipal(userDetails.getUtenza().getPrincipal());
+		
+		// TODO Controllare se corrisponde a quello dell'utenza giusta.
+		nota.setAutore(userDetails.getIdentificativo());
 		nota.setData(new Date());
 		nota.setOggetto("Pendenza annullata");
 		nota.setTesto(motivazione);
@@ -602,12 +602,12 @@ public class PendenzeDAO extends BaseDAO{
 		versamentoLetto.setAck(ackVersamento != null ? ackVersamento.booleanValue() : false);
 	}
 	
-	private Nota patchNota(IAutorizzato user, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, BasicBD bd) throws ValidationException, ServiceException, NotFoundException { 
+	private Nota patchNota(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, BasicBD bd) throws ValidationException, ServiceException, NotFoundException { 
 		if(!op.getOp().equals(OpEnum.ADD)) {
 			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 		}
 		
-	 	return UtenzaPatchUtils.getNotaFromPatch(user, this.getOperatoreFromUser(user, bd), op, bd); 
+	 	return UtenzaPatchUtils.getNotaFromPatch(authentication, op, bd); 
 	}
 
 	private StatoVersamento getNuovoStatoVersamento(PatchOp op) throws ValidationException {

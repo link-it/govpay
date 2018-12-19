@@ -1,10 +1,10 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class GetDominioDTO extends BasicRequestDTO {
 	
-	public GetDominioDTO(IAutorizzato user, String codDominio) {
+	public GetDominioDTO(Authentication user, String codDominio) {
 		super(user);
 		this.codDominio = codDominio;
 	}

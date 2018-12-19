@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
@@ -28,7 +29,6 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.pagamento.v1.beans.ListaRppIndex;
 import it.govpay.pagamento.v1.beans.Rpp;
@@ -43,7 +43,7 @@ public class RppController extends BaseController {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
 	}
 
-	public Response rppGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
+	public Response rppGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
 		String methodName = "rppGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -108,7 +108,7 @@ public class RppController extends BaseController {
 
 
 
-	public Response rppIdDominioIuvCcpRtGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
+	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -133,14 +133,18 @@ public class RppController extends BaseController {
 			leggiPagamentoPortaleDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
+			
+			if(visualizzaSoggettoDebitore != null)
+				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
-			LeggiRicevutaDTOResponse ricevutaDTOResponse = null;
+			LeggiRicevutaDTOResponse ricevutaDTOResponse = null; 
 
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.RAW);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+				
 				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
@@ -154,7 +158,7 @@ public class RppController extends BaseController {
 					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
 					this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
-				} else if(accept.toLowerCase().contains("application/json")) {
+				} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
@@ -164,21 +168,21 @@ public class RppController extends BaseController {
 				} else {
 					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 					this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(rt),transactionId).build();
+					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
 				}
 			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			if(ctx != null) ctx.log();
-		}    }
+		}    
+	}
 
 
 
-	public Response rppIdDominioIuvCcpRptGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
+	public Response rppIdDominioIuvCcpRptGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -189,22 +193,31 @@ public class RppController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			String accept = "";
+			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
+				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+			}
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
-			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(user);
-			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
-			leggiPagamentoPortaleDTO.setIuv(iuv);
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
+			leggiRptDTO.setIdDominio(idDominio);
+			leggiRptDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
-			leggiPagamentoPortaleDTO.setCcp(ccp);
+			leggiRptDTO.setCcp(ccp);
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
-			LeggiRicevutaDTOResponse ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
-			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(ricevutaDTOResponse.getRpt().getXmlRpt(), false);
-			return this.handleResponseOk(Response.status(Status.OK).entity(rpt),transactionId).build();
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
+			}else {
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
+			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -214,7 +227,7 @@ public class RppController extends BaseController {
 
 
 
-	public Response rppIdDominioIuvCcpGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
+	public Response rppIdDominioIuvCcpGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpGET";  
 		GpContext ctx = null;
 		String transactionId = null;		

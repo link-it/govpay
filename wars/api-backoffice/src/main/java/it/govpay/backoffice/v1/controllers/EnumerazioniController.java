@@ -13,6 +13,7 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.JSONUtils;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -21,7 +22,6 @@ import it.govpay.backoffice.v1.beans.VersioneApiEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 
 
 
@@ -33,7 +33,7 @@ public class EnumerazioniController extends BaseController {
 
 
 
-    public Response enumerazioniServiziACLGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    public Response enumerazioniServiziACLGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "enumerazioniServiziACLGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -64,7 +64,7 @@ public class EnumerazioniController extends BaseController {
 
 
 
-    public Response enumerazioniVersioneConnettoreGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    public Response enumerazioniVersioneConnettoreGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "enumerazioniVersioneConnettoreGET";  
 		GpContext ctx = null;
 		String transactionId = null;

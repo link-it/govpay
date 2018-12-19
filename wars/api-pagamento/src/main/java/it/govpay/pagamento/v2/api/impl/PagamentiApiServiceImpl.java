@@ -11,6 +11,9 @@ import org.openspcoop2.utils.jaxrs.impl.AuthorizationManager;
 import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
 import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
 import org.openspcoop2.utils.jaxrs.impl.AuthorizationConfig;
+
+import javax.ws.rs.core.UriBuilder;
+
 import org.openspcoop2.utils.jaxrs.fault.FaultCode;
 /**
  * GovPay - API Pagamento
@@ -19,6 +22,8 @@ import org.openspcoop2.utils.jaxrs.fault.FaultCode;
  *
  */
 public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
+	
+	public static UriBuilder basePath = UriBuilder.fromPath("/pagamenti");
 
 	public PagamentiApiServiceImpl(){
 		super(org.slf4j.LoggerFactory.getLogger(PagamentiApiServiceImpl.class));

@@ -11,11 +11,11 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.joda.time.LocalDate;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.jaxrs.RawObject;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.core.utils.rawutils.RawObject;
 import it.govpay.pagamento.v2.api.impl.PagamentiApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl;

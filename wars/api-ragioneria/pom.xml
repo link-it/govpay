@@ -29,12 +29,37 @@
 			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-service-description</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-policy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-wsdl</artifactId>
+        </dependency>
 
 	</dependencies>
 
@@ -69,6 +94,18 @@
 						<webResource>
 							<directory>src/main/webapp</directory>
 							<filtering>true</filtering>
+						</webResource>
+						<webResource>
+							<directory>src/main/resources/spring-jaxrs</directory>
+							<filtering>true</filtering>
+							<include>applicationContext-jaxrs-*.xml</include>
+							<targetPath>WEB-INF</targetPath>							
+						</webResource>
+						<webResource>
+							<directory>src/main/resources/spring-sec</directory>
+							<filtering>true</filtering>
+							<include>applicationContext-security-${govpay-api-ragioneria-auth}.xml</include>
+							<targetPath>WEB-INF</targetPath>							
 						</webResource>
 					</webResources>
 					<webXml>src/main/resources/web-${govpay-api-ragioneria-auth}.xml</webXml>

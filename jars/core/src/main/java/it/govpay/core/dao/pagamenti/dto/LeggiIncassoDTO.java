@@ -1,11 +1,13 @@
 package it.govpay.core.dao.pagamenti.dto;
 
+import org.springframework.security.core.Authentication;
+
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.model.IAutorizzato;
 
 public class LeggiIncassoDTO extends BasicFindRequestDTO {
 	
-	public LeggiIncassoDTO(IAutorizzato user) {
+	public LeggiIncassoDTO(Authentication user) {
 		super(user);
 	}
 	
@@ -14,7 +16,7 @@ public class LeggiIncassoDTO extends BasicFindRequestDTO {
 	private String idIncasso;
 	
 	public String getPrincipal() {
-		return this.getUser() != null ? this.getUser().getPrincipal() : this.principal;
+		return AutorizzazioneUtils.getPrincipal(this.getUser()) != null ? AutorizzazioneUtils.getPrincipal(this.getUser()) : this.principal;
 	}
 	public void setPrincipal(String principal) {
 		this.principal = principal;

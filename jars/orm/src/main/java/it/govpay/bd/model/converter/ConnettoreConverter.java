@@ -46,6 +46,10 @@ public class ConnettoreConverter {
 				if(Connettore.P_URL_NAME.equals(connettore.getCodProprieta())) {
 					dto.setUrl(connettore.getValore());
 				}
+				
+				if(Connettore.P_URL_SERVIZI_AVVISATURA_NAME.equals(connettore.getCodProprieta())) {
+					dto.setUrlServiziAvvisatura(connettore.getValore());
+				}
 
 				if(Connettore.P_TIPOAUTENTICAZIONE_NAME.equals(connettore.getCodProprieta())) {
 					dto.setTipoAutenticazione(Connettore.EnumAuthType.valueOf(connettore.getValore()));
@@ -123,6 +127,14 @@ public class ConnettoreConverter {
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_URL_NAME);
 			vo.setValore(connettore.getUrl());
+			voList.add(vo);
+		}
+		
+		if(connettore.getUrlServiziAvvisatura() != null && !connettore.getUrlServiziAvvisatura().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_URL_SERVIZI_AVVISATURA_NAME);
+			vo.setValore(connettore.getUrlServiziAvvisatura());
 			voList.add(vo);
 		}
 

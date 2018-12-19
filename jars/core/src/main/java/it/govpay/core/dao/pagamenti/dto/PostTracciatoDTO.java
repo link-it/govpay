@@ -2,13 +2,14 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Versamento;
-import it.govpay.model.IAutorizzato;
 
 public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	
-	public PostTracciatoDTO(IAutorizzato user) {
+	public PostTracciatoDTO(Authentication user) {
 		super(user);
 	}
 	

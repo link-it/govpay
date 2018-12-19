@@ -11,12 +11,12 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.InfoGovPay;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato; 
+import it.govpay.core.utils.GpThreadLocal; 
 
 
 
@@ -29,7 +29,7 @@ public class InfoController extends BaseController {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
 	}
 
-	public Response infoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+	public Response infoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "infoGET";  
 		GpContext ctx = null;
 		String transactionId = null;

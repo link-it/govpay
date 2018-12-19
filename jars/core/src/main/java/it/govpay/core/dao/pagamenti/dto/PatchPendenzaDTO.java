@@ -1,6 +1,6 @@
 package it.govpay.core.dao.pagamenti.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class PatchPendenzaDTO extends AbstractPatchDTO  {
 	
@@ -9,7 +9,7 @@ public class PatchPendenzaDTO extends AbstractPatchDTO  {
 	private String idA2a;
 	private String idPendenza;
 
-	public PatchPendenzaDTO(IAutorizzato user) {
+	public PatchPendenzaDTO(Authentication user) {
 		super(user);
 	}
 

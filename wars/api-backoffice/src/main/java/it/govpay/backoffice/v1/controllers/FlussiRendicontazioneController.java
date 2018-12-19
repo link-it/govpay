@@ -11,20 +11,20 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
+import it.govpay.backoffice.v1.beans.ListaFlussiRendicontazione;
 import it.govpay.backoffice.v1.beans.converter.FlussiRendicontazioneConverter;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
-import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
-import it.govpay.backoffice.v1.beans.ListaFlussiRendicontazione;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.model.IAutorizzato;
 
 
 
@@ -36,7 +36,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response flussiRendicontazioneIdFlussoGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
+    public Response flussiRendicontazioneIdFlussoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
     	String methodName = "flussiRendicontazioneIdFlussoGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -89,7 +89,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response flussiRendicontazioneGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String ordinamento, String dataDa, String dataA) {
+    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String ordinamento, String dataDa, String dataA) {
     	String methodName = "flussiRendicontazioneGET";  
 		GpContext ctx = null;
 		String transactionId = null;

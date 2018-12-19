@@ -462,7 +462,7 @@ public class Operazioni{
 						Session sessionIn = null;
 						Channel channelIn = null;
 						try {
-							sessionIn = jsch.getSession(intermediario.getConnettoreSftp().getHttpUserIn(), intermediario.getConnettoreSftp().getUrlIn(), 22);
+							sessionIn = jsch.getSession(intermediario.getConnettoreSftp().getHttpUserIn(), intermediario.getConnettoreSftp().getHostIn(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaIn())); 
 							sessionIn.setConfig("StrictHostKeyChecking", "no");
 							sessionIn.setPassword(intermediario.getConnettoreSftp().getHttpPasswIn());
 							sessionIn.connect();
@@ -574,7 +574,7 @@ public class Operazioni{
 								if(connettore == null)
 									throw new Exception("Connettore SFTP in ingresso non definito per l'intermediario "+intermediario.getCodIntermediario());
 
-								sessionIn = jsch.getSession(connettore.getHttpUserIn(), connettore.getUrlIn(), 22);
+								sessionIn = jsch.getSession(connettore.getHttpUserIn(), connettore.getHostIn(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaIn())); 
 								sessionIn.setConfig("StrictHostKeyChecking", "no");
 								sessionIn.setPassword(connettore.getHttpPasswIn());
 								sessionIn.connect();
@@ -666,7 +666,7 @@ public class Operazioni{
 								if(connettore == null)
 									throw new Exception("Connettore SFTP in uscita non definito per l'intermediario "+intermediario.getCodIntermediario());
 
-								sessionOut = jsch.getSession(connettore.getHttpUserOut(), connettore.getUrlOut(), 22);
+								sessionOut = jsch.getSession(connettore.getHttpUserOut(), connettore.getHostOut(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaOut()));
 								sessionOut.setConfig("StrictHostKeyChecking", "no");
 								sessionOut.setPassword(connettore.getHttpPasswOut());
 								sessionOut.connect();
@@ -812,7 +812,7 @@ public class Operazioni{
 							if(connettore == null)
 								throw new Exception("Connettore SFTP in uscita non definito per l'intermediario "+intermediario.getCodIntermediario());
 
-							sessionOut = jsch.getSession(connettore.getHttpUserOut(), connettore.getUrlOut(), 22);
+							sessionOut = jsch.getSession(connettore.getHttpUserOut(), connettore.getHostOut(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaOut()));
 							sessionOut.setConfig("StrictHostKeyChecking", "no");
 							sessionOut.setPassword(connettore.getHttpPasswOut());
 							sessionOut.connect();
@@ -909,7 +909,7 @@ public class Operazioni{
 							if(connettore == null)
 								throw new Exception("Connettore SFTP in ingresso non definito per l'intermediario "+intermediario.getCodIntermediario());
 
-							sessionIn = jsch.getSession(connettore.getHttpUserIn(), connettore.getUrlIn(), 22);
+							sessionIn = jsch.getSession(connettore.getHttpUserIn(), connettore.getHostIn(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaIn()));
 							sessionIn.setConfig("StrictHostKeyChecking", "no");
 							sessionIn.setPassword(connettore.getHttpPasswIn());
 							sessionIn.connect();
@@ -1035,7 +1035,7 @@ public class Operazioni{
 		}
 	}
 
-	public static String elaborazioneTracciati(String serviceName){
+	public static String elaborazioneTracciatiPendenze(String serviceName){
 		BasicBD bd = null;
 		GpContext ctx = null;
 		boolean wasAutoCommit = false;
@@ -1075,7 +1075,7 @@ public class Operazioni{
 						log.info("Avvio elaborazione tracciato "  + tracciato.getId());
 						ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
 						elaboraTracciatoDTO.setTracciato(tracciato);
-						tracciatiBusiness.elaboraTracciato(elaboraTracciatoDTO);
+						tracciatiBusiness.elaboraTracciatoPendenze(elaboraTracciatoDTO);
 						log.info("Elaborazione tracciato "  + tracciato.getId() + " completata");
 					}
 					

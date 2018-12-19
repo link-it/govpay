@@ -10,9 +10,9 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.Utenza;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
@@ -21,7 +21,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RendicontazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -40,7 +39,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			this.autorizzaRichiesta(listaRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AclEngine.getDominiAutorizzati((Utenza) listaRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
 			if(listaDominiFiltro == null) {
 				throw new NotAuthorizedException("L'utenza autenticata ["+listaRendicontazioniDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
 			}

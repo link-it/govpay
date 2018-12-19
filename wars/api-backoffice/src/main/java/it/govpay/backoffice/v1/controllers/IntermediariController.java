@@ -12,7 +12,16 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.Intermediario;
+import it.govpay.backoffice.v1.beans.IntermediarioIndex;
+import it.govpay.backoffice.v1.beans.IntermediarioPost;
+import it.govpay.backoffice.v1.beans.ListaIntermediari;
+import it.govpay.backoffice.v1.beans.ListaStazioni;
+import it.govpay.backoffice.v1.beans.Stazione;
+import it.govpay.backoffice.v1.beans.StazioneIndex;
+import it.govpay.backoffice.v1.beans.StazionePost;
 import it.govpay.backoffice.v1.beans.converter.IntermediariConverter;
 import it.govpay.backoffice.v1.beans.converter.StazioniConverter;
 import it.govpay.core.beans.JSONSerializable;
@@ -29,20 +38,9 @@ import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
-import it.govpay.backoffice.v1.beans.Intermediario;
-import it.govpay.backoffice.v1.beans.IntermediarioIndex;
-import it.govpay.backoffice.v1.beans.IntermediarioPost;
-import it.govpay.backoffice.v1.beans.ListaIntermediari;
-import it.govpay.backoffice.v1.beans.ListaStazioni;
-import it.govpay.backoffice.v1.beans.Stazione;
-import it.govpay.backoffice.v1.beans.StazioneIndex;
-import it.govpay.backoffice.v1.beans.StazionePost;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
-
-
 
 public class IntermediariController extends BaseController {
 
@@ -52,7 +50,7 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariIdIntermediarioGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario) {
+    public Response intermediariIdIntermediarioGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario) {
     	String methodName = "intermediariIdIntermediarioGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -108,7 +106,7 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniIdStazionePUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione, java.io.InputStream is) {
+    public Response intermediariIdIntermediarioStazioniIdStazionePUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione, java.io.InputStream is) {
     	String methodName = "intermediariIdIntermediarioStazioniIdStazionePUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -146,7 +144,7 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response intermediariGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "intermediariGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -199,7 +197,7 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariIdIntermediarioPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, java.io.InputStream is) {
+    public Response intermediariIdIntermediarioPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, java.io.InputStream is) {
     	String methodName = "intermediariIdIntermediarioPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -237,7 +235,7 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response intermediariIdIntermediarioStazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "intermediariIdIntermediarioStazioniGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -291,7 +289,7 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniIdStazioneGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione) {
+    public Response intermediariIdIntermediarioStazioniIdStazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione) {
     	String methodName = "intermediariIdIntermediarioStazioniIdStazioneGET";  
 		GpContext ctx = null;
 		String transactionId = null;

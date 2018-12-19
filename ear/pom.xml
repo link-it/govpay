@@ -14,6 +14,7 @@
 
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
+		<war-base-name>govpay</war-base-name>
 	</properties>
 
 	<dependencies>
@@ -148,37 +149,37 @@
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>api-pagopa</artifactId>
-							<contextRoot>/govpay/frontend/api/pagopa</contextRoot>
+							<contextRoot>/${war-base-name}/frontend/api/pagopa</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>api-pagamento</artifactId>
-							<contextRoot>/govpay/frontend/api/pagamento</contextRoot>
+							<contextRoot>/${war-base-name}/frontend/api/pagamento</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>web-connector</artifactId>
-							<contextRoot>/govpay/frontend/web/connector</contextRoot>
+							<contextRoot>/${war-base-name}/frontend/web/connector</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>api-pendenze</artifactId>
-							<contextRoot>/govpay/backend/api/pendenze</contextRoot>
+							<contextRoot>/${war-base-name}/backend/api/pendenze</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>api-ragioneria</artifactId>
-							<contextRoot>/govpay/backend/api/ragioneria</contextRoot>
+							<contextRoot>/${war-base-name}/backend/api/ragioneria</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>api-backoffice</artifactId>
-							<contextRoot>/govpay/backend/api/backoffice</contextRoot>
+							<contextRoot>/${war-base-name}/backend/api/backoffice</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
 							<artifactId>web-console</artifactId>
-							<contextRoot>/govpay/backend/gui/backoffice</contextRoot>
+							<contextRoot>/${war-base-name}/backend/gui/backoffice</contextRoot>
 						</webModule>
 					</modules>
 					<version>6</version>

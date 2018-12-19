@@ -1,7 +1,8 @@
 package it.govpay.core.dao.anagrafica.dto;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.bd.model.Dominio;
-import it.govpay.model.IAutorizzato;
 
 public class PutDominioDTO extends BasicCreateRequestDTO  {
 	
@@ -9,7 +10,7 @@ public class PutDominioDTO extends BasicCreateRequestDTO  {
 	private String idDominio;
 	private String codStazione;
 	
-	public PutDominioDTO(IAutorizzato user) {
+	public PutDominioDTO(Authentication user) {
 		super(user);
 		// TODO Auto-generated constructor stub
 	}

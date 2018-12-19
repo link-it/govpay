@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
-import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.RuoloIndex;
+import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.model.Acl;
-import it.govpay.model.IAutorizzato;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -36,7 +36,7 @@ public class RuoliConverter {
 	 * @return
 	 * @throws ServiceException 
 	 */
-	public static PutRuoloDTO getPutRuoloDTO(List<AclPost> listaAcl, String idRuolo, IAutorizzato user) throws ServiceException {
+	public static PutRuoloDTO getPutRuoloDTO(List<AclPost> listaAcl, String idRuolo, Authentication user) throws ServiceException {
 		PutRuoloDTO putRuoloDTO = new PutRuoloDTO(user);
 		List<Acl> acls = new ArrayList<>();
 		for(AclPost acl: listaAcl) {

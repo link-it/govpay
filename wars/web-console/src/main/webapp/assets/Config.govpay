@@ -1,0 +1,58 @@
+(function (global) {
+
+  function hostname() {
+    return this.location.protocol + '//' + this.location.host;
+  }
+
+  function httpRootService() {
+    return '/govpay/backend/api/backoffice/rs/form/v1'; // Root URL servizi
+  }
+
+  function httpLogOutService() {
+    return '/govpay/backend/api/backoffice/rs/form/logout'; // URL per il servizio di 'logout'
+  }
+
+  function httpLogInService() {
+    return '/govpay/backend/api/backoffice/rs/form/login'; // URL per il servizio di 'login'
+  }
+
+  function httpDocumentsRoot() {
+    return hostname() + '/govpay/backend/api/backoffice/public'; // Root URL informazioni
+  }
+
+  // Default application name/title
+  function _applicationName() {
+    const _NAME = 'GovPay';
+    document.title = _NAME;
+    return _NAME;
+  }
+
+  const _HTTP_DOCUMENTS_ROOT = httpDocumentsRoot();
+
+  global.GovPayConfig = {
+    HOST_NAME: hostname(),
+    INFO: {
+      DOCUMENTS: {
+        HTTP_DOCUMENTS_ROOT: _HTTP_DOCUMENTS_ROOT,
+        LICENSE: _HTTP_DOCUMENTS_ROOT + '/LICENSE',
+        MANUALE_UTENTE: _HTTP_DOCUMENTS_ROOT + '/GovPay-ManualeUtente.pdf',
+        ENABLED: true
+      },
+      NEWS: {
+        URL: 'https://api.github.com/repos/link-it/GovPay/releases', // URL GovPay Github distribuzioni
+        ENABLED: true
+      },
+      APP_NAME: _applicationName(), // Default application name
+      PROGETTO_GOVPAY: 'https://github.com/link-it/GovPay' // URL GovPay Github
+    },
+    HTTP_ROOT_SERVICE: httpRootService(),
+    HTTP_LOGOUT_SERVICE: httpLogOutService(),
+    HTTP_LOGIN_SERVICE: httpLogInService(),
+    BADGE_FILTER: {
+      HOUR: 1, // Ore, (filtro badge)
+      TIMER: 30000 // Millisecondi, (timer badge)
+    },
+    EXTERNAL_JS_PROCEDURE_URL: 'Converter.js' //Http URL al file Js per conversioni esterne (caricamento tracciati)
+  };
+
+})(window);

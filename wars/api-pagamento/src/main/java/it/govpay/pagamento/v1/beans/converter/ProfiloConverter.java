@@ -10,8 +10,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.model.IAutorizzato;
 import it.govpay.pagamento.v1.beans.AclPost;
 import it.govpay.pagamento.v1.beans.DominioIndex;
 import it.govpay.pagamento.v1.beans.Profilo;
@@ -33,7 +33,7 @@ public class ProfiloConverter {
 	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) throws ServiceException {
 		Profilo profilo = new Profilo();
 		
-		IAutorizzato user = leggiProfilo.getUtente();
+		Utenza user = leggiProfilo.getUtente();
 		if(user.getAcls()!=null) {
 			List<AclPost> aclLst = new ArrayList<>();
 			for(it.govpay.model.Acl acl: user.getAcls()) {

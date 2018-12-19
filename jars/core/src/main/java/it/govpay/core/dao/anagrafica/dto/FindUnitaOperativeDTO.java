@@ -19,7 +19,7 @@
  */
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 	
@@ -28,7 +28,7 @@ public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 	private String ragioneSociale;
 	private Boolean abilitato;
 
-	public FindUnitaOperativeDTO(IAutorizzato user, String codDominio) {
+	public FindUnitaOperativeDTO(Authentication user, String codDominio) {
 		super(user);
 		this.codDominio = codDominio;
 		this.addSortField("ragioneSociale", it.govpay.orm.Uo.model().UO_DENOMINAZIONE);

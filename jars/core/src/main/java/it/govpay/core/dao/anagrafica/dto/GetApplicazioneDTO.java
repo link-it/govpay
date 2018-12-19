@@ -1,10 +1,10 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class GetApplicazioneDTO extends BasicRequestDTO {
 	
-	public GetApplicazioneDTO(IAutorizzato user, String codApplicazione) {
+	public GetApplicazioneDTO(Authentication user, String codApplicazione) {
 		super(user);
 		this.codApplicazione = codApplicazione;
 	}

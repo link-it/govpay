@@ -19,9 +19,6 @@
  */
 package it.govpay.core.business;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -37,7 +34,6 @@ import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
 import it.govpay.core.business.model.CaricaVersamentoDTO;
@@ -50,13 +46,10 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.StatoVersamento;
 
@@ -521,51 +514,5 @@ public class Versamento extends BasicBD {
 		}
 		
 		return versamentoModel;
-	}
-	
-	
-	public it.govpay.bd.model.Versamento chiediVersamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ServiceException, GovPayException {
-		List<Diritti> diritti = new ArrayList<>();
-		diritti.add(Diritti.LETTURA);
-		
-		if(codDominio != null && !AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, codDominio, null,diritti)) {
-			throw new GovPayException(EsitoOperazione.APP_005);
-		}
-		
-		it.govpay.bd.model.Versamento v = this.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
-		
-		if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, v.getUo(this).getDominio(this).getCodDominio(), null,diritti)) {
-			return v;
-		} else {
-			throw new GovPayException(EsitoOperazione.APP_005);
-		}	
-	}
-	
-	public List<it.govpay.bd.model.Versamento> chiediVersamenti(Applicazione applicazioneAutenticata, String codApplicazione, String codUnivocoDebitore, List<StatoVersamento> statiVersamento, VersamentoFilter.SortFields filterSortList) throws GovPayException, ServiceException {
-		VersamentiBD versamentiBD = new VersamentiBD(this);
-		VersamentoFilter filter = versamentiBD.newFilter();
-		filter.setCodUnivocoDebitore(codUnivocoDebitore);
-		filter.setStatiPagamento(statiVersamento);
-		filter.addSortField(filterSortList);
-		
-		List<Long> domini = new ArrayList<>();
-		List<Diritti> diritti = new ArrayList<>();
-		diritti.add(Diritti.SCRITTURA);
-		diritti.add(Diritti.ESECUZIONE);
-		 List<Long> dominiSet = AclEngine.getIdDominiAutorizzati(applicazioneAutenticata.getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, diritti);
-				
-		if(dominiSet != null) {
-			domini.addAll(dominiSet);
-			filter.setIdDomini(domini);
-		}
-		
-		List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(filter);
-		for(it.govpay.bd.model.Versamento versamento : versamenti)
-			try {
-				it.govpay.core.utils.VersamentoUtils.aggiornaVersamento(versamento, this);
-			} catch (Exception e) {
-				// Aggiornamento andato male. risultera' scaduto.
-			} 
-		return versamenti;
 	}
 }

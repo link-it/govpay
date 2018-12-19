@@ -22,6 +22,7 @@ package it.govpay.core.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -34,6 +35,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -45,6 +47,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
@@ -54,6 +57,7 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisoDigitale;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtIdentificativoUnivocoPersonaFG;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtSoggettoPagatore;
 import gov.telematici.pagamenti.ws.avvisi_digitali.ListaEsitoAvvisiDigitali;
+import gov.telematici.pagamenti.ws.avvisi_digitali.ObjectFactory;
 import gov.telematici.pagamenti.ws.avvisi_digitali.StTipoIdentificativoUnivocoPersFG;
 import gov.telematici.pagamenti.ws.avvisi_digitali.StTipoOperazione;
 import gov.telematici.pagamenti.ws.presa_in_carico.EsitoPresaInCarico;
@@ -73,7 +77,17 @@ public class AvvisaturaUtils {
 
 	public static void scriviVersamentoTracciatoAvvisatura(OutputStream out, Versamento versamento) throws Exception {
 		
-		CtAvvisoDigitale avviso = new CtAvvisoDigitale();
+		CtAvvisoDigitale avviso = toCtAvvisoDigitale(versamento);
+		
+		init();
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.marshal(avviso, out);
+	}
+
+	public static CtAvvisoDigitale toCtAvvisoDigitale(Versamento versamento)
+			throws ServiceException, DatatypeConfigurationException, UnsupportedEncodingException {
+		CtAvvisoDigitale avviso = new ObjectFactory().createCtAvvisoDigitale();
 		avviso.setIdentificativoDominio(versamento.getDominio(null).getCodDominio());
 		avviso.setAnagraficaBeneficiario(versamento.getDominio(null).getRagioneSociale());
 		avviso.setIdentificativoMessaggioRichiesta(versamento.getCodAvvisatura());
@@ -179,11 +193,7 @@ public class AvvisaturaUtils {
 			avviso.setTipoPagamento("1"); //default pagamento non contestuale
 		
 		avviso.setTipoOperazione(StTipoOperazione.fromValue(versamento.getAvvisatura()));
-		
-		init();
-		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		jaxbMarshaller.marshal(avviso, out);
+		return avviso;
 	}
 
 	private static void init() throws JAXBException, SAXException {

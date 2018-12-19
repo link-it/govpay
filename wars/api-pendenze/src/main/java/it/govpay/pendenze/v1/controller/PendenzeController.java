@@ -13,6 +13,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.commons.Versamento;
@@ -25,6 +26,10 @@ import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.pendenze.v1.beans.FaultBean;
 import it.govpay.pendenze.v1.beans.FaultBean.CategoriaEnum;
 import it.govpay.pendenze.v1.beans.ListaPendenze;
@@ -34,11 +39,6 @@ import it.govpay.pendenze.v1.beans.Pendenza;
 import it.govpay.pendenze.v1.beans.PendenzaCreata;
 import it.govpay.pendenze.v1.beans.PendenzaIndex;
 import it.govpay.pendenze.v1.beans.PendenzaPut;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.validator.ValidatorFactory;
-import it.govpay.model.IAutorizzato;
 import it.govpay.pendenze.v1.beans.converter.PatchOpConverter;
 import it.govpay.pendenze.v1.beans.converter.PendenzeConverter;
 
@@ -50,7 +50,7 @@ public class PendenzeController extends BaseController {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
      
-     public Response pendenzeIdA2AIdPendenzaGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
+     public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
 		String methodName = "getByIda2aIdPendenza";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -82,7 +82,7 @@ public class PendenzeController extends BaseController {
 		}
     }
     
-    public Response pendenzeGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
+    public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
     	GpContext ctx = null;
     	String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -146,7 +146,7 @@ public class PendenzeController extends BaseController {
     }
 
     @SuppressWarnings("unchecked")
-	public Response pendenzeIdA2AIdPendenzaPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
+	public Response pendenzeIdA2AIdPendenzaPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
     	String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -220,7 +220,7 @@ public class PendenzeController extends BaseController {
 
 
 
-    public Response pendenzeIdA2AIdPendenzaPUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale) {
+    public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale) {
     	String methodName = "pendenzeIdA2AIdPendenzaPUT";  
 		GpContext ctx = null;
 		String transactionId = null;

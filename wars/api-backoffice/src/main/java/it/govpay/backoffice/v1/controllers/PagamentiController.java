@@ -15,7 +15,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.ListaPagamentiPortale;
+import it.govpay.backoffice.v1.beans.PatchOp;
+import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.backoffice.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.core.beans.JSONSerializable;
@@ -25,16 +29,10 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentoPatchDTO;
-import it.govpay.backoffice.v1.beans.ListaPagamentiPortale;
-import it.govpay.backoffice.v1.beans.PatchOp;
-import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.model.IAutorizzato;
-
-
 
 public class PagamentiController extends BaseController {
 
@@ -44,7 +42,7 @@ public class PagamentiController extends BaseController {
 
 
 
-    public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    public Response pagamentiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -77,7 +75,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA) {
+    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -148,7 +146,7 @@ public class PagamentiController extends BaseController {
     }
 
     @SuppressWarnings("unchecked")
-	public Response pagamentiIdPATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String id) {
+	public Response pagamentiIdPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String id) {
     	String methodName = "pagamentiIdPATCH";  
 		GpContext ctx = null;
 		String transactionId = null;

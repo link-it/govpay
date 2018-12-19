@@ -1,7 +1,8 @@
 package it.govpay.core.dao.anagrafica.dto;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.model.IAutorizzato;
 
 public class PutUnitaOperativaDTO extends BasicCreateRequestDTO  {
 	
@@ -10,7 +11,7 @@ public class PutUnitaOperativaDTO extends BasicCreateRequestDTO  {
 	private String idDominio;
 	private String idUo;
 	
-	public PutUnitaOperativaDTO(IAutorizzato user) {
+	public PutUnitaOperativaDTO(Authentication user) {
 		super(user);
 	}
 

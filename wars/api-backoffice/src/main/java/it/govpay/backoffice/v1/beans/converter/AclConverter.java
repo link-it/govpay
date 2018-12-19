@@ -5,19 +5,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
-import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.AclPost.AutorizzazioniEnum;
 import it.govpay.backoffice.v1.beans.ServizioEnum;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.IAutorizzato;
 
 public class AclConverter {
 
-	public static PostAclDTO getPostAclDTO(AclPost aclPost, IAutorizzato user) throws ServiceException {
+	public static PostAclDTO getPostAclDTO(AclPost aclPost, Authentication user) throws ServiceException {
 		
 		PostAclDTO aclDTO = new PostAclDTO(user);
 		Acl acl = getAcl(aclPost, user);
@@ -26,7 +27,7 @@ public class AclConverter {
 		return aclDTO;		
 	}
 	
-	public static Acl getAcl(AclPost aclPost, IAutorizzato user) throws ServiceException {
+	public static Acl getAcl(AclPost aclPost, Authentication user) throws ServiceException {
 		
 		Acl acl = new Acl();
 		
@@ -47,7 +48,7 @@ public class AclConverter {
 
 		acl.setListaDiritti(lst);
 		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
-		acl.setPrincipal(user.getPrincipal());
+		acl.setPrincipal(AutorizzazioneUtils.getPrincipal(user));
 		return acl;
 	}
 	

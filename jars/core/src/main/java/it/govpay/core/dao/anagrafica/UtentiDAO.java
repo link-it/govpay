@@ -26,13 +26,15 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Utenza;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.DeleteOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTOResponse;
@@ -53,7 +55,6 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.PatchOp;
 
 
@@ -67,33 +68,17 @@ public class UtentiDAO extends BaseDAO{
 		super(useCacheData);
 	}
 
-	public enum TipoUtenza {
-		PORTALE, OPERATORE, APPLICAZIONE;
-	}
-
-	public void populateUser(IAutorizzato user) throws NotAuthenticatedException, ServiceException, NotAuthorizedException {
-		BasicBD bd = null;
-
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.populateUser(user, bd);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
-	}
-
-	public LeggiProfiloDTOResponse getProfilo(IAutorizzato user) throws NotAuthenticatedException, ServiceException, NotAuthorizedException {
+	public LeggiProfiloDTOResponse getProfilo(Authentication authentication) throws NotAuthenticatedException, ServiceException, NotAuthorizedException {
 		BasicBD bd = null;
 		LeggiProfiloDTOResponse response = new LeggiProfiloDTOResponse();
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			response.setNome(this.populateUser(user, bd));
 			
-			response.setUtente(user);
-			
-			response.setDomini(((Utenza)user).getDomini(bd));
-			response.setTributi(((Utenza)user).getTributi(bd));
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+			response.setNome(userDetails.getIdentificativo());
+			response.setUtente(userDetails.getUtenza());
+			response.setDomini(userDetails.getUtenza().getDomini(bd));
+			response.setTributi(userDetails.getUtenza().getTributi(bd));
 			
 		} finally {
 			if(bd != null)

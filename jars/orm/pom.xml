@@ -68,8 +68,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.jcs</groupId>
-			<artifactId>jcs</artifactId>
+			<groupId>org.apache.commons</groupId>
+		    <artifactId>commons-jcs-core</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>

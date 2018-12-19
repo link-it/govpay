@@ -5,19 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.Incasso;
+import it.govpay.backoffice.v1.beans.IncassoIndex;
+import it.govpay.backoffice.v1.beans.IncassoPost;
+import it.govpay.backoffice.v1.beans.Riscossione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
-import it.govpay.backoffice.v1.beans.Incasso;
-import it.govpay.backoffice.v1.beans.IncassoPost;
-import it.govpay.backoffice.v1.beans.IncassoIndex;
-import it.govpay.backoffice.v1.beans.Riscossione;
-import it.govpay.model.IAutorizzato;
 
 public class IncassiConverter {
 
 	
-	public static RichiestaIncassoDTO toRichiestaIncassoDTO(IncassoPost incassoPost, String idDominio, IAutorizzato user) {
+	public static RichiestaIncassoDTO toRichiestaIncassoDTO(IncassoPost incassoPost, String idDominio, Authentication user) {
 		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
 		dto.setCausale(incassoPost.getCausale());
 		dto.setDataValuta(incassoPost.getDataValuta());

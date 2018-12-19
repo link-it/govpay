@@ -3,13 +3,14 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Anagrafica;
-import it.govpay.model.IAutorizzato;
 
 public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 
-	public PagamentiPortaleDTO(IAutorizzato user) {
+	public PagamentiPortaleDTO(Authentication user) {
 		super(user);
 	}
 

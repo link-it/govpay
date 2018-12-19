@@ -109,7 +109,7 @@ public class Operazioni{
 		if(!it.govpay.core.business.Operazioni.getEseguiElaborazioneTracciati()) {
 			return "";
 		}
-		String esito = it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
+		String esito = it.govpay.core.business.Operazioni.elaborazioneTracciatiPendenze("Batch");
 		
 		it.govpay.core.business.Operazioni.resetEseguiElaborazioneTracciati();
 		return esito;
@@ -126,7 +126,7 @@ public class Operazioni{
 			return "Batch Elaborazione Tracciati non attivo";
 		}
 		
-		return it.govpay.core.business.Operazioni.elaborazioneTracciati("Batch");
+		return it.govpay.core.business.Operazioni.elaborazioneTracciatiPendenze("Batch");
 	}
 
 }

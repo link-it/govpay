@@ -35,25 +35,22 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 
-import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtDatiSingoliPagamenti;
-import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazione;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediElencoFlussiRendicontazioneRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazione;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediFlussoRendicontazioneRisposta;
 import gov.telematici.pagamenti.ws.rpt.TipoIdRendicontazione;
+import it.gov.digitpa.schemas._2011.pagamenti.riversamento.CtDatiSingoliPagamenti;
+import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
@@ -64,22 +61,18 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -601,70 +594,6 @@ public class Rendicontazioni extends BasicBD {
 
 		return flussiDaAcquisire;
 	}
-
-
-	/**
-	 * Recupera l'elenco dei flussi di rendicontazione per cui l'applicazione richiedente e' abilitata
-	 * 
-	 * 
-	 * TODO rendere opzionale il filtro per dominio
-	 * TODO deprecare il filtro per applicazione
-	 * 
-	 * @param applicazione
-	 * @param codDominio
-	 * @param codApplicazione
-	 * @param da
-	 * @param a
-	 * @return
-	 * @throws GovPayException
-	 * @throws ServiceException
-	 * @throws NotFoundException
-	 */
-	public List<Fr> chiediListaRendicontazioni(Applicazione applicazione, String codDominio, String codApplicazione, Date da, Date a) throws GovPayException, ServiceException, NotFoundException {
-		
-		List<Diritti> diritti = new ArrayList<>(); 
-		diritti.add(Diritti.LETTURA);
-		
-		List<String> domini = new ArrayList<>();
-		if(codDominio != null) {
-			if(AclEngine.isAuthorized(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, codDominio, null,diritti))
-				domini.add(codDominio);
-			else
-				throw new GovPayException(EsitoOperazione.RND_001);
-		} else {
-			List<String> authorizedRnd = AclEngine.getDominiAutorizzati(applicazione.getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI,diritti);
-			if(authorizedRnd != null)
-				domini.addAll(authorizedRnd);
-			else 
-				domini = null;
-		}
-		
-		if(domini != null && domini.size() == 0)
-			throw new GovPayException(EsitoOperazione.RND_001);
-
-		FrBD frBD = new FrBD(this);
-		FrFilter newFilter = frBD.newFilter();
-		newFilter.setCodDominio(domini);
-		newFilter.setDatainizio(da);
-		newFilter.setDataFine(a);
-		newFilter.setLimit(500);
-		FilterSortWrapper fs = new FilterSortWrapper();
-		fs.setField(it.govpay.orm.FR.model().DATA_ACQUISIZIONE);
-		fs.setSortOrder(SortOrder.DESC);
-		newFilter.getFilterSortList().add(fs);
-
-		if(codApplicazione != null) {
-			long idApplicazione = 0;
-			try {
-				idApplicazione = AnagraficaManager.getApplicazione(this, codApplicazione).getId();
-			} catch (Exception e) {
-				throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
-			}
-			newFilter.setIdApplicazione(idApplicazione);
-		}
-		return frBD.findAll(newFilter);
-	}
-
 
 	/**
 	 * Recupera il flusso di rendicontazione identificato dal codFlusso

@@ -8,10 +8,10 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.model.Utenza;
 import it.govpay.bd.viste.EntratePrevisteBD;
 import it.govpay.bd.viste.filters.EntrataPrevistaFilter;
 import it.govpay.bd.viste.model.EntrataPrevista;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.business.reportistica.EntratePreviste;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO;
@@ -20,7 +20,6 @@ import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTOResponse;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
@@ -37,9 +36,9 @@ public class EntratePrevisteDAO extends BaseDAO{
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaEntratePrevisteDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 			// Autorizzazione sui domini
-			List<String> codDomini = AclEngine.getDominiAutorizzati((Utenza) listaEntratePrevisteDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEntratePrevisteDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 			if(codDomini == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+listaEntratePrevisteDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaEntratePrevisteDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 			}
 
 			EntratePrevisteBD entrateBD = new EntratePrevisteBD(bd);

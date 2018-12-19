@@ -30,10 +30,10 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Anagrafica;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica.TIPO;
@@ -160,7 +160,7 @@ public class VersamentoUtils {
 				throw new GovPayException(EsitoOperazione.TRB_000, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 			
-			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd).getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo(),diritti)) {
+			if(!versamento.getApplicazione(bd).isTrusted() && !AuthorizationManager.isAuthorized(versamento.getApplicazione(bd).getUtenza(), versamento.getApplicazione(bd).getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo(),diritti)) {
 				throw new GovPayException(EsitoOperazione.VER_022, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 		}
@@ -170,7 +170,7 @@ public class VersamentoUtils {
 			if(!versamento.getApplicazione(bd).isTrusted())
 				throw new GovPayException(EsitoOperazione.VER_019);
 			
-			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd).getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamento.getUo(bd).getDominio(bd).getCodDominio(), null, diritti))
+			if(!AuthorizationManager.isAuthorized(versamento.getApplicazione(bd).getUtenza(), versamento.getApplicazione(bd).getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamento.getUo(bd).getDominio(bd).getCodDominio(), null, diritti))
 				throw new GovPayException(EsitoOperazione.VER_021);
 			
 			try {

@@ -3,8 +3,9 @@
  */
 package it.govpay.core.dao.anagrafica.dto;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.core.dao.pagamenti.dto.AbstractPatchDTO;
-import it.govpay.model.IAutorizzato;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -16,7 +17,7 @@ public class PatchRuoloDTO extends AbstractPatchDTO {
 
 	private String idRuolo;
 	
-	public PatchRuoloDTO(IAutorizzato user) {
+	public PatchRuoloDTO(Authentication user) {
 		super(user);
 	}
 

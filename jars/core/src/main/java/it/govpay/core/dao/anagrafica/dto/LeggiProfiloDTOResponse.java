@@ -7,7 +7,7 @@ import java.util.List;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
-import it.govpay.model.IAutorizzato;
+import it.govpay.bd.model.Utenza;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -18,13 +18,13 @@ import it.govpay.model.IAutorizzato;
 public class LeggiProfiloDTOResponse {
 
 	private String nome;
-	private IAutorizzato utente;
+	private Utenza utente;
 	private List<Dominio> domini;
 	private List<Tributo> tributi;
-	public IAutorizzato getUtente() {
+	public Utenza getUtente() {
 		return this.utente;
 	}
-	public void setUtente(IAutorizzato utente) {
+	public void setUtente(Utenza utente) {
 		this.utente = utente;
 	}
 	public List<Dominio> getDomini() {

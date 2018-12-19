@@ -1,16 +1,16 @@
 package it.govpay.backoffice.v1.beans.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
-import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 import it.govpay.backoffice.v1.beans.Intermediario;
 import it.govpay.backoffice.v1.beans.IntermediarioIndex;
 import it.govpay.backoffice.v1.beans.IntermediarioPost;
-import it.govpay.model.IAutorizzato;
+import it.govpay.core.dao.anagrafica.dto.PutIntermediarioDTO;
 
 public class IntermediariConverter {
 
-	public static PutIntermediarioDTO getPutIntermediarioDTO(IntermediarioPost intermediarioPost, String idIntermediario, IAutorizzato user) throws ServiceException {
+	public static PutIntermediarioDTO getPutIntermediarioDTO(IntermediarioPost intermediarioPost, String idIntermediario, Authentication user) throws ServiceException {
 		PutIntermediarioDTO putIntermediarioDTO = new PutIntermediarioDTO(user);
 		
 		it.govpay.model.Intermediario intermediario = new it.govpay.model.Intermediario();

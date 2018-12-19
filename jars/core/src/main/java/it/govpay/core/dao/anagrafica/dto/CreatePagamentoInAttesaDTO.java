@@ -20,12 +20,11 @@
 package it.govpay.core.dao.anagrafica.dto;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class CreatePagamentoInAttesaDTO extends BasicCreateRequestDTO {
 	
-	public CreatePagamentoInAttesaDTO(IAutorizzato user) throws ServiceException {
+	public CreatePagamentoInAttesaDTO(Authentication user) throws ServiceException {
 		super(user);
 	}
 	

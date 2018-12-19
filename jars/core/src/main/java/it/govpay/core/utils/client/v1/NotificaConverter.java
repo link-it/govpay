@@ -28,6 +28,7 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.LocalDate;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.jaxrs.RawObject;
 import org.xml.sax.SAXException;
 
 import it.govpay.bd.BasicBD;
@@ -35,7 +36,6 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
-import it.govpay.core.utils.rawutils.RawObject;
 import it.govpay.ec.v1.beans.Allegato;
 import it.govpay.ec.v1.beans.Allegato.TipoEnum;
 import it.govpay.ec.v1.beans.Notifica;

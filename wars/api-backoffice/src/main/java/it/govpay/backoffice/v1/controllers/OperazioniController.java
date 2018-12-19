@@ -11,18 +11,18 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.ListaOperazioni;
 import it.govpay.backoffice.v1.beans.converter.OperazioniConverter;
 import it.govpay.core.dao.operazioni.OperazioniDAO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTO;
 import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
-import it.govpay.backoffice.v1.beans.ListaOperazioni;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
 
 public class OperazioniController extends BaseController {
 
@@ -30,7 +30,7 @@ public class OperazioniController extends BaseController {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
     }
     
-    public Response operazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
+    public Response operazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
     	String methodName = "operazioniGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -80,7 +80,7 @@ public class OperazioniController extends BaseController {
 		}
     }
 
-    public Response operazioniIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    public Response operazioniIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "operazioniIdGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -112,7 +112,7 @@ public class OperazioniController extends BaseController {
 		}
     }
 
-    public Response operazioniStatoIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    public Response operazioniStatoIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity( "Not implemented" ).build();
     }
 

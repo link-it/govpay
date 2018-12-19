@@ -46,8 +46,12 @@ public class ConnettoreSftpConverter {
 			dto.setHttpPasswIn(connettore.getValore());
 		}
 
-		if(ConnettoreSftp.P_URL_NAME_IN.equals(connettore.getCodProprieta())) {
-			dto.setUrlIn(connettore.getValore());
+		if(ConnettoreSftp.P_HOST_NAME_IN.equals(connettore.getCodProprieta())) {
+			dto.setHostIn(connettore.getValore());
+		}
+		
+		if(ConnettoreSftp.P_PORTA_NAME_IN.equals(connettore.getCodProprieta())) {
+			dto.setPortaIn(connettore.getValore());
 		}
 		
 		if(ConnettoreSftp.P_USER_NAME_OUT.equals(connettore.getCodProprieta())) {
@@ -58,8 +62,12 @@ public class ConnettoreSftpConverter {
 			dto.setHttpPasswOut(connettore.getValore());
 		}
 
-		if(ConnettoreSftp.P_URL_NAME_OUT.equals(connettore.getCodProprieta())) {
-			dto.setUrlOut(connettore.getValore());
+		if(ConnettoreSftp.P_HOST_NAME_OUT.equals(connettore.getCodProprieta())) {
+			dto.setHostOut(connettore.getValore());
+		}
+		
+		if(ConnettoreSftp.P_PORTA_NAME_OUT.equals(connettore.getCodProprieta())) {
+			dto.setPortaOut(connettore.getValore());
 		}
 		
 		return dto;
@@ -85,12 +93,21 @@ public class ConnettoreSftpConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getUrlIn() != null && !connettore.getUrlIn().trim().isEmpty()) {
+		if(connettore.getHostIn() != null && !connettore.getHostIn().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			
-			vo.setCodProprieta(ConnettoreSftp.P_URL_NAME_IN);
-			vo.setValore(connettore.getUrlIn());
+			vo.setCodProprieta(ConnettoreSftp.P_HOST_NAME_IN);
+			vo.setValore(connettore.getHostIn());
+			voList.add(vo);
+		}
+		
+		if(connettore.getPortaIn() != null && !connettore.getPortaIn().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			
+			vo.setCodProprieta(ConnettoreSftp.P_PORTA_NAME_IN);
+			vo.setValore(connettore.getPortaIn());
 			voList.add(vo);
 		}
 
@@ -110,13 +127,22 @@ public class ConnettoreSftpConverter {
 			vo.setValore(connettore.getHttpPasswOut());
 			voList.add(vo);
 		}
-
-		if(connettore.getUrlOut() != null && !connettore.getUrlOut().trim().isEmpty()) {
+		
+		if(connettore.getHostOut() != null && !connettore.getHostOut().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			
-			vo.setCodProprieta(ConnettoreSftp.P_URL_NAME_OUT);
-			vo.setValore(connettore.getUrlOut());
+			vo.setCodProprieta(ConnettoreSftp.P_HOST_NAME_OUT);
+			vo.setValore(connettore.getHostOut());
+			voList.add(vo);
+		}
+
+		if(connettore.getPortaOut() != null && !connettore.getPortaOut().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			
+			vo.setCodProprieta(ConnettoreSftp.P_PORTA_NAME_OUT);
+			vo.setValore(connettore.getPortaOut());
 			voList.add(vo);
 		}
 

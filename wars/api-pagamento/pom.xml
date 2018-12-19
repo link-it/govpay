@@ -38,9 +38,34 @@
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-service-description</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-policy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-wsdl</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>io.swagger.codegen.v3</groupId>
@@ -114,6 +139,18 @@
 							<directory>src/main/webapp</directory>
 							<filtering>true</filtering>
 						</webResource>
+						<webResource>
+							<directory>src/main/resources/spring-jaxrs</directory>
+							<filtering>true</filtering>
+							<include>applicationContext-jaxrs-*.xml</include>
+							<targetPath>WEB-INF</targetPath>							
+						</webResource>
+						<webResource>
+							<directory>src/main/resources/spring-sec</directory>
+							<filtering>true</filtering>
+							<include>applicationContext-security-${govpay-api-pagamento-auth}*.xml</include>
+							<targetPath>WEB-INF</targetPath>							
+						</webResource>
 					</webResources>
 					<webXml>src/main/resources/web-${govpay-api-pagamento-auth}.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
@@ -132,7 +169,7 @@
 			<plugin>
 				<groupId>io.swagger.codegen.v3</groupId>
 				<artifactId>swagger-codegen-maven-plugin</artifactId>
-				<version>${swagger.codegen.version}</version>
+				<version>${swagger-codegen-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -141,7 +178,7 @@
 						<id>generate-sources</id>
 						<phase>generate-sources</phase>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/webapp/v2/govpay-api-pagamento-onefile-v2.yaml</inputSpec>
+							<inputSpec>${project.basedir}/src/main/webapp/v2/govpay-api-pagamento-v2.yaml</inputSpec>
 							<language>jaxrs-cxf</language>
 							<configOptions>
 								<dateLibrary>joda</dateLibrary>

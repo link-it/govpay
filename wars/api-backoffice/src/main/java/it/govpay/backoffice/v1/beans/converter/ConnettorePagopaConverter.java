@@ -31,7 +31,8 @@ public class ConnettorePagopaConverter {
 			connettore.setTipoAutenticazione(EnumAuthType.NONE);
 		}	
 		
-		connettore.setUrl(connector.getUrl());
+		connettore.setUrl(connector.getUrlRPT());
+		connettore.setUrlServiziAvvisatura(connector.getUrlAvvisatura()); 
 		
 		return connettore;
 	}
@@ -40,7 +41,8 @@ public class ConnettorePagopaConverter {
 		ConnettorePagopa rsModel = new ConnettorePagopa();
 		if(!connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
 			rsModel.setAuth(toTipoAutenticazioneRsModel(connettore));
-		rsModel.setUrl(connettore.getUrl());
+		rsModel.setUrlRPT(connettore.getUrl());
+		rsModel.setUrlAvvisatura(connettore.getUrlServiziAvvisatura());
 		
 		return rsModel;
 	}

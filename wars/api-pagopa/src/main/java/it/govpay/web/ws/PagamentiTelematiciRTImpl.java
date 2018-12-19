@@ -24,9 +24,7 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
@@ -35,6 +33,8 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import gov.telematici.pagamenti.ws.rt.EsitoPaaInviaRT;
@@ -50,15 +50,13 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.eventi.EventoCooperazione;
 import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
-import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.business.GiornaleEventi;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
-import it.govpay.core.utils.CredentialUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -127,8 +125,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			Utenza user = this.getUtenzaAutenticata();
-			if(GovpayConfig.getInstance().isPddAuthEnable() && user.getPrincipal() == null) {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
 				ctx.log("er.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
@@ -139,18 +137,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 				// Controllo autorizzazione
 				if(GovpayConfig.getInstance().isPddAuthEnable()){
-					boolean authOk = false;
-					
-					if(user.isCheckSubject()) {
-						// check tra subject
-						authOk = CredentialUtils.checkSubject(intermediario.getPrincipal(), user.getPrincipal());
-					} else {
-						authOk = user.getPrincipal().equals(intermediario.getPrincipal());
-					}
+					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
 					
 					if(!authOk) {
-						ctx.log("er.erroreAutorizzazione", user.getPrincipal());
-						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + identificativoIntermediarioPA);
+						String principal = AutorizzazioneUtils.getPrincipal(authentication);
+						ctx.log("er.erroreAutorizzazione", principal);
+						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + identificativoIntermediarioPA + ").");
 					}
 				}
 
@@ -268,8 +260,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			Utenza user =  this.getUtenzaAutenticata();
-			if(GovpayConfig.getInstance().isPddAuthEnable() && user.getPrincipal() == null) {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
 				ctx.log("rt.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
@@ -280,18 +272,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 				// Controllo autorizzazione
 				if(GovpayConfig.getInstance().isPddAuthEnable()){
-					boolean authOk = false;
-					
-					if(user.isCheckSubject()) {
-						// check tra subject
-						authOk = CredentialUtils.checkSubject(intermediario.getPrincipal(), user.getPrincipal());
-					} else {
-						authOk = user.getPrincipal().equals(intermediario.getPrincipal());
-					}
+					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
 					
 					if(!authOk) {
-					ctx.log("rt.erroreAutorizzazione", user.getPrincipal());
-					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + user.getPrincipal() + ") non corrisponde all'intermediario " + header.getIdentificativoIntermediarioPA() + ". Atteso [" + intermediario.getPrincipal() + "]");
+						String principal = AutorizzazioneUtils.getPrincipal(authentication);
+						ctx.log("rt.erroreAutorizzazione", principal);
+						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + header.getIdentificativoIntermediarioPA() + ").");
 					}
 				}
 
@@ -412,17 +398,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		}
 
 		return r;
-	}
-
-	private Utenza getUtenzaAutenticata() throws GovPayException {
-		Utenza user = null;
-		try {
-			HttpServletRequest request = (HttpServletRequest) this.wsCtxt.getMessageContext().get(MessageContext.SERVLET_REQUEST);  
-			user = CredentialUtils.getUser(request, log);
-		} catch (Exception e) {
-			throw new GovPayException(EsitoOperazione.AUT_001, this.wsCtxt.getUserPrincipal().getName());
-		}
-		return user;
 	}
 
 	@Override

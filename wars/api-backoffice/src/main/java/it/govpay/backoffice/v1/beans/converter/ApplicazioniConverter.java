@@ -4,26 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
-import it.govpay.backoffice.v1.controllers.ApplicazioniController;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Tributo;
-import it.govpay.bd.model.UtenzaApplicazione;
-import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.Applicazione;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.CodificaAvvisi;
 import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.TipoEntrata;
+import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.UtenzaApplicazione;
+import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Acl;
-import it.govpay.model.IAutorizzato;
 import it.govpay.model.Rpt.FirmaRichiesta;
 
 public class ApplicazioniConverter {
 	
-	public static PutApplicazioneDTO getPutApplicazioneDTO(ApplicazionePost applicazionePost, String idA2A, IAutorizzato user) throws ServiceException,NotAuthorizedException {
+	public static PutApplicazioneDTO getPutApplicazioneDTO(ApplicazionePost applicazionePost, String idA2A, Authentication user) throws ServiceException,NotAuthorizedException {
 		PutApplicazioneDTO applicazioneDTO = new PutApplicazioneDTO(user);
 		it.govpay.bd.model.Applicazione applicazione = new it.govpay.bd.model.Applicazione();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
@@ -62,7 +62,8 @@ public class ApplicazioniConverter {
 		applicazione.setCodApplicazione(idA2A);
 		applicazione.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 		applicazione.setConnettoreNotifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioNotifica()));
-		applicazione.setConnettoreVerifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioVerifica()));
+		if(applicazionePost.getServizioVerifica() != null)
+			applicazione.setConnettoreVerifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioVerifica()));
 		applicazioneDTO.setApplicazione(applicazione);
 		applicazioneDTO.setIdApplicazione(idA2A);
 		

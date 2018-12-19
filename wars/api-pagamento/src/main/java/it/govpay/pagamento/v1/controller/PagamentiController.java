@@ -12,6 +12,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.core.beans.JSONSerializable;
@@ -29,15 +30,14 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.model.IAutorizzato;
 import it.govpay.pagamento.v1.beans.FaultBean;
 import it.govpay.pagamento.v1.beans.FaultBeanEsteso;
+import it.govpay.pagamento.v1.beans.FaultBeanEsteso.CategoriaEnum;
 import it.govpay.pagamento.v1.beans.ListaPagamentiIndex;
 import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.v1.beans.PagamentoPost;
 import it.govpay.pagamento.v1.beans.PendenzaIndex;
 import it.govpay.pagamento.v1.beans.RppIndex;
-import it.govpay.pagamento.v1.beans.FaultBeanEsteso.CategoriaEnum;
 import it.govpay.pagamento.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.pagamento.v1.beans.converter.PendenzeConverter;
 import it.govpay.pagamento.v1.beans.converter.RptConverter;
@@ -51,7 +51,7 @@ public class PagamentiController extends BaseController {
      }
 
 
-    public Response pagamentiPOST(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale) {
+    public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale) {
     	String methodName = "pagamentiPOST";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -107,7 +107,7 @@ public class PagamentiController extends BaseController {
 		}
     }
     
-    public Response pagamentiIdSessionGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idSessione) {
+    public Response pagamentiIdSessionGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idSessione) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -153,7 +153,7 @@ public class PagamentiController extends BaseController {
 		}
     }
     
-    public Response pagamentiIdGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
+    public Response pagamentiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "getPagamentoPortaleById";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -199,7 +199,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response pagamentiGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, String idSessionePsp) {
+    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, String idSessionePsp) {
     	String methodName = "getListaPagamenti";  
 		GpContext ctx = null;
 		String transactionId = null;

@@ -33,6 +33,7 @@
 			<xsd:element name="qr_code" type="xsd:string"/>
 			<xsd:element name="cbill" type="xsd:string"/>
 			<xsd:element name="codice_avviso" type="xsd:string"/>
+			<xsd:element name="codice_avviso_postale" type="xsd:string"/>
 			<xsd:element name="numero_cc_postale" type="xsd:string"/>
 			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
 			<xsd:element name="autorizzazione" type="xsd:string"/>
@@ -57,6 +58,10 @@
 			<xsd:element name="indirizzo_ente" type="xsd:string"/>
 			<xsd:element name="luogo_ente" type="xsd:string"/>
 			<xsd:element name="cf_ente" type="xsd:string"/>
+			<xsd:element name="soggetto" type="xsd:string"/>
+			<xsd:element name="indirizzo_soggetto" type="xsd:string"/>
+			<xsd:element name="luogo_soggetto" type="xsd:string"/>
+			<xsd:element name="cf_soggetto" type="xsd:string"/>
 			<xsd:element name="istituto" type="xsd:string"/>
 			<xsd:element name="importo" type="xsd:double"/>
 			<xsd:element name="data" type="xsd:string"/>

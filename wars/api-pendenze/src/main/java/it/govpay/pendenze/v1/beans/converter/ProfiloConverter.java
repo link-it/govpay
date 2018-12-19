@@ -10,12 +10,12 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.pendenze.v1.beans.AclPost;
 import it.govpay.pendenze.v1.beans.DominioIndex;
 import it.govpay.pendenze.v1.beans.Profilo;
 import it.govpay.pendenze.v1.beans.TipoEntrata;
-import it.govpay.model.IAutorizzato;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -33,7 +33,7 @@ public class ProfiloConverter {
 	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) throws ServiceException {
 		Profilo profilo = new Profilo();
 		
-		IAutorizzato user = leggiProfilo.getUtente();
+		Utenza user = leggiProfilo.getUtente();
 		if(user.getAcls()!=null) {
 			List<AclPost> aclLst = new ArrayList<>();
 			for(it.govpay.model.Acl acl: user.getAcls()) {
@@ -48,7 +48,7 @@ public class ProfiloConverter {
 			for(Dominio dominio: leggiProfilo.getDomini()) {
 				dominiLst.add(DominiConverter.toRsIndexModel(dominio));
 			}
-			profilo.setDomini(dominiLst);
+			profilo.setDomini(dominiLst); 
 		}
 		if(leggiProfilo.getTributi()!=null) {
 			List<TipoEntrata> entrateLst = new ArrayList<>();

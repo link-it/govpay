@@ -13,6 +13,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIstitutoAttestante;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
@@ -49,7 +50,7 @@ public class RicevutaTelematica  extends BasicBD {
 			ricevuta.setCcp(leggiRicevutaDTO.getCcp());
 
 			RicevutaTelematicaProperties rtProperties = RicevutaTelematicaProperties.getInstance();
-			RicevutaTelematicaInput input = this.fromRpt(rpt);
+			RicevutaTelematicaInput input = this.fromRpt(rpt, leggiRicevutaDTO.isVisualizzaSoggettoDebitore());
 			ricevuta = RicevutaTelematicaPdf.getInstance().creaRicevuta(log, input, ricevuta, rtProperties );
 			response.setPdf(ricevuta.getPdf()); 
 		}catch(ServiceException e) {
@@ -60,7 +61,7 @@ public class RicevutaTelematica  extends BasicBD {
 		return response;
 	}
 
-	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
+	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt, boolean visualizzaSoggettoDebitore) throws Exception{
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
@@ -116,7 +117,11 @@ public class RicevutaTelematica  extends BasicBD {
 		
 		input.setStato(stato);
 
-
+		
+		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
+		if(visualizzaSoggettoDebitore && soggettoPagatore != null) {
+			this.impostaIndirizzoSoggettoPagatore(input, soggettoPagatore);
+		}
 
 		return input;
 	}
@@ -186,6 +191,36 @@ public class RicevutaTelematica  extends BasicBD {
 			}else {
 				input.setLuogoEnte(capCitta);
 			}
+		}
+	}
+	
+	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSoggettoPagatore soggettoPagatore) throws ServiceException {
+		if(soggettoPagatore != null) {
+			String indirizzo = StringUtils.isNotEmpty(soggettoPagatore.getIndirizzoPagatore()) ? soggettoPagatore.getIndirizzoPagatore() : "";
+			String civico = StringUtils.isNotEmpty(soggettoPagatore.getCivicoPagatore()) ? soggettoPagatore.getCivicoPagatore() : "";
+			String cap = StringUtils.isNotEmpty(soggettoPagatore.getCapPagatore()) ? soggettoPagatore.getCapPagatore() : "";
+			String localita = StringUtils.isNotEmpty(soggettoPagatore.getLocalitaPagatore()) ? soggettoPagatore.getLocalitaPagatore() : "";
+			String provincia = StringUtils.isNotEmpty(soggettoPagatore.getProvinciaPagatore()) ? (" (" +soggettoPagatore.getProvinciaPagatore() +")" ) : "";
+			String indirizzoCivico = indirizzo + " " + civico;
+			String capCitta = cap + " " + localita + provincia;
+
+			String indirizzoEnte = indirizzoCivico + ",";
+
+			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
+				input.setIndirizzoSoggetto(indirizzoEnte);
+			}else {
+				input.setIndirizzoSoggetto(indirizzoEnte);
+			}
+
+			if(capCitta.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
+				input.setLuogoSoggetto(capCitta);
+			}else {
+				input.setLuogoSoggetto(capCitta);
+			}
+			
+			input.setSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getAnagraficaPagatore()) ? soggettoPagatore.getAnagraficaPagatore() : "");
+			if(soggettoPagatore.getIdentificativoUnivocoPagatore() != null)
+				input.setCfSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco()) ? soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco() : "");
 		}
 	}
 }

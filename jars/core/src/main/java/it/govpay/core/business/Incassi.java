@@ -39,8 +39,8 @@ import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Nota.TipoNota;
-import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -48,6 +48,9 @@ import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
@@ -59,7 +62,6 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Acl.Diritti;
@@ -132,15 +134,15 @@ public class Incassi extends BasicBD {
 			diritti.add(Diritti.SCRITTURA);
 			
 			
+			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncasso.getUser());
+			if(!AuthorizationManager.isAuthorized(richiestaIncasso.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, richiestaIncasso.getCodDominio(), null,diritti))
+				throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
+	
 			// Verifica autorizzazione all'incasso e acquisizione applicazione chiamante
-			if(richiestaIncasso.getApplicazione() != null) {
-				idApplicazione = richiestaIncasso.getApplicazione().getId();
-				if(!AclEngine.isAuthorized(richiestaIncasso.getApplicazione().getUtenza(), Servizio.RENDICONTAZIONI_E_INCASSI, richiestaIncasso.getCodDominio(), null,diritti))
-					throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
-			} else if(richiestaIncasso.getOperatore() != null) {
-				idOperatore = richiestaIncasso.getOperatore().getId();
-				if(!AclEngine.isAuthorized(richiestaIncasso.getOperatore().getUtenza(),Servizio.PAGAMENTI_E_PENDENZE, richiestaIncasso.getCodDominio(), null,diritti))
-					throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
+			if(authenticationDetails.getApplicazione() != null) {
+				idApplicazione = authenticationDetails.getApplicazione().getId();
+			} else if(authenticationDetails.getOperatore() != null) {
+				idOperatore = authenticationDetails.getOperatore().getId();
 			} else {
 				throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
 			} 
@@ -413,7 +415,7 @@ public class Incassi extends BasicBD {
 		List<String> domini = null;
 		List<Diritti> diritti = new ArrayList<>(); 
 		diritti.add(Diritti.LETTURA);
-		domini = AclEngine.getDominiAutorizzati(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti); 
+		domini = AuthorizationManager.getDominiAutorizzati(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti); 
 		if(domini == null) {
 			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
 		}
@@ -446,7 +448,7 @@ public class Incassi extends BasicBD {
 			
 			List<Diritti> diritti = new ArrayList<>();
 			diritti.add(Diritti.LETTURA);
-			List<String> domini = AclEngine.getDominiAutorizzati(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
 			if(domini == null || (domini.size() > 0 && !domini.contains(incasso.getCodDominio()))) {
 				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per il dominio " + incasso.getCodDominio());
 			}

@@ -16,20 +16,20 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.EntrataPrevistaIndex;
+import it.govpay.backoffice.v1.beans.ListaEntratePreviste;
 import it.govpay.backoffice.v1.beans.converter.EntrataPrevistaConverter;
 import it.govpay.bd.viste.model.EntrataPrevista;
 import it.govpay.core.dao.reportistica.EntratePrevisteDAO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO.FormatoRichiesto;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTOResponse;
-import it.govpay.backoffice.v1.beans.EntrataPrevistaIndex;
-import it.govpay.backoffice.v1.beans.ListaEntratePreviste;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.model.IAutorizzato;
 
 public class ReportisticheController extends BaseController {
 
@@ -37,7 +37,7 @@ public class ReportisticheController extends BaseController {
     	 super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
-    public Response reportisticheEntratePrevisteGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String dataDa, String dataA) {
+    public Response reportisticheEntratePrevisteGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String dataDa, String dataA) {
     	GpContext ctx = null;
 		String transactionId = null;
 

@@ -13,10 +13,12 @@ public class ConnettoreSftpConverter {
 		connettoreSftp.setIdConnettore(idIntermediario + "_SFTP");
 		connettoreSftp.setHttpPasswIn(connector.getFtpLettura().getPassword());
 		connettoreSftp.setHttpUserIn(connector.getFtpLettura().getUsername());
-		connettoreSftp.setUrlIn(connector.getFtpLettura().getServerurl());
+		connettoreSftp.setHostIn(connector.getFtpLettura().getHost());
+		connettoreSftp.setPortaIn(connector.getFtpLettura().getPorta());
 		connettoreSftp.setHttpPasswOut(connector.getFtpScrittura().getPassword());
 		connettoreSftp.setHttpUserOut(connector.getFtpScrittura().getUsername());
-		connettoreSftp.setUrlOut(connector.getFtpScrittura().getServerurl());
+		connettoreSftp.setHostOut(connector.getFtpScrittura().getHost());
+		connettoreSftp.setPortaOut(connector.getFtpScrittura().getPorta());
 		
 		return connettoreSftp;
 	}
@@ -24,12 +26,14 @@ public class ConnettoreSftpConverter {
 	public static ServizioFtp toRsModel(it.govpay.model.ConnettoreSftp connettore) throws ServiceException {
 		ServizioFtp rsModel = new ServizioFtp();
 		ConnettoreFtp ftpLettura = new ConnettoreFtp();
-		ftpLettura.setServerurl(connettore.getUrlIn());
+		ftpLettura.setHost(connettore.getHostIn());
+		ftpLettura.setPorta(connettore.getPortaIn());
 		ftpLettura.setUsername(connettore.getHttpUserIn());
 		ftpLettura.setPassword(connettore.getHttpPasswIn());
 		rsModel.setFtpLettura(ftpLettura);
 		ConnettoreFtp ftpScrittura = new ConnettoreFtp();
-		ftpScrittura.setServerurl(connettore.getUrlOut());
+		ftpScrittura.setHost(connettore.getHostOut());
+		ftpScrittura.setPorta(connettore.getPortaOut());
 		ftpScrittura.setUsername(connettore.getHttpUserOut());
 		ftpScrittura.setPassword(connettore.getHttpPasswOut());
 		rsModel.setFtpScrittura(ftpScrittura);

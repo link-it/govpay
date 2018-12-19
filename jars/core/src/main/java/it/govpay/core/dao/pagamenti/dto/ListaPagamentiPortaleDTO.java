@@ -3,14 +3,14 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.Date;
 
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.model.IAutorizzato;
 import it.govpay.orm.PagamentoPortale;
 
 public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	
-	public ListaPagamentiPortaleDTO(IAutorizzato user) {
+	public ListaPagamentiPortaleDTO(Authentication user) {
 		super(user);
 		this.addSortField("dataRichiestaPagamento", PagamentoPortale.model().DATA_RICHIESTA);
 		this.addSortField("stato", PagamentoPortale.model().STATO);

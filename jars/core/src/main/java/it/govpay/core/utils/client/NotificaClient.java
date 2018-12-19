@@ -22,7 +22,9 @@ package it.govpay.core.utils.client;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
@@ -77,44 +79,46 @@ public class NotificaClient extends BasicClient {
 			List<Property> headerProperties = new ArrayList<>();
 			headerProperties.add(new Property("Accept", "application/json"));
 			String jsonBody = "";
-			String path = "";
+			StringBuilder sb = new StringBuilder();
 
 			if(notifica.getIdRr() == null) {
 				Rpt rpt = notifica.getRpt(null);
-				path = "/pagamenti/" + rpt.getCodDominio() + "/"+ rpt.getIuv();
+				
+				sb.append("/pagamenti/" + rpt.getCodDominio() + "/"+ rpt.getIuv());
 
-				boolean amp = false;
+				Map<String, String> queryParams = new HashMap<>();
+				
 				if(rpt.getCodSessione() != null) {
-					amp = true;
-					path += "?idSession=" + encode(rpt.getCodSessione());
+					queryParams.put("idSession", encode(rpt.getCodSessione()));
 				}
 
 				if(rpt.getCodSessionePortale() != null) {
-					if(amp) {
-						path += "?idSessionePortale=" + encode(rpt.getCodSessionePortale());
-						amp = true;
-					} else {
-						path += "&idSessionePortale=" + encode(rpt.getCodSessionePortale());
-					}
-
+					queryParams.put("idSessionePortale", encode(rpt.getCodSessionePortale()));
 				}
 
 				if(rpt.getCodCarrello() != null) {
-					if(amp) {
-						path += "?idCarrello=" + encode(rpt.getCodCarrello());
-						amp = true;
-					} else {
-						path += "&idCarrello=" + encode(rpt.getCodCarrello());
-					}
+					queryParams.put("idCarrello", encode(rpt.getCodCarrello()));
 				}
-
+				
+				boolean amp = false;
+				for (String key : queryParams.keySet()) {
+					if(amp) {
+						sb.append("&");
+					} else {
+						sb.append("?");
+						amp = true;
+					}
+					
+					sb.append(key).append("=").append(queryParams.get(key));
+				}
+				
 				it.govpay.ec.v1.beans.Notifica notificaRsModel = new NotificaConverter().toRsModel(notifica, rpt, bd);
 				jsonBody = ConverterUtils.toJSON(notificaRsModel, null);
 
 			} else {
 				throw new ServiceException("Notifica Storno REST non implementata!");
 			}
-			this.sendJson(path, jsonBody, headerProperties);
+			this.sendJson(sb.toString(), jsonBody, headerProperties);
 		}
 
 

@@ -1,14 +1,15 @@
 package it.govpay.core.dao.pagamenti.dto;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
-import it.govpay.model.IAutorizzato;
 
 public class LeggiPagamentoPortaleDTO extends BasicCreateRequestDTO {
 
 	/**
 	 * @param user
 	 */
-	public LeggiPagamentoPortaleDTO(IAutorizzato user) {
+	public LeggiPagamentoPortaleDTO(Authentication user) {
 		super(user);
 	}
 	

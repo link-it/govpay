@@ -12,12 +12,12 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -33,7 +33,7 @@ public class EventiDAO extends BaseDAO {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA,bd);
 			// Autorizzazione sui domini
-			List<String> codDomini = AclEngine.getDominiAutorizzati(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA);
+			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA);
 			if(codDomini == null) {
 				throw new NotAuthorizedException("L'utenza autenticata ["+listaEventiDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.GIORNALE_DEGLI_EVENTI + " per alcun dominio");
 			}

@@ -268,9 +268,9 @@ CREATE TABLE tracciati
 	data_completamento TIMESTAMP(3) NOT NULL DEFAULT 0,
 	bean_dati LONGTEXT,
 	file_name_richiesta VARCHAR(256),
-	raw_richiesta MEDIUMBLOB NOT NULL,
+	raw_richiesta MEDIUMBLOB ,
 	file_name_esito VARCHAR(256),
-	raw_esito MEDIUMBLOB NOT NULL,
+	raw_esito MEDIUMBLOB,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_operatore BIGINT,
@@ -285,7 +285,7 @@ CREATE TABLE tracciati
 ALTER TABLE intermediari ADD COLUMN da_avvisare BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE intermediari ADD COLUMN cod_avvisatura VARCHAR(20);
 ALTER TABLE intermediari ADD COLUMN id_tracciato BIGINT;
-ALTER TABLE intermediari ADD CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id);
+ALTER TABLE intermediari ADD CONSTRAINT fk_ntr_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id);
 
 CREATE TABLE esiti_avvisatura
 (
@@ -296,6 +296,7 @@ CREATE TABLE esiti_avvisatura
 	data TIMESTAMP(3) NOT NULL DEFAULT 0,
 	cod_esito INT NOT NULL,
 	descrizione_esito VARCHAR(140) NOT NULL,
+	id BIGINT NOT NULL,
 	id_tracciato BIGINT NOT NULL,
 	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
@@ -335,7 +336,7 @@ ALTER TABLE versamenti ADD COLUMN anomalo BOOLEAN NOT NULL DEFAULT FALSE;
 
 alter table singoli_versamenti add column indice_dati INT;
 update singoli_versamenti sv set indice_dati = (select sb1.indice_dati from (select sv1.id as id , sv1.id_versamento as id_versamento, row_number() over (partition by sv1.id_versamento) as indice_dati from singoli_versamenti sv1) as sb1 where sb1.id = sv.id);
-alter table singoli_versamenti MODIFY column indice_dati NOT NULL;
+alter table singoli_versamenti MODIFY column indice_dati INT NOT NULL;
 
 alter table singoli_versamenti drop index unique_singoli_versamenti_1;
 alter table singoli_versamenti add CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati);

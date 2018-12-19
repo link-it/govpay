@@ -3,8 +3,9 @@
  */
 package it.govpay.core.dao.pagamenti.dto;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
-import it.govpay.model.IAutorizzato;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -18,7 +19,7 @@ public class LeggiRicevutaDTO extends BasicCreateRequestDTO {
 	/*
 	 * @param user
 	 */
-	public LeggiRicevutaDTO(IAutorizzato user) {
+	public LeggiRicevutaDTO(Authentication user) {
 		super(user);
 	}
 	 
@@ -26,6 +27,7 @@ public class LeggiRicevutaDTO extends BasicCreateRequestDTO {
 	private String iuv;
 	private String ccp;
 	private FormatoRicevuta formato;
+	private boolean visualizzaSoggettoDebitore = false;
 	
 	public String getIdDominio() {
 		return this.idDominio;
@@ -52,5 +54,11 @@ public class LeggiRicevutaDTO extends BasicCreateRequestDTO {
 
 	public void setFormato(FormatoRicevuta formato) {
 		this.formato = formato;
+	}
+	public boolean isVisualizzaSoggettoDebitore() {
+		return visualizzaSoggettoDebitore;
+	}
+	public void setVisualizzaSoggettoDebitore(boolean visualizzaSoggettoDebitore) {
+		this.visualizzaSoggettoDebitore = visualizzaSoggettoDebitore;
 	}
 }

@@ -8,6 +8,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
@@ -19,11 +20,13 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
+import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
@@ -31,7 +34,6 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -62,13 +64,14 @@ public class Rpt extends BasicBD{
 		super(basicBD);
 	}
 
-	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Utenza utenzaChiamante, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
-		return this.avviaTransazione(versamenti, utenzaChiamante, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
+	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Authentication authentication, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
+		return this.avviaTransazione(versamenti, authentication, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
 	}
-
-	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Utenza utenza, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException {
+	
+	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Authentication authentication, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		try {
+			GovpayLdapUserDetails utenza = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 			ctx.getPagamentoCtx().setCarrello(true);
 			String codCarrello = RptUtils.buildUUID35();
 			if(pagamentoPortale != null) codCarrello= pagamentoPortale.getIdSessione();
@@ -92,7 +95,7 @@ public class Rpt extends BasicBD{
 					List<Diritti> diritti = new ArrayList<>(); 
 					diritti.add(Diritti.ESECUZIONE);
 
-					if(!AclEngine.isAuthorized(utenza, Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti,true)) {
+					if(!AuthorizationManager.isAuthorized(authentication, Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti,true)) {
 						log.warn("Non autorizzato " + utenza.getTipoUtenza() + " [" + utenza.getIdentificativo() + "] al caricamento tributo [" + codTributo + "] per dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "] ");
 						throw new GovPayException(EsitoOperazione.APP_003, utenza.getIdentificativo(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 					}

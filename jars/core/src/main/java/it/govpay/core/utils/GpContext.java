@@ -27,9 +27,11 @@ import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.beans.proxy.Transaction;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
-import it.govpay.bd.model.Utenza;
+import it.gov.spcoop.puntoaccessopa.servizi.avvisidigitali.NodoInviaAvvisoDigitaleService;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
@@ -104,9 +106,10 @@ public class GpContext {
 			else 
 				client.setInterfaceName("<Unknown>");
 			
-			Utenza user = CredentialUtils.getUser((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST), null);
+			String user = AutorizzazioneUtils.getPrincipal(SecurityContextHolder.getContext().getAuthentication()); 
+			
 			if(user != null)
-				client.setPrincipal(user.getPrincipal());
+				client.setPrincipal(user);
 			
 			transaction.setClient(client);
 			
@@ -156,9 +159,10 @@ public class GpContext {
 			
 			client.setInterfaceName(nomeServizio);
 			
-			Utenza user = CredentialUtils.getUser(request, null);
+			String user = AutorizzazioneUtils.getPrincipal(SecurityContextHolder.getContext().getAuthentication()); 
+			
 			if(user != null)
-				client.setPrincipal(user.getPrincipal());
+				client.setPrincipal(user);
 			
 			transaction.setClient(client);
 			
@@ -233,6 +237,14 @@ public class GpContext {
 	}
 	
 	public void setupNodoClient(String codStazione, String codDominio, Azione azione) {
+		this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
+	}
+	
+	public void setupNodoClient(String codStazione, String codDominio, it.govpay.core.utils.client.AvvisaturaClient.Azione azione) {
+		this._setupNodoClient(codStazione, codDominio, NodoInviaAvvisoDigitaleService.SERVICE.getLocalPart(), azione.toString(), 1);
+	}
+	
+	private void _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
 		Actor to = new Actor();
 		to.setName(NodoDeiPagamentiSPC);
 		to.setType(TIPO_SOGGETTO_NDP);
@@ -243,7 +255,7 @@ public class GpContext {
 		from.setType(TIPO_SOGGETTO_STAZIONE);
 		GpThreadLocal.get().getTransaction().setFrom(from);
 		
-		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_NDP, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
+		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_NDP, servizio, azione, versione);
 		
 		Server server = new Server();
 		server.setName(NodoDeiPagamentiSPC);

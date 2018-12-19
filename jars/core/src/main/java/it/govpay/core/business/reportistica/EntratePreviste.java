@@ -1,5 +1,6 @@
 package it.govpay.core.business.reportistica;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -30,6 +31,7 @@ import it.govpay.stampe.pdf.prospettoRiscossioni.utils.ProspettoRiscossioniPrope
 public class EntratePreviste extends BasicBD{
 	
 	public static final String COD_FLUSSO_NULL = "_gp_cod_flusso_null";
+	private SimpleDateFormat sdfData = new SimpleDateFormat("dd/MM/yyyy");
 
 	public EntratePreviste(BasicBD basicBD) {
 		super(basicBD);
@@ -62,6 +64,10 @@ public class EntratePreviste extends BasicBD{
 			
 			for (String codDominio :codDomini) {
 				ProspettoRiscossioneDominioInput prospRiscDominio = new ProspettoRiscossioneDominioInput();
+				if(dataA != null)
+					prospRiscDominio.setDataA(this.sdfData.format(dataA));
+				if(dataDa != null)
+				prospRiscDominio.setDataDa(this.sdfData.format(dataDa));
 				
 				Dominio dominio = this.impostaAnagraficaEnteCreditore(dominiBD, codDominio, prospRiscDominio);
 				

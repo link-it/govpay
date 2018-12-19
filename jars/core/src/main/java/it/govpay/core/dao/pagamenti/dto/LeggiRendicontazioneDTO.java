@@ -3,8 +3,9 @@
  */
 package it.govpay.core.dao.pagamenti.dto;
 
+import org.springframework.security.core.Authentication;
+
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
-import it.govpay.model.IAutorizzato;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -15,7 +16,7 @@ import it.govpay.model.IAutorizzato;
 public class LeggiRendicontazioneDTO extends BasicCreateRequestDTO {
 
 
-	public LeggiRendicontazioneDTO(IAutorizzato user, String idFlusso) {
+	public LeggiRendicontazioneDTO(Authentication user, String idFlusso) {
 		super(user);
 		this.idFlusso=idFlusso;
 	}

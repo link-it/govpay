@@ -12,7 +12,11 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.Applicazione;
+import it.govpay.backoffice.v1.beans.ApplicazionePost;
+import it.govpay.backoffice.v1.beans.ListaApplicazioni;
 import it.govpay.backoffice.v1.beans.converter.ApplicazioniConverter;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.ApplicazioniDAO;
@@ -23,15 +27,9 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
-import it.govpay.backoffice.v1.beans.Applicazione;
-import it.govpay.backoffice.v1.beans.ApplicazionePost;
-import it.govpay.backoffice.v1.beans.ListaApplicazioni;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.IAutorizzato;
-
-
 
 public class ApplicazioniController extends BaseController {
 	
@@ -44,7 +42,7 @@ public class ApplicazioniController extends BaseController {
 
 
 
-    public Response applicazioniIdA2AGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
+    public Response applicazioniIdA2AGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
     	String methodName = "applicazioniIdA2AGET";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -86,7 +84,7 @@ public class ApplicazioniController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response applicazioniIdA2APATCH(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
+	public Response applicazioniIdA2APATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
     	String methodName = "applicazioniIdA2APATCH";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -143,7 +141,7 @@ public class ApplicazioniController extends BaseController {
     }
 
 
-    public Response applicazioniIdA2APUT(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
+    public Response applicazioniIdA2APUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
     	String methodName = "applicazioniIdApplicazionePUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -182,7 +180,7 @@ public class ApplicazioniController extends BaseController {
 
 
 
-    public Response applicazioniGET(IAutorizzato user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response applicazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "applicazioniGET";  
 		GpContext ctx = null;
 		String transactionId = null;

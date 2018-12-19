@@ -1,6 +1,6 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class GetAvvisoDTO extends BasicRequestDTO {
 	
@@ -12,7 +12,7 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	private boolean accessoAnonimo;
 	private String cfDebitore;
 	
-	public GetAvvisoDTO(IAutorizzato user, String codDominio, String iuv) {
+	public GetAvvisoDTO(Authentication user, String codDominio, String iuv) {
 		super(user);
 		this.setCodDominio(codDominio);
 		this.setIuv(iuv);

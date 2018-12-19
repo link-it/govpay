@@ -1,5 +1,7 @@
 package it.govpay.pagamento.v2.api.impl;
 
+import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.Rpt;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
@@ -18,6 +20,7 @@ import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
 import org.openspcoop2.utils.jaxrs.impl.AuthorizationConfig;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -115,8 +118,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			AuthorizationManager.authorize(context, getAuthorizationConfig());
 			context.getLogger().debug("Autorizzazione completata con successo");     
                         
-			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO();
-			
+			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(context.getAuthentication());
 			leggiPendenzaDTO.setCodA2A(idA2A);
 			leggiPendenzaDTO.setCodPendenza(idPendenza);
 			leggiPendenzaDTO.setInfoIncasso(true); 
@@ -125,7 +127,10 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza =  PendenzeConverter.toPendenza(ricevutaDTOResponse.getVersamentoIncasso()); 
+			List<PagamentoPortale> pagamenti = null; // TODO
+			List<Rpt> transazioni = null; // TODO
+			
+			Pendenza pendenza = PendenzeConverter.toPendenza(ricevutaDTOResponse.getVersamentoIncasso(), pagamenti, transazioni); 
 
         
 			context.getLogger().debug("Invocazione completata con successo");

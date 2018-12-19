@@ -1,16 +1,17 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IAutorizzato;
+import org.springframework.security.core.Authentication;
 
 public class BasicRequestDTO {
 	
-	public BasicRequestDTO(IAutorizzato user) {
-		this.user = user;
+	public BasicRequestDTO(Authentication authentication) {
+		this.authentication = authentication;
 	}
 
-	private IAutorizzato user;
+	private Authentication authentication;
 	
-	public IAutorizzato getUser() {
-		return this.user;
+	// TODO Rinominare
+	public Authentication getUser() {
+		return this.authentication;
 	}
 }

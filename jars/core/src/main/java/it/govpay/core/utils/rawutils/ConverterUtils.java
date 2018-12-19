@@ -1,13 +1,11 @@
 package it.govpay.core.utils.rawutils;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.ValidationException;
-import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
@@ -23,7 +21,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.utils.JaxbUtils;
-import it.govpay.core.utils.SimpleDateFormatUtils;
 
 public class ConverterUtils {
 

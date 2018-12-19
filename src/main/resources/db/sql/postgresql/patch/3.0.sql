@@ -281,9 +281,9 @@ CREATE TABLE tracciati
 	data_completamento TIMESTAMP NOT NULL,
 	bean_dati TEXT,
 	file_name_richiesta VARCHAR(256),
-	raw_richiesta BYTEA NOT NULL,
+	raw_richiesta BYTEA,
 	file_name_esito VARCHAR(256),
-	raw_esito BYTEA NOT NULL,
+	raw_esito BYTEA,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tracciati') NOT NULL,
 	id_operatore BIGINT,

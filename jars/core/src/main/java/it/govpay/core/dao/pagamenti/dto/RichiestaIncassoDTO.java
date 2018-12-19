@@ -22,14 +22,15 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.springframework.security.core.Authentication;
+
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.model.IAutorizzato;
-import it.govpay.bd.model.Applicazione;
 
 public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	
-	public RichiestaIncassoDTO(IAutorizzato user) {
+	public RichiestaIncassoDTO(Authentication user) {
 		super(user);
 	}
 	
