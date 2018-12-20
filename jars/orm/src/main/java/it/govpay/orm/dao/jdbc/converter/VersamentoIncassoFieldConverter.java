@@ -354,32 +354,46 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "numero_avviso";
 			}
 		}
-		if(field.equals(VersamentoIncasso.model().AVVISATURA)){
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_ABILITATA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".avvisatura";
+				return this.toAliasTable(field)+".avvisatura_abilitata";
 			}else{
-				return "avvisatura";
+				return "avvisatura_abilitata";
 			}
 		}
-		if(field.equals(VersamentoIncasso.model().TIPO_PAGAMENTO)){
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_DA_INVIARE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo_pagamento";
+				return this.toAliasTable(field)+".avvisatura_da_inviare";
 			}else{
-				return "tipo_pagamento";
+				return "avvisatura_da_inviare";
 			}
 		}
-		if(field.equals(VersamentoIncasso.model().DA_AVVISARE)){
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_OPERAZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".da_avvisare";
+				return this.toAliasTable(field)+".avvisatura_operazione";
 			}else{
-				return "da_avvisare";
+				return "avvisatura_operazione";
 			}
 		}
-		if(field.equals(VersamentoIncasso.model().COD_AVVISATURA)){
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_MODALITA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_avvisatura";
+				return this.toAliasTable(field)+".avvisatura_modalita";
 			}else{
-				return "cod_avvisatura";
+				return "avvisatura_modalita";
+			}
+		}
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_TIPO_PAGAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".avvisatura_tipo_pagamento";
+			}else{
+				return "avvisatura_tipo_pagamento";
+			}
+		}
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_COD_AVVISATURA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".avvisatura_cod_avvisatura";
+			}else{
+				return "avvisatura_cod_avvisatura";
 			}
 		}
 		if(field.equals(VersamentoIncasso.model().ID_TRACCIATO_AVVISATURA.ID_TRACCIATO)){
@@ -394,13 +408,6 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".ack";
 			}else{
 				return "ack";
-			}
-		}
-		if(field.equals(VersamentoIncasso.model().NOTE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".note";
-			}else{
-				return "note";
 			}
 		}
 		if(field.equals(VersamentoIncasso.model().ANOMALO)){
@@ -595,25 +602,28 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VersamentoIncasso.model().NUMERO_AVVISO)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
-		if(field.equals(VersamentoIncasso.model().AVVISATURA)){
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_ABILITATA)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
-		if(field.equals(VersamentoIncasso.model().TIPO_PAGAMENTO)){
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_DA_INVIARE)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
-		if(field.equals(VersamentoIncasso.model().DA_AVVISARE)){
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_OPERAZIONE)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
-		if(field.equals(VersamentoIncasso.model().COD_AVVISATURA)){
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_MODALITA)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_TIPO_PAGAMENTO)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().AVVISATURA_COD_AVVISATURA)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().ID_TRACCIATO_AVVISATURA.ID_TRACCIATO)){
 			return this.toTable(VersamentoIncasso.model().ID_TRACCIATO_AVVISATURA, returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().ACK)){
-			return this.toTable(VersamentoIncasso.model(), returnAlias);
-		}
-		if(field.equals(VersamentoIncasso.model().NOTE)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().ANOMALO)){

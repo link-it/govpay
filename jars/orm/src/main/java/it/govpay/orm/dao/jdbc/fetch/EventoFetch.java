@@ -70,6 +70,8 @@ public class EventoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data", Evento.model().DATA.getFieldType()));
 				this.setParameter(object, "setIntervallo", Evento.model().INTERVALLO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "intervallo", Evento.model().INTERVALLO.getFieldType()));
+				this.setParameter(object, "setClassnameDettaglio", Evento.model().CLASSNAME_DETTAGLIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "classname_dettaglio", Evento.model().CLASSNAME_DETTAGLIO.getFieldType()));
 				this.setParameter(object, "setDettaglio", Evento.model().DETTAGLIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dettaglio", Evento.model().DETTAGLIO.getFieldType()));
 				return object;
@@ -110,6 +112,8 @@ public class EventoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"data"));
 				this.setParameter(object, "setIntervallo", Evento.model().INTERVALLO.getFieldType(),
 					this.getObjectFromMap(map,"intervallo"));
+				this.setParameter(object, "setClassnameDettaglio", Evento.model().CLASSNAME_DETTAGLIO.getFieldType(),
+					this.getObjectFromMap(map,"classnameDettaglio"));
 				this.setParameter(object, "setDettaglio", Evento.model().DETTAGLIO.getFieldType(),
 					this.getObjectFromMap(map,"dettaglio"));
 				return object;

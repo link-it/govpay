@@ -10,7 +10,7 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitale;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitaleRisposta;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtRisposta;
 import gov.telematici.pagamenti.ws.avvisi_digitali.ObjectFactory;
-import gov.telematici.pagamenti.ws.sachead.IntestazionePPT;
+import gov.telematici.pagamenti.ws.ppthead.richiesta_avvisi.IntestazionePPT;
 import it.govpay.bd.BasicBD;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpThreadLocal;
@@ -34,7 +34,7 @@ public class AvvisaturaClient extends BasicClient {
 	private ObjectFactory objectFactory = null;
 
 	public AvvisaturaClient(Intermediario intermediario, BasicBD bd) throws ClientException {
-		super(intermediario);
+		super(intermediario, TipoOperazioneNodo.AVVISATURA);
 		this.bd = bd;
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();

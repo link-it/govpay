@@ -115,6 +115,10 @@ public class BasicClient {
 	protected String mittente;
 	
 	protected IntegrationContext integrationCtx;
+	
+	public enum TipoOperazioneNodo {
+		AVVISATURA, NODO;
+	}
 
 	public enum TipoConnettore {
 		VERIFICA, NOTIFICA;
@@ -124,9 +128,9 @@ public class BasicClient {
 		APPLICAZIONE, INTERMEDIARIO;
 	}
 	
-	protected BasicClient(Intermediario intermediario) throws ClientException {
-		this("I_" + intermediario.getCodIntermediario(), intermediario.getConnettorePdd());
-		errMsg = "Pdd dell'intermediario (" + intermediario.getCodIntermediario() + ")";
+	protected BasicClient(Intermediario intermediario, TipoOperazioneNodo tipoOperazione) throws ClientException {
+		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura());
+		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
 		mittente = intermediario.getDenominazione();
 		destinatario = "NodoDeiPagamentiDellaPA";
 		integrationCtx = new IntegrationContext();

@@ -1258,11 +1258,13 @@
 			</xsd:element>
 			<xsd:element name="iuvVersamento" type="String35" minOccurs="0"/>
 			<xsd:element name="numeroAvviso" type="String35" minOccurs="0"/>
-			<xsd:element name="avvisatura" type="String1" minOccurs="0"/>
-			<xsd:element name="tipoPagamento" type="xsd:positiveInteger" minOccurs="0"/>
 			
-			<xsd:element name="daAvvisare" type="xsd:boolean"/>
-			<xsd:element name="codAvvisatura" type="String20" minOccurs="0"/>
+			<xsd:element name="avvisaturaAbilitata" type="xsd:boolean"/>
+			<xsd:element name="avvisaturaDaInviare" type="xsd:boolean"/>
+			<xsd:element name="avvisaturaOperazione" type="String1" minOccurs="0"/>
+			<xsd:element name="avvisaturaModalita" type="String1" minOccurs="0"/>
+			<xsd:element name="avvisaturaTipoPagamento" type="xsd:positiveInteger" minOccurs="0"/>
+			<xsd:element name="avvisaturaCodAvvisatura" type="String20" minOccurs="0"/>
 			<xsd:element name="idTracciatoAvvisatura" type="id-tracciato" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1274,15 +1276,6 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="ack" type="xsd:boolean" />
-			<xsd:element name="note" type="String4000" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="anomalo" type="xsd:boolean" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -1310,6 +1303,7 @@
 			<xsd:element name="sottotipoEvento" type="String35" minOccurs="0" />
 			<xsd:element name="data" type="xsd:dateTime" minOccurs="0" />
 			<xsd:element name="intervallo" type="xsd:long" minOccurs="0" />
+			<xsd:element name="classnameDettaglio" type="xsd:string" minOccurs="0" />
 			<xsd:element name="dettaglio" type="xsd:string" minOccurs="0">
             	<xsd:annotation>
 	            	<xsd:appinfo>
@@ -1795,8 +1789,8 @@
 			<xsd:element name="importo" type="xsd:double" />
 			<xsd:element name="versanteIdentificativo" type="String35" minOccurs="0"/>
 			<xsd:element name="idSessione" type="String35"/>
-			<xsd:element name="idSessionePortale" type="String35" minOccurs="0"/>
-			<xsd:element name="idSessionePsp" type="String35" minOccurs="0"/>
+			<xsd:element name="idSessionePortale" type="String255" minOccurs="0"/>
+			<xsd:element name="idSessionePsp" type="String255" minOccurs="0"/>
 			<xsd:element name="stato" type="String35" />
 			<xsd:element name="codiceStato" type="String35" />
 			<xsd:element name="descrizioneStato" type="String1024" minOccurs="0"/>
@@ -1829,15 +1823,6 @@
 			<xsd:element name="tipoVersamento" type="String4" minOccurs="0"/>
 			<xsd:element name="multiBeneficiario" type="String35" minOccurs="0"/>
 			<xsd:element name="ack" type="xsd:boolean" />
-			<xsd:element name="note" type="String4000" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="tipo" type="xsd:int" />
 			<xsd:element name="principal" type="String4000" />
 			<xsd:element name="tipo_utenza" type="String35" />
@@ -2547,11 +2532,12 @@
 			</xsd:element>
 			<xsd:element name="iuvVersamento" type="String35" minOccurs="0"/>
 			<xsd:element name="numeroAvviso" type="String35" minOccurs="0"/>
-			<xsd:element name="avvisatura" type="String1" minOccurs="0"/>
-			<xsd:element name="tipoPagamento" type="xsd:positiveInteger" minOccurs="0"/>
-			
-			<xsd:element name="daAvvisare" type="xsd:string"/>
-			<xsd:element name="codAvvisatura" type="String20" minOccurs="0"/>
+			<xsd:element name="avvisaturaAbilitata" type="xsd:string"/>
+			<xsd:element name="avvisaturaDaInviare" type="xsd:string"/>
+			<xsd:element name="avvisaturaOperazione" type="String1" minOccurs="0"/>
+			<xsd:element name="avvisaturaModalita" type="String1" minOccurs="0"/>
+			<xsd:element name="avvisaturaTipoPagamento" type="xsd:positiveInteger" minOccurs="0"/>
+			<xsd:element name="avvisaturaCodAvvisatura" type="String20" minOccurs="0"/>
 			<xsd:element name="idTracciatoAvvisatura" type="id-tracciato" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -2563,15 +2549,6 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="ack" type="xsd:string" />
-			<xsd:element name="note" type="String4000" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping long-text="true"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="anomalo" type="xsd:string" />
 			
 			<xsd:element name="dataPagamento" type="xsd:dateTime" minOccurs="0"/>

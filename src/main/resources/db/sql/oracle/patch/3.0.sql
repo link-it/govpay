@@ -662,11 +662,11 @@ CREATE VIEW v_riscossioni AS
 
 
 -- Principal Intermediario
-alter table intermediari add principal VARCHAR(4000);
+alter table intermediari add principal VARCHAR2(4000 CHAR);
 update intermediari set principal = (select valore from connettori where connettori.cod_proprieta = 'PRINCIPAL' and connettori.cod_connettore = intermediari.cod_connettore_pdd);
 alter table intermediari MODIFY (principal NOT NULL);
 
-alter table intermediari add principal_originale VARCHAR(4000);
+alter table intermediari add principal_originale VARCHAR2(4000 CHAR);
 update intermediari set principal_originale = (select valore from connettori where connettori.cod_proprieta = 'PRINCIPAL' and connettori.cod_connettore = intermediari.cod_connettore_pdd);
 alter table intermediari MODIFY (principal_originale NOT NULL);
 
@@ -689,7 +689,7 @@ CREATE TABLE eventi
         sottotipo_evento VARCHAR2(35 CHAR),
         data TIMESTAMP,
         intervallo NUMBER,
-        dettaglio CLOB,
+	dettaglio CLOB,
         -- fk/pk columns
         id NUMBER NOT NULL,
         id_versamento NUMBER,
@@ -700,4 +700,99 @@ CREATE TABLE eventi
         CONSTRAINT pk_eventi PRIMARY KEY (id)
 );
 
+
+-- Avvisatura Digitale SOAP
+
+-- aggiunta informazione classe java dell'oggetto serializzato nel campo dettaglio
+ALTER TABLE eventi ADD classname_dettaglio VARCHAR2(255 CHAR);
+
+-- inserisco informazione sulla classe degli eventi presenti
+update eventi set classname_dettaglio = 'it.govpay.bd.model.eventi.EventoCooperazione' where categoria_evento = 'C';
+update eventi set classname_dettaglio = 'it.govpay.bd.model.eventi.EventoNota' where categoria_evento = 'B';
+
+-- sonda batch invio avvisature in modalita' SOAP
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale-immediata', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+
+-- Aggiornamento della vista versamenti incassi dopo l'aggiornamento dei campi della tabella versamenti;
+DROP view versamenti_incassi;
+
+-- elimino la colonna note dai versamenti
+ALTER TABLE versamenti DROP COLUMN note;
+
+-- aggiunte informazioni sul modo di avvisatura richiesto sul versamento
+ALTER TABLE versamenti ADD COLUMN avvisatura_modalita VARCHAR2(1 CHAR);
+UPDATE versamenti SET avvisatura_modalita = 'A';
+
+ALTER TABLE versamenti ADD COLUMN avvisatura_abilitata NUMBER;
+UPDATE versamenti SET avvisatura_abilitata = 0;
+alter table versamenti MODIFY (avvisatura_abilitata NOT NULL);
+
+ALTER TABLE versamenti RENAME da_avvisare TO avvisatura_da_inviare;
+ALTER TABLE versamenti RENAME avvisatura TO avvisatura_operazione;
+ALTER TABLE versamenti RENAME tipo_pagamento TO avvisatura_tipo_pagamento;
+ALTER TABLE versamenti RENAME cod_avvisatura TO avvisatura_cod_avvisatura;
+
+CREATE VIEW versamenti_incassi AS
+SELECT
+versamenti.id as id,
+MAX(versamenti.cod_versamento_ente) as cod_versamento_ente,
+MAX(versamenti.nome) as nome,
+MAX(versamenti.importo_totale) as importo_totale,
+versamenti.stato_versamento as stato_versamento,
+MAX(versamenti.descrizione_stato) as descrizione_stato,
+MAX(CASE WHEN versamenti.aggiornabile = 1 THEN 'TRUE' ELSE 'FALSE' END) AS aggiornabile,
+MAX(versamenti.data_creazione) as data_creazione,
+MAX(versamenti.data_validita) as data_validita,
+MAX(versamenti.data_scadenza) as data_scadenza,
+MAX(versamenti.data_ora_ultimo_aggiornamento) as data_ora_ultimo_aggiornamento,
+MAX(versamenti.causale_versamento) as causale_versamento,
+MAX(versamenti.debitore_tipo) as debitore_tipo,
+versamenti.debitore_identificativo as debitore_identificativo,
+MAX(versamenti.debitore_anagrafica) as debitore_anagrafica,
+MAX(versamenti.debitore_indirizzo) as debitore_indirizzo,
+MAX(versamenti.debitore_civico) as debitore_civico,
+MAX(versamenti.debitore_cap) as debitore_cap,
+MAX(versamenti.debitore_localita) as debitore_localita,
+MAX(versamenti.debitore_provincia) as debitore_provincia,
+MAX(versamenti.debitore_nazione) as debitore_nazione,
+MAX(versamenti.debitore_email) as debitore_email,
+MAX(versamenti.debitore_telefono) as debitore_telefono,
+MAX(versamenti.debitore_cellulare) as debitore_cellulare,
+MAX(versamenti.debitore_fax) as debitore_fax,
+MAX(versamenti.tassonomia_avviso) as tassonomia_avviso,
+MAX(versamenti.tassonomia) as tassonomia,
+MAX(versamenti.cod_lotto) as cod_lotto,
+MAX(versamenti.cod_versamento_lotto) as cod_versamento_lotto,
+MAX(versamenti.cod_anno_tributario) as cod_anno_tributario,
+MAX(versamenti.cod_bundlekey) as cod_bundlekey,
+MAX(dbms_lob.substr(versamenti.dati_allegati)) as dati_allegati,
+MAX(versamenti.incasso) as incasso,
+MAX(dbms_lob.substr(versamenti.anomalie)) as anomalie,
+MAX(versamenti.iuv_versamento) as iuv_versamento,
+MAX(versamenti.numero_avviso) as numero_avviso,
+MAX(versamenti.id_dominio) as id_dominio,
+MAX(versamenti.id_uo) as id_uo,
+MAX(versamenti.id_applicazione) as id_applicazione,
+MAX(CASE WHEN versamenti.avvisatura_abilitata = 1 THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_abilitata,
+MAX(CASE WHEN versamenti.avvisatura_da_inviare = 1 THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_da_inviare,
+MAX(versamenti.avvisatura_operazione) as avvisatura_operazione,               
+MAX(versamenti.avvisatura_modalita) as avvisatura_modalita,
+MAX(versamenti.avvisatura_tipo_pagamento) as avvisatura_tipo_pagamento,                   
+MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,      
+MAX(versamenti.id_tracciato) as id_tracciato,
+MAX(CASE WHEN versamenti.ack = 1 THEN 'TRUE' ELSE 'FALSE' END) AS ack,
+MAX(CASE WHEN versamenti.anomalo = 1 THEN 'TRUE' ELSE 'FALSE' END) AS anomalo,
+MAX(pagamenti.data_pagamento) as data_pagamento,
+SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) AS importo_pagato,
+SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) AS importo_incassato,
+MAX(CASE WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) AS stato_pagamento,
+MAX(pagamenti.iuv) AS iuv_pagamento,
+MAX(CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > CURRENT_DATE THEN 0 ELSE 1 END) AS smart_order_rank,
+MIN(ABS((date_to_unix_for_smart_order(CURRENT_DATE) * 1000) - (date_to_unix_for_smart_order(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione))) *1000)) AS smart_order_date
+FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento
+WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0
+GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
+
+-- elimino la colonna note dai pagamenti portale
+ALTER TABLE pagamenti_portale DROP COLUMN note;
 

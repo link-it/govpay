@@ -253,6 +253,9 @@ public class TracciatiDAO extends BaseDAO{
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
 			
+			beanDati.setAvvisaturaAbilitata(postTracciatoDTO.getAvvisaturaDigitale());
+			beanDati.setAvvisaturaModalita(postTracciatoDTO.getAvvisaturaModalita() != null ? postTracciatoDTO.getAvvisaturaModalita().getValue() : null); 
+			
 			Tracciato tracciato = new Tracciato();
 			tracciato.setCodDominio(postTracciatoDTO.getIdDominio());
 			tracciato.setBeanDati(serializer.getObject(beanDati));

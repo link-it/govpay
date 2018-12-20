@@ -115,7 +115,7 @@ public class InviaRptThread implements Runnable {
 				notificheBD.insertNotifica(notifica);
 				bd.commit();
 				
-				ThreadExecutorManager.getClientPoolExecutor().execute(new InviaNotificaThread(notifica, bd));
+				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
 				log.info("RPT inviata correttamente al nodo");
 				ctx.log("pagamento.invioRptAttivataOk");
 			}

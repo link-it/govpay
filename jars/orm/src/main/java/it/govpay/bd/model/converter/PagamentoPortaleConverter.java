@@ -71,12 +71,6 @@ public class PagamentoPortaleConverter {
 		dto.setMultiBeneficiario(vo.getMultiBeneficiario()); 
 		dto.setAck(vo.getAck());
 		dto.setTipo(vo.getTipo());
-		if(vo.getNote()!=null)
-			try {
-				dto.setNote(vo.getNote());
-			} catch(IOException e) {
-				throw new ServiceException(e);
-			}
 
 		return dto;
 	}
@@ -112,13 +106,7 @@ public class PagamentoPortaleConverter {
 		vo.setMultiBeneficiario(dto.getMultiBeneficiario()); 
 		vo.setAck(dto.isAck());
 		vo.setTipo(dto.getTipo());
-		
-		if(dto.getNote()!=null && !dto.getNote().isEmpty())
-			try {
-				vo.setNote(dto.getNoteString());
-			} catch(IOException e) {
-				throw new ServiceException(e);
-			}
+
 		return vo;
 	}
 

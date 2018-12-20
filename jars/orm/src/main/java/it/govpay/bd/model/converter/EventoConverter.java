@@ -19,12 +19,19 @@
  */
 package it.govpay.bd.model.converter;
 
+import java.util.Arrays;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IOException;
+import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.eventi.EventoCooperazione;
 import it.govpay.bd.model.eventi.EventoNota;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
@@ -38,6 +45,7 @@ public class EventoConverter {
 		vo.setCodDominio(dto.getCodDominio());
 		vo.setData(dto.getData());
 		vo.setDettaglio(dto.getDettaglio());
+		vo.setClassnameDettaglio(dto.getClassnameDettaglio());
 		vo.setIntervallo(dto.getIntervallo() != null ? dto.getIntervallo() : 0l); 
 		vo.setId(dto.getId());
 		vo.setIuv(dto.getIuv());
@@ -90,6 +98,7 @@ public class EventoConverter {
 		dto.setCodDominio(vo.getCodDominio());
 		dto.setData(vo.getData());
 		dto.setDettaglio(vo.getDettaglio());
+		dto.setClassnameDettaglio(vo.getClassnameDettaglio());
 		dto.setId(vo.getId());
 		dto.setIuv(vo.getIuv());
 		dto.setTipoEvento(vo.getTipoEvento());
@@ -129,14 +138,15 @@ public class EventoConverter {
 		return dto;
 	}
 
-	public static Evento fromEventoCooperazionetoEvento(EventoCooperazione eventoCooperazione) throws IOException {
+	public static Evento fromEventoCooperazioneToEvento(EventoCooperazione eventoCooperazione) throws IOException {
 		Evento evento = new Evento();
 		
 		evento.setCategoriaEvento(eventoCooperazione.getCategoriaEvento());
 		evento.setCcp(eventoCooperazione.getCcp());
 		evento.setCodDominio(eventoCooperazione.getCodDominio());
 		evento.setData(eventoCooperazione.getDataRichiesta());
-		evento.setDettaglio(evento.getDettaglioEventoCooperazione(eventoCooperazione)); 
+		evento.setClassnameDettaglio(EventoCooperazione.class.getName());
+		evento.setDettaglio(getDettaglioEventoCooperazione(eventoCooperazione)); 
 		evento.setIdPagamentoPortale(eventoCooperazione.getIdPagamentoPortale()); 
 		evento.setIdVersamento(eventoCooperazione.getIdVersamento());
 		if(eventoCooperazione.getDataRisposta() != null) {
@@ -158,6 +168,8 @@ public class EventoConverter {
 	}
 	
 	public static EventoCooperazione toEventoCooperazione(Evento evento) throws IOException {
+		EventoCooperazione eventoCooperazione = evento.getDettaglioObject(EventoCooperazione.class);
+		
 //		EventoCooperazione eventoCooperazione = new EventoCooperazione();
 		
 //		eventoCooperazione.setCategoriaEvento(evento.getCategoriaEvento());
@@ -178,19 +190,20 @@ public class EventoConverter {
 //		if(evento.getTipoEvento() != null)
 //			eventoCooperazione.setTipoEvento(TipoEvento.valueOf(evento.getTipoEvento()));
 		
-		EventoCooperazione eventoCooperazione = evento.toEventoCooperazione();
+//		EventoCooperazione eventoCooperazione = evento.toEventoCooperazione();
 		
 		return eventoCooperazione;
 	}
 	
-	public static Evento fromEventoNotatoEvento(EventoNota eventoNota) throws IOException {
+	public static Evento fromEventoNotaToEvento(EventoNota eventoNota) throws IOException {
 		Evento evento = new Evento();
 		
 		evento.setCategoriaEvento(eventoNota.getCategoriaEvento());
 		evento.setCcp(eventoNota.getCcp());
 		evento.setCodDominio(eventoNota.getCodDominio());
 		evento.setData(eventoNota.getData());
-		evento.setDettaglio(evento.getDettaglioEventoNota(eventoNota)); 
+		evento.setClassnameDettaglio(EventoNota.class.getName());
+		evento.setDettaglio(getDettaglioEventoNota(eventoNota)); 
 		evento.setIdPagamentoPortale(eventoNota.getIdPagamentoPortale()); 
 		evento.setIdVersamento(eventoNota.getIdVersamento());
 		evento.setIuv(eventoNota.getIuv());
@@ -202,8 +215,23 @@ public class EventoConverter {
 	}
 	
 	public static EventoNota toEventoNota(Evento evento) throws IOException {
-		EventoNota eventoNota = evento.toEventoNota();
-
+		EventoNota eventoNota = evento.getDettaglioObject(EventoNota.class);
 		return eventoNota;
+	}
+	
+	public static String getDettaglioEventoCooperazione(EventoCooperazione eventoCooperazione) throws IOException {
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+		return serializer.getObject(eventoCooperazione); 
+	}
+
+	public static String getDettaglioEventoNota(EventoNota eventoNota) throws IOException {
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+		return serializer.getObject(eventoNota); 
 	}
 }

@@ -136,18 +136,6 @@ public class PagamentiPortaleBD extends BasicBD{
 		}
 	}
 
-	public void aggiornaNote(PagamentoPortale pagamento, String note) throws ServiceException {
-		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
-		try {
-			UpdateField noteField = new UpdateField(it.govpay.orm.PagamentoPortale.model().NOTE, note);
-			this.getPagamentoPortaleService().updateFields(this.getPagamentoPortaleService().convertToId(vo), noteField);
-		} catch (NotFoundException e) {
-			throw new ServiceException();
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		}
-	}
-
 	public void ack(PagamentoPortale pagamento) throws ServiceException {
 		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
 		try {

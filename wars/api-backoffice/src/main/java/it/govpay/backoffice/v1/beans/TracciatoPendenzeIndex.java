@@ -13,6 +13,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "nomeFile",
+"dominio",
 "dataOraCaricamento",
 "stato",
 "numeroOperazioniTotali",

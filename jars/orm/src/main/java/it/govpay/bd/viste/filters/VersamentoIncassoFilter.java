@@ -60,7 +60,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private String codDominio = null;
 	private Long idTracciato; 
 	private Boolean tracciatoNull; 
-	private Boolean daAvvisare; 
+	private Boolean avvisatuaraDaInviare; 
 	private String cfCittadino;
 	
 	public enum SortFields {
@@ -270,8 +270,8 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				}
 			}
 			
-			if(this.daAvvisare!=null) {
-				newExpression.equals(VersamentoIncasso.model().DA_AVVISARE, this.daAvvisare);
+			if(this.avvisatuaraDaInviare!=null) {
+				newExpression.equals(VersamentoIncasso.model().AVVISATURA_DA_INVIARE, this.avvisatuaraDaInviare);
 			}
 
 			return newExpression;
@@ -460,11 +460,11 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	}
 
 	public Boolean getDaAvvisare() {
-		return this.daAvvisare;
+		return this.avvisatuaraDaInviare;
 	}
 
 	public void setDaAvvisare(Boolean daAvvisare) {
-		this.daAvvisare = daAvvisare;
+		this.avvisatuaraDaInviare = daAvvisare;
 	}
 	public String getCfCittadino() {
 		return cfCittadino;

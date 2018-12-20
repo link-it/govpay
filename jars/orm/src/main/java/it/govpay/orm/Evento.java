@@ -43,6 +43,7 @@ import java.io.Serializable;
  * 			&lt;element name="sottotipoEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="intervallo" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="classnameDettaglio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dettaglio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="0" maxOccurs="1"/>
@@ -68,6 +69,7 @@ import java.io.Serializable;
   	"sottotipoEvento",
   	"data",
   	"intervallo",
+  	"classnameDettaglio",
   	"dettaglio",
   	"idVersamento",
   	"idPagamentoPortale"
@@ -158,6 +160,14 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.intervallo = intervallo;
   }
 
+  public java.lang.String getClassnameDettaglio() {
+    return this.classnameDettaglio;
+  }
+
+  public void setClassnameDettaglio(java.lang.String classnameDettaglio) {
+    this.classnameDettaglio = classnameDettaglio;
+  }
+
   public java.lang.String getDettaglio() {
     return this.dettaglio;
   }
@@ -233,6 +243,10 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="intervallo",required=false,nillable=false)
   protected long intervallo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="classnameDettaglio",required=false,nillable=false)
+  protected java.lang.String classnameDettaglio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="dettaglio",required=false,nillable=false)

@@ -42,14 +42,13 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.eventi.EventoNota;
+import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -65,6 +64,8 @@ import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.Versamento.AvvisaturaOperazione;
+import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class RtUtils extends NdpValidationUtils {
@@ -402,9 +403,6 @@ public class RtUtils extends NdpValidationUtils {
 		EventoNota eventoNota = null;
 		switch (rpt.getEsitoPagamento()) {
 		case PAGAMENTO_ESEGUITO:
-			//TODO Eliminare
-			versamento.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento eseguito", "Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote));
-			
 			eventoNota = new EventoNota();
 			eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
 			eventoNota.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
@@ -413,7 +411,7 @@ public class RtUtils extends NdpValidationUtils {
 			eventoNota.setIuv(versamento.getIuvVersamento());
 			eventoNota.setOggetto("Pagamento eseguito");
 			eventoNota.setTesto("Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote);
-			eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+			eventoNota.setTipoEvento(TipoNota.SistemaInfo);
 			
 			
 			switch (versamento.getStatoVersamento()) {
@@ -442,9 +440,6 @@ public class RtUtils extends NdpValidationUtils {
 			
 		case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 		case DECORRENZA_TERMINI_PARZIALE:
-			//TODO Eliminare
-			versamento.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento parzialmente eseguito", "Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote));
-			
 			eventoNota = new EventoNota();
 			eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
 			eventoNota.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
@@ -453,7 +448,7 @@ public class RtUtils extends NdpValidationUtils {
 			eventoNota.setIuv(versamento.getIuvVersamento());
 			eventoNota.setOggetto("Pagamento parzialmente eseguito");
 			eventoNota.setTesto("Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote);
-			eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+			eventoNota.setTipoEvento(TipoNota.SistemaInfo);
 			
 			switch (versamento.getStatoVersamento()) {
 				case ANNULLATO:
@@ -484,6 +479,23 @@ public class RtUtils extends NdpValidationUtils {
 			break;
 		}	
 		
+		switch (versamento.getStatoVersamento()) {
+		case PARZIALMENTE_ESEGUITO:
+		case ESEGUITO:
+			// Avvisatura
+			versamentiBD.updateVersamentoOperazioneAvvisatura(versamento.getId(), AvvisaturaOperazione.DELETE.getValue()); 
+			String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
+			if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
+				versamentiBD.updateVersamentoModalitaAvvisatura(versamento.getId(), avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
+			}
+			// schedulo l'invio dell'avvisatura
+			versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true);
+			break;
+		default:
+			// do nothing
+			break;
+		}
+		
 		// inserimento di una eventuale nota
 		if(eventoNota != null) {
 			giornaleEventi.registraEventoNota(eventoNota);
@@ -502,7 +514,7 @@ public class RtUtils extends NdpValidationUtils {
 		bd.commit();
 		bd.disableSelectForUpdate();
 		
-		ThreadExecutorManager.getClientPoolExecutor().execute(new InviaNotificaThread(notifica, bd));
+		ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
 		
 		ctx.log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
 		log.info("RT acquisita con successo.");

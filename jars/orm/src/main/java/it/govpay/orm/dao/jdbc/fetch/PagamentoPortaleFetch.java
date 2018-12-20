@@ -100,13 +100,11 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "multi_beneficiario", PagamentoPortale.model().MULTI_BENEFICIARIO.getFieldType()));
 				this.setParameter(object, "setAck", PagamentoPortale.model().ACK.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ack", PagamentoPortale.model().ACK.getFieldType()));
-				this.setParameter(object, "setNote", PagamentoPortale.model().NOTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "note", PagamentoPortale.model().NOTE.getFieldType()));
 				this.setParameter(object, "setTipo", PagamentoPortale.model().TIPO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo", PagamentoPortale.model().TIPO.getFieldType()));
-				setParameter(object, "setPrincipal", PagamentoPortale.model().PRINCIPAL.getFieldType(),
+				this.setParameter(object, "setPrincipal", PagamentoPortale.model().PRINCIPAL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "principal", PagamentoPortale.model().PRINCIPAL.getFieldType()));
-				setParameter(object, "setTipoUtenza", PagamentoPortale.model().TIPO_UTENZA.getFieldType(),
+				this.setParameter(object, "setTipoUtenza", PagamentoPortale.model().TIPO_UTENZA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_utenza", PagamentoPortale.model().TIPO_UTENZA.getFieldType()));
 				return object;
 			}
@@ -176,13 +174,11 @@ public class PagamentoPortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"multiBeneficiario"));
 				this.setParameter(object, "setAck", PagamentoPortale.model().ACK.getFieldType(),
 					this.getObjectFromMap(map,"ack"));
-				this.setParameter(object, "setNote", PagamentoPortale.model().NOTE.getFieldType(),
-					this.getObjectFromMap(map,"note"));
 				this.setParameter(object, "setTipo", PagamentoPortale.model().TIPO.getFieldType(),
 					this.getObjectFromMap(map,"tipo"));
-				setParameter(object, "setPrincipal", PagamentoPortale.model().PRINCIPAL.getFieldType(),
+				this.setParameter(object, "setPrincipal", PagamentoPortale.model().PRINCIPAL.getFieldType(),
 					this.getObjectFromMap(map,"principal"));
-				setParameter(object, "setTipoUtenza", PagamentoPortale.model().TIPO_UTENZA.getFieldType(),
+				this.setParameter(object, "setTipoUtenza", PagamentoPortale.model().TIPO_UTENZA.getFieldType(),
 					this.getObjectFromMap(map,"tipo_utenza"));
 				return object;
 			}

@@ -1,6 +1,5 @@
 package it.govpay.core.utils;
 
-import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -9,16 +8,13 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Nota;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 
@@ -91,23 +87,5 @@ public class PagamentoPortaleUtils {
 			log.debug("Update pagamento portale id ["+idPagamentoPortale+"] completato "); 
 		} catch (NotFoundException e) {
 		}
-	}
-	
-	public static Nota addNota(PagamentoPortale pagamentoPortale, String autore, String oggetto, TipoNota tipo, String testo, Boolean ack) {
-		Nota nota = new Nota();
-		nota.setAutore(autore);
-		nota.setData(new Date());
-		nota.setOggetto(oggetto);
-		nota.setTipo(tipo);
-		nota.setTesto(testo); 
-		pagamentoPortale.getNote().add(0, nota);
-		if(ack != null)
-			pagamentoPortale.setAck(ack.booleanValue());
-		
-		return nota;
-	}
-	
-	public static Nota addNota(PagamentoPortale pagamentoPortale, String autore, GovPayException e, Boolean ack) {
-		return addNota(pagamentoPortale, autore, e.getDescrizioneEsito(), e.getTipoNota(), e.getMessageNota(), ack);
 	}
 }

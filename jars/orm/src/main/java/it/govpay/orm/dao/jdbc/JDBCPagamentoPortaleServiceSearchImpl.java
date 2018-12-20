@@ -184,7 +184,6 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 			fields.add(PagamentoPortale.model().MULTI_BENEFICIARIO);
 			fields.add(PagamentoPortale.model().TIPO);
 			fields.add(PagamentoPortale.model().ACK);
-			fields.add(PagamentoPortale.model().NOTE);
 			fields.add(PagamentoPortale.model().PRINCIPAL);
 			fields.add(PagamentoPortale.model().TIPO_UTENZA);
 		

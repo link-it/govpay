@@ -19,9 +19,9 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.UtenzeBD;
-import it.govpay.bd.model.Nota;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.eventi.EventoNota;
+import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.model.Acl;
@@ -225,17 +225,17 @@ public class UtenzaPatchUtils {
 		
 	}
 
-	public static Nota getNotaFromPatch(Authentication authentication, PatchOp op, BasicBD bd) throws ValidationException, ServiceException { 
+	public static EventoNota getNotaFromPatch(Authentication authentication, PatchOp op, BasicBD bd) throws ValidationException, ServiceException { 
 		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
 		
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		Nota nota = new Nota();
+		EventoNota nota = new EventoNota();
 		nota.setPrincipal(userDetails.getUtenza().getPrincipal());
 		nota.setAutore(userDetails.getUtenza().getIdentificativo());
 		nota.setData(new Date());
 		nota.setTesto((String)map.get(TESTO_NOTA_KEY));
 		nota.setOggetto((String)map.get(OGGETTO_NOTA_KEY));
-		nota.setTipo(TipoNota.valueOf((String) map.get(TIPO_NOTA_KEY)));
+		nota.setTipoEvento(TipoNota.valueOf((String) map.get(TIPO_NOTA_KEY)));
 				
 		return nota;
 	}

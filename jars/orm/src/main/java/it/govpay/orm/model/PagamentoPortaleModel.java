@@ -64,7 +64,6 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.TIPO_VERSAMENTO = new Field("tipoVersamento",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.MULTI_BENEFICIARIO = new Field("multiBeneficiario",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.ACK = new Field("ack",boolean.class,"PagamentoPortale",PagamentoPortale.class);
-		this.NOTE = new Field("note",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.TIPO = new Field("tipo",int.class,"PagamentoPortale",PagamentoPortale.class);
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.TIPO_UTENZA = new Field("tipo_utenza",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
@@ -98,7 +97,6 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 		this.TIPO_VERSAMENTO = new ComplexField(father,"tipoVersamento",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.MULTI_BENEFICIARIO = new ComplexField(father,"multiBeneficiario",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.ACK = new ComplexField(father,"ack",boolean.class,"PagamentoPortale",PagamentoPortale.class);
-		this.NOTE = new ComplexField(father,"note",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.TIPO = new ComplexField(father,"tipo",int.class,"PagamentoPortale",PagamentoPortale.class);
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
 		this.TIPO_UTENZA = new ComplexField(father,"tipo_utenza",java.lang.String.class,"PagamentoPortale",PagamentoPortale.class);
@@ -152,8 +150,6 @@ public class PagamentoPortaleModel extends AbstractModel<PagamentoPortale> {
 	public IField MULTI_BENEFICIARIO = null;
 	 
 	public IField ACK = null;
-	 
-	public IField NOTE = null;
 	 
 	public IField TIPO = null;
 	 

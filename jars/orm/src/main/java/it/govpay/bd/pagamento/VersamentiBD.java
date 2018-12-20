@@ -50,6 +50,7 @@ import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdSingoloVersamento;
@@ -184,7 +185,7 @@ public class VersamentiBD extends BasicBD {
 
 			String nextAvvisatura = this.getNextAvvisatura(versamento.getUo(this).getDominio(this).getCodDominio());
 			log.info("CodAvvisatura:" + nextAvvisatura);
-			versamento.setCodAvvisatura(nextAvvisatura);
+			versamento.setAvvisaturaCodAvvisatura(nextAvvisatura);
 
 			it.govpay.orm.Versamento vo = VersamentoConverter.toVO(versamento);
 			this.getVersamentoService().create(vo);
@@ -307,7 +308,7 @@ public class VersamentiBD extends BasicBD {
 			String nativeUpdate = NativeQueries.getInstance().getUpdateVersamentiPerDominioConLimit();
 			log.info("NATIVE: "+ nativeUpdate);
 			
-			Object[] fields = Arrays.asList(idTracciato, idDominio, true, limit).toArray();
+			Object[] fields = Arrays.asList(idTracciato, idDominio, true, ModoAvvisatura.ASICNRONA.getValue(), limit).toArray();
 			return this.getVersamentoService().nativeUpdate(nativeUpdate, fields);
 
 		} catch (NotImplementedException e) {
@@ -371,6 +372,54 @@ public class VersamentiBD extends BasicBD {
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO, statoSingoloVersamento.toString()));
 
 			this.getSingoloVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateVersamentoStatoAvvisatura(long idVersamento, boolean daAvvisare) throws ServiceException {
+		try {
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISATURA_DA_INVIARE, daAvvisare));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateVersamentoModalitaAvvisatura(long idVersamento, String modalitaAvvisatura) throws ServiceException {
+		try {
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISATURA_MODALITA, modalitaAvvisatura));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public void updateVersamentoOperazioneAvvisatura(long idVersamento, String operazioneAvvisatura) throws ServiceException {
+		try {
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISATURA_OPERAZIONE, operazioneAvvisatura));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
@@ -444,5 +493,4 @@ public class VersamentiBD extends BasicBD {
 			if(bd != null) bd.closeConnection();
 		}
 	}
-
 }

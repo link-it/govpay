@@ -29,15 +29,11 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Nota;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
-import it.govpay.core.business.model.CaricaVersamentoDTO;
-import it.govpay.core.business.model.CaricaVersamentoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.exceptions.GovPayException;
@@ -61,18 +57,6 @@ public class Versamento extends BasicBD {
 	
 	public Versamento(BasicBD basicBD) {
 		super(basicBD);
-	}
-	
-	@Deprecated
-	public it.govpay.model.Iuv caricaVersamento(Applicazione applicazioneAutenticata, it.govpay.bd.model.Versamento versamentoModel, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException { 
-		try {
-			return this.caricaVersamento(versamentoModel, generaIuv, aggiornaSeEsiste);
-		} catch (Exception e) {
-			if(e instanceof GovPayException)
-				throw (GovPayException) e;
-			else 
-				throw new GovPayException(e);
-		}
 	}
 	
 	@Deprecated
@@ -111,22 +95,28 @@ public class Versamento extends BasicBD {
 				}
 			}
 			
-			
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte());
 				// Versamento presente. Verifico e aggiorno
 				
-				versamento.setCodAvvisatura(versamentoLetto.getCodAvvisatura());
-				versamento.setDaAvvisare(versamentoLetto.isDaAvvisare());
+				// riporto informazioni che non si modificano
+				versamento.setAvvisaturaAbilitata(versamentoLetto.isAvvisaturaAbilitata());
+				versamento.setAvvisaturaCodAvvisatura(versamentoLetto.getAvvisaturaCodAvvisatura());
+				versamento.setAvvisaturaDaInviare(versamentoLetto.isAvvisaturaDaInviare());
+				versamento.setAvvisaturaModalita(versamentoLetto.getAvvisaturaModalita());
+				versamento.setAvvisaturaOperazione(versamentoLetto.getAvvisaturaOperazione());
+				versamento.setAvvisaturaTipoPagamento(versamentoLetto.getAvvisaturaTipoPagamento());
 				versamento.setAck(versamentoLetto.isAck());
-				versamento.setNote(versamentoLetto.getNote());
 				versamento.setDataCreazione(versamentoLetto.getDataCreazione());
+				versamento.setIdTracciatoAvvisatura(versamentoLetto.getIdTracciatoAvvisatura());
 				
 				// riporto iuv e numero avviso che sono gia' stati assegnati
 				if(versamento.getIuvVersamento() == null) {
 					versamento.setIuvVersamento(versamentoLetto.getIuvVersamento());
 					versamento.setNumeroAvviso(versamentoLetto.getNumeroAvviso());
 				}
+				
+				// schedulazione Avvisatura per operazione di update in caso di vero update del versamento TODO
 				
 				if(!aggiornaSeEsiste)
 					throw new GovPayException(EsitoOperazione.VER_015, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
@@ -161,7 +151,6 @@ public class Versamento extends BasicBD {
 				// Versamento nuovo. Inserisco
 				versamentiBD.insertVersamento(versamento);
 				ctx.log("versamento.inserimentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
-				
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") inserito");
 			}
 			if(doCommit) this.commit();
@@ -172,40 +161,6 @@ public class Versamento extends BasicBD {
 				throw (GovPayException) e;
 			else 
 				throw new GovPayException(e);
-		}
-	}
-	
-	public CaricaVersamentoDTOResponse caricaVersamento(CaricaVersamentoDTO caricaVersamentoDTO) throws GovPayException, NotAuthorizedException, ServiceException {
-		
-		// AUTORIZZAZIONE
-		if(caricaVersamentoDTO.getApplicazione() != null && !caricaVersamentoDTO.getApplicazione().getCodApplicazione().equals(caricaVersamentoDTO.getVersamento().getApplicazione(this).getCodApplicazione())) {
-			throw new NotAuthorizedException("Applicazione ["+caricaVersamentoDTO.getApplicazione().getCodApplicazione()+"] non autorizzata a caricare il Versamento ["+caricaVersamentoDTO.getVersamento().getCodVersamentoEnte()+"]");
-		}
-		
-		// Il controllo sul dominio disponibile per l'operatore riferito delle pendenze del tracciato e' gia' stato fatto durante l'operazione di caricamento tracciato.
-//		if(caricaVersamentoDTO.getOperatore() != null && 
-//				!AclEngine.isAuthorized(caricaVersamentoDTO.getOperatore().getUtenza(), Servizio.PAGAMENTI_E_PENDENZE, caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio(), null, Arrays.asList(Diritti.SCRITTURA,Diritti.ESECUZIONE))){
-//			throw new NotAuthorizedException("Operatore chiamante [" + caricaVersamentoDTO.getOperatore().getPrincipal() + "] non autorizzato in scrittura per il dominio " + caricaVersamentoDTO.getVersamento().getUo(this).getDominio(this).getCodDominio());
-//		}
-		
-		it.govpay.bd.model.Versamento versamento = caricaVersamentoDTO.getVersamento();
-		boolean generaIuv = caricaVersamentoDTO.isGeneraIuv();
-		boolean aggiornaSeEsiste = caricaVersamentoDTO.isAggiornaSeEsiste();
-		CaricaVersamentoDTOResponse response = new CaricaVersamentoDTOResponse();
-		
-		try {
-			this.caricaVersamento(versamento, generaIuv, aggiornaSeEsiste);
-			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento,versamento.getApplicazione(this), versamento.getUo(this).getDominio(this));
-			response.setBarCode(iuvGenerato.getBarCode());
-			response.setCodApplicazione(iuvGenerato.getCodApplicazione());
-			response.setCodDominio(iuvGenerato.getCodDominio());
-			response.setCodVersamentoEnte(iuvGenerato.getCodVersamentoEnte());
-			response.setIuv(iuvGenerato.getIuv());
-			response.setNumeroAvviso(iuvGenerato.getNumeroAvviso());
-			response.setQrCode(iuvGenerato.getQrCode());
-			return response;
-		} catch (GovPayException e) {
-			throw e;
 		}
 	}
 
@@ -360,9 +315,6 @@ public class Versamento extends BasicBD {
 					return;
 				}
 
-				// TODO Eliminare
-				versamentoLetto.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento eseguito extra-pagoPA", "Notificato esecuzione del pagamento fuori dal circuito pagoPA", applicazione.getPrincipal(), applicazione.getCodApplicazione()));
-				
 				EventoNota eventoNota = new EventoNota();
 				eventoNota.setAutore(applicazione.getCodApplicazione());
 				eventoNota.setCodDominio(versamentoLetto.getUo(this).getDominio(this).getCodDominio());

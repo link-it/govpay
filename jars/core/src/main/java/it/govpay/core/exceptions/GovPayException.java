@@ -22,12 +22,12 @@ package it.govpay.core.exceptions;
 import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
+import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.bd.model.Nota.TipoNota;
 
 public class GovPayException extends Exception {
 
@@ -249,8 +249,9 @@ public class GovPayException extends Exception {
 	}
 	
 	public int getStatusCode() {
-		switch (this.getCategoria()) {
-		case PAGOPA: return 502;
+		switch (this.codEsito) {
+		case OK: return 200;
+		case VER_003: return 422;
 		default:
 			return 500;
 		}
@@ -371,8 +372,8 @@ public class GovPayException extends Exception {
 	
 	public TipoNota getTipoNota() {
 		switch (this.codEsito) {
-		case OK: return TipoNota.SISTEMA_INFO;
-		default: return TipoNota.SISTEMA_FATAL;
+		case OK: return TipoNota.SistemaInfo;
+		default: return TipoNota.SistemaFatal;
 		}
 	}
 	

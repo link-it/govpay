@@ -485,7 +485,7 @@ public class Pagamento extends BasicBD {
 		}
 		this.commit();
 
-		ThreadExecutorManager.getClientPoolExecutor().execute(new InviaNotificaThread(notifica, this));
+		ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this));
 
 		AvviaRichiestaStornoDTOResponse response = new AvviaRichiestaStornoDTOResponse();
 		response.setCodRichiestaStorno(rr.getCodMsgRevoca());

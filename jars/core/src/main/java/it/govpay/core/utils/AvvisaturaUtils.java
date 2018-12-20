@@ -67,6 +67,10 @@ import it.govpay.core.beans.tracciati.TassonomiaAvviso;
 import it.govpay.model.Anagrafica.TIPO;
 
 public class AvvisaturaUtils {
+	
+	public static final String AVVISATURA_DIGITALE_MODALITA_ASINCRONA = "asincrona";
+	public static final String AVVISATURA_DIGITALE_MODALITA_SINCRONA = "sincrona";
+	public static final String AVVISATURA_DIGITALE_MODALITA_USER_DEFINED = "user_defined";
 
 	private static JAXBContext jaxbContext;
 	private static Schema schema;
@@ -90,7 +94,7 @@ public class AvvisaturaUtils {
 		CtAvvisoDigitale avviso = new ObjectFactory().createCtAvvisoDigitale();
 		avviso.setIdentificativoDominio(versamento.getDominio(null).getCodDominio());
 		avviso.setAnagraficaBeneficiario(versamento.getDominio(null).getRagioneSociale());
-		avviso.setIdentificativoMessaggioRichiesta(versamento.getCodAvvisatura());
+		avviso.setIdentificativoMessaggioRichiesta(versamento.getAvvisaturaCodAvvisatura());
 		TassonomiaAvviso tassonomia = TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso());
 		
 		String tassonomiaString = null;
@@ -187,12 +191,12 @@ public class AvvisaturaUtils {
 			avviso.getDatiSingoloVersamento().add(datiSingoloVersamento);
 		}
 		
-		if(versamento.getTipoPagamento()!=null)
-			avviso.setTipoPagamento(versamento.getTipoPagamento() + "");
+		if(versamento.getAvvisaturaTipoPagamento()!=null)
+			avviso.setTipoPagamento(versamento.getAvvisaturaTipoPagamento() + "");
 		else 
 			avviso.setTipoPagamento("1"); //default pagamento non contestuale
 		
-		avviso.setTipoOperazione(StTipoOperazione.fromValue(versamento.getAvvisatura()));
+		avviso.setTipoOperazione(StTipoOperazione.fromValue(versamento.getAvvisaturaOperazione()));
 		return avviso;
 	}
 

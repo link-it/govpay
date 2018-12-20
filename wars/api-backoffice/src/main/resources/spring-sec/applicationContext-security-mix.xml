@@ -98,15 +98,9 @@
                  -->
                 <intercept-url pattern="/rs/form/**" access="isFullyAuthenticated()" />
                 
-                <intercept-url pattern="/rs/form/login" access="isAnonymous()" />
-                
                 <intercept-url pattern="/**" access="denyAll" />
                 
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilter" />
-                
-                <form-login login-page="/public/index.html" username-parameter="username" authentication-success-handler-ref="authSuccessHandler"
-                        password-parameter="password" authentication-failure-handler-ref="authFailureHandler" 
-                                login-processing-url="/rs/form/login" />
                 
                 <logout logout-url="/rs/form/logout" success-handler-ref="logoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true" />
                 
@@ -169,10 +163,6 @@
                 
                 <!-- Entry Point SSL -->
                 <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenze" />
-                
-                <form-login login-page="/public/index.html" username-parameter="username" authentication-success-handler-ref="authSuccessHandler"
-                        password-parameter="password" authentication-failure-handler-ref="authFailureHandler" 
-                                login-processing-url="/rs/form/login" />
                 
                 <logout logout-url="/rs/form/logout" success-handler-ref="logoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true" />
                 

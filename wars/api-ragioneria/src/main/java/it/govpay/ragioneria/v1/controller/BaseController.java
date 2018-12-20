@@ -242,20 +242,19 @@ public abstract class BaseController {
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
 		this.log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
+		int statusCode = e.getStatusCode();
 		if(e.getFaultBean()!=null) {
 			respKo.setCategoria(CategoriaEnum.PAGOPA);
 			respKo.setCodice(e.getFaultBean().getFaultCode());
 			respKo.setDescrizione(e.getFaultBean().getFaultString());
 			respKo.setDettaglio(e.getFaultBean().getDescription());
+			statusCode = 502; // spostato dalla govpayException perche' ci sono dei casi di errore che non devono restituire 500;
 		} else {
 			respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
 			respKo.setCodice(e.getCodEsitoV3());
 			respKo.setDescrizione(e.getDescrizioneEsito());
 			respKo.setDettaglio(e.getMessageV3());
-			
 		}
-		
-		int statusCode = e.getStatusCode();
 		
 		try {
 			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);

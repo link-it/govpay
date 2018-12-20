@@ -131,6 +131,9 @@ public class Tracciati extends BasicBD {
 
 				// inserisco l'identificativo del dominio
 				versamentoToAdd.setCodDominio(codDominio);
+				// inserisco le informazioni di avvisatura
+				versamentoToAdd.setAvvisaturaAbilitata(beanDati.getAvvisaturaAbilitata());
+				versamentoToAdd.setModoAvvisatura(beanDati.getAvvisaturaModalita()); 
 
 				CaricamentoRequest request = new CaricamentoRequest();
 				request.setCodApplicazione(pendenzaPost.getIdA2A());

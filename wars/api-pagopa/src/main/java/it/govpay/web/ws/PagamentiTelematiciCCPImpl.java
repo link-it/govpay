@@ -56,8 +56,6 @@ import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematiciccp.PagamentiTe
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Nota;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -87,7 +85,6 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.PagamentoPortaleUtils;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -378,25 +375,25 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					bd.rollback();
 					bd.disableSelectForUpdate();
 					// update della entry pagamento portale
-					Nota nota = PagamentoPortaleUtils.addNota(pagamentoPortale, Nota.UTENTE_SISTEMA, "Creazione RPT non completata.", TipoNota.SISTEMA_FATAL, e.getMessage(), false);
 					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 					pagamentoPortale.setStato(STATO.FALLITO);
 					pagamentoPortale.setDescrizioneStato(e.getMessage());
+					pagamentoPortale.setAck(false);
 					ppbd.updatePagamento(pagamentoPortale, true);
 					
 					EventoNota eventoNota = new EventoNota();
-					eventoNota.setAutore(nota.getAutore());
-					eventoNota.setOggetto(nota.getOggetto());
-					eventoNota.setTesto(nota.getTesto());
-					eventoNota.setPrincipal(nota.getPrincipal());
-					eventoNota.setData(nota.getData());
-					eventoNota.setTipoEvento(nota.getTipo() != null  ? nota.getTipo().name() : it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo.name()); 
+					eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
+					eventoNota.setOggetto("Creazione RPT non completata.");
+					eventoNota.setTesto(e.getMessage());
+					eventoNota.setPrincipal(null);
+					eventoNota.setData(new Date());
+					eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal);
 					eventoNota.setCodDominio(codDominio);
 					eventoNota.setIuv(iuv);
 					eventoNota.setCcp(ccp);
 					eventoNota.setIdPagamentoPortale(idPagamentoPortaleLong);
 					eventoNota.setIdVersamento(idVersamentoLong);					
-					eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+					
 					giornaleEventi.registraEventoNota(eventoNota);
 					
 					ppbd.commit();

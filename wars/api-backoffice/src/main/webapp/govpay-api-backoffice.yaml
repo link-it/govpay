@@ -5501,6 +5501,14 @@ components:
           type: string
           description: Identificativo del Dominio
           example: "01234567890"
+        avvisaturaDigitale:
+          description: Indica se la pendenza deve essere avvisata digitalmente
+          type: boolean
+          default: false
+        modalitaAvvisaturaDigitale:
+          type: string
+          description: Modalita' di avvisatura scelta per le pendenza [sincrona|asincrona]
+          example: "asincrona"
         inserimenti:
           type: array
           items:

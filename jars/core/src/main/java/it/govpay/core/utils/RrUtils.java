@@ -400,7 +400,7 @@ public class RrUtils extends NdpValidationUtils {
 		bd.commit();
 		bd.disableSelectForUpdate();
 		
-		ThreadExecutorManager.getClientPoolExecutor().execute(new InviaNotificaThread(notifica, bd));
+		ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
 		
 		ctx.log("er.acquisizioneOk", v.getCodVersamentoEnte(), v.getStatoVersamento().toString());
 		log.info("ER acquisita con successo.");

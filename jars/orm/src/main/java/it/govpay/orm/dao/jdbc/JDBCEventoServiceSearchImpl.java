@@ -122,6 +122,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			fields.add(Evento.model().SOTTOTIPO_EVENTO);
 			fields.add(Evento.model().INTERVALLO);
 			fields.add(Evento.model().DATA);
+			fields.add(Evento.model().CLASSNAME_DETTAGLIO);
 			fields.add(Evento.model().DETTAGLIO);
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getFieldConverter().toTable(Evento.model())));
 			fields.add(new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", this.getFieldConverter().toTable(Evento.model())));

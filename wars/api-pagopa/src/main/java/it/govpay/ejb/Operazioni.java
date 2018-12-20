@@ -70,29 +70,43 @@ public class Operazioni{
 	}
 	
 	@Schedule(hour="*", persistent=false)
-    public static String avvisaturaDigitale(){
+    public static String avvisaturaDigitaleModalitaAsincrona(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
 		}
 		
-		if(!GovpayConfig.getInstance().isBatchAvvisaturaDigitale()) {
-			return "Batch Avvisatura Digitale non attivo";
+		if(!GovpayConfig.getInstance().isAvvisaturaDigitaleAsincronaEnabled()) {
+			return "Batch Avvisatura Digitale modalita' asincrona non attivo";
 		}
 		
 		return it.govpay.core.business.Operazioni.avvisaturaDigitale("Batch");
 	}
 	
 	@Schedule(hour="*", persistent=false)
-    public static String esitoAvvisaturaDigitale(){
+    public static String esitoAvvisaturaDigitaleModalitaAsincrona(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
 		}
 		
-		if(!GovpayConfig.getInstance().isBatchAvvisaturaDigitale()) {
-			return "Batch Avvisatura Digitale non attivo";
+		if(!GovpayConfig.getInstance().isAvvisaturaDigitaleAsincronaEnabled()) {
+			return "Batch Esito Avvisatura Digitale modalita' asincrona non attivo";
 		}
 		
 		return it.govpay.core.business.Operazioni.esitoAvvisaturaDigitale("Batch");
+	}
+	
+	@Schedule(hour="*", minute="*", persistent=false)
+	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
+	public static String avvisaturaDigitaleModalitaSincrona(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+		
+		if(!GovpayConfig.getInstance().isAvvisaturaDigitaleSincronaEnabled()) {
+			return "Batch Avvisatura Digitale modalita' sincrona non attivo";
+		}
+		
+		return it.govpay.core.business.Operazioni.avvisaturaDigitaleModalitaSincrona("Batch");
 	}
 	
 	@Schedule(hour="*", minute="*", second="*/5", persistent=false)

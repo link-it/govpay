@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
@@ -105,8 +104,14 @@ public class VersamentoConverter {
 			
 			dto.setIuvVersamento(vo.getIuvVersamento());
 			dto.setNumeroAvviso(vo.getNumeroAvviso());
-			dto.setAvvisatura(vo.getAvvisatura());
-			dto.setTipoPagamento(vo.getTipoPagamento());
+			dto.setAvvisaturaAbilitata(vo.isAvvisaturaAbilitata());
+			dto.setAvvisaturaDaInviare(vo.isAvvisaturaDaInviare());
+			dto.setAvvisaturaCodAvvisatura(vo.getAvvisaturaCodAvvisatura());
+			dto.setAvvisaturaModalita(vo.getAvvisaturaModalita());
+			dto.setAvvisaturaOperazione(vo.getAvvisaturaOperazione());
+			dto.setAvvisaturaTipoPagamento(vo.getAvvisaturaTipoPagamento());
+			if(vo.getIdTracciatoAvvisatura()!=null)
+				dto.setIdTracciatoAvvisatura(vo.getIdTracciatoAvvisatura().getId());
 			
 			// se il numero avviso e' impostato lo iuv proposto deve coincidere con quello inserito a partire dall'avviso
 			// TODO controllare
@@ -114,19 +119,7 @@ public class VersamentoConverter {
 				dto.setIuvProposto(dto.getIuvVersamento());
 			}
 			
-			dto.setDaAvvisare(vo.isDaAvvisare());
-			dto.setCodAvvisatura(vo.getCodAvvisatura());
-			if(vo.getIdTracciatoAvvisatura()!=null)
-				dto.setIdTracciatoAvvisatura(vo.getIdTracciatoAvvisatura().getId());
-			
 			dto.setAck(vo.isAck());
-			if(vo.getNote()!=null)
-				try {
-					dto.setNote(vo.getNote());
-				} catch(IOException e) {
-					throw new ServiceException(e);
-				}
-			
 			dto.setAnomalo(vo.isAnomalo());
 			
 			return dto;
@@ -199,11 +192,13 @@ public class VersamentoConverter {
 			
 			vo.setIuvVersamento(dto.getIuvVersamento());
 			vo.setNumeroAvviso(dto.getNumeroAvviso());
-			vo.setAvvisatura(dto.getAvvisatura());
-			vo.setTipoPagamento(dto.getTipoPagamento());
-
-			vo.setDaAvvisare(dto.isDaAvvisare());
-			vo.setCodAvvisatura(dto.getCodAvvisatura());
+			vo.setAvvisaturaAbilitata(dto.isAvvisaturaAbilitata());
+			vo.setAvvisaturaDaInviare(dto.isAvvisaturaDaInviare());
+			vo.setAvvisaturaCodAvvisatura(dto.getAvvisaturaCodAvvisatura());
+			vo.setAvvisaturaModalita(dto.getAvvisaturaModalita());
+			vo.setAvvisaturaOperazione(dto.getAvvisaturaOperazione());
+			vo.setAvvisaturaTipoPagamento(dto.getAvvisaturaTipoPagamento());
+			
 			if(dto.getIdTracciatoAvvisatura()!=null) {
 				IdTracciato idTracciato = new IdTracciato();
 				idTracciato.setId(dto.getIdTracciatoAvvisatura());
@@ -212,13 +207,6 @@ public class VersamentoConverter {
 			}
 			
 			vo.setAck(dto.isAck());
-			if(dto.getNote()!=null && !dto.getNote().isEmpty())
-				try {
-					vo.setNote(dto.getNoteString());
-				} catch(IOException e) {
-					throw new ServiceException(e);
-				}
-
 			vo.setAnomalo(dto.isAnomalo());
 			return vo;
 		} catch (UnsupportedEncodingException e) {

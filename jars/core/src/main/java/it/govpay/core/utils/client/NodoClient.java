@@ -70,7 +70,7 @@ public class NodoClient extends BasicClient {
 	private BasicBD bd;
 
 	public NodoClient(Intermediario intermediario, BasicBD bd) throws ClientException {
-		super(intermediario);
+		super(intermediario, TipoOperazioneNodo.NODO);
 		this.bd = bd;
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();

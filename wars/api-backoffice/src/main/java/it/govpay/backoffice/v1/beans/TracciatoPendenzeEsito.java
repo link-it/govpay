@@ -13,6 +13,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "nomeFile",
+"dominio",
 "dataOraCaricamento",
 "stato",
 "numeroOperazioniTotali",
@@ -29,6 +30,9 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
   
   @JsonProperty("nomeFile")
   private String nomeFile = null;
+  
+  @JsonProperty("dominio")
+  private DominioIndex dominio = null;
   
   @JsonProperty("dataOraCaricamento")
   private Date dataOraCaricamento = null;
@@ -84,6 +88,21 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
   }
   public void setNomeFile(String nomeFile) {
     this.nomeFile = nomeFile;
+  }
+
+  /**
+   **/
+  public TracciatoPendenzeEsito dominio(DominioIndex dominio) {
+    this.dominio = dominio;
+    return this;
+  }
+
+  @JsonProperty("dominio")
+  public DominioIndex getDominio() {
+    return dominio;
+  }
+  public void setDominio(DominioIndex dominio) {
+    this.dominio = dominio;
   }
 
   /**
@@ -223,6 +242,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
     TracciatoPendenzeEsito tracciatoPendenzeEsito = (TracciatoPendenzeEsito) o;
     return Objects.equals(this.id, tracciatoPendenzeEsito.id) &&
         Objects.equals(this.nomeFile, tracciatoPendenzeEsito.nomeFile) &&
+        Objects.equals(dominio, tracciatoPendenzeEsito.dominio) &&
         Objects.equals(this.dataOraCaricamento, tracciatoPendenzeEsito.dataOraCaricamento) &&
         Objects.equals(this.stato, tracciatoPendenzeEsito.stato) &&
         Objects.equals(this.numeroOperazioniTotali, tracciatoPendenzeEsito.numeroOperazioniTotali) &&
@@ -235,7 +255,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.nomeFile, this.dataOraCaricamento, this.stato, this.numeroOperazioniTotali, this.numeroOperazioniEseguite, this.numeroOperazioniFallite, this.operatoreMittente, this.dataOraUltimoAggiornamento, this.esito);
+    return Objects.hash(this.id, this.nomeFile, dominio, this.dataOraCaricamento, this.stato, this.numeroOperazioniTotali, this.numeroOperazioniEseguite, this.numeroOperazioniFallite, this.operatoreMittente, this.dataOraUltimoAggiornamento, this.esito);
   }
 
   public static TracciatoPendenzeEsito parse(String json) throws ServiceException, ValidationException {
@@ -254,6 +274,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
     
     sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
     sb.append("    nomeFile: ").append(this.toIndentedString(this.nomeFile)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    dataOraCaricamento: ").append(this.toIndentedString(this.dataOraCaricamento)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    numeroOperazioniTotali: ").append(this.toIndentedString(this.numeroOperazioniTotali)).append("\n");

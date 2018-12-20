@@ -65,6 +65,17 @@ public class Intermediario extends BasicModel{
 	public void setDenominazione(String nomeSPC) {
 		this.denominazione = nomeSPC;
 	}
+	
+	public Connettore getConnettorePddAvvisatura() {
+		try {
+			Connettore cAvvisatura = (Connettore) this.connettorePdd.clone();
+			cAvvisatura.setUrl(cAvvisatura.getUrlServiziAvvisatura());
+			return cAvvisatura;
+		} catch (CloneNotSupportedException e) {
+		}
+		
+		return this.connettorePdd;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
