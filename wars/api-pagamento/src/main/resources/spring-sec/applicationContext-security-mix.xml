@@ -8,37 +8,24 @@
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security.xsd">
         
-        <!-- Abilito gestione della sicurezza tramite annotazioni nel codice Java -->
-        <global-method-security
-                secured-annotations="enabled">
+        <global-method-security secured-annotations="enabled">
         </global-method-security>
         
-        <!-- AUTENTICAZIONE CONTAINER INIT -->
-         
-         <!-- entry point per l'httpbasic per gestire il contenuto della response nel caso id utenza non autorizzata. -->
+        <!-- CONTAINER START  -->
         <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
                 <b:property name="realname" value="GovPay API Pagamento"/>
         </b:bean>
-        
-        <!-- Servizio di accesso alla base dati dell'applicazione per il check delle richieste effettuate dalle utenze -->
         <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         </b:bean>
-        
-        <!-- Definisco il sistema di autenticazione, nel nostro caso utilizziamo una sorgente degli utenti basata su file di proprietà -->
         <authentication-manager alias="authenticationManager">
                 <authentication-provider ref="preauthAuthProvider">
                 </authentication-provider>
         </authentication-manager>
-        
-        <!-- Pre Authentication -->
         <b:bean id="preAuthFilter" class="org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter">
                 <b:property name="authenticationManager" ref="authenticationManager" />
                 <b:property name="authenticationDetailsSource">
            			<b:bean class="org.springframework.security.web.authentication.preauth.j2ee.J2eeBasedPreAuthenticatedWebAuthenticationDetailsSource">
 		                <b:property name="mappableRolesRetriever">
-		                		<!-- Leggo i ruoli disponibili dal web.xml  -->
-								<!-- <b:bean class="org.springframework.security.web.authentication.preauth.j2ee.WebXmlMappableAttributesRetriever" /> -->
-		                		<!-- Leggo i ruoli disponibili su govpay -->
 		                	<b:bean class="it.govpay.rs.v1.authentication.preauth.ruoli.RuoliRetriever" />
 		                </b:property>
 		                <b:property name="userRoles2GrantedAuthoritiesMapper">
@@ -49,7 +36,6 @@
             		</b:bean>
         		</b:property>
         </b:bean>
-
         <b:bean id="preauthAuthProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
         	<b:property name="preAuthenticatedUserDetailsService">
             	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.UserDetailsByNameServiceWrapper">
@@ -57,85 +43,49 @@
               	</b:bean>
             </b:property>
         </b:bean>
-         
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="basicAuthenticationEntryPoint" pattern="/rs/basic/**">
-
                 <csrf disabled="true"/>
-
-                <!-- 
-                        Tutte le altre url dell'applicazione sono accessibili ad utenze che si devono essere autenticati
-                        Eventuali controlli di autorizzazione sono realizzati tramite le ACL
-                 -->
                 <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
-                
                 <intercept-url pattern="/**" access="denyAll" />
-                
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilter" />
-
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-         
-        <!-- AUTENTICAZIONE CONTAINER END -->
+        <!-- CONTAINER END -->
         
-        <!-- AUTENTICAZIONE SSL INIT -->
-        
-        <!-- entry point per l'ssl per gestire il contenuto della response nel caso id utenza non autorizzata. -->
+        <!-- SSL START -->
         <b:bean id="opensiopeX509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
-        
-        <!-- Servizio di accesso alla base dati dell'applicazione per il check delle richieste effettuate dalle utenze -->
         <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         	<b:property name="checkSubject" value="true"/>
         </b:bean>
-        
-        <!-- SSL -->
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="opensiopeX509AuthenticationEntryPoint" pattern="/rs/ssl/**">
-
                 <csrf disabled="true"/>
-
-                <!-- 
-                        Tutte le altre url dell'applicazione sono accessibili ad utenze che si devono essere autenticati
-                        Eventuali controlli di autorizzazione sono realizzati tramite le ACL
-                 -->
                 <intercept-url pattern="/rs/ssl/**" access="isFullyAuthenticated()" />
-                
                 <intercept-url pattern="/**" access="denyAll" />
-                
-                <!-- Entry Point SSL -->
                 <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
-
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
+		<!-- SSL END -->
         
-         <!-- AUTENTICAZIONE SSL END -->
-        
-         <!-- AUTENTICAZIONE SPID INIT -->
-         
-         <!-- entry point per l'httpbasic per gestire il contenuto della response nel caso id utenza non autorizzata. -->
+		<!-- SPID START -->
         <b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
-        
-        <!-- Servizio di accesso alla base dati dell'applicazione per il check delle richieste effettuate dalle utenze cittadino-->
         <b:bean id="userDetailServiceUtenzeCit" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeCittadinoDAO" >
         </b:bean>
-        
         <authentication-manager id="authenticationManagerCit">
                 <authentication-provider ref="preauthAuthProviderCit">
                 </authentication-provider>
         </authentication-manager>
-        
-        <!-- Pre Authentication -->
         <b:bean id="preAuthFilterCit" class="it.govpay.rs.v1.authentication.preauth.filter.HeaderPreAuthFilter">
                 <b:property name="authenticationManager" ref="authenticationManagerCit" />
         </b:bean>
-
         <b:bean id="preauthAuthProviderCit" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
         	<b:property name="preAuthenticatedUserDetailsService">
             	<b:bean id="userDetailsServiceWrapper" class="it.govpay.rs.v1.authentication.provider.UserDetailsByNameServiceWrapper">
@@ -143,79 +93,48 @@
               	</b:bean>
             </b:property>
         </b:bean>
-        
-        <!-- Accesso cittadino -->
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/spid/**">
-
                 <csrf disabled="true"/>
-
-                <!-- 
-                        Tutte le altre url dell'applicazione sono accessibili ad utenze che si devono essere autenticati
-                        Eventuali controlli di autorizzazione sono realizzati tramite le ACL
-                 -->
                 <intercept-url pattern="/rs/spid/**" access="isFullyAuthenticated()" />
-                
                 <intercept-url pattern="/**" access="denyAll" />
-                
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterCit" />
-
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
                         <xss-protection disabled="true"/>
                 </headers>
-                
         </http>
+		<!-- SPID END -->
         
-         <!-- AUTENTICAZIONE SPID END -->
-        
-        <!-- AUTENTICAZIONE PUBLIC INIT -->
-        
-        <!-- entry point per l'httpbasic per gestire il contenuto della response nel caso id utenza non autorizzata. -->
+        <!-- PUBLIC START -->
         <b:bean id="http403ForbiddenEntryPointPublic" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
-        
-        <!-- Accessi in forma anonima -->
         <b:bean id="preAuthFilterAnonymous" class="it.govpay.rs.v1.authentication.preauth.filter.AnonymousAuthenticationFilter">
         	<b:constructor-arg index="0" value="GovPay_API_Pagamento_Utenza_Anonima" />
         </b:bean>
-        
-        <!-- Accesso Anonimo -->
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/**">
-
                 <csrf disabled="true"/>
-
-                <!-- 
-                        Tutte le altre url dell'applicazione sono accessibili ad utenze che si devono essere autenticati
-                        Eventuali controlli di autorizzazione sono realizzati tramite le ACL
-                 -->
                 <intercept-url pattern="/rs/public/v1/avvisi/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v1/pagamenti/**" access="isAnonymous()" method="POST" />
                 <intercept-url pattern="/rs/public/v2/avvisi/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v2/pagamenti/**" access="isAnonymous()" method="POST" />
-               
                 <intercept-url pattern="/rs/public/**" access="denyAll" />
-                
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterAnonymous" />
-
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        
-        <!-- AUTENTICAZIONE PUBLIC END -->
+        <!-- PUBLIC END -->
         
        	<!-- entry point per l'httpbasic per gestire il contenuto della response nel caso id utenza non autorizzata. -->
         <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
         
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointGenerale" pattern="/**">
-
                 <csrf disabled="true"/>
-                
-                <!-- Le pagine per ottenere l'interfaccia e per provarla sono pubbliche -->
+                <!-- risorse pubbliche -->
                 <intercept-url pattern="/govpay-api-pagamento-v1.yaml" access="permitAll"/>
                 <intercept-url pattern="/govpay-api-pagamento-v2.yaml" access="permitAll"/>
                 <intercept-url pattern="/index.html" access="permitAll"/>
@@ -226,32 +145,11 @@
                 <intercept-url pattern="/*.js.map" access="permitAll"/>
                 
                 <intercept-url pattern="/**" access="denyAll" />
-               
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        
-        
-       	<!-- Configurazione della sicurezza su tutte le url esposte dall'applicazione
-           	  create-session="stateless" sta ad indicare che non vogliamo nessuna sessione ed ogni richiesta dovra' essere autorizzata.
-
-              use-expressions="false" sta ad indicare che non posso scrivere Expression per indicare le regole di accesso, ma solo ruoli
-              L'attributo access deve quindi contenere ruoli.
-
-              use-expressions="true" permette invece di usare le seguenti espressioni:
-              hasRole([role]) Returns true if the current principal has the specified role.
-              hasAnyRole([role1,role2])       Returns true if the current principal has any of the supplied roles (given as a comma-separated list of strings)
-              principal       Allows direct access to the principal object representing the current user
-              authentication  Allows direct access to the current Authentication object obtained from the SecurityContext
-              permitAll       Always evaluates to true
-              denyAll Always evaluates to false
-              isAnonymous()   Returns true if the current principal is an anonymous user
-              isRememberMe()  Returns true if the current principal is a remember-me user
-              isAuthenticated()       Returns true if the user is not anonymous
-              isFullyAuthenticated()  Returns true if the user is not an anonymous or a remember-me user
-       -->
 </b:beans>
         
