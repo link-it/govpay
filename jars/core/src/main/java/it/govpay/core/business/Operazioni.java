@@ -64,7 +64,6 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisatura;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisoDigitale;
 import gov.telematici.pagamenti.ws.presa_in_carico.EsitoPresaInCarico;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.model.Dominio;
@@ -72,6 +71,7 @@ import it.govpay.bd.model.EsitoAvvisatura;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.model.eventi.EventoCooperazione;
 import it.govpay.bd.pagamento.EsitiAvvisaturaBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.TracciatiBD;
@@ -83,15 +83,20 @@ import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.core.beans.tracciati.Avvisatura;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.AvvisaturaUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.client.AvvisaturaClient;
+import it.govpay.core.utils.thread.InviaAvvisaturaThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.ConnettoreSftp;
 import it.govpay.model.Intermediario;
+import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
+import it.govpay.model.Versamento.ModoAvvisatura;
 
 public class Operazioni{
 
@@ -106,6 +111,7 @@ public class Operazioni{
 	public static final String BATCH_GENERAZIONE_AVVISI = "generazione-avvisi";
 	public static final String BATCH_AVVISATURA_DIGITALE = "avvisatura-digitale";
 	public static final String BATCH_ESITO_AVVISATURA_DIGITALE = "esito-avvisatura-digitale";
+	public static final String BATCH_AVVISATURA_DIGITALE_SINCRONA = "avvisatura-digitale-immediata";
 
 
 
@@ -239,7 +245,7 @@ public class Operazioni{
 				log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
 				for(Notifica notifica: notifiche) {
 					InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
-					ThreadExecutorManager.getClientPoolExecutor().execute(sender);
+					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
 					threads.add(sender);
 				}
 				log.info("Processi di spedizione avviati.");
@@ -758,6 +764,7 @@ public class Operazioni{
 	public static String avvisaturaDigitale(String serviceName){
 		BasicBD bd = null;
 		GpContext ctx = null;
+		List<InviaAvvisaturaThread> threads = new ArrayList<>();
 		try {
 			ctx = new GpContext();
 			MDC.put("cmd", "AvvisaturaDigitale");
@@ -774,8 +781,8 @@ public class Operazioni{
 
 			if(BatchManager.startEsecuzione(bd, BATCH_AVVISATURA_DIGITALE)) {
 				log.debug("Batch avvisatura digitale");
-
-
+				
+				boolean wasAutoCommit = bd.isAutoCommit();
 
 				SerializationConfig config = new SerializationConfig();
 				config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -783,8 +790,6 @@ public class Operazioni{
 
 				IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 				ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
-
-
 
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				TracciatiBD tracciatiBD = new TracciatiBD(bd);
@@ -794,8 +799,6 @@ public class Operazioni{
 				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
 
 				for(Tracciato tracciato: tracciati) {
-
-
 					Avvisatura avvisatura = (Avvisatura) deserializer.getObject(tracciato.getBeanDati(), Avvisatura.class);
 
 					Intermediario intermediario = AnagraficaManager.getIntermediario(bd, avvisatura.getIntermediario());
@@ -959,52 +962,77 @@ public class Operazioni{
 
 				SimpleDateFormat sdfYYYYMMDD = new SimpleDateFormat("yyyyMMdd"); 
 				VersamentoFilter versamentiFilter = versamentiBD.newFilter();
-				versamentiFilter.setDaAvvisare(true);
+				versamentiFilter.setAvvisaturaDainviare(true);
+				versamentiFilter.setAvvisaturaAbilitata(true); 
 				versamentiFilter.setTracciatoNull(true);
+				versamentiFilter.setModoAvvisatura(ModoAvvisatura.ASICNRONA.getValue());
+				versamentiFilter.setDataFine(new Date());
 				List<CountPerDominio> countGroupByIdDominio = versamentiBD.countGroupByIdDominio(versamentiFilter);
 
-				boolean wasAutoCommit = bd.isAutoCommit();
 				if(wasAutoCommit)
 					bd.setAutoCommit(false);
 				for(CountPerDominio countPerDominio: countGroupByIdDominio) {
-
-					Dominio dominio = AnagraficaManager.getDominio(bd, countPerDominio.getIdDominio());
-					Intermediario intermediario = dominio.getStazione().getIntermediario(bd);
-
-					long countVersamentiTracciati = 0;
-					String filenameFormat = intermediario.getCodIntermediario() + "_" + dominio.getCodDominio() + "_" + sdfYYYYMMDD.format(new Date());
-					TracciatoFilter tracciatiFilter = tracciatiBD.newFilter();
-					tracciatiFilter.setFilenameRichiestaLike(filenameFormat);
-					tracciatiFilter.setTipo(Arrays.asList(TIPO_TRACCIATO.AV));
-					long countTracciatiPerDominioPergiorno = tracciatiBD.count(tracciatiFilter);
-
-					while(countVersamentiTracciati < countPerDominio.getCount()) {
-						long countVersamentiNextTracciato = Math.min(countPerDominio.getCount()-countVersamentiTracciati, GovpayConfig.getInstance().getSizePaginaNumeroVersamentiAvvisaturaDigitale());
-
-						Tracciato tracciato = new Tracciato();
-						//populate tracciato
-						tracciato.setCodDominio(dominio.getCodDominio());
-						tracciato.setTipo(TIPO_TRACCIATO.AV);
-						tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
-						tracciato.setDataCaricamento(new Date());
-						Avvisatura avvisatura = new Avvisatura();
-						avvisatura.setIntermediario(intermediario.getCodIntermediario());
-						avvisatura.setNumeroAvvisi(countVersamentiNextTracciato);
-						avvisatura.setStepElaborazione("IN_SPEDIZIONE");
-						avvisatura.setDataUltimoAggiornamento(new Date());
-						avvisatura.setPercentualeStep(0);
-						tracciato.setBeanDati(serializer.getObject(avvisatura));
-						tracciato.setFileNameRichiesta(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + ".zip");
-						tracciato.setFileNameEsito(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + "_ACK.zip");
-
-						tracciatiBD.insertTracciato(tracciato);
-						versamentiBD.updateConLimit(countPerDominio.getIdDominio(), tracciato.getId(), countVersamentiNextTracciato);
-						bd.commit();
-
-						countVersamentiTracciati += countVersamentiNextTracciato;
-						countTracciatiPerDominioPergiorno++;
+					if(countPerDominio.getCount() > 0) { // avvio la procedura solo se ho trovato dei versamenti da avvisare
+						Dominio dominio = AnagraficaManager.getDominio(bd, countPerDominio.getIdDominio());
+						Intermediario intermediario = dominio.getStazione().getIntermediario(bd);
+	
+						if(intermediario.getConnettorePddAvvisatura() != null && intermediario.getConnettorePddAvvisatura().getUrl() != null) {
+							// invio dell'avvisatura col connettore SOAP
+							
+							versamentiFilter.setCodDominio(dominio.getCodDominio());
+							List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(versamentiFilter); 
+							if(versamenti.size() == 0) {
+								log.debug("Nessun versamento da avvisare in modalita' asincrona tramite il connettore SOAP.");
+								break;
+							}
+							
+							log.info("Trovati ["+versamenti.size()+"] versamenti da avvisare in modalita' asincrona tramite il connettore SOAP");
+							for(it.govpay.bd.model.Versamento versamento: versamenti) {
+								InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, GpThreadLocal.get().getTransactionId(), versamentiBD);
+								ThreadExecutorManager.getClientPoolExecutorAvvisaturaDigitale().execute(sender);
+								threads.add(sender);
+							}
+							
+						} else if(intermediario.getConnettoreSftp() != null) {
+							// invio dell'avvisatura col connettore FTP (avvio creazione del tracciato) 
+							
+							long countVersamentiTracciati = 0;
+							String filenameFormat = intermediario.getCodIntermediario() + "_" + dominio.getCodDominio() + "_" + sdfYYYYMMDD.format(new Date());
+							TracciatoFilter tracciatiFilter = tracciatiBD.newFilter();
+							tracciatiFilter.setFilenameRichiestaLike(filenameFormat);
+							tracciatiFilter.setTipo(Arrays.asList(TIPO_TRACCIATO.AV));
+							long countTracciatiPerDominioPergiorno = tracciatiBD.count(tracciatiFilter);
+		
+							while(countVersamentiTracciati < countPerDominio.getCount()) {
+								long countVersamentiNextTracciato = Math.min(countPerDominio.getCount()-countVersamentiTracciati, GovpayConfig.getInstance().getSizePaginaNumeroVersamentiAvvisaturaDigitale());
+		
+								Tracciato tracciato = new Tracciato();
+								//populate tracciato
+								tracciato.setCodDominio(dominio.getCodDominio());
+								tracciato.setTipo(TIPO_TRACCIATO.AV);
+								tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+								tracciato.setDataCaricamento(new Date());
+								Avvisatura avvisatura = new Avvisatura();
+								avvisatura.setIntermediario(intermediario.getCodIntermediario());
+								avvisatura.setNumeroAvvisi(countVersamentiNextTracciato);
+								avvisatura.setStepElaborazione("IN_SPEDIZIONE");
+								avvisatura.setDataUltimoAggiornamento(new Date());
+								avvisatura.setPercentualeStep(0);
+								tracciato.setBeanDati(serializer.getObject(avvisatura));
+								tracciato.setFileNameRichiesta(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + ".zip");
+								tracciato.setFileNameEsito(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + "_ACK.zip");
+		
+								tracciatiBD.insertTracciato(tracciato);
+								versamentiBD.updateConLimit(countPerDominio.getIdDominio(), tracciato.getId(), countVersamentiNextTracciato);
+								bd.commit();
+		
+								countVersamentiTracciati += countVersamentiNextTracciato;
+								countTracciatiPerDominioPergiorno++;
+							}
+						} else {
+							log.warn("Spedizione avvisatura digitale per il Dominio ["+dominio.getCodDominio()+"] in modalita' asincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP o FTP valido.");
+						}
 					}
-
 				}
 
 				log.debug("Batch avvisatura digitale terminato");
@@ -1013,7 +1041,7 @@ public class Operazioni{
 
 				if(!wasAutoCommit)
 					bd.setAutoCommit(wasAutoCommit);
-
+				
 				return "Avvisatura digitale ok";
 			} else {
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
@@ -1029,9 +1057,175 @@ public class Operazioni{
 			}
 			return "Avvisatura digitale#" + e.getMessage();
 		} finally {
+			
+			// se la lista dei thread contiene elementi controllo che siano tutti terminati prima di uscire.
+			if(threads.size() > 0) {
+				// Aspetto che abbiano finito tutti
+				while(true){
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+
+					}
+					boolean completed = true;
+					for(InviaAvvisaturaThread sender : threads) {
+						if(!sender.isCompleted()) 
+							completed = false;
+					}
+
+					if(!completed) {
+						try {
+							BatchManager.aggiornaEsecuzione(bd, BATCH_AVVISATURA_DIGITALE);
+						} catch (ServiceException e) {
+						}  
+					} else 
+						break;
+				}
+				
+				log.info("Spedizione avvisatura digitale in modalita' asincrona tramite il connettore SOAP completata.");
+			}
+			
 			BatchManager.stopEsecuzione(bd, BATCH_AVVISATURA_DIGITALE);
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
+		}
+	}
+	
+	public static String avvisaturaDigitaleModalitaSincrona(String serviceName){
+		BasicBD bd = null;
+		List<InviaAvvisaturaThread> threads = new ArrayList<>();
+		GpContext ctx = null;
+		try {
+			ctx = new GpContext();
+			MDC.put("cmd", "AvvisaturaDigitaleSincrona");
+			MDC.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName(serviceName);
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
+			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("AvvisaturaDigitaleSincrona");
+			ctx.getTransaction().setOperation(opt);
+			GpThreadLocal.set(ctx);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			
+			boolean wasAutoCommit = false;
+
+			if(BatchManager.startEsecuzione(bd, BATCH_AVVISATURA_DIGITALE_SINCRONA)) {
+				log.trace("Spedizione Avvisatura Digitale modalita' sincrona");
+				VersamentiBD versamentiBD = new VersamentiBD(bd);
+				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
+				
+				VersamentoFilter versamentiFilter = versamentiBD.newFilter();
+				versamentiFilter.setAvvisaturaDainviare(true);
+				versamentiFilter.setAvvisaturaAbilitata(true);
+				versamentiFilter.setModoAvvisatura(ModoAvvisatura.SINCRONA.getValue());
+				versamentiFilter.setDataFine(new Date());
+				
+				List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(versamentiFilter); 
+				if(versamenti.size() == 0) {
+					log.debug("Nessun versamento da avvisare in modalita' sincrona.");
+					return "Nessuna versamento da avvisare in modalita' sincrona.";
+				}
+				
+				wasAutoCommit = bd.isAutoCommit();
+				
+				if(wasAutoCommit)
+					bd.setAutoCommit(false);
+
+				log.info("Trovati ["+versamenti.size()+"] versamenti da avvisare in modalita' sincrona");
+				for(it.govpay.bd.model.Versamento versamento: versamenti) {
+					
+					EventoCooperazione evento = new EventoCooperazione();
+					evento.setData(new Date());
+					evento.setDataRichiesta(new Date());
+					evento.setAltriParametriRichiesta(null);
+					evento.setAltriParametriRisposta(null);
+					evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
+					evento.setCodDominio(versamento.getDominio(bd).getCodDominio());
+					evento.setCodStazione(versamento.getDominio(bd).getStazione().getCodStazione());
+					evento.setComponente(EventoCooperazione.COMPONENTE);
+					evento.setDataRisposta(new Date());
+					evento.setErogatore(EventoCooperazione.NDP);
+					evento.setIuv(versamento.getIuvVersamento());
+					evento.setSottotipoEvento("Avvisatura Digitale Sincrona");
+					evento.setTipoEvento(AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name());
+					evento.setIdVersamento(versamento.getId());
+					
+					Intermediario intermediario = versamento.getDominio(bd).getStazione().getIntermediario(bd);
+					
+					evento.setFruitore(intermediario.getDenominazione());
+					if(intermediario.getConnettorePddAvvisatura() != null && intermediario.getConnettorePddAvvisatura().getUrl() != null) {
+						InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, GpThreadLocal.get().getTransactionId(), versamentiBD);
+						ThreadExecutorManager.getClientPoolExecutorAvvisaturaDigitale().execute(sender);
+						threads.add(sender);
+						
+						evento.setEsito("OK");
+						evento.setDescrizioneEsito("Avvisatura Digitale in modalita' sincrona schedulata correttamente.");
+					} else {
+						log.warn("Spedizione avvisatura Versamento [Dominio: "+versamento.getDominio(bd).getCodDominio()+", NumeroAvviso: "+versamento.getNumeroAvviso()+"] in modalita' sincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP valido.");
+						versamentiBD.updateVersamentoModalitaAvvisatura(versamento.getId(), ModoAvvisatura.ASICNRONA.getValue());
+						evento.setEsito("WARN");
+						evento.setDescrizioneEsito("Spedizione avvisatura Versamento [Dominio: "+versamento.getDominio(bd).getCodDominio()+", NumeroAvviso: "+versamento.getNumeroAvviso()+"] in modalita' sincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP valido.");
+					}
+					
+					giornaleEventi.registraEventoCooperazione(evento);
+					bd.commit();
+				}
+				log.info("Processi di spedizione avvisatura versamento in modalita' sincrona avviati.");
+				aggiornaSondaOK(BATCH_AVVISATURA_DIGITALE_SINCRONA, bd);
+				
+				if(!wasAutoCommit)
+					bd.setAutoCommit(wasAutoCommit);
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare la spedizione dell'avvisatura digitale in modalita' sincrona", e);
+			try {
+				if(!bd.isAutoCommit()) bd.rollback();
+				aggiornaSondaKO(BATCH_AVVISATURA_DIGITALE_SINCRONA, e, bd); 
+			} catch (ServiceException e1) {
+				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
+			}
+			return "Non è stato possibile avviare la spedizione dell'avvisatura digitale in modalita' sincrona: " + e;
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
+
+		// Aspetto che abbiano finito tutti
+		while(true){
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+
+			}
+			boolean completed = true;
+			for(InviaAvvisaturaThread sender : threads) {
+				if(!sender.isCompleted()) 
+					completed = false;
+			}
+
+			if(completed) {
+				try {
+					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					BatchManager.stopEsecuzione(bd, BATCH_AVVISATURA_DIGITALE_SINCRONA);
+				} catch (ServiceException e) {
+				} finally {
+					if(bd != null) bd.closeConnection();
+				}
+				log.info("Spedizione avvisatura digitale in modalita' sincrona completata.");
+				return "Spedizione avvisatura digitale in modalita' sincrona completata.";
+			} else {
+				try {
+					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					BatchManager.aggiornaEsecuzione(bd, BATCH_AVVISATURA_DIGITALE_SINCRONA);
+				} catch (ServiceException e) {
+				} finally {
+					if(bd != null) bd.closeConnection();
+				}
+			}
 		}
 	}
 

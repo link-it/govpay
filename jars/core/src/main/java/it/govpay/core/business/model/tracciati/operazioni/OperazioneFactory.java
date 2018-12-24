@@ -21,7 +21,6 @@
 package it.govpay.core.business.model.tracciati.operazioni;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -36,12 +35,11 @@ import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.Versamento;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
-import it.govpay.core.business.model.CaricaVersamentoDTO;
-import it.govpay.core.business.model.CaricaVersamentoDTOResponse;
 import it.govpay.core.business.model.tracciati.CostantiCaricamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.DateUtils;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 
@@ -60,15 +58,14 @@ public class OperazioneFactory {
 		
 		try {
 			it.govpay.bd.model.Versamento versamentoModel = it.govpay.core.business.VersamentoUtils.toVersamentoModel(request.getVersamento(), basicBD);
-			CaricaVersamentoDTO caricaVersamentoDTO = new CaricaVersamentoDTO(request.getOperatore(), versamentoModel);
-			caricaVersamentoDTO.setAggiornaSeEsiste(true);
-			caricaVersamentoDTO.setGeneraIuv(versamentoModel.getNumeroAvviso() == null);
 
 			Versamento versamento = new Versamento(basicBD);
-			CaricaVersamentoDTOResponse caricaVersamento = versamento.caricaVersamento(caricaVersamentoDTO);
-			caricamentoResponse.setBarCode(caricaVersamento.getBarCode());
-			caricamentoResponse.setQrCode(caricaVersamento.getQrCode());
-			caricamentoResponse.setIuv(caricaVersamento.getIuv());
+			
+			versamento.caricaVersamento(versamentoModel, versamentoModel.getNumeroAvviso() == null, true);
+			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(basicBD), versamentoModel.getUo(basicBD).getDominio(basicBD));
+			caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
+			caricamentoResponse.setIuv(iuvGenerato.getIuv());
+			caricamentoResponse.setQrCode(iuvGenerato.getQrCode());
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
 			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
 			
@@ -88,8 +85,8 @@ public class OperazioneFactory {
 			avviso.setImporto(versamentoModel.getImportoTotale());
 			avviso.setNumeroAvviso(versamentoModel.getNumeroAvviso());
 			avviso.setTassonomiaAvviso(versamentoModel.getTassonomiaAvviso());
-			avviso.setBarcode(caricaVersamento.getBarCode() != null ? new String(caricaVersamento.getBarCode()) : null);
-			avviso.setQrcode(caricaVersamento.getQrCode() != null ? new String(caricaVersamento.getQrCode()) : null);
+			avviso.setBarcode(iuvGenerato.getBarCode() != null ? new String(iuvGenerato.getBarCode()) : null);
+			avviso.setQrcode(iuvGenerato.getQrCode() != null ? new String(iuvGenerato.getQrCode()) : null);
 			
 			StatoEnum statoPendenza = this.getStatoPendenza(versamentoModel);
 
@@ -116,20 +113,6 @@ public class OperazioneFactory {
 				respKo.setDettaglio(e.getMessageV3());
 				
 			}
-			caricamentoResponse.setFaultBean(respKo);
-			
-			
-		} catch(NotAuthorizedException e) {
-			log.debug("Impossibile eseguire il caricamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);
-			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
-			caricamentoResponse.setDescrizioneEsito(StringUtils.isNotEmpty(CostantiCaricamento.NOT_AUTHORIZED + ": " + e.getMessage()) ? e.getMessage() : "");
-			
-			FaultBean respKo = new FaultBean();
-			respKo.setCategoria(FaultBean.CategoriaEnum.fromValue(e.getCategoria().name()));
-			respKo.setCodice(e.getCode());
-			respKo.setDescrizione(e.getMessage());
-			respKo.setDettaglio(e.getDetails());
 			caricamentoResponse.setFaultBean(respKo);
 		} catch(Throwable e) {
 			log.error("Si e' verificato un errore durante il caricamento della pendenza [Id: "+request.getCodVersamentoEnte()+", CodApplicazione: "+request.getCodApplicazione()+"]: "+ e.getMessage(),e);

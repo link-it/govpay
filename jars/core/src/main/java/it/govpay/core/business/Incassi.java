@@ -37,10 +37,9 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
-import it.govpay.bd.model.Nota;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.eventi.EventoNota;
+import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -62,8 +61,12 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.AvvisaturaUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IncassoUtils;
+import it.govpay.core.utils.thread.InviaAvvisaturaThread;
+import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Fr.StatoFr;
@@ -72,6 +75,8 @@ import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.Versamento.AvvisaturaOperazione;
+import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 
 
@@ -310,14 +315,20 @@ public class Incassi extends BasicBD {
 								pagamentiBD.insertPagamento(pagamento);
 								rendicontazione.setIdPagamento(pagamento.getId());
 									
-								// TODO eliminare
-								versamento.getNote().add(new Nota(TipoNota.SISTEMA_INFO, "Pagamento eseguito senza RPT", "Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "]."));
-
 								//Aggiorno lo stato del versamento:
 								switch (versamento.getSingoliVersamenti(this).get(0).getStatoSingoloVersamento()) {
 									case NON_ESEGUITO:
 										versamentiBD.updateStatoSingoloVersamento(versamento.getSingoliVersamenti(this).get(0).getId(), StatoSingoloVersamento.ESEGUITO);
 										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
+										// Avvisatura
+										versamentiBD.updateVersamentoOperazioneAvvisatura(versamento.getId(), AvvisaturaOperazione.DELETE.getValue()); 
+										String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
+										if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
+											versamentiBD.updateVersamentoModalitaAvvisatura(versamento.getId(), avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
+										}
+										// schedulo l'invio dell'avvisatura
+										versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true); 
+										
 										break;
 									case ESEGUITO:
 										versamento.setAnomalo(true);
@@ -334,7 +345,7 @@ public class Incassi extends BasicBD {
 								eventoNota.setIuv(versamento.getIuvVersamento());
 								eventoNota.setOggetto("Pagamento eseguito senza RPT");
 								eventoNota.setTesto("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
-								eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+								eventoNota.setTipoEvento(TipoNota.SistemaInfo);
 								giornaleEventi.registraEventoNota(eventoNota);
 							} catch (MultipleResultException e) {
 								GpThreadLocal.get().log("incasso.frAnomala", idf);

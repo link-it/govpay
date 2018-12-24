@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.bd.viste.model.VersamentoIncasso.StatoPagamento;
@@ -103,10 +102,12 @@ public class VersamentoIncassoConverter {
 			
 			dto.setIuvVersamento(vo.getIuvVersamento());
 			dto.setNumeroAvviso(vo.getNumeroAvviso());
-			dto.setAvvisatura(vo.getAvvisatura());
-			dto.setTipoPagamento(vo.getTipoPagamento());
-			dto.setDaAvvisare("true".equalsIgnoreCase(vo.getDaAvvisare()));
-			dto.setCodAvvisatura(vo.getCodAvvisatura());
+			dto.setAvvisaturaAbilitata("true".equalsIgnoreCase(vo.getAvvisaturaAbilitata()));
+			dto.setAvvisaturaDaInviare("true".equalsIgnoreCase(vo.getAvvisaturaDaInviare()));
+			dto.setAvvisaturaCodAvvisatura(vo.getAvvisaturaCodAvvisatura());
+			dto.setAvvisaturaModalita(vo.getAvvisaturaModalita());
+			dto.setAvvisaturaOperazione(vo.getAvvisaturaOperazione());
+			dto.setAvvisaturaTipoPagamento(vo.getAvvisaturaTipoPagamento());
 			if(vo.getIdTracciatoAvvisatura()!=null)
 				dto.setIdTracciatoAvvisatura(vo.getIdTracciatoAvvisatura().getId());
 			
@@ -119,13 +120,6 @@ public class VersamentoIncassoConverter {
 				dto.setStatoPagamento(StatoPagamento.valueOf(vo.getStatoPagamento())); 
 			
 			dto.setAck("true".equalsIgnoreCase(vo.getAck()));
-			if(vo.getNote()!=null)
-				try {
-					dto.setNote(vo.getNote());
-				} catch(IOException e) {
-					throw new ServiceException(e);
-				}
-			
 			dto.setAnomalo("true".equalsIgnoreCase(vo.getAnomalo()));
 			
 			dto.setIuvPagamento(vo.getIuvPagamento());

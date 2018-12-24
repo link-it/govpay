@@ -49,6 +49,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.SOTTOTIPO_EVENTO = new Field("sottotipoEvento",java.lang.String.class,"Evento",Evento.class);
 		this.DATA = new Field("data",java.util.Date.class,"Evento",Evento.class);
 		this.INTERVALLO = new Field("intervallo",long.class,"Evento",Evento.class);
+		this.CLASSNAME_DETTAGLIO = new Field("classnameDettaglio",java.lang.String.class,"Evento",Evento.class);
 		this.DETTAGLIO = new Field("dettaglio",java.lang.String.class,"Evento",Evento.class);
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"Evento",Evento.class));
 		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new Field("idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"Evento",Evento.class));
@@ -67,6 +68,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.SOTTOTIPO_EVENTO = new ComplexField(father,"sottotipoEvento",java.lang.String.class,"Evento",Evento.class);
 		this.DATA = new ComplexField(father,"data",java.util.Date.class,"Evento",Evento.class);
 		this.INTERVALLO = new ComplexField(father,"intervallo",long.class,"Evento",Evento.class);
+		this.CLASSNAME_DETTAGLIO = new ComplexField(father,"classnameDettaglio",java.lang.String.class,"Evento",Evento.class);
 		this.DETTAGLIO = new ComplexField(father,"dettaglio",java.lang.String.class,"Evento",Evento.class);
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"Evento",Evento.class));
 		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new ComplexField(father,"idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"Evento",Evento.class));
@@ -90,6 +92,8 @@ public class EventoModel extends AbstractModel<Evento> {
 	public IField DATA = null;
 	 
 	public IField INTERVALLO = null;
+	 
+	public IField CLASSNAME_DETTAGLIO = null;
 	 
 	public IField DETTAGLIO = null;
 	 

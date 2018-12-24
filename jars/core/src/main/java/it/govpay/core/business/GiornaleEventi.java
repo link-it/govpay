@@ -48,7 +48,7 @@ public class GiornaleEventi extends BasicBD {
 	
 	public void registraEventoCooperazione(EventoCooperazione eventoCooperazione) {
 		try {
-			this._registraEvento(EventoConverter.fromEventoCooperazionetoEvento(eventoCooperazione));
+			this._registraEvento(EventoConverter.fromEventoCooperazioneToEvento(eventoCooperazione));
 		} catch (Exception e) {
 			log.error("Errore nella registrazione degli eventi", e);
 		}
@@ -56,7 +56,7 @@ public class GiornaleEventi extends BasicBD {
 	
 	public void registraEventoNota(EventoNota eventoNota) {
 		try {
-			this._registraEvento(EventoConverter.fromEventoNotatoEvento(eventoNota));
+			this._registraEvento(EventoConverter.fromEventoNotaToEvento(eventoNota));
 		} catch (Exception e) {
 			log.error("Errore nella registrazione degli eventi", e);
 		}

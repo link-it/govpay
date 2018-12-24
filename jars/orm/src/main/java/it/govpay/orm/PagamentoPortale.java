@@ -58,7 +58,6 @@ import java.io.Serializable;
  * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="multiBeneficiario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ack" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tipo_utenza" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -99,7 +98,6 @@ import java.io.Serializable;
   	"tipoVersamento",
   	"multiBeneficiario",
   	"ack",
-  	"note",
   	"tipo",
   	"principal",
   	"tipoUtenza"
@@ -314,14 +312,6 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
     this.ack = ack;
   }
 
-  public java.lang.String getNote() {
-    return this.note;
-  }
-
-  public void setNote(java.lang.String note) {
-    this.note = note;
-  }
-
   public int getTipo() {
     return this.tipo;
   }
@@ -457,10 +447,6 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="ack",required=true,nillable=false)
   protected boolean ack;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="note",required=false,nillable=false)
-  protected java.lang.String note;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="int")
   @XmlElement(name="tipo",required=true,nillable=false)

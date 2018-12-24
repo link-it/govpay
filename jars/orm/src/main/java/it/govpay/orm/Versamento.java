@@ -75,13 +75,14 @@ import java.io.Serializable;
  * 			&lt;element name="anomalie" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuvVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="numeroAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="avvisatura" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoPagamento" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="daAvvisare" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codAvvisatura" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvisaturaAbilitata" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="avvisaturaDaInviare" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="avvisaturaOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvisaturaModalita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvisaturaTipoPagamento" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="avvisaturaCodAvvisatura" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idTracciatoAvvisatura" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ack" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="anomalo" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -137,13 +138,14 @@ import java.io.Serializable;
   	"anomalie",
   	"iuvVersamento",
   	"numeroAvviso",
-  	"avvisatura",
-  	"tipoPagamento",
-  	"daAvvisare",
-  	"codAvvisatura",
+  	"avvisaturaAbilitata",
+  	"avvisaturaDaInviare",
+  	"avvisaturaOperazione",
+  	"avvisaturaModalita",
+  	"avvisaturaTipoPagamento",
+  	"avvisaturaCodAvvisatura",
   	"idTracciatoAvvisatura",
   	"ack",
-  	"note",
   	"anomalo"
   }
 )
@@ -492,40 +494,60 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.numeroAvviso = numeroAvviso;
   }
 
-  public java.lang.String getAvvisatura() {
-    return this.avvisatura;
+  public boolean isAvvisaturaAbilitata() {
+    return this.avvisaturaAbilitata;
   }
 
-  public void setAvvisatura(java.lang.String avvisatura) {
-    this.avvisatura = avvisatura;
+  public boolean getAvvisaturaAbilitata() {
+    return this.avvisaturaAbilitata;
   }
 
-  public java.lang.Integer getTipoPagamento() {
-    return this.tipoPagamento;
+  public void setAvvisaturaAbilitata(boolean avvisaturaAbilitata) {
+    this.avvisaturaAbilitata = avvisaturaAbilitata;
   }
 
-  public void setTipoPagamento(java.lang.Integer tipoPagamento) {
-    this.tipoPagamento = tipoPagamento;
+  public boolean isAvvisaturaDaInviare() {
+    return this.avvisaturaDaInviare;
   }
 
-  public boolean isDaAvvisare() {
-    return this.daAvvisare;
+  public boolean getAvvisaturaDaInviare() {
+    return this.avvisaturaDaInviare;
   }
 
-  public boolean getDaAvvisare() {
-    return this.daAvvisare;
+  public void setAvvisaturaDaInviare(boolean avvisaturaDaInviare) {
+    this.avvisaturaDaInviare = avvisaturaDaInviare;
   }
 
-  public void setDaAvvisare(boolean daAvvisare) {
-    this.daAvvisare = daAvvisare;
+  public java.lang.String getAvvisaturaOperazione() {
+    return this.avvisaturaOperazione;
   }
 
-  public java.lang.String getCodAvvisatura() {
-    return this.codAvvisatura;
+  public void setAvvisaturaOperazione(java.lang.String avvisaturaOperazione) {
+    this.avvisaturaOperazione = avvisaturaOperazione;
   }
 
-  public void setCodAvvisatura(java.lang.String codAvvisatura) {
-    this.codAvvisatura = codAvvisatura;
+  public java.lang.String getAvvisaturaModalita() {
+    return this.avvisaturaModalita;
+  }
+
+  public void setAvvisaturaModalita(java.lang.String avvisaturaModalita) {
+    this.avvisaturaModalita = avvisaturaModalita;
+  }
+
+  public java.lang.Integer getAvvisaturaTipoPagamento() {
+    return this.avvisaturaTipoPagamento;
+  }
+
+  public void setAvvisaturaTipoPagamento(java.lang.Integer avvisaturaTipoPagamento) {
+    this.avvisaturaTipoPagamento = avvisaturaTipoPagamento;
+  }
+
+  public java.lang.String getAvvisaturaCodAvvisatura() {
+    return this.avvisaturaCodAvvisatura;
+  }
+
+  public void setAvvisaturaCodAvvisatura(java.lang.String avvisaturaCodAvvisatura) {
+    this.avvisaturaCodAvvisatura = avvisaturaCodAvvisatura;
   }
 
   public IdTracciato getIdTracciatoAvvisatura() {
@@ -546,14 +568,6 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
 
   public void setAck(boolean ack) {
     this.ack = ack;
-  }
-
-  public java.lang.String getNote() {
-    return this.note;
-  }
-
-  public void setNote(java.lang.String note) {
-    this.note = note;
   }
 
   public boolean isAnomalo() {
@@ -746,21 +760,29 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @XmlElement(name="numeroAvviso",required=false,nillable=false)
   protected java.lang.String numeroAvviso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="avvisatura",required=false,nillable=false)
-  protected java.lang.String avvisatura;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
-  @XmlElement(name="tipoPagamento",required=false,nillable=false)
-  protected java.lang.Integer tipoPagamento;
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="avvisaturaAbilitata",required=true,nillable=false)
+  protected boolean avvisaturaAbilitata;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="daAvvisare",required=true,nillable=false)
-  protected boolean daAvvisare;
+  @XmlElement(name="avvisaturaDaInviare",required=true,nillable=false)
+  protected boolean avvisaturaDaInviare;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codAvvisatura",required=false,nillable=false)
-  protected java.lang.String codAvvisatura;
+  @XmlElement(name="avvisaturaOperazione",required=false,nillable=false)
+  protected java.lang.String avvisaturaOperazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avvisaturaModalita",required=false,nillable=false)
+  protected java.lang.String avvisaturaModalita;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
+  @XmlElement(name="avvisaturaTipoPagamento",required=false,nillable=false)
+  protected java.lang.Integer avvisaturaTipoPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="avvisaturaCodAvvisatura",required=false,nillable=false)
+  protected java.lang.String avvisaturaCodAvvisatura;
 
   @XmlElement(name="idTracciatoAvvisatura",required=false,nillable=false)
   protected IdTracciato idTracciatoAvvisatura;
@@ -768,10 +790,6 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="ack",required=true,nillable=false)
   protected boolean ack;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="note",required=false,nillable=false)
-  protected java.lang.String note;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="anomalo",required=true,nillable=false)

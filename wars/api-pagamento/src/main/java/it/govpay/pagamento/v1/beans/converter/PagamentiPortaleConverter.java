@@ -14,6 +14,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pagamento.v1.beans.ContoAddebito;
 import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.v1.beans.Pagamento;
@@ -45,9 +46,18 @@ public class PagamentiPortaleConverter {
 		return json;
 	}
 
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, String idSessionePortale) throws Exception {
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, String idSessionePortale,Boolean avvisaturaDigitale, String modalitaAvvisaturaDigitale) throws Exception {
 
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
+		
+		pagamentiPortaleDTO.setAvvisaturaDigitale(avvisaturaDigitale);
+		ModoAvvisatura avvisaturaModalita = null;
+		if(modalitaAvvisaturaDigitale != null) {
+			if(modalitaAvvisaturaDigitale.equals("asincrona") || modalitaAvvisaturaDigitale.equals("sincrona"))
+				avvisaturaModalita = modalitaAvvisaturaDigitale.equals("asincrona") ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
+		}
+		
+		pagamentiPortaleDTO.setAvvisaturaModalita(avvisaturaModalita);
 
 		pagamentiPortaleDTO.setIdSessione(idSessione);
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
@@ -97,6 +107,10 @@ public class PagamentiPortaleConverter {
 
 				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
 					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
+					
+					versamento.setAvvisaturaAbilitata(pagamentiPortaleDTO.getAvvisaturaDigitale());
+					versamento.setModoAvvisatura(pagamentiPortaleDTO.getAvvisaturaModalita() != null ? pagamentiPortaleDTO.getAvvisaturaModalita().getValue() : null); 
+					
 					listRefs.add(versamento);
 				} else {
 					throw new RequestValidationException("La pendenza "+(i+1)+" e' di un tipo non riconosciuto.");

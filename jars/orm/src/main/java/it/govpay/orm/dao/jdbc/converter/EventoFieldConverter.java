@@ -123,6 +123,13 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "intervallo";
 			}
 		}
+		if(field.equals(Evento.model().CLASSNAME_DETTAGLIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".classname_dettaglio";
+			}else{
+				return "classname_dettaglio";
+			}
+		}
 		if(field.equals(Evento.model().DETTAGLIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".dettaglio";
@@ -235,6 +242,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().INTERVALLO)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().CLASSNAME_DETTAGLIO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().DETTAGLIO)){

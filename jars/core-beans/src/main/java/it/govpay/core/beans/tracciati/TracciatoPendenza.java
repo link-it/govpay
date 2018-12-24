@@ -18,6 +18,9 @@ public class TracciatoPendenza {
 	private String stepElaborazione;
 	private String descrizioneStepElaborazione;
 	
+	private Boolean avvisaturaAbilitata;
+	private String avvisaturaModalita;
+	
 	public String getStepElaborazione() {
 		return this.stepElaborazione;
 	}
@@ -83,5 +86,17 @@ public class TracciatoPendenza {
 	}
 	public void setLineaElaborazioneDel(long lineaElaborazioneDel) {
 		this.lineaElaborazioneDel = lineaElaborazioneDel;
+	}
+	public Boolean getAvvisaturaAbilitata() {
+		return avvisaturaAbilitata;
+	}
+	public void setAvvisaturaAbilitata(Boolean avvisaturaAbilitata) {
+		this.avvisaturaAbilitata = avvisaturaAbilitata;
+	}
+	public String getAvvisaturaModalita() {
+		return avvisaturaModalita;
+	}
+	public void setAvvisaturaModalita(String avvisaturaModalita) {
+		this.avvisaturaModalita = avvisaturaModalita;
 	}
 }

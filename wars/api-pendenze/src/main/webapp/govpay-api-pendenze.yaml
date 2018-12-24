@@ -157,6 +157,13 @@ paths:
           schema:
             type: boolean
             default: false
+        - in: query
+          name: modalitaAvvisaturaDigitale
+          description: Modalita' di avvisatura scelta per le pendenza [sincrona|asincrona]
+          required: false
+          schema:
+            type: string
+            default: asincrona
       requestBody:
         content:
           application/json:

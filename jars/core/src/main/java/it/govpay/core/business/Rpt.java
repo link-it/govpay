@@ -380,7 +380,7 @@ public class Rpt extends BasicBD{
 				RptBD rptBD = new RptBD(this);
 				rptBD.updateRpt(rpt.getId(), statoRpt, null, sessionId, url);
 				notificheBD.insertNotifica(notifica);
-				ThreadExecutorManager.getClientPoolExecutor().execute(new InviaNotificaThread(notifica, this));
+				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this));
 			} catch (Exception ee) {
 				// Se uno o piu' aggiornamenti vanno male, non importa. 
 				// si risolvera' poi nella verifica pendenti

@@ -237,7 +237,7 @@ public class RptUtils {
 
 	public static void inviaRPTAsync(Rpt rpt, BasicBD bd) throws ServiceException {
 		InviaRptThread t = new InviaRptThread(rpt, bd);
-		ThreadExecutorManager.getClientPoolExecutor().execute(t);
+		ThreadExecutorManager.getClientPoolExecutorRPT().execute(t);
 	}
 
 	public static NodoChiediStatoRPTRisposta chiediStatoRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, BasicBD bd) throws GovPayException, ClientException {

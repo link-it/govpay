@@ -30,6 +30,7 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pagamento.v1.beans.FaultBean;
 import it.govpay.pagamento.v1.beans.FaultBeanEsteso;
 import it.govpay.pagamento.v1.beans.FaultBeanEsteso.CategoriaEnum;
@@ -51,7 +52,7 @@ public class PagamentiController extends BaseController {
      }
 
 
-    public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale) {
+    public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, Boolean avvisaturaDigitale, String modalitaAvvisaturaDigitale) {
     	String methodName = "pagamentiPOST";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -73,7 +74,7 @@ public class PagamentiController extends BaseController {
 			
 			
 			String idSession = transactionId.replace("-", "");
-			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale);
+			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale, avvisaturaDigitale,modalitaAvvisaturaDigitale);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			

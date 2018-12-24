@@ -228,13 +228,6 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "ack";
 			}
 		}
-		if(field.equals(PagamentoPortale.model().NOTE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".note";
-			}else{
-				return "note";
-			}
-		}
 		if(field.equals(PagamentoPortale.model().TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".tipo";
@@ -336,9 +329,6 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().ACK)){
-			return this.toTable(PagamentoPortale.model(), returnAlias);
-		}
-		if(field.equals(PagamentoPortale.model().NOTE)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(PagamentoPortale.model().TIPO)){

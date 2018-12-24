@@ -381,12 +381,13 @@ CREATE TABLE versamenti
 	anomalie TEXT,
 	iuv_versamento VARCHAR(35),
 	numero_avviso VARCHAR(35),
-	avvisatura VARCHAR(1),
-	tipo_pagamento INT,
-	da_avvisare BOOLEAN NOT NULL,
-	cod_avvisatura VARCHAR(20),
+	avvisatura_abilitata BOOLEAN NOT NULL,
+	avvisatura_da_inviare BOOLEAN NOT NULL,
+	avvisatura_operazione VARCHAR(1),
+	avvisatura_modalita VARCHAR(1),
+	avvisatura_tipo_pagamento INT,
+	avvisatura_cod_avvisatura VARCHAR(20),
 	ack BOOLEAN NOT NULL,
-	note TEXT,
 	anomalo BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
@@ -472,7 +473,6 @@ CREATE TABLE pagamenti_portale
 	tipo_versamento VARCHAR(4),
 	multi_beneficiario VARCHAR(35),
 	ack BOOLEAN NOT NULL,
-	note TEXT,
 	tipo INT NOT NULL,
 	principal VARCHAR(4000) NOT NULL,
 	tipo_utenza VARCHAR(35) NOT NULL,
@@ -791,6 +791,7 @@ CREATE TABLE eventi
 	sottotipo_evento VARCHAR(35),
 	data TIMESTAMP,
 	intervallo BIGINT,
+	classname_dettaglio VARCHAR(255),
 	dettaglio TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
@@ -983,24 +984,21 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
     max(versamenti.anomalie) AS anomalie,
     max(versamenti.iuv_versamento::text) AS iuv_versamento,
     max(versamenti.numero_avviso::text) AS numero_avviso,
-    max(versamenti.avvisatura::text) AS avvisatura,
-    max(versamenti.tipo_pagamento) AS tipo_pagamento,
     max(versamenti.id_dominio) AS id_dominio,
     max(versamenti.id_uo) AS id_uo,
     max(versamenti.id_applicazione) AS id_applicazione,
-    max(
-        CASE
-            WHEN versamenti.da_avvisare = true THEN 'TRUE'::text
-            ELSE 'FALSE'::text
-        END) AS da_avvisare,
-    max(versamenti.cod_avvisatura::text) AS cod_avvisatura,
-    max(versamenti.id_tracciato) AS id_tracciato,
+    MAX(CASE WHEN versamenti.avvisatura_abilitata = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_abilitata,
+    MAX(CASE WHEN versamenti.avvisatura_da_inviare = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_da_inviare,
+    MAX(versamenti.avvisatura_operazione) as avvisatura_operazione,               
+    MAX(versamenti.avvisatura_modalita) as avvisatura_modalita,
+    MAX(versamenti.avvisatura_tipo_pagamento) as avvisatura_tipo_pagamento,                   
+    MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,      
+    MAX(versamenti.id_tracciato) as id_tracciato,
     max(
         CASE
             WHEN versamenti.ack = true THEN 'TRUE'::text
             ELSE 'FALSE'::text
         END) AS ack,
-    max(versamenti.note) AS note,
     max(
         CASE
             WHEN versamenti.anomalo = true THEN 'TRUE'::text

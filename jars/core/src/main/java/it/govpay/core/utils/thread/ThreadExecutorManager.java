@@ -29,23 +29,50 @@ import it.govpay.core.utils.GovpayConfig;
 
 public class ThreadExecutorManager {
 	
-	private static ExecutorService executor;
+	private static ExecutorService executorNotifica;
+	private static ExecutorService executorRPT;
+	private static ExecutorService executorAvvisaturaDigitale;
 	
 	public static void setup() throws GovPayException {
-		int threadPoolSize = GovpayConfig.getInstance().getDimensionePool();
-		LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi [NumThread: "+threadPoolSize+"]" );
-		executor = Executors.newFixedThreadPool(threadPoolSize);
+		int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotifica();
+		LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi notifica [NumThread: "+threadNotificaPoolSize+"]" );
+		executorNotifica = Executors.newFixedThreadPool(threadNotificaPoolSize);
+		
+		int threadAvvisaturaDigitalePoolSize = GovpayConfig.getInstance().getDimensionePoolAvvisaturaDigitale();
+		LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi avvisatura digitale [NumThread: "+threadAvvisaturaDigitalePoolSize+"]" );
+		executorAvvisaturaDigitale = Executors.newFixedThreadPool(threadAvvisaturaDigitalePoolSize);
+		
+		int threadRPTPoolSize = GovpayConfig.getInstance().getDimensionePoolRPT();
+		LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione rpt [NumThread: "+threadRPTPoolSize+"]" );
+		executorRPT = Executors.newFixedThreadPool(threadRPTPoolSize);
 	}
 	
 	public static void shutdown() throws InterruptedException {
-		executor.shutdown();
-		while (!executor.isTerminated()) {
+		executorNotifica.shutdown();
+		while (!executorNotifica.isTerminated()) {
+			Thread.sleep(500);
+		}
+		
+		executorAvvisaturaDigitale.shutdown();
+		while (!executorAvvisaturaDigitale.isTerminated()) {
+			Thread.sleep(500);
+		}
+		
+		executorRPT.shutdown();
+		while (!executorRPT.isTerminated()) {
 			Thread.sleep(500);
 		}
 	}
 	
-	public static ExecutorService getClientPoolExecutor() {
-		return executor;
+	public static ExecutorService getClientPoolExecutorNotifica() {
+		return executorNotifica;
 	}
 
+	public static ExecutorService getClientPoolExecutorAvvisaturaDigitale() {
+		return executorAvvisaturaDigitale;
+	}
+	
+	public static ExecutorService getClientPoolExecutorRPT() {
+		return executorRPT;
+	}
 }

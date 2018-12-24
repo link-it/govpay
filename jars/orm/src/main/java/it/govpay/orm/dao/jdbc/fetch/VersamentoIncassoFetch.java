@@ -124,18 +124,20 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iuv_versamento", VersamentoIncasso.model().IUV_VERSAMENTO.getFieldType()));
 				setParameter(object, "setNumeroAvviso", VersamentoIncasso.model().NUMERO_AVVISO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "numero_avviso", VersamentoIncasso.model().NUMERO_AVVISO.getFieldType()));
-				setParameter(object, "setAvvisatura", VersamentoIncasso.model().AVVISATURA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "avvisatura", VersamentoIncasso.model().AVVISATURA.getFieldType()));
-				setParameter(object, "setTipoPagamento", VersamentoIncasso.model().TIPO_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_pagamento", VersamentoIncasso.model().TIPO_PAGAMENTO.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
-				setParameter(object, "setDaAvvisare", VersamentoIncasso.model().DA_AVVISARE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "da_avvisare", VersamentoIncasso.model().DA_AVVISARE.getFieldType()));
-				setParameter(object, "setCodAvvisatura", VersamentoIncasso.model().COD_AVVISATURA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_avvisatura", VersamentoIncasso.model().COD_AVVISATURA.getFieldType()));
+				setParameter(object, "setAvvisaturaAbilitata", VersamentoIncasso.model().AVVISATURA_ABILITATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_abilitata", VersamentoIncasso.model().AVVISATURA_ABILITATA.getFieldType()));
+				setParameter(object, "setAvvisaturaDaInviare", VersamentoIncasso.model().AVVISATURA_DA_INVIARE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_da_inviare", VersamentoIncasso.model().AVVISATURA_DA_INVIARE.getFieldType()));
+				setParameter(object, "setAvvisaturaOperazione", VersamentoIncasso.model().AVVISATURA_OPERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_operazione", VersamentoIncasso.model().AVVISATURA_OPERAZIONE.getFieldType()));
+				setParameter(object, "setAvvisaturaModalita", VersamentoIncasso.model().AVVISATURA_MODALITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_modalita", VersamentoIncasso.model().AVVISATURA_MODALITA.getFieldType()));
+				setParameter(object, "setAvvisaturaTipoPagamento", VersamentoIncasso.model().AVVISATURA_TIPO_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_tipo_pagamento", VersamentoIncasso.model().AVVISATURA_TIPO_PAGAMENTO.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setAvvisaturaCodAvvisatura", VersamentoIncasso.model().AVVISATURA_COD_AVVISATURA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_cod_avvisatura", VersamentoIncasso.model().AVVISATURA_COD_AVVISATURA.getFieldType()));
 				setParameter(object, "setAck", VersamentoIncasso.model().ACK.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ack", VersamentoIncasso.model().ACK.getFieldType()));
-				setParameter(object, "setNote", VersamentoIncasso.model().NOTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "note", VersamentoIncasso.model().NOTE.getFieldType()));
 				setParameter(object, "setAnomalo", VersamentoIncasso.model().ANOMALO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "anomalo", VersamentoIncasso.model().ANOMALO.getFieldType()));
 				setParameter(object, "setDataPagamento", VersamentoIncasso.model().DATA_PAGAMENTO.getFieldType(),
@@ -244,18 +246,20 @@ public class VersamentoIncassoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"iuvVersamento"));
 				setParameter(object, "setNumeroAvviso", VersamentoIncasso.model().NUMERO_AVVISO.getFieldType(),
 					this.getObjectFromMap(map,"numeroAvviso"));
-				setParameter(object, "setAvvisatura", VersamentoIncasso.model().AVVISATURA.getFieldType(),
-					this.getObjectFromMap(map,"avvisatura"));
-				setParameter(object, "setTipoPagamento", VersamentoIncasso.model().TIPO_PAGAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"tipoPagamento"));
-				setParameter(object, "setDaAvvisare", VersamentoIncasso.model().DA_AVVISARE.getFieldType(),
-					this.getObjectFromMap(map,"daAvvisare"));
-				setParameter(object, "setCodAvvisatura", VersamentoIncasso.model().COD_AVVISATURA.getFieldType(),
-					this.getObjectFromMap(map,"codAvvisatura"));
+				setParameter(object, "setAvvisaturaAbilitata", VersamentoIncasso.model().AVVISATURA_ABILITATA.getFieldType(),
+					this.getObjectFromMap(map,"avvisaturaAbilitata"));
+				setParameter(object, "setAvvisaturaDaInviare", VersamentoIncasso.model().AVVISATURA_DA_INVIARE.getFieldType(),
+					this.getObjectFromMap(map,"avvisaturaDaInviare"));
+				setParameter(object, "setAvvisaturaOperazione", VersamentoIncasso.model().AVVISATURA_OPERAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"avvisaturaOperazione"));
+				setParameter(object, "setAvvisaturaModalita", VersamentoIncasso.model().AVVISATURA_MODALITA.getFieldType(),
+					this.getObjectFromMap(map,"avvisaturaModalita"));
+				setParameter(object, "setAvvisaturaTipoPagamento", VersamentoIncasso.model().AVVISATURA_TIPO_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"avvisaturaTipoPagamento"));
+				setParameter(object, "setAvvisaturaCodAvvisatura", VersamentoIncasso.model().AVVISATURA_COD_AVVISATURA.getFieldType(),
+					this.getObjectFromMap(map,"avvisaturaCodAvvisatura"));
 				setParameter(object, "setAck", VersamentoIncasso.model().ACK.getFieldType(),
 					this.getObjectFromMap(map,"ack"));
-				setParameter(object, "setNote", VersamentoIncasso.model().NOTE.getFieldType(),
-					this.getObjectFromMap(map,"note"));
 				setParameter(object, "setAnomalo", VersamentoIncasso.model().ANOMALO.getFieldType(),
 					this.getObjectFromMap(map,"anomalo"));
 				setParameter(object, "setDataPagamento", VersamentoIncasso.model().DATA_PAGAMENTO.getFieldType(),

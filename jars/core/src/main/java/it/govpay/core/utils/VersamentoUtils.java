@@ -384,7 +384,7 @@ public class VersamentoUtils {
 		} 
 		
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-		versamentoBusiness.caricaVersamento(applicazione, versamento, versamento.getNumeroAvviso() == null, true);
+		versamentoBusiness.caricaVersamento(versamento, versamento.getNumeroAvviso() == null, true);
 		return versamento;
 	}
 	

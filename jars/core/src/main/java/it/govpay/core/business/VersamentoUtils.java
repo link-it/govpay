@@ -34,6 +34,7 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Anagrafica;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica.TIPO;
@@ -43,7 +44,9 @@ import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilita;
+import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.CausaleSemplice;
+import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class VersamentoUtils {
@@ -67,6 +70,21 @@ public class VersamentoUtils {
 		model.setDataUltimoAggiornamento(new Date());
 		model.setDescrizioneStato(null);
 		model.setNome(versamento.getNome());
+		
+		if(versamento.getAvvisaturaAbilitata() != null) {
+			model.setAvvisaturaAbilitata(versamento.getAvvisaturaAbilitata().booleanValue());
+		} else {
+			// imposto il default di sistema
+			model.setAvvisaturaAbilitata(GovpayConfig.getInstance().isAvvisaturaDigitaleEnabled());
+		}
+		
+		if(versamento.getModoAvvisatura() != null) {
+			model.setAvvisaturaModalita(versamento.getModoAvvisatura());
+		} else {
+			// imposto il default
+			model.setAvvisaturaModalita(ModoAvvisatura.ASICNRONA.getValue()); 
+		}
+		
 		model.setId(null);
 		try {
 			model.setApplicazione(versamento.getCodApplicazione(), bd);
@@ -122,7 +140,8 @@ public class VersamentoUtils {
 //				model.setIuvVersamento(versamento.getIuv().substring(3));
 //			}
 //			model.setNumeroAvviso(versamento.getIuv());
-			model.setAvvisatura("C");
+			model.setAvvisaturaOperazione(AvvisaturaOperazione.CREATE.getValue());
+			model.setAvvisaturaDaInviare(true);
 		}
 		return model;
 	}

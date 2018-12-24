@@ -73,6 +73,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
+import it.govpay.model.Versamento.ModoAvvisatura;
 
 
 public class PendenzeController extends BaseController {
@@ -350,6 +351,11 @@ public class PendenzeController extends BaseController {
 
 			postTracciatoDTO.setIdDominio(tracciatoPendenzeRequest.getIdDominio());
 			postTracciatoDTO.setNomeFile(tracciatoPendenzeRequest.getIdTracciato());
+			postTracciatoDTO.setAvvisaturaDigitale(tracciatoPendenzeRequest.AvvisaturaDigitale());
+			if(tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale() != null) {
+				ModoAvvisatura modoAvvisatura = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale().equals("asincrona") ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
+				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura );
+			}
 			postTracciatoDTO.setContenuto(baos.toByteArray()); 
 
 			tracciatiDAO.create(postTracciatoDTO);

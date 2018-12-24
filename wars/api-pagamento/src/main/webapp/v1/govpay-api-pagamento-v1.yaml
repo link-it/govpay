@@ -453,6 +453,20 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: avvisaturaDigitale
+          description: Indica se la pendenza deve essere avvisata digitalmente
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: modalitaAvvisaturaDigitale
+          description: Modalita' di avvisatura scelta per le pendenza [sincrona|asincrona]
+          required: false
+          schema:
+            type: string
+            default: asincrona
       requestBody:
         content:
           application/json:

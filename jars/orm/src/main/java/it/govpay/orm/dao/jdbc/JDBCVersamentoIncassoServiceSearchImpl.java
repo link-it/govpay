@@ -199,12 +199,13 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(VersamentoIncasso.model().ANOMALIE);
 			fields.add(VersamentoIncasso.model().IUV_VERSAMENTO);
 			fields.add(VersamentoIncasso.model().NUMERO_AVVISO);
-			fields.add(VersamentoIncasso.model().AVVISATURA);
-			fields.add(VersamentoIncasso.model().TIPO_PAGAMENTO);
-			fields.add(VersamentoIncasso.model().DA_AVVISARE);
-			fields.add(VersamentoIncasso.model().COD_AVVISATURA);
+			fields.add(VersamentoIncasso.model().AVVISATURA_ABILITATA);
+			fields.add(VersamentoIncasso.model().AVVISATURA_OPERAZIONE);
+			fields.add(VersamentoIncasso.model().AVVISATURA_MODALITA);
+			fields.add(VersamentoIncasso.model().AVVISATURA_TIPO_PAGAMENTO);
+			fields.add(VersamentoIncasso.model().AVVISATURA_DA_INVIARE);
+			fields.add(VersamentoIncasso.model().AVVISATURA_COD_AVVISATURA);
 			fields.add(VersamentoIncasso.model().ACK);
-			fields.add(VersamentoIncasso.model().NOTE);
 			fields.add(VersamentoIncasso.model().ANOMALO);
 			fields.add(VersamentoIncasso.model().IUV_PAGAMENTO);
 			fields.add(VersamentoIncasso.model().DATA_PAGAMENTO);

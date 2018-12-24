@@ -40,6 +40,7 @@ public class Evento extends BasicModel {
 	private Long intervallo;
 	private Date data;
 	private String dettaglio;
+	private String classnameDettaglio;
 	
 	public enum CategoriaEvento {
 		INTERNO ("B"), INTERFACCIA_COOPERAZIONE ("C"), INTERFACCIA_INTEGRAZIONE ("I"), UTENTE ("U");
@@ -160,4 +161,11 @@ public class Evento extends BasicModel {
 		this.dettaglio = dettaglio;
 	}
 
+	public String getClassnameDettaglio() {
+		return classnameDettaglio;
+	}
+
+	public void setClassnameDettaglio(String classnameDettaglio) {
+		this.classnameDettaglio = classnameDettaglio;
+	}
 }

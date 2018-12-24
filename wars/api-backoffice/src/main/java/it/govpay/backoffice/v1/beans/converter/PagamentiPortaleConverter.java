@@ -7,11 +7,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
-import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.backoffice.v1.beans.ContoAddebito;
-import it.govpay.backoffice.v1.beans.Nota;
 import it.govpay.backoffice.v1.beans.Pagamento;
 import it.govpay.backoffice.v1.beans.Pagamento.ModelloEnum;
 import it.govpay.backoffice.v1.beans.PagamentoIndex;
@@ -19,6 +15,9 @@ import it.govpay.backoffice.v1.beans.PagamentoPost;
 import it.govpay.backoffice.v1.beans.PendenzaPost;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.StatoPagamento;
+import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PagamentiPortaleConverter {
@@ -84,15 +83,7 @@ public class PagamentiPortaleConverter {
 			}
 			rsModel.setRpp(rpp);
 		}
-		
-		if(pagamentoPortale.getNote()!=null && !pagamentoPortale.getNote().isEmpty()) {
-			List<Nota> note = new ArrayList<>();
-			for(it.govpay.bd.model.Nota nota: pagamentoPortale.getNote()) {
-				note.add(NoteConverter.toRsModel(nota));
-			}
-			rsModel.setNote(note);
-		}
-		
+
 		rsModel.setVerificato(pagamentoPortale.isAck());
 
 		if(pagamentoPortale.getTipo() == 1) {
@@ -138,14 +129,6 @@ public class PagamentiPortaleConverter {
 
 		if(pagamentoPortale.getImporto() != null) 
 			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
-
-		if(pagamentoPortale.getNote()!=null && !pagamentoPortale.getNote().isEmpty()) {
-			List<Nota> note = new ArrayList<>();
-			for(it.govpay.bd.model.Nota nota: pagamentoPortale.getNote()) {
-				note.add(NoteConverter.toRsModel(nota));
-			}
-			rsModel.setNote(note);
-		}
 
 		rsModel.setVerificato(pagamentoPortale.isAck());
 

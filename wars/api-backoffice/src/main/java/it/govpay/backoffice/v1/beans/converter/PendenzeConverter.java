@@ -10,7 +10,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
-import it.govpay.backoffice.v1.beans.Nota;
 import it.govpay.backoffice.v1.beans.Pendenza;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.Riscossione;
@@ -135,15 +134,6 @@ public class PendenzeConverter {
 			v.add(toVocePendenzaRsModel(s,addInfoIncasso));
 		}
 		rsModel.setVoci(v);
-		
-		if(versamento.getNote()!=null && !versamento.getNote().isEmpty()) {
-			List<Nota> note = new ArrayList<>();
-			for(it.govpay.bd.model.Nota nota: versamento.getNote()) {
-				note.add(NoteConverter.toRsModel(nota));
-			}
-			rsModel.setNote(note);
-		}
-		
 		rsModel.setVerificato(versamento.isAck());
 		rsModel.setAnomalo(versamento.isAnomalo());
 
@@ -263,16 +253,6 @@ public class PendenzeConverter {
 		
 		rsModel.setPagamenti(UriBuilderUtils.getPagamentiByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
 		rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
-
-		
-		if(versamento.getNote()!=null && !versamento.getNote().isEmpty()) {
-			List<Nota> note = new ArrayList<>();
-			for(it.govpay.bd.model.Nota nota: versamento.getNote()) {
-				note.add(NoteConverter.toRsModel(nota));
-			}
-			rsModel.setNote(note);
-		}
-		
 		rsModel.setVerificato(versamento.isAck());
 		rsModel.setAnomalo(versamento.isAnomalo());
 		

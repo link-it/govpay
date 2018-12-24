@@ -85,10 +85,6 @@
                 <!-- Entry Point SSL -->
                 <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenze" />
                 
-                <form-login login-page="/public/index.html" username-parameter="username" authentication-success-handler-ref="authSuccessHandler"
-                        password-parameter="password" authentication-failure-handler-ref="authFailureHandler" 
-                                login-processing-url="/rs/form/login" />
-                
                 <logout logout-url="/rs/form/logout" success-handler-ref="logoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true" />
                 
                 <session-management session-fixation-protection="changeSessionId" invalid-session-url="/">

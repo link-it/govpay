@@ -22,7 +22,8 @@ public class EventoCooperazione extends EventoGenerico {
 		paaVerificaRPT, 
 		paaAttivaRPT,
 		nodoInviaRichiestaStorno,
-		paaInviaEsitoStorno;
+		paaInviaEsitoStorno,
+		nodoInviaAvvisoDigitale;
 	}
 
 	public static final String COMPONENTE = "FESP";

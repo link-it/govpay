@@ -19,24 +19,23 @@
  */
 package it.govpay.orm.dao.jdbc.fetch;
 
+import java.sql.ResultSet;
+import java.util.Map;
+
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.jdbc.utils.AbstractJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
-
-import java.sql.ResultSet;
-import java.util.Map;
-
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 import org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType;
 
 import it.govpay.orm.FR;
+import it.govpay.orm.Pagamento;
 import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.RendicontazionePagamento;
 import it.govpay.orm.SingoloVersamento;
 import it.govpay.orm.Versamento;
-import it.govpay.orm.RendicontazionePagamento;
-import it.govpay.orm.Pagamento;
 
 
 /**     
@@ -256,23 +255,25 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "incasso", RendicontazionePagamento.model().VERSAMENTO.INCASSO.getFieldType()));
 				this.setParameter(object, "setAnomalie", RendicontazionePagamento.model().VERSAMENTO.ANOMALIE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "anomalie", RendicontazionePagamento.model().VERSAMENTO.ANOMALIE.getFieldType()));
-				setParameter(object, "setIuvVersamento", RendicontazionePagamento.model().VERSAMENTO.IUV_VERSAMENTO.getFieldType(),
+				this.setParameter(object, "setIuvVersamento", RendicontazionePagamento.model().VERSAMENTO.IUV_VERSAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv_versamento", RendicontazionePagamento.model().VERSAMENTO.IUV_VERSAMENTO.getFieldType()));
-				setParameter(object, "setNumeroAvviso", RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO.getFieldType(),
+				this.setParameter(object, "setNumeroAvviso", RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "numero_avviso", RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO.getFieldType()));
-				setParameter(object, "setAvvisatura", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "avvisatura", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA.getFieldType()));
-				setParameter(object, "setTipoPagamento", RendicontazionePagamento.model().VERSAMENTO.TIPO_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_pagamento", RendicontazionePagamento.model().VERSAMENTO.TIPO_PAGAMENTO.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
-				setParameter(object, "setDaAvvisare", RendicontazionePagamento.model().VERSAMENTO.DA_AVVISARE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "da_avvisare", RendicontazionePagamento.model().VERSAMENTO.DA_AVVISARE.getFieldType()));
-				setParameter(object, "setCodAvvisatura", RendicontazionePagamento.model().VERSAMENTO.COD_AVVISATURA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_avvisatura", RendicontazionePagamento.model().VERSAMENTO.COD_AVVISATURA.getFieldType()));
-				setParameter(object, "setAck", RendicontazionePagamento.model().VERSAMENTO.ACK.getFieldType(),
+				this.setParameter(object, "setAvvisaturaAbilitata", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_abilitata", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA.getFieldType()));
+				this.setParameter(object, "setAvvisaturaDaInviare", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_da_inviare", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE.getFieldType()));
+				this.setParameter(object, "setAvvisaturaOperazione", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_operazione", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE.getFieldType()));
+				this.setParameter(object, "setAvvisaturaModalita", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_MODALITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_modalita", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_MODALITA.getFieldType()));
+				this.setParameter(object, "setAvvisaturaTipoPagamento", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_TIPO_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_tipo_pagamento", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_TIPO_PAGAMENTO.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				this.setParameter(object, "setAvvisaturaCodAvvisatura", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_COD_AVVISATURA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "avvisatura_cod_avvisatura", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_COD_AVVISATURA.getFieldType()));
+				this.setParameter(object, "setAck", RendicontazionePagamento.model().VERSAMENTO.ACK.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ack", RendicontazionePagamento.model().VERSAMENTO.ACK.getFieldType()));
-				setParameter(object, "setNote", RendicontazionePagamento.model().VERSAMENTO.NOTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "note", RendicontazionePagamento.model().VERSAMENTO.NOTE.getFieldType()));
-				setParameter(object, "setAnomalo", RendicontazionePagamento.model().VERSAMENTO.ANOMALO.getFieldType(),
+				this.setParameter(object, "setAnomalo", RendicontazionePagamento.model().VERSAMENTO.ANOMALO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "anomalo", RendicontazionePagamento.model().VERSAMENTO.ANOMALO.getFieldType()));
 				return object;
 			}
@@ -496,18 +497,20 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Versamento.iuvVersamento"));
 				setParameter(object, "setNumeroAvviso", RendicontazionePagamento.model().VERSAMENTO.NUMERO_AVVISO.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.numeroAvviso"));
-				setParameter(object, "setAvvisatura", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.avvisatura"));
-				setParameter(object, "setTipoPagamento", RendicontazionePagamento.model().VERSAMENTO.TIPO_PAGAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.tipoPagamento"));
-				setParameter(object, "setDaAvvisare", RendicontazionePagamento.model().VERSAMENTO.DA_AVVISARE.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.daAvvisare"));
-				setParameter(object, "setCodAvvisatura", RendicontazionePagamento.model().VERSAMENTO.COD_AVVISATURA.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.codAvvisatura"));
+				setParameter(object, "setAvvisaturaAbilitata", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_ABILITATA.getFieldType(),
+						this.getObjectFromMap(map,"Versamento.avvisaturaAbilitata"));
+				setParameter(object, "setAvvisaturaDaInviare", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_DA_INVIARE.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvisaturaDaInviare"));
+				setParameter(object, "setAvvisaturaOperazione", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_OPERAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvisaturaOperazione"));
+				setParameter(object, "setAvvisaturaModalita", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_MODALITA.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvisaturaModalita"));
+				setParameter(object, "setAvvisaturaTipoPagamento", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_TIPO_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvisaturaTipoPagamento"));
+				setParameter(object, "setAvvisaturaCodAvvisatura", RendicontazionePagamento.model().VERSAMENTO.AVVISATURA_COD_AVVISATURA.getFieldType(),
+					this.getObjectFromMap(map,"Versamento.avvisaturaCodAvvisatura"));
 				setParameter(object, "setAck", RendicontazionePagamento.model().VERSAMENTO.ACK.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.ack"));
-				setParameter(object, "setNote", RendicontazionePagamento.model().VERSAMENTO.NOTE.getFieldType(),
-					this.getObjectFromMap(map,"Versamento.note"));
 				setParameter(object, "setAnomalo", RendicontazionePagamento.model().VERSAMENTO.ANOMALO.getFieldType(),
 					this.getObjectFromMap(map,"Versamento.anomalo"));
 				return object;

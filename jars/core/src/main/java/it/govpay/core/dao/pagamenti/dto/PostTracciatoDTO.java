@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Versamento;
+import it.govpay.model.Versamento.ModoAvvisatura;
 
 public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	
@@ -18,6 +19,8 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	private byte [] contenuto;
 	private List<Versamento> inserimenti;
 	private List<Versamento> annullamenti;
+	private Boolean avvisaturaDigitale;
+	private ModoAvvisatura avvisaturaModalita;
 	
 	public List<Versamento> getInserimenti() {
 		return this.inserimenti;
@@ -49,5 +52,16 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;
 	}
-	
+	public Boolean getAvvisaturaDigitale() {
+		return this.avvisaturaDigitale;
+	}
+	public void setAvvisaturaDigitale(Boolean avvisaturaDigitale) {
+		this.avvisaturaDigitale = avvisaturaDigitale;
+	}
+	public ModoAvvisatura getAvvisaturaModalita() {
+		return avvisaturaModalita;
+	}
+	public void setAvvisaturaModalita(ModoAvvisatura avvisaturaModalita) {
+		this.avvisaturaModalita = avvisaturaModalita;
+	}
 }

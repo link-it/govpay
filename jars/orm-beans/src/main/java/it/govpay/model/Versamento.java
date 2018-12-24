@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringUtils;
 
 
 public class Versamento extends BasicModel {
-	
+
 	public static final String INCASSO_FALSE = "f";
 	public static final String INCASSO_TRUE = "t";
 
@@ -43,9 +43,65 @@ public class Versamento extends BasicModel {
 		ANNULLATO,
 		ESEGUITO_ALTRO_CANALE;
 	}
+
+	public enum ModoAvvisatura {
+		ASICNRONA("A"), SINCRONA("S");
+
+		private String value;
+
+		ModoAvvisatura(String value) {
+			this.value = value;
+		}
+		
+		public String getValue() {
+			return this.value;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.value);
+		}
+
+		public static ModoAvvisatura fromValue(String text) {
+			for (ModoAvvisatura m : ModoAvvisatura.values()) {
+				if (String.valueOf(m.value).equals(text)) {
+					return m;
+				}
+			}
+			return null;
+		}
+	}
 	
+	public enum AvvisaturaOperazione {
+		CREATE("C"), UPDATE("U"), DELETE ("D");
+
+		private String value;
+
+		AvvisaturaOperazione(String value) {
+			this.value = value;
+		}
+		
+		public String getValue() {
+			return this.value;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.value);
+		}
+
+		public static AvvisaturaOperazione fromValue(String text) {
+			for (AvvisaturaOperazione m : AvvisaturaOperazione.values()) {
+				if (String.valueOf(m.value).equals(text)) {
+					return m;
+				}
+			}
+			return null;
+		}
+	}
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
 	private Long idUo;
 	private long idDominio;
@@ -74,14 +130,16 @@ public class Versamento extends BasicModel {
 	private String tassonomia;
 	private String iuvVersamento;
 	private String numeroAvviso;
-	private String avvisatura;
-	private Integer tipoPagamento;
-	private boolean daAvvisare;
-	private String codAvvisatura;
+	private boolean avvisaturaDaInviare;
+	private boolean avvisaturaAbilitata;
+	private String avvisaturaOperazione;
+	private String avvisaturaModalita;
+	private Integer avvisaturaTipoPagamento;
+	private String avvisaturaCodAvvisatura;
 	private Long idTracciatoAvvisatura;
 	private boolean ack;
 	private boolean anomalo;
-	
+
 	public String getIuvVersamento() {
 		return this.iuvVersamento;
 	}
@@ -96,22 +154,6 @@ public class Versamento extends BasicModel {
 
 	public void setNumeroAvviso(String numeroAvviso) {
 		this.numeroAvviso = numeroAvviso;
-	}
-
-	public String getAvvisatura() {
-		return this.avvisatura;
-	}
-
-	public void setAvvisatura(String avvisatura) {
-		this.avvisatura = avvisatura;
-	}
-
-	public Integer getTipoPagamento() {
-		return this.tipoPagamento;
-	}
-
-	public void setTipoPagamento(Integer tipoPagamento) {
-		this.tipoPagamento = tipoPagamento;
 	}
 
 	public long getIdDominio() {
@@ -156,7 +198,7 @@ public class Versamento extends BasicModel {
 
 	private String codBundlekey;
 	private boolean bolloTelematico;
-	
+
 	@Override
 	public Long getId() {
 		return this.id;
@@ -253,7 +295,7 @@ public class Versamento extends BasicModel {
 	public void setAnagraficaDebitore(Anagrafica anagraficaDebitore) {
 		this.anagraficaDebitore = anagraficaDebitore;
 	}
-	
+
 	public String getCodBundlekey() {
 		return this.codBundlekey;
 	}
@@ -269,51 +311,51 @@ public class Versamento extends BasicModel {
 	public void setCausaleVersamento(Causale causaleVersamento) {
 		this.causaleVersamento = causaleVersamento;
 	}
-	
+
 	public void setCausaleVersamento(String causaleVersamentoEncoded) throws UnsupportedEncodingException {
 		if(causaleVersamentoEncoded == null) 
 			this.causaleVersamento = null;
 		else
 			this.causaleVersamento = Versamento.decode(causaleVersamentoEncoded);
 	}
-	
+
 	public interface Causale {
 		public String encode() throws UnsupportedEncodingException;
 		public String getSimple() throws UnsupportedEncodingException;
 	}
-	
+
 	public class CausaleSemplice implements Causale {
 		private String causale;
-		
+
 		@Override
 		public String encode() throws UnsupportedEncodingException {
 			if(this.causale == null) return null;
 			return "01 " + Base64.encodeBase64String(this.causale.getBytes(StandardCharsets.UTF_8));
 		}
-		
+
 		@Override
 		public String getSimple() throws UnsupportedEncodingException {
 			return this.getCausale();
 		}
-		
+
 		public void setCausale(String causale) {
 			this.causale = causale;
 		}
-		
+
 		public String getCausale() {
 			return this.causale;
 		}
-		
+
 		@Override
 		public String toString() {
 			return this.causale;
 		}
-		
+
 	}
-	
+
 	public class CausaleSpezzoni implements Causale {
 		private List<String> spezzoni;
-		
+
 		@Override
 		public String encode() throws UnsupportedEncodingException {
 			if(this.spezzoni == null) return null;
@@ -323,33 +365,33 @@ public class Versamento extends BasicModel {
 			}
 			return encoded;
 		}
-		
+
 		@Override
 		public String getSimple() throws UnsupportedEncodingException {
 			if(this.spezzoni != null && !this.spezzoni.isEmpty())
 				return this.spezzoni.get(0);
-				
+
 			return "";
 		}
-		
+
 		public void setSpezzoni(List<String> spezzoni) {
 			this.spezzoni = spezzoni;
 		}
-		
+
 		public List<String> getSpezzoni() {
 			return this.spezzoni;
 		}
-		
+
 		@Override
 		public String toString() {
 			return StringUtils.join(this.spezzoni, "; ");
 		}
 	}
-	
+
 	public class CausaleSpezzoniStrutturati implements Causale {
 		private List<String> spezzoni;
 		private List<BigDecimal> importi;
-		
+
 		@Override
 		public String encode() throws UnsupportedEncodingException {
 			if(this.spezzoni == null) return null;
@@ -359,7 +401,7 @@ public class Versamento extends BasicModel {
 			}
 			return encoded;
 		}
-		
+
 		@Override
 		public String getSimple() throws UnsupportedEncodingException {
 			if(this.spezzoni != null && !this.spezzoni.isEmpty()){
@@ -367,36 +409,36 @@ public class Versamento extends BasicModel {
 				sb.append(this.importi.get(0).doubleValue() + ": " + this.spezzoni.get(0) );
 				return sb.toString();
 			}
-				
+
 			return "";
 		}
-		
+
 		public CausaleSpezzoniStrutturati() {
 			this.spezzoni = new ArrayList<>();
 			this.importi = new ArrayList<>();
 		}
-		
+
 		public void setSpezzoni(List<String> spezzoni) {
 			this.spezzoni = spezzoni;
 		}
-		
+
 		public List<String> getSpezzoni() {
 			return this.spezzoni;
 		}
-		
+
 		public void setImporti(List<BigDecimal> importi) {
 			this.importi = importi;
 		}
-		
+
 		public List<BigDecimal> getImporti() {
 			return this.importi;
 		}
-		
+
 		public void addSpezzoneStrutturato(String spezzone, BigDecimal importo){
 			this.spezzoni.add(spezzone);
 			this.importi.add(importo);
 		}
-		
+
 		@Override
 		public String toString() {
 			StringBuffer sb = new StringBuffer();
@@ -406,11 +448,11 @@ public class Versamento extends BasicModel {
 			return sb.toString();
 		}
 	}
-	
+
 	public static Causale decode(String encodedCausale) throws UnsupportedEncodingException {
 		if(encodedCausale == null || encodedCausale.trim().isEmpty())
 			return null;
-		
+
 		String[] causaleSplit = encodedCausale.split(" ");
 		if(causaleSplit[0].equals("01")) {
 			CausaleSemplice causale = new Versamento().new CausaleSemplice();
@@ -421,7 +463,7 @@ public class Versamento extends BasicModel {
 				return null;
 			}
 		}
-		
+
 		if(causaleSplit[0].equals("02")) {
 			List<String> spezzoni = new ArrayList<>();
 			for(int i=1; i<causaleSplit.length; i++) {
@@ -431,11 +473,11 @@ public class Versamento extends BasicModel {
 			causale.setSpezzoni(spezzoni);
 			return causale;
 		}
-		
+
 		if(causaleSplit[0].equals("03")) {
 			List<String> spezzoni = new ArrayList<>();
 			List<BigDecimal> importi = new ArrayList<>();
-			
+
 			for(int i=1; i<causaleSplit.length; i=i+2) {
 				spezzoni.add(new String(Base64.decodeBase64(causaleSplit[i].getBytes()), StandardCharsets.UTF_8));
 				importi.add(BigDecimal.valueOf(Double.parseDouble(new String(Base64.decodeBase64(causaleSplit[i+1].getBytes()), StandardCharsets.UTF_8))));
@@ -447,7 +489,7 @@ public class Versamento extends BasicModel {
 		}
 		throw new UnsupportedEncodingException();
 	}
-	
+
 	public boolean isBolloTelematico() {
 		return this.bolloTelematico;
 	}
@@ -455,7 +497,7 @@ public class Versamento extends BasicModel {
 	public void setBolloTelematico(boolean bolloTelematico) {
 		this.bolloTelematico = bolloTelematico;
 	}
-	
+
 	public String getIuvProposto() {
 		return this.iuvProposto;
 	}
@@ -512,20 +554,52 @@ public class Versamento extends BasicModel {
 		this.anomalie = anomalie;
 	}
 
-	public boolean isDaAvvisare() {
-		return this.daAvvisare;
+	public boolean isAvvisaturaDaInviare() {
+		return avvisaturaDaInviare;
 	}
 
-	public void setDaAvvisare(boolean daAvvisare) {
-		this.daAvvisare = daAvvisare;
+	public void setAvvisaturaDaInviare(boolean avvisaturaDaInviare) {
+		this.avvisaturaDaInviare = avvisaturaDaInviare;
 	}
 
-	public String getCodAvvisatura() {
-		return this.codAvvisatura;
+	public boolean isAvvisaturaAbilitata() {
+		return avvisaturaAbilitata;
 	}
 
-	public void setCodAvvisatura(String codAvvisatura) {
-		this.codAvvisatura = codAvvisatura;
+	public void setAvvisaturaAbilitata(boolean avvisaturaAbilitata) {
+		this.avvisaturaAbilitata = avvisaturaAbilitata;
+	}
+
+	public String getAvvisaturaOperazione() {
+		return avvisaturaOperazione;
+	}
+
+	public void setAvvisaturaOperazione(String avvisaturaOperazione) {
+		this.avvisaturaOperazione = avvisaturaOperazione;
+	}
+
+	public String getAvvisaturaModalita() {
+		return avvisaturaModalita;
+	}
+
+	public void setAvvisaturaModalita(String avvisaturaModalita) {
+		this.avvisaturaModalita = avvisaturaModalita;
+	}
+
+	public Integer getAvvisaturaTipoPagamento() {
+		return avvisaturaTipoPagamento;
+	}
+
+	public void setAvvisaturaTipoPagamento(Integer avvisaturaTipoPagamento) {
+		this.avvisaturaTipoPagamento = avvisaturaTipoPagamento;
+	}
+
+	public String getAvvisaturaCodAvvisatura() {
+		return avvisaturaCodAvvisatura;
+	}
+
+	public void setAvvisaturaCodAvvisatura(String avvisaturaCodAvvisatura) {
+		this.avvisaturaCodAvvisatura = avvisaturaCodAvvisatura;
 	}
 
 	public Long getIdTracciatoAvvisatura() {
@@ -549,5 +623,4 @@ public class Versamento extends BasicModel {
 	public void setAnomalo(boolean anomalo) {
 		this.anomalo = anomalo;
 	}
-	
 }

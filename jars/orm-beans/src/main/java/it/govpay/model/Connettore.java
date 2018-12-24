@@ -19,7 +19,7 @@
  */
 package it.govpay.model;
 
-public class Connettore extends Versionabile {
+public class Connettore extends Versionabile implements Cloneable{
 	
 	private static final long serialVersionUID = 1L;
 	public static final String P_TIPOAUTENTICAZIONE_NAME = "TIPOAUTENTICAZIONE";
@@ -169,5 +169,10 @@ public class Connettore extends Versionabile {
 	}
 	public void setUrlServiziAvvisatura(String urlServiziAvvisatura) {
 		this.urlServiziAvvisatura = urlServiziAvvisatura;
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }

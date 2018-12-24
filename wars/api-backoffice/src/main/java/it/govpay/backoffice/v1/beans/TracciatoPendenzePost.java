@@ -14,6 +14,8 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTracciato",
 "idDominio",
+"avvisaturaDigitale",
+"modalitaAvvisaturaDigitale",
 "inserimenti",
 "annullamenti",
 })
@@ -24,6 +26,12 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   
   @JsonProperty("idDominio")
   private String idDominio = null;
+  
+  @JsonProperty("avvisaturaDigitale")
+  private Boolean avvisaturaDigitale = false;
+  
+  @JsonProperty("modalitaAvvisaturaDigitale")
+  private String modalitaAvvisaturaDigitale = null;
   
   @JsonProperty("inserimenti")
   private List<PendenzaPost> inserimenti = null;
@@ -61,6 +69,38 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
+  }
+
+  /**
+   * Indica se la pendenza deve essere avvisata digitalmente
+   **/
+  public TracciatoPendenzePost avvisaturaDigitale(Boolean avvisaturaDigitale) {
+    this.avvisaturaDigitale = avvisaturaDigitale;
+    return this;
+  }
+
+  @JsonProperty("avvisaturaDigitale")
+  public Boolean AvvisaturaDigitale() {
+    return avvisaturaDigitale;
+  }
+  public void setAvvisaturaDigitale(Boolean avvisaturaDigitale) {
+    this.avvisaturaDigitale = avvisaturaDigitale;
+  }
+
+  /**
+   * Modalita' di avvisatura scelta per le pendenza [sincrona|asincrona]
+   **/
+  public TracciatoPendenzePost modalitaAvvisaturaDigitale(String modalitaAvvisaturaDigitale) {
+    this.modalitaAvvisaturaDigitale = modalitaAvvisaturaDigitale;
+    return this;
+  }
+
+  @JsonProperty("modalitaAvvisaturaDigitale")
+  public String getModalitaAvvisaturaDigitale() {
+    return modalitaAvvisaturaDigitale;
+  }
+  public void setModalitaAvvisaturaDigitale(String modalitaAvvisaturaDigitale) {
+    this.modalitaAvvisaturaDigitale = modalitaAvvisaturaDigitale;
   }
 
   /**
@@ -104,13 +144,15 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
     TracciatoPendenzePost tracciatoPendenzePost = (TracciatoPendenzePost) o;
     return Objects.equals(this.idTracciato, tracciatoPendenzePost.idTracciato) &&
         Objects.equals(this.idDominio, tracciatoPendenzePost.idDominio) &&
+        Objects.equals(avvisaturaDigitale, tracciatoPendenzePost.avvisaturaDigitale) &&
+        Objects.equals(modalitaAvvisaturaDigitale, tracciatoPendenzePost.modalitaAvvisaturaDigitale) &&
         Objects.equals(this.inserimenti, tracciatoPendenzePost.inserimenti) &&
         Objects.equals(this.annullamenti, tracciatoPendenzePost.annullamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idTracciato, this.idDominio, this.inserimenti, this.annullamenti);
+    return Objects.hash(this.idTracciato, this.idDominio, avvisaturaDigitale, modalitaAvvisaturaDigitale, this.inserimenti, this.annullamenti);
   }
 
   public static TracciatoPendenzePost parse(String json) throws ServiceException, ValidationException {
@@ -129,6 +171,8 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
     
     sb.append("    idTracciato: ").append(this.toIndentedString(this.idTracciato)).append("\n");
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+    sb.append("    avvisaturaDigitale: ").append(toIndentedString(avvisaturaDigitale)).append("\n");
+    sb.append("    modalitaAvvisaturaDigitale: ").append(toIndentedString(modalitaAvvisaturaDigitale)).append("\n");
     sb.append("    inserimenti: ").append(this.toIndentedString(this.inserimenti)).append("\n");
     sb.append("    annullamenti: ").append(this.toIndentedString(this.annullamenti)).append("\n");
     sb.append("}");
@@ -152,6 +196,8 @@ public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		
 		vf.getValidator("idTracciato", this.idTracciato).notNull();
 		vf.getValidator("idDominio", this.idDominio).notNull().minLength(1).maxLength(35);
+		
+		vf.getValidator("modalitaAvvisaturaDigitale", this.modalitaAvvisaturaDigitale).pattern("^(asincrona|sincrona)$");
 		
 		vf.getValidator("inserimenti", this.inserimenti).notNull().validateObjects();
 		vf.getValidator("annullamenti", this.annullamenti).notNull().validateObjects();

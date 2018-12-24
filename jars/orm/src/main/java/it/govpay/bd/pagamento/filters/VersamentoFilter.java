@@ -58,8 +58,10 @@ public class VersamentoFilter extends AbstractFilter {
 	private String codDominio = null;
 	private Long idTracciato; 
 	private Boolean tracciatoNull; 
-	private Boolean daAvvisare; 
+	private Boolean avvisaturaDainviare; 
 	private String cfCittadino;
+	private String modoAvvisatura = null;
+	private Boolean avvisaturaAbilitata;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -151,6 +153,22 @@ public class VersamentoFilter extends AbstractFilter {
 
 				newExpression.between(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.dataInizio,this.dataFine);
 				addAnd = true;
+			} else {
+				if(this.dataInizio != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.greaterEquals(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.dataInizio);
+					addAnd = true;
+				} 
+				
+				if(this.dataFine != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.lessEquals(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.dataFine);
+					addAnd = true;
+				}
 			}
 
 			if(this.codUnivocoDebitore != null) {
@@ -269,8 +287,16 @@ public class VersamentoFilter extends AbstractFilter {
 				}
 			}
 			
-			if(this.daAvvisare!=null) {
-				newExpression.equals(Versamento.model().DA_AVVISARE, this.daAvvisare);
+			if(this.avvisaturaDainviare!=null) {
+				newExpression.equals(Versamento.model().AVVISATURA_DA_INVIARE, this.avvisaturaDainviare);
+			}
+			
+			if(this.modoAvvisatura!=null) {
+				newExpression.equals(Versamento.model().AVVISATURA_MODALITA, this.modoAvvisatura);
+			}
+			
+			if(this.avvisaturaAbilitata!=null) {
+				newExpression.equals(Versamento.model().AVVISATURA_ABILITATA, this.avvisaturaAbilitata);
 			}
 
 			return newExpression;
@@ -465,14 +491,6 @@ public class VersamentoFilter extends AbstractFilter {
 		this.tracciatoNull = tracciatoNull;
 	}
 
-	public Boolean getDaAvvisare() {
-		return this.daAvvisare;
-	}
-
-	public void setDaAvvisare(Boolean daAvvisare) {
-		this.daAvvisare = daAvvisare;
-	}
-	
 	public String getCfCittadino() {
 		return cfCittadino;
 	}
@@ -480,4 +498,29 @@ public class VersamentoFilter extends AbstractFilter {
 	public void setCfCittadino(String cfCittadino) {
 		this.cfCittadino = cfCittadino;
 	}
+
+	public Boolean getAvvisaturaDainviare() {
+		return avvisaturaDainviare;
+	}
+
+	public void setAvvisaturaDainviare(Boolean avvisaturaDainviare) {
+		this.avvisaturaDainviare = avvisaturaDainviare;
+	}
+
+	public String getModoAvvisatura() {
+		return modoAvvisatura;
+	}
+
+	public void setModoAvvisatura(String modoAvvisatura) {
+		this.modoAvvisatura = modoAvvisatura;
+	}
+
+	public Boolean getAvvisaturaAbilitata() {
+		return avvisaturaAbilitata;
+	}
+
+	public void setAvvisaturaAbilitata(Boolean avvisaturaAbilitata) {
+		this.avvisaturaAbilitata = avvisaturaAbilitata;
+	}
+	
 }
