@@ -21,7 +21,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	private String simpleSearch;
 	private List<FilterSortWrapper> fieldsSort;
 	private Map<String, IField> fieldMap;
-	private int pagina;
+	private int offset;
 	private List<FilterSortWrapper> defaultSort = null;
 	
 	public final static int DEFAULT_LIMIT = 50;
@@ -39,16 +39,21 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	public void addSortField(String key, IField value) {
 		this.fieldMap.put(key, value);
 	}
+	
 	public int getOffset() {
-		return (this.pagina - 1) * this.limit;
+		return offset;
+	}
+	
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 
 	public void setPagina(int pagina) {
-		this.pagina = pagina;
+		this.offset = (pagina - 1) * this.limit;
 	}
 	
 	public int getPagina() {
-		return this.pagina;
+		return Math.floorDiv(this.offset, this.limit);
 	}
 
 	public int getLimit() {

@@ -1,8 +1,14 @@
 package it.govpay.pagamento.v2.beans.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.core.UriInfo;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.pagamento.v2.beans.Domini;
 import it.govpay.pagamento.v2.beans.Dominio;
 import it.govpay.pagamento.v2.beans.UnitaOperativa;
 
@@ -51,5 +57,16 @@ public class DominiConverter {
 		rsModel.setFax(uo.getAnagrafica().getFax());
 		rsModel.setArea(uo.getAnagrafica().getArea());
 		return rsModel;
+	}
+
+
+	public static Domini toRsModel(List<it.govpay.bd.model.Dominio> results, int offset, int limit, long totalResults, UriInfo uriInfo) throws ServiceException {
+		Domini domini = new Domini();
+		domini.setItems(new ArrayList<Dominio>());
+		ConverterUtils.popolaLista(domini, uriInfo.getRequestUriBuilder(), results.size(), offset, limit, totalResults);
+		for(it.govpay.bd.model.Dominio d : results) {
+			domini.addItemsItem(toRsModel(d));
+		}
+		return domini;
 	}
 }

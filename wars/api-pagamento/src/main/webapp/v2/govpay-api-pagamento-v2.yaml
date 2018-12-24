@@ -17,6 +17,8 @@ tags:
     description: Consultazione delle transazioni di pagamento a pagoPA    
   - name: Pendenze
     description: Consultazione delle posizioni debitorie
+  - name: Avvisi
+    description: Consultazione degli avvisi di pagamento pagoPA    
   - name: Domini
     description: Anagrafica degli Enti Creditori    
   - name: Utenti
@@ -385,7 +387,7 @@ paths:
   '/avvisi/{idDominio}/{iuv}':
     get:
       tags:
-        - Pendenze
+        - Avvisi
       summary: Avviso di pagamento
       operationId: getAvviso
       description: Fornisce un avviso di pagamento o la pendenza ad esso associata
@@ -422,6 +424,24 @@ paths:
           $ref: '#/components/responses/404NotFound'
         '503':
           $ref: '#/components/responses/503ServiceUnavailable'
+  '/domini':
+    get:
+      summary: Lista dei domini
+      tags:
+        - Domini 
+      operationId: findDomini
+      parameters:
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/fields'
+        - $ref: '#/components/parameters/sort'
+      responses:
+        '200':
+          description: Elenco dei domini
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domini'          
   '/domini/{idDominio}/logo':
     get:
       summary: Lettura del logo di un dominio
@@ -439,13 +459,10 @@ paths:
         '200':
           description: Logo dell'ente
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Avviso'
-            application/pdf:
+            image/svg+xml:
               schema:
                 type: string
-                format: binary  
+ 
   '/profilo':
     get:
       summary: Elenco delle acl associate all'utenza chiamante
@@ -660,10 +677,10 @@ components:
         type: integer
         format: int32
     Retry-After:
-        description: Retry contacting the endpoint *at least* after seconds. See https://tools.ietf.org/html/rfc7231#section-7.1.3
-        schema:
-          type: integer
-          format: int32
+      description: Retry contacting the endpoint *at least* after seconds. See https://tools.ietf.org/html/rfc7231#section-7.1.3
+      schema:
+        type: integer
+        format: int32
   responses:
     # Predefined error codes for this API
     400BadRequest:
@@ -707,18 +724,12 @@ components:
             $ref: '#/components/schemas/Problem'
     502BadGateway:
       description: Bad Gateway
-      headers:
-        Retry-After:
-          $ref: '#/components/headers/Retry-After'
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Problem'            
     503ServiceUnavailable:
       description: Service Unavailable
-      headers:
-        Retry-After:
-          $ref: '#/components/headers/Retry-After'
       content:
         application/problem+json:
           schema:
@@ -805,9 +816,19 @@ components:
       minimum: 0        
     Offset:
       type: integer
-      format: int64
+      format: int32
       default: 0
-      minimum: 0         
+      minimum: 0     
+    Domini:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Lista' 
+        - type: object
+          properties:
+            items:
+              type: array
+              items: 
+                $ref: '#/components/schemas/Dominio'        
     Dominio:
       type: object
       required:

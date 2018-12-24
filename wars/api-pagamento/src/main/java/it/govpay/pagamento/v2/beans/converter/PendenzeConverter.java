@@ -2,7 +2,6 @@ package it.govpay.pagamento.v2.beans.converter;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,24 +34,10 @@ import it.govpay.pagamento.v2.beans.VocePendenza;
 
 public class PendenzeConverter {
 	
-	public static Pendenze toRsList(List<it.govpay.bd.viste.model.VersamentoIncasso> versamenti, URI requestURI, long offset, int limit, long total) throws ServiceException {
+	public static Pendenze toRsModel(List<it.govpay.bd.viste.model.VersamentoIncasso> versamenti, UriBuilder requestURI, int offset, int limit, long total) throws ServiceException {
 		Pendenze pendenze = new Pendenze();
 		
-		if(offset > 0)
-			pendenze.setFirst(UriBuilder.fromUri(requestURI).queryParam("offset", 0).build().toString());
-		
-		if(offset + versamenti.size() < total) 
-			pendenze.setLast(UriBuilder.fromUri(requestURI).queryParam("offset", (total % limit) * limit).build().toString());
-		
-		if(offset + limit < total)
-			pendenze.setNext(UriBuilder.fromUri(requestURI).queryParam("offset", offset + limit).build().toString());
-		
-		if(offset - limit > 0)
-			pendenze.setPrev(UriBuilder.fromUri(requestURI).queryParam("offset",offset - limit).build().toString());
-		
-		pendenze.setOffset(offset);
-		pendenze.setLimit(limit);
-		pendenze.setTotal(total);
+		ConverterUtils.popolaLista(pendenze, requestURI, versamenti.size(), offset, limit, total);
 		
 		List<PendenzaIndex> items = new ArrayList<PendenzaIndex>();
 		for(it.govpay.bd.viste.model.VersamentoIncasso v : versamenti) {

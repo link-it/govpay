@@ -1,138 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<b:beans xmlns:b="http://www.springframework.org/schema/beans"
-        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
-        xmlns:cxf="http://cxf.apache.org/core"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="
+<b:beans xmlns:b="http://www.springframework.org/schema/beans" xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:cxf="http://cxf.apache.org/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
         http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
 
-        <b:import resource="classpath:META-INF/cxf/cxf.xml"/>
-        <b:import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-        
-	<!-- CXF Configuration -->
-<!--     <cxf:bus> -->
-<!--         <cxf:features> -->
-<!--             <cxf:logging/> -->
-<!--         </cxf:features> -->
-<!--     </cxf:bus> -->
+	<b:import resource="classpath:META-INF/cxf/cxf.xml" />
+	<b:import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+
+	<b:bean id="openApiFeature" class="org.apache.cxf.jaxrs.openapi.OpenApiFeature">
+		<!-- customize some of the properties -->
+		<b:property name="configLocation" value="openapi-configuration.json"/>
+		<b:property name="prettyPrint" value="true"/>
+		<b:property name="supportSwaggerUi" value="true"/>
+		<b:property name="license" value="GPL v3.0"/>
+		<b:property name="licenseUrl" value="https://www.gnu.org/licenses/gpl-3.0.txt"/>
+		<b:property name="description" value="Servizi per la realizzazione di Portali di Pagamento"/>
+		<b:property name="version" value="2.0.0"/>
+		<b:property name="title" value="GovPay - API Pagamento"/>
+	</b:bean>
 
 	<!-- Parameter Converter -->
-    <b:bean id="parameterConverter" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider"/>
+	<b:bean id="parameterConverter" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider" />
 
-	<!--  Object BodyReader -->
-    <b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader"/>
+	<!-- Object BodyReader -->
+	<b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader" />
 
-    <!--  Jackson Provider for JSON/XML -->
-    <b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider"/>
-    <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider"/>
-    
-    <!-- FaultBean Exception Mapper -->
-    <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>
-        
-   	<!-- JAX-RS Service Impl V2 -->
-   	<b:bean id="avvisiV2" class="it.govpay.pagamento.v1.Avvisi"/>
-   	<b:bean id="dominiV2" class="it.govpay.pagamento.v1.Domini"/>
-   	<b:bean id="pagamentiV2" class="it.govpay.pagamento.v1.Pagamenti"/>
-   	<b:bean id="pendenzeV2" class="it.govpay.pagamento.v2.Pendenze"/>
-   	<b:bean id="profiloV2" class="it.govpay.pagamento.v1.Profilo"/>
-   	<b:bean id="rppV2" class="it.govpay.pagamento.v1.Rpp"/>
-       
-   	<!-- JAX-RS Configuration -->
-   
-    <!-- Servizi V2 -->
+	<!-- Jackson Provider for JSON/XML -->
+	<b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider" />
+	<b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider" />
 
-    <jaxrs:server id="apiPagamentoV2Basic" address="/basic/v2/">
-        <jaxrs:serviceBeans>
-			   	<ref bean="avvisiV2" />
-			   	<ref bean="dominiV2" />
-			   	<ref bean="pagamentiV2" />
-			   	<ref bean="pendenzeV2" />
-			   	<ref bean="profiloV2" />
-			   	<ref bean="rppV2" />
-        </jaxrs:serviceBeans>
-        <jaxrs:providers>
-                <ref bean="parameterConverter" />
-                <ref bean="objectMessageBodyReader"/>
-                <ref bean="jacksonJsonProvider"/>
-                <ref bean="jacksonXmlProvider"/>
-                <ref bean="webApplicationExceptionMapper" />
-        </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
-    </jaxrs:server>
-    
-    <!-- Servizi SSL V2 -->
+	<!-- FaultBean Exception Mapper -->
+	<b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler" />
 
-    <jaxrs:server id="apiPagamentoV2SSL" address="/ssl/v2/">
-        <jaxrs:serviceBeans>
-			   	<ref bean="avvisiV2" />
-			   	<ref bean="dominiV2" />
-			   	<ref bean="pagamentiV2" />
-			   	<ref bean="pendenzeV2" />
-			   	<ref bean="profiloV2" />
-			   	<ref bean="rppV2" />
-        </jaxrs:serviceBeans>
-        <jaxrs:providers>
-                <ref bean="parameterConverter" />
-                <ref bean="objectMessageBodyReader"/>
-                <ref bean="jacksonJsonProvider"/>
-                <ref bean="jacksonXmlProvider"/>
-                <ref bean="webApplicationExceptionMapper" />
-        </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
-    </jaxrs:server>
-    
-   <!-- Servizi SPid V2 -->
+	<!-- JAX-RS Service Impl V2 -->
+	<b:bean id="avvisiV2" class="it.govpay.pagamento.v2.api.impl.AvvisiApiServiceImpl" />
+	<b:bean id="dominiV2" class="it.govpay.pagamento.v2.api.impl.DominiApiServiceImpl" />
+	<b:bean id="pagamentiV2" class="it.govpay.pagamento.v2.api.impl.PagamentiApiServiceImpl" />
+	<b:bean id="pendenzeV2" class="it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl" />
+	<b:bean id="rppV2" class="it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl" />
+	<b:bean id="profiloV2" class="it.govpay.pagamento.v2.api.impl.UtentiApiServiceImpl" />
+	<b:bean id="logging" class="it.govpay.features.LoggingFeature" />
 
-    <jaxrs:server id="apiPagamentoV2Spid" address="/spid/v2/">
-        <jaxrs:serviceBeans>
-			   	<ref bean="avvisiV2" />
-			   	<ref bean="dominiV2" />
-			   	<ref bean="pagamentiV2" />
-			   	<ref bean="pendenzeV2" />
-			   	<ref bean="profiloV2" />
-			   	<ref bean="rppV2" />
-        </jaxrs:serviceBeans>
-        <jaxrs:providers>
-                <ref bean="parameterConverter" />
-                <ref bean="objectMessageBodyReader"/>
-                <ref bean="jacksonJsonProvider"/>
-                <ref bean="jacksonXmlProvider"/>
-                <ref bean="webApplicationExceptionMapper" />
-        </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
-    </jaxrs:server>
-    
-    
-   <!-- Servizi Public V2 -->
+	<!-- JAX-RS Configuration -->
 
-    <jaxrs:server id="apiPagamentoV2Public" address="/public/v2/">
-        <jaxrs:serviceBeans>
-			   	<ref bean="avvisiV2" />
-			   	<ref bean="dominiV2" />
-			   	<ref bean="pagamentiV2" />
-			   	<ref bean="pendenzeV2" />
-			   	<ref bean="profiloV2" />
-			   	<ref bean="rppV2" />
-        </jaxrs:serviceBeans>
-        <jaxrs:providers>
-                <ref bean="parameterConverter" />
-                <ref bean="objectMessageBodyReader"/>
-                <ref bean="jacksonJsonProvider"/>
-                <ref bean="jacksonXmlProvider"/>
-                <ref bean="webApplicationExceptionMapper" />
-        </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
-    </jaxrs:server>
-    
+	<!-- Servizi V2 -->
+
+	<jaxrs:server id="apiPagamentoV2Basic" address="/basic/v2/">
+		<jaxrs:serviceBeans>
+			<ref bean="avvisiV2" />
+			<ref bean="dominiV2" />
+			<ref bean="pagamentiV2" />
+			<ref bean="pendenzeV2" />
+			<ref bean="profiloV2" />
+			<ref bean="rppV2" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="parameterConverter" />
+			<ref bean="objectMessageBodyReader" />
+			<ref bean="jacksonJsonProvider" />
+			<ref bean="jacksonXmlProvider" />
+			<ref bean="webApplicationExceptionMapper" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeature" />
+			<ref bean="logging" />
+		</jaxrs:features>
+	</jaxrs:server>
+
+	<!-- Servizi SSL V2 -->
+
+	<jaxrs:server id="apiPagamentoV2SSL" address="/ssl/v2/">
+		<jaxrs:serviceBeans>
+			<ref bean="avvisiV2" />
+			<ref bean="dominiV2" />
+			<ref bean="pagamentiV2" />
+			<ref bean="pendenzeV2" />
+			<ref bean="profiloV2" />
+			<ref bean="rppV2" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="parameterConverter" />
+			<ref bean="objectMessageBodyReader" />
+			<ref bean="jacksonJsonProvider" />
+			<ref bean="jacksonXmlProvider" />
+			<ref bean="webApplicationExceptionMapper" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeature" />
+		</jaxrs:features>
+	</jaxrs:server>
+
+	<!-- Servizi SPid V2 -->
+
+	<jaxrs:server id="apiPagamentoV2Spid" address="/spid/v2/">
+		<jaxrs:serviceBeans>
+			<ref bean="avvisiV2" />
+			<ref bean="dominiV2" />
+			<ref bean="pagamentiV2" />
+			<ref bean="pendenzeV2" />
+			<ref bean="profiloV2" />
+			<ref bean="rppV2" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="parameterConverter" />
+			<ref bean="objectMessageBodyReader" />
+			<ref bean="jacksonJsonProvider" />
+			<ref bean="jacksonXmlProvider" />
+			<ref bean="webApplicationExceptionMapper" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeature" />
+		</jaxrs:features>
+	</jaxrs:server>
+
+
+	<!-- Servizi Public V2 -->
+
+	<jaxrs:server id="apiPagamentoV2Public" address="/public/v2/">
+		<jaxrs:serviceBeans>
+			<ref bean="avvisiV2" />
+			<ref bean="dominiV2" />
+			<ref bean="pagamentiV2" />
+			<ref bean="pendenzeV2" />
+			<ref bean="profiloV2" />
+			<ref bean="rppV2" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="parameterConverter" />
+			<ref bean="objectMessageBodyReader" />
+			<ref bean="jacksonJsonProvider" />
+			<ref bean="jacksonXmlProvider" />
+			<ref bean="webApplicationExceptionMapper" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeature" />
+		</jaxrs:features>
+	</jaxrs:server>
+
 </b:beans>
         

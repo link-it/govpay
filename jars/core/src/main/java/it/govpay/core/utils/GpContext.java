@@ -136,7 +136,7 @@ public class GpContext {
 			
 			this.contexts = new ArrayList<>();
 			Context context = (Context) logger.getContext();
-			context.getTransaction().setProtocol("govpay");
+			context.getTransaction().setProtocol("REST");
 			this.contexts.add(context);
 			
 			Transaction transaction = context.getTransaction();
@@ -146,7 +146,6 @@ public class GpContext {
 			service.setName(nomeServizio);
 			service.setVersion(versioneServizio);
 			service.setType(tipoServizio);
-			
 			transaction.setService(service);
 			
 			Operation operation = new Operation();
@@ -156,7 +155,6 @@ public class GpContext {
 			
 			Client client = new Client();
 			client.setInvocationEndpoint(request.getRequestURI());
-			
 			client.setInterfaceName(nomeServizio);
 			
 			String user = AutorizzazioneUtils.getPrincipal(SecurityContextHolder.getContext().getAuthentication()); 
@@ -180,6 +178,49 @@ public class GpContext {
 		}
 	}
 	
+	public GpContext(String requestUri,	String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user) throws ServiceException {
+		try {
+			this.loggers = new ArrayList<>();
+			ILogger logger = LoggerFactory.newLogger(new Context());	
+			this.loggers.add(logger);
+			
+			this.contexts = new ArrayList<>();
+			Context context = (Context) logger.getContext();
+			this.contexts.add(context);
+			
+			Transaction transaction = context.getTransaction();
+			transaction.setRole(Role.SERVER);
+			transaction.setProtocol("REST");
+			
+			Service service = new Service();
+			service.setName(nomeServizio);
+			service.setVersion(versioneServizio);
+			service.setType(httpMethod);
+			transaction.setService(service);
+			
+			Operation operation = new Operation();
+			operation.setMode(FlowMode.INPUT_OUTPUT);
+			operation.setName(nomeOperazione);
+			transaction.setOperation(operation);
+			
+			Client client = new Client();
+			client.setInvocationEndpoint(requestUri);
+			client.setInterfaceName(nomeServizio);
+			if(user != null) client.setPrincipal(user);
+			transaction.setClient(client);
+			
+			Server server = new Server();
+			server.setName(GovPay);
+			
+			Actor to = new Actor();
+			to.setName(GovPay);
+			transaction.setTo(to);
+			
+			transaction.setServer(server);
+		} catch (UtilsException e) {
+			throw new ServiceException(e);
+		}
+	}
 	public GpContext() throws ServiceException {
 		this.loggers = new ArrayList<>();
 		this.contexts = new ArrayList<>();
@@ -391,6 +432,10 @@ public class GpContext {
 		} catch (Exception e) {
 			LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione della transazione", e);
 		}
+	}
+	
+	public ILogger getLogger() {
+		return getActiveLogger();
 	}
 	
 	public PagamentoContext getPagamentoCtx() {

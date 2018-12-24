@@ -70,7 +70,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
      *
      */
 	@Override
-    public Pagamenti findPagamenti(Long offset, Integer limit, String fields, String sort, String idSessionePortale, String idSessionePsp, String idDebitore, StatoPagamento statoPagamento) {
+    public Pagamenti findPagamenti(Integer offset, Integer limit, String fields, String sort, String idSessionePortale, String idSessionePsp, String idDebitore, StatoPagamento statoPagamento) {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
