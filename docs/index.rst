@@ -46,7 +46,8 @@ Donec in lobortis enim.
 .. _manuale-installazione:
 
 .. toctree::
-   :maxdepth: 2 
+   :maxdepth: 1 
+   :glob:
    :caption: Manuale di installazione
 
    installazione/*
@@ -54,12 +55,10 @@ Donec in lobortis enim.
 .. _manuale-integrazione:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :glob:
    :caption: Manuale di integrazione
 
    integrazione/*
 
 .. |banner| image:: _img/link_banner.png
-   :width: 232px
-   :height: 94px

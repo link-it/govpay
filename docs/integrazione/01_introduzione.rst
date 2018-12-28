@@ -19,5 +19,3 @@ a cui si rimanda per ogni ulteriore informazione sulla
 specifica pagoPA.
 
 .. |banner| image:: ../_img/link_banner.png
-   :width: 232px
-   :height: 94px

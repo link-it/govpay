@@ -14,5 +14,3 @@ di selezionare tra i seguenti:
 * Oracle 10g o superiore
 
 .. |banner| image:: ../_img/link_banner.png
-   :width: 232px
-   :height: 94px

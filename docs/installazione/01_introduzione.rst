@@ -14,5 +14,3 @@ Terminata la procedura di installazione vengono descritti i passi da effettuare
 per verificarne la riuscita.
 
 .. |banner| image:: ../_img/link_banner.png
-   :width: 232px
-   :height: 94px
