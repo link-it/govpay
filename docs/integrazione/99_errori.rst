@@ -47,7 +47,7 @@ piattaforma GovPay di modificare la configurazione del dominio in oggetto abilit
 
 **Descrizione**: Lorem ipsum dolor sit amet.
 
-**Risoluzione**: Lorem ipsum dolor sit amet. 400000_
+**Risoluzione**: Lorem ipsum dolor sit amet.
 
 .. |banner| image:: ../_img/link_banner.png
 
