@@ -3,13 +3,10 @@
 +-----------------------------------------------------------------------+
 
 ###############################################
-GovPay - Implementazione pagoPA
+GovPay - Manuale Installazione 
 ###############################################
 
-.. toctree::
-      :caption: Indice dei contenuti
-   
-   integrazione/index.rst
+TODO
 
 .. |AGID_logo_carta_intestata-02.png| image:: _docs/media/header.png
       :width: 5.90551in
