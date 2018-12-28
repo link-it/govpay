@@ -217,8 +217,6 @@ public class LoggingOutInterceptor extends org.apache.cxf.ext.logging.LoggingOut
 				ctx.getLogger().log(msg);
 			} catch (UtilsException ue) {
 				LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione della transazione", ue);
-			} finally {
-				ctx.log();
 			}
 			try {
 				// empty out the cache

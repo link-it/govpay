@@ -32,6 +32,7 @@
 
 	<!-- FaultBean Exception Mapper -->
 	<b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler" />
+	<b:bean id="validationExceptionMapper" class="it.govpay.features.ValidationExceptionMapper"/>
 
 	<!-- JAX-RS Service Impl V2 -->
 	<b:bean id="avvisiV2" class="it.govpay.pagamento.v2.api.impl.AvvisiApiServiceImpl" />
@@ -41,6 +42,9 @@
 	<b:bean id="rppV2" class="it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl" />
 	<b:bean id="profiloV2" class="it.govpay.pagamento.v2.api.impl.UtentiApiServiceImpl" />
 	<b:bean id="logging" class="it.govpay.features.LoggingFeature" />
+	<b:bean id="context" class="it.govpay.features.ContextFeature" />
+	
+	<b:bean id="commonValidationFeature" class="org.apache.cxf.validation.BeanValidationFeature"/>
 
 	<!-- JAX-RS Configuration -->
 
@@ -61,10 +65,13 @@
 			<ref bean="jacksonJsonProvider" />
 			<ref bean="jacksonXmlProvider" />
 			<ref bean="webApplicationExceptionMapper" />
+			<ref bean="validationExceptionMapper" />
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeature" />
+			<ref bean="context" />
 			<ref bean="logging" />
+			<ref bean="commonValidationFeature" />
 		</jaxrs:features>
 	</jaxrs:server>
 
@@ -88,6 +95,8 @@
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeature" />
+			<ref bean="context" />
+			<ref bean="logging" />
 		</jaxrs:features>
 	</jaxrs:server>
 
@@ -111,6 +120,8 @@
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeature" />
+			<ref bean="context" />
+			<ref bean="logging" />
 		</jaxrs:features>
 	</jaxrs:server>
 
@@ -135,6 +146,8 @@
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeature" />
+			<ref bean="context" />
+			<ref bean="logging" />
 		</jaxrs:features>
 	</jaxrs:server>
 

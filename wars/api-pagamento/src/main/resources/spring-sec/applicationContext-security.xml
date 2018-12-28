@@ -13,41 +13,25 @@
         
         <!-- CONTAINER START  -->
         <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
-                <b:property name="realname" value="GovPay API Pagamento"/>
+                <b:property name="wwwAuthenticate" value="false"/>
         </b:bean>
+        
         <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         </b:bean>
-        <authentication-manager alias="authenticationManager">
-                <authentication-provider ref="preauthAuthProvider">
-                </authentication-provider>
+        
+		<b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.WildflyApplicationAuthenticationProvider" >
+			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
+		</b:bean>
+        <authentication-manager id="authenticationManager">
+			<authentication-provider ref="wildflyApplicationAuthenticationProvider"/>
         </authentication-manager>
-        <b:bean id="preAuthFilter" class="org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter">
-                <b:property name="authenticationManager" ref="authenticationManager" />
-                <b:property name="authenticationDetailsSource">
-           			<b:bean class="org.springframework.security.web.authentication.preauth.j2ee.J2eeBasedPreAuthenticatedWebAuthenticationDetailsSource">
-		                <b:property name="mappableRolesRetriever">
-		                	<b:bean class="it.govpay.rs.v1.authentication.preauth.ruoli.RuoliRetriever" />
-		                </b:property>
-		                <b:property name="userRoles2GrantedAuthoritiesMapper">
-		                    <b:bean class="org.springframework.security.core.authority.mapping.SimpleAttributes2GrantedAuthoritiesMapper">
-		                    	<b:property name="attributePrefix" value=""/>  
-		                    </b:bean>
-		                </b:property>
-            		</b:bean>
-        		</b:property>
-        </b:bean>
-        <b:bean id="preauthAuthProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
-        	<b:property name="preAuthenticatedUserDetailsService">
-            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.UserDetailsByNameServiceWrapper">
-                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenze"/>
-              	</b:bean>
-            </b:property>
-        </b:bean>
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="basicAuthenticationEntryPoint" pattern="/rs/basic/**">
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/basic/**" authentication-manager-ref="authenticationManager">
                 <csrf disabled="true"/>
+                <intercept-url pattern="/rs/basic/v2/api-docs/*" access="permitAll" />
                 <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
                 <intercept-url pattern="/**" access="denyAll" />
-                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilter" />
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
@@ -79,19 +63,20 @@
         </b:bean>
         <b:bean id="userDetailServiceUtenzeCit" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeCittadinoDAO" >
         </b:bean>
+        <b:bean id="preauthAuthProviderCit" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        	<b:property name="preAuthenticatedUserDetailsService">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.UserDetailsByNameServiceWrapper">
+                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeCit"/>
+              	</b:bean>
+            </b:property>
+        </b:bean>
         <authentication-manager id="authenticationManagerCit">
                 <authentication-provider ref="preauthAuthProviderCit">
                 </authentication-provider>
         </authentication-manager>
         <b:bean id="preAuthFilterCit" class="it.govpay.rs.v1.authentication.preauth.filter.HeaderPreAuthFilter">
                 <b:property name="authenticationManager" ref="authenticationManagerCit" />
-        </b:bean>
-        <b:bean id="preauthAuthProviderCit" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
-        	<b:property name="preAuthenticatedUserDetailsService">
-            	<b:bean id="userDetailsServiceWrapper" class="it.govpay.rs.v1.authentication.provider.UserDetailsByNameServiceWrapper">
-                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeCit"/>
-              	</b:bean>
-            </b:property>
+                <b:property name="exceptionIfHeaderMissing" value="false" />
         </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/spid/**">
                 <csrf disabled="true"/>
@@ -116,8 +101,11 @@
                 <csrf disabled="true"/>
                 <intercept-url pattern="/rs/public/v1/avvisi/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v1/pagamenti/**" access="isAnonymous()" method="POST" />
+                
                 <intercept-url pattern="/rs/public/v2/avvisi/**" access="isAnonymous()" method="GET" />
-                <intercept-url pattern="/rs/public/v2/pagamenti/**" access="isAnonymous()" method="POST" />
+                <intercept-url pattern="/rs/public/v2/pagamenti/**" access="isAnonymous()" />
+                <intercept-url pattern="/rs/public/v2/domini/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v2/profilo/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterAnonymous" />
                 <headers>
@@ -135,8 +123,8 @@
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointGenerale" pattern="/**">
                 <csrf disabled="true"/>
                 <!-- risorse pubbliche -->
-                <intercept-url pattern="/govpay-api-pagamento-v1.yaml" access="permitAll"/>
-                <intercept-url pattern="/govpay-api-pagamento-v2.yaml" access="permitAll"/>
+                <intercept-url pattern="/v1/govpay-api-pagamento-v1.yaml" access="permitAll"/>
+                <intercept-url pattern="/v2/govpay-api-pagamento-v2.yaml" access="permitAll"/>
                 <intercept-url pattern="/index.html" access="permitAll"/>
                 <intercept-url pattern="/*.png" access="permitAll"/>
                 <intercept-url pattern="/*.css" access="permitAll"/>

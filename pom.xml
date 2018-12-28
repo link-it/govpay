@@ -464,6 +464,12 @@
 				<artifactId>openspcoop2_utils-jaxrs</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-io</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>

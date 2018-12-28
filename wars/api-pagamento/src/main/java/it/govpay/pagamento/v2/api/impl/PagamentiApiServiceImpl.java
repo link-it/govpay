@@ -1,20 +1,26 @@
 package it.govpay.pagamento.v2.api.impl;
 
-import it.govpay.pagamento.v2.api.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.core.UriBuilder;
+
+import org.openspcoop2.utils.jaxrs.fault.FaultCode;
+import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
+import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+import org.openspcoop2.utils.transport.http.HttpRequestMethod;
+
+import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagamento.v2.acl.Acl;
+import it.govpay.pagamento.v2.acl.AuthorizationRules;
+import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
+import it.govpay.pagamento.v2.api.PagamentiApi;
 import it.govpay.pagamento.v2.beans.NuovoPagamento;
 import it.govpay.pagamento.v2.beans.Pagamenti;
 import it.govpay.pagamento.v2.beans.Pagamento;
 import it.govpay.pagamento.v2.beans.PagamentoCreato;
 import it.govpay.pagamento.v2.beans.StatoPagamento;
 
-import org.openspcoop2.utils.jaxrs.impl.AuthorizationManager;
-import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
-import org.openspcoop2.utils.jaxrs.impl.AuthorizationConfig;
-
-import javax.ws.rs.core.UriBuilder;
-
-import org.openspcoop2.utils.jaxrs.fault.FaultCode;
 /**
  * GovPay - API Pagamento
  *
@@ -29,9 +35,45 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		super(org.slf4j.LoggerFactory.getLogger(PagamentiApiServiceImpl.class));
 	}
 
-	private AuthorizationConfig getAuthorizationConfig() throws Exception{
-		// TODO: Implement ...
-		throw new Exception("NotImplemented");
+	private AuthorizationRules getAuthorizationRules() throws Exception{
+		AuthorizationRules ac = new AuthorizationRules();
+		
+		/*
+		 * Utenti anonimi possono chiamare:
+		 * - addPagamento - per avviare un pagamento
+		 * - getPagamentoByIdSession - per verificarne lo stato
+		 * - getPagamento - per verificarne lo stato
+		 */
+		{
+			TIPO_UTENZA[] tipiUtenza = { TIPO_UTENZA.ANONIMO };
+			
+			Map<HttpRequestMethod, String[]> resources = new HashMap<HttpRequestMethod, String[]>();
+			{
+				String[] location = { "/pagamenti" };
+				resources.put(HttpRequestMethod.POST, location);
+			}
+			{
+				String[] location = { "/pagamenti/byIdSession/{idSession}" };
+				resources.put(HttpRequestMethod.GET, location);
+			}
+			{
+				String[] location = { "/pagamenti/{id}" };
+				resources.put(HttpRequestMethod.GET, location);
+			}
+			
+			Acl acl = new TipoUtenzaOnlyAcl(tipiUtenza, resources);
+			ac.addAcl(acl);
+		}
+		/*
+		 * Utenti CITTADINO e APPLICAZIONE possono chiamare tutte le operazioni:
+		 */
+		{
+			TIPO_UTENZA[] tipiUtenza = { TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE };
+			Acl acl = new TipoUtenzaOnlyAcl(tipiUtenza);
+			ac.addAcl(acl);
+		}
+		
+		return ac;
 	}
 
     /**
@@ -45,8 +87,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
-
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
+			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
                         
         // TODO: Implement...
@@ -75,7 +116,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
+			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
                         
         // TODO: Implement...
@@ -104,7 +145,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
+			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
                         
         // TODO: Implement...
@@ -133,7 +174,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
+			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
                         
         // TODO: Implement...

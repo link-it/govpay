@@ -1,11 +1,11 @@
 package it.govpay.pagamento.v2.acl.impl;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
@@ -15,14 +15,14 @@ import it.govpay.pagamento.v2.acl.Acl;
 
 public class BasicAcl implements Acl {
 
-	List<String> principals;
-	List<String> roles;
-	Map<HttpRequestMethod, List<String>> resources;
+	String[] principals;
+	String[] roles;
+	Map<HttpRequestMethod, String[]> resources;
 	Properties pathParams;
 	Properties queryParams;
 	Properties roleParams;
 
-	public BasicAcl(List<String> principals, List<String> roles, Map<HttpRequestMethod, List<String>> resources, Properties pathParams, Properties queryParams, Properties roleParams) {
+	public BasicAcl(String[] principals, String[] roles, Map<HttpRequestMethod, String[]> resources, Properties pathParams, Properties queryParams, Properties roleParams) {
 		this.principals = principals;
 		this.roles = roles;
 		this.resources = resources;
@@ -37,7 +37,7 @@ public class BasicAcl implements Acl {
 		// Se il principal e' impostato controllo che 
 		// - Ho un principal
 		// - Il mio principal e' tra quelli dell'ACL
-		if(principals != null && (context.getAuthentication().getPrincipal() == null || !this.principals.contains(context.getAuthentication().getPrincipal()))) {
+		if(principals != null && (context.getAuthentication().getPrincipal() == null || !ArrayUtils.contains(principals, context.getAuthentication().getPrincipal()))) {
 			return false;
 		}
 
@@ -48,7 +48,7 @@ public class BasicAcl implements Acl {
 			if(context.getAuthentication().getAuthorities() == null) return false;
 			boolean hasRole = false;
 			for(GrantedAuthority gaut : context.getAuthentication().getAuthorities()) {
-				if(roles.contains(gaut.getAuthority())) hasRole = true;
+				if(ArrayUtils.contains(roles, gaut.getAuthority())) hasRole = true;
 			}
 			if(!hasRole) return false;
 		}
@@ -57,7 +57,7 @@ public class BasicAcl implements Acl {
 		if(this.resources != null) {
 			
 			// Prendo la lista dei path del Method usato nella richiesta
-			List<String> resourcePaths = this.resources.get(HttpRequestMethod.valueOf(context.getServletRequest().getMethod().toUpperCase()));
+			String[] resourcePaths = this.resources.get(HttpRequestMethod.valueOf(context.getServletRequest().getMethod().toUpperCase()));
 			
 			// Se la lista e' nulla, ho finito
 			if(resourcePaths == null) return false;

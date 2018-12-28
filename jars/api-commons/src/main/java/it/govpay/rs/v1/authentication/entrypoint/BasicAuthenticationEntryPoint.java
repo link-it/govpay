@@ -10,11 +10,6 @@ import it.govpay.rs.v1.exception.CodiceEccezione;
 public class BasicAuthenticationEntryPoint extends org.openspcoop2.utils.jaxrs.impl.authentication.entrypoint.BasicAuthenticationEntryPoint {
 
 	@Override
-	protected void addCustomHeaders(HttpServletResponse httpResponse) {
-		httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"");
-	}
-
-	@Override
 	protected Response getPayload(AuthenticationException authException, HttpServletResponse httpResponse) {
 		return CodiceEccezione.AUTORIZZAZIONE.toFaultResponse(authException);
 	}

@@ -16,7 +16,6 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.io.CachedWriter;
 import org.apache.cxf.message.Message;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.proxy.Client;
@@ -25,7 +24,6 @@ import org.openspcoop2.utils.logger.beans.proxy.Role;
 import org.openspcoop2.utils.logger.beans.proxy.Transaction;
 import org.openspcoop2.utils.logger.constants.MessageType;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
-import org.slf4j.MDC;
 
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpContext.Context;
@@ -68,70 +66,63 @@ public class LoggingInInterceptor extends org.apache.cxf.ext.logging.LoggingInIn
 		// Realizzo la stessa logica di MessageLoggingHandlerUtils
 		//
 
-		try {
-			GpContext ctx = new GpContext();
-			
-			org.openspcoop2.utils.logger.beans.Message msg = new org.openspcoop2.utils.logger.beans.Message();
-			msg.setContent(event.getPayload().getBytes());
-			msg.setType(MessageType.REQUEST_IN);
-			msg.setContentType(event.getContentType());
+		GpContext ctx = GpThreadLocal.get();
 
-			Map<String, String> headers = event.getHeaders();
-			for (Map.Entry<String, String> entry : headers.entrySet())
-			{
-				String key = entry.getKey();
-				String value = entry.getValue();
-				msg.addHeader(new Property(key, value));
-			}
-			
-			try {
-				ctx.getLogger().log(msg);
-			} catch (UtilsException ue) {
-				throw new ServiceException(); 
-			}
+		org.openspcoop2.utils.logger.beans.Message msg = new org.openspcoop2.utils.logger.beans.Message();
+		msg.setContent(event.getPayload().getBytes());
+		msg.setType(MessageType.REQUEST_IN);
+		msg.setContentType(event.getContentType());
 
-			String servizio = null;
-			if (event.getServiceName() != null) {
-				servizio = event.getServiceName().getLocalPart();
-			}
-
-			Transaction transaction = ctx.getTransaction();
-			transaction.setRole(Role.SERVER);
-			
-			if (event.getServiceName() != null) 
-				transaction.setProtocol("REST");
-			else
-				transaction.setProtocol("SOAP");
-			
-			org.openspcoop2.utils.logger.beans.proxy.Service service = new org.openspcoop2.utils.logger.beans.proxy.Service();
-			service.setName(servizio);
-			service.setVersion(this.version);
-			service.setType(event.getHttpMethod());
-			transaction.setService(service);
-			
-			Operation operation = new Operation();
-			operation.setMode(FlowMode.INPUT_OUTPUT);
-			operation.setName(event.getOperationName());
-			transaction.setOperation(operation);
-			
-			Client client = new Client();
-			client.setInvocationEndpoint(event.getAddress());
-			if(event.getPortName() != null) client.setInterfaceName(event.getPortName().getLocalPart());
-			client.setPrincipal(event.getPrincipal());
-			transaction.setClient(client);
-			
-			Context context = ctx.getContext();
-			context.getRequest().setInDate(new Date());
-			if(event.getPayload() != null)
-				context.getRequest().setInSize(new Long(event.getPayload().getBytes().length));
-			else
-				context.getRequest().setInSize(0l);
-			MDC.put("op", ctx.getTransactionId());
-
-			GpThreadLocal.set(ctx);
-		} catch (ServiceException se) {
-			throw new Fault(se);
+		Map<String, String> headers = event.getHeaders();
+		for (Map.Entry<String, String> entry : headers.entrySet())
+		{
+			String key = entry.getKey();
+			String value = entry.getValue();
+			msg.addHeader(new Property(key, value));
 		}
+
+		try {
+			ctx.getLogger().log(msg);
+		} catch (UtilsException ue) {
+			throw new Fault(ue); 
+		}
+
+		String servizio = null;
+		if (event.getServiceName() != null) {
+			servizio = event.getServiceName().getLocalPart();
+		}
+
+		Transaction transaction = ctx.getTransaction();
+		transaction.setRole(Role.SERVER);
+
+		if (event.getServiceName() != null) 
+			transaction.setProtocol("REST");
+		else
+			transaction.setProtocol("SOAP");
+
+		org.openspcoop2.utils.logger.beans.proxy.Service service = new org.openspcoop2.utils.logger.beans.proxy.Service();
+		service.setName(servizio);
+		service.setVersion(this.version);
+		service.setType(event.getHttpMethod());
+		transaction.setService(service);
+
+		Operation operation = new Operation();
+		operation.setMode(FlowMode.INPUT_OUTPUT);
+		operation.setName(event.getOperationName());
+		transaction.setOperation(operation);
+
+		Client client = new Client();
+		client.setInvocationEndpoint(event.getAddress());
+		if(event.getPortName() != null) client.setInterfaceName(event.getPortName().getLocalPart());
+		client.setPrincipal(event.getPrincipal());
+		transaction.setClient(client);
+
+		Context context = ctx.getContext();
+		context.getRequest().setInDate(new Date());
+		if(event.getPayload() != null)
+			context.getRequest().setInSize(new Long(event.getPayload().getBytes().length));
+		else
+			context.getRequest().setInSize(0l);
 	}
 
 	private void addContent(Message message, final LogEvent event) {

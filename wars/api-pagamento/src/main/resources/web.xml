@@ -2,10 +2,10 @@
 	      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 
 	<display-name>govpay-api-pagamento</display-name>
-	
+
 	<context-param>
     	<param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/applicationContext-jaxrs-*.xml,/WEB-INF/applicationContext-security-*.xml</param-value>
+		<param-value>/WEB-INF/applicationContext-jaxrs-*.xml,/WEB-INF/applicationContext-security.xml</param-value>
     </context-param>
     
     <listener>
@@ -31,7 +31,7 @@
 	    <dispatcher>FORWARD</dispatcher>
 	    <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
-    
+	
 	<filter-mapping>
 		<filter-name>OriginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -48,24 +48,5 @@
         <servlet-name>CXFServlet</servlet-name>
         <url-pattern>/rs/*</url-pattern>
     </servlet-mapping>
-
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Protetto</web-resource-name>
-			<url-pattern>/rs/basic/*</url-pattern>
-			<http-method-omission>OPTIONS</http-method-omission>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>*</role-name>
-		</auth-constraint>
-	</security-constraint>
-
-	<security-role>
-		<role-name>*</role-name>
-	</security-role>
-
-	<login-config>
-		<auth-method>BASIC</auth-method>
-	</login-config> 
- 
+    
 </web-app>
