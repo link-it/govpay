@@ -7,10 +7,10 @@ GovPay - Implementazione pagoPA
 ###############################################
 
 .. toctree::
-      :caption: Indice dei contenuti
+        :caption: Indice dei contenuti
    
-   integrazione.rst
+        integrazione
 
 .. |intestazione-govpay.png| image:: https://www.link.it/linkit2/img/govp_ent.svg
-      :width: 5.90551in
-   :height: 1.30277in
+        :width: 5.90551in
+        :height: 1.30277in
