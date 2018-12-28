@@ -1,5 +1,5 @@
 +-----------------------------------------------------------------------+
-| |AGID_logo_carta_intestata-02.png|                                    |
+| |intestazione-govpay.png|                                             |
 +-----------------------------------------------------------------------+
 
 ###############################################
@@ -9,8 +9,8 @@ GovPay - Implementazione pagoPA
 .. toctree::
       :caption: Indice dei contenuti
    
-   integrazione/index.rst
+   integrazione.rst
 
-.. |AGID_logo_carta_intestata-02.png| image:: _docs/media/header.png
+.. |intestazione-govpay.png| image:: https://www.link.it/linkit2/img/govp_ent.svg
       :width: 5.90551in
    :height: 1.30277in
