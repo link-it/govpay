@@ -5,12 +5,14 @@ Errori
 
 blablabla...
 
+
 .. _400:
 
 HTTP 400: Bad request
 ---------------------
 
 La richiesta non può essere processata per errori di validazione semantica.
+
 
 .. _400000:
 
@@ -24,10 +26,11 @@ La richiesta non può essere processata per errori di validazione semantica.
 
 .. _422:
 
-HTTP 422:Unprocessable Entity
+HTTP 422: Unprocessable Entity
 -----------------------------
 
 La richiesta non può essere processata per errori di validazione semantica
+
 
 .. _422001:
 
@@ -40,9 +43,55 @@ di una pendenza, è disabilitato.
 **Risoluzione**: Se il comportamento risulta indesiderato, è necessario richiedere al gestore della
 piattaforma GovPay di modificare la configurazione del dominio in oggetto abilitandolo. 
 
+
 .. _422002:
 
 422002: Lorem ipsum dolor
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Descrizione**: Lorem ipsum dolor sit amet.
+
+**Risoluzione**: Lorem ipsum dolor sit amet.
+
+
+.. _422002:
+
+422003: Lorem ipsum dolor
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Descrizione**: Lorem ipsum dolor sit amet.
+
+**Risoluzione**: Lorem ipsum dolor sit amet.
+
+422004: Lorem ipsum dolor
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Descrizione**: Lorem ipsum dolor sit amet.
+
+**Risoluzione**: Lorem ipsum dolor sit amet.
+
+422005: Lorem ipsum dolor
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Descrizione**: Lorem ipsum dolor sit amet.
+
+**Risoluzione**: Lorem ipsum dolor sit amet.
+
+422006: Lorem ipsum dolor
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Descrizione**: Lorem ipsum dolor sit amet.
+
+**Risoluzione**: Lorem ipsum dolor sit amet.
+
+422007: Lorem ipsum dolor
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Descrizione**: Lorem ipsum dolor sit amet.
+
+**Risoluzione**: Lorem ipsum dolor sit amet.
+
+422008: Lorem ipsum dolor
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Descrizione**: Lorem ipsum dolor sit amet.
