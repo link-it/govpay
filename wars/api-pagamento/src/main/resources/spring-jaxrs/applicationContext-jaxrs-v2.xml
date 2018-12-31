@@ -49,12 +49,15 @@
 	<!-- JAX-RS Configuration -->
 
 	<!-- Servizi V2 -->
+	
+	<b:bean id="pagamentiTest" class="it.govpay.pagamento.test.PagamentiImpl" />
 
 	<jaxrs:server id="apiPagamentoV2Basic" address="/basic/v2/">
 		<jaxrs:serviceBeans>
 			<ref bean="avvisiV2" />
 			<ref bean="dominiV2" />
 			<ref bean="pagamentiV2" />
+			<ref bean="pagamentiTest" />
 			<ref bean="pendenzeV2" />
 			<ref bean="profiloV2" />
 			<ref bean="rppV2" />
