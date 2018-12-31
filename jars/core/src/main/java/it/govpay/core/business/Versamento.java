@@ -42,11 +42,15 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.AvvisaturaUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Versamento.AvvisaturaOperazione;
+import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class Versamento extends BasicBD {
@@ -116,7 +120,15 @@ public class Versamento extends BasicBD {
 					versamento.setNumeroAvviso(versamentoLetto.getNumeroAvviso());
 				}
 				
-				// schedulazione Avvisatura per operazione di update in caso di vero update del versamento TODO
+				if(versamento.checkEsecuzioneUpdate(versamentoLetto)) {
+					versamento.setAvvisaturaOperazione(AvvisaturaOperazione.UPDATE.getValue());
+					versamento.setAvvisaturaDaInviare(true);
+					String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
+					if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
+						versamento.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
+					}
+				}
+				
 				
 				if(!aggiornaSeEsiste)
 					throw new GovPayException(EsitoOperazione.VER_015, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
@@ -163,53 +175,6 @@ public class Versamento extends BasicBD {
 				throw new GovPayException(e);
 		}
 	}
-
-	@Deprecated
-	public void annullaVersamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte) throws GovPayException {
-		try {
-			VersamentiBD versamentiBD = new VersamentiBD(this);
-			
-			this.setAutoCommit(false);
-			this.enableSelectForUpdate();
-			
-			try {
-				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
-			
-				// Se è già annullato non devo far nulla.
-				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
-					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") gia' annullato. Aggiornamento non necessario.");
-					return;
-				}
-				
-				// Se è in stato NON_ESEGUITO lo annullo
-				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
-					versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
-					versamentiBD.updateVersamento(versamentoLetto);
-					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") annullato.");
-					return;
-				}
-				
-				// Se non è ne ANNULLATO ne NON_ESEGUITO non lo posso annullare
-				throw new GovPayException(EsitoOperazione.VER_009, codApplicazione, codVersamentoEnte, versamentoLetto.getStatoVersamento().toString());
-				
-			} catch (NotFoundException e) {
-				// Versamento inesistente
-				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
-			} finally {
-				this.commit();
-			}
-		} catch (Exception e) {
-			this.rollback();
-			if(e instanceof GovPayException)
-				throw (GovPayException) e;
-			else 
-				throw new GovPayException(e);
-		} finally {
-			try {
-				this.disableSelectForUpdate();
-			} catch (Exception e) {}
-		}
-	}
 	
 	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException {
 		log.info("Richiesto annullamento per il Versamento (" + annullaVersamentoDTO.getCodVersamentoEnte() + ") dell'applicazione (" + annullaVersamentoDTO.getCodApplicazione() + ")");
@@ -249,10 +214,17 @@ public class Versamento extends BasicBD {
 					return;
 				}
 				
-				// Se è in stato NON_ESEGUITO lo annullo
+				// Se è in stato NON_ESEGUITO lo annullo ed aggiorno lo stato avvisatura
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 					versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
 					versamentoLetto.setDescrizioneStato(annullaVersamentoDTO.getMotivoAnnullamento()); 
+					versamentoLetto.setAvvisaturaOperazione(AvvisaturaOperazione.DELETE.getValue());
+					versamentoLetto.setAvvisaturaDaInviare(true);
+					String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
+					if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
+						versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
+					}
+					
 					versamentiBD.updateVersamento(versamentoLetto);
 					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") annullato.");
 					ctx.log("versamento.annullaOk");

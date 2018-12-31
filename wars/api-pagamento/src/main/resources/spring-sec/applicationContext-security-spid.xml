@@ -30,12 +30,13 @@
         
         <!-- Pre Authentication -->
         <b:bean id="preAuthFilter" class="it.govpay.rs.v1.authentication.preauth.filter.HeaderPreAuthFilter">
-                <b:property name="authenticationManager" ref="authenticationManager" />
+        		<b:property name="authenticationManager" ref="authenticationManager" />
+                <b:property name="exceptionIfHeaderMissing" value="false" />
         </b:bean>
 
         <b:bean id="preauthAuthProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
         	<b:property name="preAuthenticatedUserDetailsService">
-            	<b:bean id="userDetailsServiceWrapper" class="it.govpay.rs.v1.authentication.provider.UserDetailsByNameServiceWrapper">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.UserDetailsByNameServiceWrapper">
                 	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenze"/>
               	</b:bean>
             </b:property>

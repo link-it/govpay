@@ -250,6 +250,7 @@ public class GovPayException extends Exception {
 	
 	public int getStatusCode() {
 		switch (this.codEsito) {
+		case NDP_000: return 502;
 		case OK: return 200;
 		case VER_003: return 422;
 		default:

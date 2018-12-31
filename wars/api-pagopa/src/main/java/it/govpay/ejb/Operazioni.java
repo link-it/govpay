@@ -96,7 +96,7 @@ public class Operazioni{
 	}
 	
 	@Schedule(hour="*", minute="*", persistent=false)
-	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
+	@AccessTimeout(value=2, unit=TimeUnit.MINUTES)
 	public static String avvisaturaDigitaleModalitaSincrona(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";

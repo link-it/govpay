@@ -66,6 +66,8 @@ import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.AvvisaturaUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Acl.Diritti;
@@ -74,6 +76,8 @@ import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.StatoPendenza;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.model.Versamento.AvvisaturaOperazione;
+import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
@@ -514,11 +518,27 @@ public class PendenzeDAO extends BaseDAO{
 		}
 		
 		StatoVersamento nuovoStato = this.getNuovoStatoVersamento(op);
+		
+		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		EventoNota eventoNota = new EventoNota();
+		eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
+		eventoNota.setAutore(userDetails.getIdentificativo());
+		eventoNota.setData(new Date());
+		eventoNota.setTesto(motivazione);
+		eventoNota.setTipoEvento(TipoNota.SistemaInfo);
 
 		switch (nuovoStato) {
 		case ANNULLATO:
 			if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 				versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
+				versamentoLetto.setAvvisaturaOperazione(AvvisaturaOperazione.DELETE.getValue());
+				versamentoLetto.setAvvisaturaDaInviare(true);
+				String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
+				if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
+					versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
+				}
+				
+				eventoNota.setOggetto("Pendenza annullata");
 			} else {
 				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO");
 			}
@@ -526,6 +546,14 @@ public class PendenzeDAO extends BaseDAO{
 		case NON_ESEGUITO:
 			if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
 				versamentoLetto.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
+				versamentoLetto.setAvvisaturaOperazione(AvvisaturaOperazione.CREATE.getValue());
+				versamentoLetto.setAvvisaturaDaInviare(true);
+				String avvisaturaDigitaleModalitaAnnullamentoAvviso = GovpayConfig.getInstance().getAvvisaturaDigitaleModalitaAnnullamentoAvviso();
+				if(!avvisaturaDigitaleModalitaAnnullamentoAvviso.equals(AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_USER_DEFINED)) {
+					versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
+				}
+				
+				eventoNota.setOggetto("Pendenza ripristinata");
 			} else {
 				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad NON_ESEGUITO da uno stato diverso da ANNULLATO");
 			}
@@ -534,14 +562,7 @@ public class PendenzeDAO extends BaseDAO{
 			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, nuovoStato.name()));
 		}
 		
-		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		EventoNota eventoNota = new EventoNota();
-		eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
-		eventoNota.setAutore(userDetails.getIdentificativo());
-		eventoNota.setData(new Date());
-		eventoNota.setOggetto("Pendenza annullata");
-		eventoNota.setTesto(motivazione);
-		eventoNota.setTipoEvento(TipoNota.SistemaInfo);
+		
 		
 		return eventoNota;
 	}

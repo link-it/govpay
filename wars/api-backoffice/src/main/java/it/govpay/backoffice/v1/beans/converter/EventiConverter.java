@@ -33,6 +33,7 @@ public class EventiConverter {
 				rsModel.setIdStazione(eventoCooperazione.getCodStazione());
 				rsModel.setIuv(eventoCooperazione.getIuv());
 				rsModel.setTipoEvento(eventoCooperazione.getTipoEvento());
+				rsModel.setSottotipoEvento(eventoCooperazione.getSottotipoEvento()); 
 
 				if(eventoCooperazione.getTipoVersamento() != null) {
 					rsModel.setTipoVersamento(eventoCooperazione.getTipoVersamento().name());
@@ -47,6 +48,7 @@ public class EventiConverter {
 				rsModel.setIuv(evento.getIuv());
 				rsModel.setTipoEvento(evento.getTipoEvento());
 				rsModel.setCcp(evento.getCcp());
+				rsModel.setSottotipoEvento(evento.getSottotipoEvento());
 				
 				try {
 					EventoNota eventoNota = EventoConverter.toEventoNota(evento);

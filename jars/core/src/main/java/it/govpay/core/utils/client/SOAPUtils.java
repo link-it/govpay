@@ -39,7 +39,7 @@ public class SOAPUtils {
 	
 	private static XMLInputFactory xif = XMLInputFactory.newInstance();
 
-	public static void writeMessage(JAXBElement<?> body, Object header, OutputStream baos) throws JAXBException, SAXException, IOException {
+	public static void writeRPTMessage(JAXBElement<?> body, Object header, OutputStream baos) throws JAXBException, SAXException, IOException {
 		baos.write("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">".getBytes());
 		if(header != null) {
 			baos.write("<soap:Header>".getBytes());
@@ -52,7 +52,7 @@ public class SOAPUtils {
 		baos.write("</soap:Envelope>".getBytes());
 	}
 	
-	public static Object unmarshal(InputStream is, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
+	public static Object unmarshalRPT(InputStream is, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
 		
         XMLStreamReader xsr = xif.createXMLStreamReader(is);
         
@@ -74,17 +74,57 @@ public class SOAPUtils {
         }
 	}
 	
-	public static JAXBElement<?> toJaxb(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
+	public static JAXBElement<?> toJaxbRPT(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
 		String s = new String(msg);
 		InputStream is = IOUtils.toInputStream(s);
-		return  (JAXBElement<?>) unmarshal(is, schema);
+		return  (JAXBElement<?>) unmarshalRPT(is, schema);
 	}
 	
-	public static Object unmarshal(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
+	public static Object unmarshalRPT(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
 		String s = new String(msg);
 		InputStream is = IOUtils.toInputStream(s);
-		return  unmarshal(is, schema);
+		return  unmarshalRPT(is, schema);
 	}
 	
 	
+	public static void writeAvvisaturaDigitaleMessage(JAXBElement<?> body, Object header, OutputStream baos) throws JAXBException, SAXException, IOException {
+		baos.write("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">".getBytes());
+		if(header != null) {
+			baos.write("<soap:Header>".getBytes());
+			JaxbUtils.marshalAvvisaturaDigitaleService(header, baos);
+			baos.write("</soap:Header>".getBytes());
+		}
+		baos.write("<soap:Body>".getBytes());
+		JaxbUtils.marshalAvvisaturaDigitaleService(body, baos);
+		baos.write("</soap:Body>".getBytes());
+		baos.write("</soap:Envelope>".getBytes());
+	}
+	
+	public static Object unmarshalAvvisaturaDigitale(InputStream is, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
+		
+        XMLStreamReader xsr = xif.createXMLStreamReader(is);
+        
+        boolean isBody = false;
+        while(!isBody) {
+        	xsr.nextTag();
+        	if(xsr.isStartElement()) {
+        		String local = xsr.getLocalName();
+        		isBody = local.equals("Body");
+        	}
+        }
+        
+        xsr.nextTag();
+        if(!xsr.isStartElement()) {
+        	// Body vuoto
+        	return null;
+        } else {
+        	return JaxbUtils.unmarshalAvvisaturaDigitaleService(xsr, schema);
+        }
+	}
+	
+	public static JAXBElement<?> toJaxbAvvisaturaDigitale(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
+		String s = new String(msg);
+		InputStream is = IOUtils.toInputStream(s);
+		return  (JAXBElement<?>) unmarshalAvvisaturaDigitale(is, schema);
+	}
 }

@@ -28,42 +28,52 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
 
 public class ThreadExecutorManager {
-	
+
 	private static ExecutorService executorNotifica;
 	private static ExecutorService executorRPT;
 	private static ExecutorService executorAvvisaturaDigitale;
-	
-	public static void setup() throws GovPayException {
-		int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotifica();
-		LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi notifica [NumThread: "+threadNotificaPoolSize+"]" );
-		executorNotifica = Executors.newFixedThreadPool(threadNotificaPoolSize);
-		
-		int threadAvvisaturaDigitalePoolSize = GovpayConfig.getInstance().getDimensionePoolAvvisaturaDigitale();
-		LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi avvisatura digitale [NumThread: "+threadAvvisaturaDigitalePoolSize+"]" );
-		executorAvvisaturaDigitale = Executors.newFixedThreadPool(threadAvvisaturaDigitalePoolSize);
-		
-		int threadRPTPoolSize = GovpayConfig.getInstance().getDimensionePoolRPT();
-		LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione rpt [NumThread: "+threadRPTPoolSize+"]" );
-		executorRPT = Executors.newFixedThreadPool(threadRPTPoolSize);
+	private static boolean initialized = false;
+
+	private static synchronized void init() throws GovPayException {
+		if(!initialized) {
+			int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotifica();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi notifica [NumThread: "+threadNotificaPoolSize+"]" );
+			executorNotifica = Executors.newFixedThreadPool(threadNotificaPoolSize);
+
+			int threadAvvisaturaDigitalePoolSize = GovpayConfig.getInstance().getDimensionePoolAvvisaturaDigitale();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi avvisatura digitale [NumThread: "+threadAvvisaturaDigitalePoolSize+"]" );
+			executorAvvisaturaDigitale = Executors.newFixedThreadPool(threadAvvisaturaDigitalePoolSize);
+
+			int threadRPTPoolSize = GovpayConfig.getInstance().getDimensionePoolRPT();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione rpt [NumThread: "+threadRPTPoolSize+"]" );
+			executorRPT = Executors.newFixedThreadPool(threadRPTPoolSize);
+		}
+		initialized = true;
 	}
-	
+
+	public static void setup() throws GovPayException {
+		if(!initialized) {
+			init();
+		}
+	}
+
 	public static void shutdown() throws InterruptedException {
 		executorNotifica.shutdown();
 		while (!executorNotifica.isTerminated()) {
 			Thread.sleep(500);
 		}
-		
+
 		executorAvvisaturaDigitale.shutdown();
 		while (!executorAvvisaturaDigitale.isTerminated()) {
 			Thread.sleep(500);
 		}
-		
+
 		executorRPT.shutdown();
 		while (!executorRPT.isTerminated()) {
 			Thread.sleep(500);
 		}
 	}
-	
+
 	public static ExecutorService getClientPoolExecutorNotifica() {
 		return executorNotifica;
 	}
@@ -71,7 +81,7 @@ public class ThreadExecutorManager {
 	public static ExecutorService getClientPoolExecutorAvvisaturaDigitale() {
 		return executorAvvisaturaDigitale;
 	}
-	
+
 	public static ExecutorService getClientPoolExecutorRPT() {
 		return executorRPT;
 	}

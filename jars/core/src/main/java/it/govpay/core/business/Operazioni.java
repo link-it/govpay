@@ -1109,8 +1109,6 @@ public class Operazioni{
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			boolean wasAutoCommit = false;
-
 			if(BatchManager.startEsecuzione(bd, BATCH_AVVISATURA_DIGITALE_SINCRONA)) {
 				log.trace("Spedizione Avvisatura Digitale modalita' sincrona");
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -1128,67 +1126,47 @@ public class Operazioni{
 					return "Nessuna versamento da avvisare in modalita' sincrona.";
 				}
 				
-				wasAutoCommit = bd.isAutoCommit();
-				
-				if(wasAutoCommit)
-					bd.setAutoCommit(false);
-
 				log.info("Trovati ["+versamenti.size()+"] versamenti da avvisare in modalita' sincrona");
 				for(it.govpay.bd.model.Versamento versamento: versamenti) {
-					
-					EventoCooperazione evento = new EventoCooperazione();
-					evento.setData(new Date());
-					evento.setDataRichiesta(new Date());
-					evento.setAltriParametriRichiesta(null);
-					evento.setAltriParametriRisposta(null);
-					evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
-					evento.setCodDominio(versamento.getDominio(bd).getCodDominio());
-					evento.setCodStazione(versamento.getDominio(bd).getStazione().getCodStazione());
-					evento.setComponente(EventoCooperazione.COMPONENTE);
-					evento.setDataRisposta(new Date());
-					evento.setErogatore(EventoCooperazione.NDP);
-					evento.setIuv(versamento.getIuvVersamento());
-					evento.setSottotipoEvento("Avvisatura Digitale Sincrona");
-					evento.setTipoEvento(AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name());
-					evento.setIdVersamento(versamento.getId());
-					
 					Intermediario intermediario = versamento.getDominio(bd).getStazione().getIntermediario(bd);
 					
-					evento.setFruitore(intermediario.getDenominazione());
 					if(intermediario.getConnettorePddAvvisatura() != null && intermediario.getConnettorePddAvvisatura().getUrl() != null) {
 						InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, GpThreadLocal.get().getTransactionId(), versamentiBD);
 						ThreadExecutorManager.getClientPoolExecutorAvvisaturaDigitale().execute(sender);
 						threads.add(sender);
-						
-						evento.setEsito("OK");
-						evento.setDescrizioneEsito("Avvisatura Digitale in modalita' sincrona schedulata correttamente.");
 					} else {
 						log.warn("Spedizione avvisatura Versamento [Dominio: "+versamento.getDominio(bd).getCodDominio()+", NumeroAvviso: "+versamento.getNumeroAvviso()+"] in modalita' sincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP valido.");
 						versamentiBD.updateVersamentoModalitaAvvisatura(versamento.getId(), ModoAvvisatura.ASICNRONA.getValue());
+						EventoCooperazione evento = new EventoCooperazione();
+						evento.setData(new Date());
+						evento.setDataRichiesta(new Date());
+						evento.setAltriParametriRichiesta(null);
+						evento.setAltriParametriRisposta(null);
+						evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
+						evento.setCodDominio(versamento.getDominio(bd).getCodDominio());
+						evento.setCodStazione(versamento.getDominio(bd).getStazione().getCodStazione());
+						evento.setComponente(EventoCooperazione.COMPONENTE);
+						evento.setDataRisposta(new Date());
+						evento.setErogatore(EventoCooperazione.NDP);
+						evento.setIuv(versamento.getIuvVersamento());
+						evento.setSottotipoEvento(versamento.getAvvisaturaOperazione());
+						evento.setTipoEvento(AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name());
+						evento.setIdVersamento(versamento.getId());
+						evento.setFruitore(intermediario.getDenominazione());
 						evento.setEsito("WARN");
 						evento.setDescrizioneEsito("Spedizione avvisatura Versamento [Dominio: "+versamento.getDominio(bd).getCodDominio()+", NumeroAvviso: "+versamento.getNumeroAvviso()+"] in modalita' sincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP valido.");
+						giornaleEventi.registraEventoCooperazione(evento);
 					}
-					
-					giornaleEventi.registraEventoCooperazione(evento);
-					bd.commit();
 				}
 				log.info("Processi di spedizione avvisatura versamento in modalita' sincrona avviati.");
 				aggiornaSondaOK(BATCH_AVVISATURA_DIGITALE_SINCRONA, bd);
-				
-				if(!wasAutoCommit)
-					bd.setAutoCommit(wasAutoCommit);
 			} else {
 				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione dell'avvisatura digitale in modalita' sincrona", e);
-			try {
-				if(!bd.isAutoCommit()) bd.rollback();
-				aggiornaSondaKO(BATCH_AVVISATURA_DIGITALE_SINCRONA, e, bd); 
-			} catch (ServiceException e1) {
-				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
-			}
+			aggiornaSondaKO(BATCH_AVVISATURA_DIGITALE_SINCRONA, e, bd); 
 			return "Non è stato possibile avviare la spedizione dell'avvisatura digitale in modalita' sincrona: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();

@@ -50,7 +50,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.RR;
 
 public class JaxbUtils {
 
-	private static JAXBContext jaxbBolloContext, jaxbRptRtContext, jaxbRrErContext, jaxbFrContext, jaxbWsRptContext;//, jaxbWsRtContext, jaxbWsCcpContext;
+	private static JAXBContext jaxbBolloContext, jaxbRptRtContext, jaxbRrErContext, jaxbFrContext, jaxbWsRptContext, jaxbWsAvvisaturaDigitaleContext;//, jaxbWsRtContext, jaxbWsCcpContext;
 	private static Schema RPT_RT_schema, RR_ER_schema, FR_schema;
 	private static boolean initialized = false;
 
@@ -65,6 +65,7 @@ public class JaxbUtils {
 			jaxbWsRptContext = JAXBContext.newInstance("gov.telematici.pagamenti.ws.rpt:gov.telematici.pagamenti.ws.rpt.ppthead");
 //			jaxbWsRtContext = JAXBContext.newInstance("gov.telematici.pagamenti.ws.rt:gov.telematici.pagamenti.ws.ppthead");
 //			jaxbWsCcpContext = JAXBContext.newInstance("gov.telematici.pagamenti.ws.ccp:gov.telematici.pagamenti.ws.ppthead");
+			jaxbWsAvvisaturaDigitaleContext = JAXBContext.newInstance("gov.telematici.pagamenti.ws.avvisi_digitali:gov.telematici.pagamenti.ws.ppthead.richiesta_avvisi");
 			jaxbRptRtContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti");
 			jaxbRrErContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti.revoche");
 			jaxbFrContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti.riversamento");
@@ -182,6 +183,30 @@ public class JaxbUtils {
 		
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbWsRptContext.createUnmarshaller();
+		jaxbUnmarshaller.setSchema(schema);
+		jaxbUnmarshaller.setEventHandler(new JaxbUtils().new GpEventHandler());
+		return jaxbUnmarshaller.unmarshal(xsr);
+	}
+	
+	public static void marshalAvvisaturaDigitaleService(Object jaxb, OutputStream os) throws JAXBException, SAXException {
+		if(jaxb == null) return;
+		init();
+		Marshaller jaxbMarshaller = jaxbWsAvvisaturaDigitaleContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.marshal(jaxb, os);
+	}
+	
+	public static Object unmarshalAvvisaturaDigitaleService(XMLStreamReader xsr) throws JAXBException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbWsAvvisaturaDigitaleContext.createUnmarshaller();
+		return jaxbUnmarshaller.unmarshal(xsr);
+	}
+	
+	public static Object unmarshalAvvisaturaDigitaleService(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
+		if(schema == null) return unmarshalAvvisaturaDigitaleService(xsr);
+		
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbWsAvvisaturaDigitaleContext.createUnmarshaller();
 		jaxbUnmarshaller.setSchema(schema);
 		jaxbUnmarshaller.setEventHandler(new JaxbUtils().new GpEventHandler());
 		return jaxbUnmarshaller.unmarshal(xsr);

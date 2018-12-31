@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
@@ -622,5 +623,18 @@ public class Versamento extends BasicModel {
 
 	public void setAnomalo(boolean anomalo) {
 		this.anomalo = anomalo;
+	}
+	
+	public boolean checkEsecuzioneUpdate(Versamento oldVersamento) {
+		
+		boolean equals = 
+				Objects.equals(this.getDataScadenza(), oldVersamento.getDataScadenza()) && 
+				Objects.equals(this.getDataValidita(), oldVersamento.getDataValidita()) && 
+				Objects.equals(this.getStatoVersamento(), oldVersamento.getStatoVersamento()) && 
+				Objects.equals(this.getImportoTotale(), oldVersamento.getImportoTotale()) && 
+				Objects.equals(this.getNumeroAvviso(), oldVersamento.getNumeroAvviso()) && 
+				Objects.equals(this.getCausaleVersamento(), oldVersamento.getCausaleVersamento());
+		
+		return !equals;
 	}
 }

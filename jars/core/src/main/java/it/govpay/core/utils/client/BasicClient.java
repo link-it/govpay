@@ -19,20 +19,7 @@
  */
 package it.govpay.core.utils.client;
 
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.JaxbUtils;
-import it.govpay.core.utils.client.handler.IntegrationContext;
-import it.govpay.core.utils.client.handler.IntegrationOutHandler;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.model.Connettore;
-import it.govpay.model.Intermediario;
-import it.govpay.model.Connettore.EnumAuthType;
-import it.govpay.model.Connettore.EnumSslType;
-
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -50,7 +37,6 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.xml.bind.JAXBElement;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPException;
@@ -59,11 +45,22 @@ import javax.xml.soap.SOAPMessage;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.slf4j.Logger;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Message;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.constants.MessageType;
+import org.slf4j.Logger;
+
+import it.govpay.bd.model.Applicazione;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.client.handler.IntegrationContext;
+import it.govpay.core.utils.client.handler.IntegrationOutHandler;
+import it.govpay.model.Connettore;
+import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.Connettore.EnumSslType;
+import it.govpay.model.Intermediario;
 
 public class BasicClient {
 
@@ -222,11 +219,6 @@ public class BasicClient {
 		}
 	}
 	
-	
-	public byte[] sendXml(JAXBElement<?> body, boolean isAzioneInUrl) throws ClientException {
-		return this.send(false, null, body, null, isAzioneInUrl);
-	}
-
 	private void invokeOutHandlers() throws ClientException {
 		
 		try {
@@ -250,11 +242,11 @@ public class BasicClient {
 	}
 	
 	
-	public byte[] sendSoap(String azione, JAXBElement<?> body, Object header, boolean isAzioneInUrl) throws ClientException {
-		return this.send(true, azione, body, header, isAzioneInUrl);
+	public byte[] sendSoap(String azione, byte[] body, boolean isAzioneInUrl) throws ClientException {
+		return this.send(true, azione, body, isAzioneInUrl);
 	}
 	
-	private byte[] send(boolean soap, String azione, JAXBElement<?> body, Object header, boolean isAzioneInUrl) throws ClientException {
+	private byte[] send(boolean soap, String azione, byte[] body, boolean isAzioneInUrl) throws ClientException {
 
 		// Creazione Connessione
 		int responseCode;
@@ -301,14 +293,7 @@ public class BasicClient {
 				requestMsg.addHeader(new Property("Authorization", "Basic " + encoding));
 			}
 			
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			if(soap) {
-				SOAPUtils.writeMessage(body, header, baos);
-			} else {
-				JaxbUtils.marshalRptService(body, baos);
-			}
-
-			integrationCtx.setMsg(baos.toByteArray());
+			integrationCtx.setMsg(body);
 			this.invokeOutHandlers();
 			
 			if(log.isTraceEnabled()) {

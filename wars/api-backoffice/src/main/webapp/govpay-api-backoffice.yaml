@@ -5133,6 +5133,9 @@ components:
         tipoEvento:
           type: string
           example: 'nodoInviaRPT'
+        sottotipoEvento:
+          type: string
+          example: 'richiesta verso il nodo'
         identificativoFruitore:
           type: string
           example: 'Soggetto Creditore'

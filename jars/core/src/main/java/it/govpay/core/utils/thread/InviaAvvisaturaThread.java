@@ -64,69 +64,77 @@ public class InviaAvvisaturaThread implements Runnable {
 			singoloVersamento.getIbanAccredito(bd);
 			singoloVersamento.getIbanAppoggio(bd);
 		}
-		
+
 		try {
 			this.avviso = AvvisaturaUtils.toCtAvvisoDigitale(versamento);
 		} catch (UnsupportedEncodingException | DatatypeConfigurationException e) {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	@Override
 	public void run() {
-		
+
 		GpContext ctx = null;
 		BasicBD bd = null;
 		GiornaleEventi giornaleEventi = null;
 		VersamentiBD versamentiBD = null;
 		EventoCooperazione evento = new EventoCooperazione();
+		String messaggioRichiesta = null;
+		String messaggioRisposta = null;
 		try {
 			if(this.idTransazione != null)
 				ctx = new GpContext(this.idTransazione);
 			else 
 				ctx = new GpContext();
-			
+
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			giornaleEventi = new GiornaleEventi(bd);
 			versamentiBD = new VersamentiBD(bd);
 			MDC.put("cmd", "InviaAvvisaturaThread");
 			MDC.put("op", ctx.getTransactionId());
-			
+
 			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", this.avviso.getIdentificativoDominio()));
 			ctx.getContext().getRequest().addGenericProperty(new Property("codAvviso", this.avviso.getCodiceAvviso()));
 			ctx.getContext().getRequest().addGenericProperty(new Property("tipoOperazione", this.avviso.getTipoOperazione().name()));
-			
+
 			ctx.log("versamento.avvisaturaDigitale");
-			
+
 			evento.setData(new Date());
 			evento.setDataRichiesta(new Date());
-			
+
 			ctx.setupNodoClient(this.stazione.getCodStazione(), this.avviso.getIdentificativoDominio(), Azione.nodoInviaAvvisoDigitale);
 			ctx.log("versamento.avvisaturaDigitaleSpedizione");
-			
+
 			log.info("Spedizione Avvisatura al Nodo [Dominio: " + this.avviso.getIdentificativoDominio() + ", NumeroAvviso: "+this.avviso.getCodiceAvviso()+", TipoAvvisatura: "+this.avviso.getTipoOperazione()+"]");
-			
+
 			AvvisaturaClient client = new AvvisaturaClient(this.intermediario,bd);
-			
+
 			CtNodoInviaAvvisoDigitale ctNodoInviaAvvisoDigitale = new CtNodoInviaAvvisoDigitale();
 			ctNodoInviaAvvisoDigitale.setAvvisoDigitaleWS(this.avviso);
 			ctNodoInviaAvvisoDigitale.setPassword(this.stazione.getPassword()); 
 			
+			messaggioRichiesta = new String(client.getByteRichiesta(this.intermediario, this.stazione, ctNodoInviaAvvisoDigitale));
+
 			CtNodoInviaAvvisoDigitaleRisposta risposta = client.nodoInviaAvvisoDigitale(this.intermediario, this.stazione, ctNodoInviaAvvisoDigitale );
+			
+			messaggioRisposta = new String(client.getByteRisposta(risposta));
 
 			if(risposta.getEsitoOperazione() == null || !risposta.getEsitoOperazione().equals(StEsitoOperazione.OK)) {
 				CtFaultBean fault = risposta.getFault();
 				
-				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.KO.name(), fault.getDescription(), bd);
+				String esito = fault.getFaultCode() != null ? fault.getFaultCode() : StEsitoOperazione.KO.name();
+
+				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), esito, fault.getDescription(), messaggioRichiesta, messaggioRisposta, bd);
 				giornaleEventi.registraEventoCooperazione(evento);
-				
+
 				// se l'avvisatura e' andata male allora passo il controllo alla modalita' asincrona
 				//this.versamento.setAvvisaturaModalita(ModoAvvisatura.ASICNRONA.getValue());
 				// segnalo che il versamento non e' piu' da avvisare
 				this.versamento.setAvvisaturaDaInviare(false);
 				versamentiBD.updateVersamentoStatoAvvisatura(this.versamento.getId(), false);
-			
+
 				// emetto un evento ok
 				log.info("Avvisatura Digitale inviata con errore al nodo");
 				ctx.log("versamento.avvisaturaDigitaleKo", fault.getDescription());
@@ -135,37 +143,38 @@ public class InviaAvvisaturaThread implements Runnable {
 				CtEsitoAvvisoDigitale esitoAvvisoDigitale = risposta.getEsitoAvvisoDigitaleWS();
 				if(esitoAvvisoDigitale != null) {
 					List<CtEsitoAvvisatura> leggiListaAvvisiDigitali = esitoAvvisoDigitale.getEsitoAvvisatura();
-					
+
 					for(CtEsitoAvvisatura ctEsitoAvvisatura : leggiListaAvvisiDigitali) {
 						EsitoAvvisatura esitoAvvisatura = new EsitoAvvisatura();
 						esitoAvvisatura.setCodDominio(esitoAvvisoDigitale.getIdentificativoDominio());
 						esitoAvvisatura.setIdentificativoAvvisatura(esitoAvvisoDigitale.getIdentificativoMessaggioRichiesta());
-		
+
 						esitoAvvisatura.setTipoCanale(Integer.parseInt(ctEsitoAvvisatura.getTipoCanaleEsito()));
 						esitoAvvisatura.setCodCanale(ctEsitoAvvisatura.getIdentificativoCanale());
 						esitoAvvisatura.setData(ctEsitoAvvisatura.getDataEsito());
 						esitoAvvisatura.setCodEsito(ctEsitoAvvisatura.getCodiceEsito());
 						esitoAvvisatura.setDescrizioneEsito(ctEsitoAvvisatura.getDescrizioneEsito());
-		
+
 						esitoAvvisaturaLst.add(esitoAvvisatura);
 					}
-					
-					// segnalo che il versamento non e' piu' da avvisare
-					this.versamento.setAvvisaturaDaInviare(false);
-					versamentiBD.updateVersamentoStatoAvvisatura(this.versamento.getId(), false);
-					
-					// emetto un evento ok
-					buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.OK.name(), null, bd);
-					giornaleEventi.registraEventoCooperazione(evento);
-					
-					log.info("Avvisatura Digitale inviata correttamente al nodo");
-					ctx.log("versamento.avvisaturaDigitaleOk");
 				}
+
+				// segnalo che il versamento non e' piu' da avvisare
+				this.versamento.setAvvisaturaDaInviare(false);
+				versamentiBD.updateVersamentoStatoAvvisatura(this.versamento.getId(), false);
+
+				// emetto un evento ok
+				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.OK.name(), null, messaggioRichiesta, messaggioRisposta, bd);
+				giornaleEventi.registraEventoCooperazione(evento);
+
+				log.info("Avvisatura Digitale inviata correttamente al nodo");
+				ctx.log("versamento.avvisaturaDigitaleOk");
+
 			}
 		} catch (ClientException e) {
 			log.error("Errore nella spedizione della Avvisatura Digitale", e);
 			ctx.log("versamento.avvisaturaDigitaleFail", e.getMessage());
-			
+
 			// se l'avvisatura in modalita sincrona e' andata male allora passo il controllo alla modalita' asincrona
 			if(this.versamento.getAvvisaturaModalita().equals(ModoAvvisatura.SINCRONA.getValue())) {
 				this.versamento.setAvvisaturaModalita(ModoAvvisatura.ASICNRONA.getValue());
@@ -175,15 +184,15 @@ public class InviaAvvisaturaThread implements Runnable {
 					log.error("Errore aggiornamento modalita avvisatura versaemento", e);
 				}
 			}
-			
+
 			if(giornaleEventi != null) {
-				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.KO.name(), e.getMessage(), bd);
+				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.KO.name(), e.getMessage(), messaggioRichiesta, messaggioRisposta, bd);
 				giornaleEventi.registraEventoCooperazione(evento);
 			}
 		} catch(Exception e) {
 			log.error("Errore nella spedizione della Avvisatura Digitale", e);
 			ctx.log("versamento.avvisaturaDigitaleFail", e.getMessage());
-			
+
 			// se l'avvisatura in modalita sincrona e' andata male allora passo il controllo alla modalita' asincrona
 			if(this.versamento.getAvvisaturaModalita().equals(ModoAvvisatura.SINCRONA.getValue())) {
 				this.versamento.setAvvisaturaModalita(ModoAvvisatura.ASICNRONA.getValue());
@@ -193,9 +202,9 @@ public class InviaAvvisaturaThread implements Runnable {
 					log.error("Errore aggiornamento modalita avvisatura versaemento", e);
 				}
 			}
-			
+
 			if(giornaleEventi != null) {
-				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.KO.name(), e.getMessage(), bd);
+				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.KO.name(), e.getMessage(), messaggioRichiesta, messaggioRisposta, bd);
 				giornaleEventi.registraEventoCooperazione(evento);
 			}
 		} finally {
@@ -208,8 +217,8 @@ public class InviaAvvisaturaThread implements Runnable {
 	public boolean isCompleted() {
 		return this.completed;
 	}
-	
-	private void buildEventoCoperazione(EventoCooperazione evento, String tipoEvento, String esito, String descrizioneEsito, BasicBD bd) {
+
+	private void buildEventoCoperazione(EventoCooperazione evento, String tipoEvento, String esito, String descrizioneEsito, String messaggioRichiesta, String messaggioRisposta, BasicBD bd) {
 		evento.setAltriParametriRichiesta(null);
 		evento.setAltriParametriRisposta(null);
 		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
@@ -224,7 +233,8 @@ public class InviaAvvisaturaThread implements Runnable {
 		evento.setIuv(this.versamento.getIuvVersamento());
 		evento.setSottotipoEvento(this.avviso.getTipoOperazione().name());
 		evento.setTipoEvento(tipoEvento);
-		//evento.setTipoVersamento(this.versamento.getTipoPagamento());
+		evento.setAltriParametriRichiesta(messaggioRichiesta);
+		evento.setAltriParametriRisposta(messaggioRisposta);
 
 		evento.setIdVersamento(this.versamento.getId());
 	}
