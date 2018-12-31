@@ -34,6 +34,7 @@ import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pendenze.v1.beans.FaultBean;
 import it.govpay.pendenze.v1.beans.FaultBean.CategoriaEnum;
 import it.govpay.pendenze.v1.beans.ListaPendenze;
+import it.govpay.pendenze.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pendenze.v1.beans.PatchOp;
 import it.govpay.pendenze.v1.beans.PatchOp.OpEnum;
 import it.govpay.pendenze.v1.beans.Pendenza;
@@ -221,7 +222,7 @@ public class PendenzeController extends BaseController {
 
 
 
-    public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, String modalitaAvvisaturaDigitale) {
+    public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
     	String methodName = "pendenzeIdA2AIdPendenzaPUT";  
 		GpContext ctx = null;
 		String transactionId = null;
@@ -255,8 +256,7 @@ public class PendenzeController extends BaseController {
 			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
 			ModoAvvisatura avvisaturaModalita = null;
 			if(modalitaAvvisaturaDigitale != null) {
-				if(modalitaAvvisaturaDigitale.equals("asincrona") || modalitaAvvisaturaDigitale.equals("sincrona"))
-					avvisaturaModalita = modalitaAvvisaturaDigitale.equals("asincrona") ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
+				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
 			}
 			
 			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);

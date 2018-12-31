@@ -5382,6 +5382,12 @@ components:
         - ADD
         - DEL
         - NON_VALIDA
+    modalitaAvvisaturaDigitale:
+      example: ASINCRONA
+      type: string
+      enum:
+        - ASINCRONA
+        - SINCRONA
     tracciatoPendenzeIndex:
       type: object
       required:
@@ -5509,9 +5515,7 @@ components:
           type: boolean
           default: false
         modalitaAvvisaturaDigitale:
-          type: string
-          description: Modalita' di avvisatura scelta per le pendenza [sincrona|asincrona]
-          example: "asincrona"
+          $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
         inserimenti:
           type: array
           items:

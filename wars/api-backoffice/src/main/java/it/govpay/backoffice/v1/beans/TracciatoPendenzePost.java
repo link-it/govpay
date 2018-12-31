@@ -31,7 +31,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   private Boolean avvisaturaDigitale = false;
   
   @JsonProperty("modalitaAvvisaturaDigitale")
-  private String modalitaAvvisaturaDigitale = null;
+  private ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale = null;
   
   @JsonProperty("inserimenti")
   private List<PendenzaPost> inserimenti = null;
@@ -88,18 +88,17 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   }
 
   /**
-   * Modalita' di avvisatura scelta per le pendenza [sincrona|asincrona]
    **/
-  public TracciatoPendenzePost modalitaAvvisaturaDigitale(String modalitaAvvisaturaDigitale) {
+  public TracciatoPendenzePost modalitaAvvisaturaDigitale(ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
     this.modalitaAvvisaturaDigitale = modalitaAvvisaturaDigitale;
     return this;
   }
 
   @JsonProperty("modalitaAvvisaturaDigitale")
-  public String getModalitaAvvisaturaDigitale() {
+  public ModalitaAvvisaturaDigitale getModalitaAvvisaturaDigitale() {
     return modalitaAvvisaturaDigitale;
   }
-  public void setModalitaAvvisaturaDigitale(String modalitaAvvisaturaDigitale) {
+  public void setModalitaAvvisaturaDigitale(ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
     this.modalitaAvvisaturaDigitale = modalitaAvvisaturaDigitale;
   }
 
@@ -196,9 +195,6 @@ public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		
 		vf.getValidator("idTracciato", this.idTracciato).notNull();
 		vf.getValidator("idDominio", this.idDominio).notNull().minLength(1).maxLength(35);
-		
-		vf.getValidator("modalitaAvvisaturaDigitale", this.modalitaAvvisaturaDigitale).pattern("^(asincrona|sincrona)$");
-		
 		vf.getValidator("inserimenti", this.inserimenti).notNull().validateObjects();
 		vf.getValidator("annullamenti", this.annullamenti).notNull().validateObjects();
   }

@@ -16,6 +16,7 @@ import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pagamento.v1.beans.ContoAddebito;
+import it.govpay.pagamento.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.v1.beans.Pagamento;
 import it.govpay.pagamento.v1.beans.PagamentoIndex;
@@ -46,15 +47,14 @@ public class PagamentiPortaleConverter {
 		return json;
 	}
 
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, String idSessionePortale,Boolean avvisaturaDigitale, String modalitaAvvisaturaDigitale) throws Exception {
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, String idSessionePortale,Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) throws Exception {
 
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
 		
 		pagamentiPortaleDTO.setAvvisaturaDigitale(avvisaturaDigitale);
 		ModoAvvisatura avvisaturaModalita = null;
 		if(modalitaAvvisaturaDigitale != null) {
-			if(modalitaAvvisaturaDigitale.equals("asincrona") || modalitaAvvisaturaDigitale.equals("sincrona"))
-				avvisaturaModalita = modalitaAvvisaturaDigitale.equals("asincrona") ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
+				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
 		}
 		
 		pagamentiPortaleDTO.setAvvisaturaModalita(avvisaturaModalita);

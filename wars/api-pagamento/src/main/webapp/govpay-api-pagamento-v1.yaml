@@ -462,11 +462,10 @@ paths:
             default: false
         - in: query
           name: modalitaAvvisaturaDigitale
-          description: Modalita' di avvisatura scelta per le pendenza [sincrona|asincrona]
+          description: Modalita' di avvisatura scelta per le pendenza
           required: false
           schema:
-            type: string
-            default: asincrona
+            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
       requestBody:
         content:
           application/json:
@@ -2460,3 +2459,9 @@ components:
         - SIOPE
         - ALTRO
       example: SIOPE
+    modalitaAvvisaturaDigitale:
+      example: ASINCRONA
+      type: string
+      enum:
+        - ASINCRONA
+        - SINCRONA

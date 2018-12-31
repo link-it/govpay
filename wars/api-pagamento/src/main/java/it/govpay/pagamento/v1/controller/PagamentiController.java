@@ -30,11 +30,11 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pagamento.v1.beans.FaultBean;
 import it.govpay.pagamento.v1.beans.FaultBeanEsteso;
 import it.govpay.pagamento.v1.beans.FaultBeanEsteso.CategoriaEnum;
 import it.govpay.pagamento.v1.beans.ListaPagamentiIndex;
+import it.govpay.pagamento.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
 import it.govpay.pagamento.v1.beans.PagamentoPost;
 import it.govpay.pagamento.v1.beans.PendenzaIndex;
@@ -52,7 +52,7 @@ public class PagamentiController extends BaseController {
      }
 
 
-    public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, Boolean avvisaturaDigitale, String modalitaAvvisaturaDigitale) {
+    public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
     	String methodName = "pagamentiPOST";  
 		GpContext ctx = null;
 		String transactionId = null;

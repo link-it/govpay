@@ -33,6 +33,7 @@ import it.govpay.backoffice.v1.beans.FaultBean.CategoriaEnum;
 import it.govpay.backoffice.v1.beans.ListaOperazioniPendenza;
 import it.govpay.backoffice.v1.beans.ListaPendenze;
 import it.govpay.backoffice.v1.beans.ListaTracciatiPendenza;
+import it.govpay.backoffice.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.backoffice.v1.beans.OperazionePendenza;
 import it.govpay.backoffice.v1.beans.PatchOp;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
@@ -353,7 +354,7 @@ public class PendenzeController extends BaseController {
 			postTracciatoDTO.setNomeFile(tracciatoPendenzeRequest.getIdTracciato());
 			postTracciatoDTO.setAvvisaturaDigitale(tracciatoPendenzeRequest.AvvisaturaDigitale());
 			if(tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale() != null) {
-				ModoAvvisatura modoAvvisatura = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale().equals("asincrona") ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
+				ModoAvvisatura modoAvvisatura = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale().equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
 				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura );
 			}
 			postTracciatoDTO.setContenuto(baos.toByteArray()); 
