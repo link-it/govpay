@@ -30,7 +30,6 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
-import it.govpay.stampe.model.InfoEnte;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoPdf;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
@@ -221,12 +220,30 @@ public class AvvisoPagamento extends BasicBD {
 		input.setCfEnte(codDominio);
 		input.setCbill(dominio.getCbill() != null ? dominio.getCbill()  : " ");
 
-		InfoEnte infoEnte = new InfoEnte();
+		String infoEnte = null;
 		if(anagraficaDominio != null) {
 			input.setSettoreEnte(anagraficaDominio.getArea());
-			infoEnte.setWeb(anagraficaDominio.getUrlSitoWeb());
-			infoEnte.setEmail(anagraficaDominio.getEmail());
-			infoEnte.setPec(anagraficaDominio.getPec());
+			StringBuilder sb = new StringBuilder();
+			
+			if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
+				sb.append("sito web: ").append(anagraficaDominio.getUrlSitoWeb());
+			}
+			
+			if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
+				if(sb.length() > 0)
+					sb.append("<br/>");
+				
+				sb.append("email: ").append(anagraficaDominio.getEmail());
+			}
+			
+			if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
+				if(sb.length() > 0)
+					sb.append("<br/>");
+				
+				sb.append("PEC: ").append(anagraficaDominio.getPec());
+			}
+			
+			infoEnte = sb.toString();
 		}
 
 		input.setAutorizzazione(dominio.getAutStampaPoste());

@@ -271,7 +271,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			
 			RptBD rptBD = new RptBD(bd);
-			if(GovpayConfig.getInstance().isTimeoutPendenti()) {
+			if(GovpayConfig.getInstance().isTimeoutPendentiModello3()) {
 				// Controllo che non ci sia un pagamento in corso
 				// Prendo tutte le RPT pendenti
 				RptFilter filter = rptBD.newFilter();
@@ -281,11 +281,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				
 				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
 				// Altrimenti lancio il fault
-				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiMins() * 60000);
+				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() * 60000);
 				
 				for(Rpt rpt_pendente : rpt_pendenti) {
 					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
-					if(GovpayConfig.getInstance().getTimeoutPendentiMins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
+					if(GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
 					}
 				}
@@ -640,7 +640,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 			
 			RptBD rptBD = new RptBD(bd);
-			if(GovpayConfig.getInstance().isTimeoutPendenti()) {
+			if(GovpayConfig.getInstance().isTimeoutPendentiModello3()) {
 				// Controllo che non ci sia un pagamento in corso
 				// Prendo tutte le RPT pendenti
 				RptFilter filter = rptBD.newFilter();
@@ -650,12 +650,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				
 				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
 				// Altrimenti lancio il fault
-				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiMins() * 60000);
+				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() * 60000);
 				
 				for(Rpt rpt_pendente : rpt_pendenti) {
 					idPagamentoPortaleLong = rpt_pendente.getIdPagamentoPortale();
 					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
-					if(GovpayConfig.getInstance().getTimeoutPendentiMins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
+					if(GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
 					}
 				}

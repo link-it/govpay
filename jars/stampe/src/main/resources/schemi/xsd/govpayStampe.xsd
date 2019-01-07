@@ -2,19 +2,12 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
  
 	<xsd:element name="AvvisoPagamentoInput" type="AvvisoPagamentoInput" />
-    <xsd:element name="InfoEnte" type="InfoEnte" /> 
     <xsd:element name="RicevutaTelematicaInput" type="RicevutaTelematicaInput" />
     <xsd:element name="ProspettoRiscossioniInput" type="ProspettoRiscossioniInput" />
     
     <xsd:complexType name="AvvisoPagamentoInput">
 		<xsd:sequence>
 			<xsd:element name="logo_ente" type="xsd:string"/>
-			<xsd:element name="logo_pagopa" type="xsd:string"/>
-			<xsd:element name="logo_app" type="xsd:string"/>
-			<xsd:element name="logo_place" type="xsd:string"/>
-			<xsd:element name="logo_posta" type="xsd:string"/>
-			<xsd:element name="logo_scissors" type="xsd:string"/>
-			<xsd:element name="logo_euro" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento_rata" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento_bollettino" type="xsd:string"/>
@@ -25,7 +18,7 @@
 			<xsd:element name="settore_ente" type="xsd:string"/>
 			<xsd:element name="indirizzo_destinatario_1" type="xsd:string"/>
 			<xsd:element name="indirizzo_destinatario_2" type="xsd:string"/>
-			<xsd:element name="info_ente" type="InfoEnte"/>
+			<xsd:element name="info_ente" type="xsd:string"/>
 			<xsd:element name="del_tuo_ente" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="di_poste" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="importo" type="xsd:double"/>
@@ -41,14 +34,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
     
-   	<xsd:complexType name="InfoEnte">
-		<xsd:sequence>
-			<xsd:element name="web" type="xsd:string"/>
-			<xsd:element name="email" type="xsd:string"/>
-			<xsd:element name="pec" type="xsd:string"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
 	<xsd:complexType name="RicevutaTelematicaInput">
 		<xsd:sequence>
 			<xsd:element name="logo_ente" type="xsd:string"/>

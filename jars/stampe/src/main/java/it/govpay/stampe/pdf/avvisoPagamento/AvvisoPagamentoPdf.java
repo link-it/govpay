@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 
 import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
-import it.govpay.stampe.model.InfoEnte;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -105,13 +104,6 @@ public class AvvisoPagamentoPdf {
 		// valorizzo la sezione loghi
 		if(input.getLogoEnte() == null)
 			input.setLogoEnte(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_ENTE));
-		
-		input.setLogoPagopa(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PAGOPA));
-		input.setLogoApp(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_APP));
-		input.setLogoPlace(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_PLACE));
-		input.setLogoPosta(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_POSTA));
-		input.setLogoScissors(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_SCISSORS));
-		input.setLogoEuro(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_EURO));
 	}
 
 
@@ -136,11 +128,7 @@ public class AvvisoPagamentoPdf {
 			input.setSettoreEnte("Area di sviluppo per le politiche agricole e forestali");
 			input.setCfEnte("83000390019");
 			input.setCbill("AAAAAAA");
-			InfoEnte infoEnte = new InfoEnte();
-			infoEnte.setWeb("www.comune.sanciprianopicentino.sa.it/");
-			infoEnte.setEmail("info@comune.sancipriano.sa.it");
-			infoEnte.setPec("protocollo@pec.comune.sanciprianopicentino.sa.it");
-			input.setInfoEnte(infoEnte );
+			input.setInfoEnte("www.comune.sanciprianopicentino.sa.it/ <br/> info@comune.sancipriano.sa.it <br/> protocollo@pec.comune.sanciprianopicentino.sa.it");
 			input.setNomeCognomeDestinatario("Lorenzo Nardi");
 			input.setCfDestinatario("NRDLNA80P19D612M");
 			input.setIndirizzoDestinatario1("Via di Corniola 119A,");

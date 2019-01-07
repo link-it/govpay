@@ -601,7 +601,12 @@ public enum EsitoOperazione {
      * Utenza di tipo cittadino non autorizzata a effettuare dei pagamenti portale dove il versante non e' lui.  
      * 
      */
-    CIT_004;
+    CIT_004,
+    /**
+     * Validazione semantica del versamento non valida: Pagamento in attesa risulta in corso all'Ente Creditore.  
+     * 
+     */
+    VER_031;
 	
 
     public String value() {

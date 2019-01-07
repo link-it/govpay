@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Nota;
-import it.govpay.bd.model.Nota.TipoNota;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
@@ -27,7 +25,9 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
+import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
+import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -55,9 +55,9 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.PagamentoPortaleUtils;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Acl.Diritti;
@@ -193,8 +193,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			// 5. somma degli importi delle pendenze
 			double sommaImporti = 0;
 
+			List<Long> idsVersamenti = new ArrayList<>();
 			for (Versamento vTmp : versamenti) {
 				sommaImporti += vTmp.getImportoTotale().doubleValue();
+				idsVersamenti.add(vTmp.getId());
 			}
 
 			nome = sbNomeVersamenti.length() > 255 ? (sbNomeVersamenti.substring(0, 252) + "...") : sbNomeVersamenti.toString();
@@ -243,7 +245,25 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			stato = STATO.IN_CORSO;
 
 			try {
-				
+				RptBD rptBD2 = new RptBD(bd);
+				if(GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
+					// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
+					RptFilter filter = rptBD2.newFilter();
+					filter.setStato(Rpt.stati_pendenti);
+					filter.setIdVersamenti(idsVersamenti);
+					List<Rpt> rpt_pendenti = rptBD2.findAll(filter);
+					
+					// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
+					// Altrimenti lancio il fault
+					Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() * 60000);
+					
+					for(Rpt rpt_pendente : rpt_pendenti) {
+						Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
+						if(GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
+							throw new GovPayException(EsitoOperazione.VER_031, codDominio, rpt_pendente.getIuv(), rpt_pendente.getCcp());
+						}
+					}
+				}
 				
 				rpts = rptBD.avviaTransazione(versamenti, pagamentiPortaleDTO.getUser(), null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), true, pagamentoPortale);
 

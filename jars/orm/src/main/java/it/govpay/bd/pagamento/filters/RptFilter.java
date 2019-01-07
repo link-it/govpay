@@ -43,7 +43,7 @@ import it.govpay.orm.dao.jdbc.converter.RPTFieldConverter;
 
 public class RptFilter extends AbstractFilter {
 
-	private Long idVersamento;
+	private List<Long> idVersamento;
 	private String iuv;
 	private String ccp;
 	private List<String> idDomini;
@@ -73,11 +73,12 @@ public class RptFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 
-			if(this.idVersamento != null) {
+			if(this.idVersamento != null && !this.idVersamento.isEmpty()) {
+				this.idVersamento.removeAll(Collections.singleton(null));				
 				addAnd = true;
 				RPTFieldConverter rptFieldConverter = new RPTFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField idRptCustomField = new CustomField("id_versamento",  Long.class, "id_versamento",  rptFieldConverter.toTable(RPT.model()));
-				newExpression.equals(idRptCustomField, this.idVersamento);
+				newExpression.in(idRptCustomField, this.idVersamento);
 			}
 
 			if(this.iuv != null){
@@ -226,12 +227,19 @@ public class RptFilter extends AbstractFilter {
 		}
 	}
 
-	public Long getIdVersamento() {
+	public List<Long> getIdVersamenti() {
 		return this.idVersamento;
 	}
 
 	public void setIdVersamento(Long idVersamento) {
-		this.idVersamento = idVersamento;
+		this.idVersamento = new ArrayList<>();
+		this.idVersamento.add(idVersamento);
+	}
+	
+	public void setIdVersamenti(List<Long> ids) {
+		this.idVersamento = new ArrayList<>();
+		if(ids != null && !ids.isEmpty())
+			this.idVersamento.addAll(ids);
 	}
 
 	public String getIuv() {

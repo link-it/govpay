@@ -56,6 +56,8 @@ public class VerificaConverter {
 		
 		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 		versamento.setNumeroAvviso(pendenzaVerificata.getNumeroAvviso());
+		
+		versamento.setAvvisaturaAbilitata(false);
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenzaVerificata.getVoci());

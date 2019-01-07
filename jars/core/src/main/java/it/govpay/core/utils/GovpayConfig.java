@@ -84,8 +84,10 @@ public class GovpayConfig {
 
 	private boolean batchAvvisiPagamento;
 	private boolean batchCaricamentoTracciati;
-	private boolean timeoutPendenti;
-	private Integer timeoutPendentiMins;
+	private boolean timeoutPendentiModello3;
+	private Integer timeoutPendentiModello3Mins;
+	private boolean timeoutPendentiModello1;
+	private Integer timeoutPendentiModello1Mins;
 	
 	private Properties[] props;
 	private IConservazione conservazionePlugin;
@@ -133,8 +135,10 @@ public class GovpayConfig {
 		this.validazioneAPIRest = false;
 		this.dumpAPIRestGETResponse = false;
 		this.batchCaricamentoTracciati = false;
-		this.timeoutPendenti = false;
-		this.timeoutPendentiMins = null;
+		this.timeoutPendentiModello3 = false;
+		this.timeoutPendentiModello3Mins = null;
+		this.timeoutPendentiModello1 = false;
+		this.timeoutPendentiModello1Mins = null;
 		
 		this.appName = null;
 		this.ambienteDeploy = null;
@@ -374,10 +378,20 @@ public class GovpayConfig {
 			String timeoutPendentiString = getProperty("it.govpay.modello3.timeoutPagamento", props, false, log);
 			if(timeoutPendentiString != null && !timeoutPendentiString.equalsIgnoreCase("false")) {
 				try{
-					this.timeoutPendentiMins = Integer.parseInt(timeoutPendentiString);
-					this.timeoutPendenti = true;
+					this.timeoutPendentiModello3Mins = Integer.parseInt(timeoutPendentiString);
+					this.timeoutPendentiModello3 = true;
 				} catch(NumberFormatException nfe) {
 					log.warn("La proprieta \"it.govpay.modello3.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
+				}
+			}
+			
+			String timeoutPendentiModello1String = getProperty("it.govpay.modello1.timeoutPagamento", props, false, log);
+			if(timeoutPendentiModello1String != null && !timeoutPendentiModello1String.equalsIgnoreCase("false")) {
+				try{
+					this.timeoutPendentiModello1Mins = Integer.parseInt(timeoutPendentiModello1String);
+					this.timeoutPendentiModello1 = true;
+				} catch(NumberFormatException nfe) {
+					log.warn("La proprieta \"it.govpay.modello1.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
 				}
 			}
 			
@@ -599,12 +613,20 @@ public class GovpayConfig {
 		return batchCaricamentoTracciati;
 	}
 	
-	public boolean isTimeoutPendenti() {
-		return timeoutPendenti;
+	public boolean isTimeoutPendentiModello3() {
+		return timeoutPendentiModello3;
 	}
 
-	public Integer getTimeoutPendentiMins() {
-		return timeoutPendentiMins;
+	public Integer getTimeoutPendentiModello3Mins() {
+		return timeoutPendentiModello3Mins;
+	}
+	
+	public boolean isTimeoutPendentiModello1() {
+		return timeoutPendentiModello1;
+	}
+
+	public Integer getTimeoutPendentiModello1Mins() {
+		return timeoutPendentiModello1Mins;
 	}
 
 	public String getAppName() {
