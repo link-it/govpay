@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -17,10 +19,33 @@
 	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>api-commons</artifactId>
 			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.cxf</groupId>
+		    <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		</dependency>
+
+		<!-- Da rimuovere quando migrato in commons la gestione delle autorizzazioni -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
+
+		<!-- Aggiunto per customizzazione del loggin -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-features-logging</artifactId>
+			<version>3.2.5</version>
 		</dependency>
 
 		<dependency>
@@ -34,32 +59,92 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
-		<dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-service-description</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-policy</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-wsdl</artifactId>
-        </dependency>
 
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>swagger-ui</artifactId>
+			<version>3.20.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-service-description</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-ws-policy</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-wsdl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger.codegen.v3</groupId>
+			<artifactId>swagger-codegen-maven-plugin</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-jaxrs</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-client</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-joda</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openspcoop2.utils</groupId>
+			<artifactId>openspcoop2_utils-jaxrs</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openspcoop2.utils</groupId>
+			<artifactId>openspcoop2_utils-io</artifactId>
+		</dependency>
+
+		<!-- Dipendenza openspcoop2_utils-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -98,16 +183,16 @@
 							<directory>src/main/resources/spring-jaxrs</directory>
 							<filtering>true</filtering>
 							<include>applicationContext-jaxrs-*.xml</include>
-							<targetPath>WEB-INF</targetPath>							
+							<targetPath>WEB-INF</targetPath>
 						</webResource>
 						<webResource>
 							<directory>src/main/resources/spring-sec</directory>
 							<filtering>true</filtering>
-							<include>applicationContext-security-${govpay-api-pagamento-auth}*.xml</include>
-							<targetPath>WEB-INF</targetPath>							
+							<include>applicationContext-security.xml</include>
+							<targetPath>WEB-INF</targetPath>
 						</webResource>
 					</webResources>
-					<webXml>src/main/resources/web-${govpay-api-pagamento-auth}.xml</webXml>
+					<webXml>src/main/resources/web.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
 					<archive>
@@ -120,6 +205,33 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.swagger.codegen.v3</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>${swagger-codegen-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/webapp/v2/govpay-api-pagamento-v2.yaml</inputSpec>
+							<language>jaxrs-cxf</language>
+							<configOptions>
+								<dateLibrary>joda</dateLibrary>
+								<sourceFolder>target/generated-sources/java/</sourceFolder>
+								<apiPackage>it.govpay.pagamento.v2.api</apiPackage>
+								<modelPackage>it.govpay.pagamento.v2.beans</modelPackage>
+							</configOptions>
+							<output>${project.basedir}</output>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

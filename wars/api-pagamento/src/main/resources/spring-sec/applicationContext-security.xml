@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns="http://www.springframework.org/schema/security"
+        xmlns:b="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
+        
+        <global-method-security secured-annotations="enabled">
+        </global-method-security>
+        
+        <!-- CONTAINER START  -->
+        <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+                <b:property name="wwwAuthenticate" value="false"/>
+        </b:bean>
+        
+        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        </b:bean>
+        
+		<b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.WildflyApplicationAuthenticationProvider" >
+			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
+		</b:bean>
+        <authentication-manager id="authenticationManager">
+			<authentication-provider ref="wildflyApplicationAuthenticationProvider"/>
+        </authentication-manager>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/basic/**" authentication-manager-ref="authenticationManager">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/basic/v2/api-docs/*" access="permitAll" />
+                <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        <!-- CONTAINER END -->
+        
+        <!-- SSL START -->
+        <b:bean id="opensiopeX509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
+        <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        	<b:property name="checkSubject" value="true"/>
+        </b:bean>
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="opensiopeX509AuthenticationEntryPoint" pattern="/rs/ssl/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/ssl/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+		<!-- SSL END -->
+        
+		<!-- SPID START -->
+        <b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        <b:bean id="userDetailServiceUtenzeCit" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeCittadinoDAO" >
+        </b:bean>
+        <b:bean id="preauthAuthProviderCit" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        	<b:property name="preAuthenticatedUserDetailsService">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.UserDetailsByNameServiceWrapper">
+                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeCit"/>
+              	</b:bean>
+            </b:property>
+        </b:bean>
+        <authentication-manager id="authenticationManagerCit">
+                <authentication-provider ref="preauthAuthProviderCit">
+                </authentication-provider>
+        </authentication-manager>
+        <b:bean id="preAuthFilterCit" class="it.govpay.rs.v1.authentication.preauth.filter.HeaderPreAuthFilter">
+                <b:property name="authenticationManager" ref="authenticationManagerCit" />
+                <b:property name="exceptionIfHeaderMissing" value="false" />
+        </b:bean>
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/spid/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/spid/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterCit" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+		<!-- SPID END -->
+        
+        <!-- PUBLIC START -->
+        <b:bean id="http403ForbiddenEntryPointPublic" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        <b:bean id="preAuthFilterAnonymous" class="it.govpay.rs.v1.authentication.preauth.filter.AnonymousAuthenticationFilter">
+        	<b:constructor-arg index="0" value="GovPay_API_Pagamento_Utenza_Anonima" />
+        </b:bean>
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/public/v1/avvisi/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v1/pagamenti/**" access="isAnonymous()" method="POST" />
+                
+                <intercept-url pattern="/rs/public/v2/avvisi/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v2/pagamenti/**" access="isAnonymous()" />
+                <intercept-url pattern="/rs/public/v2/domini/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v2/profilo/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/**" access="denyAll" />
+                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterAnonymous" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        <!-- PUBLIC END -->
+        
+       	<!-- entry point per l'httpbasic per gestire il contenuto della response nel caso id utenza non autorizzata. -->
+        <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointGenerale" pattern="/**">
+                <csrf disabled="true"/>
+                <!-- risorse pubbliche -->
+                <intercept-url pattern="/v1/govpay-api-pagamento-v1.yaml" access="permitAll"/>
+                <intercept-url pattern="/v2/govpay-api-pagamento-v2.yaml" access="permitAll"/>
+                <intercept-url pattern="/index.html" access="permitAll"/>
+                <intercept-url pattern="/*.png" access="permitAll"/>
+                <intercept-url pattern="/*.css" access="permitAll"/>
+                <intercept-url pattern="/*.css.map" access="permitAll"/>
+                <intercept-url pattern="/*.js" access="permitAll"/>
+                <intercept-url pattern="/*.js.map" access="permitAll"/>
+                
+                <intercept-url pattern="/**" access="denyAll" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+</b:beans>
+        

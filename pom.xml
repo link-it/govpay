@@ -41,7 +41,7 @@
 		<logger.version>2.6.2</logger.version>
 		
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.0-rc1</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.0-gov4j-1</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.5.21</swagger.version>
 		<swagger.v3.version>2.0.3</swagger.v3.version>
 		<swagger.parser.version>2.0.2</swagger.parser.version>
@@ -464,6 +464,12 @@
 				<artifactId>openspcoop2_utils-jaxrs</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-io</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
@@ -596,7 +602,7 @@
 			</dependency>
 			
 			<dependency>
-				<groupId>io.swagger</groupId>
+				<groupId>io.swagger.codegen.v3</groupId>
 				<artifactId>swagger-codegen-maven-plugin</artifactId>
 				<version>${swagger-codegen-maven-plugin.version}</version>
 			</dependency>
@@ -822,8 +828,18 @@
 			<url>http://maven.openspcoop.org/content/repositories/public/</url>
 		</repository>
 		<repository>
-			<id>openspcoop2-snapshot</id>
+			<id>openspcoop2-snapshots</id>
 			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>openspcoop2-releases</id>
+			<url>http://maven.openspcoop.org/content/repositories/public/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>openspcoop2-snapshots</id>
+			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
