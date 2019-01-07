@@ -27,7 +27,7 @@ La richiesta non può essere processata per errori di validazione semantica.
 .. _422:
 
 HTTP 422: Unprocessable Entity
------------------------------
+------------------------------
 
 La richiesta non può essere processata per errori di validazione semantica
 
@@ -41,7 +41,7 @@ La richiesta non può essere processata per errori di validazione semantica
 di una pendenza, è disabilitato.
 
 **Risoluzione**: Se il comportamento risulta indesiderato, è necessario richiedere al gestore della
-piattaforma GovPay di modificare la configurazione del dominio in oggetto abilitandolo. 
+piattaforma di modificare la configurazione del dominio in oggetto abilitandolo. 
 
 
 .. _422002:
@@ -54,7 +54,7 @@ piattaforma GovPay di modificare la configurazione del dominio in oggetto abilit
 **Risoluzione**: Lorem ipsum dolor sit amet.
 
 
-.. _422002:
+.. _422003:
 
 422003: Lorem ipsum dolor
 ~~~~~~~~~~~~~~~~~~~~~~~~~

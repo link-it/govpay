@@ -31,8 +31,8 @@
 	<b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider" />
 
 	<!-- FaultBean Exception Mapper -->
-	<b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler" />
-	<b:bean id="validationExceptionMapper" class="it.govpay.features.ValidationExceptionMapper"/>
+	<b:bean id="webApplicationExceptionMapper" class="it.govpay.exception.WebApplicationExceptionMapper" />
+	<b:bean id="validationExceptionMapper" class="it.govpay.exception.ValidationExceptionMapper"/>
 
 	<!-- JAX-RS Service Impl V2 -->
 	<b:bean id="avvisiV2" class="it.govpay.pagamento.v2.api.impl.AvvisiApiServiceImpl" />
@@ -64,7 +64,7 @@
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean="parameterConverter" />
-			<ref bean="objectMessageBodyReader" />
+			<ref bean="objectMessageBodyReader" /> 
 			<ref bean="jacksonJsonProvider" />
 			<ref bean="jacksonXmlProvider" />
 			<ref bean="webApplicationExceptionMapper" />

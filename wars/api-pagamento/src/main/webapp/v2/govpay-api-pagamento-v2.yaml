@@ -1570,78 +1570,71 @@ components:
             $ref: '#/components/schemas/VocePendenza' 
     NuovaPendenza:  
       type: object
-      required:
-        - idA2A
-        - idPendenza
-        - idDominio
-        - descrizione
-        - soggettoPagatore
-        - importo
-        - voci
-      properties:
-        idA2A:
-          type: string
-          description: Identificativo del gestionale responsabile della pendenza
-          example: A2A-12345
-        idPendenza:
-          type: string
-          description: Identificativo della pendenza nel gestionale responsabile
-          example: abcdef12345
-        idDominio:
-          type: string
-          description: Identificativo del dominio creditore
-          example: 1234567890
-        idUnitaOperativa:
-          type: string
-          description: Identificativo dell'unita' operativa
-          example: UO33132
-        descrizione:
-          type: string
-          description: Descrizione della pendenza
-          example: 'Sanzione CdS n. abc00000'
-          maxLength: 140
-        soggettoPagatore:
-          $ref: '#/components/schemas/Soggetto'
-        importo:
-          type: number
-          description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
-          example: 10.01
-          minimum: 0.00
-          maximum: 99999999.99
-        numeroAvviso:
-          type: string
-          description: Identificativo univoco versamento, assegnato se pagabile da psp
-          example: 123456789012345678
-          pattern: "[0-9]18"
-        tassonomiaAvviso:
-          $ref: '#/components/schemas/TassonomiaAvviso'  
-        dataValidita:
-          type: string
-          format: date
-          description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
-          example: '2019-12-31'
-        dataScadenza:
-          type: string
-          format: date
-          description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
-          example: '2020-12-31'
-        annoRiferimento:
-          type: number
-          description: Anno di riferimento della pendenza
-          example: 2020
-        cartellaPagamento:
-          type: string
-          description: Identificativo della cartella di pagamento a cui afferisce la pendenza
-          example: ABC00000001
-        datiAllegati:
-          type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
-        voci:
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            $ref: '#/components/schemas/NuovaVocePendenza'  
+      allOf:
+        - $ref: "#/components/schemas/RiferimentoPendenza"
+        - type: object
+          required:
+            - idDominio
+            - descrizione
+            - soggettoPagatore
+            - importo
+            - voci
+          properties:
+            idDominio:
+              type: string
+              description: Identificativo del dominio creditore
+              example: 1234567890
+            idUnitaOperativa:
+              type: string
+              description: Identificativo dell'unita' operativa
+              example: UO33132
+            descrizione:
+              type: string
+              description: Descrizione della pendenza
+              example: 'Sanzione CdS n. abc00000'
+              maxLength: 140
+            soggettoPagatore:
+              $ref: '#/components/schemas/Soggetto'
+            importo:
+              type: number
+              description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
+              example: 10.01
+              minimum: 0.00
+              maximum: 99999999.99
+            numeroAvviso:
+              type: string
+              description: Identificativo univoco versamento, assegnato se pagabile da psp
+              example: 123456789012345678
+              pattern: "[0-9]18"
+            tassonomiaAvviso:
+              $ref: '#/components/schemas/TassonomiaAvviso'  
+            dataValidita:
+              type: string
+              format: date
+              description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+              example: '2019-12-31'
+            dataScadenza:
+              type: string
+              format: date
+              description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+              example: '2020-12-31'
+            annoRiferimento:
+              type: number
+              description: Anno di riferimento della pendenza
+              example: 2020
+            cartellaPagamento:
+              type: string
+              description: Identificativo della cartella di pagamento a cui afferisce la pendenza
+              example: ABC00000001
+            datiAllegati:
+              type: object
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
+            voci:
+              type: array
+              minItems: 1
+              maxItems: 5
+              items:
+                $ref: '#/components/schemas/NuovaVocePendenza'  
     VocePendenza:
       allOf:
         - $ref: "#/components/schemas/NuovaVocePendenza"
