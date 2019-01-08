@@ -1,13 +1,13 @@
-VERSION=3.0.0-RC3-SNAPSHOT
+VERSION=3.0.0-RC3
 
-mvn -f ../../pom.xml -Denv=installer_template clean install
+#mvn -f ../../../../pom.xml -Denv=installer_template clean install
 
 # Directory
-COPYING_FILE=../../COPYING
+COPYING_FILE=../../../../COPYING
 SQL=../../resources/db/sql/
 DATASOURCE=../../resources/db/datasource/
 DOC=../../resources/doc/pdf
-GOVPAY=../../govpay-ear/target/govpay.ear
+GOVPAY=../../../../ear/target/govpay.ear
 
 # Template
 rm -rf core.template
