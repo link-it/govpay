@@ -19,7 +19,7 @@
     		<b:property name="wwwAuthenticate" value="false"/>
         </b:bean>
         
-        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
+        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         </b:bean>
         
         <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.WildflyApplicationAuthenticationProvider" >
@@ -31,13 +31,13 @@
                 </authentication-provider>
         </authentication-manager>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**">
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/basic/**">
 
                 <csrf disabled="true"/>
 
-                <intercept-url pattern="*?wsdl" access="permitAll" />
+                <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
                 
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
                 
                 <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
 
@@ -47,24 +47,24 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-      	
-      	<!-- CONTAINER END -->
         
-        <!-- SSL INIT -->
+        <!-- CONTAINER END -->
+        
+        <!-- SSL START -->
         
         <b:bean id="x509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
        
-        <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
+	    <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         	<b:property name="checkSubject" value="true"/>
         </b:bean>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint" pattern="/rs/ssl/**">
 
                 <csrf disabled="true"/>
+
+                <intercept-url pattern="/rs/ssl/**" access="isFullyAuthenticated()" />
                 
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
                 
                 <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
 
@@ -77,5 +77,28 @@
         
         <!-- SSL END -->
         
+        <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointGenerale" pattern="/**"> 
+
+                <csrf disabled="true"/>
+
+                <intercept-url pattern="/govpay-api-ragioneria.yaml" access="permitAll"/>
+                <intercept-url pattern="/index.html" access="permitAll"/>
+                <intercept-url pattern="/*.png" access="permitAll"/>
+                <intercept-url pattern="/*.css" access="permitAll"/>
+                <intercept-url pattern="/*.css.map" access="permitAll"/>
+                <intercept-url pattern="/*.js" access="permitAll"/>
+                <intercept-url pattern="/*.js.map" access="permitAll"/>
+               <intercept-url pattern="/**" access="denyAll" />
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+         
 </b:beans>
         

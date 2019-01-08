@@ -77,7 +77,7 @@
 							<targetPath>WEB-INF</targetPath>							
 						</webResource>
 					</webResources>
-					<webXml>src/main/resources/web-${govpay-api-pagopa-auth}.xml</webXml>
+					<webXml>src/main/resources/web.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
 					<archive>

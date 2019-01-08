@@ -9,11 +9,7 @@
   }
 
   function httpLogOutService() {
-    return '/govpay/backend/api/backoffice/rs/form/logout'; // URL per il servizio di 'logout'
-  }
-
-  function httpLogInService() {
-    return '/govpay/backend/api/backoffice/rs/form/login'; // URL per il servizio di 'login'
+    return '/govpay/backend/api/backoffice/rs/form/v1/logout'; // URL per il servizio di 'logout'
   }
 
   function httpDocumentsRoot() {
@@ -47,7 +43,6 @@
     },
     HTTP_ROOT_SERVICE: httpRootService(),
     HTTP_LOGOUT_SERVICE: httpLogOutService(),
-    HTTP_LOGIN_SERVICE: httpLogInService(),
     BADGE_FILTER: {
       HOUR: 1, // Ore, (filtro badge)
       TIMER: 30000 // Millisecondi, (timer badge)

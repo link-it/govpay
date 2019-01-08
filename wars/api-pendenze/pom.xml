@@ -104,11 +104,11 @@
 						<webResource>
 							<directory>src/main/resources/spring-sec</directory>
 							<filtering>true</filtering>
-							<include>applicationContext-security-${govpay-api-pendenze-auth}.xml</include>
+							<include>applicationContext-security-*.xml</include>
 							<targetPath>WEB-INF</targetPath>							
 						</webResource>
 					</webResources>
-					<webXml>src/main/resources/web-${govpay-api-pendenze-auth}.xml</webXml>
+					<webXml>src/main/resources/web.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
 	                <archive>

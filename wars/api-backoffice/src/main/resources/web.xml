@@ -31,7 +31,7 @@
 	    <dispatcher>FORWARD</dispatcher>
 	    <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
-    
+	
 	<filter-mapping>
 		<filter-name>OriginFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -48,25 +48,5 @@
         <servlet-name>CXFServlet</servlet-name>
         <url-pattern>/rs/*</url-pattern>
     </servlet-mapping>
-
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>Protetto</web-resource-name>
-			<url-pattern>/rs/basic/*</url-pattern>
-			<url-pattern>/rs/form/*</url-pattern>
-			<http-method-omission>OPTIONS</http-method-omission>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>*</role-name>
-		</auth-constraint>
-	</security-constraint>
-
-	<security-role>
-		<role-name>*</role-name>
-	</security-role>
-
-	<login-config>
-		<auth-method>BASIC</auth-method>
-	</login-config>
-
+    
 </web-app>

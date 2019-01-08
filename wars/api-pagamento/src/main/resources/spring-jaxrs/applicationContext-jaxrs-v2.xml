@@ -8,7 +8,7 @@
 	<b:import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
 
-	<b:bean id="openApiFeature" class="org.apache.cxf.jaxrs.openapi.OpenApiFeature">
+	<b:bean id="openApiFeatureV2" class="org.apache.cxf.jaxrs.openapi.OpenApiFeature">
 		<!-- customize some of the properties -->
 		<b:property name="configLocation" value="openapi-configuration.json"/>
 		<b:property name="prettyPrint" value="true"/>
@@ -21,18 +21,18 @@
 	</b:bean>
 
 	<!-- Parameter Converter -->
-	<b:bean id="parameterConverter" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider" />
+	<b:bean id="parameterConverterV2" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider" />
 
 	<!-- Object BodyReader -->
-	<b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader" />
+	<b:bean id="objectMessageBodyReaderV2" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader" />
 
 	<!-- Jackson Provider for JSON/XML -->
-	<b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider" />
-	<b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider" />
+	<b:bean id="jacksonJsonProviderV2" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider" />
+	<b:bean id="jacksonXmlProviderV2" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider" />
 
 	<!-- FaultBean Exception Mapper -->
-	<b:bean id="webApplicationExceptionMapper" class="it.govpay.exception.WebApplicationExceptionMapper" />
-	<b:bean id="validationExceptionMapper" class="it.govpay.exception.ValidationExceptionMapper"/>
+	<b:bean id="webApplicationExceptionMapperV2" class="it.govpay.exception.WebApplicationExceptionMapper" />
+	<b:bean id="validationExceptionMapperV2" class="it.govpay.exception.ValidationExceptionMapper"/>
 
 	<!-- JAX-RS Service Impl V2 -->
 	<b:bean id="avvisiV2" class="it.govpay.pagamento.v2.api.impl.AvvisiApiServiceImpl" />
@@ -41,40 +41,40 @@
 	<b:bean id="pendenzeV2" class="it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl" />
 	<b:bean id="rppV2" class="it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl" />
 	<b:bean id="profiloV2" class="it.govpay.pagamento.v2.api.impl.UtentiApiServiceImpl" />
-	<b:bean id="logging" class="it.govpay.features.LoggingFeature" />
-	<b:bean id="context" class="it.govpay.features.ContextFeature" />
+	<b:bean id="loggingV2" class="it.govpay.features.LoggingFeature" />
+	<b:bean id="contextV2" class="it.govpay.features.ContextFeature" />
 	
-	<b:bean id="commonValidationFeature" class="org.apache.cxf.validation.BeanValidationFeature"/>
+	<b:bean id="commonValidationFeatureV2" class="org.apache.cxf.validation.BeanValidationFeature"/>
 
 	<!-- JAX-RS Configuration -->
 
 	<!-- Servizi V2 -->
 	
-	<b:bean id="pagamentiTest" class="it.govpay.pagamento.test.PagamentiImpl" />
+	<b:bean id="pagamentiTestV2" class="it.govpay.pagamento.test.PagamentiImpl" />
 
 	<jaxrs:server id="apiPagamentoV2Basic" address="/basic/v2/">
 		<jaxrs:serviceBeans>
 			<ref bean="avvisiV2" />
 			<ref bean="dominiV2" />
 			<ref bean="pagamentiV2" />
-			<ref bean="pagamentiTest" />
+			<ref bean="pagamentiTestV2" />
 			<ref bean="pendenzeV2" />
 			<ref bean="profiloV2" />
 			<ref bean="rppV2" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
-			<ref bean="parameterConverter" />
-			<ref bean="objectMessageBodyReader" /> 
-			<ref bean="jacksonJsonProvider" />
-			<ref bean="jacksonXmlProvider" />
-			<ref bean="webApplicationExceptionMapper" />
-			<ref bean="validationExceptionMapper" />
+			<ref bean="parameterConverterV2" />
+			<ref bean="objectMessageBodyReaderV2" /> 
+			<ref bean="jacksonJsonProviderV2" />
+			<ref bean="jacksonXmlProviderV2" />
+			<ref bean="webApplicationExceptionMapperV2" />
+			<ref bean="validationExceptionMapperV2" />
 		</jaxrs:providers>
 		<jaxrs:features>
-			<ref bean="openApiFeature" />
-			<ref bean="context" />
-			<ref bean="logging" />
-			<ref bean="commonValidationFeature" />
+			<ref bean="openApiFeatureV2" />
+			<ref bean="contextV2" />
+			<ref bean="loggingV2" />
+			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
 	</jaxrs:server>
 
@@ -90,16 +90,17 @@
 			<ref bean="rppV2" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
-			<ref bean="parameterConverter" />
-			<ref bean="objectMessageBodyReader" />
-			<ref bean="jacksonJsonProvider" />
-			<ref bean="jacksonXmlProvider" />
-			<ref bean="webApplicationExceptionMapper" />
+			<ref bean="parameterConverterV2" />
+			<ref bean="objectMessageBodyReaderV2" /> 
+			<ref bean="jacksonJsonProviderV2" />
+			<ref bean="jacksonXmlProviderV2" />
+			<ref bean="webApplicationExceptionMapperV2" />
+			<ref bean="validationExceptionMapperV2" />
 		</jaxrs:providers>
 		<jaxrs:features>
-			<ref bean="openApiFeature" />
-			<ref bean="context" />
-			<ref bean="logging" />
+			<ref bean="openApiFeatureV2" />
+			<ref bean="contextV2" />
+			<ref bean="loggingV2" />
 		</jaxrs:features>
 	</jaxrs:server>
 
@@ -115,16 +116,17 @@
 			<ref bean="rppV2" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
-			<ref bean="parameterConverter" />
-			<ref bean="objectMessageBodyReader" />
-			<ref bean="jacksonJsonProvider" />
-			<ref bean="jacksonXmlProvider" />
-			<ref bean="webApplicationExceptionMapper" />
+			<ref bean="parameterConverterV2" />
+			<ref bean="objectMessageBodyReaderV2" /> 
+			<ref bean="jacksonJsonProviderV2" />
+			<ref bean="jacksonXmlProviderV2" />
+			<ref bean="webApplicationExceptionMapperV2" />
+			<ref bean="validationExceptionMapperV2" />
 		</jaxrs:providers>
 		<jaxrs:features>
-			<ref bean="openApiFeature" />
-			<ref bean="context" />
-			<ref bean="logging" />
+			<ref bean="openApiFeatureV2" />
+			<ref bean="contextV2" />
+			<ref bean="loggingV2" />
 		</jaxrs:features>
 	</jaxrs:server>
 
@@ -141,16 +143,17 @@
 			<ref bean="rppV2" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
-			<ref bean="parameterConverter" />
-			<ref bean="objectMessageBodyReader" />
-			<ref bean="jacksonJsonProvider" />
-			<ref bean="jacksonXmlProvider" />
-			<ref bean="webApplicationExceptionMapper" />
+			<ref bean="parameterConverterV2" />
+			<ref bean="objectMessageBodyReaderV2" /> 
+			<ref bean="jacksonJsonProviderV2" />
+			<ref bean="jacksonXmlProviderV2" />
+			<ref bean="webApplicationExceptionMapperV2" />
+			<ref bean="validationExceptionMapperV2" />
 		</jaxrs:providers>
 		<jaxrs:features>
-			<ref bean="openApiFeature" />
-			<ref bean="context" />
-			<ref bean="logging" />
+			<ref bean="openApiFeatureV2" />
+			<ref bean="contextV2" />
+			<ref bean="loggingV2" />
 		</jaxrs:features>
 	</jaxrs:server>
 
