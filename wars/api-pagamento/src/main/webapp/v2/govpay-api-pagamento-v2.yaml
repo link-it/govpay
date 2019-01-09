@@ -41,6 +41,8 @@ paths:
         fornire direttamente i dati costitutivi.
       parameters:
         - $ref: '#/components/parameters/idSessionePortale'
+        - $ref: '#/components/parameters/avvisaturaDigitale'
+        - $ref: '#/components/parameters/modalitaAvvisaturaDigitale'
       requestBody:
         content:
           application/json:
@@ -487,35 +489,35 @@ components:
       name: idDominio
       in: query
       description: Identificativo del dominio dell'ente
-      required: true
+      required: false
       schema:
         type: string
     iuv:
       name: iuv
       in: query
       description: Identificativo del versamento
-      required: true
+      required: false
       schema:
         type: string
     ccp:
       name: ccp
       in: query
       description: Codice contesto pagamento
-      required: true
+      required: false
       schema:
         type: string        
     idA2A:
       name: idA2A
       in: query
       description: Identificativo del gestionale ente
-      required: true
+      required: false
       schema:
         type: string
     idPendenza:
       name: idPendenza
       in: query
       description: Identificativo della pendenza nel gestionale ente
-      required: true
+      required: false
       schema:
         type: string        
     idDebitore:
@@ -659,6 +661,21 @@ components:
       example: '"7da7a728-f910-11e6-942a-68f728c1ba70", *'
       schema:
         type: string
+    avvisaturaDigitale:
+      in: query
+      name: avvisaturaDigitale
+      description: Indica se la pendenza deve essere avvisata digitalmente
+      required: false
+      schema:
+        type: boolean
+        default: false
+    modalitaAvvisaturaDigitale:
+      in: query
+      name: modalitaAvvisaturaDigitale
+      description: Modalita' di avvisatura scelta per le pendenza
+      required: false
+      schema:
+        $ref: '#/components/schemas/modalitaAvvisaturaDigitale'        
   headers:
     # Headers conform to http://zalando.github.io/restful-api-guidelines/index.html#132
     X-RateLimit-Limit:
@@ -1878,4 +1895,10 @@ components:
         rt:
           type: object
           description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"  
+    modalitaAvvisaturaDigitale:
+      example: ASINCRONA
+      type: string
+      enum:
+        - ASINCRONA
+        - SINCRONA           
               
