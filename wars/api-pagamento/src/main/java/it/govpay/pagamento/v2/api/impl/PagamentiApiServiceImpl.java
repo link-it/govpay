@@ -15,6 +15,7 @@ import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
 import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
 import it.govpay.pagamento.v2.api.PagamentiApi;
+import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v2.beans.NuovoPagamento;
 import it.govpay.pagamento.v2.beans.Pagamenti;
 import it.govpay.pagamento.v2.beans.Pagamento;
@@ -83,7 +84,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
      *
      */
 	@Override
-    public PagamentoCreato addPagamento(NuovoPagamento body, String idSessionePortale) {
+	public PagamentoCreato addPagamento(NuovoPagamento body, String idSessionePortale, Boolean avvisaturaDigitale,	ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     

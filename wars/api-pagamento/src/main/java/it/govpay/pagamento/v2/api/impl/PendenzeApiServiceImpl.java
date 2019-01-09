@@ -44,7 +44,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
      *
      */
 	@Override
-    public Pendenze findPendenze(String idDominio, String iuv, String idA2A, String idPendenza, Integer offset, Integer limit, String fields, String sort, String idDebitore, StatoPendenza statoPendenza, String idSessionePortale) {
+	public Pendenze findPendenze(Integer offset, Integer limit, String fields, String sort, String idDominio, String iuv, String idA2A, String idPendenza, String idDebitore, StatoPendenza statoPendenza, String idSessionePortale) {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().debug("Invocazione in corso ...");     

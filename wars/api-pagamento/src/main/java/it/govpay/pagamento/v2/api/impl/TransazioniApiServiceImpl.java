@@ -37,7 +37,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
      *
      */
 	@Override
-    public Rpps findRpps(String idDominio, String iuv, String ccp, String idA2A, String idPendenza, Integer offset, Integer limit, String fields, String sort, String idDebitore, EsitoRpp statoPendenza, String idSessionePortale) {
+	public Rpps findRpps(Integer offset, Integer limit, String fields, String sort, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String idDebitore, EsitoRpp statoPendenza, String idSessionePortale) {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
