@@ -30,17 +30,20 @@ public class AnnullaVersamentoDTO {
 	private String codApplicazione;
 	private String codVersamentoEnte;
 	private String motivoAnnullamento;
+	private boolean batch;
 	
 	public AnnullaVersamentoDTO(Operatore operatore, String codApplicazione, String codVersamentoEnte) {
 		this.operatore = operatore;
 		this.codApplicazione = codApplicazione;
 		this.codVersamentoEnte = codVersamentoEnte;
+		this.batch = false;
 	}
 	
 	public AnnullaVersamentoDTO(Applicazione applicazione, String codApplicazione, String codVersamentoEnte) {
 		this.applicazione = applicazione;
 		this.codApplicazione = codApplicazione;
 		this.codVersamentoEnte = codVersamentoEnte;
+		this.batch = false;
 	}
 	
 	public Applicazione getApplicazione() {
@@ -65,6 +68,14 @@ public class AnnullaVersamentoDTO {
 
 	public void setMotivoAnnullamento(String motivoAnnullamento) {
 		this.motivoAnnullamento = motivoAnnullamento;
+	}
+
+	public boolean isBatch() {
+		return batch;
+	}
+
+	public void setBatch(boolean batch) {
+		this.batch = batch;
 	}
 	
 }
