@@ -42,29 +42,47 @@ public class PagamentoPortaleUtils {
 			boolean updateStato = true;
 			int numeroEseguiti = 0;
 			int numeroNonEseguiti = 0;
+			int numeroFalliti = 0;
 			//int numeroResidui = 0;
 			for (int i = 0; i <findAll.size(); i++) {
 				Rpt rpt  = findAll.get(i);
-				log.debug("RT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
-				if(rpt.getEsitoPagamento() == null) {
+				log.debug("RPT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
+				StatoRpt stato = rpt.getStato();
+				if(Rpt.stati_pendenti.contains(stato)) {
+//						rpt.getEsitoPagamento() == null) {
 					updateStato = false;
 					break;
 				}
-				StatoRpt stato = rpt.getStato();
 				
-				if(rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO)) {
-					numeroEseguiti ++;
-				} else if(rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_NON_ESEGUITO) || rpt.getEsitoPagamento().equals(EsitoPagamento.DECORRENZA_TERMINI) || !stato.equals(StatoRpt.RT_ACCETTATA_PA)) {
-					numeroNonEseguiti ++;
-				} else {
-					//numeroResidui ++;
+				// controllo che l'rpt non si trovi in uno stato di fallimento
+				if(stato.equals(StatoRpt.RPT_ERRORE_INVIO_A_PSP) 
+					|| stato.equals(StatoRpt.RPT_RIFIUTATA_NODO) 
+					|| stato.equals(StatoRpt.RPT_RIFIUTATA_PSP)) {
+					numeroFalliti ++;
+				}
+				else {
+					if(rpt.getEsitoPagamento() != null) {
+						if(rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO)) {
+							numeroEseguiti ++;
+						} else if(rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_NON_ESEGUITO) 
+								|| rpt.getEsitoPagamento().equals(EsitoPagamento.DECORRENZA_TERMINI) || !stato.equals(StatoRpt.RT_ACCETTATA_PA)) {
+							numeroNonEseguiti ++;
+						}  
+					} else {
+						 // in corso aspetto che terminino tutte
+						updateStato = false;
+						break;
+					}
 				}
 			}
 			
-			log.debug("Esito analisi rpt Update ["+updateStato+"] #OK ["+numeroEseguiti+"], #KO ["+numeroNonEseguiti+"]"); 
+			log.debug("Esito analisi rpt Update ["+updateStato+"] #OK ["+numeroEseguiti+"], #KO ["+numeroNonEseguiti+"], #Fallite ["+numeroFalliti+"]"); 
 			
 			if(updateStato) {
-				if(numeroEseguiti == findAll.size()) {
+				if(numeroFalliti == findAll.size()) {
+					pagamentoPortale.setStato(STATO.FALLITO);
+					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
+				} else if(numeroEseguiti == findAll.size()) {
 					pagamentoPortale.setStato(STATO.ESEGUITO);
 					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_ESEGUITO);
 				} else if(numeroNonEseguiti == findAll.size()) {

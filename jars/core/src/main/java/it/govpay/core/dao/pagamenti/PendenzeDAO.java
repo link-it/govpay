@@ -624,16 +624,6 @@ public class PendenzeDAO extends BaseDAO{
 				createOrUpdatePendenzaResponse.setCreated(true);
 			}
 			
-			// TODO verificare e poi togliere
-//			if(putVersamentoDTO.isAvvisaturaDigitale()) {
-//				// controllare se e' abilitata a livello di sistema
-//				chiediVersamento.setAvvisaturaAbilitata(true); 
-//			}
-//			
-//			if(putVersamentoDTO.getAvvisaturaModalita() != null) {
-//				chiediVersamento.setAvvisaturaModalita(putVersamentoDTO.getAvvisaturaModalita().getValue()); 
-//			}
-			
 			versamentoBusiness.caricaVersamento(chiediVersamento, chiediVersamento.getNumeroAvviso() == null, true);
 			
 			// restituisco il versamento creato

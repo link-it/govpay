@@ -82,7 +82,7 @@ public class AvvisoPagamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				// [TODO] fare model
+				// TODO fare model
 				CustomField idOperatoreCustomField = new CustomField("id_tracciato",  Long.class, "id_tracciato",converter.toTable(it.govpay.orm.Avviso.model().OPERAZIONE));
 				newExpression.equals(idOperatoreCustomField, this.idTracciato);
 			}

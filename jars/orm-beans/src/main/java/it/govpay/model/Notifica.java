@@ -29,8 +29,8 @@ public class Notifica extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public enum TipoNotifica {ATTIVAZIONE, RICEVUTA}
-	public enum StatoSpedizione {DA_SPEDIRE, SPEDITO}
+	public enum TipoNotifica {ATTIVAZIONE, RICEVUTA, ANNULLAMENTO, FALLIMENTO}
+	public enum StatoSpedizione {DA_SPEDIRE, SPEDITO, ANNULLATA}
 	
 	private Long id;
 	private long idApplicazione;

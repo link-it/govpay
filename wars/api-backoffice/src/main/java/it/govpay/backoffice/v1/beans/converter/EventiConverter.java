@@ -6,6 +6,7 @@ import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.model.converter.EventoConverter;
 import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoIntegrazione;
 import it.govpay.bd.model.eventi.EventoNota;
 
 public class EventiConverter {
@@ -16,6 +17,23 @@ public class EventiConverter {
 		
 		if(evento.getCategoriaEvento() != null) {
 			switch (evento.getCategoriaEvento()) { 
+			case INTERFACCIA_INTEGRAZIONE:
+				EventoIntegrazione eventoIntegrazione = EventoConverter.toEventoIntegrazione(evento);
+				rsModel.setParametriRichiesta(eventoIntegrazione.getAltriParametriRichiesta());
+				rsModel.setParametriRisposta(eventoIntegrazione.getAltriParametriRisposta());
+				rsModel.setEsito(eventoIntegrazione.getEsito());
+				rsModel.setDataOraRichiesta(eventoIntegrazione.getDataRichiesta());
+				rsModel.setDataOraRisposta(eventoIntegrazione.getDataRisposta());
+				rsModel.setCcp(eventoIntegrazione.getCcp());
+				rsModel.setComponente(eventoIntegrazione.getComponente());
+				rsModel.setIdDominio(eventoIntegrazione.getCodDominio());
+				rsModel.setIdentificativoErogatore(eventoIntegrazione.getErogatore());
+				rsModel.setIdentificativoFruitore(eventoIntegrazione.getFruitore());
+				rsModel.setIuv(eventoIntegrazione.getIuv());
+				rsModel.setTipoEvento(eventoIntegrazione.getTipoEvento());
+				rsModel.setSottotipoEvento(eventoIntegrazione.getSottotipoEvento()); 
+				rsModel.setCategoriaEvento(CategoriaEventoEnum.INTERFACCIA);
+				break;
 			case INTERFACCIA_COOPERAZIONE:
 				EventoCooperazione eventoCooperazione = EventoConverter.toEventoCooperazione(evento);
 				rsModel.setParametriRichiesta(eventoCooperazione.getAltriParametriRichiesta());

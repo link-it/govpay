@@ -26,6 +26,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.converter.EventoConverter;
 import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoIntegrazione;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.EventiBD;
 
@@ -57,6 +58,14 @@ public class GiornaleEventi extends BasicBD {
 	public void registraEventoNota(EventoNota eventoNota) {
 		try {
 			this._registraEvento(EventoConverter.fromEventoNotaToEvento(eventoNota));
+		} catch (Exception e) {
+			log.error("Errore nella registrazione degli eventi", e);
+		}
+	}
+	
+	public void registraEventointegrazione(EventoIntegrazione eventoIntegrazione) {
+		try {
+			this._registraEvento(EventoConverter.fromEventointegrazioneToEvento(eventoIntegrazione));
 		} catch (Exception e) {
 			log.error("Errore nella registrazione degli eventi", e);
 		}
