@@ -2172,7 +2172,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/rpp'            
+                          $ref: '#/components/schemas/rppIndex'            
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -2204,7 +2204,7 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '200':
           description: Dettaglio della richiesta di pagamento
           content:
             application/json:
@@ -2217,7 +2217,54 @@ paths:
         '404':
           $ref: '#/components/responses/400'
         '500':
-          $ref: '#/components/responses/500'      
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Aggiorna selettivamente campi di una richiesta di pagamento
+      tags:
+        - Pagamenti
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
+      responses:
+        '200':
+          description: Dettaglio della richiesta di pagamento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpp'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
     get:
       summary: Acquisizione della richiesta di pagamento pagopa
@@ -4384,6 +4431,10 @@ components:
           description: >-
             Dettaglio fornito dal Nodo dei Pagamenti sullo stato della
             richiesta.
+        bloccante:
+          description: Indica se la richiesta di pagamento deve essere bloccata quando viene inviata mentre e' ancora in corso il tentativo precedente
+          type: boolean
+          default: true
         segnalazioni:
           type: array
           items: 
@@ -4413,6 +4464,10 @@ components:
           description: >-
             Dettaglio fornito dal Nodo dei Pagamenti sullo stato della
             richiesta.
+        bloccante:
+          description: Indica se la richiesta di pagamento deve essere bloccata quando viene inviata mentre e' ancora in corso il tentativo precedente
+          type: boolean
+          default: true
         segnalazioni:
           type: array
           items: 

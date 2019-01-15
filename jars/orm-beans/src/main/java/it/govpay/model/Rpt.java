@@ -202,7 +202,7 @@ public class Rpt extends BasicModel{
 	private TipoIdentificativoAttestante tipoIdentificativoAttestante;
 	private String identificativoAttestante;
 	private String denominazioneAttestante;
-	
+	private boolean bloccante;
 	
 	public TipoIdentificativoAttestante getTipoIdentificativoAttestante() {
 		return this.tipoIdentificativoAttestante;
@@ -427,6 +427,12 @@ public class Rpt extends BasicModel{
 	}
 	public void setModelloPagamento(ModelloPagamento modelloPagamento) {
 		this.modelloPagamento = modelloPagamento;
+	}
+	public boolean isBloccante() {
+		return bloccante;
+	}
+	public void setBloccante(boolean bloccante) {
+		this.bloccante = bloccante;
 	}
 
 }

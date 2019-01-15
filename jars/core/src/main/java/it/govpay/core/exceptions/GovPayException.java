@@ -207,7 +207,7 @@ public class GovPayException extends Exception {
 		case CIT_002: return "L'utente cittadino (" +this.params[0] + ") non e' autorizzato ad effettuare il pagamento della pendenza (IdA2A:"+this.params[1]+" Id:"+this.params[2]+") l'entrata ("+ this.params[3] +") non e' abilitata ai pagamenti spontanei.";
 		case CIT_003: return "L'utente cittadino (" +this.params[0] + ") non e' autorizzato ad effettuare il pagamento della pendenza (IdA2A:"+this.params[1]+" Id:"+this.params[2]+") per il soggetto debitore ("+ this.params[3] +").";
 		case CIT_004: return "L'utente cittadino (" +this.params[0] + ") non e' autorizzato ad effettuare il pagamento della pendenza (IdA2A:"+this.params[1]+" Id:"+this.params[2]+") per il soggetto versante ("+ this.params[3] +").";
-		case VER_031: return "Il versamento (IdDominio:" + this.params[0] + ", IUV:" + this.params[1] + ", CCP:" + this.params[2] + ") risulta in corso all'Ente Creditore";
+		case PAG_014: return "Il pagamento (IdDominio:" + this.params[0] + ", IUV:" + this.params[1] + ", CCP:" + this.params[2] + ") non e' eseguibile poiche' risulta in corso all'Ente Creditore";
 		}
 		
 		return "";
@@ -350,7 +350,7 @@ public class GovPayException extends Exception {
 		case CIT_002: return "Richiesta non valida";
 		case CIT_003: return "Richiesta non valida";
 		case CIT_004: return "Richiesta non valida";
-		case VER_031: return "Richiesta non valida";
+		case PAG_014: return "Richiesta non valida";
 		}
 		
 		return "";

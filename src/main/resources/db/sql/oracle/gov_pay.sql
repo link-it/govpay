@@ -773,6 +773,7 @@ CREATE TABLE rpt
 	stato_conservazione VARCHAR2(35 CHAR),
 	descrizione_stato_cons VARCHAR2(512 CHAR),
 	data_conservazione TIMESTAMP,
+	bloccante NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -791,6 +792,9 @@ CREATE TABLE rpt
 -- index
 CREATE INDEX index_rpt_1 ON rpt (stato);
 CREATE INDEX index_rpt_2 ON rpt (id_versamento);
+
+ALTER TABLE rpt MODIFY bloccante DEFAULT 1;
+
 CREATE TRIGGER trg_rpt
 BEFORE
 insert on rpt

@@ -547,6 +547,7 @@ CREATE TABLE rpt
 	stato_conservazione VARCHAR(35),
 	descrizione_stato_cons VARCHAR(512),
 	data_conservazione TIMESTAMP,
+	bloccante BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_rpt') NOT NULL,
 	id_versamento BIGINT NOT NULL,

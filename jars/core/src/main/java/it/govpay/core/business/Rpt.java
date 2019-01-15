@@ -1,6 +1,7 @@
 package it.govpay.core.business;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -24,6 +25,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
+import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -35,6 +37,7 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.DateUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
@@ -212,6 +215,32 @@ public class Rpt extends BasicBD{
 						ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 					}
 				}
+				
+				if(pagamentoPortale !=  null && pagamentoPortale.getTipo() == 1 && GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
+					log.debug("Blocco pagamento per il Mod1 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() + " minuti]"); 
+					log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:"+versamento.getApplicazione(this).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+					
+					// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
+					RptFilter filter = rptBD.newFilter();
+					filter.setStato(it.govpay.bd.model.Rpt.stati_pendenti);
+					filter.setIdVersamento(versamento.getId());
+					List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
+					
+					log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(this).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+					
+					// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
+					// Altrimenti lancio il fault
+					Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() * 60000);
+					
+					for(it.govpay.bd.model.Rpt rpt_pendente : rpt_pendenti) {
+						Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
+						
+						// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
+						if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
+							throw new GovPayException(EsitoOperazione.PAG_014, rpt_pendente.getCodDominio(), rpt_pendente.getIuv(), rpt_pendente.getCcp());
+						}
+					}
+				} 
 
 				if(ctx.getPagamentoCtx().getCodCarrello() != null) {
 					ctx.setCorrelationId(ctx.getPagamentoCtx().getCodCarrello());

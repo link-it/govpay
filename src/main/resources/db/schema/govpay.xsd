@@ -1612,7 +1612,7 @@
 			<xsd:element name="statoConservazione" type="String35" minOccurs="0"/>
 			<xsd:element name="descrizioneStatoCons" type="String512" minOccurs="0"/>
 			<xsd:element name="dataConservazione" type="xsd:dateTime" minOccurs="0"/>
-			
+			<xsd:element name="bloccante" type="xsd:boolean" default="true"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

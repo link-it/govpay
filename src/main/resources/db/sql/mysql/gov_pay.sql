@@ -548,6 +548,7 @@ CREATE TABLE rpt
 	descrizione_stato_cons VARCHAR(512),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_conservazione TIMESTAMP(3) DEFAULT 0,
+	bloccante BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,

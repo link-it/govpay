@@ -1,7 +1,10 @@
 package it.govpay.backoffice.v1;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -89,6 +92,44 @@ public class Rpp extends BaseRsServiceV1{
     public Response rppIdDominioIuvCcpRptGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.rppIdDominioIuvCcpRptGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
+    }
+    
+    @POST
+    @Path("/{idDominio}/{iuv}/{ccp}")
+    @Consumes({ "application/json" })
+    public Response rppIdDominioIuvCcpPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
+        this.controller.setRequestResponse(this.request, this.response);
+        if(httpHeaders.getRequestHeader("X-HTTP-Method-Override") != null && !httpHeaders.getRequestHeader("X-HTTP-Method-Override").isEmpty() && httpHeaders.getRequestHeader("X-HTTP-Method-Override").get(0).equals("PATCH"))
+        	return this.controller.rppIdDominioIuvCcpPATCH(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  ccp);
+        return Response.status(405).build();
+    }
+    
+    @POST
+    @Path("/{idDominio}/{iuv}/n/a")
+    @Consumes({ "application/json" })
+    public Response rppIdDominioIuvNaPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
+        this.controller.setRequestResponse(this.request, this.response);
+        if(httpHeaders.getRequestHeader("X-HTTP-Method-Override") != null && !httpHeaders.getRequestHeader("X-HTTP-Method-Override").isEmpty() && httpHeaders.getRequestHeader("X-HTTP-Method-Override").get(0).equals("PATCH"))
+        	return this.controller.rppIdDominioIuvCcpPATCH(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  "n/a");
+        return Response.status(405).build();
+    }
+
+    @PATCH
+    @Path("/{idDominio}/{iuv}/{ccp}")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    public Response rppIdDominioIuvCcpPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.rppIdDominioIuvCcpPATCH(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  ccp);
+    }
+
+    @PATCH
+    @Path("/{idDominio}/{iuv}/n/a")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    public Response rppIdDominioIuvNaPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.rppIdDominioIuvCcpPATCH(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  "n/a");
     }
 }
 

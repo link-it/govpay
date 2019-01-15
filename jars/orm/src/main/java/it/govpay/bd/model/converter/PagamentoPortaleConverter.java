@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;

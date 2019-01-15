@@ -12,6 +12,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
 "dettaglioStato",
+"bloccante",
 "segnalazioni",
 "rpt",
 "rt",
@@ -24,6 +25,9 @@ public class RppIndex extends JSONSerializable {
   
   @JsonProperty("dettaglioStato")
   private String dettaglioStato = null;
+  
+  @JsonProperty("bloccante")
+  private Boolean bloccante = true;
   
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
@@ -72,7 +76,22 @@ public class RppIndex extends JSONSerializable {
   }
 
   /**
-   * Data di emissione della richiesta di pagamento.
+   * Indica se la richiesta di pagamento deve essere bloccata quando viene inviata mentre e' ancora in corso il tentativo precedente
+   **/
+  public RppIndex bloccante(Boolean bloccante) {
+    this.bloccante = bloccante;
+    return this;
+  }
+
+  @JsonProperty("bloccante")
+  public Boolean Bloccante() {
+    return bloccante;
+  }
+  public void setBloccante(Boolean bloccante) {
+    this.bloccante = bloccante;
+  }
+
+  /**
    **/
   public RppIndex segnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
@@ -148,6 +167,7 @@ public class RppIndex extends JSONSerializable {
     RppIndex rppIndex = (RppIndex) o;
     return Objects.equals(this.stato, rppIndex.stato) &&
         Objects.equals(this.dettaglioStato, rppIndex.dettaglioStato) &&
+        Objects.equals(bloccante, rppIndex.bloccante) &&
         Objects.equals(this.segnalazioni, rppIndex.segnalazioni) &&
         Objects.equals(this.rpt, rppIndex.rpt) &&
         Objects.equals(this.rt, rppIndex.rt) &&
@@ -156,7 +176,7 @@ public class RppIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.stato, this.dettaglioStato, this.segnalazioni, this.rpt, this.rt, this.pendenza);
+    return Objects.hash(this.stato, this.dettaglioStato, this.bloccante, this.segnalazioni, this.rpt, this.rt, this.pendenza);
   }
 
   public static RppIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -175,6 +195,7 @@ public class RppIndex extends JSONSerializable {
     
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    dettaglioStato: ").append(this.toIndentedString(this.dettaglioStato)).append("\n");
+    sb.append("    bloccante: ").append(toIndentedString(bloccante)).append("\n");
     sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
     sb.append("    rpt: ").append(this.toIndentedString(this.rpt)).append("\n");
     sb.append("    rt: ").append(this.toIndentedString(this.rt)).append("\n");

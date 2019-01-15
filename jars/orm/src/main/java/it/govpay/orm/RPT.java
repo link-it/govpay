@@ -71,6 +71,7 @@ import java.io.Serializable;
  * 			&lt;element name="statoConservazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStatoCons" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataConservazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="bloccante" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -120,7 +121,8 @@ import java.io.Serializable;
   	"codTransazioneRT",
   	"statoConservazione",
   	"descrizioneStatoCons",
-  	"dataConservazione"
+  	"dataConservazione",
+  	"bloccante"
   }
 )
 
@@ -438,6 +440,18 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.dataConservazione = dataConservazione;
   }
 
+  public boolean isBloccante() {
+    return this.bloccante;
+  }
+
+  public boolean getBloccante() {
+    return this.bloccante;
+  }
+
+  public void setBloccante(boolean bloccante) {
+    this.bloccante = bloccante;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -605,5 +619,9 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataConservazione",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataConservazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="bloccante",required=true,nillable=false,defaultValue="true")
+  protected boolean bloccante = true;
 
 }

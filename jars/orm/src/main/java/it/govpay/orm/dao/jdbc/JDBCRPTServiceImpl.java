@@ -153,6 +153,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().STATO_CONSERVAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DESCRIZIONE_STATO_CONS,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_CONSERVAZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().BLOCCANTE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_pagamento_portale","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
@@ -193,6 +194,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getStatoConservazione(),RPT.model().STATO_CONSERVAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDescrizioneStatoCons(),RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataConservazione(),RPT.model().DATA_CONSERVAZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getBloccante(),RPT.model().BLOCCANTE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamentoPortale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
@@ -367,6 +369,8 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		lstObjects_rpt.add(new JDBCObject(rpt.getDescrizioneStatoCons(), RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_CONSERVAZIONE,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getDataConservazione(), RPT.model().DATA_CONSERVAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().BLOCCANTE,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getBloccante(), RPT.model().BLOCCANTE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}

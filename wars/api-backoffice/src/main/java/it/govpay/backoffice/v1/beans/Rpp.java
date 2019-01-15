@@ -13,6 +13,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
 "dettaglioStato",
+"bloccante",
 "segnalazioni",
 "rpt",
 "rt",
@@ -25,6 +26,9 @@ public class Rpp extends JSONSerializable {
   
   @JsonProperty("dettaglioStato")
   private String dettaglioStato = null;
+  
+  @JsonProperty("bloccante")
+  private Boolean bloccante = true;
   
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
@@ -71,6 +75,22 @@ public class Rpp extends JSONSerializable {
   }
   public void setDettaglioStato(String dettaglioStato) {
     this.dettaglioStato = dettaglioStato;
+  }
+
+  /**
+   * Indica se la richiesta di pagamento deve essere bloccata quando viene inviata mentre e' ancora in corso il tentativo precedente
+   **/
+  public Rpp bloccante(Boolean bloccante) {
+    this.bloccante = bloccante;
+    return this;
+  }
+
+  @JsonProperty("bloccante")
+  public Boolean Bloccante() {
+    return bloccante;
+  }
+  public void setBloccante(Boolean bloccante) {
+    this.bloccante = bloccante;
   }
 
   /**
@@ -148,6 +168,7 @@ public class Rpp extends JSONSerializable {
     Rpp rpp = (Rpp) o;
     return Objects.equals(this.stato, rpp.stato) &&
         Objects.equals(this.dettaglioStato, rpp.dettaglioStato) &&
+        Objects.equals(bloccante, rpp.bloccante) &&
         Objects.equals(this.segnalazioni, rpp.segnalazioni) &&
         Objects.equals(this.rpt, rpp.rpt) &&
         Objects.equals(this.rt, rpp.rt) &&
@@ -156,7 +177,7 @@ public class Rpp extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.stato, this.dettaglioStato, this.segnalazioni, this.rpt, this.rt, this.pendenza);
+    return Objects.hash(this.stato, this.dettaglioStato, this.bloccante, this.segnalazioni, this.rpt, this.rt, this.pendenza);
   }
 
   public static Rpp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -175,6 +196,7 @@ public class Rpp extends JSONSerializable {
     
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    dettaglioStato: ").append(this.toIndentedString(this.dettaglioStato)).append("\n");
+    sb.append("    bloccante: ").append(toIndentedString(bloccante)).append("\n");
     sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
     sb.append("    rpt: ").append(this.toIndentedString(this.rpt)).append("\n");
     sb.append("    rt: ").append(this.toIndentedString(this.rt)).append("\n");
