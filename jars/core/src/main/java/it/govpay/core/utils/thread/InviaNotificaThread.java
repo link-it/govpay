@@ -127,7 +127,7 @@ public class InviaNotificaThread implements Runnable {
 			
 			MDC.put("op", ctx.getTransactionId());
 			
-			log.info("Spedizione della notifica [idNotifica: " + this.notifica.getId() +"] all'applicazione [CodApplicazione: " + this.notifica.getApplicazione(null).getCodApplicazione() + "]");
+			log.info("Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.notifica.getRptKey(bd) +"] all'applicazione [CodApplicazione: " + this.notifica.getApplicazione(null).getCodApplicazione() + "]");
 			if(applicazione.getConnettoreNotifica() == null || applicazione.getConnettoreNotifica().getUrl() == null) {
 				ctx.log("notifica.annullata");
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");

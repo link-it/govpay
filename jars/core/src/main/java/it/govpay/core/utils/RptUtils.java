@@ -359,6 +359,7 @@ public class RptUtils {
 					case RT_ESITO_SCONOSCIUTO_PA:
 					case RT_RIFIUTATA_PA:
 					case RT_ACCETTATA_PA:
+					case RPT_ANNULLATA:
 						
 						log.info("Richiesta dell'RT al Nodo dei Pagamenti [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "].");
 	

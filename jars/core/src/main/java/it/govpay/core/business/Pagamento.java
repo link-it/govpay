@@ -251,7 +251,7 @@ public class Pagamento extends BasicBD {
 					BatchManager.aggiornaEsecuzione(this, Operazioni.PND);
 					
 					String stato = statiRptPendenti.get(rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp());
-					if(stato != null) {
+					if(stato != null && !stato.equals(StatoRpt.RPT_ANNULLATA.name())) {
 						log.info("Rpt confermata pendente dal nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
 						ctx.log("pendenti.confermaPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), stato);
 						StatoRpt statoRpt = StatoRpt.toEnum(stato);
