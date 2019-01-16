@@ -194,6 +194,11 @@ public class Pagamento extends BasicBD {
 				ctx.log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
 				log.debug("Recupero i pendenti [CodStazione: " + stazione.getCodStazione() + "]");
 				
+				if(lstDomini.isEmpty()) {
+					log.debug("Recupero i pendenti per la stazione [CodStazione: " + stazione.getCodStazione() + "], non eseguita: la stazione non e' associata ad alcun dominio.");
+					continue;
+				}
+				
 				// Costruisco una mappa di tutti i pagamenti pendenti sul nodo
 				// La chiave di lettura e' iuv@ccp
 
@@ -245,7 +250,7 @@ public class Pagamento extends BasicBD {
 					BatchManager.aggiornaEsecuzione(this, Operazioni.PND);
 					
 					String stato = statiRptPendenti.get(rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp());
-					if(stato != null) {
+					if(stato != null && !stato.equals(StatoRpt.RPT_ANNULLATA.name())) {
 						log.info("Rpt confermata pendente dal nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
 						ctx.log("pendenti.confermaPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), stato);
 						StatoRpt statoRpt = StatoRpt.toEnum(stato);
