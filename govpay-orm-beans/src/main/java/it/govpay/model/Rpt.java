@@ -52,6 +52,7 @@ public class Rpt extends BasicModel{
 		stati_pendenti.add(StatoRpt.RPT_ACCETTATA_NODO);
 		stati_pendenti.add(StatoRpt.RPT_INVIATA_A_PSP);
 		stati_pendenti.add(StatoRpt.RPT_ACCETTATA_PSP);
+		stati_pendenti.add(StatoRpt.RPT_ANNULLATA);
 		stati_pendenti.add(StatoRpt.RT_RICEVUTA_NODO);
 		stati_pendenti.add(StatoRpt.RT_RIFIUTATA_NODO);
 		stati_pendenti.add(StatoRpt.RT_ACCETTATA_NODO);
@@ -134,6 +135,7 @@ public class Rpt extends BasicModel{
 		RPT_ERRORE_INVIO_A_PSP, 
 		RPT_INVIATA_A_PSP, 
 		RPT_DECORSI_TERMINI,
+		RPT_ANNULLATA,
 		RT_RICEVUTA_NODO,
 		RT_RIFIUTATA_NODO,
 		RT_ACCETTATA_NODO,
