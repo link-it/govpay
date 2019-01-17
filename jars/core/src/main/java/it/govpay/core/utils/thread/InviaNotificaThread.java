@@ -31,43 +31,48 @@ import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoIntegrazione;
+import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NotificaClient;
+import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
 
 public class InviaNotificaThread implements Runnable {
 
+	public static final String PA_NOTIFICA_TRANSAZIONE = "paNotificaTransazione";
 	private static Logger log = LoggerWrapperFactory.getLogger(InviaNotificaThread.class);
 	private Notifica notifica;
+	private Versamento versamento;
+	private Rpt rpt;
+	private Dominio dominio = null;
 	private boolean completed = false;
+	private Applicazione applicazione = null;
 
 	public InviaNotificaThread(Notifica notifica, BasicBD bd) throws ServiceException {
 		// Verifico che tutti i campi siano valorizzati
 		this.notifica = notifica;
 		this.notifica.getApplicazione(bd);
-		if(this.notifica.getIdRpt() != null) {
-			this.notifica.getRpt(bd).getVersamento(bd);
-			List<Pagamento> pagamenti = this.notifica.getRpt(bd).getPagamenti(bd);
-			if(pagamenti != null) {
-				for(Pagamento pagamento : pagamenti)
-					pagamento.getSingoloVersamento(bd);
-			}
-		} else {
-			this.notifica.getRr(bd);
-			this.notifica.getRr(bd).getRpt(bd);
-			this.notifica.getRr(bd).getRpt(bd).getVersamento(bd);
-			List<Pagamento> pagamenti = this.notifica.getRr(bd).getRpt(bd).getPagamenti(bd);
-			if(pagamenti != null) {
-				for(Pagamento pagamento : pagamenti)
-					pagamento.getSingoloVersamento(bd);
-			}
+		this.versamento = this.notifica.getRpt(bd).getVersamento(bd);
+		this.dominio = this.versamento.getDominio(bd);
+		this.rpt = this.notifica.getRpt(bd);
+		this.applicazione = this.notifica.getApplicazione(bd);
+		List<Pagamento> pagamenti = this.rpt.getPagamenti(bd);
+		if(pagamenti != null) {
+			for(Pagamento pagamento : pagamenti)
+				pagamento.getSingoloVersamento(bd);
 		}
 	}
 
@@ -76,63 +81,91 @@ public class InviaNotificaThread implements Runnable {
 		
 		GpContext ctx = null;
 		BasicBD bd = null;
+		TipoNotifica tipoNotifica = this.notifica.getTipo();
+		GiornaleEventi giornaleEventi = null;
+		EventoIntegrazione evento = new EventoIntegrazione();
+		String messaggioRichiesta = null;
+		String messaggioRisposta = null;
 		try {
-			
-			if(this.notifica.getIdRpt() != null) {
-				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-					ctx = new GpContext(this.notifica.getRpt(bd).getIdTransazioneRpt());
-				} else {
-					ctx = new GpContext(this.notifica.getRpt(bd).getIdTransazioneRt());
-				}
-				
-				if(this.notifica.getRpt(bd).getCodCarrello() != null) {
-					ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", this.notifica.getRpt(bd).getCodCarrello()));
-				} 
-				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", this.notifica.getRpt(null).getCodDominio()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", this.notifica.getRpt(null).getIuv()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", this.notifica.getRpt(null).getCcp()));
-				
-				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) 
-					ctx.log("notifica.rpt");
-				else
-					ctx.log("notifica.rt");
-			} else {
-				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-					ctx = new GpContext(this.notifica.getRr(bd).getIdTransazioneRr());
-				} else {
-					ctx = new GpContext(this.notifica.getRr(bd).getIdTransazioneEr());
-				}
-				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", this.notifica.getRr(null).getCodDominio()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", this.notifica.getRr(null).getIuv()));
-				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", this.notifica.getRr(null).getCcp()));
-				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) 
-					ctx.log("notifica.rr");
-				else
-					ctx.log("notifica.er");
+			switch (tipoNotifica) {
+			case ATTIVAZIONE:
+			case ANNULLAMENTO:
+			case FALLIMENTO:
+				ctx = new GpContext(rpt.getIdTransazioneRpt());
+				break;
+			case RICEVUTA:
+				ctx = new GpContext(rpt.getIdTransazioneRt());
+				break;
 			}
+			
+			if(rpt.getCodCarrello() != null) {
+				ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", rpt.getCodCarrello()));
+			} 
+			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", this.notifica.getRpt(null).getCodDominio()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("iuv", this.notifica.getRpt(null).getIuv()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", this.notifica.getRpt(null).getCcp()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("tipoNotifica", tipoNotifica.name().toLowerCase()));
+			
+			switch (tipoNotifica) {
+			case ATTIVAZIONE:
+				ctx.log("notifica.rpt");
+				break;
+			case ANNULLAMENTO:
+				ctx.log("notifica.annullamentoRpt");
+				break;
+			case FALLIMENTO:
+				ctx.log("notifica.fallimentoRpt");
+				break;
+			case RICEVUTA:
+				ctx.log("notifica.rt");
+				break;
+			}
+			
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			giornaleEventi = new GiornaleEventi(bd);
 			
-			Applicazione applicazione = this.notifica.getApplicazione(bd);
-					
 			MDC.put("op", ctx.getTransactionId());
 			
-			log.info("Spedizione della notifica [idNotifica: " + this.notifica.getId() +"] all'applicazione [CodApplicazione: " + this.notifica.getApplicazione(null).getCodApplicazione() + "]");
+			log.info("Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.notifica.getRptKey(bd) +"] all'applicazione [CodApplicazione: " + this.notifica.getApplicazione(null).getCodApplicazione() + "]");
 			if(applicazione.getConnettoreNotifica() == null || applicazione.getConnettoreNotifica().getUrl() == null) {
 				ctx.log("notifica.annullata");
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
 				NotificheBD notificheBD = new NotificheBD(bd);
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();
-				notificheBD.updateDaSpedire(this.notifica.getId(), "Connettore Notifica non configurato.", tentativi, prossima);
+				notificheBD.updateAnnullata(this.notifica.getId(), "Connettore Notifica non configurato, notifica annullata.", tentativi, prossima);
+				
+				EventoNota eventoNota = new EventoNota();
+				eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
+				eventoNota.setOggetto("Notifica " +tipoNotifica.name().toLowerCase()
+						+ " pagamento annullata: connettore non configurato.");
+				eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase()
+						+ " pagamento annullata: connettore di notifica dell'applicazione "+this.applicazione.getCodApplicazione()+" non configurato.");
+				eventoNota.setPrincipal(null);
+				eventoNota.setData(new Date());
+				eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
+				eventoNota.setCodDominio(this.rpt.getCodDominio());
+				eventoNota.setIuv(this.rpt.getIuv());
+				eventoNota.setCcp(this.rpt.getCcp());
+				eventoNota.setIdPagamentoPortale(this.rpt.getIdPagamentoPortale());
+				eventoNota.setIdVersamento(this.rpt.getIdVersamento());					
+				giornaleEventi.registraEventoNota(eventoNota);
+				
 				return;
 			}
 			
-			ctx.setupPaClient(applicazione.getCodApplicazione(), this.notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", applicazione.getConnettoreNotifica().getUrl(), applicazione.getConnettoreNotifica().getVersione());
+			ctx.setupPaClient(applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, applicazione.getConnettoreNotifica().getUrl(), applicazione.getConnettoreNotifica().getVersione());
 			ctx.log("notifica.spedizione");
 			
 			NotificaClient client = new NotificaClient(applicazione);
-			client.invoke(this.notifica,bd);
+			
+			messaggioRichiesta = client.getMessaggioRichiesta(this.notifica, bd);
+			
+			byte[] byteResponse = client.invoke(this.notifica,bd);
+			
+			messaggioRisposta = byteResponse != null ? new String(byteResponse) : "";
+			
 			this.notifica.setStato(StatoSpedizione.SPEDITO);
 			this.notifica.setDescrizioneStato(null);
 			this.notifica.setDataAggiornamento(new Date());
@@ -141,23 +174,28 @@ public class InviaNotificaThread implements Runnable {
 			NotificheBD notificheBD = new NotificheBD(bd);
 			notificheBD.updateSpedito(this.notifica.getId());
 			
-			if(this.notifica.getIdRpt() != null) {
-				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-					if(this.notifica.getRpt(bd).getCodCarrello() != null) {
-						ctx.log("notifica.carrellook");
-					} else {
-						ctx.log("notifica.rptok");
-					}
+			switch (tipoNotifica) {
+			case ATTIVAZIONE:
+				if(rpt.getCodCarrello() != null) {
+					ctx.log("notifica.carrellook");
 				} else {
-					ctx.log("notifica.rtok");
+					ctx.log("notifica.rptok");
 				}
-			} else {
-				if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-					ctx.log("notifica.rrok");
-				} else {
-					ctx.log("notifica.erok");
-				}
+				break;
+			case ANNULLAMENTO:
+				ctx.log("notifica.annullamentoRptok");
+				break;
+			case FALLIMENTO:
+				ctx.log("notifica.fallimentoRptok");
+				break;
+			case RICEVUTA:
+				ctx.log("notifica.rtok");
+				break;
 			}
+			
+			buildEventoIntegrazione(evento, ctx.getTransactionId(), applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, tipoNotifica.name(), "OK", null, messaggioRichiesta, messaggioRisposta, bd);
+			giornaleEventi.registraEventointegrazione(evento);
+			 
 			log.info("Notifica consegnata con successo");
 		} catch(Exception e) {
 			if(e instanceof GovPayException || e instanceof ClientException)
@@ -167,6 +205,9 @@ public class InviaNotificaThread implements Runnable {
 			try {
 				if(bd == null)
 					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+				
+				Rpt rpt = this.notifica.getRpt(bd);
+				
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;
 				NotificheBD notificheBD = new NotificheBD(bd);
 				
@@ -178,44 +219,57 @@ public class InviaNotificaThread implements Runnable {
 				if(prossima.after(tomorrow)) prossima = tomorrow;
 				
 				if(tentativi == 1 || !e.getMessage().equals(this.notifica.getDescrizioneStato())) {
-					if(this.notifica.getIdRpt() != null) {
-						if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-							if(this.notifica.getRpt(bd).getCodCarrello() != null) {
-								ctx.log("notifica.carrelloko", e.getMessage());
-							} else {
-								ctx.log("notifica.rptko", e.getMessage());
-							}
+					switch (tipoNotifica) {
+					case ATTIVAZIONE:
+						if(rpt.getCodCarrello() != null) {
+							ctx.log("notifica.carrelloko", e.getMessage());
 						} else {
-							ctx.log("notifica.rtko", e.getMessage());
+							ctx.log("notifica.rptko", e.getMessage());
 						}
-					} else {
-						if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-							ctx.log("notifica.rrko", e.getMessage());
-						} else {
-							ctx.log("notifica.erko", e.getMessage());
-						}
+						break;
+					case ANNULLAMENTO:
+						ctx.log("notifica.annullamentoRptko", e.getMessage());
+						break;
+					case FALLIMENTO:
+						ctx.log("notifica.fallimentoRptko", e.getMessage());
+						break;
+					case RICEVUTA:
+						ctx.log("notifica.rtko", e.getMessage());
+						break;
 					}
 				} else {
-					if(this.notifica.getIdRpt() != null) {
-						if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-							if(this.notifica.getRpt(bd).getCodCarrello() != null) {
-								ctx.log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
-							} else {
-								ctx.log("notifica.rptRetryko", e.getMessage(), prossima.toString());
-							}
+					switch (tipoNotifica) {
+					case ATTIVAZIONE:
+						if(rpt.getCodCarrello() != null) {
+							ctx.log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
 						} else {
-							ctx.log("notifica.rtRetryko", e.getMessage(), prossima.toString());
+							ctx.log("notifica.rptRetryko", e.getMessage(), prossima.toString());
 						}
-					} else {
-						if(this.notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
-							ctx.log("notifica.rrRetryko", e.getMessage(), prossima.toString());
-						} else {
-							ctx.log("notifica.erRetryko", e.getMessage(), prossima.toString());
-						}
+						break;
+					case ANNULLAMENTO:
+						ctx.log("notifica.annullamentoRptRetryko", e.getMessage(), prossima.toString());
+						break;
+					case FALLIMENTO:
+						ctx.log("notifica.fallimentoRptRetryko", e.getMessage(), prossima.toString());
+						break;
+					case RICEVUTA:
+						ctx.log("notifica.rtRetryko", e.getMessage(), prossima.toString());
+						break;
 					}
 				}
 				
 				notificheBD.updateDaSpedire(this.notifica.getId(), e.getMessage(), tentativi, prossima);
+				
+				if(giornaleEventi != null) {
+					if(e instanceof ClientException) {
+						byte[] byteResponse = ((ClientException) e).getResponseContent();
+						messaggioRisposta = byteResponse != null ? new String(byteResponse) : "";
+					}
+					
+					buildEventoIntegrazione(evento, ctx.getTransactionId(), applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, tipoNotifica.name(), "KO", e.getMessage(), messaggioRichiesta, messaggioRisposta, bd);
+					giornaleEventi.registraEventointegrazione(evento);
+				}
+				
 			} catch (Exception ee) {
 				// Andato male l'aggiornamento. Non importa, verra' rispedito.
 			}
@@ -228,5 +282,29 @@ public class InviaNotificaThread implements Runnable {
 
 	public boolean isCompleted() {
 		return this.completed;
+	}
+	
+	private void buildEventoIntegrazione(EventoIntegrazione evento, String idTransazione, 
+			String codApplicazione, String tipoEvento, 
+			String sottotipoEvento, String esito, String descrizioneEsito,  
+			String messaggioRichiesta, String messaggioRisposta, BasicBD bd) {
+		evento.setAltriParametriRichiesta(null);
+		evento.setAltriParametriRisposta(null);
+		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_INTEGRAZIONE);
+		evento.setCodDominio(this.dominio.getCodDominio());
+		evento.setComponente(EventoCooperazione.COMPONENTE);
+		evento.setDataRisposta(new Date());
+		evento.setErogatore(codApplicazione);
+		evento.setEsito(esito);
+		evento.setDescrizioneEsito(descrizioneEsito);
+		evento.setFruitore(EventoCooperazione.COMPONENTE);
+		evento.setIuv(this.rpt.getIuv());
+		evento.setCcp(this.rpt.getCcp());
+		evento.setSottotipoEvento(sottotipoEvento);
+		evento.setTipoEvento(tipoEvento);
+		evento.setAltriParametriRichiesta(messaggioRichiesta);
+		evento.setAltriParametriRisposta(messaggioRisposta);
+		evento.setIdVersamento(this.versamento.getId());
+		evento.setIdTransazione(idTransazione);
 	}
 }

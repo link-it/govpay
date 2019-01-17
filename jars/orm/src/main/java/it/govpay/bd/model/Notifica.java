@@ -40,7 +40,7 @@ public class Notifica extends it.govpay.model.Notifica {
 		long adesso = new Date().getTime();
 		this.setDataAggiornamento(new Date(adesso));
 		this.setDataCreazione(new Date(adesso));
-		this.setDataProssimaSpedizione(new Date(adesso + 60000 ));
+		this.setDataProssimaSpedizione(new Date(adesso + 10000 ));
 		this.setDescrizioneStato(null);
 		this.setRpt(rpt);
 		this.setStato(StatoSpedizione.DA_SPEDIRE);
@@ -85,13 +85,9 @@ public class Notifica extends it.govpay.model.Notifica {
 	}
 	
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
-		if(this.rpt == null) {
-			if(this.getIdRpt() != null) { 
-				RptBD rptBD = new RptBD(bd);
-				this.rpt = rptBD.getRpt(this.getIdRpt());
-			} else {
-				this.rpt = this.getRr(bd).getRpt(bd);
-			}
+		if(this.rpt == null && this.getIdRpt() != null) {
+			RptBD rptBD = new RptBD(bd);
+			this.rpt = rptBD.getRpt(this.getIdRpt());
 		}
 			
 		return this.rpt;
@@ -110,6 +106,10 @@ public class Notifica extends it.govpay.model.Notifica {
 		this.setIdRr(rr.getId());
 	}
 	
-	
+	public String getRptKey(BasicBD bd) throws ServiceException {
+		if(this.getRpt(bd) != null)
+			return rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp();
+		return "";
+	}
 	
 }

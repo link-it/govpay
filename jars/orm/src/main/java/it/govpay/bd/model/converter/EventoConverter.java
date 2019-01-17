@@ -30,6 +30,7 @@ import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TY
 
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoIntegrazione;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Evento.CategoriaEvento;
@@ -167,6 +168,39 @@ public class EventoConverter {
 		return evento;
 	}
 	
+	public static Evento fromEventointegrazioneToEvento(EventoIntegrazione eventointegrazione) throws IOException {
+		Evento evento = new Evento();
+		
+		evento.setCategoriaEvento(eventointegrazione.getCategoriaEvento());
+		evento.setCcp(eventointegrazione.getCcp());
+		evento.setCodDominio(eventointegrazione.getCodDominio());
+		evento.setData(eventointegrazione.getDataRichiesta());
+		evento.setClassnameDettaglio(EventoIntegrazione.class.getName());
+		evento.setDettaglio(getDettaglioEventoIntegrazione(eventointegrazione)); 
+		evento.setIdPagamentoPortale(eventointegrazione.getIdPagamentoPortale()); 
+		evento.setIdVersamento(eventointegrazione.getIdVersamento());
+		if(eventointegrazione.getDataRisposta() != null) {
+			if(eventointegrazione.getDataRichiesta() != null) {
+				evento.setIntervallo(eventointegrazione.getDataRisposta().getTime() - eventointegrazione.getDataRichiesta().getTime());
+			} else {
+				evento.setIntervallo(0l);
+			}
+		} else {
+			evento.setIntervallo(0l);
+		}
+		evento.setIuv(eventointegrazione.getIuv());
+		evento.setSottotipoEvento(eventointegrazione.getSottotipoEvento());
+		if(eventointegrazione.getTipoEvento() != null)
+			evento.setTipoEvento(eventointegrazione.getTipoEvento().toString());
+		
+		return evento;
+	}
+	
+	public static EventoIntegrazione toEventoIntegrazione(Evento evento) throws IOException {
+		EventoIntegrazione eventointegrazione = evento.getDettaglioObject(EventoIntegrazione.class);
+		return eventointegrazione;
+	}
+	
 	public static EventoCooperazione toEventoCooperazione(Evento evento) throws IOException {
 		EventoCooperazione eventoCooperazione = evento.getDettaglioObject(EventoCooperazione.class);
 		
@@ -217,6 +251,14 @@ public class EventoConverter {
 	public static EventoNota toEventoNota(Evento evento) throws IOException {
 		EventoNota eventoNota = evento.getDettaglioObject(EventoNota.class);
 		return eventoNota;
+	}
+	
+	public static String getDettaglioEventoIntegrazione(EventoIntegrazione eventoIntegrazione) throws IOException {
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+		return serializer.getObject(eventoIntegrazione); 
 	}
 	
 	public static String getDettaglioEventoCooperazione(EventoCooperazione eventoCooperazione) throws IOException {

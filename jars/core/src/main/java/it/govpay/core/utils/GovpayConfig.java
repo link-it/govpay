@@ -88,6 +88,7 @@ public class GovpayConfig {
 	private Integer timeoutPendentiModello3Mins;
 	private boolean timeoutPendentiModello1;
 	private Integer timeoutPendentiModello1Mins;
+	private Integer intervalloControlloRptPendenti;
 	
 	private Properties[] props;
 	private IConservazione conservazionePlugin;
@@ -153,6 +154,7 @@ public class GovpayConfig {
 		this.sizePaginaNumeroVersamentiAvvisaturaDigitale = 100;
 		this.limiteNumeroVersamentiAvvisaturaDigitale = 100000;
 		this.avvisaturaDigitaleModalitaAnnullamentoAvviso = AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_ASINCRONA;
+		this.intervalloControlloRptPendenti = 30;
 		
 		try {
 
@@ -425,7 +427,7 @@ public class GovpayConfig {
 			try {
 				this.sizePaginaNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(sizePaginaNumeroVersamentiPerAvvisoString);
 			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.batch.avvisaturaDigitale.sizePaginaNumeroVersamenti\" impostata com valore di default (100)");
+				log.info("Proprieta \"it.govpay.avvisaturaDigitale.sizePaginaNumeroVersamenti\" impostata com valore di default (100)");
 				this.sizePaginaNumeroVersamentiAvvisaturaDigitale = 100;
 			}
 			
@@ -433,11 +435,19 @@ public class GovpayConfig {
 			try {
 				this.limiteNumeroVersamentiAvvisaturaDigitale = Integer.parseInt(limiteNumeroVersamentiPerAvvisoString);
 			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.batch.avvisaturaDigitale.limiteNumeroVersamenti\" impostata com valore di default (100000)");
+				log.info("Proprieta \"it.govpay.avvisaturaDigitale.limiteNumeroVersamenti\" impostata com valore di default (100000)");
 				this.limiteNumeroVersamentiAvvisaturaDigitale = 100000;
 			}
 			
 			this.avvisaturaDigitaleModalitaAnnullamentoAvviso = getProperty("it.govpay.avvisaturaDigitale.annullamentoAvviso.modalita", this.props, false, log);
+			
+			String intervalloControlloRptPendentiString = getProperty("it.govpay.recuperoRptPendenti.intervalloControlloCreazioneRpt", props, false, log);
+			try {
+				this.intervalloControlloRptPendenti = Integer.parseInt(intervalloControlloRptPendentiString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.recuperoRptPendenti.intervalloControlloCreazioneRpt\" impostata com valore di default (100000)");
+				this.intervalloControlloRptPendenti = 100000;
+			}
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -671,5 +681,9 @@ public class GovpayConfig {
 
 	public String getAvvisaturaDigitaleModalitaAnnullamentoAvviso() {
 		return avvisaturaDigitaleModalitaAnnullamentoAvviso;
+	}
+
+	public Integer getIntervalloControlloRptPendenti() {
+		return intervalloControlloRptPendenti;
 	}
 }

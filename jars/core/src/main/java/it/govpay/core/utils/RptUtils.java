@@ -46,11 +46,13 @@ import gov.telematici.pagamenti.ws.rpt.TipoElementoListaRPT;
 import gov.telematici.pagamenti.ws.rpt.TipoListaRPT;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.eventi.EventoCooperazione;
 import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
+import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
@@ -65,6 +67,7 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt.StatoRpt;
 
@@ -257,11 +260,18 @@ public class RptUtils {
 
 	public static boolean aggiornaRptDaNpD(NodoClient client, Rpt rpt, BasicBD bd) throws GovPayException, ServiceException, ClientException, NdpException {
 		try {
+			NotificheBD notificheBD = null;
 			StatoRpt stato_originale = rpt.getStato();
 			switch (stato_originale) {
 			case RPT_RIFIUTATA_NODO:
 			case RPT_RIFIUTATA_PSP:
 			case RPT_ERRORE_INVIO_A_PSP:
+				// inserisco una notifica di fallimento
+				Notifica notifica = new Notifica(rpt, TipoNotifica.FALLIMENTO, bd);
+				notificheBD = new NotificheBD(bd);
+				notificheBD.insertNotifica(notifica);
+				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato terminale [" + rpt.getStato()+ "]. Aggiornamento non necessario, Schedulazione notifica di Fallimento del tentativo.");
+				return false;
 			case RT_ACCETTATA_PA:
 				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato terminale [" + rpt.getStato()+ "]. Aggiornamento non necessario.");
 				return false;
@@ -349,6 +359,7 @@ public class RptUtils {
 					case RT_ESITO_SCONOSCIUTO_PA:
 					case RT_RIFIUTATA_PA:
 					case RT_ACCETTATA_PA:
+					case RPT_ANNULLATA:
 						
 						log.info("Richiesta dell'RT al Nodo dei Pagamenti [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "].");
 	
@@ -396,6 +407,56 @@ public class RptUtils {
 						rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), nodoChiediCopiaRTRisposta.getTipoFirma(), rtByte, bd);
 						GpThreadLocal.get().getContext().getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 						GpThreadLocal.get().log("pagamento.acquisizioneRtOk");
+						return true;
+						
+					case RPT_RIFIUTATA_NODO:
+					case RPT_RIFIUTATA_PSP:
+					case RPT_ERRORE_INVIO_A_PSP:
+						// Controllo che lo stato sia ancora quello originale per il successivo aggiornamento
+						bd.enableSelectForUpdate();
+						rptBD = new RptBD(bd);
+						Rpt rpt_attuale_tmp = rptBD.getRpt(rpt.getId());
+						if(!stato_originale.equals(rpt_attuale_tmp.getStato())) {
+							// Lo stato e' cambiato. Rinuncio all'aggiornamento
+							log.info("Lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] risulta cambiato su GovPay durante l'aggiornamento: " + rpt_attuale_tmp.getStato() + ". Operazione di recupero annullata.");
+							bd.disableSelectForUpdate();
+							return false;
+						}
+						
+						boolean wasAutoCommit = bd.isAutoCommit();
+						try {
+							
+							if(wasAutoCommit)
+								bd.setAutoCommit(false);
+							
+							// inserisco una notifica di fallimento
+							Notifica notificaFallimento = new Notifica(rpt, TipoNotifica.FALLIMENTO, bd);
+							notificheBD = new NotificheBD(bd);
+							notificheBD.insertNotifica(notificaFallimento);
+							
+							log.info("Aggiorno lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in " + nuovoStato + ". Schedulazione notifica di Fallimento del tentativo.");
+							rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato acquisito da Nodo dei Pagamenti", null, null);
+							rpt.setStato(nuovoStato);
+							rpt.setDescrizioneStato("Stato acquisito da Nodo dei Pagamenti");
+							bd.disableSelectForUpdate();
+							
+							// aggiornamento del pagamento portale
+							Long idPagamentoPortale = rpt.getIdPagamentoPortale();
+							if(idPagamentoPortale != null) {
+								PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, bd); 
+							}
+							
+							if(!bd.isAutoCommit())
+								bd.commit();
+						}catch(ServiceException e) {
+							if(!bd.isAutoCommit())
+								bd.rollback();
+							throw e;
+						} finally {
+							if(wasAutoCommit)
+								bd.setAutoCommit(true);
+						}
+						
 						return true;
 					default:
 						

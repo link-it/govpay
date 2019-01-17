@@ -606,7 +606,7 @@ public enum EsitoOperazione {
      * Validazione semantica del versamento non valida: Pagamento in attesa risulta in corso all'Ente Creditore.  
      * 
      */
-    VER_031;
+    PAG_014;
 	
 
     public String value() {

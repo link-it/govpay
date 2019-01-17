@@ -120,6 +120,8 @@ public class RPTFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato_cons", RPT.model().DESCRIZIONE_STATO_CONS.getFieldType()));
 				this.setParameter(object, "setDataConservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_conservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType()));
+				this.setParameter(object, "setBloccante", RPT.model().BLOCCANTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "bloccante", RPT.model().BLOCCANTE.getFieldType()));
 				return object;
 			}
 			
@@ -208,6 +210,8 @@ public class RPTFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"descrizioneStatoCons"));
 				this.setParameter(object, "setDataConservazione", RPT.model().DATA_CONSERVAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataConservazione"));
+				this.setParameter(object, "setBloccante", RPT.model().BLOCCANTE.getFieldType(),
+					this.getObjectFromMap(map,"bloccante"));
 				return object;
 			}
 			

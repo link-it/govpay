@@ -95,6 +95,7 @@ public class RptConverter {
 			dto.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(vo.getTipoIdentificativoAttestante()));
 		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
 		dto.setDenominazioneAttestante(vo.getDenominazioneAttestante());
+		dto.setBloccante(vo.isBloccante()); 
 		return dto;
 	}
 
@@ -156,7 +157,7 @@ public class RptConverter {
 			vo.setTipoIdentificativoAttestante(dto.getTipoIdentificativoAttestante().name());
 		vo.setIdentificativoAttestante(dto.getIdentificativoAttestante());
 		vo.setDenominazioneAttestante(dto.getDenominazioneAttestante());
-		
+		vo.setBloccante(dto.isBloccante());
 		return vo;
 	}
 

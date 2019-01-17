@@ -32,6 +32,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.resources.Charset;
+import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -72,55 +73,81 @@ public class NotificaClient extends BasicClient {
 	 * @throws JAXBException 
 	 * @throws NdpException 
 	 */
-	public void invoke(Notifica notifica, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException {
+	public byte[] invoke(Notifica notifica, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException {
+		Rpt rpt = notifica.getRpt(bd); 
+		String codDominio = rpt.getCodDominio();
+		String iuv = rpt.getIuv();
+		String ccp = rpt.getCcp();
+		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
 
-		log.debug("Spedisco la notifica di " + notifica.getTipo() + ((notifica.getIdRr() == null) ? " PAGAMENTO" : " STORNO") + " della transazione (" + notifica.getRpt(null).getCodDominio() + ")(" + notifica.getRpt(null).getIuv() + ")(" + notifica.getRpt(null).getCcp() + ") in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+		List<Property> headerProperties = new ArrayList<>();
+		headerProperties.add(new Property("Accept", "application/json"));
+		String jsonBody = "";
+		StringBuilder sb = new StringBuilder();
+		Map<String, String> queryParams = new HashMap<>();
+		HttpRequestMethod httpMethod = HttpRequestMethod.POST;
 
-			List<Property> headerProperties = new ArrayList<>();
-			headerProperties.add(new Property("Accept", "application/json"));
-			String jsonBody = "";
-			StringBuilder sb = new StringBuilder();
-
-			if(notifica.getIdRr() == null) {
-				Rpt rpt = notifica.getRpt(null);
-				
-				sb.append("/pagamenti/" + rpt.getCodDominio() + "/"+ rpt.getIuv());
-
-				Map<String, String> queryParams = new HashMap<>();
-				
-				if(rpt.getCodSessione() != null) {
-					queryParams.put("idSession", encode(rpt.getCodSessione()));
-				}
-
-				if(rpt.getCodSessionePortale() != null) {
-					queryParams.put("idSessionePortale", encode(rpt.getCodSessionePortale()));
-				}
-
-				if(rpt.getCodCarrello() != null) {
-					queryParams.put("idCarrello", encode(rpt.getCodCarrello()));
-				}
-				
-				boolean amp = false;
-				for (String key : queryParams.keySet()) {
-					if(amp) {
-						sb.append("&");
-					} else {
-						sb.append("?");
-						amp = true;
-					}
-					
-					sb.append(key).append("=").append(queryParams.get(key));
-				}
-				
-				it.govpay.ec.v1.beans.Notifica notificaRsModel = new NotificaConverter().toRsModel(notifica, rpt, bd);
-				jsonBody = ConverterUtils.toJSON(notificaRsModel, null);
-
-			} else {
-				throw new ServiceException("Notifica Storno REST non implementata!");
+		switch (notifica.getTipo()) {
+		case ANNULLAMENTO:
+		case FALLIMENTO:
+			sb.append("/pagamenti/" + codDominio + "/"+ iuv);
+			sb.append("/").append(ccp).append("/annulla");
+			break;
+		case ATTIVAZIONE:
+		case RICEVUTA:
+			sb.append("/pagamenti/" + codDominio + "/"+ iuv);
+			if(rpt.getCodSessione() != null) {
+				queryParams.put("idSession", encode(rpt.getCodSessione()));
 			}
-			this.sendJson(sb.toString(), jsonBody, headerProperties);
+
+			if(rpt.getCodSessionePortale() != null) {
+				queryParams.put("idSessionePortale", encode(rpt.getCodSessionePortale()));
+			}
+
+			if(rpt.getCodCarrello() != null) {
+				queryParams.put("idCarrello", encode(rpt.getCodCarrello()));
+			}
+			break;
 		}
 
+		// composizione URL
+		boolean amp = false;
+		for (String key : queryParams.keySet()) {
+			if(amp) {
+				sb.append("&");
+			} else {
+				sb.append("?");
+				amp = true;
+			}
+
+			sb.append(key).append("=").append(queryParams.get(key));
+		}
+		
+		jsonBody = this.getMessaggioRichiesta(notifica, bd);
+
+		return this.sendJson(sb.toString(), jsonBody, headerProperties, httpMethod.name());
+	}
+
+	public String getMessaggioRichiesta(Notifica notifica, BasicBD bd) throws ServiceException, JAXBException, SAXException {
+		Rpt rpt = notifica.getRpt(bd);
+		String jsonBody = "";
+		
+		switch (notifica.getTipo()) {
+		case ANNULLAMENTO:
+		case FALLIMENTO:
+			it.govpay.ec.v1.beans.NotificaAnnullamento notificaCancellazioneRsModel = new NotificaConverter().toNotificaCancellazioneRsModel(notifica, rpt, bd);
+			jsonBody = ConverterUtils.toJSON(notificaCancellazioneRsModel, null);
+
+			break;
+		case ATTIVAZIONE:
+		case RICEVUTA:
+			it.govpay.ec.v1.beans.Notifica notificaRsModel = new NotificaConverter().toRsModel(notifica, rpt, bd);
+			jsonBody = ConverterUtils.toJSON(notificaRsModel, null);
+			break;
+		}
+		
+		return jsonBody;
+	}
 
 	private String encode(String value) {
 		try {

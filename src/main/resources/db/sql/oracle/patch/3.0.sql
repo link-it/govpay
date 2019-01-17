@@ -267,8 +267,8 @@ ALTER TABLE operatori DROP COLUMN principal;
 ALTER TABLE operatori DROP COLUMN profilo;
 ALTER TABLE operatori DROP COLUMN abilitato;
 
-ALTER TABLE applicazioni ADD auto_iuv BOOLEAN;
-UPDATE applicazioni SET auto_iuv = true;
+ALTER TABLE applicazioni ADD auto_iuv NUMBER;
+UPDATE applicazioni SET auto_iuv = 1;
 ALTER TABLE applicazioni MODIFY (auto_iuv NOT NULL);
 
 ALTER TABLE domini DROP COLUMN custom_iuv;

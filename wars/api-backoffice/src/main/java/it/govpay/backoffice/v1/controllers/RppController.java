@@ -12,17 +12,23 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.backoffice.v1.beans.ListaRpp;
+import it.govpay.backoffice.v1.beans.PatchOp;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.RppIndex;
+import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
+import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.backoffice.v1.beans.converter.RptConverter;
+import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
@@ -31,6 +37,8 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
+import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -106,7 +114,151 @@ public class RppController extends BaseController {
 		}
 	}
 
+	public Response rppIdDominioIuvCcpGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
+		String methodName = "rppIdDominioIuvCcpGET";  
+		GpContext ctx = null;
+		String transactionId = null;		
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
+			leggiRptDTO.setIdDominio(idDominio);
+			leggiRptDTO.setIuv(iuv);
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			leggiRptDTO.setCcp(ccp);
+
+			RptDAO ricevuteDAO = new RptDAO(); 
+
+			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
+
+
+			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt());
+
+			PendenzaIndex pendenza = PendenzeConverter.toRsModelIndex(leggiRptDTOResponse.getVersamento());
+
+			response.setPendenza(pendenza);
+
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public Response rppIdDominioIuvCcpPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String iuv, String ccp) {
+		String methodName = "rppIdDominioIuvCcpPATCH";  
+		GpContext ctx = null;
+		String transactionId = null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			// salvo il json ricevuto
+			IOUtils.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			RptDAO rptDAO = new RptDAO();
+			
+			PatchRptDTO patchRptDTO = new PatchRptDTO(user);
+			patchRptDTO.setIdDominio(idDominio);
+			patchRptDTO.setIuv(iuv);
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			patchRptDTO.setCcp(ccp);
+			
+			String jsonRequest = baos.toString();
+
+			List<PatchOp> lstOp = new ArrayList<>();
+
+			try {
+				List<java.util.LinkedHashMap<?,?>> lst = JSONSerializable.parse(jsonRequest, List.class);
+				for(java.util.LinkedHashMap<?,?> map: lst) {
+					PatchOp op = new PatchOp();
+					op.setOp(OpEnum.fromValue((String) map.get("op")));
+					op.setPath((String) map.get("path"));
+					op.setValue(map.get("value"));
+					op.validate();
+					lstOp.add(op);
+				}
+			} catch (ServiceException e) {
+				lstOp = JSONSerializable.parse(jsonRequest, List.class);
+				//				PatchOp op = PatchOp.parse(jsonRequest);
+				//				op.validate();
+				//				lstOp.add(op);
+			}
+
+			patchRptDTO.setOp(PatchOpConverter.toModel(lstOp));
+			
+			
+			PatchRptDTOResponse patchRptDTOResponse = rptDAO.patch(patchRptDTO);
+		
+			Rpp response =  RptConverter.toRsModel(patchRptDTOResponse.getRpt());
+
+			PendenzaIndex pendenza = PendenzeConverter.toRsModelIndex(patchRptDTOResponse.getVersamento());
+
+			response.setPendenza(pendenza);
+
+			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		}
+	}
+
+	public Response rppIdDominioIuvCcpRptGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
+		String methodName = "rppIdDominioIuvCcpRtGET";  
+		GpContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+
+
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+
+			String accept = "";
+			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
+				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
+			}
+
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
+			leggiRptDTO.setIdDominio(idDominio);
+			leggiRptDTO.setIuv(iuv);
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			leggiRptDTO.setCcp(ccp);
+
+			RptDAO ricevuteDAO = new RptDAO(); 
+
+			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
+
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
+			}else {
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
+			}
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			if(ctx != null) ctx.log();
+		} 
+	}
 
 	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
@@ -133,7 +285,7 @@ public class RppController extends BaseController {
 			leggiPagamentoPortaleDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
-			
+
 			if(visualizzaSoggettoDebitore != null)
 				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
 
@@ -144,7 +296,7 @@ public class RppController extends BaseController {
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.RAW);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-				
+
 				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
@@ -179,94 +331,6 @@ public class RppController extends BaseController {
 			if(ctx != null) ctx.log();
 		}    
 	}
-
-
-
-	public Response rppIdDominioIuvCcpRptGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
-		String methodName = "rppIdDominioIuvCcpRtGET";  
-		GpContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-
-
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			String accept = "";
-			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
-				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
-			}
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-
-			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
-			leggiRptDTO.setIdDominio(idDominio);
-			leggiRptDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
-			leggiRptDTO.setCcp(ccp);
-
-			RptDAO ricevuteDAO = new RptDAO(); 
-
-			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
-			
-			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
-				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
-				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
-			}else {
-				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
-			}
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		} 
-	}
-
-
-
-	public Response rppIdDominioIuvCcpGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
-		String methodName = "rppIdDominioIuvCcpGET";  
-		GpContext ctx = null;
-		String transactionId = null;		
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-
-			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
-			leggiRptDTO.setIdDominio(idDominio);
-			leggiRptDTO.setIuv(iuv);
-			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
-			leggiRptDTO.setCcp(ccp);
-
-			RptDAO ricevuteDAO = new RptDAO(); 
-
-			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
-
-
-			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt());
-			
-			PendenzaIndex pendenza = PendenzeConverter.toRsModelIndex(leggiRptDTOResponse.getVersamento());
-			
-			response.setPendenza(pendenza);
-			
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			if(ctx != null) ctx.log();
-		}
-	}
-
-
 }
 
 

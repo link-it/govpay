@@ -155,6 +155,24 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
+	/**
+	 * Aggiorna lo stato di blocco una RPT identificata dall'id
+	 * @param idRpt
+	 * @param stato
+	 * @throws NotFoundException
+	 * @throws ServiceException
+	 */
+	public void sbloccaRpt(long idRpt, boolean statoBlocco) throws NotFoundException, ServiceException{
+		try {
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			lstUpdateFields.add(new UpdateField(RPT.model().BLOCCANTE, statoBlocco));
+
+			((JDBCRPTService)this.getRptService()).updateFields(idRpt, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 	public void updateRpt(Long id, Rpt rpt) throws ServiceException {
 		try {
 			it.govpay.orm.RPT vo = RptConverter.toVO(rpt);

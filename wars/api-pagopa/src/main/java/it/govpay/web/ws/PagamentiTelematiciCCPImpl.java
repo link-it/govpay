@@ -285,7 +285,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				
 				for(Rpt rpt_pendente : rpt_pendenti) {
 					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
-					if(GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
+					
+					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
+					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
 					}
 				}
@@ -655,7 +657,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				for(Rpt rpt_pendente : rpt_pendenti) {
 					idPagamentoPortaleLong = rpt_pendente.getIdPagamentoPortale();
 					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
-					if(GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta)) {
+					
+					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
+					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
 					}
 				}

@@ -47,6 +47,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
@@ -66,6 +67,7 @@ import it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
@@ -80,7 +82,6 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rr.StatoRr;
 
@@ -194,6 +195,11 @@ public class Pagamento extends BasicBD {
 				ctx.log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
 				log.debug("Recupero i pendenti [CodStazione: " + stazione.getCodStazione() + "]");
 				
+				if(lstDomini.isEmpty()) {
+					log.debug("Recupero i pendenti per la stazione [CodStazione: " + stazione.getCodStazione() + "], non eseguita: la stazione non e' associata ad alcun dominio.");
+					continue;
+				}
+				
 				// Costruisco una mappa di tutti i pagamenti pendenti sul nodo
 				// La chiave di lettura e' iuv@ccp
 
@@ -227,14 +233,14 @@ public class Pagamento extends BasicBD {
 
 				// Scorro le transazioni. Se non risulta pendente sul nodo (quindi non e' pendente) la mando in aggiornamento.
 				
-				Date mezzorafa = new Date(new Date().getTime() - (30 * 60 * 1000));
+				Integer minutiDallaCreazioneRPT = GovpayConfig.getInstance().getIntervalloControlloRptPendenti();
+				Date dataCreazioneRPT = new Date(new Date().getTime() - (minutiDallaCreazioneRPT * 60 * 1000));
 				
 				for(Rpt rpt : rpts) {
 					
-					// WORKAROUND CONCORRENZA CON INVIO RT DAL NODO
-					// SKIPPO LE RPT PENDENTI CREATE MENO DI MEZZ'ORA FA
+					// WORKAROUND CONCORRENZA CON INVIO RT DAL NODO SKIPPO LE RPT PENDENTI CREATE DA MENO DI X MINUTI (INDICATI NELLE PROPERTIES)
 					
-					if(rpt.getDataMsgRichiesta().after(mezzorafa)) {
+					if(rpt.getDataMsgRichiesta().after(dataCreazioneRPT)) {
 						log.info("Rpt recente [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] aggiornamento non necessario");
 						continue;
 					} else {
@@ -245,7 +251,7 @@ public class Pagamento extends BasicBD {
 					BatchManager.aggiornaEsecuzione(this, Operazioni.PND);
 					
 					String stato = statiRptPendenti.get(rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp());
-					if(stato != null) {
+					if(stato != null && !stato.equals(StatoRpt.RPT_ANNULLATA.name())) {
 						log.info("Rpt confermata pendente dal nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
 						ctx.log("pendenti.confermaPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), stato);
 						StatoRpt statoRpt = StatoRpt.toEnum(stato);

@@ -162,6 +162,7 @@ public class RptBuilder {
 		rpt.setStato(StatoRpt.RPT_ATTIVATA);
 		rpt.setIdTransazioneRpt(GpThreadLocal.get().getTransactionId());
 		rpt.setVersamento(versamento);
+		rpt.setBloccante(true);
 
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
 		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);

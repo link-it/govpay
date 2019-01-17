@@ -72,6 +72,21 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: idSession
+          description: Identificativo di sessione assegnato al pagamento da pagoPA
+          schema:
+            type: string
+        - in: query
+          name: idSessionePortale
+          description: Identificativo della sessione di pagamento assegnato dall'EC
+          schema:
+            type: string     
+        - in: query
+          name: idCarrello
+          description: Identificativo del carrello
+          schema:
+            type: string     
       requestBody:
         description: Notifica di pagamento
         content:
@@ -81,6 +96,48 @@ paths:
       responses:
         '201':
           description: notifica acquisita
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/pagamenti/{idDominio}/{iuv}/{ccp}/annulla':
+    post:
+      operationId: deletePagamento
+      summary: Notifica di annullamento di un pagamento
+      tags:
+        - Notifica
+      parameters: 
+        - name: idDominio
+          in: path
+          description: Dominio creditore
+          required: true
+          schema:
+            type: string
+        - name: iuv
+          in: path
+          description: Identificativo di versamento
+          required: true
+          schema:
+            type: string
+        - name: ccp
+          in: path
+          description: CCP
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Notifica annullamento di pagamento
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/notificaAnnullamento'
+      responses:
+        '200':
+          description: notifica di annullamento acquisita
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -561,3 +618,15 @@ components:
         - SIOPE
         - ALTRO
       example: SIOPE          
+    notificaAnnullamento:
+      type: object
+      properties:
+        codice:
+          type: string
+          description: Codice Operazione
+          example: ERR_001
+        motivazione:
+          type: string
+          description: Descrizione estesa della motivazione che ha portato alla cancellazione del pagamento
+          example: Errore gestione nel PSP  
+    

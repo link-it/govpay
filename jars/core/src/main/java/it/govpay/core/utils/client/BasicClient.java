@@ -45,6 +45,7 @@ import javax.xml.soap.SOAPMessage;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Message;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -69,20 +70,18 @@ public class BasicClient {
 	public class ClientException extends Exception {
 		private static final long serialVersionUID = 1L;
 		private Integer responseCode = null;
+		private byte[] responseContent = null;
 
 		public ClientException(String message, Exception e, Integer responseCode) {
-			super(message, e);
-			this.responseCode = responseCode;
+			this(message, e, responseCode, null);
 		}
 
 		public ClientException(Exception e, Integer responseCode) {
-			super(e);
-			this.responseCode = responseCode;
+			this(e, responseCode, null);
 		}
 
 		public ClientException(String string, Integer responseCode) {
-			super(string);
-			this.responseCode = responseCode;
+			this(string, responseCode, null);
 		}
 		
 		public ClientException(String message, Exception e) {
@@ -97,8 +96,30 @@ public class BasicClient {
 			super(string);
 		}
 		
+		public ClientException(Exception e, Integer responseCode, byte[] responseContent) {
+			super(e);
+			this.responseCode = responseCode;
+			this.responseContent = responseContent;
+		}
+		
+		public ClientException(String string, Integer responseCode, byte[] responseContent) {
+			super(string);
+			this.responseCode = responseCode;
+			this.responseContent = responseContent;
+		}
+		
+		public ClientException(String message, Exception e, Integer responseCode, byte[] responseContent) {
+			super(message, e);
+			this.responseCode = responseCode;
+			this.responseContent = responseContent;
+		}
+		
 		public Integer getResponseCode() {
 			return this.responseCode;
+		}
+		
+		public byte[] getResponseContent () {
+			return this.responseContent;
 		}
 	}
 	
@@ -402,6 +423,10 @@ public class BasicClient {
 	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties) throws ClientException {
 		return this.handleJsonRequest(path, jsonBody, headerProperties, "POST", "application/json");
 	}
+	
+	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties, String httpMethod) throws ClientException {
+		return this.handleJsonRequest(path, jsonBody, headerProperties, httpMethod, "application/json");
+	}
 
 	private byte[] handleJsonRequest(String path, String jsonBody, List<Property> headerProperties, 
 			String httpMethod, String contentType) throws ClientException {
@@ -427,8 +452,9 @@ public class BasicClient {
 			requestMsg.setType(MessageType.REQUEST_OUT);
 			
 			connection = (HttpURLConnection) this.url.openConnection();
-			if(httpMethod.equals("POST"))
+			if(httpMethod.equals("POST") || StringUtils.isNotEmpty(jsonBody))
 				connection.setDoOutput(true);
+			
 			if(contentType != null) {
 				requestMsg.setContentType(contentType);
 				connection.setRequestProperty("Content-Type", contentType);
@@ -522,7 +548,7 @@ public class BasicClient {
 						responseMsg.setContent(msg);
 					return msg;
 				} catch (Exception e) {
-					throw new ClientException("Messaggio di risposta non valido", e,responseCode);
+					throw new ClientException("Messaggio di risposta non valido", e,responseCode,msg);
 				}
 			} else {
 				try {
@@ -531,10 +557,10 @@ public class BasicClient {
 				} catch (IOException e) {
 					msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
 				} finally {
-					log.warn("Errore nell'invocazione del Nodo dei Pagamenti [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
+					log.warn("Errore nell'invocazione verso "+destinatario+" [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
 				}
 				
-				throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode);
+				throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode, msg);
 			}
 		} finally {
 			if(responseMsg != null) {

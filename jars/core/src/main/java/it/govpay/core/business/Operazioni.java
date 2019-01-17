@@ -28,7 +28,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -69,9 +72,11 @@ import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.EsitiAvvisaturaBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.TracciatiBD;
@@ -93,6 +98,7 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.ConnettoreSftp;
 import it.govpay.model.Intermediario;
+import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
@@ -233,6 +239,7 @@ public class Operazioni{
 			if(BatchManager.startEsecuzione(bd, NTFY)) {
 				log.trace("Spedizione notifiche non consegnate");
 				NotificheBD notificheBD = new NotificheBD(bd);
+				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);						
 				List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
 				if(notifiche.size() == 0) {
 					aggiornaSondaOK(NTFY, bd);
@@ -243,7 +250,130 @@ public class Operazioni{
 				}
 
 				log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
+				
+				List<Notifica> notificheAttivazione = new ArrayList<>();
+				List<Notifica> notificheTerminazione = new ArrayList<>();
+				List<Notifica> notificheAnnullamentoAttivazione = new ArrayList<>();
+				List<Notifica> notificheFallimentoAttivazione = new ArrayList<>();
+				List<String> blackListChiaviRptAttivazione = new ArrayList<>();
+				
+				Map<String, List<Notifica>> mappaAttivazioni = new HashMap<>();
 				for(Notifica notifica: notifiche) {
+					String key = notifica.getRptKey(bd);
+					
+					List<Notifica> notifichePerChiave = null;
+					
+					if(mappaAttivazioni.containsKey(key)) {
+						notifichePerChiave = mappaAttivazioni.remove(key);
+					} else {
+						notifichePerChiave = new ArrayList<>();
+					}
+					
+					switch (notifica.getTipo()) {
+					case ATTIVAZIONE:
+						notificheAttivazione.add(notifica);
+						notifichePerChiave.add(notifica);
+						break;
+					case ANNULLAMENTO:
+						notificheAnnullamentoAttivazione.add(notifica);
+						notifichePerChiave.add(notifica);
+						break;
+					case FALLIMENTO:
+						notificheFallimentoAttivazione.add(notifica);
+						notifichePerChiave.add(notifica);
+						break;
+					case RICEVUTA:
+						notificheTerminazione.add(notifica);
+						// le notifiche di terminazione devono essere eseguite sempre
+						break;
+					}
+					
+					mappaAttivazioni.put(key, notifichePerChiave);
+				}
+				
+				for (String key : mappaAttivazioni.keySet()) { // controllo duplicati tra le attivazioni.
+					List<Notifica> notifichePerChiave = mappaAttivazioni.get(key);
+					
+					if(notifichePerChiave.size() > 1) {
+						blackListChiaviRptAttivazione.add(key);
+						
+						EventoNota eventoNota = null;
+						for(Notifica notifica: notifichePerChiave) {
+							Date prossima = new GregorianCalendar(9999,1,1).getTime();
+							TipoNotifica tipoNotifica = notifica.getTipo();
+							Rpt rpt = notifica.getRpt(bd);
+							long tentativi = notifica.getTentativiSpedizione() + 1;
+							
+							switch (tipoNotifica) {
+							case ATTIVAZIONE:
+								notificheBD.updateAnnullata(notifica.getId(), "Trovata una notifica di annullamento/fallimento per la stessa RPT ["+key+"] schedulata per l'invio, spedizione annullata", tentativi, prossima);
+								
+								eventoNota = new EventoNota();
+								eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
+								eventoNota.setOggetto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata.");
+								eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata: trovata una notifica di annullamento/fallimento per la stessa RPT ["+key+"] schedulata per l'invio.");
+								eventoNota.setPrincipal(null);
+								eventoNota.setData(new Date());
+								eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal);
+								eventoNota.setCodDominio(rpt.getCodDominio());
+								eventoNota.setIuv(rpt.getIuv());
+								eventoNota.setCcp(rpt.getCcp());
+								eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
+								eventoNota.setIdVersamento(rpt.getIdVersamento());					
+								giornaleEventi.registraEventoNota(eventoNota);
+								break;
+							case ANNULLAMENTO:
+							case FALLIMENTO:
+								notificheBD.updateAnnullata(notifica.getId(), "Trovata una notifica di attivazione per la stessa RPT ["+key+"] schedulata per l'invio, spedizione annullata", tentativi, prossima);
+								
+								eventoNota = new EventoNota();
+								eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
+								eventoNota.setOggetto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata.");
+								eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata: trovata una notifica di attivazione per la stessa RPT ["+key+"] schedulata per l'invio.");
+								eventoNota.setPrincipal(null);
+								eventoNota.setData(new Date());
+								eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal);
+								eventoNota.setCodDominio(rpt.getCodDominio());
+								eventoNota.setIuv(rpt.getIuv());
+								eventoNota.setCcp(rpt.getCcp());
+								eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
+								eventoNota.setIdVersamento(rpt.getIdVersamento());					
+								giornaleEventi.registraEventoNota(eventoNota);
+								break;
+							case RICEVUTA:
+								break;
+							}
+							
+							
+						}
+					} 
+				}
+				
+				for(Notifica notifica: notificheAttivazione) {
+					// avvio solo le notifiche che non sono in black list
+					if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey(bd))) { 
+						InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
+						ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
+						threads.add(sender);
+					} 
+				}
+				for(Notifica notifica: notificheAnnullamentoAttivazione) {
+					// avvio solo le notifiche che non sono in black list
+					if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey(bd))) { 
+						InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
+						ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
+						threads.add(sender);
+					}
+				}
+				for(Notifica notifica: notificheFallimentoAttivazione) {
+					// avvio solo le notifiche che non sono in black list
+					if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey(bd))) { 
+						InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
+						ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
+						threads.add(sender);
+					}
+				}
+				for(Notifica notifica: notificheTerminazione) {
 					InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
 					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
 					threads.add(sender);

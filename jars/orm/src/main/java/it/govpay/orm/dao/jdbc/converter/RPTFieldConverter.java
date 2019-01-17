@@ -375,6 +375,13 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "data_conservazione";
 			}
 		}
+		if(field.equals(RPT.model().BLOCCANTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".bloccante";
+			}else{
+				return "bloccante";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -518,6 +525,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RPT.model(), returnAlias);
 		}
 		if(field.equals(RPT.model().DATA_CONSERVAZIONE)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().BLOCCANTE)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
 

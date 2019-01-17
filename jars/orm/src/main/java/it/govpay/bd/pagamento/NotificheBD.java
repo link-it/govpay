@@ -108,6 +108,10 @@ public class NotificheBD extends BasicBD {
 		// Non aggiorno il campo a DA_SPEDIRE. Se lo e' gia' tutto bene, se per concorrenza e' a spedito, non voglio sovrascriverlo. 
 		this.update(id, null, message, tentativi, prossima);
 	}
+	
+	public void updateAnnullata(Long id, String message, long tentativi, Date prossima) throws ServiceException {
+		this.update(id, StatoSpedizione.ANNULLATA, message, tentativi, prossima);
+	}
 
 	private void update(long id, StatoSpedizione stato, String descrizione, Long tentativi, Date prossimaSpedizione) throws ServiceException {
 		try {
