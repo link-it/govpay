@@ -49,7 +49,6 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.eventi.EventoNota.TipoNota;
-import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -508,13 +507,14 @@ public class RtUtils extends NdpValidationUtils {
 		}
 		
 		Notifica notifica = new Notifica(rpt, TipoNotifica.RICEVUTA, bd);
-		NotificheBD notificheBD = new NotificheBD(bd);
-		notificheBD.insertNotifica(notifica);
+		it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica(bd);
+		boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
 		
 		bd.commit();
 		bd.disableSelectForUpdate();
 		
-		ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
+		if(schedulaThreadInvio)
+			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
 		
 		ctx.log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
 		log.info("RT acquisita con successo.");

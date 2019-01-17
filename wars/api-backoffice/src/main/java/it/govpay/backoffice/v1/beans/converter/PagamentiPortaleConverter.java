@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.backoffice.v1.beans.ContoAddebito;
+import it.govpay.backoffice.v1.beans.Nota;
 import it.govpay.backoffice.v1.beans.Pagamento;
 import it.govpay.backoffice.v1.beans.Pagamento.ModelloEnum;
 import it.govpay.backoffice.v1.beans.PagamentoIndex;
@@ -15,6 +17,9 @@ import it.govpay.backoffice.v1.beans.PagamentoPost;
 import it.govpay.backoffice.v1.beans.PendenzaPost;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.StatoPagamento;
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.converter.EventoConverter;
+import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
@@ -39,7 +44,7 @@ public class PagamentiPortaleConverter {
 		return getVersamentoFromPendenza(pendenza);
 	}
 
-	public static Pagamento toRsModel(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException {
+	public static Pagamento toRsModel(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException, IOException {
 		it.govpay.bd.model.PagamentoPortale pagamentoPortale = dto.getPagamento();
 		Pagamento rsModel = new Pagamento();
 
@@ -83,6 +88,24 @@ public class PagamentiPortaleConverter {
 			}
 			rsModel.setRpp(rpp);
 		}
+		
+		if(dto.getEventi() !=null && !dto.getEventi() .isEmpty()) {
+			List<Nota> note = new ArrayList<>();
+			for(Evento evento: dto.getEventi()) {
+				switch (evento.getCategoriaEvento()) { 
+				case INTERFACCIA_INTEGRAZIONE:
+				case INTERFACCIA_COOPERAZIONE:
+					break;
+				case INTERNO:
+				case UTENTE:
+				default:
+					EventoNota nota = EventoConverter.toEventoNota(evento);
+					note.add(NoteConverter.toRsModel(nota));
+					break;
+				}
+			}
+			rsModel.setNote(note);
+		}
 
 		rsModel.setVerificato(pagamentoPortale.isAck());
 
@@ -94,7 +117,8 @@ public class PagamentiPortaleConverter {
 		
 		return rsModel;
 	}
-	public static PagamentoIndex toRsModelIndex(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
+	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException, IOException {
+		it.govpay.bd.model.PagamentoPortale pagamentoPortale = dto.getPagamento();
 		PagamentoIndex rsModel = new PagamentoIndex();
 
 		PagamentoPost pagamentiPortaleRequest = null;
@@ -129,6 +153,24 @@ public class PagamentiPortaleConverter {
 
 		if(pagamentoPortale.getImporto() != null) 
 			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
+		
+		if(dto.getEventi() !=null && !dto.getEventi() .isEmpty()) {
+			List<Nota> note = new ArrayList<>();
+			for(Evento evento: dto.getEventi()) {
+				switch (evento.getCategoriaEvento()) { 
+				case INTERFACCIA_INTEGRAZIONE:
+				case INTERFACCIA_COOPERAZIONE:
+					break;
+				case INTERNO:
+				case UTENTE:
+				default:
+					EventoNota nota = EventoConverter.toEventoNota(evento);
+					note.add(NoteConverter.toRsModel(nota));
+					break;
+				}
+			}
+			rsModel.setNote(note);
+		}
 
 		rsModel.setVerificato(pagamentoPortale.isAck());
 

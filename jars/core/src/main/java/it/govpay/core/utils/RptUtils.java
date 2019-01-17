@@ -33,9 +33,6 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.slf4j.Logger;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
-import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
-import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRT;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPT;
@@ -44,6 +41,9 @@ import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPT;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
 import gov.telematici.pagamenti.ws.rpt.TipoElementoListaRPT;
 import gov.telematici.pagamenti.ws.rpt.TipoListaRPT;
+import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
+import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
+import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
@@ -52,7 +52,6 @@ import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.eventi.EventoCooperazione;
 import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
-import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
@@ -67,8 +66,8 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Evento.CategoriaEvento;
-import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Intermediario;
+import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
 
 public class RptUtils {
@@ -260,7 +259,9 @@ public class RptUtils {
 
 	public static boolean aggiornaRptDaNpD(NodoClient client, Rpt rpt, BasicBD bd) throws GovPayException, ServiceException, ClientException, NdpException {
 		try {
-			NotificheBD notificheBD = null;
+			it.govpay.core.business.Notifica notificaBD = null;
+			boolean insertNotificaOk = false;
+			String msg = ".";
 			StatoRpt stato_originale = rpt.getStato();
 			switch (stato_originale) {
 			case RPT_RIFIUTATA_NODO:
@@ -268,9 +269,10 @@ public class RptUtils {
 			case RPT_ERRORE_INVIO_A_PSP:
 				// inserisco una notifica di fallimento
 				Notifica notifica = new Notifica(rpt, TipoNotifica.FALLIMENTO, bd);
-				notificheBD = new NotificheBD(bd);
-				notificheBD.insertNotifica(notifica);
-				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato terminale [" + rpt.getStato()+ "]. Aggiornamento non necessario, Schedulazione notifica di Fallimento del tentativo.");
+				notificaBD = new it.govpay.core.business.Notifica(bd);
+				insertNotificaOk = notificaBD.inserisciNotifica(notifica);
+				msg = insertNotificaOk ? ", Schedulazione notifica di Fallimento del tentativo." : ".";
+				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato terminale [" + rpt.getStato()+ "]. Aggiornamento non necessario"+msg);
 				return false;
 			case RT_ACCETTATA_PA:
 				log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in stato terminale [" + rpt.getStato()+ "]. Aggiornamento non necessario.");
@@ -431,10 +433,11 @@ public class RptUtils {
 							
 							// inserisco una notifica di fallimento
 							Notifica notificaFallimento = new Notifica(rpt, TipoNotifica.FALLIMENTO, bd);
-							notificheBD = new NotificheBD(bd);
-							notificheBD.insertNotifica(notificaFallimento);
+							notificaBD = new it.govpay.core.business.Notifica(bd);
+							insertNotificaOk = notificaBD.inserisciNotifica(notificaFallimento);
 							
-							log.info("Aggiorno lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in " + nuovoStato + ". Schedulazione notifica di Fallimento del tentativo.");
+							msg = insertNotificaOk ? ", Schedulazione notifica di Fallimento del tentativo." : ".";
+							log.info("Aggiorno lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in " + nuovoStato + msg);
 							rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato acquisito da Nodo dei Pagamenti", null, null);
 							rpt.setStato(nuovoStato);
 							rpt.setDescrizioneStato("Stato acquisito da Nodo dei Pagamenti");

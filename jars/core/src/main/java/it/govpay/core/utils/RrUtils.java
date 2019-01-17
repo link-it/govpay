@@ -394,13 +394,14 @@ public class RrUtils extends NdpValidationUtils {
 		}
 		
 		Notifica notifica = new Notifica(rr, TipoNotifica.RICEVUTA, bd);
-		NotificheBD notificheBD = new NotificheBD(bd);
-		notificheBD.insertNotifica(notifica);
+		it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica(bd);
+		boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
 		
 		bd.commit();
 		bd.disableSelectForUpdate();
 		
-		ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
+		if(schedulaThreadInvio)
+			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
 		
 		ctx.log("er.acquisizioneOk", v.getCodVersamentoEnte(), v.getStatoVersamento().toString());
 		log.info("ER acquisita con successo.");

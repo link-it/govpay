@@ -54,7 +54,6 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
@@ -476,7 +475,7 @@ public class Pagamento extends BasicBD {
 		RrBD rrBD = new RrBD(this);
 
 		Notifica notifica = new Notifica(rr, TipoNotifica.ATTIVAZIONE, this);
-		NotificheBD notificheBD = new NotificheBD(this);
+		it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica(this);
 		PagamentiBD pagamentiBD = new PagamentiBD(this);
 
 		ctx.log("rr.creazioneRr", rr.getCodDominio(), rr.getIuv(), rr.getCcp(), rr.getCodMsgRevoca());
@@ -484,14 +483,15 @@ public class Pagamento extends BasicBD {
 		this.setAutoCommit(false);
 		rrBD.insertRr(rr);
 		notifica.setIdRr(rr.getId());
-		notificheBD.insertNotifica(notifica);
+		boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
 		for(it.govpay.bd.model.Pagamento pagamento : pagamentiDaStornare) {
 			pagamento.setIdRr(rr.getId());
 			pagamentiBD.updatePagamento(pagamento);
 		}
 		this.commit();
 
-		ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this));
+		if(schedulaThreadInvio)
+			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this));
 
 		AvviaRichiestaStornoDTOResponse response = new AvviaRichiestaStornoDTOResponse();
 		response.setCodRichiestaStorno(rr.getCodMsgRevoca());

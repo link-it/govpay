@@ -17,6 +17,7 @@ public class ListaEventiDTO extends BasicFindRequestDTO{
 	private String iuv;
 	private String idA2A;
 	private String idPendenza;
+	private String idPagamento;
 	
 	public String getIdDominio() {
 		return this.idDominio;
@@ -41,5 +42,11 @@ public class ListaEventiDTO extends BasicFindRequestDTO{
 	}
 	public void setIdPendenza(String idPendenza) {
 		this.idPendenza = idPendenza;
+	}
+	public String getIdPagamento() {
+		return this.idPagamento;
+	}
+	public void setIdPagamento(String idPagamento) {
+		this.idPagamento = idPagamento;
 	}
 }

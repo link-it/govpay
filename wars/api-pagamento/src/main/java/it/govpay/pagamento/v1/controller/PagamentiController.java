@@ -238,8 +238,8 @@ public class PagamentiController extends BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<it.govpay.pagamento.v1.beans.PagamentoIndex> results = new ArrayList<>();
-			for(it.govpay.bd.model.PagamentoPortale pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
-				this.log.info("get Pagamenti portale: " + pagamentoPortale.getIdSessione());
+			for(LeggiPagamentoPortaleDTOResponse pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
+				this.log.info("get Pagamenti portale: " + pagamentoPortale.getPagamento().getIdSessione());
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale));
 			}
 			

@@ -404,7 +404,7 @@ public class Rpt extends BasicBD{
 		GpContext ctx = GpThreadLocal.get();
 		this.setupConnection(ctx.getTransactionId());
 		String sessionId = null;
-		NotificheBD notificheBD = new NotificheBD(this);
+		it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica(this);
 		try {
 			if(url != null)
 				sessionId = UrlUtils.getCodSessione(url);
@@ -420,8 +420,9 @@ public class Rpt extends BasicBD{
 			try {
 				RptBD rptBD = new RptBD(this);
 				rptBD.updateRpt(rpt.getId(), statoRpt, null, sessionId, url);
-				notificheBD.insertNotifica(notifica);
-				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this));
+				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
+				if(schedulaThreadInvio)
+					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this));
 			} catch (Exception ee) {
 				// Se uno o piu' aggiornamenti vanno male, non importa. 
 				// si risolvera' poi nella verifica pendenti
