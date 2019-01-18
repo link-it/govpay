@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.joda.time.LocalDate;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -15,6 +15,7 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.pagamento.v2.api.impl.PagamentiApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl;
@@ -34,14 +35,14 @@ import it.govpay.pagamento.v2.beans.VocePendenza;
 
 public class PendenzeConverter {
 	
-	public static Pendenze toRsModel(List<it.govpay.bd.viste.model.VersamentoIncasso> versamenti, UriBuilder requestURI, int offset, int limit, long total) throws ServiceException {
+	public static Pendenze toRsModel(List<LeggiPendenzaDTOResponse> versamentiDTO, UriInfo uriInfo, int offset, int limit, long total) throws ServiceException {
 		Pendenze pendenze = new Pendenze();
 		
-		ConverterUtils.popolaLista(pendenze, requestURI, versamenti.size(), offset, limit, total);
+		ConverterUtils.popolaLista(pendenze, uriInfo.getRequestUriBuilder(), versamentiDTO.size(), offset, limit, total);
 		
 		List<PendenzaIndex> items = new ArrayList<PendenzaIndex>();
-		for(it.govpay.bd.viste.model.VersamentoIncasso v : versamenti) {
-			items.add(PendenzeConverter.toPendenzaIndex(v));
+		for(LeggiPendenzaDTOResponse dto : versamentiDTO) {
+			items.add(PendenzeConverter.toPendenzaIndex(dto.getVersamentoIncasso()));
 		}
 		pendenze.setItems(items);
 		return pendenze;

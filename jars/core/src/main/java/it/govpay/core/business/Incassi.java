@@ -65,8 +65,6 @@ import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IncassoUtils;
-import it.govpay.core.utils.thread.InviaAvvisaturaThread;
-import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Fr.StatoFr;

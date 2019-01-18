@@ -48,6 +48,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String idDebitore;
 	private String idA2A;
 	private String idPendenza;
+	private String iuv;
 	private boolean infoIncasso;
 	
 	public Date getDataA() {
@@ -103,6 +104,12 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	}
 	public void setIdPendenza(String idPendenza) {
 		this.idPendenza = idPendenza;
+	}
+	public String getIuv() {
+		return iuv;
+	}
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
 	}
 
 	@Override

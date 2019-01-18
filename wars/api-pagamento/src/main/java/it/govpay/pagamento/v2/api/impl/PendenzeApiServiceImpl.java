@@ -1,26 +1,29 @@
 package it.govpay.pagamento.v2.api.impl;
 
-import it.govpay.bd.model.PagamentoPortale;
-import it.govpay.bd.model.Rpt;
-import it.govpay.core.dao.pagamenti.PendenzeDAO;
-import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
-import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
-import it.govpay.pagamento.v2.api.*;
-import it.govpay.pagamento.v2.beans.Pendenza;
-import it.govpay.pagamento.v2.beans.Pendenze;
-import it.govpay.pagamento.v2.beans.StatoPendenza;
-import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
-
-import org.openspcoop2.utils.jaxrs.impl.AuthorizationManager;
-import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
-import org.openspcoop2.utils.jaxrs.impl.AuthorizationConfig;
-
 import java.util.List;
 
 import javax.ws.rs.core.UriBuilder;
 
 import org.openspcoop2.utils.jaxrs.fault.FaultCode;
+import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
+import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+
+import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.Rpt;
+import it.govpay.core.dao.pagamenti.PendenzeDAO;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
+import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagamento.v2.acl.Acl;
+import it.govpay.pagamento.v2.acl.AuthorizationRules;
+import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
+import it.govpay.pagamento.v2.api.PendenzeApi;
+import it.govpay.pagamento.v2.beans.Pendenza;
+import it.govpay.pagamento.v2.beans.Pendenze;
+import it.govpay.pagamento.v2.beans.StatoPendenza;
+import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 /**
  * GovPay - API Pagamento
  */
@@ -32,9 +35,23 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 		super(org.slf4j.LoggerFactory.getLogger(PendenzeApiServiceImpl.class));
 	}
 
-	private AuthorizationConfig getAuthorizationConfig() throws Exception{
-		// TODO: Implement ...
-		throw new Exception("NotImplemented");
+	private AuthorizationRules getAuthorizationRules() throws Exception{
+		AuthorizationRules ac = new AuthorizationRules();
+		
+		/*
+		 * Utenti anonimi possono chiamare: nessun servizio
+		 */
+		
+		/*
+		 * Utenti CITTADINO e APPLICAZIONE possono chiamare tutte le operazioni:
+		 */
+		{
+			TIPO_UTENZA[] tipiUtenza = { TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE };
+			Acl acl = new TipoUtenzaOnlyAcl(tipiUtenza);
+			ac.addAcl(acl);
+		}
+		
+		return ac;
 	}
 
     /**
@@ -47,15 +64,39 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 	public Pendenze findPendenze(Integer offset, Integer limit, String fields, String sort, String idDominio, String iuv, String idA2A, String idPendenza, String idDebitore, StatoPendenza statoPendenza, String idSessionePortale) {
 		ServiceContext context = this.getContext();
 		try {
-			context.getLogger().debug("Invocazione in corso ...");     
-
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
-			context.getLogger().debug("Autorizzazione completata con successo");     
-                        
-        // TODO: Implement...
-        
+			context.getLogger().info("Invocazione in corso ...");     
+			getAuthorizationRules().authorize(context);
+			context.getLogger().debug("Autorizzazione completata con successo");    
+			
+			// Parametri - > DTO Input
+			
+			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(context.getAuthentication());
+			
+			listaPendenzeDTO.setOffset(offset);
+			listaPendenzeDTO.setLimit(limit);
+			
+			if(statoPendenza != null)
+				listaPendenzeDTO.setStato(statoPendenza.name());
+			
+			listaPendenzeDTO.setIuv(iuv);
+			listaPendenzeDTO.setIdDominio(idDominio);
+			listaPendenzeDTO.setIdA2A(idA2A);
+			listaPendenzeDTO.setIdDebitore(idDebitore);
+			listaPendenzeDTO.setIdPagamento(idSessionePortale);
+			listaPendenzeDTO.setIdPendenza(idPendenza);
+			listaPendenzeDTO.setOrderBy(sort);
+			// INIT DAO
+			
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+			
+			// CHIAMATA AL DAO
+			
+			ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.listaPendenze(listaPendenzeDTO);
+			
+			Pendenze pendenze = PendenzeConverter.toRsModel(listaPendenzeDTOResponse.getResults(), context.getUriInfo(), offset, limit, listaPendenzeDTOResponse.getTotalResults());
 			context.getLogger().debug("Invocazione completata con successo");
-        return null;
+			
+			return pendenze;
      
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
@@ -78,9 +119,8 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
     public Pendenza getPendenza(String idA2A, String idPendenza) {
 		ServiceContext context = this.getContext();
 		try {
-			context.getLogger().debug("Invocazione in corso ...");     
-
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
+			context.getLogger().info("Invocazione in corso ...");     
+			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
                         
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(context.getAuthentication());

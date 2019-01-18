@@ -209,6 +209,9 @@ public class GovPayException extends Exception {
 		case CIT_004: return "L'utente cittadino (" +this.params[0] + ") non e' autorizzato ad effettuare il pagamento della pendenza (IdA2A:"+this.params[1]+" Id:"+this.params[2]+") per il soggetto versante ("+ this.params[3] +").";
 		case PAG_014: return "Il pagamento (IdDominio:" + this.params[0] + ", IUV:" + this.params[1] + ", CCP:" + this.params[2] + ") non e' eseguibile poiche' risulta in corso all'Ente Creditore";
 		case APP_006: return "Nessuna applicazione trovata per gestire lo IUV ("+this.params[0]+") per il dominio ("+this.params[1]+")";
+		case UAN_001: return "Non e' possibile effettuare il pagamento della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") in maniera anonima senza specificare l'entrata da pagare.";
+		case UAN_002: return "Non e' possibile effettuare il pagamento della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") in maniera anonima poiche' l'entrata ("+ this.params[2] +") non e' abilitata ai pagamenti spontanei.";
+		
 		}
 		
 		return "";
@@ -342,6 +345,8 @@ public class GovPayException extends Exception {
 		case CIT_004: return 422; // "Richiesta non valida";
 		case PAG_014: return 422; // "Richiesta non valida";
 		case APP_006: return 422; // "Richiesta non valida";
+		case UAN_001: return 422; // "Richiesta non valida";
+		case UAN_002: return 422; // "Richiesta non valida";
 		}
 		
 		return 500;
@@ -440,6 +445,8 @@ public class GovPayException extends Exception {
 		case CIT_004: return "Richiesta non valida";
 		case PAG_014: return "Richiesta non valida";
 		case APP_006: return "Richiesta non valida";
+		case UAN_001: return "Richiesta non valida";
+		case UAN_002: return "Richiesta non valida";
 		}
 		
 		return "";

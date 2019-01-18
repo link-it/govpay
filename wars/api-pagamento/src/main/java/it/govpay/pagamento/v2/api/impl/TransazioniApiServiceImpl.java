@@ -1,5 +1,13 @@
 package it.govpay.pagamento.v2.api.impl;
 
+import it.govpay.core.dao.pagamenti.RptDAO;
+import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
+import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagamento.v2.acl.Acl;
+import it.govpay.pagamento.v2.acl.AuthorizationRules;
+import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
 import it.govpay.pagamento.v2.api.*;
 import it.govpay.pagamento.v2.beans.EsitoRpp;
 import it.govpay.pagamento.v2.beans.Rpp;
@@ -27,9 +35,23 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		super(org.slf4j.LoggerFactory.getLogger(TransazioniApiServiceImpl.class));
 	}
 
-	private AuthorizationConfig getAuthorizationConfig() throws Exception{
-		// TODO: Implement ...
-		throw new Exception("NotImplemented");
+	private AuthorizationRules getAuthorizationRules() throws Exception{
+		AuthorizationRules ac = new AuthorizationRules();
+		
+		/*
+		 * Utenti anonimi possono chiamare: nessun servizio
+		 */
+		
+		/*
+		 * Utenti CITTADINO e APPLICAZIONE possono chiamare tutte le operazioni:
+		 */
+		{
+			TIPO_UTENZA[] tipiUtenza = { TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE };
+			Acl acl = new TipoUtenzaOnlyAcl(tipiUtenza);
+			ac.addAcl(acl);
+		}
+		
+		return ac;
 	}
 
     /**
@@ -41,14 +63,38 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
-
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
-			context.getLogger().debug("Autorizzazione completata con successo");     
+			getAuthorizationRules().authorize(context);
+			context.getLogger().debug("Autorizzazione completata con successo");    
                         
-        // TODO: Implement...
+			// Parametri - > DTO Input
+
+			ListaRptDTO listaRptDTO = new ListaRptDTO(context.getAuthentication());
+			listaRptDTO.setOffset(offset);
+			listaRptDTO.setLimit(limit);
+
+			if(statoPendenza != null)
+				listaRptDTO.setStato(StatoRpt.valueOf(statoPendenza.name()));
+
+			listaRptDTO.setIdDominio(idDominio);
+			listaRptDTO.setIuv(iuv);
+			listaRptDTO.setCcp(ccp);
+			listaRptDTO.setIdA2A(idA2A);
+			listaRptDTO.setIdPendenza(idPendenza);
+			listaRptDTO.setIdPagamento(idSessionePortale);
+
+				listaRptDTO.setOrderBy(sort);
+			// INIT DAO
+
+			RptDAO rptDAO = new RptDAO();
+
+			// CHIAMATA AL DAO
+
+			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
         
+			Rpps rpps = null;
 			context.getLogger().info("Invocazione completata con successo");
-        return null;
+			
+			return rpps;
      
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
@@ -70,8 +116,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
-
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
+			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
                         
         // TODO: Implement...
@@ -99,8 +144,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
-
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
+			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
                         
         // TODO: Implement...
@@ -128,8 +172,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
-
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
+			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
                         
         // TODO: Implement...

@@ -33,7 +33,6 @@ import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;

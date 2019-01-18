@@ -1,13 +1,22 @@
 package it.govpay.pagamento.v2.api.impl;
 
-import it.govpay.pagamento.v2.api.*;
-import it.govpay.pagamento.v2.beans.Profilo;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.openspcoop2.utils.jaxrs.impl.AuthorizationManager;
+import org.openspcoop2.utils.jaxrs.fault.FaultCode;
 import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
 import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
-import org.openspcoop2.utils.jaxrs.impl.AuthorizationConfig;
-import org.openspcoop2.utils.jaxrs.fault.FaultCode;
+import org.openspcoop2.utils.transport.http.HttpRequestMethod;
+
+import it.govpay.core.dao.anagrafica.UtentiDAO;
+import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
+import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagamento.v2.beans.converter.ProfiloConverter;
+import it.govpay.pagamento.v2.acl.Acl;
+import it.govpay.pagamento.v2.acl.AuthorizationRules;
+import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
+import it.govpay.pagamento.v2.api.UtentiApi;
+import it.govpay.pagamento.v2.beans.Profilo;
 /**
  * GovPay - API Pagamento
  *
@@ -20,29 +29,61 @@ public class UtentiApiServiceImpl extends BaseImpl implements UtentiApi {
 		super(org.slf4j.LoggerFactory.getLogger(UtentiApiServiceImpl.class));
 	}
 
-	private AuthorizationConfig getAuthorizationConfig() throws Exception{
-		// TODO: Implement ...
-		throw new Exception("NotImplemented");
+	private AuthorizationRules getAuthorizationRules() throws Exception{
+		AuthorizationRules ac = new AuthorizationRules();
+
+		/*
+		 * Utenti anonimi possono chiamare: 
+		 * - /profilo - profilo associato
+		 */
+		{
+			TIPO_UTENZA[] tipiUtenza = { TIPO_UTENZA.ANONIMO };
+
+			Map<HttpRequestMethod, String[]> resources = new HashMap<HttpRequestMethod, String[]>();
+			{
+				String[] location = { "/profilo" };
+				resources.put(HttpRequestMethod.GET, location);
+			}
+
+			Acl acl = new TipoUtenzaOnlyAcl(tipiUtenza, resources);
+			ac.addAcl(acl);
+		}
+		/*
+		 * Utenti CITTADINO e APPLICAZIONE possono chiamare tutte le operazioni:
+		 */
+		{
+			TIPO_UTENZA[] tipiUtenza = { TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE };
+			Acl acl = new TipoUtenzaOnlyAcl(tipiUtenza);
+			ac.addAcl(acl);
+		}
+		return ac;
 	}
 
-    /**
-     * Elenco delle acl associate all&#x27;utenza chiamante
-     *
-     */
+	/**
+	 * Elenco delle acl associate all&#x27;utenza chiamante
+	 *
+	 */
 	@Override
-    public Profilo getProfilo() {
+	public Profilo getProfilo() {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
-
-			AuthorizationManager.authorize(context, getAuthorizationConfig());
+			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
-                        
-        // TODO: Implement...
-        
+
+			// INIT DAO
+
+			UtentiDAO utentiDAO = new UtentiDAO();
+
+			// CHIAMATA AL DAO
+
+			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(context.getAuthentication());
+
+			// CONVERT TO JSON DELLA RISPOSTA
+
+			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 			context.getLogger().info("Invocazione completata con successo");
-        return null;
-     
+			return profilo;
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -52,7 +93,7 @@ public class UtentiApiServiceImpl extends BaseImpl implements UtentiApi {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
-    }
-    
+	}
+
 }
 

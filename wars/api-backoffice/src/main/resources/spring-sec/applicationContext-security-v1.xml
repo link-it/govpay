@@ -46,6 +46,7 @@
 
                 <csrf disabled="true"/>
 
+				<intercept-url pattern="/rs/basic/v1/info" access="permitAll" />
                 <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
                 
                 <intercept-url pattern="/**" access="denyAll" />
@@ -59,10 +60,13 @@
                 </headers>
         </http>
         
+        <http auto-config="false" pattern="/rs/form/v1/info" security="none"/>
+        
         <http auto-config="false" use-expressions="true" create-session="ifRequired" authentication-manager-ref="authenticationManager" pattern="/rs/form/**">
 
                 <csrf disabled="true"/>
-                
+
+				            
                 <intercept-url pattern="/rs/form/**" access="isFullyAuthenticated()" />
                 
                 <intercept-url pattern="/**" access="denyAll" />
@@ -96,7 +100,9 @@
 
                 <csrf disabled="true"/>
 
+				<intercept-url pattern="/rs/ssl/v1/info" access="permitAll" />
                 <intercept-url pattern="/rs/ssl/**" access="isFullyAuthenticated()" />
+                
                 <intercept-url pattern="/**" access="denyAll" />
                 <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
 
@@ -126,7 +132,7 @@
                 
                 <intercept-url pattern="/**" access="permitAll" method="OPTIONS"/>
                 
-               <intercept-url pattern="/**" access="denyAll" />
+                <intercept-url pattern="/**" access="denyAll" />
 
                 <headers>
                         <content-type-options disabled="true"/>

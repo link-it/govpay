@@ -97,6 +97,8 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="CIT_003"/&gt;
  *     &lt;enumeration value="CIT_004"/&gt;
  *     &lt;enumeration value="PAG_014"/&gt;
+ *     &lt;enumeration value="UAN_001"/&gt;
+ *     &lt;enumeration value="UAN_002"/&gt;
  *   &lt;/restriction&gt;
  * &lt;/simpleType&gt;
  * </pre>
@@ -622,7 +624,17 @@ public enum EsitoOperazione {
      * Applicazione non autorizzata a gestire lo Iuv per il dominio indicato
      * 
      */
-    APP_006;
+    APP_006,
+    /**
+     * Utenza anonima non autorizzata a effettuare dei pagamenti portale senza specificare il tributo da pagare. 
+     * 
+     */
+    UAN_001,
+    /**
+     * Utenza anonima non autorizzata a effettuare il pagamento di un tributo non spontaneo.
+     * 
+     */
+    UAN_002;
 	
 
     public String value() {

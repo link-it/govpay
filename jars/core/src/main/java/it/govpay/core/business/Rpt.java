@@ -23,7 +23,6 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
-import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;

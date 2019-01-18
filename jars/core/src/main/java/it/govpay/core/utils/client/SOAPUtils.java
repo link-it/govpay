@@ -19,11 +19,10 @@
  */
 package it.govpay.core.utils.client;
 
-import it.govpay.core.utils.JaxbUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -34,6 +33,8 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
+
+import it.govpay.core.utils.JaxbUtils;
 
 public class SOAPUtils {
 	
@@ -76,13 +77,13 @@ public class SOAPUtils {
 	
 	public static JAXBElement<?> toJaxbRPT(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
 		String s = new String(msg);
-		InputStream is = IOUtils.toInputStream(s);
+		InputStream is = IOUtils.toInputStream(s,Charset.defaultCharset());
 		return  (JAXBElement<?>) unmarshalRPT(is, schema);
 	}
 	
 	public static Object unmarshalRPT(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
 		String s = new String(msg);
-		InputStream is = IOUtils.toInputStream(s);
+		InputStream is = IOUtils.toInputStream(s,Charset.defaultCharset());
 		return  unmarshalRPT(is, schema);
 	}
 	
@@ -124,7 +125,7 @@ public class SOAPUtils {
 	
 	public static JAXBElement<?> toJaxbAvvisaturaDigitale(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
 		String s = new String(msg);
-		InputStream is = IOUtils.toInputStream(s);
+		InputStream is = IOUtils.toInputStream(s,Charset.defaultCharset());
 		return  (JAXBElement<?>) unmarshalAvvisaturaDigitale(is, schema);
 	}
 }

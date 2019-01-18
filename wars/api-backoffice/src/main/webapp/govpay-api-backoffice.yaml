@@ -5222,6 +5222,9 @@ components:
         esito:
           type: string
           example: 'OK'
+        descrizioneEsito:
+          type: string
+          example: 'Operazione completata con successo'
     avviso:
       type: object
       required:

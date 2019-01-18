@@ -135,6 +135,21 @@ public class PagamentiPortaleDAO extends BaseDAO {
 							}
 						}
 					}
+					
+					// se l'utenza che ha caricato la pendenza inline e' anonima sono necessari dei controlli supplementari.
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						for (SingoloVersamento sv : versamentoModel.getSingoliVersamenti(bd)) {
+							// il tributo deve essere passato all'interno della pendenza
+							if(sv.getTributo(bd) == null) {
+								throw new GovPayException(EsitoOperazione.UAN_001, versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+							}
+									
+							// se il tributo non e' online non puo' essere pagato spontaneamente
+							if(!sv.getTributo(bd).isOnline()) {
+								throw new GovPayException(EsitoOperazione.UAN_002, versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),sv.getTributo(bd).getCodTributo());
+							}
+						}
+					}
 				}  else if(v instanceof RefVersamentoAvviso) {
 					String idDominio = ((RefVersamentoAvviso)v).getIdDominio();
 					String cfToCheck = ((RefVersamentoAvviso)v).getIdDebitore();
