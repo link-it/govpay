@@ -36,6 +36,9 @@ import it.govpay.core.beans.Mittente;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.dao.eventi.EventiDAO;
+import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
+import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
@@ -129,6 +132,21 @@ public class PagamentiPortaleDAO extends BaseDAO {
 								
 								if(versanteModel != null && !versanteModel.getCodUnivoco().equals(userDetails.getIdentificativo()))
 									throw new GovPayException(EsitoOperazione.CIT_004, userDetails.getIdentificativo(),versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),versanteModel.getCodUnivoco());
+							}
+						}
+					}
+					
+					// se l'utenza che ha caricato la pendenza inline e' anonima sono necessari dei controlli supplementari.
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						for (SingoloVersamento sv : versamentoModel.getSingoliVersamenti(bd)) {
+							// il tributo deve essere passato all'interno della pendenza
+							if(sv.getTributo(bd) == null) {
+								throw new GovPayException(EsitoOperazione.UAN_001, versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+							}
+									
+							// se il tributo non e' online non puo' essere pagato spontaneamente
+							if(!sv.getTributo(bd).isOnline()) {
+								throw new GovPayException(EsitoOperazione.UAN_002, versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),sv.getTributo(bd).getCodTributo());
 							}
 						}
 					}
@@ -475,6 +493,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 			}
+			
+			EventiDAO eventiDAO = new EventiDAO();
+			ListaEventiDTO listaEventiDTO = new ListaEventiDTO(leggiPagamentoPortaleDTO.getUser());
+			listaEventiDTO.setIdPagamento(pagamentoPortale.getIdSessione());
+			ListaEventiDTOResponse listaEventi = eventiDAO.listaEventi(listaEventiDTO, bd);
+			leggiPagamentoPortaleDTOResponse.setEventi(listaEventi.getResults());
 
 			return leggiPagamentoPortaleDTOResponse;
 		}catch(NotFoundException e) {
@@ -485,7 +509,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}
 	}
 
-	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException{
+	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
 		BasicBD bd = null;
 
 		try {
@@ -512,7 +536,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				try {
 					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
 				} catch(Exception e) {
-					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<PagamentoPortale>());
+					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
 				}
 			}
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
@@ -527,9 +551,23 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			long count = pagamentiPortaleBD.count(filter);
 
 			if(count > 0) {
-				return new ListaPagamentiPortaleDTOResponse(count, pagamentiPortaleBD.findAll(filter));
+				List<LeggiPagamentoPortaleDTOResponse> lst = new ArrayList<>();
+				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(filter);
+//				EventiDAO eventiDAO = new EventiDAO();
+				
+				for (PagamentoPortale pagamentoPortale : findAll) {
+					LeggiPagamentoPortaleDTOResponse dto = new LeggiPagamentoPortaleDTOResponse();
+					dto.setPagamento(pagamentoPortale);
+//					ListaEventiDTO listaEventiDTO = new ListaEventiDTO(listaPagamentiPortaleDTO.getUser());
+//					listaEventiDTO.setIdPagamento(pagamentoPortale.getIdSessione());
+//					ListaEventiDTOResponse listaEventi = eventiDAO.listaEventi(listaEventiDTO, bd);
+//					dto.setEventi(listaEventi.getResults());
+					lst.add(dto);
+				}
+				
+				return new ListaPagamentiPortaleDTOResponse(count, lst);
 			} else {
-				return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<PagamentoPortale>());
+				return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
 			}
 		}finally {
 			if(bd != null)

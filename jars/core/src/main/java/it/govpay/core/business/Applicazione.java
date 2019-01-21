@@ -18,6 +18,11 @@ public class Applicazione extends BasicBD{
 	}
 	
 	public it.govpay.bd.model.Applicazione getApplicazioneDominio(Dominio dominio,String iuv) throws GovPayException, ServiceException {
+		return getApplicazioneDominio(dominio, iuv, true);
+	}
+	
+	public it.govpay.bd.model.Applicazione getApplicazioneDominio(Dominio dominio,String iuv, boolean throwException) throws GovPayException, ServiceException {
+	
 		ApplicazioniBD applicazioniBD = new ApplicazioniBD(this);
 		List<it.govpay.bd.model.Applicazione> listaApplicazioni = applicazioniBD.findAll(applicazioniBD.newFilter());
 		
@@ -37,6 +42,11 @@ public class Applicazione extends BasicBD{
 				return applicazione;
 		}
 		
-		throw new GovPayException(EsitoOperazione.INTERNAL, "Nessuna applicazione trovata per gestire lo IUV ["+iuv+"] per il dominio ["+dominio.getCodDominio()+"]");
+		if(throwException)
+			throw new GovPayException(EsitoOperazione.APP_006, iuv, dominio.getCodDominio());
+		 
+		return null;
 	}
+	
+	
 }

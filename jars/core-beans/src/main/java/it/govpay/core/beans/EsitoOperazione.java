@@ -87,6 +87,18 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="APP_005"/&gt;
  *     &lt;enumeration value="VER_024"/&gt;
  *     &lt;enumeration value="VER_025"/&gt;
+ *     &lt;enumeration value="VER_026"/&gt;
+ *     &lt;enumeration value="VER_027"/&gt;
+ *     &lt;enumeration value="VER_028"/&gt;
+ *     &lt;enumeration value="VER_029"/&gt;
+ *     &lt;enumeration value="VER_030"/&gt;
+ *     &lt;enumeration value="CIT_001"/&gt;
+ *     &lt;enumeration value="CIT_002"/&gt;
+ *     &lt;enumeration value="CIT_003"/&gt;
+ *     &lt;enumeration value="CIT_004"/&gt;
+ *     &lt;enumeration value="PAG_014"/&gt;
+ *     &lt;enumeration value="UAN_001"/&gt;
+ *     &lt;enumeration value="UAN_002"/&gt;
  *   &lt;/restriction&gt;
  * &lt;/simpleType&gt;
  * </pre>
@@ -606,7 +618,23 @@ public enum EsitoOperazione {
      * Validazione semantica del versamento non valida: Pagamento in attesa risulta in corso all'Ente Creditore.  
      * 
      */
-    PAG_014;
+    PAG_014,
+
+    /**
+     * Applicazione non autorizzata a gestire lo Iuv per il dominio indicato
+     * 
+     */
+    APP_006,
+    /**
+     * Utenza anonima non autorizzata a effettuare dei pagamenti portale senza specificare il tributo da pagare. 
+     * 
+     */
+    UAN_001,
+    /**
+     * Utenza anonima non autorizzata a effettuare il pagamento di un tributo non spontaneo.
+     * 
+     */
+    UAN_002;
 	
 
     public String value() {

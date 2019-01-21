@@ -26,6 +26,7 @@ import java.util.Date;
 "dataOraRichiesta",
 "dataOraRisposta",
 "esito",
+"descrizioneEsito",
 })
 public class Evento extends it.govpay.core.beans.JSONSerializable {
   
@@ -123,6 +124,9 @@ public class Evento extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("esito")
   private String esito = null;
+  
+  @JsonProperty("descrizioneEsito")
+  private String descrizioneEsito = null;
   
   /**
    * Identificativo ente creditore
@@ -402,6 +406,21 @@ public class Evento extends it.govpay.core.beans.JSONSerializable {
     this.esito = esito;
   }
 
+  /**
+   **/
+  public Evento descrizioneEsito(String descrizioneEsito) {
+    this.descrizioneEsito = descrizioneEsito;
+    return this;
+  }
+
+  @JsonProperty("descrizioneEsito")
+  public String getDescrizioneEsito() {
+    return descrizioneEsito;
+  }
+  public void setDescrizioneEsito(String descrizioneEsito) {
+    this.descrizioneEsito = descrizioneEsito;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -428,12 +447,13 @@ public class Evento extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.parametriRisposta, evento.parametriRisposta) &&
         Objects.equals(this.dataOraRichiesta, evento.dataOraRichiesta) &&
         Objects.equals(this.dataOraRisposta, evento.dataOraRisposta) &&
-        Objects.equals(this.esito, evento.esito);
+        Objects.equals(this.esito, evento.esito) &&
+        Objects.equals(descrizioneEsito, evento.descrizioneEsito);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idDominio, this.iuv, this.ccp, this.idPsp, this.tipoVersamento, this.componente, this.categoriaEvento, this.tipoEvento, this.sottotipoEvento, this.identificativoFruitore, this.identificativoErogatore, this.idCanale, this.idStazione, this.parametriRichiesta, this.parametriRisposta, this.dataOraRichiesta, this.dataOraRisposta, this.esito);
+    return Objects.hash(this.idDominio, this.iuv, this.ccp, this.idPsp, this.tipoVersamento, this.componente, this.categoriaEvento, this.tipoEvento, this.sottotipoEvento, this.identificativoFruitore, this.identificativoErogatore, this.idCanale, this.idStazione, this.parametriRichiesta, this.parametriRisposta, this.dataOraRichiesta, this.dataOraRisposta, this.esito, this.descrizioneEsito);
   }
 
   public static Evento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -468,6 +488,7 @@ public class Evento extends it.govpay.core.beans.JSONSerializable {
     sb.append("    dataOraRichiesta: ").append(this.toIndentedString(this.dataOraRichiesta)).append("\n");
     sb.append("    dataOraRisposta: ").append(this.toIndentedString(this.dataOraRisposta)).append("\n");
     sb.append("    esito: ").append(this.toIndentedString(this.esito)).append("\n");
+    sb.append("    descrizioneEsito: ").append(toIndentedString(descrizioneEsito)).append("\n");
     sb.append("}");
     return sb.toString();
   }

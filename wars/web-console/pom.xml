@@ -17,11 +17,11 @@
 	</properties>
 	
 	<dependencies>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>api-commons</artifactId>
-			<type>jar</type>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>it.govpay</groupId> -->
+<!-- 			<artifactId>api-commons</artifactId> -->
+<!-- 			<type>jar</type> -->
+<!-- 		</dependency> -->
 	
 		<dependency>
 			<groupId>javax.servlet</groupId>

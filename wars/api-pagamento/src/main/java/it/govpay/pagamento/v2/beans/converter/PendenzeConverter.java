@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.joda.time.LocalDate;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -15,6 +15,7 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.pagamento.v2.api.impl.PagamentiApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl;
@@ -34,14 +35,14 @@ import it.govpay.pagamento.v2.beans.VocePendenza;
 
 public class PendenzeConverter {
 	
-	public static Pendenze toRsModel(List<it.govpay.bd.viste.model.VersamentoIncasso> versamenti, UriBuilder requestURI, int offset, int limit, long total) throws ServiceException {
+	public static Pendenze toRsModel(List<LeggiPendenzaDTOResponse> versamentiDTO, UriInfo uriInfo, int offset, int limit, long total) throws ServiceException {
 		Pendenze pendenze = new Pendenze();
 		
-		ConverterUtils.popolaLista(pendenze, requestURI, versamenti.size(), offset, limit, total);
+		ConverterUtils.popolaLista(pendenze, uriInfo.getRequestUriBuilder(), versamentiDTO.size(), offset, limit, total);
 		
 		List<PendenzaIndex> items = new ArrayList<PendenzaIndex>();
-		for(it.govpay.bd.viste.model.VersamentoIncasso v : versamenti) {
-			items.add(PendenzeConverter.toPendenzaIndex(v));
+		for(LeggiPendenzaDTOResponse dto : versamentiDTO) {
+			items.add(PendenzeConverter.toPendenzaIndex(dto.getVersamentoIncasso()));
 		}
 		pendenze.setItems(items);
 		return pendenze;
@@ -81,13 +82,13 @@ public class PendenzeConverter {
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
 			break;
-		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
+		case ESEGUITO: statoPendenza = StatoPendenza.PAGATA;
 			break;
-		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
+		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.PAGATA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_PAGATA;}
 			break;
-		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
+		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.PARZIALMENTE_PAGATA;
 			break;
 		default:
 			break;
@@ -99,13 +100,6 @@ public class PendenzeConverter {
 		if(versamento.getUo(null) != null)
 			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModel(versamento.getUo(null)));
 		
-		List<VocePendenza> v = new ArrayList<>();
-		int indice = 1;
-		for(SingoloVersamento s: versamento.getSingoliVersamenti(null)) {
-			v.add(toVocePendenza(s, indice++));
-		}
-		rsModel.setVoci(v);
-
 		return rsModel;
 	}
 	
@@ -142,6 +136,14 @@ public class PendenzeConverter {
 		Pendenza rsModel = new Pendenza();
 		
 		fillPendenzaBase(rsModel, versamento);
+		
+		List<VocePendenza> v = new ArrayList<>();
+		int indice = 1;
+		for(SingoloVersamento s: versamento.getSingoliVersamenti(null)) {
+			v.add(toVocePendenza(s, indice++));
+		}
+		rsModel.setVoci(v);
+		
 		rsModel.setPagamenti(null); //TODO
 		rsModel.setRpps(null); //TODO
 		return rsModel;
@@ -194,8 +196,8 @@ public class PendenzeConverter {
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setTassonomia(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
-		rsModel.setBarcode(barCode);
-		rsModel.setQrcode(qrCode);
+//		rsModel.setBarcode(barCode);
+//		rsModel.setQrcode(qrCode);
 		
 		StatoAvviso statoPendenza = null;
 

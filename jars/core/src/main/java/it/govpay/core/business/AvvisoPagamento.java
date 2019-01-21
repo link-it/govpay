@@ -145,14 +145,14 @@ public class AvvisoPagamento extends BasicBD {
 		if(versamento.getCausaleVersamento() != null) {
 			try {
 				causaleVersamento = versamento.getCausaleVersamento().getSimple();
-
+				input.setOggettoDelPagamento(causaleVersamento);
+				
 				if(causaleVersamento.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_CAUSALE) {
 					String causaleTroncata = causaleVersamento.substring(0, AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_CAUSALE);
-					input.setOggettoDelPagamento(causaleTroncata);
 					input.setOggettoDelPagamentoRata(causaleTroncata);
 					input.setOggettoDelPagamentoBollettino(causaleTroncata);
 				} else {
-					input.setOggettoDelPagamento(causaleVersamento);
+					
 					input.setOggettoDelPagamentoRata(causaleVersamento);
 					input.setOggettoDelPagamentoBollettino(causaleVersamento);
 				}

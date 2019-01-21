@@ -23,7 +23,6 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
-import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -404,7 +403,7 @@ public class Rpt extends BasicBD{
 		GpContext ctx = GpThreadLocal.get();
 		this.setupConnection(ctx.getTransactionId());
 		String sessionId = null;
-		NotificheBD notificheBD = new NotificheBD(this);
+		it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica(this);
 		try {
 			if(url != null)
 				sessionId = UrlUtils.getCodSessione(url);
@@ -420,8 +419,9 @@ public class Rpt extends BasicBD{
 			try {
 				RptBD rptBD = new RptBD(this);
 				rptBD.updateRpt(rpt.getId(), statoRpt, null, sessionId, url);
-				notificheBD.insertNotifica(notifica);
-				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this));
+				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
+				if(schedulaThreadInvio)
+					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this));
 			} catch (Exception ee) {
 				// Se uno o piu' aggiornamenti vanno male, non importa. 
 				// si risolvera' poi nella verifica pendenti

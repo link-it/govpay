@@ -31,47 +31,7 @@ public class EventiDAO extends BaseDAO {
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA,bd);
-			// Autorizzazione sui domini
-			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA);
-			if(codDomini == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+listaEventiDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.GIORNALE_DEGLI_EVENTI + " per alcun dominio");
-			}
-			
-			EventiBD eventiBD = new EventiBD(bd);
-			EventiFilter filter = eventiBD.newFilter();
-			
-			if(codDomini != null && codDomini.size() > 0)
-				filter.setCodDomini(codDomini);
-
-			filter.setOffset(listaEventiDTO.getOffset());
-			filter.setLimit(listaEventiDTO.getLimit());
-			
-			filter.setCodDominio(listaEventiDTO.getIdDominio());
-			filter.setIuv(listaEventiDTO.getIuv());
-			
-			if(listaEventiDTO.getIdA2A()!=null && listaEventiDTO.getIdPendenza() != null) {
-				VersamentiBD versamentiBD = new VersamentiBD(bd);
-				Versamento versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, listaEventiDTO.getIdA2A()).getId(), listaEventiDTO.getIdPendenza());
-				
-				filter.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
-				filter.setIuv(versamento.getIuvVersamento());
-				
-			} else {
-				filter.setCodApplicazione(listaEventiDTO.getIdA2A());
-				filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());
-			}
-			
-			filter.setFilterSortList(listaEventiDTO.getFieldSortList());
-
-			long count = eventiBD.count(filter);
-
-			List<Evento> resList = new ArrayList<>();
-			if(count > 0) {
-				resList = eventiBD.findAll(filter);
-			} 
-
-			return new ListaEventiDTOResponse(count, resList);
+			return listaEventi(listaEventiDTO, bd);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -79,6 +39,52 @@ public class EventiDAO extends BaseDAO {
 				bd.closeConnection();
 		}
 
+	}
+
+	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, NotFoundException {
+		this.autorizzaRichiesta(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA,bd);
+		// Autorizzazione sui domini
+		List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA);
+		if(codDomini == null) {
+			throw new NotAuthorizedException("L'utenza autenticata ["+listaEventiDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.GIORNALE_DEGLI_EVENTI + " per alcun dominio");
+		}
+		
+		EventiBD eventiBD = new EventiBD(bd);
+		EventiFilter filter = eventiBD.newFilter();
+		
+		if(codDomini != null && codDomini.size() > 0)
+			filter.setCodDomini(codDomini);
+
+		filter.setOffset(listaEventiDTO.getOffset());
+		filter.setLimit(listaEventiDTO.getLimit());
+		
+		filter.setCodDominio(listaEventiDTO.getIdDominio());
+		filter.setIuv(listaEventiDTO.getIuv());
+		
+		if(listaEventiDTO.getIdA2A()!=null && listaEventiDTO.getIdPendenza() != null) {
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			Versamento versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, listaEventiDTO.getIdA2A()).getId(), listaEventiDTO.getIdPendenza());
+			
+			filter.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
+			filter.setIuv(versamento.getIuvVersamento());
+			
+		} else {
+			filter.setCodApplicazione(listaEventiDTO.getIdA2A());
+			filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());
+		}
+		
+		filter.setIdSessione(listaEventiDTO.getIdPagamento());
+		filter.setFilterSortList(listaEventiDTO.getFieldSortList());
+		
+
+		long count = eventiBD.count(filter);
+
+		List<Evento> resList = new ArrayList<>();
+		if(count > 0) {
+			resList = eventiBD.findAll(filter);
+		} 
+
+		return new ListaEventiDTOResponse(count, resList);
 	}
 
 }

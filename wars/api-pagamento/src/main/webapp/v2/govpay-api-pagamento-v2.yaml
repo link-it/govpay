@@ -1402,7 +1402,7 @@ components:
             pagamenti:
               type: array
               items:
-                $ref: '#/components/schemas/PagamentiIndex'         
+                $ref: '#/components/schemas/PagamentoIndex'         
     PendenzaBase:
       type: object
       required:

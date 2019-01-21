@@ -2,8 +2,6 @@ package it.govpay.model;
 
 import java.util.Date;
 
-import it.govpay.model.Versamento.ModoAvvisatura;
-
 public class Tracciato extends BasicModel {
 
 	/**

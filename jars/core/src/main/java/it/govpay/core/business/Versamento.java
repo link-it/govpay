@@ -391,11 +391,11 @@ public class Versamento extends BasicBD {
 				codVersamentoEnte = iuvModel.getCodVersamentoEnte();
 			} catch (NotFoundException e) {
 				// Iuv non registrato. Vedo se c'e' un'applicazione da interrogare, altrimenti non e' recuperabile.
-				codApplicazione = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv).getCodApplicazione();
-				
-				if(codApplicazione == null) {
+				Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv, false);
+				if(applicazioneDominio == null) {
 					throw new GovPayException("L'avviso di pagamento [Dominio:" + codDominio + " Iuv:" + iuv + "] non risulta registrato, ne associabile ad un'applicazione censita.", EsitoOperazione.VER_008);
 				}
+				codApplicazione = applicazioneDominio.getCodApplicazione();
 			}
 
 			// A questo punto ho sicuramente il codApplicazione. Se ho anche il codVersamentoEnte lo cerco localmente

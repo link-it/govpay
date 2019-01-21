@@ -51,6 +51,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
@@ -61,7 +62,6 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
@@ -330,9 +330,11 @@ public class Rendicontazioni extends BasicBD {
 												versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 											} catch (NotFoundException nfe) {
 												// Non e' su sistema. Individuo l'applicativo gestore
-												codApplicazione = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv).getCodApplicazione();
-												if(codApplicazione != null)
+												Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione(this).getApplicazioneDominio(dominio, iuv,false);
+												if(applicazioneDominio != null) {
+													codApplicazione = applicazioneDominio.getCodApplicazione();
 													versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, this);
+												}
 											}
 										} catch (VersamentoScadutoException e1) {
 											erroreVerifica = "Versamento non acquisito dall'applicazione gestrice perche' SCADUTO.";
@@ -593,28 +595,5 @@ public class Rendicontazioni extends BasicBD {
 		}
 
 		return flussiDaAcquisire;
-	}
-
-	/**
-	 * Recupera il flusso di rendicontazione identificato dal codFlusso
-	 * 
-	 * Se applicazione == null, il flusso contiene tutte le rendicontazioni, 
-	 * altrimenti solo quelle riferite a pagamenti dell'applicazione.
-	 * 
-	 * @param applicazione
-	 * @param codFlusso
-	 * @return
-	 * @throws GovPayException
-	 * @throws ServiceException
-	 */
-
-	public Fr chiediRendicontazione(String codFlusso) throws GovPayException, ServiceException {
-		FrBD frBD = new FrBD(this);
-		try {
-			Fr flusso = frBD.getFr(codFlusso);
-			return flusso;
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.RND_000);
-		}
 	}
 }

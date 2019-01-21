@@ -17,11 +17,11 @@ import it.govpay.core.exceptions.RequestParamException.FaultType;
 
 public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	
-	private int limit;
+	private Integer limit;
 	private String simpleSearch;
 	private List<FilterSortWrapper> fieldsSort;
 	private Map<String, IField> fieldMap;
-	private int offset;
+	private Integer offset;
 	private List<FilterSortWrapper> defaultSort = null;
 	
 	public final static int DEFAULT_LIMIT = 50;
@@ -44,22 +44,24 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		return offset;
 	}
 	
-	public void setOffset(int offset) {
-		this.offset = offset;
+	public void setOffset(Integer offset) {
+		this.offset = offset != null ? offset : 0;
 	}
 
 	public void setPagina(int pagina) {
-		this.offset = (pagina - 1) * this.limit;
+		this.offset = this.limit != null ?  ((pagina - 1) * this.limit) : 0;
 	}
 	
 	public int getPagina() {
-		return Math.floorDiv(this.offset, this.limit);
+		if(this.offset != null && this.limit != null)
+			return Math.floorDiv(this.offset, this.limit);
+		else return 1;
 	}
 
 	public int getLimit() {
 		return this.limit;
 	}
-	public void setLimit(int limit) {
+	public void setLimit(Integer limit) {
 		this.limit = limit;
 	}
 

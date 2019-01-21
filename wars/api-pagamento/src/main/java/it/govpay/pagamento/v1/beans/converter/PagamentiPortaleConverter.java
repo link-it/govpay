@@ -10,6 +10,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
@@ -284,7 +285,8 @@ public class PagamentiPortaleConverter {
 
 		return rsModel;
 	}
-	public static PagamentoIndex toRsModelIndex(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
+	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException {
+		it.govpay.bd.model.PagamentoPortale pagamentoPortale = dto.getPagamento();
 		PagamentoIndex rsModel = new PagamentoIndex();
 		
 		PagamentoPost pagamentiPortaleRequest = null;

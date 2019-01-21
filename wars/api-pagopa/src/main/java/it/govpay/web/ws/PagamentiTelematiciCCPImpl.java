@@ -212,7 +212,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			try {
 				versamento = versamentiBD.getVersamento(codDominio, iuv);
 			}catch (NotFoundException e) {
-				applicazioneGestisceIuv = new Applicazione(bd).getApplicazioneDominio(dominio,iuv); 
+				applicazioneGestisceIuv = new Applicazione(bd).getApplicazioneDominio(dominio,iuv,false); 
 				
 				if(applicazioneGestisceIuv == null) {
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
@@ -580,7 +580,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				idVersamentoLong = versamento.getId();
 				ctx.log("ccp.iuvPresente", versamento.getCodVersamentoEnte());
 			}catch (NotFoundException e) {
-				applicazioneGestisceIuv = new Applicazione(bd).getApplicazioneDominio(dominio,iuv); 
+				applicazioneGestisceIuv = new Applicazione(bd).getApplicazioneDominio(dominio,iuv,false); 
 				
 				if(applicazioneGestisceIuv == null) {
 					ctx.log("ccp.iuvNonPresenteNoAppGestireIuv");

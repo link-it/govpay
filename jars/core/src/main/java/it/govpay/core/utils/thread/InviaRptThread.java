@@ -30,7 +30,6 @@ import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.utils.GpContext;
@@ -107,15 +106,16 @@ public class InviaRptThread implements Runnable {
 				// RPT accettata dal Nodo
 				// Invio la notifica e aggiorno lo stato
 				Notifica notifica = new Notifica(this.rpt, TipoNotifica.ATTIVAZIONE, bd);
-				NotificheBD notificheBD = new NotificheBD(bd);
+				it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica(bd);
 				
 				
 				bd.setAutoCommit(false);
 				rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null);
-				notificheBD.insertNotifica(notifica);
+				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
 				bd.commit();
 				
-				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
+				if(schedulaThreadInvio)
+					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
 				log.info("RPT inviata correttamente al nodo");
 				ctx.log("pagamento.invioRptAttivataOk");
 			}

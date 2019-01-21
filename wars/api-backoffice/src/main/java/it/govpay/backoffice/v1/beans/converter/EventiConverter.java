@@ -33,6 +33,7 @@ public class EventiConverter {
 				rsModel.setTipoEvento(eventoIntegrazione.getTipoEvento());
 				rsModel.setSottotipoEvento(eventoIntegrazione.getSottotipoEvento()); 
 				rsModel.setCategoriaEvento(CategoriaEventoEnum.INTERFACCIA);
+				rsModel.setDescrizioneEsito(eventoIntegrazione.getDescrizioneEsito());
 				break;
 			case INTERFACCIA_COOPERAZIONE:
 				EventoCooperazione eventoCooperazione = EventoConverter.toEventoCooperazione(evento);
@@ -57,6 +58,7 @@ public class EventiConverter {
 					rsModel.setTipoVersamento(eventoCooperazione.getTipoVersamento().name());
 				}
 				rsModel.setCategoriaEvento(CategoriaEventoEnum.INTERFACCIA);
+				rsModel.setDescrizioneEsito(eventoCooperazione.getDescrizioneEsito());
 				break;
 			case INTERNO:
 			default:
@@ -67,10 +69,11 @@ public class EventiConverter {
 				rsModel.setTipoEvento(evento.getTipoEvento());
 				rsModel.setCcp(evento.getCcp());
 				rsModel.setSottotipoEvento(evento.getSottotipoEvento());
-				
+			
 				try {
 					EventoNota eventoNota = EventoConverter.toEventoNota(evento);
 					rsModel.setEsito(eventoNota.getOggetto());
+					rsModel.setDescrizioneEsito(eventoNota.getDescrizioneEsito());
 				}catch(Exception e) {}
 				
 				break;

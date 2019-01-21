@@ -32,13 +32,11 @@ public class AvvisaturaClient extends BasicClient {
 
 	private boolean isAzioneInUrl;
 	private static Logger log = LoggerWrapperFactory.getLogger(AvvisaturaClient.class);
-	private String azione, dominio, stazione, errore, faultCode;
-	private BasicBD bd;
+	private String errore, faultCode;
 	private ObjectFactory objectFactory = null;
 
 	public AvvisaturaClient(Intermediario intermediario, BasicBD bd) throws ClientException {
 		super(intermediario, TipoOperazioneNodo.AVVISATURA);
-		this.bd = bd;
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}
@@ -94,7 +92,6 @@ public class AvvisaturaClient extends BasicClient {
 	}
 
 	public CtRisposta send(String azione, byte[] body) throws GovPayException, ClientException {
-		this.azione = azione;
 		String urlString = this.url.toExternalForm();
 		if(this.isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
@@ -129,5 +126,9 @@ public class AvvisaturaClient extends BasicClient {
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		} finally {
 		}
+	}
+	
+	public String getErrore() {
+		return errore;
 	}
 }

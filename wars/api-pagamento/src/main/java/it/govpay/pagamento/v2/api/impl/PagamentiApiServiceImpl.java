@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.ws.rs.core.UriBuilder;
 
 import org.openspcoop2.utils.jaxrs.fault.FaultCode;
+import org.openspcoop2.utils.jaxrs.impl.AuthorizationConfig;
 import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
 import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;

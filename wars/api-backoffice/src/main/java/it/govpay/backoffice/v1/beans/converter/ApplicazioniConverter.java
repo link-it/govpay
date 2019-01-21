@@ -61,9 +61,12 @@ public class ApplicazioniConverter {
 		applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna());
 		applicazione.setCodApplicazione(idA2A);
 		applicazione.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
-		applicazione.setConnettoreNotifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioNotifica()));
+		
+		if(applicazionePost.getServizioNotifica() != null)
+			applicazione.setConnettoreNotifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioNotifica()));
 		if(applicazionePost.getServizioVerifica() != null)
 			applicazione.setConnettoreVerifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioVerifica()));
+		
 		applicazioneDTO.setApplicazione(applicazione);
 		applicazioneDTO.setIdApplicazione(idA2A);
 		
