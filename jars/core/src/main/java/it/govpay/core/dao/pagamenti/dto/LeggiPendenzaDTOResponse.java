@@ -6,6 +6,8 @@ package it.govpay.core.dao.pagamenti.dto;
 import java.util.List;
 
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
@@ -27,6 +29,8 @@ public class LeggiPendenzaDTOResponse {
 	private Dominio dominio;
 	private Applicazione applicazione;
 	private byte[] avvisoPdf;
+	private List<PagamentoPortale> pagamenti;
+	private List<Rpt> rpts;
 
 	public Versamento getVersamento() {
 		return this.versamento;
@@ -82,6 +86,22 @@ public class LeggiPendenzaDTOResponse {
 
 	public void setVersamentoIncasso(VersamentoIncasso versamentoIncasso) {
 		this.versamentoIncasso = versamentoIncasso;
+	}
+
+	public List<PagamentoPortale> getPagamenti() {
+		return pagamenti;
+	}
+
+	public void setPagamenti(List<PagamentoPortale> pagamenti) {
+		this.pagamenti = pagamenti;
+	}
+
+	public List<Rpt> getRpts() {
+		return rpts;
+	}
+
+	public void setRpts(List<Rpt> rpts) {
+		this.rpts = rpts;
 	}
 	
 }

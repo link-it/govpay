@@ -6,12 +6,20 @@ import java.util.Map;
 import javax.ws.rs.core.UriBuilder;
 
 import org.openspcoop2.utils.jaxrs.fault.FaultCode;
-import org.openspcoop2.utils.jaxrs.impl.AuthorizationConfig;
 import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
 import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
+import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
+import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
+import it.govpay.pagamento.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
 import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
@@ -22,6 +30,7 @@ import it.govpay.pagamento.v2.beans.Pagamenti;
 import it.govpay.pagamento.v2.beans.Pagamento;
 import it.govpay.pagamento.v2.beans.PagamentoCreato;
 import it.govpay.pagamento.v2.beans.StatoPagamento;
+import it.govpay.pagamento.v2.beans.converter.PagamentiConverter;
 
 /**
  * GovPay - API Pagamento
@@ -30,7 +39,7 @@ import it.govpay.pagamento.v2.beans.StatoPagamento;
  *
  */
 public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
-	
+
 	public static UriBuilder basePath = UriBuilder.fromPath("/pagamenti");
 
 	public PagamentiApiServiceImpl(){
@@ -39,7 +48,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 
 	private AuthorizationRules getAuthorizationRules() throws Exception{
 		AuthorizationRules ac = new AuthorizationRules();
-		
+
 		/*
 		 * Utenti anonimi possono chiamare:
 		 * - addPagamento - per avviare un pagamento
@@ -48,7 +57,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		 */
 		{
 			TIPO_UTENZA[] tipiUtenza = { TIPO_UTENZA.ANONIMO };
-			
+
 			Map<HttpRequestMethod, String[]> resources = new HashMap<HttpRequestMethod, String[]>();
 			{
 				String[] location = { "/pagamenti" };
@@ -62,7 +71,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 				String[] location = { "/pagamenti/{id}" };
 				resources.put(HttpRequestMethod.GET, location);
 			}
-			
+
 			Acl acl = new TipoUtenzaOnlyAcl(tipiUtenza, resources);
 			ac.addAcl(acl);
 		}
@@ -74,16 +83,16 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 			Acl acl = new TipoUtenzaOnlyAcl(tipiUtenza);
 			ac.addAcl(acl);
 		}
-		
+
 		return ac;
 	}
 
-    /**
-     * Avvio di un pagamento di pendenze
-     *
-     * L&#x27;operazione consente di avviare una sessione di pagamento per una o più pendenze. Le pendenze presenti in posizione debitoria possono essere riferite tramite identificativo della pendenza del gestionale proprietario  (_idA2A_ e _idPendenza_) oppure con gli estremi dell&#x27;avviso (_idDominio_  e _iuv_). Nel caso invece di pendenze spontanee, è possibile fornire direttamente i dati costitutivi.
-     *
-     */
+	/**
+	 * Avvio di un pagamento di pendenze
+	 *
+	 * L&#x27;operazione consente di avviare una sessione di pagamento per una o più pendenze. Le pendenze presenti in posizione debitoria possono essere riferite tramite identificativo della pendenza del gestionale proprietario  (_idA2A_ e _idPendenza_) oppure con gli estremi dell&#x27;avviso (_idDominio_  e _iuv_). Nel caso invece di pendenze spontanee, è possibile fornire direttamente i dati costitutivi.
+	 *
+	 */
 	@Override
 	public PagamentoCreato addPagamento(NuovoPagamento body, String idSessionePortale, Boolean avvisaturaDigitale,	ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
 		ServiceContext context = this.getContext();
@@ -91,12 +100,19 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
-                        
-        // TODO: Implement...
-        
+			
+			String idSession = context.getIdOperazione().replace("-", "");
+			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiConverter.getPagamentiPortaleDTO(body, context.getAuthentication(),idSession, idSessionePortale, avvisaturaDigitale,modalitaAvvisaturaDigitale);
+			
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
+			
+			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);
+						
+			PagamentoCreato responseOk = PagamentiConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
+
 			context.getLogger().info("Invocazione completata con successo");
-        return null;
-     
+			return responseOk;
+
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -106,26 +122,47 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
-    }
-    
-    /**
-     * Lista dei pagamenti
-     *
-     */
+	}
+
+	/**
+	 * Lista dei pagamenti
+	 *
+	 */
 	@Override
-    public Pagamenti findPagamenti(Integer offset, Integer limit, String fields, String sort, String idSessionePortale, String idSessionePsp, String idDebitore, StatoPagamento statoPagamento) {
+	public Pagamenti findPagamenti(Integer offset, Integer limit, String fields, String sort, String idSessionePortale, String idSessionePsp, String idDebitore, StatoPagamento statoPagamento) {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
-                        
-        // TODO: Implement...
-        
+
+			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(context.getAuthentication());
+			listaPagamentiPortaleDTO.setOffset(offset);
+			listaPagamentiPortaleDTO.setLimit(limit);
+			if(statoPagamento != null)
+				listaPagamentiPortaleDTO.setStato(statoPagamento.name());
+			listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
+			listaPagamentiPortaleDTO.setIdSessionePsp(idSessionePsp);
+			listaPagamentiPortaleDTO.setVersante(idDebitore);
+
+			listaPagamentiPortaleDTO.setOrderBy(sort);
+
+			// INIT DAO
+
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+
+			// CHIAMATA AL DAO
+
+			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);
+
+			// CONVERT TO JSON DELLA RISPOSTA
+
+			Pagamenti pagamenti = PagamentiConverter.toRsModel(pagamentoPortaleDTOResponse.getResults(),context.getUriInfo(), offset, limit, pagamentoPortaleDTOResponse.getTotalResults());
 			context.getLogger().info("Invocazione completata con successo");
-        return null;
-     
+			
+			return pagamenti;
+
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -135,55 +172,69 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
-    }
-    
-    /**
-     * Dettaglio di un pagamento
-     *
-     */
+	}
+
+	/**
+	 * Dettaglio di un pagamento
+	 *
+	 */
 	@Override
-    public Pagamento getPagamento(String id) {
+	public Pagamento getPagamento(String id) {
+		ServiceContext context = this.getContext();
+		try {
+			context.getLogger().info("Invocazione in corso ...");     
+			getAuthorizationRules().authorize(context);
+			context.getLogger().debug("Autorizzazione completata con successo");     
+
+			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(context.getAuthentication());
+			leggiPagamentoPortaleDTO.setId(id);
+			leggiPagamentoPortaleDTO.setRisolviLink(true); 
+			
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
+			
+			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
+
+			Pagamento pagamento = PagamentiConverter.toRsModel(pagamentoPortaleDTOResponse);
+			
+			context.getLogger().info("Invocazione completata con successo");
+			return pagamento;
+		}
+		catch(javax.ws.rs.WebApplicationException e) {
+			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
+			throw e;
+		}
+		catch(Throwable e) {
+			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
+			throw FaultCode.ERRORE_INTERNO.toException(e);
+		}
+	}
+
+	/**
+	 * Dettaglio di un pagamento
+	 *
+	 */
+	@Override
+	public Pagamento getPagamentoByIdSession(String idSession) {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
-                        
-        // TODO: Implement...
-        
-			context.getLogger().info("Invocazione completata con successo");
-        return null;
-     
-		}
-		catch(javax.ws.rs.WebApplicationException e) {
-			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
-			throw e;
-		}
-		catch(Throwable e) {
-			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
-		}
-    }
-    
-    /**
-     * Dettaglio di un pagamento
-     *
-     */
-	@Override
-    public Pagamento getPagamentoByIdSession(String idSession) {
-		ServiceContext context = this.getContext();
-		try {
-			context.getLogger().info("Invocazione in corso ...");     
 
-			getAuthorizationRules().authorize(context);
-			context.getLogger().debug("Autorizzazione completata con successo");     
-                        
-        // TODO: Implement...
-        
+			LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO = new LeggiPagamentoPortaleDTO(context.getAuthentication());
+			leggiPagamentoPortaleDTO.setIdSessionePsp(idSession);
+			leggiPagamentoPortaleDTO.setRisolviLink(true); 
+			
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
+			
+			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
+
+			Pagamento pagamento = PagamentiConverter.toRsModel(pagamentoPortaleDTOResponse);
+
 			context.getLogger().info("Invocazione completata con successo");
-        return null;
-     
+			return pagamento;
+
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -193,7 +244,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
-    }
-    
+	}
+
 }
 

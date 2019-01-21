@@ -67,7 +67,7 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp);
 
 			response.setRpt(rpt);
-			response.setVersamento(rpt.getVersamento(bd));
+			response.setVersamento(rpt.getVersamentoIncasso(bd));
 			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
 			response.setDominio(rpt.getVersamento(bd).getDominio(bd));
 			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(bd));
@@ -176,7 +176,7 @@ public class RptDAO extends BaseDAO{
 				elem.setRpt(rpt);
 				rpt.getVersamento(bd).getDominio(bd);
 				rpt.getVersamento(bd).getUo(bd);
-				elem.setVersamento(rpt.getVersamento(bd));
+				elem.setVersamento(rpt.getVersamentoIncasso(bd));
 				elem.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
 				resList.add(elem);
 			}

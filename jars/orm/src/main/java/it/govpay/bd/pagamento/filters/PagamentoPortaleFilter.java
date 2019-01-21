@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -32,8 +33,11 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.PagamentoPortale.STATO;
+import it.govpay.orm.Versamento;
+import it.govpay.orm.dao.jdbc.converter.PagamentoPortaleFieldConverter;
 
 public class PagamentoPortaleFilter extends AbstractFilter {
 
@@ -46,6 +50,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private List<String> codDomini;
 	private Boolean ack;
 	private String cfCittadino;
+	private List<Long> idPagamentiPortale;
 	
 	public enum SortFields {
 		DATA
@@ -133,6 +138,16 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				
 				newExpression.and(cfExpr);
 				
+				addAnd = true;
+			}
+			
+			if(this.idPagamentiPortale != null && !this.idPagamentiPortale.isEmpty()) {
+				PagamentoPortaleFieldConverter converter = new PagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()));
+				newExpression.in(cf, this.idPagamentiPortale);
 				addAnd = true;
 			}
 			
@@ -240,6 +255,14 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 	public void setCfCittadino(String cfCittadino) {
 		this.cfCittadino = cfCittadino;
+	}
+
+	public List<Long> getIdPagamentiPortale() {
+		return idPagamentiPortale;
+	}
+
+	public void setIdPagamentiPortale(List<Long> idPagamentiPortale) {
+		this.idPagamentiPortale = idPagamentiPortale;
 	}
 
 }

@@ -290,6 +290,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				transazioneResponse.setDescrizioneEsito("Operazione completata con successo");
 				transazioneResponse.setMittente(Mittente.GOV_PAY);
 
+				response.setIdCarrelloRpt(rpt.getIdTransazioneRpt());
 			}catch(GovPayException e) {
 				transazioneResponse = (GpAvviaTransazionePagamentoResponse) e.getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);
 				for(Versamento versamentoModel: versamenti) {
@@ -442,6 +443,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setCodCanale(codCanale); 
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale, true); //inserisce anche i versamenti
 			response.setId(pagamentoPortale.getIdSessione());
+			response.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
+			
 			return response;
 		}finally {
 			if(ctx != null) {
