@@ -166,7 +166,7 @@ paths:
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/idA2A'
         - $ref: '#/components/parameters/idPendenza'
-        - $ref: '#/components/parameters/idDebitore'
+        - $ref: '#/components/parameters/idPagatore'
         - $ref: '#/components/parameters/statoPendenza'
         - $ref: '#/components/parameters/idPagamento'
       responses:
@@ -235,7 +235,7 @@ paths:
         - $ref: '#/components/parameters/ccp'
         - $ref: '#/components/parameters/idA2A'
         - $ref: '#/components/parameters/idPendenza'
-        - $ref: '#/components/parameters/idDebitore'
+        - $ref: '#/components/parameters/idPagatore'
         - $ref: '#/components/parameters/esitoPagamento'
         - $ref: '#/components/parameters/idPagamento'
       responses:
@@ -408,7 +408,7 @@ paths:
           required: true
           schema:
             type: string
-        - $ref: '#/components/parameters/idDebitore'            
+        - $ref: '#/components/parameters/idPagatore'            
       responses:
         '200':
           description: Avviso di pagamento
@@ -522,8 +522,8 @@ components:
       required: false
       schema:
         type: string        
-    idDebitore:
-      name: idDebitore
+    idPagatore:
+      name: idPagatore
       in: query
       description: Identificativo del soggetto debitore della pendenza
       required: false
@@ -531,7 +531,7 @@ components:
         type: string
       example: 'RSSMRA30A01H501I'
     idVersante:
-      name: idDebitore
+      name: idVersante
       in: query
       description: Identificativo del soggetto versante del pagamento
       required: false
