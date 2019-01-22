@@ -151,7 +151,9 @@ public class AvvisiApiServiceImpl extends BaseImpl implements AvvisiApi {
 			getAvvisoDTO.setAccessoAnonimo(true);
 			getAvvisoDTO.setCfDebitore(idDebitore);
 			
-			AvvisiDAO avvisiDAO = new AvvisiDAO();
+			AvvisiDAO avvisiDAO = new AvvisiDAO(); 
+			
+			// test
 			
 			// TODO quale formato restituire?
 			if(accept.toLowerCase().contains("application/pdf")) {
