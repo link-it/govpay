@@ -36,7 +36,6 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.PagamentoPortale.STATO;
-import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoPortaleFieldConverter;
 
 public class PagamentoPortaleFilter extends AbstractFilter {
@@ -146,7 +145,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				
 				if(addAnd)
 					newExpression.and();
-				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()));
+				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.PagamentoPortale.model()));
 				newExpression.in(cf, this.idPagamentiPortale);
 				addAnd = true;
 			}

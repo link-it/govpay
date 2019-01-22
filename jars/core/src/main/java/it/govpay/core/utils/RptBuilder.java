@@ -161,7 +161,6 @@ public class RptBuilder {
 		rpt.setPspRedirectURL(null);
 		rpt.setStato(StatoRpt.RPT_ATTIVATA);
 		rpt.setIdTransazioneRpt(GpThreadLocal.get().getTransactionId());
-		rpt.setVersamento(versamento);
 		rpt.setBloccante(true);
 
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();

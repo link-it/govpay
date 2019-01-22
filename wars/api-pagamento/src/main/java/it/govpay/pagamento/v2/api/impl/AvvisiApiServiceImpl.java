@@ -153,8 +153,6 @@ public class AvvisiApiServiceImpl extends BaseImpl implements AvvisiApi {
 			
 			AvvisiDAO avvisiDAO = new AvvisiDAO(); 
 			
-			// test
-			
 			// TODO quale formato restituire?
 			if(accept.toLowerCase().contains("application/pdf")) {
 				getAvvisoDTO.setFormato(FormatoAvviso.PDF);
