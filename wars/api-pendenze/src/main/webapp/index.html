@@ -41,7 +41,10 @@
 
       // Build a system
       const ui = SwaggerUIBundle({
-        url: "${it.govpay.apiurl}/govpay/backend/api/pendenze/govpay-api-pendenze.yaml",
+        urls: [
+          	{url: "${it.govpay.apiurl}/govpay/backend/api/pendenze/v2/govpay-api-pendenze-v2.yaml", name: "API Pendenze v2"},
+          	{url: "${it.govpay.apiurl}/govpay/backend/api/pendenze/v1/govpay-api-pendenze-v1.yaml", name: "API Pendenze v1"},
+          	],
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [

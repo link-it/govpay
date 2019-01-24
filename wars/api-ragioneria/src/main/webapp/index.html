@@ -41,7 +41,10 @@
 
       // Build a system
       const ui = SwaggerUIBundle({
-        url: "${it.govpay.apiurl}/govpay/backend/api/ragioneria/govpay-api-ragioneria.yaml",
+        urls: [
+          	{url: "${it.govpay.apiurl}/govpay/backend/api/ragioneria/govpay-api-ragioneria-v2.yaml", name: "API Ragioneria v2"},
+          	{url: "${it.govpay.apiurl}/govpay/backend/api/ragioneria/govpay-api-ragioneria-v1.yaml", name: "API Ragioneria v1"},
+          	],
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [

@@ -707,26 +707,7 @@ components:
       content:
         application/problem+json:
           schema:
-            type: object
-            allOf:
-            - $ref: '#/components/schemas/Problem'
-            - type: object
-              properties:
-                invalidParams:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - name
-                    - reason
-                    - value
-                  properties:
-                    name:
-                      type: string
-                    reason:
-                      type: string
-                    value:
-                      type: string
+            $ref: '#/components/schemas/ProblemValidation'
           example:
             status: 400
             title: "Bad Request"          
@@ -796,34 +777,7 @@ components:
       content:
         application/problem+json:
           schema:
-            type: object
-            allOf:
-            - $ref: '#/components/schemas/Problem'
-            - type: object
-              properties:
-                faultBean:
-                  type: object
-                  description: Errore originale dal Nodo dei Pagamenti SPC, come definito in https://docs.italia.it/italia/pagopa/pagopa-specifichepagamenti-docs/it/bozza/_docs/Capitolo10.html#la-struttura-faultbean
-                  required:
-                    - id
-                    - faultCode
-                    - faultString
-                  properties:
-                    id:
-                      type: string
-                      description: Soggetto che emette l'errore.
-                    faultCode:
-                      type: string
-                      description: Codice di errore.
-                    faultString:
-                      type: string
-                      description: Specifica del codice di errore.
-                    description:
-                      type: string
-                      description: Descrizione aggiuntiva.
-                    serial:
-                      type: number
-                      description: Posizione dell’elemento nella lista a cui fa riferimento.                  
+            $ref: '#/components/schemas/ProblemGateway'
           example:
             status: 502
             title: "Bad Gateway"          
@@ -1336,7 +1290,7 @@ components:
         - href
         - redirect
         - idCarrelloRpt
-        - idSessionePsp
+        - idSession
       properties:
         id:
           type: string
@@ -1349,15 +1303,20 @@ components:
         redirect:
           type: string
           description: url a cui redirigere il navigatore per proseguire nel pagamento.
-          example: 'https://www.agid.wisp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
-        idCarrelloRpt:
-          type: string
-          description: identificativo del carrello di pagamento pagoPA
-          example: abc12345-4567-8901-9296-qwerty12345a           
-        idSessionePsp:
+          example: 'https://www.agid.wisp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'      
+        idSession:
           type: string
           description: identificativo della sessione di pagamento assegnato da pagoPA
-          example: abc12345-4567-8901-9296-qwerty12345a         
+          example: abc12345-4567-8901-9296-qwerty12345a 
+        idCarrello:
+          type: string
+          description: identificativo del carrello di pagamento su pagoPA
+          example: abc12345-4567-8901-9296-qwerty12345a                   
+        rpps:
+          type: array
+          description: elenco delle richieste di pagamento attivate con pagoPA
+          items:
+            $ref: '#/components/schemas/RppIndex' 
     PagamentoIndex:
       type: object
       allOf:
@@ -1562,6 +1521,56 @@ components:
           description: |
             An absolute URI that identifies the specific occurrence of the problem.
             It may or may not yield further information if dereferenced.
+    ProblemGateway:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/Problem'
+      - type: object
+        properties:
+          faultBean:
+            type: object
+            description: Errore originale dal Nodo dei Pagamenti SPC, come definito in https://docs.italia.it/italia/pagopa/pagopa-specifichepagamenti-docs/it/bozza/_docs/Capitolo10.html#la-struttura-faultbean
+            required:
+              - id
+              - faultCode
+              - faultString
+            properties:
+              id:
+                type: string
+                description: Soggetto che emette l'errore.
+              faultCode:
+                type: string
+                description: Codice di errore.
+              faultString:
+                type: string
+                description: Specifica del codice di errore.
+              description:
+                type: string
+                description: Descrizione aggiuntiva.
+              serial:
+                type: number
+                description: Posizione dell’elemento nella lista a cui fa riferimento.   
+    ProblemValidation:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/Problem'
+      - type: object
+        properties:
+          invalidParams:
+            type: array
+            items:
+              type: object
+              required:
+                - name
+                - reason
+                - value
+              properties:
+                name:
+                  type: string
+                reason:
+                  type: string
+                value:
+                  type: string                                   
     Profilo:
       type: object
       required: 
