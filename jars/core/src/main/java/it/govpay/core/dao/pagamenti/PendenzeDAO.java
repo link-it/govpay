@@ -35,12 +35,18 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.eventi.EventoNota.TipoNota;
+import it.govpay.bd.pagamento.PagamentiPortaleBD;
+import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
+import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.viste.VersamentiIncassiBD;
 import it.govpay.bd.viste.filters.VersamentoIncassoFilter;
@@ -80,6 +86,7 @@ import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.avvisi.AvvisoPagamento;
+import it.govpay.orm.PagamentoPortaleVersamento;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
 
 public class PendenzeDAO extends BaseDAO{
@@ -328,7 +335,40 @@ public class PendenzeDAO extends BaseDAO{
 				singoloVersamento.getTributo(bd);
 				
 			}
+			
+			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			PagamentoPortaleFilter newFilter = pagamentiPortaleBD.newFilter();
+			List<PagamentoPortaleVersamento> allPagPortVers = pagamentiPortaleBD.getAllPagPortVers(versamento.getId());
+			List<Long> idPagamentiPortale = new ArrayList<>();
+			
+			if(allPagPortVers != null && !allPagPortVers.isEmpty()) {
+				for (PagamentoPortaleVersamento pagamentoPortaleVersamento : allPagPortVers) {
+					idPagamentiPortale.add(pagamentoPortaleVersamento.getIdPagamentoPortale().getId());
+				}
+				
+				newFilter.setIdPagamentiPortale(idPagamentiPortale);
+				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(newFilter);
+				response.setPagamenti(findAll);
+			}
+			
+			RptBD rptBD = new RptBD(bd);
+			RptFilter newFilter2 = rptBD.newFilter();
+			newFilter2.setIdPendenza(versamento.getCodVersamentoEnte());
+			newFilter2.setCodApplicazione(versamento.getApplicazione(bd).getCodApplicazione());
+			long count = rptBD.count(newFilter2);
 
+			if(count > 0) {
+				List<Rpt> findAll = rptBD.findAll(newFilter2);
+
+				for (Rpt rpt : findAll) {
+					rpt.getVersamento(bd).getDominio(bd);
+					rpt.getVersamento(bd).getUo(bd);
+					rpt.getVersamento(bd).getApplicazione(bd);
+				}
+				
+				response.setRpts(findAll);
+			}
+			
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		} finally {
@@ -382,6 +422,39 @@ public class PendenzeDAO extends BaseDAO{
 						}
 					}
 				}
+			}
+			
+			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			PagamentoPortaleFilter newFilter = pagamentiPortaleBD.newFilter();
+			List<PagamentoPortaleVersamento> allPagPortVers = pagamentiPortaleBD.getAllPagPortVers(versamentoIncasso.getId());
+			List<Long> idPagamentiPortale = new ArrayList<>();
+			
+			if(allPagPortVers != null && !allPagPortVers.isEmpty()) {
+				for (PagamentoPortaleVersamento pagamentoPortaleVersamento : allPagPortVers) {
+					idPagamentiPortale.add(pagamentoPortaleVersamento.getIdPagamentoPortale().getId());
+				}
+				
+				newFilter.setIdPagamentiPortale(idPagamentiPortale);
+				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(newFilter);
+				response.setPagamenti(findAll);
+			}
+			
+			RptBD rptBD = new RptBD(bd);
+			RptFilter newFilter2 = rptBD.newFilter();
+			newFilter2.setIdPendenza(versamentoIncasso.getCodVersamentoEnte());
+			newFilter2.setCodApplicazione(versamentoIncasso.getApplicazione(bd).getCodApplicazione());
+			long count = rptBD.count(newFilter2);
+
+			if(count > 0) {
+				List<Rpt> findAll = rptBD.findAll(newFilter2);
+
+				for (Rpt rpt : findAll) {
+					rpt.getVersamento(bd).getDominio(bd);
+					rpt.getVersamento(bd).getUo(bd);
+					rpt.getVersamento(bd).getApplicazione(bd);
+				}
+				
+				response.setRpts(findAll);
 			}
 
 		} catch (NotFoundException e) {

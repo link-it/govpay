@@ -12,6 +12,13 @@
                 secured-annotations="enabled">
         </global-method-security>
         
+         <b:bean id="allowUrlEncodedSlashFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall" >
+    		<b:property name="allowUrlEncodedSlash" value="true"/>
+    		<b:property name="allowUrlEncodedPercent" value="true"/>
+        </b:bean>
+        
+        <http-firewall ref="allowUrlEncodedSlashFirewall"/>
+        
 		<!-- CONTAINER START -->
         
         <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >

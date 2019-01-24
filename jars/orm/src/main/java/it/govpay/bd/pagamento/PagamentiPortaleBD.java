@@ -135,6 +135,19 @@ public class PagamentiPortaleBD extends BasicBD{
 			throw new ServiceException();
 		}
 	}
+	
+	public List<PagamentoPortaleVersamento> getAllPagPortVers(long idVersamento)
+			throws ServiceException {
+
+		try {
+			IPaginatedExpression exp = this.getPagamentoPortaleVersamentoService().newPaginatedExpression();
+			CustomField field = new CustomField("id_versamento", Long.class, "id_versamento", new PagamentoPortaleVersamentoFieldConverter(this.getJdbcProperties().getDatabase()).toTable(it.govpay.orm.PagamentoPortaleVersamento.model()));
+			exp.equals(field, idVersamento);
+			return this.getPagamentoPortaleVersamentoService().findAll(exp);
+		} catch (ExpressionNotImplementedException| ExpressionException  | NotImplementedException e) {
+			throw new ServiceException();
+		}
+	}
 
 	public void ack(PagamentoPortale pagamento) throws ServiceException {
 		it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);

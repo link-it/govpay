@@ -20,10 +20,12 @@ import it.govpay.pagamento.v2.api.impl.PagamentiApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl;
 import it.govpay.pagamento.v2.beans.Avviso;
+import it.govpay.pagamento.v2.beans.PagamentoIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
 import it.govpay.pagamento.v2.beans.PendenzaBase;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
 import it.govpay.pagamento.v2.beans.Pendenze;
+import it.govpay.pagamento.v2.beans.RppIndex;
 import it.govpay.pagamento.v2.beans.Segnalazione;
 import it.govpay.pagamento.v2.beans.StatoAvviso;
 import it.govpay.pagamento.v2.beans.StatoPendenza;
@@ -144,8 +146,19 @@ public class PendenzeConverter {
 		}
 		rsModel.setVoci(v);
 		
-		rsModel.setPagamenti(null); //TODO
-		rsModel.setRpps(null); //TODO
+		List<PagamentoIndex> listaPagamentoIndex = new ArrayList<>();
+		
+		for (PagamentoPortale pagamento : pagamenti) {
+			listaPagamentoIndex.add(PagamentiConverter.toRsModelIndex(pagamento));
+		}
+		
+		rsModel.setPagamenti(listaPagamentoIndex);
+		
+		List<RppIndex> rpps = new ArrayList<>();
+		for (Rpt rpt : transazioni) {
+			rpps.add(RppConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null)));
+		} 
+		rsModel.setRpps(rpps); 
 		return rsModel;
 	}
 	

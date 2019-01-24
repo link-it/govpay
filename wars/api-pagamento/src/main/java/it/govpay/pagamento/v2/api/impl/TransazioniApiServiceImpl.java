@@ -1,26 +1,37 @@
 package it.govpay.pagamento.v2.api.impl;
 
+import java.net.URLDecoder;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+
+import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.NotAuthorizedException;
+import org.openspcoop2.utils.jaxrs.fault.FaultCode;
+import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
+import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.core.dao.pagamenti.RptDAO;
+import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
+import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
+import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
+import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
 import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
-import it.govpay.pagamento.v2.api.*;
+import it.govpay.pagamento.v2.api.TransazioniApi;
 import it.govpay.pagamento.v2.beans.EsitoRpp;
 import it.govpay.pagamento.v2.beans.Rpp;
 import it.govpay.pagamento.v2.beans.Rpps;
-
-import org.openspcoop2.utils.jaxrs.impl.AuthorizationManager;
-import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
-import org.openspcoop2.utils.jaxrs.impl.AuthorizationConfig;
-
-import javax.ws.rs.core.UriBuilder;
-
-import org.openspcoop2.utils.jaxrs.fault.FaultCode;
+import it.govpay.pagamento.v2.beans.converter.RppConverter;
 /**
  * GovPay - API Pagamento
  *
@@ -30,18 +41,18 @@ import org.openspcoop2.utils.jaxrs.fault.FaultCode;
 public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniApi {
 
 	public static UriBuilder basePath = UriBuilder.fromPath("/rpps");
-	
+
 	public TransazioniApiServiceImpl(){
 		super(org.slf4j.LoggerFactory.getLogger(TransazioniApiServiceImpl.class));
 	}
 
 	private AuthorizationRules getAuthorizationRules() throws Exception{
 		AuthorizationRules ac = new AuthorizationRules();
-		
+
 		/*
 		 * Utenti anonimi possono chiamare: nessun servizio
 		 */
-		
+
 		/*
 		 * Utenti CITTADINO e APPLICAZIONE possono chiamare tutte le operazioni:
 		 */
@@ -50,14 +61,14 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			Acl acl = new TipoUtenzaOnlyAcl(tipiUtenza);
 			ac.addAcl(acl);
 		}
-		
+
 		return ac;
 	}
 
-    /**
-     * Lista delle richieste di pagamento pendenza
-     *
-     */
+	/**
+	 * Lista delle richieste di pagamento pendenza
+	 *
+	 */
 	@Override
 	public Rpps findRpps(Integer offset, Integer limit, String fields, String sort, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String idDebitore, EsitoRpp statoPendenza, String idSessionePortale) {
 		ServiceContext context = this.getContext();
@@ -65,7 +76,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");    
-                        
+
 			// Parametri - > DTO Input
 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(context.getAuthentication());
@@ -82,7 +93,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			listaRptDTO.setIdPendenza(idPendenza);
 			listaRptDTO.setIdPagamento(idSessionePortale);
 
-				listaRptDTO.setOrderBy(sort);
+			listaRptDTO.setOrderBy(sort);
 			// INIT DAO
 
 			RptDAO rptDAO = new RptDAO();
@@ -90,12 +101,10 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			// CHIAMATA AL DAO
 
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
-        
-			Rpps rpps = null;
+			Rpps rpps = RppConverter.toRsModel(listaRptDTOResponse.getResults(),offset,limit,listaRptDTOResponse.getTotalResults(),context.getUriInfo());
 			context.getLogger().info("Invocazione completata con successo");
-			
 			return rpps;
-     
+
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -105,25 +114,35 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
-    }
-    
-    /**
-     * Dettaglio di una richiesta di pagamento pendenza
-     *
-     */
+	}
+
+	/**
+	 * Dettaglio di una richiesta di pagamento pendenza
+	 *
+	 */
 	@Override
-    public Rpp getRpp(String idDominio, String iuv, String ccp) {
+	public Rpp getRpp(String idDominio, String iuv, String ccp) {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
-                        
-        // TODO: Implement...
-        
+
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(context.getAuthentication());
+			leggiRptDTO.setIdDominio(idDominio);
+			leggiRptDTO.setIuv(iuv);
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			leggiRptDTO.setCcp(ccp);
+
+			RptDAO ricevuteDAO = new RptDAO(); 
+
+			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
+
+			Rpp rpp = RppConverter.toRsModel(leggiRptDTOResponse.getRpt(), leggiRptDTOResponse.getVersamento(), leggiRptDTOResponse.getApplicazione());
+
 			context.getLogger().info("Invocazione completata con successo");
-        return null;
-     
+			return rpp;
+
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -133,25 +152,51 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
-    }
-    
-    /**
-     * Acquisizione della richiesta di pagamento pagopa
-     *
-     */
+	}
+
+	/**
+	 * Acquisizione della richiesta di pagamento pagopa
+	 *
+	 */
 	@Override
-    public Object getRpt(String idDominio, String iuv, String ccp) {
+	public Object getRpt(String idDominio, String iuv, String ccp) {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
-                        
-        // TODO: Implement...
-        
+
+			String accept = "";
+			if(StringUtils.isNotEmpty(this.getContext().getServletRequest().getHeader("Accept"))) {
+				accept = this.getContext().getServletRequest().getHeader("Accept");
+			}
+
+			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(context.getAuthentication());
+			leggiRptDTO.setIdDominio(idDominio);
+			leggiRptDTO.setIuv(iuv);
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			leggiRptDTO.setCcp(ccp);
+
+			RptDAO ricevuteDAO = new RptDAO(); 
+
+			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
+
+			// TODO quale formato restituire?
+			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
+
+				
+				//return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
+			}else if(accept.toLowerCase().contains("application/xml")){
+				// return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
+			} else {
+				// formato non accettato
+				throw new NotAuthorizedException("Rpt non disponibile nel formato richiesto");
+			}
+
 			context.getLogger().info("Invocazione completata con successo");
-        return null;
-     
+			return null;
+
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -161,25 +206,64 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
-    }
-    
-    /**
-     * Acquisizione della ricevuta di pagamento
-     *
-     */
+	}
+
+	/**
+	 * Acquisizione della ricevuta di pagamento
+	 *
+	 */
 	@Override
-    public byte[] getRt(String idDominio, String iuv, String ccp) {
+	public byte[] getRt(String idDominio, String iuv, String ccp) {
 		ServiceContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
-                        
-        // TODO: Implement...
-        
+			
+			String accept = "";
+			if(StringUtils.isNotEmpty(this.getContext().getServletRequest().getHeader("Accept"))) {
+				accept = this.getContext().getServletRequest().getHeader("Accept");
+			}
+
+			LeggiRicevutaDTO leggiPagamentoPortaleDTO = new LeggiRicevutaDTO(context.getAuthentication());
+			leggiPagamentoPortaleDTO.setIdDominio(idDominio);
+			leggiPagamentoPortaleDTO.setIuv(iuv);
+			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
+			leggiPagamentoPortaleDTO.setCcp(ccp);
+			
+			// TODO riportare dalla v1
+//			if(visualizzaSoggettoDebitore != null)
+//				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
+
+			RptDAO ricevuteDAO = new RptDAO(); 
+
+			LeggiRicevutaDTOResponse ricevutaDTOResponse = null; 
+
+			// TODO quale formato restituire?
+			if(accept.toLowerCase().contains("application/pdf")) {
+				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.PDF);
+				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+				String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
+				byte[] b = ricevutaDTOResponse.getPdf(); 
+
+		//		return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
+			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
+				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+				CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
+	//			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
+			} else if(accept.toLowerCase().contains("application/xml")){
+				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
+				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+//				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
+			} else {
+				// formato non accettato
+				throw new NotAuthorizedException("Rt non disponibile nel formato richiesto");
+			}
+			
 			context.getLogger().info("Invocazione completata con successo");
-        return null;
-     
+			return null;
+
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -189,7 +273,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
-    }
-    
+	}
+
 }
 

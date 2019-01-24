@@ -268,6 +268,14 @@ public class Versamento {
 		this.avvisaturaAbilitata = avvisaturaAbilitata;
 	}
 
+	public String getCartellaPagamento() {
+		return cartellaPagamento;
+	}
+
+	public void setCartellaPagamento(String cartellaPagamento) {
+		this.cartellaPagamento = cartellaPagamento;
+	}
+
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -296,6 +304,7 @@ public class Versamento {
 	private String numeroAvviso;
 	private String modoAvvisatura;
 	private Boolean avvisaturaAbilitata; 
+	private String cartellaPagamento;
     
     private TIPO tipo;
     private List<String> spezzoneCausale;

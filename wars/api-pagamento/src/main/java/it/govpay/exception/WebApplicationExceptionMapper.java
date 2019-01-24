@@ -17,7 +17,10 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
 	public Response toResponse(WebApplicationException exception) {
 		Response.Status errorStatus = Response.Status.BAD_REQUEST;
 		
-		Problem problem = null;
+		Problem problem = new Problem();
+		problem.setStatus(errorStatus.getStatusCode());
+		problem.setTitle(Response.Status.BAD_REQUEST.name());
+		problem.setDetail(exception.getMessage());
 		
 		if(exception.getCause() instanceof JsonMappingException) {
 			errorStatus = Response.Status.BAD_REQUEST;

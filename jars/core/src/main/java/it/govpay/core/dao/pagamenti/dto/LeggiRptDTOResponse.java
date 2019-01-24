@@ -7,6 +7,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.viste.model.VersamentoIncasso;
 
 import java.util.List;
 
@@ -22,17 +23,17 @@ import it.govpay.bd.model.Dominio;
 public class LeggiRptDTOResponse {
 
 	private Rpt rpt;
-	private Versamento versamento;
+	private VersamentoIncasso versamento;
 	private Applicazione applicazione;
 	private List<SingoloVersamento> lstSingoliVersamenti;
 	private UnitaOperativa unitaOperativa;
 	private Dominio dominio;
 
-	public Versamento getVersamento() {
+	public VersamentoIncasso getVersamento() {
 		return this.versamento;
 	}
 
-	public void setVersamento(Versamento versamento) {
+	public void setVersamento(VersamentoIncasso versamento) {
 		this.versamento = versamento;
 	}
 

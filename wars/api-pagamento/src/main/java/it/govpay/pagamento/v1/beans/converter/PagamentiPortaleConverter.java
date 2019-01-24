@@ -182,6 +182,7 @@ public class PagamentiPortaleConverter {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
 		
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
+		versamento.setCartellaPagamento(pendenza.getCartellaPagamento());
 		
 //		versamento.setIncasso(pendenza.getIncasso()); //TODO
 //		versamento.setAnomalie(pendenza.getAnomalie()); 
