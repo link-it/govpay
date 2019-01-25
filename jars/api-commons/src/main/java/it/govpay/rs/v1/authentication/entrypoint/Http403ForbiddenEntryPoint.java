@@ -7,7 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 
 import it.govpay.rs.v1.exception.CodiceEccezione;
 
-public class Http403ForbiddenEntryPoint extends org.openspcoop2.utils.jaxrs.impl.authentication.entrypoint.Http403ForbiddenEntryPoint { 
+public class Http403ForbiddenEntryPoint extends org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint { 
 
 	@Override
 	protected Response getPayload(AuthenticationException authException, HttpServletResponse httpResponse) {

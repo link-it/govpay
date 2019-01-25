@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -129,7 +130,11 @@ public class VersamentoUtils {
 			// check sulla validita' dello iuv
 			Iuv iuvBD  = new Iuv(bd);
 			TipoIUV tipo = iuvBD.getTipoIUV(iuvFromNumeroAvviso);
-			iuvBD.checkIUV(dominio, iuvFromNumeroAvviso, tipo );
+			try {
+				iuvBD.checkIUV(dominio, iuvFromNumeroAvviso, tipo );
+			}catch(UtilsException e) {
+				throw new GovPayException(e);
+			}
 			
 			model.setIuvVersamento(iuvFromNumeroAvviso);
 			model.setIuvProposto(iuvFromNumeroAvviso); 

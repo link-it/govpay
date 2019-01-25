@@ -19,6 +19,8 @@
  */
 package it.govpay.core.exceptions;
 
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
@@ -492,7 +494,11 @@ public class GovPayException extends Exception {
 			response.setDescrizioneEsito(this.getDescrizioneEsito() != null ? this.getDescrizioneEsito() : "");
 			response.setDettaglioEsito(this.getMessage());
 			this.log(log);
-			GpThreadLocal.get().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
+			try {
+				GpThreadLocal.get().getApplicationLogger().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
+			} catch (UtilsException e) {
+				LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la scrittura dell'esito operazione: "+ e.getMessage(),e);
+			}
 			
 		} else {
 			if(this.faultBean.getId().contains("NodoDeiPagamentiSPC")) 

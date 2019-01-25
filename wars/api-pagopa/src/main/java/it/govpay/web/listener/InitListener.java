@@ -1,23 +1,4 @@
-/*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
- * http://www.gov4j.it/govpay
- * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 3, as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-package it.govpay.ejb;
+package it.govpay.web.listener;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -25,12 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
@@ -42,30 +24,31 @@ import it.govpay.core.utils.InitConstants;
 import it.govpay.core.utils.StartupUtils;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 
-@Startup
-@Singleton
-public class StartupEjb {
+public class InitListener implements ServletContextListener {
 
 	private static Logger log = null;
+	private static boolean initialized = false;
 	private String warName = "GovPay";
 	private String tipoServizioGovpay = GpContext.TIPO_SERVIZIO_GOVPAY_OPT;
 	private String dominioAnagraficaManager = "it.govpay.cache.anagrafica.core";
-	
-	@PostConstruct
-	public void init() {
-		
+
+	public static boolean isInitialized() {
+		return InitListener.initialized;
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
 		// Commit id
 		String commit = (InitConstants.GOVPAY_BUILD_NUMBER.length() > 7) ? InitConstants.GOVPAY_BUILD_NUMBER.substring(0, 7) : InitConstants.GOVPAY_BUILD_NUMBER;
-		
-		InputStream govpayPropertiesIS = StartupEjb.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE);
-		URL log4j2URL = StartupEjb.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
-		InputStream msgDiagnosticiIS = StartupEjb.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
-		GpContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
-		
+
+		InputStream govpayPropertiesIS = InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE);
+		URL log4j2URL = InitListener.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
+		InputStream msgDiagnosticiIS = InitListener.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
+		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
+
 		try {
 			log = LoggerWrapperFactory.getLogger("boot");	
 			StartupUtils.startupServices(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
-			
 			if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
 				Map<String, String> map = new HashMap<String, String>();
 				map.put(GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
@@ -73,27 +56,38 @@ public class StartupEjb {
 			}
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);
-			shutdown();
-			ctx.log();
+			try {
+				ctx.getApplicationLogger().log();
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
+			}
 			throw e;
 		} catch (Exception e) {
 			log.error("Inizializzazione fallita", e);
-			shutdown();
-			ctx.log();
+			try {
+				ctx.getApplicationLogger().log();
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
+			}
 			throw new RuntimeException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" fallita.", e);
 		} 
 
-		ctx.log();
+		try {
+			ctx.getApplicationLogger().log();
+		} catch (UtilsException e) {
+			log.error("Errore durante il log dell'operazione: "+e.getMessage(), e);
+		}
 
 		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo."); 
+		initialized = true;
 	}
 
-	@PreDestroy
-	public void shutdown() {
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
 		// Commit id
 		String commit = (InitConstants.GOVPAY_BUILD_NUMBER.length() > 7) ? InitConstants.GOVPAY_BUILD_NUMBER.substring(0, 7) : InitConstants.GOVPAY_BUILD_NUMBER;
-		MDC.put("cmd", "Shutdown");
-		MDC.put("op", UUID.randomUUID().toString() );
+		MDC.put(MD5Constants.OPERATION_ID, "Shutdown");
+		MDC.put(MD5Constants.TRANSACTION_ID, UUID.randomUUID().toString() );
 		
 		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" in corso...");
 		
@@ -118,5 +112,7 @@ public class StartupEjb {
 		}
 		
 		log.info("Shutdown di "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completato.");
+
 	}
+
 }

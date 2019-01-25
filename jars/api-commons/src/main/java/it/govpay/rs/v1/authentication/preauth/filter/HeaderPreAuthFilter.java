@@ -2,7 +2,7 @@ package it.govpay.rs.v1.authentication.preauth.filter;
 
 import it.govpay.core.utils.GovpayConfig;
 
-public class HeaderPreAuthFilter extends org.openspcoop2.utils.jaxrs.impl.authentication.preauth.filter.HeaderPreAuthFilter {
+public class HeaderPreAuthFilter extends org.openspcoop2.utils.service.authentication.preauth.filter.HeaderPreAuthFilter {
 
 	public HeaderPreAuthFilter() {
 		super();

@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -32,7 +33,6 @@ import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 
 public class OperatoriController extends BaseController {
@@ -45,7 +45,7 @@ public class OperatoriController extends BaseController {
 
     public Response operatoriPrincipalPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal, java.io.InputStream is) {
     	String methodName = "operatoriPrincipalPUT";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -75,7 +75,7 @@ public class OperatoriController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 
@@ -83,7 +83,7 @@ public class OperatoriController extends BaseController {
 
     public Response operatoriPrincipalDELETE(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
     	String methodName = "aclIdDELETE";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -115,7 +115,7 @@ public class OperatoriController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 
@@ -123,7 +123,7 @@ public class OperatoriController extends BaseController {
 
     public Response operatoriPrincipalGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
     	String methodName = "intermediariIdIntermediarioGET";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -157,7 +157,7 @@ public class OperatoriController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 
@@ -166,7 +166,7 @@ public class OperatoriController extends BaseController {
     @SuppressWarnings("unchecked")
 	public Response operatoriPrincipalPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
     	String methodName = "operatoriPrincipalPATCH";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -216,7 +216,7 @@ public class OperatoriController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 
@@ -224,7 +224,7 @@ public class OperatoriController extends BaseController {
 
     public Response operatoriGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
     	String methodName = "operatoriGET";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -270,7 +270,7 @@ public class OperatoriController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 

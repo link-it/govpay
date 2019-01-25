@@ -11,6 +11,13 @@
         <global-method-security secured-annotations="enabled">
         </global-method-security>
         
+        <b:bean id="allowUrlEncodedSlashFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall" >
+    		<b:property name="allowUrlEncodedSlash" value="true"/>
+    		<b:property name="allowUrlEncodedPercent" value="true"/>
+        </b:bean>
+        
+        <http-firewall ref="allowUrlEncodedSlashFirewall"/>
+        
         <!-- CONTAINER START  -->
         <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
                 <b:property name="wwwAuthenticate" value="false"/>
@@ -19,7 +26,7 @@
         <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         </b:bean>
         
-		<b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.WildflyApplicationAuthenticationProvider" >
+		<b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
 			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
 		</b:bean>
         <authentication-manager id="authenticationManager">
@@ -38,7 +45,7 @@
                 </headers>
         </http>
         
-        <b:bean id="basicAuthenticationEntryPointV2" class="org.openspcoop2.utils.jaxrs.impl.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+        <b:bean id="basicAuthenticationEntryPointV2" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.BasicAuthenticationEntryPoint" >
                 <b:property name="wwwAuthenticate" value="false"/>
         </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/basic/v2/**" authentication-manager-ref="authenticationManager">
@@ -72,7 +79,7 @@
                 </headers>
         </http>
         
-        <b:bean id="x509AuthenticationEntryPointV2" class="org.openspcoop2.utils.jaxrs.impl.authentication.entrypoint.X509AuthenticationEntryPoint" />
+        <b:bean id="x509AuthenticationEntryPointV2" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.X509AuthenticationEntryPoint" />
         
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPointV2" pattern="/rs/ssl/v2/**">
                 <csrf disabled="true"/>
@@ -94,7 +101,7 @@
         </b:bean>
         <b:bean id="preauthAuthProviderCit" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
         	<b:property name="preAuthenticatedUserDetailsService">
-            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.UserDetailsByNameServiceWrapper">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.service.authentication.provider.UserDetailsByNameServiceWrapper">
                 	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeCit"/>
               	</b:bean>
             </b:property>
@@ -119,7 +126,7 @@
                 </headers>
         </http>
         
-        <b:bean id="http403ForbiddenEntryPointV2" class="org.openspcoop2.utils.jaxrs.impl.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        <b:bean id="http403ForbiddenEntryPointV2" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
         </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointV2" pattern="/rs/spid/v2/**">
                 <csrf disabled="true"/>
@@ -153,7 +160,7 @@
                 </headers>
         </http>
         
-        <b:bean id="http403ForbiddenEntryPointPublicV2" class="org.openspcoop2.utils.jaxrs.impl.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        <b:bean id="http403ForbiddenEntryPointPublicV2" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
         </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublicV2" pattern="/rs/public/v2/**">
                 <csrf disabled="true"/>
@@ -172,7 +179,7 @@
         
         <!-- PUBLIC END -->
         
-        <b:bean id="http403ForbiddenEntryPointGenerale" class="org.openspcoop2.utils.jaxrs.impl.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        <b:bean id="http403ForbiddenEntryPointGenerale" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
         </b:bean>
         
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointGenerale" pattern="/**">

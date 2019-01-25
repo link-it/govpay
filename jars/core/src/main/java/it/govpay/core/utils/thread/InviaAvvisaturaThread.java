@@ -9,9 +9,11 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtAvvisoDigitale;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisatura;
@@ -36,8 +38,8 @@ import it.govpay.core.utils.client.AvvisaturaClient;
 import it.govpay.core.utils.client.AvvisaturaClient.Azione;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Evento.CategoriaEvento;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Intermediario;
+import it.govpay.model.Versamento.ModoAvvisatura;
 
 public class InviaAvvisaturaThread implements Runnable {
 
@@ -49,8 +51,9 @@ public class InviaAvvisaturaThread implements Runnable {
 	private CtAvvisoDigitale avviso = null;
 	private String idTransazione = null;
 	private Dominio dominio = null;
+	private IContext ctx = null;
 
-	public InviaAvvisaturaThread(Versamento versamento, String idTransazione, BasicBD bd) throws ServiceException {
+	public InviaAvvisaturaThread(Versamento versamento, String idTransazione, BasicBD bd, IContext ctx) throws ServiceException {
 		this.idTransazione = idTransazione;
 		this.versamento = versamento;
 		//leggo le info annidate
@@ -70,12 +73,14 @@ public class InviaAvvisaturaThread implements Runnable {
 		} catch (UnsupportedEncodingException | DatatypeConfigurationException e) {
 			throw new ServiceException(e);
 		}
+		this.ctx = ctx;
 	}
 
 	@Override
 	public void run() {
-
-		GpContext ctx = null;
+		GpThreadLocal.set(this.ctx);
+		IContext ctx = GpThreadLocal.get();
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		BasicBD bd = null;
 		GiornaleEventi giornaleEventi = null;
 		VersamentiBD versamentiBD = null;
@@ -83,29 +88,23 @@ public class InviaAvvisaturaThread implements Runnable {
 		String messaggioRichiesta = null;
 		String messaggioRisposta = null;
 		try {
-			if(this.idTransazione != null)
-				ctx = new GpContext(this.idTransazione);
-			else 
-				ctx = new GpContext();
-
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(this.idTransazione);
 			giornaleEventi = new GiornaleEventi(bd);
 			versamentiBD = new VersamentiBD(bd);
-			MDC.put("cmd", "InviaAvvisaturaThread");
-			MDC.put("op", ctx.getTransactionId());
+//			MDC.put(MD5Constants.OPERATION_ID, "InviaAvvisaturaThread");
+//			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 
-			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", this.avviso.getIdentificativoDominio()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("codAvviso", this.avviso.getCodiceAvviso()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("tipoOperazione", this.avviso.getTipoOperazione().name()));
+			BaseServer newServer = appContext.setupNodoClient(this.stazione.getCodStazione(), this.avviso.getIdentificativoDominio(), Azione.nodoInviaAvvisoDigitale);
+			newServer.addGenericProperty(new Property("codDominio", this.avviso.getIdentificativoDominio()));
+			newServer.addGenericProperty(new Property("codAvviso", this.avviso.getCodiceAvviso()));
+			newServer.addGenericProperty(new Property("tipoOperazione", this.avviso.getTipoOperazione().name()));
 
-			ctx.log("versamento.avvisaturaDigitale");
+			ctx.getApplicationLogger().log("versamento.avvisaturaDigitale");
 
 			evento.setData(new Date());
 			evento.setDataRichiesta(new Date());
-
-			ctx.setupNodoClient(this.stazione.getCodStazione(), this.avviso.getIdentificativoDominio(), Azione.nodoInviaAvvisoDigitale);
-			ctx.log("versamento.avvisaturaDigitaleSpedizione");
+			
+			ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleSpedizione");
 
 			log.info("Spedizione Avvisatura al Nodo [Dominio: " + this.avviso.getIdentificativoDominio() + ", NumeroAvviso: "+this.avviso.getCodiceAvviso()+", TipoAvvisatura: "+this.avviso.getTipoOperazione()+"]");
 
@@ -137,7 +136,7 @@ public class InviaAvvisaturaThread implements Runnable {
 
 				// emetto un evento ok
 				log.info("Avvisatura Digitale inviata con errore al nodo");
-				ctx.log("versamento.avvisaturaDigitaleKo", fault.getDescription());
+				ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleKo", fault.getDescription());
 			} else { // ok
 				List<it.govpay.model.EsitoAvvisatura> esitoAvvisaturaLst = new ArrayList<>();
 				CtEsitoAvvisoDigitale esitoAvvisoDigitale = risposta.getEsitoAvvisoDigitaleWS();
@@ -168,12 +167,16 @@ public class InviaAvvisaturaThread implements Runnable {
 				giornaleEventi.registraEventoCooperazione(evento);
 
 				log.info("Avvisatura Digitale inviata correttamente al nodo");
-				ctx.log("versamento.avvisaturaDigitaleOk");
+				ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleOk");
 
 			}
 		} catch (ClientException e) {
 			log.error("Errore nella spedizione della Avvisatura Digitale", e);
-			ctx.log("versamento.avvisaturaDigitaleFail", e.getMessage());
+			try {
+				ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleFail", e.getMessage());
+			} catch (UtilsException e2) {
+				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e2);
+			}
 
 			// se l'avvisatura in modalita sincrona e' andata male allora passo il controllo alla modalita' asincrona
 			if(this.versamento.getAvvisaturaModalita().equals(ModoAvvisatura.SINCRONA.getValue())) {
@@ -191,7 +194,11 @@ public class InviaAvvisaturaThread implements Runnable {
 			}
 		} catch(Exception e) {
 			log.error("Errore nella spedizione della Avvisatura Digitale", e);
-			ctx.log("versamento.avvisaturaDigitaleFail", e.getMessage());
+			try {
+				ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleFail", e.getMessage());
+			} catch (UtilsException e2) {
+				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e2);
+			}
 
 			// se l'avvisatura in modalita sincrona e' andata male allora passo il controllo alla modalita' asincrona
 			if(this.versamento.getAvvisaturaModalita().equals(ModoAvvisatura.SINCRONA.getValue())) {
@@ -210,7 +217,13 @@ public class InviaAvvisaturaThread implements Runnable {
 		} finally {
 			this.completed = true;
 			if(bd != null) bd.closeConnection(); 
-			if(ctx != null) ctx.log();
+			if(ctx != null)
+				try {
+					ctx.getApplicationLogger().log();
+				} catch (UtilsException e) {
+					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
+				}
+			GpThreadLocal.unset();
 		}
 	}
 

@@ -27,7 +27,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
+import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.pagamento.v1.beans.FaultBean;
@@ -54,7 +54,7 @@ public class PagamentiController extends BaseController {
 
     public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
     	String methodName = "pagamentiPOST";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -104,13 +104,13 @@ public class PagamentiController extends BaseController {
 			}
 			return response;
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
     
     public Response pagamentiIdSessionGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idSessione) {
     	String methodName = "getPagamentoPortaleById";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -150,13 +150,13 @@ public class PagamentiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
     
     public Response pagamentiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
     	String methodName = "getPagamentoPortaleById";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -196,13 +196,13 @@ public class PagamentiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 
     public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, String idSessionePsp) {
     	String methodName = "getListaPagamenti";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -252,7 +252,7 @@ public class PagamentiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 

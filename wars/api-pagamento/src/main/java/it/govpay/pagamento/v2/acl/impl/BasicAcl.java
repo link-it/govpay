@@ -7,7 +7,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.NotImplementedException;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -32,7 +32,7 @@ public class BasicAcl implements Acl {
 	}
 
 	@Override
-	public boolean isSatisfied(ServiceContext context) {
+	public boolean isSatisfied(IContext context) {
 
 		// Se il principal e' impostato controllo che 
 		// - Ho un principal

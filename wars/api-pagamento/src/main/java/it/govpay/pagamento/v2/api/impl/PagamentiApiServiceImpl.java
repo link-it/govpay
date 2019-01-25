@@ -5,9 +5,9 @@ import java.util.Map;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.openspcoop2.utils.jaxrs.fault.FaultCode;
-import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+import org.openspcoop2.utils.service.BaseImpl;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
@@ -18,8 +18,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
-import it.govpay.pagamento.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
 import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
@@ -95,13 +93,13 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 	 */
 	@Override
 	public PagamentoCreato addPagamento(NuovoPagamento body, String idSessionePortale, Boolean avvisaturaDigitale,	ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
 			
-			String idSession = context.getIdOperazione().replace("-", "");
+			String idSession = context.getTransactionId().replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiConverter.getPagamentiPortaleDTO(body, context.getAuthentication(),idSession, idSessionePortale, avvisaturaDigitale,modalitaAvvisaturaDigitale);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
@@ -130,7 +128,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 	 */
 	@Override
 	public Pagamenti findPagamenti(Integer offset, Integer limit, String fields, String sort, String idSessionePortale, String idSessionePsp, String idDebitore, StatoPagamento statoPagamento) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 
@@ -180,7 +178,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 	 */
 	@Override
 	public Pagamento getPagamento(String id) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
@@ -215,7 +213,7 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 	 */
 	@Override
 	public Pagamento getPagamentoByIdSession(String idSession) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 

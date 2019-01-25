@@ -23,7 +23,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
+import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.ragioneria.v1.beans.Incasso;
 import it.govpay.ragioneria.v1.beans.IncassoIndex;
@@ -42,7 +42,7 @@ public class IncassiController extends BaseController {
 
     public Response incassiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
     	String methodName = "incassiGET";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -86,14 +86,14 @@ public class IncassiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 
 
     public Response incassiIdDominioIdIncassoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
     	String methodName = "incassiIdDominioIdIncassoGET";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -129,13 +129,13 @@ public class IncassiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 
     public Response incassiIdDominioPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
     	String methodName = "incassiIdDominioPOST"; 
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -165,7 +165,7 @@ public class IncassiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 }

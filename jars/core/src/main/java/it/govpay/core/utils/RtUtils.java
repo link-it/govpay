@@ -31,7 +31,9 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -211,7 +213,7 @@ public class RtUtils extends NdpValidationUtils {
 		return null;
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, BasicBD bd) throws ServiceException, NdpException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, BasicBD bd) throws ServiceException, NdpException, UtilsException {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
@@ -263,14 +265,15 @@ public class RtUtils extends NdpValidationUtils {
 			throw new ServiceException(e);
 		}
 		
-		GpContext ctx = GpThreadLocal.get();
+		IContext ctx = GpThreadLocal.get();
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
 		if(esito.validato && esito.errori.size() > 0) {
-			ctx.log("pagamento.validazioneRtWarn", esito.getDiagnostico());
+			ctx.getApplicationLogger().log("pagamento.validazioneRtWarn", esito.getDiagnostico());
 		} 
 		
 		if (!esito.validato) {
-			ctx.log("pagamento.validazioneRtFail", esito.getDiagnostico());
+			ctx.getApplicationLogger().log("pagamento.validazioneRtFail", esito.getDiagnostico());
 			rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
 			rpt.setDescrizioneStato(esito.getFatal());
 			rpt.setXmlRt(rtByte);
@@ -282,10 +285,10 @@ public class RtUtils extends NdpValidationUtils {
 		
 		log.info("Acquisizione RT per un importo di " + ctRt.getDatiPagamento().getImportoTotalePagato());
 		
-		ctx.getContext().getRequest().addGenericProperty(new Property("codMessaggioRicevuta", ctRt.getIdentificativoMessaggioRicevuta()));
-		ctx.getContext().getRequest().addGenericProperty(new Property("importo", ctRt.getDatiPagamento().getImportoTotalePagato().toString()));
-		ctx.getContext().getRequest().addGenericProperty(new Property("codEsitoPagamento", Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()).toString()));
-		ctx.log("rt.acquisizione");
+		appContext.getTransaction().getLastServer().addGenericProperty(new Property("codMessaggioRicevuta", ctRt.getIdentificativoMessaggioRicevuta()));
+		appContext.getTransaction().getLastServer().addGenericProperty(new Property("importo", ctRt.getDatiPagamento().getImportoTotalePagato().toString()));
+		appContext.getTransaction().getLastServer().addGenericProperty(new Property("codEsitoPagamento", Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()).toString()));
+		ctx.getApplicationLogger().log("rt.acquisizione");
 		
 		// Rileggo per avere la lettura dello stato rpt in transazione
 		rpt.setCodMsgRicevuta(ctRt.getIdentificativoMessaggioRicevuta());
@@ -386,17 +389,17 @@ public class RtUtils extends NdpValidationUtils {
 						anomalie.add(irregolarita);
 						log.warn(irregolarita);
 					}
-					ctx.log("pagamento.acquisizionePagamentoAnomalo", ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), StringUtils.join(anomalie,"\n"));
+					ctx.getApplicationLogger().log("pagamento.acquisizionePagamentoAnomalo", ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), StringUtils.join(anomalie,"\n"));
 					
 					irregolare = true;
 					
 				}
-				ctx.log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
+				ctx.getApplicationLogger().log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
 				versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 				pagamentiBD.insertPagamento(pagamento);
 			}
 			else 
-				ctx.log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
+				ctx.getApplicationLogger().log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 				pagamentiBD.updatePagamento(pagamento);
 		}
 		EventoNota eventoNota = null;
@@ -514,9 +517,9 @@ public class RtUtils extends NdpValidationUtils {
 		bd.disableSelectForUpdate();
 		
 		if(schedulaThreadInvio)
-			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
+			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd,ctx));
 		
-		ctx.log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
+		ctx.getApplicationLogger().log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
 		log.info("RT acquisita con successo.");
 		
 		return rpt;

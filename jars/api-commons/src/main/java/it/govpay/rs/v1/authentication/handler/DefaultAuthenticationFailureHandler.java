@@ -7,7 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 
 import it.govpay.rs.v1.exception.CodiceEccezione;
 
-public class DefaultAuthenticationFailureHandler extends org.openspcoop2.utils.jaxrs.impl.authentication.handler.DefaultAuthenticationFailureHandler {
+public class DefaultAuthenticationFailureHandler extends org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultAuthenticationFailureHandler {
 
 	
 	@Override

@@ -7,9 +7,9 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
-import org.openspcoop2.utils.jaxrs.fault.FaultCode;
-import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+import org.openspcoop2.utils.service.BaseImpl;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
@@ -71,7 +71,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 	 */
 	@Override
 	public Rpps findRpps(Integer offset, Integer limit, String fields, String sort, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String idDebitore, EsitoRpp statoPendenza, String idSessionePortale) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
@@ -122,7 +122,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 	 */
 	@Override
 	public Rpp getRpp(String idDominio, String iuv, String ccp) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
@@ -160,7 +160,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 	 */
 	@Override
 	public Object getRpt(String idDominio, String iuv, String ccp) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
@@ -214,7 +214,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 	 */
 	@Override
 	public byte[] getRt(String idDominio, String iuv, String ccp) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);

@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -19,7 +20,6 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 
 public class AvvisiController extends BaseController {
@@ -32,7 +32,7 @@ public class AvvisiController extends BaseController {
 
     public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
     	String methodName = "avvisiIdDominioIuvGET";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -73,7 +73,7 @@ public class AvvisiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 }

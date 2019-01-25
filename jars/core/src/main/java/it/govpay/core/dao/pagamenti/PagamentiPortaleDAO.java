@@ -9,8 +9,10 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
@@ -74,11 +76,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	public PagamentiPortaleDAO() {
 	}
 
-	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException {
+	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException {
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpAvviaTransazionePagamentoResponse transazioneResponse = new GpAvviaTransazionePagamentoResponse();
 		Logger log = LoggerWrapperFactory.getLogger(WebControllerDAO.class);
-		GpContext ctx = GpThreadLocal.get();
+		IContext ctx = GpThreadLocal.get();
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		BasicBD bd = null;
 		
 		try {
@@ -89,12 +92,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			List<Versamento> versamenti = new ArrayList<>();
 
 			// Aggiungo il codSessionePortale al PaymentContext
-			ctx.getPagamentoCtx().setCodSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
-			ctx.getContext().getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
+			appContext.getPagamentoCtx().setCodSessionePortale(pagamentiPortaleDTO.getIdSessionePortale());
+			appContext.getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
 
-			ctx.log("ws.ricevutaRichiesta");
+			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 			this.autorizzaRichiesta(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA,true); 
-			ctx.log("ws.autorizzazione");
+			ctx.getApplicationLogger().log("ws.autorizzazione");
 
 			String codDominio = null;
 			String nome = null;
@@ -109,7 +112,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				Versamento versamentoModel = null;
 				if(v instanceof it.govpay.core.dao.commons.Versamento) {
 					it.govpay.core.dao.commons.Versamento versamento = (it.govpay.core.dao.commons.Versamento) v;
-					ctx.log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
+					ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 					versamentoModel = versamentoBusiness.chiediVersamento(versamento);
 					
 					// se l'utenza che ha caricato la pendenza inline e' un cittadino sono necessari dei controlli supplementari.
@@ -448,8 +451,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			return response;
 		}finally {
 			if(ctx != null) {
-				ctx.setResult(transazioneResponse);
-				ctx.log();
+				GpContext.setResult(ctx.getApplicationContext().getTransaction(), transazioneResponse);
+				try {
+					ctx.getApplicationLogger().log();
+				} catch (UtilsException e) {
+					LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la chiusura della transazione: "+ e.getMessage(),e);
+				}
 			}
 			if(bd != null)
 				bd.closeConnection();

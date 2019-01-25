@@ -41,7 +41,7 @@
 		<logger.version>2.6.2</logger.version>
 		
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.0-gov4j-1</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-1-SNAPSHOT</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.5.21</swagger.version>
 		<swagger.v3.version>2.0.3</swagger.v3.version>
 		<swagger.parser.version>2.0.2</swagger.parser.version>
@@ -113,6 +113,9 @@
 		
 		<!-- servlet api -->
 		<javax.servlet.api3.version>3.1.0</javax.servlet.api3.version>
+		
+		<!-- webjars- swagger ui api -->
+		<webjars-swaggerui.version>3.20.3</webjars-swaggerui.version>
 	</properties>
 
 	<dependencyManagement>
@@ -326,7 +329,7 @@
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
-			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache sql jdbc datasource xml id logger transport csv sonde rest openapi xml2json date resources jmx mime -->
+			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache sql jdbc datasource xml id logger transport csv sonde rest openapi xml2json date resources jmx mime jaxrs io service -->
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-core</artifactId>
@@ -468,6 +471,12 @@
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-io</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-service</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
@@ -766,6 +775,13 @@
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
 				<version>${joda-time.version}</version>
+			</dependency>
+			
+			<!-- webjar-swagger ui -->
+			<dependency>
+				<groupId>org.webjars</groupId>
+				<artifactId>swagger-ui</artifactId>
+				<version>${webjars-swaggerui.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

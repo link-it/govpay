@@ -1,18 +1,18 @@
 package it.govpay.core.utils;
 
+import org.openspcoop2.utils.service.context.IContext;
+
 public class GpThreadLocal {
 	
-	public static final ThreadLocal<GpContext> userThreadLocal = new ThreadLocal<>();
-
-	public static void set(GpContext ctx) {
-		userThreadLocal.set(ctx);
+	public static void set(IContext ctx) {
+		org.openspcoop2.utils.service.context.ContextThreadLocal.set(ctx);
 	}
 
 	public static void unset() {
-		userThreadLocal.remove();
+		org.openspcoop2.utils.service.context.ContextThreadLocal.unset();
 	}
 
-	public static GpContext get() {
-		return userThreadLocal.get();
+	public static IContext get() {
+		return org.openspcoop2.utils.service.context.ContextThreadLocal.get();
 	}
 }

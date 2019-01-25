@@ -29,7 +29,10 @@ import javax.xml.bind.JAXBException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -231,7 +234,7 @@ public class RrUtils extends NdpValidationUtils {
 		return datiRevoca;
 	}
 	
-	public static it.govpay.core.business.model.Risposta inviaRr(Rr rr, Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException {
+	public static it.govpay.core.business.model.Risposta inviaRr(Rr rr, Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
 		// Chiamate per acquisire dati prima di chiudere la connessione
 		rpt.getIntermediario(bd);
 		rpt.getStazione(bd);
@@ -298,11 +301,12 @@ public class RrUtils extends NdpValidationUtils {
 		}
 	}
 
-	public static Rr acquisisciEr(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] er, BasicBD bd) throws NdpException, ServiceException {
+	public static Rr acquisisciEr(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] er, BasicBD bd) throws NdpException, ServiceException, UtilsException {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
-		GpContext ctx = GpThreadLocal.get();
+		IContext ctx = GpThreadLocal.get();
+		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
 		
 		ER ctEr = null;
 		// Validazione Sintattica
@@ -313,9 +317,9 @@ public class RrUtils extends NdpValidationUtils {
 			throw new NdpException(FaultPa.PAA_SINTASSI_XSD, identificativoDominio, e.getCause().getMessage());
 		}
 		
-		ctx.getContext().getRequest().addGenericProperty(new Property("codMessaggioEsito", ctEr.getIdentificativoMessaggioEsito()));
-		ctx.getContext().getRequest().addGenericProperty(new Property("importo", ctEr.getDatiRevoca().getImportoTotaleRevocato().toString()));
-		ctx.log("er.acquisizione");
+		appContext.getRequest().addGenericProperty(new Property("codMessaggioEsito", ctEr.getIdentificativoMessaggioEsito()));
+		appContext.getRequest().addGenericProperty(new Property("importo", ctEr.getDatiRevoca().getImportoTotaleRevocato().toString()));
+		ctx.getApplicationLogger().log("er.acquisizione");
 		
 		RrBD rrBD = new RrBD(bd);
 		Rr rr = null;
@@ -340,11 +344,11 @@ public class RrUtils extends NdpValidationUtils {
 			
 		
 		if(esito.validato && esito.errori.size() > 0) {
-			ctx.log("er.validazioneWarn", esito.getDiagnostico());
+			ctx.getApplicationLogger().log("er.validazioneWarn", esito.getDiagnostico());
 		} 
 		
 		if (!esito.validato) {
-			ctx.log("er.validazioneFail", esito.getDiagnostico());
+			ctx.getApplicationLogger().log("er.validazioneFail", esito.getDiagnostico());
 			rr.setStato(StatoRr.ER_RIFIUTATA_PA);
 			rr.setDescrizioneStato(esito.getFatal());
 			rr.setXmlEr(er);
@@ -375,7 +379,7 @@ public class RrUtils extends NdpValidationUtils {
 			for(Pagamento pagamento : pagamenti) {
 				
 				if(pagamento.getImportoRevocato().compareTo(BigDecimal.ZERO) == 0){ 
-					ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), pagamento.getSingoloVersamento(bd).getStatoSingoloVersamento().toString());
+					ctx.getApplicationLogger().log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), pagamento.getSingoloVersamento(bd).getStatoSingoloVersamento().toString());
 					continue;
 				}
 					
@@ -386,7 +390,7 @@ public class RrUtils extends NdpValidationUtils {
 				// TODO gestire lo storno di un pagamento doppio o storno parziale
 				
 				versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.NON_ESEGUITO);
-				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), StatoSingoloVersamento.NON_ESEGUITO.toString());
+				ctx.getApplicationLogger().log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), StatoSingoloVersamento.NON_ESEGUITO.toString());
 			}
 			versamentiBD.updateStatoVersamento(v.getId(), StatoVersamento.NON_ESEGUITO, "Pagamenti stornati");
 			v.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
@@ -400,9 +404,9 @@ public class RrUtils extends NdpValidationUtils {
 		bd.disableSelectForUpdate();
 		
 		if(schedulaThreadInvio)
-			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
+			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd,ctx));
 		
-		ctx.log("er.acquisizioneOk", v.getCodVersamentoEnte(), v.getStatoVersamento().toString());
+		ctx.getApplicationLogger().log("er.acquisizioneOk", v.getCodVersamentoEnte(), v.getStatoVersamento().toString());
 		log.info("ER acquisita con successo.");
 		
 		return rr;

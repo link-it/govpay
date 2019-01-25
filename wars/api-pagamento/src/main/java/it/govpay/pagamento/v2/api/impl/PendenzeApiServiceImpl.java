@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.openspcoop2.utils.jaxrs.fault.FaultCode;
-import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+import org.openspcoop2.utils.service.BaseImpl;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
@@ -62,7 +62,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 	 */
 	@Override
 	public Pendenze findPendenze(Integer offset, Integer limit, String fields, String sort, String idDominio, String iuv, String idA2A, String idPendenza, String idPagatore, StatoPendenza statoPendenza, String idSessionePortale) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
@@ -117,7 +117,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 	 */
 	@Override
 	public Pendenza getPendenza(String idA2A, String idPendenza) {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);

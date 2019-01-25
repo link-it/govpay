@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
-import org.openspcoop2.utils.jaxrs.impl.authentication.entrypoint.AbstractBasicAuthenticationEntryPoint;
+import org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.AbstractBasicAuthenticationEntryPoint;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 
 import it.govpay.rs.v1.exception.CodiceEccezione;

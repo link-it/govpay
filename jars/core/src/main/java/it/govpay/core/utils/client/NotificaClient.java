@@ -30,6 +30,7 @@ import javax.xml.bind.JAXBException;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.resources.Charset;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
@@ -72,8 +73,9 @@ public class NotificaClient extends BasicClient {
 	 * @throws SAXException 
 	 * @throws JAXBException 
 	 * @throws NdpException 
+	 * @throws UtilsException 
 	 */
-	public byte[] invoke(Notifica notifica, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException {
+	public byte[] invoke(Notifica notifica, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException {
 		Rpt rpt = notifica.getRpt(bd); 
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();

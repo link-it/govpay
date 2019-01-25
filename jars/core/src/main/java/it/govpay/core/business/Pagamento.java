@@ -36,7 +36,10 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
@@ -92,17 +95,17 @@ public class Pagamento extends BasicBD {
 		super(bd);
 	}
 
-	public AvviaTransazioneDTOResponse avviaTransazione(AvviaTransazioneDTO dto) throws GovPayException, ServiceException {
+	public AvviaTransazioneDTOResponse avviaTransazione(AvviaTransazioneDTO dto) throws GovPayException, ServiceException, UtilsException {
 
-		GpContext ctx = GpThreadLocal.get();
+		IContext ctx = GpThreadLocal.get();
 		List<Versamento> versamenti = new ArrayList<>();
-
+ 
 		for(Object v : dto.getVersamentoOrVersamentoRef()) {
 			Versamento versamentoModel = null;
 
 			if(v instanceof it.govpay.core.beans.Versamento) {
 				it.govpay.core.beans.Versamento versamento = (it.govpay.core.beans.Versamento) v;
-				ctx.log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
+				ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				versamentoModel = VersamentoUtils.toVersamentoModel(versamento, this);
 				versamentoModel.setIuvProposto(versamento.getIuv());
 			} else {
@@ -174,10 +177,10 @@ public class Pagamento extends BasicBD {
 
 	public String verificaTransazioniPendenti() throws GovPayException {
 
-		GpContext ctx = GpThreadLocal.get();
-		ctx.log("pendenti.avvio");
+		IContext ctx = GpThreadLocal.get();
 		List<String> response = new ArrayList<>();
 		try {
+			ctx.getApplicationLogger().log("pendenti.avvio");
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
 			DominiBD dominiBD = new DominiBD(this);
@@ -191,7 +194,7 @@ public class Pagamento extends BasicBD {
 				Intermediario intermediario = stazione.getIntermediario(this);
 
 				this.closeConnection();
-				ctx.log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
+				ctx.getApplicationLogger().log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
 				log.debug("Recupero i pendenti [CodStazione: " + stazione.getCodStazione() + "]");
 				
 				if(lstDomini.isEmpty()) {
@@ -213,7 +216,7 @@ public class Pagamento extends BasicBD {
 				Map<String, String> statiRptPendenti = this.acquisisciPendenti(client,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
 				
 				log.info("Identificate sul NodoSPC " + statiRptPendenti.size() + " RPT pendenti");
-				ctx.log("pendenti.listaPendentiOk", stazione.getCodStazione(), statiRptPendenti.size() + "");
+				ctx.getApplicationLogger().log("pendenti.listaPendentiOk", stazione.getCodStazione(), statiRptPendenti.size() + "");
 
 				// Ho acquisito tutti gli stati pendenti. 
 				// Tutte quelle in stato terminale, 
@@ -228,7 +231,7 @@ public class Pagamento extends BasicBD {
 				List<Rpt> rpts = rptBD.getRptPendenti(codDomini);
 
 				log.info("Identificate su GovPay " + rpts.size() + " transazioni pendenti");
-				ctx.log("pendenti.listaPendentiGovPayOk", rpts.size() + "");
+				ctx.getApplicationLogger().log("pendenti.listaPendentiGovPayOk", rpts.size() + "");
 
 				// Scorro le transazioni. Se non risulta pendente sul nodo (quindi non e' pendente) la mando in aggiornamento.
 				
@@ -252,7 +255,7 @@ public class Pagamento extends BasicBD {
 					String stato = statiRptPendenti.get(rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp());
 					if(stato != null && !stato.equals(StatoRpt.RPT_ANNULLATA.name())) {
 						log.info("Rpt confermata pendente dal nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
-						ctx.log("pendenti.confermaPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), stato);
+						ctx.getApplicationLogger().log("pendenti.confermaPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), stato);
 						StatoRpt statoRpt = StatoRpt.toEnum(stato);
 						if(!rpt.getStato().equals(statoRpt)) {
 							response.add("[" + rpt.getCodDominio() + " " + rpt.getIuv() + " " + rpt.getCcp() + "]# Aggiornamento in stato " + stato.toString());
@@ -260,26 +263,26 @@ public class Pagamento extends BasicBD {
 						}
 					} else {
 						log.info("Rpt non pendente o sconosciuta sul nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]");
-						ctx.log("pendenti.confermaNonPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
+						ctx.getApplicationLogger().log("pendenti.confermaNonPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 						// Accedo alle entita che serviranno in seguito prima di chiudere la connessione;
 						rpt.getStazione(this).getIntermediario(this);
 						try {
 							RptUtils.aggiornaRptDaNpD(client, rpt, this);
 						} catch (NdpException e) {
-							ctx.log("pendenti.rptAggiornataKo", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getFaultString());
+							ctx.getApplicationLogger().log("pendenti.rptAggiornataKo", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getFaultString());
 							log.warn("Errore durante l'aggiornamento della RPT: " + e.getFaultString());
 							continue;
 						} catch (Exception e) {
-							ctx.log("pendenti.rptAggiornataFail", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getMessage());
+							ctx.getApplicationLogger().log("pendenti.rptAggiornataFail", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getMessage());
 							log.warn("Errore durante l'aggiornamento della RPT", e);
 							continue;
 						}
 
 						if(rpt.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP) && (rpt.getStato().equals(StatoRpt.RPT_ATTIVATA) || rpt.getStato().equals(StatoRpt.RPT_ERRORE_INVIO_A_NODO))) {
-							ctx.log("pendenti.rptAttivata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
+							ctx.getApplicationLogger().log("pendenti.rptAttivata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 							log.info("Rpt attivata ma non consegnata [" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]: avviata rispedizione al Nodo.");
 						} else {
-							ctx.log("pendenti.rptAggiornata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rpt.getStato().toString());
+							ctx.getApplicationLogger().log("pendenti.rptAggiornata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rpt.getStato().toString());
 							log.info("Processo di aggiornamento completato [" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]: nuovo stato " + rpt.getStato().toString());
 							response.add("[" + rpt.getCodDominio() + " " + rpt.getIuv() + " " + rpt.getCcp() + "]# Aggiornamento in stato " + rpt.getStato().toString());
 						}
@@ -314,13 +317,15 @@ public class Pagamento extends BasicBD {
 	 * @param da
 	 * @param a
 	 * @return
+	 * @throws UtilsException 
 	 */
-	private Map<String, String> acquisisciPendenti(NodoClient client, Intermediario intermediario, Stazione stazione, List<Dominio> lstDomini, boolean perDominio, Calendar da, Calendar a, long soglia) {
-		GpContext ctx = GpThreadLocal.get();
+	private Map<String, String> acquisisciPendenti(NodoClient client, Intermediario intermediario, Stazione stazione, List<Dominio> lstDomini, boolean perDominio, Calendar da, Calendar a, long soglia) throws UtilsException {
+		IContext ctx = GpThreadLocal.get();
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		Map<String, String> statiRptPendenti = new HashMap<>();
 		
 		// Ciclo sui domini, ma ciclo veramente solo se perDominio == true,
-		// Altrimenti ci giro una sola volta
+		// Altrimenti ci giro una sola volta 
 		
 		for(Dominio dominio : lstDomini) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -335,34 +340,28 @@ public class Pagamento extends BasicBD {
 			if(perDominio) {
 				richiesta.setIdentificativoDominio(dominio.getCodDominio());
 				log.debug("Richiedo la lista delle RPT pendenti (Dominio " + dominio.getCodDominio() + " dal " + dateFormat.format(da.getTime()) + " al " + dateFormat.format(a.getTime()) + ")");
-				ctx.log("pendenti.listaPendenti", dominio.getCodDominio(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));
+				ctx.getApplicationLogger().log("pendenti.listaPendenti", dominio.getCodDominio(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));
 			} else {
 				log.debug("Richiedo la lista delle RPT pendenti (Stazione " + stazione.getCodStazione() + " dal " + dateFormat.format(da.getTime()) + " al " + dateFormat.format(a.getTime()) + ")");
-				ctx.log("pendenti.listaPendenti", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));
+				ctx.getApplicationLogger().log("pendenti.listaPendenti", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));
 			}
 	
 			NodoChiediListaPendentiRPTRisposta risposta = null;
-			String transactionId = null;
 			try {
-				transactionId = GpThreadLocal.get().openTransaction();
-				GpThreadLocal.get().setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediListaPendentiRPT);
+				appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediListaPendentiRPT);
 				risposta = client.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
 			} catch (Exception e) {
 				log.warn("Errore durante la richiesta di lista pendenti", e);
 				// Esco da ciclo while e procedo con il prossimo dominio.
 				if(perDominio) {
-					ctx.log("pendenti.listaPendentiDominioFail", dominio.getCodDominio(), e.getMessage());
+					ctx.getApplicationLogger().log("pendenti.listaPendentiDominioFail", dominio.getCodDominio(), e.getMessage());
 					continue;
 				} else {
-					ctx.log("pendenti.listaPendentiFail", stazione.getCodStazione(), e.getMessage());
+					ctx.getApplicationLogger().log("pendenti.listaPendentiFail", stazione.getCodStazione(), e.getMessage());
 					break;
 				}
-			} finally {
-				if(transactionId != null) {
-					GpThreadLocal.get().closeTransaction(transactionId);
-				}
-			}
-	
+			}  
+			
 			if(risposta != null) {
 				if(risposta.getFault() != null) {
 					log.warn("Ricevuto errore durante la richiesta di lista pendenti: " + risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString());
@@ -371,10 +370,10 @@ public class Pagamento extends BasicBD {
 					String fs = risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "-";
 					String fd = risposta.getFault().getDescription() != null ? risposta.getFault().getDescription() : "-";
 					if(perDominio) {
-						ctx.log("pendenti.listaPendentiDominioKo", dominio.getCodDominio(), fc, fs, fd);
+						ctx.getApplicationLogger().log("pendenti.listaPendentiDominioKo", dominio.getCodDominio(), fc, fs, fd);
 						continue;
 					} else {
-						ctx.log("pendenti.listaPendentiKo", stazione.getCodStazione(), fc, fs, fd);
+						ctx.getApplicationLogger().log("pendenti.listaPendentiKo", stazione.getCodStazione(), fc, fs, fd);
 						break;
 					}
 				}
@@ -382,10 +381,10 @@ public class Pagamento extends BasicBD {
 				if(risposta.getListaRPTPendenti() == null || risposta.getListaRPTPendenti().getRptPendente().isEmpty()) {
 					log.debug("Lista pendenti vuota.");
 					if(perDominio) {
-						ctx.log("pendenti.listaPendentiDominioVuota", dominio.getCodDominio());
+						ctx.getApplicationLogger().log("pendenti.listaPendentiDominioVuota", dominio.getCodDominio());
 						continue;
 					} else {
-						ctx.log("pendenti.listaPendentiVuota", stazione.getCodStazione());					
+						ctx.getApplicationLogger().log("pendenti.listaPendentiVuota", stazione.getCodStazione());					
 						break;
 					}
 				}
@@ -398,7 +397,7 @@ public class Pagamento extends BasicBD {
 					int finestra = (int) TimeUnit.DAYS.convert((a.getTimeInMillis() - da.getTimeInMillis()), TimeUnit.MILLISECONDS);
 					
 					if(finestra > 1) {
-						ctx.log("pendenti.listaPendentiPiena", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));	
+						ctx.getApplicationLogger().log("pendenti.listaPendentiPiena", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));	
 						finestra = finestra/2;
 						Calendar mezzo = (Calendar) a.clone();
 						mezzo.add(Calendar.DATE, -finestra);
@@ -409,10 +408,10 @@ public class Pagamento extends BasicBD {
 						return statiRptPendenti;
 					} else {
 						if(perDominio) {
-							ctx.log("pendenti.listaPendentiDominioDailyPiena", dominio.getCodDominio(), dateFormat.format(a.getTime()));
+							ctx.getApplicationLogger().log("pendenti.listaPendentiDominioDailyPiena", dominio.getCodDominio(), dateFormat.format(a.getTime()));
 							log.debug("Lista pendenti con troppi elementi, ma impossibile diminuire ulteriormente la finesta. Elenco accettato.");
 						} else {
-							ctx.log("pendenti.listaPendentiDailyPiena", stazione.getCodStazione(), dateFormat.format(a.getTime()));
+							ctx.getApplicationLogger().log("pendenti.listaPendentiDailyPiena", stazione.getCodStazione(), dateFormat.format(a.getTime()));
 							log.debug("Lista pendenti con troppi elementi, scalo a dominio.");
 							return this.acquisisciPendenti(client, intermediario, stazione, lstDomini, true, da, a, soglia);
 						}
@@ -434,9 +433,9 @@ public class Pagamento extends BasicBD {
 		return statiRptPendenti;
 	}
 
-	public AvviaRichiestaStornoDTOResponse avviaStorno(AvviaRichiestaStornoDTO dto) throws ServiceException, GovPayException {
-		GpContext ctx = GpThreadLocal.get();
-
+	public AvviaRichiestaStornoDTOResponse avviaStorno(AvviaRichiestaStornoDTO dto) throws ServiceException, GovPayException, UtilsException {
+		IContext ctx = GpThreadLocal.get();
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<>(); 
 		Rpt rpt = null;
 		try {
@@ -448,7 +447,7 @@ public class Pagamento extends BasicBD {
 					if(pagamento.getImportoRevocato() != null) continue;
 					pagamento.setCausaleRevoca(dto.getCausaleRevoca());
 					pagamento.setDatiRevoca(dto.getDatiAggiuntivi());
-					ctx.log("rr.stornoPagamentoRichiesto", pagamento.getIur(), pagamento.getImportoPagato().toString());
+					ctx.getApplicationLogger().log("rr.stornoPagamentoRichiesto", pagamento.getIur(), pagamento.getImportoPagato().toString());
 					pagamentiDaStornare.add(pagamento);
 				}
 			} else {
@@ -458,7 +457,7 @@ public class Pagamento extends BasicBD {
 						throw new GovPayException(EsitoOperazione.PAG_009, p.getIur());
 					pagamento.setCausaleRevoca(p.getCausaleRevoca());
 					pagamento.setDatiRevoca(p.getDatiAggiuntivi());
-					ctx.log("rr.stornoPagamentoTrovato", pagamento.getIur(), pagamento.getImportoPagato().toString());
+					ctx.getApplicationLogger().log("rr.stornoPagamentoTrovato", pagamento.getIur(), pagamento.getImportoPagato().toString());
 					pagamentiDaStornare.add(pagamento);
 				}
 			}
@@ -478,7 +477,7 @@ public class Pagamento extends BasicBD {
 		it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica(this);
 		PagamentiBD pagamentiBD = new PagamentiBD(this);
 
-		ctx.log("rr.creazioneRr", rr.getCodDominio(), rr.getIuv(), rr.getCcp(), rr.getCodMsgRevoca());
+		ctx.getApplicationLogger().log("rr.creazioneRr", rr.getCodDominio(), rr.getIuv(), rr.getCcp(), rr.getCodMsgRevoca());
 
 		this.setAutoCommit(false);
 		rrBD.insertRr(rr);
@@ -491,24 +490,22 @@ public class Pagamento extends BasicBD {
 		this.commit();
 
 		if(schedulaThreadInvio)
-			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this));
+			ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this,ctx));
 
 		AvviaRichiestaStornoDTOResponse response = new AvviaRichiestaStornoDTOResponse();
 		response.setCodRichiestaStorno(rr.getCodMsgRevoca());
 
-		String idTransaction = null;
 		try {
 
-			idTransaction = ctx.openTransaction();
-			ctx.setupNodoClient(rpt.getStazione(this).getCodStazione(), rr.getCodDominio(), Azione.nodoInviaRichiestaStorno);
-			ctx.getContext().getRequest().addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
-			ctx.log("rr.invioRr");
+			BaseServer newServer = appContext.setupNodoClient(rpt.getStazione(this).getCodStazione(), rr.getCodDominio(), Azione.nodoInviaRichiestaStorno);
+			newServer.addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
+			ctx.getApplicationLogger().log("rr.invioRr");
 
 			Risposta risposta = RrUtils.inviaRr(rr, rpt, this);
 
 			if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 
-				ctx.log("rr.invioRrKo");
+				ctx.getApplicationLogger().log("rr.invioRrKo");
 
 				// RR rifiutata dal Nodo
 				// Aggiorno lo stato e ritorno l'errore
@@ -523,19 +520,17 @@ public class Pagamento extends BasicBD {
 				log.warn(risposta.getLog());
 				throw new GovPayException(risposta.getFaultBean());
 			} else {
-				ctx.log("rr.invioRrOk");
+				ctx.getApplicationLogger().log("rr.invioRrOk");
 				// RPT accettata dal Nodo
 				// Aggiorno lo stato e ritorno
 				rrBD.updateRr(rr.getId(), StatoRr.RR_ACCETTATA_NODO, null);
 				return response;
 			}
 		} catch (ClientException e) {
-			ctx.log("rr.invioRrKo");
+			ctx.getApplicationLogger().log("rr.invioRrKo");
 			rrBD.updateRr(rr.getId(), StatoRr.RR_ERRORE_INVIO_A_NODO, e.getMessage());
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
-		} finally {
-			ctx.closeTransaction(idTransaction);
-		}
+		}  
 	}
 
 	public Rr chiediStorno(Applicazione applicazioneAutenticata, String codRichiestaStorno) throws ServiceException, GovPayException {

@@ -32,21 +32,27 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.logger.beans.Message;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
+import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
+import org.openspcoop2.utils.logger.constants.MessageType;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
+import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 //import org.slf4j.Level;
 //import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.logger.beans.Message;
-import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.proxy.Server;
-import org.openspcoop2.utils.logger.constants.MessageType;
-import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.service.context.GpContextFactory;
 
 public class MessageLoggingHandlerUtils {
 
@@ -75,10 +81,10 @@ public class MessageLoggingHandlerUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static boolean logToSystemOut(SOAPMessageContext smc, String tipoServizio, int versioneServizio, Logger log) {
+	public static boolean logToSystemOut(SOAPMessageContext smc, String tipoServizio, int versioneServizio, Logger log) throws UtilsException {
 		Boolean outboundProperty = (Boolean) smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 		
-		GpContext ctx = null;
+		IContext ctx = null;
 		Message msg = new Message();
 		
 		SOAPMessage message = smc.getMessage();
@@ -92,16 +98,20 @@ public class MessageLoggingHandlerUtils {
 		
 		Map<String, List<String>> httpHeaders = null;
 		
+		ApplicationContext appContext = null;
 		if (outboundProperty.booleanValue()) {
 			ctx = GpThreadLocal.get();
 			httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_RESPONSE_HEADERS);
 			msg.setType(MessageType.RESPONSE_OUT);
-			ctx.getContext().getResponse().setOutDate(new Date());
-			ctx.getContext().getResponse().setOutSize(Long.valueOf(baos.size()));
+			appContext = (ApplicationContext) ctx.getApplicationContext();
+			appContext.getResponse().setDate(new Date());
+			appContext.getResponse().setSize(Long.valueOf(baos.size()));
 		} else {
 			try {
-				ctx = new GpContext(smc, tipoServizio, versioneServizio);
-				MDC.put("op", ctx.getTransactionId());
+				GpContextFactory factory = new GpContextFactory();
+				ctx = factory.newContext(smc, tipoServizio, versioneServizio);
+				appContext = (ApplicationContext) ctx.getApplicationContext();
+				MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 				GpThreadLocal.set(ctx);
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);
@@ -111,8 +121,8 @@ public class MessageLoggingHandlerUtils {
 			msg.setType(MessageType.REQUEST_IN);
 			msg.setContentType(((HttpServletRequest) smc.get(MessageContext.SERVLET_REQUEST)).getContentType());
 			
-			ctx.getContext().getRequest().setInDate(new Date());
-			ctx.getContext().getRequest().setInSize(Long.valueOf(baos.size()));
+			appContext.getRequest().setDate(new Date());
+			appContext.getRequest().setSize(Long.valueOf(baos.size()));
 		}
 		
 		if(httpHeaders != null) {
@@ -130,27 +140,27 @@ public class MessageLoggingHandlerUtils {
 
 
 		
-		ctx.log(msg);
+		ctx.getApplicationLogger().log(msg);
 		
 		return true;
 	}
 	
 	public static boolean logToSystemOut(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request, ByteArrayOutputStream baos,
-			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound) {
+			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound) throws UtilsException {
 		return logToSystemOut(uriInfo, rsHttpHeaders, request, baos.toByteArray(), nomeOperazione, nomeServizio, tipoServizio, versioneServizio, log, outbound);
 	}
 	
 	public static boolean logToSystemOut(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request, byte[] bytes,
-			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound) {
+			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound) throws UtilsException {
 		return logToSystemOut(uriInfo, rsHttpHeaders, request, bytes, nomeOperazione, nomeServizio, tipoServizio, versioneServizio, log, outbound, null);
 	}
 	
 	public static boolean logToSystemOut(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request, byte[] bytes,
-			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound, Integer responseCode) {
+			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound, Integer responseCode) throws UtilsException {
 	
 
 		
-		GpContext ctx = null;
+		IContext ctx = null;
 		Message msg = new Message();
 		
 		try {
@@ -170,23 +180,29 @@ public class MessageLoggingHandlerUtils {
 		
 		msg.addHeader(new Property("HTTP-Method", requestMethod.toString()));
 		msg.addHeader(new Property("RequestPath", servicePathwithParameters));
+		ApplicationContext appContext = null;
 		if (outbound) {
 			ctx = GpThreadLocal.get();
 			//httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_RESPONSE_HEADERS);
 			msg.setType(MessageType.RESPONSE_OUT);
 			if(rsHttpHeaders.getMediaType() != null)
 				msg.setContentType(rsHttpHeaders.getMediaType().getType() + "/" + rsHttpHeaders.getMediaType().getSubtype());
-			ctx.getContext().getResponse().setOutDate(new Date());
-			ctx.getContext().getResponse().setOutSize(Long.valueOf(bytes.length));
-			if(responseCode != null) { 
-				Server server = ctx.getTransaction().getServer();
+			
+			appContext = (ApplicationContext) ctx.getApplicationContext();
+			appContext.getResponse().setDate(new Date());
+			appContext.getResponse().setSize(Long.valueOf(bytes.length));
+			if(responseCode != null) {
+				ApplicationTransaction appTransaction = (ApplicationTransaction) appContext.getTransaction();
+				BaseServer server = (appTransaction.getServers() != null && !appTransaction.getServers().isEmpty() )? appTransaction.getServers().get(0) : null;
 				
 				if(server == null) {
-					server = new Server();
+					server = new BaseServer();
 					server.setName(GpContext.GovPay);
-					ctx.getTransaction().setServer(server);
+					appTransaction.addServer(server);
 				}
-				ctx.getTransaction().getServer().setTransportCode(responseCode.intValue() + "");
+				
+				//TODO
+				// ctx.getTransaction().getServers().get(0).setTransportCode(responseCode.intValue() + "");
 			}
 			
 			if((responseCode != null && responseCode.intValue() < 299) && HttpRequestMethod.GET.equals(requestMethod) && !GovpayConfig.getInstance().isDumpAPIRestGETResponse()) {
@@ -196,8 +212,10 @@ public class MessageLoggingHandlerUtils {
 			msg.addHeader(new Property(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()));
 		} else {
 			try {
-				ctx = new GpContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);
-				MDC.put("op", ctx.getTransactionId());
+				GpContextFactory factory = new GpContextFactory();
+				ctx = factory.newContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);
+				appContext = (ApplicationContext) ctx.getApplicationContext();
+				MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 				GpThreadLocal.set(ctx);
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);
@@ -207,8 +225,8 @@ public class MessageLoggingHandlerUtils {
 			msg.setType(MessageType.REQUEST_IN);
 			if(rsHttpHeaders.getMediaType() != null)
 				msg.setContentType(rsHttpHeaders.getMediaType().getType() + "/" + rsHttpHeaders.getMediaType().getSubtype());
-			ctx.getContext().getRequest().setInDate(new Date());
-			ctx.getContext().getRequest().setInSize(Long.valueOf(bytes.length));
+			appContext.getRequest().setDate(new Date());
+			appContext.getRequest().setSize(Long.valueOf(bytes.length));
 			
 
 		}
@@ -226,9 +244,7 @@ public class MessageLoggingHandlerUtils {
 			}
 		}
 
-
-		
-		ctx.log(msg);
+		ctx.getApplicationLogger().log(msg);
 		
 		return true;
 	}

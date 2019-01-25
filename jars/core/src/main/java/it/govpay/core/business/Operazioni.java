@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -39,19 +38,18 @@ import javax.xml.bind.UnmarshalException;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.logger.beans.proxy.Operation;
-import org.openspcoop2.utils.logger.beans.proxy.Service;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
+import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.sonde.Sonda;
 import org.openspcoop2.utils.sonde.SondaException;
 import org.openspcoop2.utils.sonde.SondaFactory;
 import org.openspcoop2.utils.sonde.impl.SondaBatch;
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -83,8 +81,6 @@ import it.govpay.core.beans.tracciati.Avvisatura;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.AvvisaturaClient;
 import it.govpay.core.utils.thread.InviaAvvisaturaThread;
@@ -142,92 +138,53 @@ public class Operazioni{
 		return eseguiElaborazioneTracciati;
 	}
 
-	public static String acquisizioneRendicontazioni(String serviceName){
-
+	public static String acquisizioneRendicontazioni(IContext ctx){
 		BasicBD bd = null;
-		GpContext ctx = null;
 		try {
-			ctx = new GpContext();
-			MDC.put("cmd", "AcquisizioneRendicontazioni");
-			MDC.put("op", ctx.getTransactionId());
-			Service service = new Service();
-			service.setName(serviceName);
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-			ctx.getTransaction().setService(service);
-			Operation opt = new Operation();
-			opt.setName("AcquisizioneRendicontazioni");
-			ctx.getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 			if(BatchManager.startEsecuzione(bd, RND)) {
 				String response = new Rendicontazioni(bd).downloadRendicontazioni(false);
-				aggiornaSondaOK(RND, bd);
+				aggiornaSondaOK(RND, bd,ctx);
 				return response;
 			} else {
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
-			aggiornaSondaKO(RND, e, bd);
+			aggiornaSondaKO(RND, e, bd,ctx);
 			return "Acquisizione fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(bd, RND);
 			if(bd != null) bd.closeConnection();
-			if(ctx != null) ctx.log();
 		}
 	}
 
-	public static String recuperoRptPendenti(String serviceName){
+	public static String recuperoRptPendenti(IContext ctx){
 		BasicBD bd = null;
-		GpContext ctx = null;
 		try {
-			ctx = new GpContext();
-			MDC.put("cmd", "RecuperoRptPendenti");
-			MDC.put("op", ctx.getTransactionId());
-			Service service = new Service();
-			service.setName(serviceName);
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-			ctx.getTransaction().setService(service);
-			Operation opt = new Operation();
-			opt.setName("RecuperoRptPendenti");
-			ctx.getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 			if(BatchManager.startEsecuzione(bd, PND)) {
 				String verificaTransazioniPendenti = new Pagamento(bd).verificaTransazioniPendenti();
-				aggiornaSondaOK(PND, bd);
+				aggiornaSondaOK(PND, bd,ctx);
 				return verificaTransazioniPendenti;
 			} else {
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
 			log.error("Acquisizione Rpt pendenti fallita", e);
-			aggiornaSondaKO(PND, e, bd);
+			aggiornaSondaKO(PND, e, bd,ctx);
 			return "Acquisizione fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(bd, PND);
 			if(bd != null) bd.closeConnection();
-			if(ctx != null) ctx.log();
 		}
 	}
 
-	public static String spedizioneNotifiche(String serviceName){
+	public static String spedizioneNotifiche(IContext ctx){
 		BasicBD bd = null;
 		List<InviaNotificaThread> threads = new ArrayList<>();
-		GpContext ctx = null;
 		try {
-			ctx = new GpContext();
-			MDC.put("cmd", "SpedizioneNotifiche");
-			MDC.put("op", ctx.getTransactionId());
-			Service service = new Service();
-			service.setName(serviceName);
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-			ctx.getTransaction().setService(service);
-			Operation opt = new Operation();
-			opt.setName("SpedizioneNotifiche");
-			ctx.getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 
 			if(BatchManager.startEsecuzione(bd, NTFY)) {
 				log.trace("Spedizione notifiche non consegnate");
@@ -235,9 +192,9 @@ public class Operazioni{
 				List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
 				
 				if(notifiche.size() == 0) {
-					aggiornaSondaOK(NTFY, bd);
+					aggiornaSondaOK(NTFY, bd,ctx);
 					BatchManager.stopEsecuzione(bd, NTFY);
-					aggiornaSondaOK(NTFY, bd);
+					aggiornaSondaOK(NTFY, bd,ctx);
 					log.debug("Nessuna notifica da inviare.");
 					return "Nessuna notifica da inviare.";
 				}
@@ -245,19 +202,19 @@ public class Operazioni{
 				log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
 
 				for(Notifica notifica: notifiche) {
-					InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
+					InviaNotificaThread sender = new InviaNotificaThread(notifica, bd,ctx);
 					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(sender);
 					threads.add(sender);
 				}
 				log.info("Processi di spedizione avviati.");
-				aggiornaSondaOK(NTFY, bd);
+				aggiornaSondaOK(NTFY, bd,ctx);
 			} else {
 				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
-			aggiornaSondaKO(NTFY, e, bd); 
+			aggiornaSondaKO(NTFY, e, bd,ctx); 
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -278,7 +235,7 @@ public class Operazioni{
 
 			if(completed) {
 				try {
-					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					bd = BasicBD.newInstance(ctx.getTransactionId());
 					BatchManager.stopEsecuzione(bd, NTFY);
 				} catch (ServiceException e) {
 				} finally {
@@ -288,7 +245,7 @@ public class Operazioni{
 				return "Spedizione notifiche completata.";
 			} else {
 				try {
-					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					bd = BasicBD.newInstance(ctx.getTransactionId());
 					BatchManager.aggiornaEsecuzione(bd, NTFY);
 				} catch (ServiceException e) {
 				} finally {
@@ -298,9 +255,7 @@ public class Operazioni{
 		}
 	}
 
-	public static String resetCacheAnagrafica(){
-		MDC.put("cmd", "ResetCacheAnagrafica");
-		MDC.put("op", UUID.randomUUID().toString() );
+	public static String resetCacheAnagrafica(IContext ctx){
 		try {
 			AnagraficaManager.cleanCache();
 			return "Reset cache completata con successo.";
@@ -310,13 +265,13 @@ public class Operazioni{
 		} 
 	}
 
-	private static void aggiornaSondaOK(String nome, BasicBD bd) {
+	private static void aggiornaSondaOK(String nome, BasicBD bd, IContext ctx) {
 		if(bd==null) return;
 		boolean wasConnected = true;
 		try {
 			if(bd.isClosed()) {
 				wasConnected = false;
-				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+				bd.setupConnection(ctx.getTransactionId());
 			}
 			Connection con = bd.getConnection();
 
@@ -333,13 +288,13 @@ public class Operazioni{
 		}
 	}
 
-	private static void aggiornaSondaKO(String nome, Exception e, BasicBD bd) {
+	private static void aggiornaSondaKO(String nome, Exception e, BasicBD bd, IContext ctx) {
 		if(bd==null) return;
 		boolean wasConnected = true;
 		try {
 			if(bd.isClosed()) {
 				wasConnected = false;
-				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+				bd.setupConnection(ctx.getTransactionId());
 			}
 			Connection con = bd.getConnection();
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
@@ -354,27 +309,12 @@ public class Operazioni{
 		}
 	}
 
-	public static String esitoAvvisaturaDigitale(String serviceName){
+	public static String esitoAvvisaturaDigitale(IContext ctx){
 		BasicBD bd = null;
-		GpContext ctx = null;
 		try {
-
-
-			ctx = new GpContext();
-			MDC.put("cmd", "EsitoAvvisaturaDigitale");
-			MDC.put("op", ctx.getTransactionId());
-			log.trace("Batch esito avvisatura digitale");
-			Service service = new Service();
-			service.setName(serviceName);
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-			ctx.getTransaction().setService(service);
-			Operation opt = new Operation();
-			opt.setName("EsitoAvvisaturaDigitale");
-			ctx.getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 			if(BatchManager.startEsecuzione(bd, BATCH_ESITO_AVVISATURA_DIGITALE)) {
+				log.trace("Batch esito avvisatura digitale");
 
 				SerializationConfig config = new SerializationConfig();
 				config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -665,7 +605,7 @@ public class Operazioni{
 				log.debug("Batch esito avvisatura digitale completato");
 
 
-				aggiornaSondaOK(BATCH_ESITO_AVVISATURA_DIGITALE, bd);
+				aggiornaSondaOK(BATCH_ESITO_AVVISATURA_DIGITALE, bd,ctx);
 
 				return "Esito Avvisatura Digitale OK";
 			} else {
@@ -676,7 +616,7 @@ public class Operazioni{
 			try {
 				if(bd.isAutoCommit())
 					bd.rollback();
-				aggiornaSondaKO(BATCH_ESITO_AVVISATURA_DIGITALE, e, bd);
+				aggiornaSondaKO(BATCH_ESITO_AVVISATURA_DIGITALE, e, bd,ctx);
 			} catch (ServiceException e1) {
 				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
 			}
@@ -684,27 +624,14 @@ public class Operazioni{
 		} finally {
 			BatchManager.stopEsecuzione(bd, BATCH_ESITO_AVVISATURA_DIGITALE);
 			if(bd != null) bd.closeConnection();
-			if(ctx != null) ctx.log();
 		}
 	}
 
-	public static String avvisaturaDigitale(String serviceName){
+	public static String avvisaturaDigitale(IContext ctx){
 		BasicBD bd = null;
-		GpContext ctx = null;
 		List<InviaAvvisaturaThread> threads = new ArrayList<>();
 		try {
-			ctx = new GpContext();
-			MDC.put("cmd", "AvvisaturaDigitale");
-			MDC.put("op", ctx.getTransactionId());
-			Service service = new Service();
-			service.setName(serviceName);
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-			ctx.getTransaction().setService(service);
-			Operation opt = new Operation();
-			opt.setName("AvvisaturaDigitale");
-			ctx.getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 
 			if(BatchManager.startEsecuzione(bd, BATCH_AVVISATURA_DIGITALE)) {
 				log.debug("Batch avvisatura digitale");
@@ -915,7 +842,7 @@ public class Operazioni{
 							
 							log.info("Trovati ["+versamenti.size()+"] versamenti da avvisare in modalita' asincrona tramite il connettore SOAP");
 							for(it.govpay.bd.model.Versamento versamento: versamenti) {
-								InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, GpThreadLocal.get().getTransactionId(), versamentiBD);
+								InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, ctx.getTransactionId(), versamentiBD,ctx);
 								ThreadExecutorManager.getClientPoolExecutorAvvisaturaDigitale().execute(sender);
 								threads.add(sender);
 							}
@@ -964,7 +891,7 @@ public class Operazioni{
 
 				log.debug("Batch avvisatura digitale terminato");
 
-				aggiornaSondaOK(BATCH_AVVISATURA_DIGITALE, bd);
+				aggiornaSondaOK(BATCH_AVVISATURA_DIGITALE, bd,ctx);
 
 				if(!wasAutoCommit)
 					bd.setAutoCommit(wasAutoCommit);
@@ -978,7 +905,7 @@ public class Operazioni{
 			log.error("Avvisatura digitale Fallita", e);
 			try {
 				if(!bd.isAutoCommit()) bd.rollback();
-				aggiornaSondaKO(BATCH_AVVISATURA_DIGITALE, e, bd);
+				aggiornaSondaKO(BATCH_AVVISATURA_DIGITALE, e, bd,ctx);
 			} catch (ServiceException e1) {
 				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
 			}
@@ -1014,27 +941,14 @@ public class Operazioni{
 			
 			BatchManager.stopEsecuzione(bd, BATCH_AVVISATURA_DIGITALE);
 			if(bd != null) bd.closeConnection();
-			if(ctx != null) ctx.log();
 		}
 	}
 	
-	public static String avvisaturaDigitaleModalitaSincrona(String serviceName){
+	public static String avvisaturaDigitaleModalitaSincrona(IContext ctx){
 		BasicBD bd = null;
 		List<InviaAvvisaturaThread> threads = new ArrayList<>();
-		GpContext ctx = null;
 		try {
-			ctx = new GpContext();
-			MDC.put("cmd", "AvvisaturaDigitaleSincrona");
-			MDC.put("op", ctx.getTransactionId());
-			Service service = new Service();
-			service.setName(serviceName);
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-			ctx.getTransaction().setService(service);
-			Operation opt = new Operation();
-			opt.setName("AvvisaturaDigitaleSincrona");
-			ctx.getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 			
 			if(BatchManager.startEsecuzione(bd, BATCH_AVVISATURA_DIGITALE_SINCRONA)) {
 				log.trace("Spedizione Avvisatura Digitale modalita' sincrona");
@@ -1058,7 +972,7 @@ public class Operazioni{
 					Intermediario intermediario = versamento.getDominio(bd).getStazione().getIntermediario(bd);
 					
 					if(intermediario.getConnettorePddAvvisatura() != null && intermediario.getConnettorePddAvvisatura().getUrl() != null) {
-						InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, GpThreadLocal.get().getTransactionId(), versamentiBD);
+						InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, ctx.getTransactionId(), versamentiBD,ctx);
 						ThreadExecutorManager.getClientPoolExecutorAvvisaturaDigitale().execute(sender);
 						threads.add(sender);
 					} else {
@@ -1086,14 +1000,14 @@ public class Operazioni{
 					}
 				}
 				log.info("Processi di spedizione avvisatura versamento in modalita' sincrona avviati.");
-				aggiornaSondaOK(BATCH_AVVISATURA_DIGITALE_SINCRONA, bd);
+				aggiornaSondaOK(BATCH_AVVISATURA_DIGITALE_SINCRONA, bd,ctx);
 			} else {
 				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione dell'avvisatura digitale in modalita' sincrona", e);
-			aggiornaSondaKO(BATCH_AVVISATURA_DIGITALE_SINCRONA, e, bd); 
+			aggiornaSondaKO(BATCH_AVVISATURA_DIGITALE_SINCRONA, e, bd,ctx); 
 			return "Non è stato possibile avviare la spedizione dell'avvisatura digitale in modalita' sincrona: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -1114,7 +1028,7 @@ public class Operazioni{
 
 			if(completed) {
 				try {
-					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					bd = BasicBD.newInstance(ctx.getTransactionId());
 					BatchManager.stopEsecuzione(bd, BATCH_AVVISATURA_DIGITALE_SINCRONA);
 				} catch (ServiceException e) {
 				} finally {
@@ -1124,7 +1038,7 @@ public class Operazioni{
 				return "Spedizione avvisatura digitale in modalita' sincrona completata.";
 			} else {
 				try {
-					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					bd = BasicBD.newInstance(ctx.getTransactionId());
 					BatchManager.aggiornaEsecuzione(bd, BATCH_AVVISATURA_DIGITALE_SINCRONA);
 				} catch (ServiceException e) {
 				} finally {
@@ -1134,23 +1048,11 @@ public class Operazioni{
 		}
 	}
 
-	public static String elaborazioneTracciatiPendenze(String serviceName){
+	public static String elaborazioneTracciatiPendenze(IContext ctx){
 		BasicBD bd = null;
-		GpContext ctx = null;
 		boolean wasAutoCommit = false;
 		try {
-			ctx = new GpContext();
-			MDC.put("cmd", "ElaborazioneTracciati");
-			MDC.put("op", ctx.getTransactionId());
-			Service service = new Service();
-			service.setName(serviceName);
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
-			ctx.getTransaction().setService(service);
-			Operation opt = new Operation();
-			opt.setName("CaricamentoTracciato");
-			ctx.getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 			wasAutoCommit = bd.isAutoCommit();
 			
 			if(BatchManager.startEsecuzione(bd, BATCH_TRACCIATI)) {
@@ -1182,7 +1084,7 @@ public class Operazioni{
 					tracciati = tracciatiBD.findAll(filter);
 				}
 				
-				aggiornaSondaOK(BATCH_TRACCIATI, bd);
+				aggiornaSondaOK(BATCH_TRACCIATI, bd, ctx);
 				BatchManager.stopEsecuzione(bd, BATCH_TRACCIATI);
 				log.info("Elaborazione tracciati terminata.");
 				return "Elaborazione tracciati terminata.";
@@ -1192,7 +1094,7 @@ public class Operazioni{
 		} catch (Exception e) {
 			try {
 				if(!bd.isAutoCommit()) bd.rollback();
-				aggiornaSondaKO(BATCH_TRACCIATI, e, bd);
+				aggiornaSondaKO(BATCH_TRACCIATI, e, bd, ctx);
 			} catch (ServiceException e1) {
 				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
 			}
@@ -1200,7 +1102,6 @@ public class Operazioni{
 			return "Non è stato possibile eseguire l'elaborazione dei tracciati: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
-			if(ctx != null) ctx.log();
 		}
 	}
 }

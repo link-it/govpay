@@ -7,7 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 
 import it.govpay.rs.v1.exception.CodiceEccezione;
 
-public class X509AuthenticationEntryPoint extends org.openspcoop2.utils.jaxrs.impl.authentication.entrypoint.X509AuthenticationEntryPoint {
+public class X509AuthenticationEntryPoint extends org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.X509AuthenticationEntryPoint {
 
 	@Override
 	protected Response getPayload(AuthenticationException authException, HttpServletResponse httpResponse) {

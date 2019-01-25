@@ -148,6 +148,11 @@
 			<artifactId>openspcoop2_utils-jaxrs</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.openspcoop2.utils</groupId>
+			<artifactId>openspcoop2_utils-service</artifactId>
+		</dependency>
+		
 		<!-- SPRING -->
         <dependency>
             <groupId>org.springframework</groupId>

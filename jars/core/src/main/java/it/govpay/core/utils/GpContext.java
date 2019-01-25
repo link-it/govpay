@@ -1,8 +1,6 @@
 package it.govpay.core.utils;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
@@ -11,22 +9,18 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.handler.MessageContext;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.logger.ILogger;
-import org.openspcoop2.utils.logger.LoggerFactory;
-import org.openspcoop2.utils.logger.beans.Message;
-import org.openspcoop2.utils.logger.beans.proxy.Actor;
-import org.openspcoop2.utils.logger.beans.proxy.Client;
-import org.openspcoop2.utils.logger.beans.proxy.Operation;
-import org.openspcoop2.utils.logger.beans.proxy.ProxyContext;
-import org.openspcoop2.utils.logger.beans.proxy.Request;
-import org.openspcoop2.utils.logger.beans.proxy.Role;
-import org.openspcoop2.utils.logger.beans.proxy.Server;
-import org.openspcoop2.utils.logger.beans.proxy.Service;
-import org.openspcoop2.utils.logger.beans.proxy.Transaction;
-import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
-import org.openspcoop2.utils.logger.constants.proxy.Result;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
+import org.openspcoop2.utils.logger.beans.context.core.AbstractTransaction;
+import org.openspcoop2.utils.logger.beans.context.core.Actor;
+import org.openspcoop2.utils.logger.beans.context.core.BaseClient;
+import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
+import org.openspcoop2.utils.logger.beans.context.core.Operation;
+import org.openspcoop2.utils.logger.beans.context.core.Request;
+import org.openspcoop2.utils.logger.beans.context.core.Role;
+import org.openspcoop2.utils.logger.beans.context.core.Service;
+import org.openspcoop2.utils.logger.constants.context.FlowMode;
+import org.openspcoop2.utils.logger.constants.context.Result;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
@@ -38,13 +32,13 @@ import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.model.Rpt;
 import it.govpay.model.Versionabile.Versione;
 
-public class GpContext {
+public class GpContext extends ApplicationContext {
 
-	private List<ILogger> loggers;
-	private List<Context> contexts;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; 
 	private PagamentoContext pagamentoCtx;
-	private boolean useCacheData = true;
 	
 	public static final String NOT_SET = "<Non valorizzato>";
 	
@@ -66,18 +60,9 @@ public class GpContext {
 	
 	
 	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {
-		try {
-			this.loggers = new ArrayList<>();
-			ILogger logger = LoggerFactory.newLogger(new Context());	
-			this.loggers.add(logger);
-			
-			this.contexts = new ArrayList<>();
-			Context context = (Context) logger.getContext();
-			context.getTransaction().setProtocol("govpay");
-			this.contexts.add(context);
-			
-			Transaction transaction = context.getTransaction();
+			ApplicationTransaction transaction = (ApplicationTransaction) this.getTransaction();
 			transaction.setRole(Role.SERVER);
+			transaction.setProtocol("govpay");
 			
 			Service service = new Service();
 			if(msgCtx.get(MessageContext.WSDL_SERVICE) != null)
@@ -98,7 +83,7 @@ public class GpContext {
 			transaction.setOperation(operation);
 			
 			HttpServletRequest servletRequest = (HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST);
-			Client client = new Client();
+			BaseClient client = new BaseClient();
 			client.setInvocationEndpoint(servletRequest.getRequestURI());
 			
 			if(msgCtx.get(MessageContext.WSDL_INTERFACE) != null)
@@ -110,37 +95,24 @@ public class GpContext {
 			
 			if(user != null)
 				client.setPrincipal(user);
-			
 			transaction.setClient(client);
 			
-			Server server = new Server();
+			BaseServer server = new BaseServer();
 			server.setName(GovPay);
 			
 			Actor to = new Actor();
 			to.setName(GovPay);
 			to.setType(TIPO_SOGGETTO_GOVPAY);
 			transaction.setTo(to);
-			
-			transaction.setServer(server);
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
-		}
+			transaction.addServer(server);
 	}
 	
 	public GpContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders, HttpServletRequest request,
 			String nomeOperazione, String nomeServizio, String tipoServizio, int versioneServizio) throws ServiceException {
-		try {
-			this.loggers = new ArrayList<>();
-			ILogger logger = LoggerFactory.newLogger(new Context());	
-			this.loggers.add(logger);
-			
-			this.contexts = new ArrayList<>();
-			Context context = (Context) logger.getContext();
-			context.getTransaction().setProtocol("REST");
-			this.contexts.add(context);
-			
-			Transaction transaction = context.getTransaction();
+
+			ApplicationTransaction transaction = (ApplicationTransaction) this.getTransaction();
 			transaction.setRole(Role.SERVER);
+			transaction.setProtocol("REST");
 			
 			Service service = new Service();
 			service.setName(nomeServizio);
@@ -153,7 +125,7 @@ public class GpContext {
 			operation.setName(nomeOperazione);
 			transaction.setOperation(operation);
 			
-			Client client = new Client();
+			BaseClient client = new BaseClient();
 			client.setInvocationEndpoint(request.getRequestURI());
 			client.setInterfaceName(nomeServizio);
 			
@@ -161,34 +133,20 @@ public class GpContext {
 			
 			if(user != null)
 				client.setPrincipal(user);
-			
 			transaction.setClient(client);
 			
-			Server server = new Server();
+			BaseServer server = new BaseServer();
 			server.setName(GovPay);
 			
 			Actor to = new Actor();
 			to.setName(GovPay);
 			to.setType(TIPO_SOGGETTO_GOVPAY);
 			transaction.setTo(to);
-			
-			transaction.setServer(server);
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
-		}
+			transaction.addServer(server);
 	}
 	
 	public GpContext(String requestUri,	String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user) throws ServiceException {
-		try {
-			this.loggers = new ArrayList<>();
-			ILogger logger = LoggerFactory.newLogger(new Context());	
-			this.loggers.add(logger);
-			
-			this.contexts = new ArrayList<>();
-			Context context = (Context) logger.getContext();
-			this.contexts.add(context);
-			
-			Transaction transaction = context.getTransaction();
+			ApplicationTransaction transaction = (ApplicationTransaction) this.getTransaction();
 			transaction.setRole(Role.SERVER);
 			transaction.setProtocol("REST");
 			
@@ -203,28 +161,36 @@ public class GpContext {
 			operation.setName(nomeOperazione);
 			transaction.setOperation(operation);
 			
-			Client client = new Client();
+			BaseClient client = new BaseClient();
 			client.setInvocationEndpoint(requestUri);
 			client.setInterfaceName(nomeServizio);
 			if(user != null) client.setPrincipal(user);
-			transaction.setClient(client);
+				transaction.setClient(client);
 			
-			Server server = new Server();
+			BaseServer server = new BaseServer();
 			server.setName(GovPay);
 			
 			Actor to = new Actor();
 			to.setName(GovPay);
 			transaction.setTo(to);
-			
-			transaction.setServer(server);
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
-		}
+			transaction.addServer(server);
 	}
 	public GpContext() throws ServiceException {
-		this.loggers = new ArrayList<>();
-		this.contexts = new ArrayList<>();
-		this.openTransaction();
+		ApplicationTransaction transaction = (ApplicationTransaction) this.getTransaction();
+		transaction.setRole(Role.SERVER);
+		transaction.setProtocol("REST");
+		
+		BaseServer server = new BaseServer();
+		server.setName(GovPay);
+		
+		Actor to = new Actor();
+		to.setName(GovPay);
+		to.setType(TIPO_SOGGETTO_GOVPAY);
+		transaction.setTo(to);
+		transaction.addServer(server);
+		
+		Request request = this.getRequest();
+		request.setDate(new Date());
 	}
 	
 	public GpContext(String correlationId) throws ServiceException {
@@ -232,239 +198,127 @@ public class GpContext {
 		this.setCorrelationId(correlationId);
 	}
 	
-	public String openTransaction() throws ServiceException {
-		try {
-			ILogger logger = LoggerFactory.newLogger(new Context());	
-			this.loggers.add(logger);
-			
-			Context context = (Context) logger.getContext();
-			context.getTransaction().setProtocol("govpay");
-			if(!this.contexts.isEmpty())
-				context.getRequest().setCorrelationIdentifier(this.contexts.get(0).getIdTransaction());
-			this.contexts.add(context);
-			
-			Request request = context.getRequest();
-			request.setInDate(new Date());
-			
-			Transaction transaction = context.getTransaction();
-			transaction.setRole(Role.CLIENT);
-			
-			return context.getIdTransaction();
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
-		}
+	public BaseServer setupNodoClient(String codStazione, String codDominio, Azione azione) {
+		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
 	}
 	
-	public void closeTransaction(String idTransaction) {
-		if(idTransaction == null) return;
-		
-		Context c = this.getContext(idTransaction);
-		if(c != null) c.setActive(false);
+	public BaseServer setupNodoClient(String codStazione, String codDominio, it.govpay.core.utils.client.AvvisaturaClient.Azione azione) {
+		return this._setupNodoClient(codStazione, codDominio, NodoInviaAvvisoDigitaleService.SERVICE.getLocalPart(), azione.toString(), 1);
 	}
 	
-	public Context getContext(){
-		for(int i=this.contexts.size() -1; i>=0; i--) {
-			if(this.contexts.get(i).isActive) return this.contexts.get(i);
-		}
-		return null;
-	}
-	
-	private Context getContext(String idTransaction){
-		for(Context c : this.contexts) {
-			if(c.getIdTransaction().equals(idTransaction))
-					return c;
-		}
-		return null;
-	}
-	
-	public void setupNodoClient(String codStazione, String codDominio, Azione azione) {
-		this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
-	}
-	
-	public void setupNodoClient(String codStazione, String codDominio, it.govpay.core.utils.client.AvvisaturaClient.Azione azione) {
-		this._setupNodoClient(codStazione, codDominio, NodoInviaAvvisoDigitaleService.SERVICE.getLocalPart(), azione.toString(), 1);
-	}
-	
-	private void _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
+	private BaseServer _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
 		Actor to = new Actor();
 		to.setName(NodoDeiPagamentiSPC);
 		to.setType(TIPO_SOGGETTO_NDP);
-		GpThreadLocal.get().getTransaction().setTo(to);
+		GpThreadLocal.get().getApplicationContext().getTransaction().setTo(to);
 		
 		Actor from = new Actor();
 		from.setName(codStazione);
 		from.setType(TIPO_SOGGETTO_STAZIONE);
-		GpThreadLocal.get().getTransaction().setFrom(from);
+		GpThreadLocal.get().getApplicationContext().getTransaction().setFrom(from);
 		
-		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_NDP, servizio, azione, versione);
+		this.setInfoFruizione(TIPO_SERVIZIO_NDP, servizio, azione, versione);
 		
-		Server server = new Server();
+		BaseServer server = new BaseServer();
 		server.setName(NodoDeiPagamentiSPC);
-		GpThreadLocal.get().getTransaction().setServer(server);
+		this.getTransaction().addServer(server); 
 		
-		if(codDominio != null) {
-			Client client = new Client();
-			client.setName(codDominio);
-			GpThreadLocal.get().getTransaction().setClient(client);
-		}
+		return server;
+//		if(codDominio != null) {
+//			BaseClient client = new BaseClient();
+//			client.setName(codDominio);
+//			this.getTransaction().setClient(client);
+//		}
 	}
 	
-	public void setupPaClient(String codApplicazione, String azione, String url, Versione versione) {
+	public BaseServer setupPaClient(String codApplicazione, String azione, String url, Versione versione) {
 		Actor to = new Actor();
 		to.setName(codApplicazione);
 		to.setType(TIPO_SOGGETTO_APP);
-		GpThreadLocal.get().getTransaction().setTo(to);
+		GpThreadLocal.get().getApplicationContext().getTransaction().setTo(to);
 		
 		Actor from = new Actor();
 		from.setName(GovPay);
 		from.setType(TIPO_SERVIZIO_GOVPAY);
-		GpThreadLocal.get().getTransaction().setFrom(from);
+		GpThreadLocal.get().getApplicationContext().getTransaction().setFrom(from);
 		
-		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, "", azione, versione.getVersione());
+		this.setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, "", azione, versione.getVersione());
 		
-		Server server = new Server();
+		BaseServer server = new BaseServer();
 		server.setName(codApplicazione);
 		server.setEndpoint(url);
-		GpThreadLocal.get().getTransaction().setServer(server);
+		this.getTransaction().addServer(server); 
 		
-		Client client = new Client();
-		client.setName(GovPay);
-		GpThreadLocal.get().getTransaction().setClient(client);
+		return server;
+//		BaseClient client = new BaseClient();
+//		client.setName(GovPay);
+//		this.getTransaction().setClient(client);
 	}
 	
-	private ILogger getActiveLogger(){
-		for(int i=this.contexts.size()-1; i>=0; i--) {
-			if(this.contexts.get(i).isActive) return this.loggers.get(i);
-		}
-		return null;
-	}
-	
-	public void setInfoFruizione(String tipoServizio, String servizio, String operazione, int version) {
+	private void setInfoFruizione(String tipoServizio, String servizio, String operazione, int version) {
 		Service service = new Service();
 		service.setName(servizio);
 		service.setVersion(version);
 		service.setType(tipoServizio);
-		this.getContext().getTransaction().setService(service);
+		this.getTransaction().setService(service);
 		
 		Operation operation = new Operation();
 		operation.setMode(FlowMode.INPUT_OUTPUT);
 		operation.setName(operazione);
-		this.getContext().getTransaction().setOperation(operation);
+		this.getTransaction().setOperation(operation);
 	}
 	
-	public Transaction getTransaction() {
-		return this.getContext().getTransaction();
-	}
-	
-	public String getTransactionId() {
-		return this.getContext().getIdTransaction();
+	public ApplicationTransaction getTransaction() {
+		return (ApplicationTransaction) super.getTransaction(); 
 	}
 	
 	public boolean hasCorrelationId() {
 		try {
-			return this.contexts.get(0).getRequest().getCorrelationIdentifier() != null;
+			return this.getRequest().getCorrelationIdentifier() != null;
 		} catch (Throwable t) {
 			return false;
 		}
 	}
 	
 	public void setCorrelationId(String id) {
-		this.contexts.get(0).getRequest().setCorrelationIdentifier(id);
+		this.getRequest().setCorrelationIdentifier(id);
 	}
-
-	public void setResult(GpResponse response) {
+	
+	public static void setResult(AbstractTransaction transaction, GpResponse response) {
 		if(response == null || response.getCodEsito() == null) {
-			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			transaction.setResult(Result.INTERNAL_ERROR);
 			return;
 		}
 		switch (response.getCodEsito()) {
 		case "OK":
-			this.getContext().getTransaction().setResult(Result.SUCCESS);
+			transaction.setResult(Result.SUCCESS);
 			break;
 		case "INTERNAL":
-			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			transaction.setResult(Result.INTERNAL_ERROR);
 			break;
 		default:
-			this.getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
+			transaction.setResult(Result.PROCESSING_ERROR);
 			break;
 		}
 	}
 	
-	public void setResult(String faultCode) {
+	public static void setResult(AbstractTransaction transaction, String faultCode) {
 		if(faultCode == null) {
-			this.getContext().getTransaction().setResult(Result.SUCCESS);
+			transaction.setResult(Result.SUCCESS);
 			return;
 		}
 			
 		if(faultCode.equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-			this.getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			transaction.setResult(Result.INTERNAL_ERROR);
 			return; 
 		}
 		
-		this.getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
-	}
-	
-	public void log(String string, String...params) {
-		try {
-			ILogger activeLogger = this.getActiveLogger();
-			if(activeLogger != null)
-				activeLogger.log(string, params);
-		} catch (Exception e) {
-			LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione del diagnostico", e);
-		}
-	}
-	
-	public void log() {
-		for(ILogger l : this.loggers) {
-			try {
-				l.log();
-			} catch (UtilsException e) {
-				LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione della transazione", e);
-			}
-		}
-	}
-	
-	public void log(Message m) {
-		try {
-			ILogger activeLogger = this.getActiveLogger();
-			if(activeLogger != null)
-				activeLogger.log(m);
-		} catch (Exception e) {
-			LoggerWrapperFactory.getLogger(GpContext.class).error("Errore nell'emissione della transazione", e);
-		}
-	}
-	
-	public ILogger getLogger() {
-		return getActiveLogger();
+		transaction.setResult(Result.PROCESSING_ERROR);
 	}
 	
 	public PagamentoContext getPagamentoCtx() {
 		if(this.pagamentoCtx == null) 
 			this.pagamentoCtx = new PagamentoContext();
 		return this.pagamentoCtx;
-	}
-
-
-	public boolean isUseCacheData() {
-		return useCacheData;
-	}
-
-	public void setUseCacheData(boolean useCacheData) {
-		this.useCacheData = useCacheData;
-	}
-
-
-	public class Context extends ProxyContext {
-		private static final long serialVersionUID = 1L;
-		
-		private boolean isActive = true;
-		
-		public boolean isActive() {
-			return this.isActive;
-		}
-
-		public void setActive(boolean isActive) {
-			this.isActive = isActive;
-		}
 	}
 }

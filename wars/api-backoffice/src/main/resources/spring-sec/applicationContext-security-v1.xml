@@ -12,7 +12,7 @@
                 secured-annotations="enabled">
         </global-method-security>
         
-         <b:bean id="allowUrlEncodedSlashFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall" >
+        <b:bean id="allowUrlEncodedSlashFirewall" class="org.springframework.security.web.firewall.StrictHttpFirewall" >
     		<b:property name="allowUrlEncodedSlash" value="true"/>
     		<b:property name="allowUrlEncodedPercent" value="true"/>
         </b:bean>
@@ -28,7 +28,7 @@
         <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         </b:bean>
         
-        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.jaxrs.impl.authentication.provider.WildflyApplicationAuthenticationProvider" >
+        <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
 			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
 		</b:bean>
         
@@ -40,7 +40,7 @@
         <b:bean id="formAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.FormAuthenticationEntryPoint" >
         </b:bean>
         
-        <b:bean id="logoutSuccessHandler" class="org.openspcoop2.utils.jaxrs.impl.authentication.handler.DefaultLogoutSuccessHandler" />
+        <b:bean id="logoutSuccessHandler" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
         
         <b:bean id="invalidSessionStrategy" class="it.govpay.rs.v1.authentication.session.NotAuthorizedInvalidSessionStrategy">
         	<b:property name="createNewSession" value="false" />

@@ -24,6 +24,10 @@ import java.io.ByteArrayOutputStream;
 import javax.xml.bind.JAXBElement;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRT;
@@ -81,14 +85,17 @@ public class NodoClient extends BasicClient {
 		this.isAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
 	}
 
-	public Risposta send(String azione, byte[] body) throws GovPayException, ClientException {
+	public Risposta send(String azione, byte[] body) throws GovPayException, ClientException, UtilsException {
 		this.azione = azione;
 		String urlString = this.url.toExternalForm();
 		if(this.isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		} 
-		GpThreadLocal.get().getTransaction().getServer().setEndpoint(urlString);
-		GpThreadLocal.get().log("ndp_client.invioRichiesta");
+		IContext ctx = GpThreadLocal.get();
+		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
+		ApplicationTransaction appTransaction = (ApplicationTransaction) appContext.getTransaction();
+		appTransaction.getLastServer().setEndpoint(urlString);
+		ctx.getApplicationLogger().log("ndp_client.invioRichiesta");
 
 		try {
 			byte[] response = super.sendSoap(azione, body, this.isAzioneInUrl);
@@ -102,18 +109,18 @@ public class NodoClient extends BasicClient {
 				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Fault String vuoto>";
 				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Fault Description vuoto>";
 				this.errore = "Errore applicativo " + this.faultCode + ": " + faultString;
-				GpThreadLocal.get().log("ndp_client.invioRichiestaFault", this.faultCode, faultString, faultDescription);
+				ctx.getApplicationLogger().log("ndp_client.invioRichiestaFault", this.faultCode, faultString, faultDescription);
 			} else {
-				GpThreadLocal.get().log("ndp_client.invioRichiestaOk");
+				ctx.getApplicationLogger().log("ndp_client.invioRichiestaOk");
 			}
 			return r;
 		} catch (ClientException e) {
 			this.errore = "Errore rete: " + e.getMessage();
-			GpThreadLocal.get().log("ndp_client.invioRichiestaKo", e.getMessage());
+			ctx.getApplicationLogger().log("ndp_client.invioRichiestaKo", e.getMessage());
 			throw e;
 		} catch (Exception e) {
 			this.errore = "Errore interno: " + e.getMessage();
-			GpThreadLocal.get().log("ndp_client.invioRichiestaKo", "Errore interno");
+			ctx.getApplicationLogger().log("ndp_client.invioRichiestaKo", "Errore interno");
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		} finally {
 			this.updateStato();
@@ -121,7 +128,7 @@ public class NodoClient extends BasicClient {
 
 	}
 
-	public NodoInviaRPTRisposta nodoInviaRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, NodoInviaRPT inviaRPT) throws GovPayException, ClientException {
+	public NodoInviaRPTRisposta nodoInviaRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, NodoInviaRPT inviaRPT) throws GovPayException, ClientException, UtilsException {
 		this.stazione = stazione.getCodStazione();
 		this.dominio = rpt.getCodDominio();
 
@@ -137,7 +144,7 @@ public class NodoClient extends BasicClient {
 		return (NodoInviaRPTRisposta) response;
 	}
 
-	public NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPT(Intermediario intermediario, Stazione stazione, NodoInviaCarrelloRPT inviaCarrelloRPT, String codCarrello) throws GovPayException, ClientException {
+	public NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPT(Intermediario intermediario, Stazione stazione, NodoInviaCarrelloRPT inviaCarrelloRPT, String codCarrello) throws GovPayException, ClientException, UtilsException {
 		IntestazioneCarrelloPPT intestazione = new IntestazioneCarrelloPPT();
 		intestazione.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
 		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
@@ -147,7 +154,7 @@ public class NodoClient extends BasicClient {
 		return (NodoInviaCarrelloRPTRisposta) response;
 	}
 
-	public NodoChiediStatoRPTRisposta nodoChiediStatoRpt(NodoChiediStatoRPT nodoChiediStatoRPT, String nomeSoggetto) throws GovPayException, ClientException {
+	public NodoChiediStatoRPTRisposta nodoChiediStatoRpt(NodoChiediStatoRPT nodoChiediStatoRPT, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		this.stazione = nodoChiediStatoRPT.getIdentificativoStazioneIntermediarioPA();
 		this.dominio = nodoChiediStatoRPT.getIdentificativoDominio();
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediStatoRPT(nodoChiediStatoRPT), null);
@@ -155,7 +162,7 @@ public class NodoClient extends BasicClient {
 		return (NodoChiediStatoRPTRisposta) response;
 	}
 
-	public NodoChiediCopiaRTRisposta nodoChiediCopiaRT(NodoChiediCopiaRT nodoChiediCopiaRT, String nomeSoggetto) throws GovPayException, ClientException {
+	public NodoChiediCopiaRTRisposta nodoChiediCopiaRT(NodoChiediCopiaRT nodoChiediCopiaRT, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		this.stazione = nodoChiediCopiaRT.getIdentificativoStazioneIntermediarioPA();
 		this.dominio = nodoChiediCopiaRT.getIdentificativoDominio();
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediCopiaRT(nodoChiediCopiaRT), null);
@@ -163,7 +170,7 @@ public class NodoClient extends BasicClient {
 		return (NodoChiediCopiaRTRisposta) response;
 	}
 
-	public NodoChiediListaPendentiRPTRisposta nodoChiediListaPendentiRPT(NodoChiediListaPendentiRPT nodoChiediListaPendentiRPT, String nomeSoggetto) throws GovPayException, ClientException {
+	public NodoChiediListaPendentiRPTRisposta nodoChiediListaPendentiRPT(NodoChiediListaPendentiRPT nodoChiediListaPendentiRPT, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		this.stazione = nodoChiediListaPendentiRPT.getIdentificativoStazioneIntermediarioPA();
 		this.dominio = nodoChiediListaPendentiRPT.getIdentificativoDominio();
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediListaPendentiRPT(nodoChiediListaPendentiRPT), null);
@@ -171,7 +178,7 @@ public class NodoClient extends BasicClient {
 		return (NodoChiediListaPendentiRPTRisposta) response;
 	}
 
-	public NodoInviaRichiestaStornoRisposta nodoInviaRichiestaStorno(NodoInviaRichiestaStorno nodoInviaRichiestaStorno) throws GovPayException, ClientException {
+	public NodoInviaRichiestaStornoRisposta nodoInviaRichiestaStorno(NodoInviaRichiestaStorno nodoInviaRichiestaStorno) throws GovPayException, ClientException, UtilsException {
 		this.stazione = nodoInviaRichiestaStorno.getIdentificativoStazioneIntermediarioPA();
 		this.dominio = nodoInviaRichiestaStorno.getIdentificativoDominio();
 		byte [] body = this.getBody(true,objectFactory.createNodoInviaRichiestaStorno(nodoInviaRichiestaStorno), null);
@@ -179,7 +186,7 @@ public class NodoClient extends BasicClient {
 		return (NodoInviaRichiestaStornoRisposta) response;
 	}
 
-	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione, String nomeSoggetto) throws GovPayException, ClientException {
+	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		this.stazione = nodoChiediElencoFlussiRendicontazione.getIdentificativoStazioneIntermediarioPA();
 		this.dominio = nodoChiediElencoFlussiRendicontazione.getIdentificativoDominio();
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediElencoFlussiRendicontazione(nodoChiediElencoFlussiRendicontazione), null);
@@ -187,7 +194,7 @@ public class NodoClient extends BasicClient {
 		return (NodoChiediElencoFlussiRendicontazioneRisposta) response;
 	}
 
-	public NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione nodoChiediFlussoRendicontazione, String nomeSoggetto) throws GovPayException, ClientException {
+	public NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione nodoChiediFlussoRendicontazione, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		this.stazione = nodoChiediFlussoRendicontazione.getIdentificativoStazioneIntermediarioPA();
 		this.dominio = nodoChiediFlussoRendicontazione.getIdentificativoDominio();
 		byte [] body = this.getBody(true, objectFactory.createNodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione), null);

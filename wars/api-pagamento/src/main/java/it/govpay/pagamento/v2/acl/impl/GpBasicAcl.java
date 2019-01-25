@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -20,7 +20,7 @@ public class GpBasicAcl extends BasicAcl {
 	}
 
 	@Override
-	public boolean isSatisfied(ServiceContext context) {
+	public boolean isSatisfied(IContext context) {
 		
 		// Se il tipoUtenza e' impostato controllo che sia come quello del chiamatne
 		if(tipiUtenza != null && AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()) == null && AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()).getTipoUtenza() != null) {

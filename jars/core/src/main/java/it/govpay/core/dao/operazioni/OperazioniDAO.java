@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.IContext;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -22,7 +23,6 @@ import it.govpay.model.Acl.Servizio;
 public class OperazioniDAO extends BaseDAO{
 	
 	public final static String ACQUISIZIONE_RENDICONTAZIONI = "acquisizioneRendicontazioni";
-	public final static String AGGIORNAMENTO_REGISTRO_PSP = "aggiornamentoRegistroPsp";
 	public final static String RECUPERO_RPT_PENDENTI = "recuperoRptPendenti";
 	public final static String SPEDIZIONE_NOTIFICHE = "spedizioneNotifiche";
 	public final static String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
@@ -35,18 +35,19 @@ public class OperazioniDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			IContext ctx = GpThreadLocal.get();
+			bd = BasicBD.newInstance(ctx.getTransactionId());
 			this.autorizzaRichiesta(leggiOperazioneDTO.getUser(), Servizio.CONFIGURAZIONE_E_MANUTENZIONE, Diritti.ESECUZIONE, bd);
 			
 			String esitoOperazione = "";
 			if(leggiOperazioneDTO.getIdOperazione().equals(ACQUISIZIONE_RENDICONTAZIONI)){
-				esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(OperazioniDAO.class.getName());
+				esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RECUPERO_RPT_PENDENTI)){
-				esitoOperazione = it.govpay.core.business.Operazioni.recuperoRptPendenti(OperazioniDAO.class.getName());
+				esitoOperazione = it.govpay.core.business.Operazioni.recuperoRptPendenti(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RESET_CACHE_ANAGRAFICA)){
-				esitoOperazione = it.govpay.core.business.Operazioni.resetCacheAnagrafica();
+				esitoOperazione = it.govpay.core.business.Operazioni.resetCacheAnagrafica(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(SPEDIZIONE_NOTIFICHE)){
-				esitoOperazione = it.govpay.core.business.Operazioni.spedizioneNotifiche(OperazioniDAO.class.getName());
+				esitoOperazione = it.govpay.core.business.Operazioni.spedizioneNotifiche(ctx);
 			}else if(leggiOperazioneDTO.getIdOperazione().equals(GENERAZIONE_AVVISI_PAGAMENTO)){
 				it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
 				esitoOperazione = "Generazione Avvisi Pagamento schedulata";
@@ -80,7 +81,6 @@ public class OperazioniDAO extends BaseDAO{
 			this.autorizzaRichiesta(listaOperazioniDTO.getUser(), Servizio.CONFIGURAZIONE_E_MANUTENZIONE, Diritti.LETTURA, bd);
 			List<LeggiOperazioneDTOResponse> results = new ArrayList<>();
 			
-			results.add(new LeggiOperazioneDTOResponse(AGGIORNAMENTO_REGISTRO_PSP));
 			results.add(new LeggiOperazioneDTOResponse(ACQUISIZIONE_RENDICONTAZIONI));
 			results.add(new LeggiOperazioneDTOResponse(RECUPERO_RPT_PENDENTI));
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_NOTIFICHE));

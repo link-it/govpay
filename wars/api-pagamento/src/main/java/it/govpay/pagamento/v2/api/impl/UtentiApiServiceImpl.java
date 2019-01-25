@@ -3,9 +3,9 @@ package it.govpay.pagamento.v2.api.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openspcoop2.utils.jaxrs.fault.FaultCode;
-import org.openspcoop2.utils.jaxrs.impl.BaseImpl;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+import org.openspcoop2.utils.service.BaseImpl;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
@@ -65,7 +65,7 @@ public class UtentiApiServiceImpl extends BaseImpl implements UtentiApi {
 	 */
 	@Override
 	public Profilo getProfilo() {
-		ServiceContext context = this.getContext();
+		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);

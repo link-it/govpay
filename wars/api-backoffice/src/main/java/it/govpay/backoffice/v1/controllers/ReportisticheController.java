@@ -15,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -22,12 +23,12 @@ import it.govpay.backoffice.v1.beans.EntrataPrevistaIndex;
 import it.govpay.backoffice.v1.beans.ListaEntratePreviste;
 import it.govpay.backoffice.v1.beans.converter.EntrataPrevistaConverter;
 import it.govpay.bd.viste.model.EntrataPrevista;
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.reportistica.EntratePrevisteDAO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO.FormatoRichiesto;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
@@ -38,7 +39,7 @@ public class ReportisticheController extends BaseController {
      }
 
     public Response reportisticheEntratePrevisteGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String dataDa, String dataA) {
-    	GpContext ctx = null;
+    	IContext ctx = null;
 		String transactionId = null;
 
 		String methodName = "reportisticheEntratePrevisteGET";
@@ -96,7 +97,7 @@ public class ReportisticheController extends BaseController {
 				}
 				
 				if(risultatiPerPagina == null) {
-					listaEntratePrevisteDTO.setLimit(ListaEntratePrevisteDTO.DEFAULT_LIMIT);
+					listaEntratePrevisteDTO.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
 				}
 				
 				listaEntratePrevisteDTO.setFormato(FormatoRichiesto.JSON);
@@ -153,7 +154,7 @@ public class ReportisticheController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 

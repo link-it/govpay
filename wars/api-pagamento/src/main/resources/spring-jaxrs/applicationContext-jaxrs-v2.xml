@@ -31,8 +31,34 @@
 	<b:bean id="jacksonXmlProviderV2" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider" />
 
 	<!-- FaultBean Exception Mapper -->
-	<b:bean id="webApplicationExceptionMapperV2" class="it.govpay.exception.WebApplicationExceptionMapper" />
-	<b:bean id="validationExceptionMapperV2" class="it.govpay.exception.ValidationExceptionMapper"/>
+	<b:bean id="typeStatusGenerator" class="org.openspcoop2.utils.service.fault.jaxrs.TypeStatusGenerator">
+		<b:property name="typeTemplate" value="https://govpay.readthedocs.io/it/latest/integrazione/99_errori.html#http-@CODE@"/>
+	</b:bean>
+	<b:bean id="webApplicationExceptionMapperV2" class="org.openspcoop2.utils.service.fault.jaxrs.WebApplicationExceptionMapper">
+		<b:property name="typeGenerator" >
+			<b:ref bean="typeStatusGenerator"/>
+		</b:property>
+	</b:bean>
+	<b:bean id="validationExceptionMapperV2" class="org.openspcoop2.utils.service.fault.jaxrs.ValidationExceptionMapper">
+		<b:property name="typeGenerator" >
+			<b:ref bean="typeStatusGenerator"/>
+		</b:property>
+	</b:bean>
+	
+	<!-- Context -->
+	<b:bean id="contextConfigV2" class="it.govpay.pagamento.v2.service.context.ContextConfig">
+	</b:bean>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory"/>
+	<b:bean id="contextV2" class="org.openspcoop2.utils.service.context.ContextFeature">
+		<b:property name="contextFactory" >
+			<b:ref bean="customContextFactory"/>
+		</b:property>
+		<b:property name="contextConfig" >
+			<b:ref bean="contextConfigV2"/>
+		</b:property>
+	</b:bean>
+	
+	<b:bean id="commonValidationFeatureV2" class="org.apache.cxf.validation.BeanValidationFeature"/>
 
 	<!-- JAX-RS Service Impl V2 -->
 	<b:bean id="avvisiV2" class="it.govpay.pagamento.v2.api.impl.AvvisiApiServiceImpl" />
@@ -41,10 +67,6 @@
 	<b:bean id="pendenzeV2" class="it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl" />
 	<b:bean id="rppV2" class="it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl" />
 	<b:bean id="profiloV2" class="it.govpay.pagamento.v2.api.impl.UtentiApiServiceImpl" />
-	<b:bean id="loggingV2" class="it.govpay.features.LoggingFeature" />
-	<b:bean id="contextV2" class="it.govpay.features.ContextFeature" />
-	
-	<b:bean id="commonValidationFeatureV2" class="org.apache.cxf.validation.BeanValidationFeature"/>
 
 	<!-- JAX-RS Configuration -->
 
@@ -73,7 +95,6 @@
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
 			<ref bean="contextV2" />
-			<ref bean="loggingV2" />
 			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
 	</jaxrs:server>
@@ -100,7 +121,6 @@
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
 			<ref bean="contextV2" />
-			<ref bean="loggingV2" />
 		</jaxrs:features>
 	</jaxrs:server>
 
@@ -126,7 +146,6 @@
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
 			<ref bean="contextV2" />
-			<ref bean="loggingV2" />
 		</jaxrs:features>
 	</jaxrs:server>
 
@@ -153,7 +172,6 @@
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
 			<ref bean="contextV2" />
-			<ref bean="loggingV2" />
 		</jaxrs:features>
 	</jaxrs:server>
 

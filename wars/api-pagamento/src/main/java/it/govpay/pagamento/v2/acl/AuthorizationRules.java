@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
-import org.openspcoop2.utils.jaxrs.impl.ServiceContext;
+import org.openspcoop2.utils.service.context.IContext;
 
 public class AuthorizationRules {
 	
@@ -26,7 +26,7 @@ public class AuthorizationRules {
 	 * @throws NotAuthorizedException
 	 */
 	
-	public Acl authorize(ServiceContext context) throws NotAuthorizedException {
+	public Acl authorize(IContext context) throws NotAuthorizedException {
 		for(Acl acl : alcs) {
 			if(acl.isSatisfied(context)) return acl;
 		}

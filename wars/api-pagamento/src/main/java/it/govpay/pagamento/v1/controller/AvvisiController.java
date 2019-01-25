@@ -17,7 +17,7 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
+import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.pagamento.v1.beans.Avviso;
 import it.govpay.pagamento.v1.beans.converter.PendenzeConverter;
@@ -32,7 +32,7 @@ public class AvvisiController extends BaseController {
 
     public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String idDebitore) {
     	String methodName = "avvisiIdDominioIuvGET";  
-		GpContext ctx = null;
+		IContext ctx = null;
 		String transactionId = null;
 
 		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -75,7 +75,7 @@ public class AvvisiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			if(ctx != null) ctx.log();
+			this.log(ctx);
 		}
     }
 

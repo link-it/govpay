@@ -10,6 +10,9 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
@@ -38,7 +41,7 @@ public class InitListener implements ServletContextListener{
 		InputStream govpayPropertiesIS = InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE);
 		URL log4j2URL = InitListener.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
 		InputStream msgDiagnosticiIS = InitListener.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
-		GpContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
+		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
 		
 		try {
 			log = LoggerWrapperFactory.getLogger("boot");	
@@ -50,15 +53,27 @@ public class InitListener implements ServletContextListener{
 			}
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);
-			ctx.log();
+			try {
+				ctx.getApplicationLogger().log();
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
+			}
 			throw e;
 		} catch (Exception e) {
 			log.error("Inizializzazione fallita", e);
-			ctx.log();
+			try {
+				ctx.getApplicationLogger().log();
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
+			}
 			throw new RuntimeException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" fallita.", e);
 		} 
 
-		ctx.log();
+		try {
+			ctx.getApplicationLogger().log();
+		} catch (UtilsException e) {
+			log.error("Errore durante il log dell'operazione: "+e.getMessage(), e);
+		}
 
 		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo."); 
 		initialized = true;
@@ -70,8 +85,8 @@ public class InitListener implements ServletContextListener{
 		// Commit id
 		String commit = (InitConstants.GOVPAY_BUILD_NUMBER.length() > 7) ? InitConstants.GOVPAY_BUILD_NUMBER.substring(0, 7) : InitConstants.GOVPAY_BUILD_NUMBER;
 		
-		MDC.put("cmd", "Shutdown");
-		MDC.put("op", UUID.randomUUID().toString() );
+		MDC.put(MD5Constants.OPERATION_ID, "Shutdown");
+		MDC.put(MD5Constants.TRANSACTION_ID, UUID.randomUUID().toString() );
 		
 		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" in corso...");
 		

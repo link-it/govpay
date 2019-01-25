@@ -47,14 +47,21 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Message;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
+import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.logger.constants.MessageType;
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.server.ServerConfig;
+import org.openspcoop2.utils.service.context.server.ServerInfoContextManuallyAdd;
+
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
@@ -131,6 +138,7 @@ public class BasicClient {
 	protected String errMsg;
 	protected String destinatario;
 	protected String mittente;
+	protected ServerInfoContextManuallyAdd serverInfoContext = null;
 	
 	protected IntegrationContext integrationCtx;
 	
@@ -263,17 +271,18 @@ public class BasicClient {
 	}
 	
 	
-	public byte[] sendSoap(String azione, byte[] body, boolean isAzioneInUrl) throws ClientException {
+	public byte[] sendSoap(String azione, byte[] body, boolean isAzioneInUrl) throws ClientException, UtilsException { 
 		return this.send(true, azione, body, isAzioneInUrl);
 	}
 	
-	private byte[] send(boolean soap, String azione, byte[] body, boolean isAzioneInUrl) throws ClientException {
+	private byte[] send(boolean soap, String azione, byte[] body, boolean isAzioneInUrl) throws ClientException, UtilsException {
 
 		// Creazione Connessione
 		int responseCode;
 		HttpURLConnection connection = null;
 		byte[] msg = null;
-		GpContext ctx = GpThreadLocal.get();
+		IContext ctx = GpThreadLocal.get();
+		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
 		String urlString = this.url.toExternalForm();
 		if(isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
@@ -283,6 +292,8 @@ public class BasicClient {
 				throw new ClientException("Url di connessione malformata: " + urlString.concat(azione), e);
 			}
 		} 
+		
+		this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
 	
 		try {
 			Message requestMsg = new Message();
@@ -328,9 +339,9 @@ public class BasicClient {
 			
 			requestMsg.setContent(integrationCtx.getMsg());
 			
-			ctx.getContext().getRequest().setOutDate(new Date());
-			ctx.getContext().getRequest().setOutSize(Long.valueOf(integrationCtx.getMsg().length));
-			ctx.log(requestMsg);
+			appContext.getRequest().setDate(new Date());
+			appContext.getRequest().setSize(Long.valueOf(integrationCtx.getMsg().length));
+			ctx.getApplicationLogger().log(requestMsg);
 			
 			connection.getOutputStream().write(integrationCtx.getMsg());
 	
@@ -339,7 +350,8 @@ public class BasicClient {
 		}
 		try {
 			responseCode = connection.getResponseCode();
-			ctx.getTransaction().getServer().setTransportCode(Integer.toString(responseCode));
+			// TODO
+//			ctx.getTransaction().getServers().get(0).setTransportCode(Integer.toString(responseCode));
 			
 		} catch (Exception e) {
 			throw new ClientException(e);
@@ -396,12 +408,12 @@ public class BasicClient {
 			}
 		} finally {
 			if(responseMsg != null) {
-				ctx.getContext().getResponse().setInDate(new Date());
+				appContext.getResponse().setDate(new Date());
 				if(responseMsg.getContent() != null)
-					ctx.getContext().getResponse().setInSize((long) responseMsg.getContent().length);
+					appContext.getResponse().setSize((long) responseMsg.getContent().length);
 				else
-					ctx.getContext().getResponse().setInSize(0l);
-				ctx.log(responseMsg);
+					appContext.getResponse().setSize(0l);
+				ctx.getApplicationLogger().log(responseMsg);
 			}
 
 			if(log.isTraceEnabled() && connection != null && connection.getHeaderFields() != null) {
@@ -416,26 +428,41 @@ public class BasicClient {
 		
 	}
 	
-	public byte[] getJson(String path, List<Property> headerProperties) throws ClientException {
+	private ServerConfig getServerConfig(IContext ctx) {
+		ServerConfig serverConfig = new ServerConfig();
+		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
+		ApplicationTransaction appTransaction = (ApplicationTransaction) appContext.getTransaction();
+		BaseServer lastServer = appTransaction.getLastServer();
+		
+		serverConfig.setServerId(lastServer.getName());
+		serverConfig.setOperationId(lastServer.getIdOperation());
+		serverConfig.setDump(true);
+		
+		return serverConfig;
+	}
+
+	public byte[] getJson(String path, List<Property> headerProperties) throws ClientException, UtilsException {
 		return this.handleJsonRequest(path, null, headerProperties, "GET", null);
 	}
 	
-	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties) throws ClientException {
+	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties) throws ClientException, UtilsException {
 		return this.handleJsonRequest(path, jsonBody, headerProperties, "POST", "application/json");
 	}
 	
-	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties, String httpMethod) throws ClientException {
+	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties, String httpMethod) throws ClientException, UtilsException {
 		return this.handleJsonRequest(path, jsonBody, headerProperties, httpMethod, "application/json");
 	}
 
 	private byte[] handleJsonRequest(String path, String jsonBody, List<Property> headerProperties, 
-			String httpMethod, String contentType) throws ClientException {
+			String httpMethod, String contentType) throws ClientException, UtilsException {
 
 		// Creazione Connessione
 		int responseCode;
 		HttpURLConnection connection = null;
 		byte[] msg = null;
-		GpContext ctx = GpThreadLocal.get();
+		IContext ctx = GpThreadLocal.get();
+		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
+		ApplicationTransaction appTransaction = (ApplicationTransaction) appContext.getTransaction();
 		String urlString = this.url.toExternalForm();
 		if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		try {
@@ -446,7 +473,8 @@ public class BasicClient {
 		} catch (MalformedURLException e) {
 			throw new ClientException("Url di connessione malformata: " + urlString.concat(path), e);
 		}
-	
+		appTransaction.getLastServer().setEndpoint(urlString);
+		this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
 		try {
 			Message requestMsg = new Message();
 			requestMsg.setType(MessageType.REQUEST_OUT);
@@ -499,13 +527,13 @@ public class BasicClient {
 			
 			requestMsg.setContent(integrationCtx.getMsg());
 			
-			ctx.getContext().getRequest().setOutDate(new Date());
-			ctx.getContext().getRequest().setOutSize(Long.valueOf(integrationCtx.getMsg().length));
+			appContext.getRequest().setDate(new Date());
+			appContext.getRequest().setSize(Long.valueOf(integrationCtx.getMsg().length));
 			
 			requestMsg.addHeader(new Property("HTTP-Method", httpMethod));
 			requestMsg.addHeader(new Property("RequestPath", this.url.toString()));
 			
-			ctx.log(requestMsg);
+			ctx.getApplicationLogger().log(requestMsg);
 			
 			if(httpMethod.equals("POST"))
 				connection.getOutputStream().write(integrationCtx.getMsg());
@@ -515,7 +543,8 @@ public class BasicClient {
 		}
 		try {
 			responseCode = connection.getResponseCode();
-			ctx.getTransaction().getServer().setTransportCode(Integer.toString(responseCode));
+			// TODO
+//			ctx.getTransaction().getServers().get(0).setTransportCode(Integer.toString(responseCode));
 			
 		} catch (Exception e) {
 			throw new ClientException(e);
@@ -564,12 +593,12 @@ public class BasicClient {
 			}
 		} finally {
 			if(responseMsg != null) {
-				ctx.getContext().getResponse().setInDate(new Date());
+				appContext.getResponse().setDate(new Date());
 				if(responseMsg.getContent() != null)
-					ctx.getContext().getResponse().setInSize((long) responseMsg.getContent().length);
+					appContext.getResponse().setSize((long) responseMsg.getContent().length);
 				else
-					ctx.getContext().getResponse().setInSize(0l);
-				ctx.log(responseMsg);
+					appContext.getResponse().setSize(0l);
+				ctx.getApplicationLogger().log(responseMsg);
 			}
 
 			if(log.isTraceEnabled() && connection != null && connection.getHeaderFields() != null) {

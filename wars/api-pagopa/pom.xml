@@ -76,6 +76,12 @@
 							<include>applicationContext-security-${govpay-api-pagopa-auth}.xml</include>
 							<targetPath>WEB-INF</targetPath>							
 						</webResource>
+						<webResource>
+							<directory>src/main/resources/spring-timers</directory>
+							<filtering>true</filtering>
+							<include>applicationContext-timers.xml</include>
+							<targetPath>WEB-INF</targetPath>							
+						</webResource>
 					</webResources>
 					<webXml>src/main/resources/web.xml</webXml>
 					<failOnMissingWebXml>false</failOnMissingWebXml>

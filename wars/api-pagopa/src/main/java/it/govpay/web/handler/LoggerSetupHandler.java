@@ -29,6 +29,7 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
@@ -62,15 +63,15 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
 
         if (outboundProperty.booleanValue()) {
         	try { 
-        		smc.getMessage().setProperty("X-GP-CMDID", MDC.get("cmd"));
+        		smc.getMessage().setProperty("X-GP-CMDID", MDC.get(MD5Constants.OPERATION_ID));
         	} catch (SOAPException e) {
         		log.warn("Impossibile impostare l'header HTTP X-GP-CMDID nella risposta.");
         	}
         } else {
     		String codOperazione = UUID.randomUUID().toString().replace("-", "");
     		if(smc.get(MessageContext.WSDL_OPERATION) != null)
-    			MDC.put("cmd", ((QName) smc.get(MessageContext.WSDL_OPERATION)).getLocalPart());
-    		MDC.put("op",  codOperazione);
+    			MDC.put(MD5Constants.OPERATION_ID, ((QName) smc.get(MessageContext.WSDL_OPERATION)).getLocalPart());
+    		MDC.put(MD5Constants.TRANSACTION_ID,  codOperazione);
         }
     }
 }

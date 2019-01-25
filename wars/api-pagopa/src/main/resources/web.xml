@@ -5,9 +5,12 @@
 	
 	<context-param>
     	<param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/applicationContext-security-*.xml</param-value>
+        <param-value>/WEB-INF/applicationContext-security-*.xml,/WEB-INF/applicationContext-timers.xml</param-value>
     </context-param>
     
+    <listener>
+	    <listener-class>it.govpay.web.listener.InitListener</listener-class>
+	</listener>
 	<listener>
     	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>

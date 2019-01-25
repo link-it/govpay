@@ -29,19 +29,23 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.LoggerFactory;
-import org.openspcoop2.utils.logger.beans.proxy.Operation;
-import org.openspcoop2.utils.logger.beans.proxy.Service;
+import org.openspcoop2.utils.logger.beans.context.core.Operation;
+import org.openspcoop2.utils.logger.beans.context.core.Service;
 import org.openspcoop2.utils.logger.config.DatabaseConfig;
 import org.openspcoop2.utils.logger.config.DatabaseConfigDatasource;
 import org.openspcoop2.utils.logger.config.DiagnosticConfig;
 import org.openspcoop2.utils.logger.config.Log4jConfig;
 import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.cache.AclCache;
+import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.stampe.utils.GovpayStampe;
 
@@ -49,10 +53,10 @@ public class StartupUtils {
 
 	private static boolean initialized = false;
 	
-	public static synchronized GpContext startup(Logger log, String warName, String govpayVersion, String buildVersion, 
+	public static synchronized IContext startup(Logger log, String warName, String govpayVersion, String buildVersion, 
 			InputStream govpayPropertiesIS, URL log4j2XmlFile, InputStream msgDiagnosticiIS, String tipoServizioGovpay) throws RuntimeException {
 		
-		GpContext ctx = null;
+		IContext ctx = null;
 		if(!initialized) {
 			
 			GovpayConfig gpConfig = null;
@@ -122,20 +126,26 @@ public class StartupUtils {
 
 		}
 		try {
-			ctx = new GpContext();
-			MDC.put("cmd", "Inizializzazione " +  warName);
-			MDC.put("op", ctx.getTransactionId());
+			GpContextFactory factory = new GpContextFactory();
+			ctx = factory.newContext();
+			MDC.put(MD5Constants.OPERATION_ID, "Inizializzazione " +  warName);
+			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 			Service service = new Service();
 			service.setName("Inizializzazione "+ warName);
 			service.setType(tipoServizioGovpay);
-			ctx.getTransaction().setService(service);
+			ctx.getApplicationContext().getTransaction().setService(service);
 			Operation opt = new Operation();
 			opt.setName("Init");
-			ctx.getTransaction().setOperation(opt);
+			ctx.getApplicationContext().getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 		} catch (Exception e) {
 			log.error("Errore durante predisposizione del contesto: " + e);
-			if(ctx != null) ctx.log();
+			if(ctx != null)
+				try {
+					ctx.getApplicationLogger().log();
+				} catch (UtilsException e1) {
+					log.error("Errore durante predisposizione del contesto: " + e1);
+				}
 			throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita.", e);
 		}
 		
@@ -143,7 +153,7 @@ public class StartupUtils {
 		return ctx;
 	}
 	
-	public static synchronized GpContext startupServices(Logger log, String warName, String govpayVersion, String buildVersion, GpContext ctx,
+	public static synchronized IContext startupServices(Logger log, String warName, String govpayVersion, String buildVersion, IContext ctx,
 			String dominioAnagraficaManager,GovpayConfig gpConfig) throws RuntimeException {
 		
 		try {

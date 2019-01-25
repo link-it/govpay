@@ -22,7 +22,11 @@ package it.govpay.core.utils.thread;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
@@ -44,33 +48,35 @@ public class InviaRptThread implements Runnable {
 	
 	private Rpt rpt;
 	private static Logger log = LoggerWrapperFactory.getLogger(InviaRptThread.class);
+	private IContext ctx = null;
 	
-	public InviaRptThread(Rpt rpt, BasicBD bd) throws ServiceException {
+	public InviaRptThread(Rpt rpt, BasicBD bd, IContext ctx) throws ServiceException {
 		this.rpt = rpt;
 		this.rpt.getIntermediario(bd);
 		this.rpt.getStazione(bd);
+		this.ctx = ctx;
 	}
 	
 	@Override
 	public void run() {
+		GpThreadLocal.set(this.ctx);
 		BasicBD bd = null;
-		GpContext ctx = null;
+		IContext ctx = GpThreadLocal.get();
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
 		try {
-			ctx = new GpContext(this.rpt.getIdTransazioneRpt());
-			GpThreadLocal.set(ctx);
-			MDC.put("cmd", "InviaRptThread");
-			MDC.put("op", ctx.getTransactionId());
+//			MDC.put(MD5Constants.OPERATION_ID, "InviaRptThread");
+//			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 			
-			ctx.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
+			BaseServer newServer = appContext.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
 			
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + "]");
 			
-			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("iuv", this.rpt.getIuv()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", this.rpt.getCcp()));
+			newServer.addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
+			newServer.addGenericProperty(new Property("iuv", this.rpt.getIuv()));
+			newServer.addGenericProperty(new Property("ccp", this.rpt.getCcp()));
 			
-			ctx.log("pagamento.invioRptAttivata");
+			ctx.getApplicationLogger().log("pagamento.invioRptAttivata");
 				
 			Risposta risposta = RptUtils.inviaRPT(rpt, bd);
 
@@ -85,7 +91,7 @@ public class InviaRptThread implements Runnable {
 			if(this.rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
 				// E' arrivata l'RT nel frattempo. Non aggiornare.
 				log.info("RPT inviata, ma nel frattempo e' arrivata l'RT. Non aggiorno lo stato");
-				ctx.log("pagamento.invioRptAttivataRTricevuta");
+				ctx.getApplicationLogger().log("pagamento.invioRptAttivataRTricevuta");
 				return;
 			}
 				
@@ -101,7 +107,7 @@ public class InviaRptThread implements Runnable {
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
 				rptBD.updateRpt(this.rpt.getId(), null, descrizione, null, null);
 				log.warn("RPT rifiutata dal nodo con fault " + descrizione);
-				ctx.log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
+				ctx.getApplicationLogger().log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
 			} else {
 				// RPT accettata dal Nodo
 				// Invio la notifica e aggiorno lo stato
@@ -115,20 +121,34 @@ public class InviaRptThread implements Runnable {
 				bd.commit();
 				
 				if(schedulaThreadInvio)
-					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd));
+					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd,ctx));
 				log.info("RPT inviata correttamente al nodo");
-				ctx.log("pagamento.invioRptAttivataOk");
+				ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
 			}
 		} catch (ClientException e) {
 			log.error("Errore nella spedizione della RPT", e);
-			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
+			try {
+				ctx.getApplicationLogger().log("pagamento.invioRptAttivataFail", e.getMessage());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
+			}
 		} catch (Exception e) {
 			log.error("Errore nella spedizione della RPT", e);
-			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
+			try {
+				ctx.getApplicationLogger().log("pagamento.invioRptAttivataFail", e.getMessage());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
+			}
 			if(bd != null) bd.rollback();
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null)
+				try {
+					ctx.getApplicationLogger().log();
+				} catch (UtilsException e) {
+					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
+				}
 			if(bd != null) bd.closeConnection();
+			GpThreadLocal.unset();
 		}
 	}
 }

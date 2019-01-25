@@ -40,7 +40,7 @@ import it.govpay.core.dao.pagamenti.exception.TokenWISPNonValidoException;
 import it.govpay.core.dao.pagamenti.exception.TransazioneRptException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GpContext;
+import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
 
@@ -56,7 +56,7 @@ public class WebControllerDAO extends BaseDAO{
 	TokenWISPNonValidoException, TransazioneRptException{
 		RichiestaWebControllerDTOResponse aggiornaPagamentiPortaleDTOResponse = new RichiestaWebControllerDTOResponse();
 
-		GpContext ctx = GpThreadLocal.get();
+		IContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 
 		try {

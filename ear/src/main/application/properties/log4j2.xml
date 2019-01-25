@@ -3,7 +3,7 @@
 <Configuration>
 	<Appenders>
 		<RollingFile name="govpay" fileName="${it.govpay.log.folder}/govpay.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_core-%d{yyyy-MM-dd}-%i.log.gz">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{transactionId} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
 			</Policies>
@@ -11,7 +11,7 @@
 		</RollingFile>
 
 		<RollingFile name="govpay_orm" fileName="${it.govpay.log.folder}/govpay_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_orm-%d{yyyy-MM-dd}-%i.log.gz">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{transactionId} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
 			</Policies>
@@ -19,7 +19,7 @@
 		</RollingFile>
 
 		<RollingFile name="govpay_bd" fileName="${it.govpay.log.folder}/govpay_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_orm-%d{yyyy-MM-dd}-%i.log.gz">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{transactionId} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
 			</Policies>
@@ -35,7 +35,7 @@
 		</RollingFile>
 
 		<RollingFile name="STDOUT" fileName="${it.govpay.log.folder}/govpay_root.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_root-%d{yyyy-MM-dd}-%i.log.gz">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{transactionId} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
 			</Policies>

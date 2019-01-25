@@ -6,6 +6,10 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
+import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitale;
@@ -43,7 +47,7 @@ public class AvvisaturaClient extends BasicClient {
 		this.isAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
 	}
 
-	public CtNodoInviaAvvisoDigitaleRisposta nodoInviaAvvisoDigitale(Intermediario intermediario, Stazione stazione, CtNodoInviaAvvisoDigitale ctNodoInviaAvvisoDigitale) throws GovPayException, ClientException{
+	public CtNodoInviaAvvisoDigitaleRisposta nodoInviaAvvisoDigitale(Intermediario intermediario, Stazione stazione, CtNodoInviaAvvisoDigitale ctNodoInviaAvvisoDigitale) throws GovPayException, ClientException, UtilsException{
 		byte[] body = getByteRichiesta(intermediario, stazione, ctNodoInviaAvvisoDigitale);
 		CtRisposta response = send(Azione.nodoInviaAvvisoDigitale.toString(), body);
 		return (CtNodoInviaAvvisoDigitaleRisposta) response;
@@ -91,13 +95,16 @@ public class AvvisaturaClient extends BasicClient {
 		return baos.toByteArray();
 	}
 
-	public CtRisposta send(String azione, byte[] body) throws GovPayException, ClientException {
+	public CtRisposta send(String azione, byte[] body) throws GovPayException, ClientException, UtilsException {
 		String urlString = this.url.toExternalForm();
 		if(this.isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		} 
-		GpThreadLocal.get().getTransaction().getServer().setEndpoint(urlString);
-		GpThreadLocal.get().log("ndp_client.invioRichiesta");
+		IContext ctx = GpThreadLocal.get();
+		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
+		ApplicationTransaction appTransaction = (ApplicationTransaction) appContext.getTransaction();
+		appTransaction.getServers().get(0).setEndpoint(urlString);
+		ctx.getApplicationLogger().log("ndp_client.invioRichiesta");
 
 		try {
 			byte[] response = super.sendSoap(azione, body, this.isAzioneInUrl);
@@ -111,18 +118,18 @@ public class AvvisaturaClient extends BasicClient {
 				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Fault String vuoto>";
 				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Fault Description vuoto>";
 				this.errore = "Errore applicativo " + this.faultCode + ": " + faultString;
-				GpThreadLocal.get().log("ndp_client.invioRichiestaFault", this.faultCode, faultString, faultDescription);
+				ctx.getApplicationLogger().log("ndp_client.invioRichiestaFault", this.faultCode, faultString, faultDescription);
 			} else {
-				GpThreadLocal.get().log("ndp_client.invioRichiestaOk");
+				ctx.getApplicationLogger().log("ndp_client.invioRichiestaOk");
 			}
 			return r;
 		} catch (ClientException e) {
 			this.errore = "Errore rete: " + e.getMessage();
-			GpThreadLocal.get().log("ndp_client.invioRichiestaKo", e.getMessage());
+			ctx.getApplicationLogger().log("ndp_client.invioRichiestaKo", e.getMessage());
 			throw e;
 		} catch (Exception e) {
 			this.errore = "Errore interno: " + e.getMessage();
-			GpThreadLocal.get().log("ndp_client.invioRichiestaKo", "Errore interno");
+			ctx.getApplicationLogger().log("ndp_client.invioRichiestaKo", "Errore interno");
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		} finally {
 		}
