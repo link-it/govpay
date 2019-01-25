@@ -196,7 +196,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/avviso'
+                type: object
+                required:
+                  - idDominio
+                  - numeroAvviso
+                properties:
+                  idDominio:
+                    type: string
+                    description: Identificativo del creditore dell'avviso
+                    example: 01234567890
+                  numeroAvviso:
+                    type: string
+                    description: Numero identificativo dell'avviso di pagamento
+                    example: 00100000000000012
+                  pdf:
+                    type: string
+                    format: base64
+                    description: Stampa pdf dell'avviso
         '400':
           $ref: '#/components/responses/400'
         '401':
