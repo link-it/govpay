@@ -141,8 +141,8 @@ public class PagamentiConverter {
 		json.setId(dtoResponse.getId());
 		json.setHref(PagamentiApiServiceImpl.basePath.path(dtoResponse.getId()).build().toString()); 
 		json.setRedirect(dtoResponse.getRedirectUrl());
-		json.setIdSessionePsp(dtoResponse.getIdSessione()); 
-		json.setIdCarrelloRpt(dtoResponse.getIdCarrelloRpt()); 
+		json.setIdSession(dtoResponse.getIdSessione()); 
+		json.setIdCarrello(dtoResponse.getIdCarrelloRpt()); 
 
 		return json;
 	}
