@@ -8,9 +8,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.pagamento.v2.beans.Acl;
 import it.govpay.pagamento.v2.beans.Profilo;
+import it.govpay.pagamento.v2.beans.Soggetto;
 import it.govpay.pagamento.v2.beans.TipoEntrata;
 
 public class ProfiloConverter {
@@ -47,6 +49,33 @@ public class ProfiloConverter {
 			}
 			profilo.setEntrate(entrateLst);
 		}
+		
+		switch(user.getTipoUtenza()) {
+		case ANONIMO:
+			break;
+		case APPLICAZIONE:
+			break;
+		case CITTADINO:
+			Soggetto anagrafica = popolaAnagraficaCittadino((UtenzaCittadino) user);
+			profilo.setAnagrafica(anagrafica);
+			break;
+		case OPERATORE:
+			break;
+		default:
+			break;
+		}
+		
 		return profilo;
+	}
+
+	private static Soggetto popolaAnagraficaCittadino(UtenzaCittadino cittadino) {
+		Soggetto anagrafica = new Soggetto();
+		
+		anagrafica.setIdentificativo(cittadino.getCodIdentificativo());
+		String nomeCognome = cittadino.getProprieta("X-SPID-NOME") + " " + cittadino.getProprieta("X-SPID-COGNOME");
+		anagrafica.setAnagrafica(nomeCognome);
+		// TODO completare informazioni utente
+		
+		return anagrafica;
 	}
 }

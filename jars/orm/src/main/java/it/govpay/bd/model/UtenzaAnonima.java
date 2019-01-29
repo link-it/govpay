@@ -2,6 +2,7 @@ package it.govpay.bd.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UtenzaAnonima extends Utenza {
@@ -16,11 +17,13 @@ public class UtenzaAnonima extends Utenza {
 		this.setDomini(new ArrayList<>());
 		this.setTributi(new ArrayList<>());
 		this.headers = new HashMap<>();
+		this.autorizzazioneDominiStar = false ;
+		this.autorizzazioneTributiStar = false;
 	}
 	
 	private static final long serialVersionUID = 1L;
 	
-	private transient Map<String, String> headers;
+	private transient Map<String, List<String>> headers;
 
 	@Override
 	public TIPO_UTENZA getTipoUtenza() {
@@ -32,7 +35,11 @@ public class UtenzaAnonima extends Utenza {
 		return ID_UTENZA_ANONIMA;
 	}
 
-	public Map<String, String> getHeaders() {
+	public Map<String, List<String>> getHeaders() {
 		return headers;
+	}
+
+	public void setHeaders(Map<String, List<String>> headers) {
+		this.headers = headers;
 	}
 }

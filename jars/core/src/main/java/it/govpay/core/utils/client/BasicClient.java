@@ -61,6 +61,7 @@ import it.govpay.core.utils.GovpayConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.server.ServerConfig;
 import org.openspcoop2.utils.service.context.server.ServerInfoContextManuallyAdd;
+import org.openspcoop2.utils.service.context.server.ServerInfoRequest;
 
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.handler.IntegrationContext;
@@ -277,6 +278,9 @@ public class BasicClient {
 	
 	private byte[] send(boolean soap, String azione, byte[] body, boolean isAzioneInUrl) throws ClientException, UtilsException {
 
+		
+//		ServerInfoRequest request = getServerInfoRequest();
+		
 		// Creazione Connessione
 		int responseCode;
 		HttpURLConnection connection = null;
@@ -294,6 +298,8 @@ public class BasicClient {
 		} 
 		
 		this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
+		
+//		this.serverInfoContext.processBeforeSend(request);
 	
 		try {
 			Message requestMsg = new Message();
@@ -427,6 +433,9 @@ public class BasicClient {
 		}
 		
 	}
+	
+//	public abstract ServerInfoRequest getServerInfoRequest();
+	
 	
 	private ServerConfig getServerConfig(IContext ctx) {
 		ServerConfig serverConfig = new ServerConfig();

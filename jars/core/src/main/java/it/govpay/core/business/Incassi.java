@@ -456,14 +456,15 @@ public class Incassi extends BasicBD {
 	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws NotFoundException,NotAuthorizedException, ServiceException {
 		IncassiBD incassiBD = new IncassiBD(this);
 		try {
-			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
-			
 			List<Diritti> diritti = new ArrayList<>();
 			diritti.add(Diritti.LETTURA);
-			List<String> domini = AuthorizationManager.getDominiAutorizzati(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti);
-			if(domini == null || (domini.size() > 0 && !domini.contains(incasso.getCodDominio()))) {
-				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per il dominio " + incasso.getCodDominio());
+			
+			boolean isAuthorized = AuthorizationManager.isAuthorized(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, leggiIncassoDTO.getIdDominio(), null, diritti);
+			if(!isAuthorized) {
+				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per il dominio " + leggiIncassoDTO.getIdDominio());
 			}
+			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
+			
 			LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();
 			response.setIncasso(incasso);
 			return response;

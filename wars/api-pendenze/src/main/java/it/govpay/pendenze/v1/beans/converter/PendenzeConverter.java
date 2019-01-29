@@ -10,6 +10,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.pendenze.v1.beans.Avviso;
 import it.govpay.pendenze.v1.beans.Avviso.StatoEnum;
 import it.govpay.pendenze.v1.beans.Pendenza;
@@ -21,11 +22,10 @@ import it.govpay.pendenze.v1.beans.StatoPendenza;
 import it.govpay.pendenze.v1.beans.TassonomiaAvviso;
 import it.govpay.pendenze.v1.beans.TipoContabilita;
 import it.govpay.pendenze.v1.beans.VocePendenza;
-import it.govpay.core.utils.UriBuilderUtils;
 
 public class PendenzeConverter {
 	
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, List<Rpt> rpts) throws ServiceException {
 	Pendenza rsModel = new Pendenza();
 	
 	if(versamento.getCodAnnoTributario()!= null)
@@ -93,6 +93,14 @@ public class PendenzeConverter {
 		v.add(toVocePendenzaRsModel(s, indice++));
 	}
 	rsModel.setVoci(v);
+	
+	List<RppIndex> rpps = new ArrayList<>();
+	if(rpts != null && rpts.size() > 0) {
+		for (Rpt rpt : rpts) {
+			rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null)));
+		} 
+	}
+	rsModel.setRpp(rpps); 
 
 	return rsModel;
 }

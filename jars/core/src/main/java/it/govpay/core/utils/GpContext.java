@@ -198,15 +198,15 @@ public class GpContext extends ApplicationContext {
 		this.setCorrelationId(correlationId);
 	}
 	
-	public BaseServer setupNodoClient(String codStazione, String codDominio, Azione azione) {
-		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
+	public void setupNodoClient(String codStazione, String codDominio, Azione azione) {
+		this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
 	}
 	
-	public BaseServer setupNodoClient(String codStazione, String codDominio, it.govpay.core.utils.client.AvvisaturaClient.Azione azione) {
-		return this._setupNodoClient(codStazione, codDominio, NodoInviaAvvisoDigitaleService.SERVICE.getLocalPart(), azione.toString(), 1);
+	public void setupNodoClient(String codStazione, String codDominio, it.govpay.core.utils.client.AvvisaturaClient.Azione azione) {
+		this._setupNodoClient(codStazione, codDominio, NodoInviaAvvisoDigitaleService.SERVICE.getLocalPart(), azione.toString(), 1);
 	}
 	
-	private BaseServer _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
+	private void _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
 		Actor to = new Actor();
 		to.setName(NodoDeiPagamentiSPC);
 		to.setType(TIPO_SOGGETTO_NDP);
@@ -223,7 +223,6 @@ public class GpContext extends ApplicationContext {
 		server.setName(NodoDeiPagamentiSPC);
 		this.getTransaction().addServer(server); 
 		
-		return server;
 //		if(codDominio != null) {
 //			BaseClient client = new BaseClient();
 //			client.setName(codDominio);
@@ -231,7 +230,7 @@ public class GpContext extends ApplicationContext {
 //		}
 	}
 	
-	public BaseServer setupPaClient(String codApplicazione, String azione, String url, Versione versione) {
+	public void setupPaClient(String codApplicazione, String azione, String url, Versione versione) {
 		Actor to = new Actor();
 		to.setName(codApplicazione);
 		to.setType(TIPO_SOGGETTO_APP);
@@ -249,7 +248,6 @@ public class GpContext extends ApplicationContext {
 		server.setEndpoint(url);
 		this.getTransaction().addServer(server); 
 		
-		return server;
 //		BaseClient client = new BaseClient();
 //		client.setName(GovPay);
 //		this.getTransaction().setClient(client);

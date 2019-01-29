@@ -166,11 +166,12 @@ public class VersamentoUtils {
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());
 		model.setStatoSingoloVersamento(StatoSingoloVersamento.NON_ESEGUITO);
 		model.setDatiAllegati(singoloVersamento.getNote()); 
+		it.govpay.bd.model.Dominio dominio = versamento.getUo(bd).getDominio(bd);
 		if(singoloVersamento.getBolloTelematico() != null) {
 			try {
 				model.setTributo(Tributo.BOLLOT, bd);
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.TRB_000, versamento.getUo(bd).getDominio(bd).getCodDominio(), Tributo.BOLLOT);
+				throw new GovPayException(EsitoOperazione.TRB_000, dominio.getCodDominio(), Tributo.BOLLOT);
 			}
 			model.setHashDocumento(singoloVersamento.getBolloTelematico().getHash());
 			model.setProvinciaResidenza(singoloVersamento.getBolloTelematico().getProvincia());
@@ -180,34 +181,35 @@ public class VersamentoUtils {
 		List<Diritti> diritti = new ArrayList<>(); // TODO controllare quale diritto serve in questa fase
 		diritti.add(Diritti.SCRITTURA);
 		diritti.add(Diritti.ESECUZIONE);
+		Applicazione applicazione = versamento.getApplicazione(bd);
 		if(singoloVersamento.getCodTributo() != null) {
 			try {
 				model.setTributo(singoloVersamento.getCodTributo(), bd);
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.TRB_000, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
+				throw new GovPayException(EsitoOperazione.TRB_000, dominio.getCodDominio(), singoloVersamento.getCodTributo());
 			}
 			
-			if(!versamento.getApplicazione(bd).isTrusted() && !AuthorizationManager.isAuthorized(versamento.getApplicazione(bd).getUtenza(), versamento.getApplicazione(bd).getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo(),diritti)) {
-				throw new GovPayException(EsitoOperazione.VER_022, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
+			if(!applicazione.isTrusted() && !AuthorizationManager.isAuthorized(applicazione.getUtenza(), applicazione.getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, dominio.getCodDominio(), singoloVersamento.getCodTributo(),diritti)) {
+				throw new GovPayException(EsitoOperazione.VER_022, dominio.getCodDominio(), singoloVersamento.getCodTributo());
 			}
 		}
 		
 		if(singoloVersamento.getTributo() != null) {
 			
-			if(!versamento.getApplicazione(bd).isTrusted())
+			if(!applicazione.isTrusted())
 				throw new GovPayException(EsitoOperazione.VER_019);
 			
-			if(!AuthorizationManager.isAuthorized(versamento.getApplicazione(bd).getUtenza(), versamento.getApplicazione(bd).getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, versamento.getUo(bd).getDominio(bd).getCodDominio(), null, diritti))
+			if(!AuthorizationManager.isAuthorized(applicazione.getUtenza(), applicazione.getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, dominio.getCodDominio(), null, diritti))
 				throw new GovPayException(EsitoOperazione.VER_021);
 			
 			try {
-				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(bd, versamento.getUo(bd).getDominio(bd).getId(), singoloVersamento.getTributo().getIbanAccredito()));
+				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), singoloVersamento.getTributo().getIbanAccredito()));
 				if(singoloVersamento.getTributo().getIbanAppoggio() != null)
-					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, versamento.getUo(bd).getDominio(bd).getId(), singoloVersamento.getTributo().getIbanAppoggio()));
+					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), singoloVersamento.getTributo().getIbanAppoggio()));
 				model.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
 				model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.VER_020, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
+				throw new GovPayException(EsitoOperazione.VER_020, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
 			}
 		}
 		

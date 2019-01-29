@@ -113,6 +113,9 @@
         <b:bean id="preAuthFilterCit" class="it.govpay.rs.v1.authentication.preauth.filter.HeaderPreAuthFilter">
                 <b:property name="authenticationManager" ref="authenticationManagerCit" />
                 <b:property name="exceptionIfHeaderMissing" value="false" />
+                <b:property name="authenticationDetailsSource">
+        		<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.GovPayAuthenticationDetailsSource"/>
+        	</b:property>
         </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/spid/v1/**">
                 <csrf disabled="true"/>

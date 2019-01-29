@@ -8,22 +8,31 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.pagamento.v1.beans.Avviso;
 import it.govpay.pagamento.v1.beans.Pendenza;
 import it.govpay.pagamento.v1.beans.PendenzaIndex;
+import it.govpay.pagamento.v1.beans.Rpp;
 import it.govpay.pagamento.v1.beans.Segnalazione;
 import it.govpay.pagamento.v1.beans.StatoPendenza;
 import it.govpay.pagamento.v1.beans.TassonomiaAvviso;
 import it.govpay.pagamento.v1.beans.VocePendenza;
 import it.govpay.pagamento.v1.beans.Avviso.StatoEnum;
+import it.govpay.pagamento.v1.beans.Pagamento;
 import it.govpay.pagamento.v1.beans.VocePendenza.TipoBolloEnum;
 import it.govpay.pagamento.v1.beans.VocePendenza.TipoContabilitaEnum;
 
 public class PendenzeConverter {
 	
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
+	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException {
+		return toRsModel(dto.getVersamento(), dto.getPagamenti(), dto.getRpts());
+	}
+	
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts) throws ServiceException {
 		Pendenza rsModel = new Pendenza();
 		
 		if(versamento.getCodAnnoTributario()!= null)
@@ -83,7 +92,24 @@ public class PendenzeConverter {
 			v.add(toVocePendenzaRsModel(s, indice++));
 		}
 		rsModel.setVoci(v);
-
+		
+		List<Pagamento> listaPagamentoIndex = new ArrayList<>();
+		
+		if(pagamenti != null && pagamenti.size() > 0) {
+			for (PagamentoPortale pagamento : pagamenti) {
+				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModel(pagamento));
+			}
+		}
+		rsModel.setPagamenti(listaPagamentoIndex);
+		
+		List<Rpp> rpps = new ArrayList<>();
+		if(rpts != null && rpts.size() > 0) {
+			for (Rpt rpt : rpts) {
+				rpps.add(RptConverter.toRsModel(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null)));
+			} 
+		}
+		rsModel.setRpp(rpps); 
+		
 		return rsModel;
 	}
 	

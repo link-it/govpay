@@ -38,7 +38,6 @@ import javax.xml.bind.UnmarshalException;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -125,15 +124,15 @@ public class Operazioni{
 	}
 
 	private static boolean eseguiElaborazioneTracciati;
-	
+
 	public static synchronized void setEseguiElaborazioneTracciati() {
 		eseguiElaborazioneTracciati = true;
 	}
-	
+
 	public static synchronized void resetEseguiElaborazioneTracciati() {
 		eseguiElaborazioneTracciati = false;
 	}
-	
+
 	public static synchronized boolean getEseguiElaborazioneTracciati() {
 		return eseguiElaborazioneTracciati;
 	}
@@ -190,7 +189,7 @@ public class Operazioni{
 				log.trace("Spedizione notifiche non consegnate");
 				it.govpay.core.business.Notifica notificheBD = new it.govpay.core.business.Notifica(bd); 
 				List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
-				
+
 				if(notifiche.size() == 0) {
 					aggiornaSondaOK(NTFY, bd,ctx);
 					BatchManager.stopEsecuzione(bd, NTFY);
@@ -399,7 +398,7 @@ public class Operazioni{
 						}
 
 					} else {
-						log.trace("Nessun connettore SFTP configurato per l'intermediario " + intermediario.getCodIntermediario());
+						log.trace("Nessun connettore SFTP in lettura configurato per l'intermediario " + intermediario.getCodIntermediario());
 					}
 				}
 
@@ -415,9 +414,9 @@ public class Operazioni{
 					log.debug("Trovati "+tracciati.size()+" tracciati in elaborazione...");
 					EsitiAvvisaturaBD esitiAvvisaturaBD = new EsitiAvvisaturaBD(bd);
 
-//					XMLInputFactory xif = XMLInputFactory.newInstance();
-//					TransformerFactory tf = TransformerFactory.newInstance(com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl.class.getName(), null );
-//					Transformer t = tf.newTransformer();
+					//					XMLInputFactory xif = XMLInputFactory.newInstance();
+					//					TransformerFactory tf = TransformerFactory.newInstance(com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl.class.getName(), null );
+					//					Transformer t = tf.newTransformer();
 
 					for(Tracciato tracciato: tracciati) {
 
@@ -426,6 +425,12 @@ public class Operazioni{
 
 						Dominio dominio = AnagraficaManager.getDominio(bd, tracciato.getCodDominio());
 						Intermediario intermediario = dominio.getStazione().getIntermediario(bd);
+						log.info("Accedo al servizio SFTP per l'intermediario " + intermediario.getCodIntermediario());
+						ConnettoreSftp connettore = intermediario.getConnettoreSftp();
+						if(connettore == null) {
+							log.warn("Connettore SFTP in uscita non definito per l'intermediario "+intermediario.getCodIntermediario() + ", tracciato [id:"+tracciato.getFileNameRichiesta()+", tipo:Avvisatura Digitale, stato:"+ beanDati.getStepElaborazione() +"] non inviato.");
+							continue;
+						}
 
 						if("DA_ACQUISIRE".equals(beanDati.getStepElaborazione())) {
 							log.debug("Tracciato "+tracciato.getId()+" DA_ACQUISIRE...");
@@ -440,12 +445,7 @@ public class Operazioni{
 							Channel channelIn = null;
 							try {
 								// Accedo al server sftp e cerco nuovi flussi di rendicontazione
-								log.info("Accedo al servizio SFTP per l'intermediario " + intermediario.getCodIntermediario());
 								JSch jsch = new JSch();
-								ConnettoreSftp connettore = intermediario.getConnettoreSftp();
-
-								if(connettore == null)
-									throw new Exception("Connettore SFTP in ingresso non definito per l'intermediario "+intermediario.getCodIntermediario());
 
 								sessionIn = jsch.getSession(connettore.getHttpUserIn(), connettore.getHostIn(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaIn())); 
 								sessionIn.setConfig("StrictHostKeyChecking", "no");
@@ -461,8 +461,8 @@ public class Operazioni{
 
 									zis.getNextEntry();
 
-//									XMLStreamReader xsr = xif.createXMLStreamReader(zis);
-//									CtEsitoAvvisoDigitale esitoAvvisoDigitale = AvvisaturaUtils.leggiProssimoEsitoAvvisoDigitale(xsr, t);
+									//									XMLStreamReader xsr = xif.createXMLStreamReader(zis);
+									//									CtEsitoAvvisoDigitale esitoAvvisoDigitale = AvvisaturaUtils.leggiProssimoEsitoAvvisoDigitale(xsr, t);
 
 									List<it.govpay.model.EsitoAvvisatura> esitoAvvisaturaLst = new ArrayList<>();
 
@@ -484,14 +484,14 @@ public class Operazioni{
 
 											esitoAvvisaturaLst.add(esitoAvvisatura);
 
-//											if(esitoAvvisaturaLst.size() > 100) { //TODO batch e definire dimensione nel properties
-//												esitiAvvisaturaBD.insertEsitoAvvisaturaBatch(esitoAvvisaturaLst);
-//												esitoAvvisaturaLst = new ArrayList<>();
-//											}
+											//											if(esitoAvvisaturaLst.size() > 100) { //TODO batch e definire dimensione nel properties
+											//												esitiAvvisaturaBD.insertEsitoAvvisaturaBatch(esitoAvvisaturaLst);
+											//												esitoAvvisaturaLst = new ArrayList<>();
+											//											}
 										}
 
 									}
-									
+
 									//inserisco i record residui
 									esitiAvvisaturaBD.insertEsitoAvvisaturaBatch(esitoAvvisaturaLst);
 
@@ -533,12 +533,7 @@ public class Operazioni{
 							ZipOutputStream zipOutputStreamFileRichiesta = null;
 							try {
 								// Accedo al server sftp e cerco nuovi flussi di rendicontazione
-								log.info("Accedo al servizio SFTP per l'intermediario " + intermediario.getCodIntermediario());
 								JSch jsch = new JSch();
-								ConnettoreSftp connettore = intermediario.getConnettoreSftp();
-								if(connettore == null)
-									throw new Exception("Connettore SFTP in uscita non definito per l'intermediario "+intermediario.getCodIntermediario());
-
 								sessionOut = jsch.getSession(connettore.getHttpUserOut(), connettore.getHostOut(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaOut()));
 								sessionOut.setConfig("StrictHostKeyChecking", "no");
 								sessionOut.setPassword(connettore.getHttpPasswOut());
@@ -560,14 +555,14 @@ public class Operazioni{
 								esito.setCodiceEsitoPresaInCarico(BigInteger.valueOf(beanDati.getCodiceEsitoPresaInCarico()));
 								esito.setDescrizioneEsitoPresaInCarico(beanDati.getDescrizioneEsitoPresaInCarico());
 								esito.setIdentificativoFlusso(tracciato.getFileNameEsito().replace(".zip", ""));
-								
+
 								AvvisaturaUtils.scriviEsitoPresaInCarico(esito, zipOutputStreamFileRichiesta);
-								
+
 
 
 								zipOutputStreamFileRichiesta.flush();
 								zipOutputStreamFileRichiesta.close();
-								
+
 								sftpChannel.exit();
 								sessionOut.disconnect();
 
@@ -593,7 +588,7 @@ public class Operazioni{
 								if(sessionOut!= null) sessionOut.disconnect();
 							}
 
-							
+
 						}
 
 					}
@@ -635,8 +630,6 @@ public class Operazioni{
 
 			if(BatchManager.startEsecuzione(bd, BATCH_AVVISATURA_DIGITALE)) {
 				log.debug("Batch avvisatura digitale");
-				
-				boolean wasAutoCommit = bd.isAutoCommit();
 
 				SerializationConfig config = new SerializationConfig();
 				config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -652,167 +645,170 @@ public class Operazioni{
 				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
 				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
 
-				for(Tracciato tracciato: tracciati) {
-					Avvisatura avvisatura = (Avvisatura) deserializer.getObject(tracciato.getBeanDati(), Avvisatura.class);
+				if(tracciati.size() > 0) {
+					for(Tracciato tracciato: tracciati) {
+						Avvisatura avvisatura = (Avvisatura) deserializer.getObject(tracciato.getBeanDati(), Avvisatura.class);
 
-					Intermediario intermediario = AnagraficaManager.getIntermediario(bd, avvisatura.getIntermediario());
+						Intermediario intermediario = AnagraficaManager.getIntermediario(bd, avvisatura.getIntermediario());
 
-					if("IN_SPEDIZIONE".equals(avvisatura.getStepElaborazione()) || "ERRORE_SPEDIZIONE".equals(avvisatura.getStepElaborazione())) {
-						Session sessionOut = null;
-						Channel channelOut = null;
-						ZipOutputStream zipOutputStreamFileRichiesta = null;
-						try {
-							// Accedo al server sftp e cerco nuovi flussi di rendicontazione
-							log.info("Accedo al servizio SFTP per l'intermediario " + intermediario.getCodIntermediario());
-							JSch jsch = new JSch();
-							ConnettoreSftp connettore = intermediario.getConnettoreSftp();
-							if(connettore == null)
-								throw new Exception("Connettore SFTP in uscita non definito per l'intermediario "+intermediario.getCodIntermediario());
+						log.info("Accedo al servizio SFTP per l'intermediario " + intermediario.getCodIntermediario());
+						ConnettoreSftp connettore = intermediario.getConnettoreSftp();
 
-							sessionOut = jsch.getSession(connettore.getHttpUserOut(), connettore.getHostOut(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaOut()));
-							sessionOut.setConfig("StrictHostKeyChecking", "no");
-							sessionOut.setPassword(connettore.getHttpPasswOut());
-							sessionOut.connect();
+						if(connettore == null) {
+							log.warn("Connettore SFTP in uscita non definito per l'intermediario "+intermediario.getCodIntermediario() + ", tracciato [id:"+tracciato.getFileNameRichiesta()+", tipo:Avvisatura Digitale, stato:"+ avvisatura.getStepElaborazione() +"] non inviato.");
+							continue;
+						}
 
-							channelOut = sessionOut.openChannel("sftp");
-							channelOut.connect();
-							ChannelSftp sftpChannel = (ChannelSftp) channelOut;
+						if("IN_SPEDIZIONE".equals(avvisatura.getStepElaborazione()) || "ERRORE_SPEDIZIONE".equals(avvisatura.getStepElaborazione())) {
+							Session sessionOut = null;
+							Channel channelOut = null;
+							ZipOutputStream zipOutputStreamFileRichiesta = null;
+							try {
+								// Accedo al server sftp e cerco nuovi flussi di rendicontazione
 
+								JSch jsch = new JSch();
 
-							// Cerco file che finiscono per _AV.zip
-							log.info("Scrittura tracciato "+tracciato.getFileNameRichiesta()+" di Avvisatura digitale...");
+								sessionOut = jsch.getSession(connettore.getHttpUserOut(), connettore.getHostOut(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaOut()));
+								sessionOut.setConfig("StrictHostKeyChecking", "no");
+								sessionOut.setPassword(connettore.getHttpPasswOut());
+								sessionOut.connect();
 
-							OutputStream outputStreamFileRichiesta = sftpChannel.put(tracciato.getFileNameRichiesta());
-							zipOutputStreamFileRichiesta = new ZipOutputStream(outputStreamFileRichiesta);
-
-							VersamentoFilter versamentiFilter = versamentiBD.newFilter();
-							versamentiFilter.setIdTracciato(tracciato.getId());
-							versamentiFilter.setOffset(0);
-							versamentiFilter.setLimit(GovpayConfig.getInstance().getSizePaginaNumeroVersamentiAvvisaturaDigitale());
+								channelOut = sessionOut.openChannel("sftp");
+								channelOut.connect();
+								ChannelSftp sftpChannel = (ChannelSftp) channelOut;
 
 
-							long count = versamentiBD.count(versamentiFilter);
-							List<it.govpay.bd.model.Versamento> lstVersamenti = versamentiBD.findAll(versamentiFilter);
+								// Cerco file che finiscono per _AV.zip
+								log.info("Scrittura tracciato "+tracciato.getFileNameRichiesta()+" di Avvisatura digitale...");
 
-							zipOutputStreamFileRichiesta.putNextEntry(new ZipEntry(tracciato.getFileNameRichiesta().replaceAll("zip", "xml")));
-							AvvisaturaUtils.scriviHeaderTracciatoAvvisatura(zipOutputStreamFileRichiesta);
-							while(lstVersamenti!=null && !lstVersamenti.isEmpty()) {
+								OutputStream outputStreamFileRichiesta = sftpChannel.put(tracciato.getFileNameRichiesta());
+								zipOutputStreamFileRichiesta = new ZipOutputStream(outputStreamFileRichiesta);
 
-								for(it.govpay.bd.model.Versamento versamento: lstVersamenti) {
+								VersamentoFilter versamentiFilter = versamentiBD.newFilter();
+								versamentiFilter.setIdTracciato(tracciato.getId());
+								versamentiFilter.setOffset(0);
+								versamentiFilter.setLimit(GovpayConfig.getInstance().getSizePaginaNumeroVersamentiAvvisaturaDigitale());
 
-									//leggo le info annidate
-									versamento.getDominio(bd);
 
-									List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
-									for(SingoloVersamento singoloVersamento: singoliVersamenti) {
-										singoloVersamento.getIbanAccredito(bd);
-										singoloVersamento.getIbanAppoggio(bd);
+								long count = versamentiBD.count(versamentiFilter);
+								List<it.govpay.bd.model.Versamento> lstVersamenti = versamentiBD.findAll(versamentiFilter);
+
+								zipOutputStreamFileRichiesta.putNextEntry(new ZipEntry(tracciato.getFileNameRichiesta().replaceAll("zip", "xml")));
+								AvvisaturaUtils.scriviHeaderTracciatoAvvisatura(zipOutputStreamFileRichiesta);
+								while(lstVersamenti!=null && !lstVersamenti.isEmpty()) {
+
+									for(it.govpay.bd.model.Versamento versamento: lstVersamenti) {
+
+										//leggo le info annidate
+										versamento.getDominio(bd);
+
+										List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+										for(SingoloVersamento singoloVersamento: singoliVersamenti) {
+											singoloVersamento.getIbanAccredito(bd);
+											singoloVersamento.getIbanAppoggio(bd);
+										}
+										AvvisaturaUtils.scriviVersamentoTracciatoAvvisatura(zipOutputStreamFileRichiesta, versamento);
 									}
-									AvvisaturaUtils.scriviVersamentoTracciatoAvvisatura(zipOutputStreamFileRichiesta, versamento);
+
+
+									avvisatura.setStepElaborazione("IN_SPEDIZIONE");
+									avvisatura.setDataUltimoAggiornamento(new Date());
+									avvisatura.setPercentualeStep(Math.round(((long) versamentiFilter.getOffset() / count) * 100.0f));
+
+									tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+									versamentiFilter.setOffset(versamentiFilter.getOffset() + lstVersamenti.size());
+									lstVersamenti = versamentiBD.findAll(versamentiFilter);
+
 								}
 
+								AvvisaturaUtils.scriviTailTracciatoAvvisatura(zipOutputStreamFileRichiesta);
 
-								avvisatura.setStepElaborazione("IN_SPEDIZIONE");
+								zipOutputStreamFileRichiesta.flush();
+								zipOutputStreamFileRichiesta.close();
+
+								sftpChannel.exit();
+								sessionOut.disconnect();
+
+
+								log.info("Scrittura tracciato "+tracciato.getFileNameRichiesta()+" di Avvisatura digitale completata");
+
+								avvisatura.setStepElaborazione("SPEDITO");
 								avvisatura.setDataUltimoAggiornamento(new Date());
-								avvisatura.setPercentualeStep(Math.round(((long) versamentiFilter.getOffset() / count) * 100.0f));
-
-								tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
-								versamentiFilter.setOffset(versamentiFilter.getOffset() + lstVersamenti.size());
-								lstVersamenti = versamentiBD.findAll(versamentiFilter);
-
-							}
-
-							AvvisaturaUtils.scriviTailTracciatoAvvisatura(zipOutputStreamFileRichiesta);
-
-							zipOutputStreamFileRichiesta.flush();
-							zipOutputStreamFileRichiesta.close();
-							
-							sftpChannel.exit();
-							sessionOut.disconnect();
-
-
-							log.info("Scrittura tracciato "+tracciato.getFileNameRichiesta()+" di Avvisatura digitale completata");
-
-							avvisatura.setStepElaborazione("SPEDITO");
-							avvisatura.setDataUltimoAggiornamento(new Date());
-							avvisatura.setPercentualeStep(0);
-
-							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
-						} catch(Exception e) {
-							log.error("Errore durante la scrittura del file '"+tracciato.getFileNameRichiesta()+"':"+ e.getMessage(),e);
-							avvisatura.setStepElaborazione("ERRORE_SPEDIZIONE");
-							avvisatura.setDataUltimoAggiornamento(new Date());
-							avvisatura.setDescrizioneStepElaborazione(e.getMessage());
-							avvisatura.setPercentualeStep(0);
-
-							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
-						} finally {
-							if(channelOut != null) channelOut.disconnect();
-							if(sessionOut != null) sessionOut.disconnect();
-							if(zipOutputStreamFileRichiesta != null) zipOutputStreamFileRichiesta.close();
-						}
-					} else if("SPEDITO".equals(avvisatura.getStepElaborazione())) {
-
-						ZipInputStream zis = null;
-						Session sessionIn = null;
-						Channel channelIn = null;
-
-						try {
-							// Accedo al server sftp e cerco nuovi flussi di rendicontazione
-							log.info("Accedo al servizio SFTP per l'intermediario " + intermediario.getCodIntermediario());
-							JSch jsch = new JSch();
-							ConnettoreSftp connettore = intermediario.getConnettoreSftp();
-
-							if(connettore == null)
-								throw new Exception("Connettore SFTP in ingresso non definito per l'intermediario "+intermediario.getCodIntermediario());
-
-							sessionIn = jsch.getSession(connettore.getHttpUserIn(), connettore.getHostIn(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaIn()));
-							sessionIn.setConfig("StrictHostKeyChecking", "no");
-							sessionIn.setPassword(connettore.getHttpPasswIn());
-							sessionIn.connect();
-
-							channelIn = sessionIn.openChannel("sftp");
-							channelIn.connect();
-							ChannelSftp sftpChannel = (ChannelSftp) channelIn;
-							InputStream inputStream = sftpChannel.get(tracciato.getFileNameEsito());
-							if(inputStream != null) {
-								zis = new ZipInputStream(inputStream);
-
-								zis.getNextEntry();
-								
-								EsitoPresaInCarico esitoPresaInCaricoAvvisoDigitale = AvvisaturaUtils.leggiEsitoPresaInCaricoAvvisoDigitale(zis);
-
-								avvisatura.setStepElaborazione("ACKATO");
-								avvisatura.setDescrizioneStepElaborazione(null);
 								avvisatura.setPercentualeStep(0);
-								avvisatura.setCodiceEsitoPresaInCarico(esitoPresaInCaricoAvvisoDigitale.getCodiceEsitoPresaInCarico().intValue());
-								avvisatura.setDescrizioneEsitoPresaInCarico(esitoPresaInCaricoAvvisoDigitale.getDescrizioneEsitoPresaInCarico());
+
+								tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+							} catch(Exception e) {
+								log.error("Errore durante la scrittura del file '"+tracciato.getFileNameRichiesta()+"':"+ e.getMessage(),e);
+								avvisatura.setStepElaborazione("ERRORE_SPEDIZIONE");
 								avvisatura.setDataUltimoAggiornamento(new Date());
+								avvisatura.setDescrizioneStepElaborazione(e.getMessage());
+								avvisatura.setPercentualeStep(0);
 
-								tracciato.setStato(avvisatura.getCodiceEsitoPresaInCarico() != 0 ? STATO_ELABORAZIONE.SCARTATO: STATO_ELABORAZIONE.COMPLETATO);
-								tracciato.setDataCompletamento(new Date());
-								tracciato.setBeanDati(serializer.getObject(avvisatura));
+								tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+							} finally {
+								if(channelOut != null) channelOut.disconnect();
+								if(sessionOut != null) sessionOut.disconnect();
+								if(zipOutputStreamFileRichiesta != null) zipOutputStreamFileRichiesta.close();
+							}
+						} else if("SPEDITO".equals(avvisatura.getStepElaborazione())) {
 
-								tracciatiBD.update(tracciato);
-							} else { //non ho trovato il file di ack
+							ZipInputStream zis = null;
+							Session sessionIn = null;
+							Channel channelIn = null;
+
+							try {
+								// Accedo al server sftp e cerco nuovi flussi di rendicontazione
+								JSch jsch = new JSch();
+
+								sessionIn = jsch.getSession(connettore.getHttpUserIn(), connettore.getHostIn(), Integer.parseInt(intermediario.getConnettoreSftp().getPortaIn()));
+								sessionIn.setConfig("StrictHostKeyChecking", "no");
+								sessionIn.setPassword(connettore.getHttpPasswIn());
+								sessionIn.connect();
+
+								channelIn = sessionIn.openChannel("sftp");
+								channelIn.connect();
+								ChannelSftp sftpChannel = (ChannelSftp) channelIn;
+								InputStream inputStream = sftpChannel.get(tracciato.getFileNameEsito());
+								if(inputStream != null) {
+									zis = new ZipInputStream(inputStream);
+
+									zis.getNextEntry();
+
+									EsitoPresaInCarico esitoPresaInCaricoAvvisoDigitale = AvvisaturaUtils.leggiEsitoPresaInCaricoAvvisoDigitale(zis);
+
+									avvisatura.setStepElaborazione("ACKATO");
+									avvisatura.setDescrizioneStepElaborazione(null);
+									avvisatura.setPercentualeStep(0);
+									avvisatura.setCodiceEsitoPresaInCarico(esitoPresaInCaricoAvvisoDigitale.getCodiceEsitoPresaInCarico().intValue());
+									avvisatura.setDescrizioneEsitoPresaInCarico(esitoPresaInCaricoAvvisoDigitale.getDescrizioneEsitoPresaInCarico());
+									avvisatura.setDataUltimoAggiornamento(new Date());
+
+									tracciato.setStato(avvisatura.getCodiceEsitoPresaInCarico() != 0 ? STATO_ELABORAZIONE.SCARTATO: STATO_ELABORAZIONE.COMPLETATO);
+									tracciato.setDataCompletamento(new Date());
+									tracciato.setBeanDati(serializer.getObject(avvisatura));
+
+									tracciatiBD.update(tracciato);
+								} else { //non ho trovato il file di ack
+									avvisatura.setDataUltimoAggiornamento(new Date());
+									tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+								}
+							} catch(Exception e) {
+								log.warn("Errore durante la lettura del file di ack'"+tracciato.getFileNameEsito()+"':"+ e.getMessage(),e);
+								avvisatura.setDescrizioneStepElaborazione(e.getMessage());
 								avvisatura.setDataUltimoAggiornamento(new Date());
 								tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
+							} finally {
+								try {if(zis !=null) zis.close();} catch(IOException e) {}
+								if(channelIn != null) channelIn.disconnect();
+								if(sessionIn != null) sessionIn.disconnect();
 							}
-						} catch(Exception e) {
-							log.warn("Errore durante la lettura del file di ack'"+tracciato.getFileNameEsito()+"':"+ e.getMessage(),e);
-							avvisatura.setDescrizioneStepElaborazione(e.getMessage());
-							avvisatura.setDataUltimoAggiornamento(new Date());
-							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(avvisatura));
-						} finally {
-							try {if(zis !=null) zis.close();} catch(IOException e) {}
-							if(channelIn != null) channelIn.disconnect();
-							if(sessionIn != null) sessionIn.disconnect();
+
 						}
 
 					}
-
 				}
-
+				
+				boolean wasAutoCommit = bd.isAutoCommit();
 
 				SimpleDateFormat sdfYYYYMMDD = new SimpleDateFormat("yyyyMMdd"); 
 				VersamentoFilter versamentiFilter = versamentiBD.newFilter();
@@ -823,79 +819,86 @@ public class Operazioni{
 				versamentiFilter.setDataFine(new Date());
 				List<CountPerDominio> countGroupByIdDominio = versamentiBD.countGroupByIdDominio(versamentiFilter);
 
-				if(wasAutoCommit)
-					bd.setAutoCommit(false);
-				for(CountPerDominio countPerDominio: countGroupByIdDominio) {
-					if(countPerDominio.getCount() > 0) { // avvio la procedura solo se ho trovato dei versamenti da avvisare
-						Dominio dominio = AnagraficaManager.getDominio(bd, countPerDominio.getIdDominio());
-						Intermediario intermediario = dominio.getStazione().getIntermediario(bd);
+				if(countGroupByIdDominio.size() > 0) {
+					for(CountPerDominio countPerDominio: countGroupByIdDominio) {
+						if(countPerDominio.getCount() > 0) { // avvio la procedura solo se ho trovato dei versamenti da avvisare
+							Dominio dominio = AnagraficaManager.getDominio(bd, countPerDominio.getIdDominio());
+							Intermediario intermediario = dominio.getStazione().getIntermediario(bd);
 	
-						if(intermediario.getConnettorePddAvvisatura() != null && intermediario.getConnettorePddAvvisatura().getUrl() != null) {
-							// invio dell'avvisatura col connettore SOAP
-							
-							versamentiFilter.setCodDominio(dominio.getCodDominio());
-							List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(versamentiFilter); 
-							if(versamenti.size() == 0) {
-								log.debug("Nessun versamento da avvisare in modalita' asincrona tramite il connettore SOAP.");
-								break;
+							if(intermediario.getConnettorePddAvvisatura() != null && intermediario.getConnettorePddAvvisatura().getUrl() != null) {
+								// invio dell'avvisatura col connettore SOAP
+	
+								versamentiFilter.setCodDominio(dominio.getCodDominio());
+								List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(versamentiFilter); 
+								if(versamenti.size() == 0) {
+									log.debug("Nessun versamento da avvisare in modalita' asincrona tramite il connettore SOAP.");
+									break;
+								}
+	
+								log.info("Trovati ["+versamenti.size()+"] versamenti da avvisare in modalita' asincrona tramite il connettore SOAP");
+								for(it.govpay.bd.model.Versamento versamento: versamenti) {
+									InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, ctx.getTransactionId(), versamentiBD,ctx);
+									ThreadExecutorManager.getClientPoolExecutorAvvisaturaDigitale().execute(sender);
+									threads.add(sender);
+								}
+	
+							} else if(intermediario.getConnettoreSftp() != null) {
+								// invio dell'avvisatura col connettore FTP (avvio creazione del tracciato) 
+								try {
+									if(wasAutoCommit)
+										bd.setAutoCommit(false);
+									long countVersamentiTracciati = 0;
+									String filenameFormat = intermediario.getCodIntermediario() + "_" + dominio.getCodDominio() + "_" + sdfYYYYMMDD.format(new Date());
+									TracciatoFilter tracciatiFilter = tracciatiBD.newFilter();
+									tracciatiFilter.setFilenameRichiestaLike(filenameFormat);
+									tracciatiFilter.setTipo(Arrays.asList(TIPO_TRACCIATO.AV));
+									long countTracciatiPerDominioPergiorno = tracciatiBD.count(tracciatiFilter);
+		
+									while(countVersamentiTracciati < countPerDominio.getCount()) {
+										long countVersamentiNextTracciato = Math.min(countPerDominio.getCount()-countVersamentiTracciati, GovpayConfig.getInstance().getSizePaginaNumeroVersamentiAvvisaturaDigitale());
+		
+										Tracciato tracciato = new Tracciato();
+										//populate tracciato
+										tracciato.setCodDominio(dominio.getCodDominio());
+										tracciato.setTipo(TIPO_TRACCIATO.AV);
+										tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+										tracciato.setDataCaricamento(new Date());
+										Avvisatura avvisatura = new Avvisatura();
+										avvisatura.setIntermediario(intermediario.getCodIntermediario());
+										avvisatura.setNumeroAvvisi(countVersamentiNextTracciato);
+										avvisatura.setStepElaborazione("IN_SPEDIZIONE");
+										avvisatura.setDataUltimoAggiornamento(new Date());
+										avvisatura.setPercentualeStep(0);
+										tracciato.setBeanDati(serializer.getObject(avvisatura));
+										tracciato.setFileNameRichiesta(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + ".zip");
+										tracciato.setFileNameEsito(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + "_ACK.zip");
+		
+										tracciatiBD.insertTracciato(tracciato);
+										versamentiBD.updateConLimit(countPerDominio.getIdDominio(), tracciato.getId(), countVersamentiNextTracciato);
+										if(!bd.isAutoCommit())
+											bd.commit();
+		
+										countVersamentiTracciati += countVersamentiNextTracciato;
+										countTracciatiPerDominioPergiorno++;
+									}
+								}catch (Exception e) {
+									if(!bd.isAutoCommit()) bd.rollback();
+									throw e;
+								} finally {
+									if(wasAutoCommit)
+										bd.setAutoCommit(wasAutoCommit);
+								}
+							} else {
+								log.warn("Spedizione avvisatura digitale per il Dominio ["+dominio.getCodDominio()+"] in modalita' asincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP o FTP valido.");
 							}
-							
-							log.info("Trovati ["+versamenti.size()+"] versamenti da avvisare in modalita' asincrona tramite il connettore SOAP");
-							for(it.govpay.bd.model.Versamento versamento: versamenti) {
-								InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, ctx.getTransactionId(), versamentiBD,ctx);
-								ThreadExecutorManager.getClientPoolExecutorAvvisaturaDigitale().execute(sender);
-								threads.add(sender);
-							}
-							
-						} else if(intermediario.getConnettoreSftp() != null) {
-							// invio dell'avvisatura col connettore FTP (avvio creazione del tracciato) 
-							
-							long countVersamentiTracciati = 0;
-							String filenameFormat = intermediario.getCodIntermediario() + "_" + dominio.getCodDominio() + "_" + sdfYYYYMMDD.format(new Date());
-							TracciatoFilter tracciatiFilter = tracciatiBD.newFilter();
-							tracciatiFilter.setFilenameRichiestaLike(filenameFormat);
-							tracciatiFilter.setTipo(Arrays.asList(TIPO_TRACCIATO.AV));
-							long countTracciatiPerDominioPergiorno = tracciatiBD.count(tracciatiFilter);
-		
-							while(countVersamentiTracciati < countPerDominio.getCount()) {
-								long countVersamentiNextTracciato = Math.min(countPerDominio.getCount()-countVersamentiTracciati, GovpayConfig.getInstance().getSizePaginaNumeroVersamentiAvvisaturaDigitale());
-		
-								Tracciato tracciato = new Tracciato();
-								//populate tracciato
-								tracciato.setCodDominio(dominio.getCodDominio());
-								tracciato.setTipo(TIPO_TRACCIATO.AV);
-								tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
-								tracciato.setDataCaricamento(new Date());
-								Avvisatura avvisatura = new Avvisatura();
-								avvisatura.setIntermediario(intermediario.getCodIntermediario());
-								avvisatura.setNumeroAvvisi(countVersamentiNextTracciato);
-								avvisatura.setStepElaborazione("IN_SPEDIZIONE");
-								avvisatura.setDataUltimoAggiornamento(new Date());
-								avvisatura.setPercentualeStep(0);
-								tracciato.setBeanDati(serializer.getObject(avvisatura));
-								tracciato.setFileNameRichiesta(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + ".zip");
-								tracciato.setFileNameEsito(filenameFormat + "_" + String.format("%02d", countTracciatiPerDominioPergiorno) + "_" + TIPO_TRACCIATO.AV.toString() + "_ACK.zip");
-		
-								tracciatiBD.insertTracciato(tracciato);
-								versamentiBD.updateConLimit(countPerDominio.getIdDominio(), tracciato.getId(), countVersamentiNextTracciato);
-								bd.commit();
-		
-								countVersamentiTracciati += countVersamentiNextTracciato;
-								countTracciatiPerDominioPergiorno++;
-							}
-						} else {
-							log.warn("Spedizione avvisatura digitale per il Dominio ["+dominio.getCodDominio()+"] in modalita' asincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP o FTP valido.");
 						}
 					}
-				}
 
+				}
 				log.debug("Batch avvisatura digitale terminato");
 
 				aggiornaSondaOK(BATCH_AVVISATURA_DIGITALE, bd,ctx);
 
-				if(!wasAutoCommit)
-					bd.setAutoCommit(wasAutoCommit);
-				
 				return "Avvisatura digitale ok";
 			} else {
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
@@ -911,7 +914,7 @@ public class Operazioni{
 			}
 			return "Avvisatura digitale#" + e.getMessage();
 		} finally {
-			
+
 			// se la lista dei thread contiene elementi controllo che siano tutti terminati prima di uscire.
 			if(threads.size() > 0) {
 				// Aspetto che abbiano finito tutti
@@ -935,42 +938,42 @@ public class Operazioni{
 					} else 
 						break;
 				}
-				
+
 				log.info("Spedizione avvisatura digitale in modalita' asincrona tramite il connettore SOAP completata.");
 			}
-			
+
 			BatchManager.stopEsecuzione(bd, BATCH_AVVISATURA_DIGITALE);
 			if(bd != null) bd.closeConnection();
 		}
 	}
-	
+
 	public static String avvisaturaDigitaleModalitaSincrona(IContext ctx){
 		BasicBD bd = null;
 		List<InviaAvvisaturaThread> threads = new ArrayList<>();
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
-			
+
 			if(BatchManager.startEsecuzione(bd, BATCH_AVVISATURA_DIGITALE_SINCRONA)) {
 				log.trace("Spedizione Avvisatura Digitale modalita' sincrona");
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-				
+
 				VersamentoFilter versamentiFilter = versamentiBD.newFilter();
 				versamentiFilter.setAvvisaturaDainviare(true);
 				versamentiFilter.setAvvisaturaAbilitata(true);
 				versamentiFilter.setModoAvvisatura(ModoAvvisatura.SINCRONA.getValue());
 				versamentiFilter.setDataFine(new Date());
-				
+
 				List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(versamentiFilter); 
 				if(versamenti.size() == 0) {
 					log.debug("Nessun versamento da avvisare in modalita' sincrona.");
 					return "Nessuna versamento da avvisare in modalita' sincrona.";
 				}
-				
+
 				log.info("Trovati ["+versamenti.size()+"] versamenti da avvisare in modalita' sincrona");
 				for(it.govpay.bd.model.Versamento versamento: versamenti) {
 					Intermediario intermediario = versamento.getDominio(bd).getStazione().getIntermediario(bd);
-					
+
 					if(intermediario.getConnettorePddAvvisatura() != null && intermediario.getConnettorePddAvvisatura().getUrl() != null) {
 						InviaAvvisaturaThread sender = new InviaAvvisaturaThread(versamento, ctx.getTransactionId(), versamentiBD,ctx);
 						ThreadExecutorManager.getClientPoolExecutorAvvisaturaDigitale().execute(sender);
@@ -1054,24 +1057,24 @@ public class Operazioni{
 		try {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 			wasAutoCommit = bd.isAutoCommit();
-			
+
 			if(BatchManager.startEsecuzione(bd, BATCH_TRACCIATI)) {
 				wasAutoCommit = bd.isAutoCommit();
 				if(wasAutoCommit)
 					bd.setAutoCommit(false);
 				log.trace("Elaborazione tracciati");
-				
+
 				TracciatiBD tracciatiBD = new TracciatiBD(bd);
 				TracciatoFilter filter = tracciatiBD.newFilter();
 				filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
 				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
-//				filter.setDataUltimoAggiornamentoMax(new Date());
+				//				filter.setDataUltimoAggiornamentoMax(new Date());
 				List<Tracciato> tracciati = tracciatiBD.findAll(filter);
 				Tracciati tracciatiBusiness = new Tracciati(bd);
-				
+
 				while(!tracciati.isEmpty()) {
 					log.info("Trovati ["+tracciati.size()+"] tracciati da elaborare...");
-					
+
 					for(Tracciato tracciato: tracciati) {
 						log.info("Avvio elaborazione tracciato "  + tracciato.getId());
 						ElaboraTracciatoDTO elaboraTracciatoDTO = new ElaboraTracciatoDTO();
@@ -1079,11 +1082,11 @@ public class Operazioni{
 						tracciatiBusiness.elaboraTracciatoPendenze(elaboraTracciatoDTO);
 						log.info("Elaborazione tracciato "  + tracciato.getId() + " completata");
 					}
-					
-//					filter.setDataUltimoAggiornamentoMax(new Date());
+
+					//					filter.setDataUltimoAggiornamentoMax(new Date());
 					tracciati = tracciatiBD.findAll(filter);
 				}
-				
+
 				aggiornaSondaOK(BATCH_TRACCIATI, bd, ctx);
 				BatchManager.stopEsecuzione(bd, BATCH_TRACCIATI);
 				log.info("Elaborazione tracciati terminata.");

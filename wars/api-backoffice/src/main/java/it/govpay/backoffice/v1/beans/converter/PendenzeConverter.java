@@ -6,28 +6,43 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.UriBuilder;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
 import it.govpay.backoffice.v1.beans.Pendenza;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.Riscossione;
+import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.Segnalazione;
 import it.govpay.backoffice.v1.beans.StatoPendenza;
 import it.govpay.backoffice.v1.beans.TassonomiaAvviso;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
 import it.govpay.backoffice.v1.beans.VocePendenza;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PendenzeConverter {
 	
+	
+	public static Pendenza toRsModelConInfoIncasso(LeggiPendenzaDTOResponse dto) throws ServiceException, IOException {
+		return toRsModelConInfoIncasso(dto.getVersamentoIncasso(),
+				dto.getUnitaOperativa(), dto.getApplicazione(), dto.getDominio(), dto.getLstSingoliVersamenti(), 
+				dto.getPagamenti(), dto.getRpts());
+	}
+	
+	
 	public static Pendenza toRsModelConInfoIncasso(it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
-		Pendenza rsModel = toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti,true);
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts) throws ServiceException, IOException {
+		Pendenza rsModel = toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti,pagamenti,rpts,true);
 		
 		StatoPendenza statoPendenza = null;
 
@@ -67,13 +82,19 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 	
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti) throws ServiceException {
-		return toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti, false);
+	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, IOException {
+		return toRsModel(dto.getVersamentoIncasso(),
+				dto.getUnitaOperativa(), dto.getApplicazione(), dto.getDominio(), dto.getLstSingoliVersamenti(), 
+				dto.getPagamenti(), dto.getRpts());
 	}
 	
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti, boolean addInfoIncasso) throws ServiceException {
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts) throws ServiceException, IOException {
+		return toRsModel(versamento, unitaOperativa, applicazione, dominio, singoliVersamenti, pagamenti,rpts, false);
+	}
+	
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts , boolean addInfoIncasso) throws ServiceException, IOException {
 		Pendenza rsModel = new Pendenza();
 		
 		if(versamento.getCodAnnoTributario()!= null)
@@ -136,6 +157,24 @@ public class PendenzeConverter {
 		rsModel.setVoci(v);
 		rsModel.setVerificato(versamento.isAck());
 		rsModel.setAnomalo(versamento.isAnomalo());
+		
+		List<it.govpay.backoffice.v1.beans.Pagamento> listaPagamentoIndex = new ArrayList<>();
+		
+		if(pagamenti != null && pagamenti.size() > 0) {
+			for (PagamentoPortale pagamento : pagamenti) {
+				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModel(pagamento,null,null));
+			}
+		}
+		
+		rsModel.setPagamenti(listaPagamentoIndex);
+		
+		List<Rpp> rpps = new ArrayList<>();
+		if(rpts != null && rpts.size() > 0) {
+			for (Rpt rpt : rpts) {
+				rpps.add(RptConverter.toRsModel(rpt));
+			} 
+		}
+		rsModel.setRpp(rpps); 
 
 		return rsModel;
 	}
@@ -250,6 +289,9 @@ public class PendenzeConverter {
 		
 		if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(it.govpay.model.Dominio.EC))
 			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModel(versamento.getUo(null)));
+		
+		String aaa = "ID{aa}";
+		String path = UriBuilder.fromPath("/pendenze").path("{idPendenze}").buildFromEncoded(aaa).toString();
 		
 		rsModel.setPagamenti(UriBuilderUtils.getPagamentiByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
 		rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));

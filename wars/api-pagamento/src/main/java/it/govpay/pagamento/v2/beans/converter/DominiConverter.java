@@ -7,7 +7,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.pagamento.v2.api.impl.DominiApiServiceImpl;
 import it.govpay.pagamento.v2.beans.Domini;
 import it.govpay.pagamento.v2.beans.Dominio;
 import it.govpay.pagamento.v2.beans.UnitaOperativa;
@@ -26,7 +26,7 @@ public class DominiConverter {
 		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
 		rsModel.setLocalita(dominio.getAnagrafica().getLocalita());
 		if(dominio.getLogo() != null) {
-			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
+			rsModel.setLogo(DominiApiServiceImpl.basePath.path(dominio.getCodDominio()).path("logo").build().toString());
 		} 
 		rsModel.setNazione(dominio.getAnagrafica().getNazione());
 		rsModel.setPec(dominio.getAnagrafica().getPec());

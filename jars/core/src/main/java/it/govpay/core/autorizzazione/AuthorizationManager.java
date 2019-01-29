@@ -261,6 +261,9 @@ public class AuthorizationManager {
 			case OPERATORE:
 			default:
 				if(codDominio != null) {
+					if(utenza.isAutorizzazioneDominiStar())
+						return true;
+					
 					List<String> dominiAutorizzati = getDominiAutorizzati(utenza,tipoUtenza, servizio, listaDiritti, accessoAnonimo);
 					
 					if(dominiAutorizzati == null) 
@@ -271,6 +274,9 @@ public class AuthorizationManager {
 				}
 				
 				if(codTributo != null) {
+					if(utenza.isAutorizzazioneTributiStar())
+						return true;
+					
 					List<String> tributiAutorizzati = getTributiAutorizzati(utenza,tipoUtenza, servizio, listaDiritti, accessoAnonimo);
 					
 					if(tributiAutorizzati == null) 

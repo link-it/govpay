@@ -369,9 +369,8 @@ public class RptUtils {
 	
 						bd.closeConnection();
 						NodoChiediCopiaRTRisposta nodoChiediCopiaRTRisposta = null;
-						BaseServer newServer = null;
 						try {
-							newServer = appContext.setupNodoClient(rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediCopiaRT);
+							appContext.setupNodoClient(rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediCopiaRT);
 							NodoChiediCopiaRT nodoChiediCopiaRT = new NodoChiediCopiaRT();
 							nodoChiediCopiaRT.setIdentificativoDominio(rpt.getCodDominio());
 							nodoChiediCopiaRT.setIdentificativoIntermediarioPA(rpt.getIntermediario(bd).getCodIntermediario());
@@ -402,9 +401,9 @@ public class RptUtils {
 							return false;
 						}
 						
-						newServer.addGenericProperty(new Property("ccp", rpt.getCcp()));
-						newServer.addGenericProperty(new Property("codDominio", rpt.getCodDominio()));
-						newServer.addGenericProperty(new Property("iuv", rpt.getIuv()));
+						appContext.getRequest().addGenericProperty(new Property("ccp", rpt.getCcp()));
+						appContext.getRequest().addGenericProperty(new Property("codDominio", rpt.getCodDominio()));
+						appContext.getRequest().addGenericProperty(new Property("iuv", rpt.getIuv()));
 						ctx.getApplicationLogger().log("pagamento.recuperoRt");
 						rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), nodoChiediCopiaRTRisposta.getTipoFirma(), rtByte, bd);
 						appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));

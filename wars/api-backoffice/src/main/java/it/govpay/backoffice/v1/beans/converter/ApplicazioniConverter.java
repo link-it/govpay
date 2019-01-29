@@ -33,23 +33,47 @@ public class ApplicazioniConverter {
 		applicazione.setUtenza(new UtenzaApplicazione(utenza, idA2A));
 		applicazioneDTO.setIdUtenza(applicazionePost.getPrincipal());
 		
-		applicazioneDTO.setIdDomini(applicazionePost.getDomini());
+		boolean appTrusted = false;
+		boolean appAuthEntrateAll = false;
+		boolean appAuthDominiAll = false;
 		
-		applicazione.setTrusted(false);
 		if(applicazionePost.getEntrate() != null) {
 			List<String> idTributi = new ArrayList<>();
 						
 			for (String id : applicazionePost.getEntrate()) {
 				if(id.equals(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_VALUE)) {
-					idTributi.clear();
-					applicazione.setTrusted(true);
-					break;
+					appTrusted = true;
+				} else if(id.equals(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR)) {
+					appAuthEntrateAll = true;
+				} else{
+					idTributi.add(id);
 				}
-				idTributi.add(id.toString());
 			}
 			
-			applicazioneDTO.setIdTributi(idTributi);
+			if(appAuthEntrateAll || appTrusted)
+				applicazioneDTO.setIdTributi(new ArrayList<>());				
+			else
+				applicazioneDTO.setIdTributi(idTributi);
 		}
+		
+		applicazione.setTrusted(appTrusted);
+		applicazione.getUtenza().setAutorizzazioneTributiStar(appAuthEntrateAll);
+		
+		if(applicazionePost.getDomini() != null) {
+			List<String> idDomini = new ArrayList<>();
+			
+			for (String id : applicazionePost.getDomini()) {
+				if(id.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+					appAuthDominiAll = true;
+					idDomini.clear();
+					break;
+				}
+				idDomini.add(id);
+			}
+			
+			applicazioneDTO.setIdDomini(idDomini);
+		}
+		applicazione.getUtenza().setAutorizzazioneDominiStar(appAuthDominiAll);
 		
 		CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
 		codificaAvvisi.setCodificaIuv(applicazione.getCodApplicazioneIuv());
@@ -103,25 +127,40 @@ public class ApplicazioniConverter {
 			rsModel.setServizioVerifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreVerifica()));
 		
 		
-		if(applicazione.getUtenza().getDomini(null) != null) {
-			List<DominioIndex> idDomini = new ArrayList<>();
+		List<DominioIndex> idDomini = new ArrayList<>();
+		if(applicazione.getUtenza().isAutorizzazioneDominiStar()) {
+			DominioIndex tuttiDomini = new DominioIndex();
+			tuttiDomini.setIdDominio(ApplicazioniController.AUTORIZZA_DOMINI_STAR);
+			tuttiDomini.setRagioneSociale(ApplicazioniController.AUTORIZZA_DOMINI_STAR_LABEL);
+			idDomini.add(tuttiDomini);
+		} else if(applicazione.getUtenza().getDomini(null) != null) {
 			for (Dominio dominio : applicazione.getUtenza().getDomini(null)) {
 				idDomini.add(DominiConverter.toRsModelIndex(dominio));
 			}
-			rsModel.setDomini(idDomini);
 		}
+		
+		rsModel.setDomini(idDomini);
 
 		List<TipoEntrata> idTributi = new ArrayList<>();
 		List<Tributo> tributi = applicazione.getUtenza().getTributi(null);
 		if(tributi == null)
 			tributi = new ArrayList<>();
 		
-		if(applicazione.isTrusted() && tributi.size() == 0) {
+		if(applicazione.isTrusted()) {
 			TipoEntrata tEI = new TipoEntrata();
 			tEI.setIdEntrata(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_VALUE);
 			tEI.setDescrizione(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_LABEL);
 			idTributi.add(tEI);
-		} else {
+		}
+		
+		if(applicazione.getUtenza().isAutorizzazioneTributiStar()) {
+			TipoEntrata tEI = new TipoEntrata();
+			tEI.setIdEntrata(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR);
+			tEI.setDescrizione(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR_LABEL);
+			idTributi.add(tEI);
+		} 
+		
+		if(!applicazione.isTrusted() && !applicazione.getUtenza().isAutorizzazioneTributiStar()) {
 			for (Tributo tributo : tributi) {
 				TipoEntrata tEI = new TipoEntrata();
 				tEI.setIdEntrata(tributo.getCodTributo());

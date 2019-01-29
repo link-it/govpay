@@ -14,6 +14,8 @@ public class UtenzaConverter {
 		Utenza dto = new Utenza();
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setPrincipalOriginale(vo.getPrincipalOriginale());
+		dto.setAutorizzazioneDominiStar(vo.isAutorizzazioneDominiStar());
+		dto.setAutorizzazioneTributiStar(vo.isAutorizzazioneTributiStar());
 		dto.setId(vo.getId());
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setIdTributi(utenzaTributoLst);
@@ -34,6 +36,8 @@ public class UtenzaConverter {
 		}
 		vo.setPrincipalOriginale(dto.getPrincipalOriginale());
 		vo.setAbilitato(dto.isAbilitato());
+		vo.setAutorizzazioneDominiStar(dto.isAutorizzazioneDominiStar());
+		vo.setAutorizzazioneTributiStar(dto.isAutorizzazioneTributiStar());
 		return vo;
 	}
 

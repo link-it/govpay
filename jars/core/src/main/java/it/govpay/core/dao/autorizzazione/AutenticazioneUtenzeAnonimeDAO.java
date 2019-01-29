@@ -34,18 +34,18 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetai
 	@Override
 	public UserDetails loadUserDetails(Authentication token) throws UsernameNotFoundException {
 		String username = (String) token.getPrincipal();
-		UserDetails user = this._loadUserDetails(username, token.getAuthorities());
+		UserDetails user = this.loadUserDetails(username, token.getAuthorities());
 		return user;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserDetails user = this._loadUserDetails(username, null);
+		UserDetails user = this.loadUserDetails(username, null);
 		return user;
 	}
 
 
-	private UserDetails _loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException {
+	public UserDetails loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException {
 		BasicBD bd = null;
 
 		try {

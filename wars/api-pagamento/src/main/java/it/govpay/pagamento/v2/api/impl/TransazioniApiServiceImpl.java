@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
-import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
@@ -22,6 +21,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.acl.Acl;
@@ -112,7 +112,8 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -150,7 +151,8 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -204,7 +206,8 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -271,7 +274,8 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 

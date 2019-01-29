@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
@@ -19,6 +20,7 @@ import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
@@ -33,6 +35,8 @@ import it.govpay.pagamento.v2.beans.converter.DominiConverter;
  *
  */
 public class DominiApiServiceImpl extends BaseImpl implements DominiApi {
+	
+	public static UriBuilder basePath = UriBuilder.fromPath("/domini");
 
 	public DominiApiServiceImpl(){
 		super(org.slf4j.LoggerFactory.getLogger(DominiApiServiceImpl.class));
@@ -114,7 +118,8 @@ public class DominiApiServiceImpl extends BaseImpl implements DominiApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -162,7 +167,8 @@ public class DominiApiServiceImpl extends BaseImpl implements DominiApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 }

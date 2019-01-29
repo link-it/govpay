@@ -24,11 +24,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.service.context.IContext;
-import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import it.govpay.bd.BasicBD;
@@ -68,13 +65,13 @@ public class InviaRptThread implements Runnable {
 //			MDC.put(MD5Constants.OPERATION_ID, "InviaRptThread");
 //			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 			
-			BaseServer newServer = appContext.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
+			appContext.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
 			
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + "]");
 			
-			newServer.addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
-			newServer.addGenericProperty(new Property("iuv", this.rpt.getIuv()));
-			newServer.addGenericProperty(new Property("ccp", this.rpt.getCcp()));
+			appContext.getRequest().addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
+			appContext.getRequest().addGenericProperty(new Property("iuv", this.rpt.getIuv()));
+			appContext.getRequest().addGenericProperty(new Property("ccp", this.rpt.getCcp()));
 			
 			ctx.getApplicationLogger().log("pagamento.invioRptAttivata");
 				

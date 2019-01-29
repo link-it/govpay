@@ -11,7 +11,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -94,10 +93,10 @@ public class InviaAvvisaturaThread implements Runnable {
 //			MDC.put(MD5Constants.OPERATION_ID, "InviaAvvisaturaThread");
 //			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 
-			BaseServer newServer = appContext.setupNodoClient(this.stazione.getCodStazione(), this.avviso.getIdentificativoDominio(), Azione.nodoInviaAvvisoDigitale);
-			newServer.addGenericProperty(new Property("codDominio", this.avviso.getIdentificativoDominio()));
-			newServer.addGenericProperty(new Property("codAvviso", this.avviso.getCodiceAvviso()));
-			newServer.addGenericProperty(new Property("tipoOperazione", this.avviso.getTipoOperazione().name()));
+			appContext.setupNodoClient(this.stazione.getCodStazione(), this.avviso.getIdentificativoDominio(), Azione.nodoInviaAvvisoDigitale);
+			appContext.getRequest().addGenericProperty(new Property("codDominio", this.avviso.getIdentificativoDominio()));
+			appContext.getRequest().addGenericProperty(new Property("codAvviso", this.avviso.getCodiceAvviso()));
+			appContext.getRequest().addGenericProperty(new Property("tipoOperazione", this.avviso.getTipoOperazione().name()));
 
 			ctx.getApplicationLogger().log("versamento.avvisaturaDigitale");
 

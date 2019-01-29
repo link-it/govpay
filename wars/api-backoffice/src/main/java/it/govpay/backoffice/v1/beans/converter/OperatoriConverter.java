@@ -11,6 +11,7 @@ import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.Operatore;
 import it.govpay.backoffice.v1.beans.OperatorePost;
 import it.govpay.backoffice.v1.beans.TipoEntrata;
+import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
@@ -38,8 +39,42 @@ public class OperatoriConverter {
 		operatore.setUtenza(utenza);
 		operatore.setNome(operatoreRequest.getRagioneSociale()); 
 		
-		putOperatoreDTO.setIdDomini(operatoreRequest.getDomini());
-		putOperatoreDTO.setIdTributi(operatoreRequest.getEntrate());
+		boolean appAuthEntrateAll = false;
+		boolean appAuthDominiAll = false;
+		
+		if(operatoreRequest.getEntrate() != null) {
+			List<String> idTributi = new ArrayList<>();
+						
+			for (String id : operatoreRequest.getEntrate()) {
+				if(id.equals(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR)) {
+					appAuthEntrateAll = true;
+					idTributi.clear();
+					break;
+				} 
+
+				idTributi.add(id.toString());
+			}
+			
+			putOperatoreDTO.setIdTributi(idTributi);
+		}
+		
+		operatore.getUtenza().setAutorizzazioneTributiStar(appAuthEntrateAll);
+		
+		if(operatoreRequest.getDomini() != null) {
+			List<String> idDomini = new ArrayList<>();
+			
+			for (String id : operatoreRequest.getDomini()) {
+				if(id.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+					appAuthDominiAll = true;
+					idDomini.clear();
+					break;
+				}
+				idDomini.add(id);
+			}
+			
+			putOperatoreDTO.setIdDomini(idDomini);
+		}
+		operatore.getUtenza().setAutorizzazioneDominiStar(appAuthDominiAll);
 		
 		putOperatoreDTO.setPrincipal(principal);
 		putOperatoreDTO.setOperatore(operatore);
@@ -55,23 +90,38 @@ public class OperatoriConverter {
 		.ragioneSociale(operatore.getNome());
 		
 		
-		if(operatore.getUtenza().getDomini(null) != null) {
-			List<DominioIndex> idDomini = new ArrayList<>();
+		
+		List<DominioIndex> idDomini = new ArrayList<>();
+		if(operatore.getUtenza().isAutorizzazioneDominiStar()) {
+			DominioIndex tuttiDomini = new DominioIndex();
+			tuttiDomini.setIdDominio(ApplicazioniController.AUTORIZZA_DOMINI_STAR);
+			tuttiDomini.setRagioneSociale(ApplicazioniController.AUTORIZZA_DOMINI_STAR_LABEL);
+			idDomini.add(tuttiDomini);
+		} else if(operatore.getUtenza().getDomini(null) != null) {
 			for (Dominio dominio : operatore.getUtenza().getDomini(null)) {
 				idDomini.add(DominiConverter.toRsModelIndex(dominio));
 			}
-			rsModel.setDomini(idDomini);
 		}
 		
-		if(operatore.getUtenza().getTributi(null) != null) {
-			List<TipoEntrata> idTributi = new ArrayList<>();
-			for (Tributo tributo : operatore.getUtenza().getTributi(null)) {
+		rsModel.setDomini(idDomini);
+
+		List<TipoEntrata> idTributi = new ArrayList<>();
+		List<Tributo> tributi = operatore.getUtenza().getTributi(null);
+		if(tributi == null)
+			tributi = new ArrayList<>();
+		
+		if(operatore.getUtenza().isAutorizzazioneTributiStar()) {
+			TipoEntrata tEI = new TipoEntrata();
+			tEI.setIdEntrata(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR);
+			tEI.setDescrizione(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR_LABEL);
+			idTributi.add(tEI);
+		} else {
+			for (Tributo tributo : tributi) {
 				TipoEntrata tEI = new TipoEntrata();
 				tEI.setIdEntrata(tributo.getCodTributo());
 				tEI.setDescrizione(tributo.getDescrizione());
 				idTributi.add(tEI);
 			}
-			rsModel.setEntrate(idTributi);
 		}
 		
 		if(operatore.getUtenza().getAcls()!=null) {

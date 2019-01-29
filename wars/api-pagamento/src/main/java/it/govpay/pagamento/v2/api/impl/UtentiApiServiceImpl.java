@@ -5,18 +5,18 @@ import java.util.Map;
 
 import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
-import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
+import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v2.beans.converter.ProfiloConverter;
 import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
 import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
 import it.govpay.pagamento.v2.api.UtentiApi;
 import it.govpay.pagamento.v2.beans.Profilo;
+import it.govpay.pagamento.v2.beans.converter.ProfiloConverter;
 /**
  * GovPay - API Pagamento
  *
@@ -91,7 +91,8 @@ public class UtentiApiServiceImpl extends BaseImpl implements UtentiApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 

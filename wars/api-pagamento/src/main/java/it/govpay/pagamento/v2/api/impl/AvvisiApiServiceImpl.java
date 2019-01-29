@@ -12,13 +12,13 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
-import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
+import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
@@ -29,7 +29,6 @@ import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 /**
  * GovPay - API Pagamento
  */
-@Path("/")
 public class AvvisiApiServiceImpl extends BaseImpl implements AvvisiApi {
 	
 	public static UriBuilder basePath = UriBuilder.fromPath("/avvisi");
@@ -120,7 +119,7 @@ public class AvvisiApiServiceImpl extends BaseImpl implements AvvisiApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
 		}
     }
 }

@@ -18,7 +18,9 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.eventi.EventoNota.TipoNota;
@@ -28,6 +30,7 @@ import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.PatchOp;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -44,6 +47,7 @@ public class UtenzaPatchUtils {
 	public static final String VALUE_NON_VALIDO_PER_IL_PATH_XX = "Value non valido per il path ''{0}''";
 	public static final String OP_XX_NON_VALIDO_PER_IL_PATH_YY = "Op ''{0}'' non valido per il path ''{1}''";
 	public static final String ACL_NON_VALIDA_SERVIZIO_XX_NON_GESTITO = "ACL non valida: servizio `{0}` non gestito.";
+	public static final String VALUE_NON_VALIDO_PER_IL_PATH_XX_DI_UTENZA = "Value non valido per il path ''{0}'' di un'utenza di tipo ''{1}''";
 	public static final String ACL_NON_VALIDA_ATTESA_LISTA_DI_STRINGHE_NEL_CAMPO_AUTORIZZAZIONI = "ACL non valida: attesa lista di stringhe nel campo `autorizzazioni`";
 	public static final String ACL_NON_VALIDA_ATTESO_CAMPO_AUTORIZZAZIONI = "ACL non valida: atteso campo `autorizzazioni`";
 	public static final String AUTORIZZAZIONI_KEY = "autorizzazioni";
@@ -57,6 +61,10 @@ public class UtenzaPatchUtils {
 	public static final String DATA_NOTA_KEY = "data";
 	public static final String OGGETTO_NOTA_KEY = "oggetto";
 	public static final String TESTO_NOTA_KEY = "testo";
+	
+	public static final String DOMINI_STAR = "*";
+	public static final String ENTRATE_STAR = "*";
+	public static final String AUTODETERMINAZIONE_ENTRATE = "autodeterminazione";
 
 	
 	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BasicBD bd) throws ServiceException, NotFoundException, ValidationException {
@@ -78,20 +86,48 @@ public class UtenzaPatchUtils {
 			throws ValidationException, ServiceException, NotFoundException {
 		if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 		String tributo = (String) op.getValue();
-		try {
-			AnagraficaManager.getTipoTributo(bd, tributo).getId();
-		} catch (NotFoundException e) {
-			throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
-		}
-		Long idTributo = AnagraficaManager.getTipoTributo(bd, tributo).getId();
-		switch(op.getOp()) {
-		case ADD: utenza.getIdTributi().add(idTributo); 
-		break;
-		case DELETE: utenza.getIdTributi().remove(idTributo);
-		break;
-		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
-		}
 		
+		if(tributo.equals(ENTRATE_STAR)) {
+			switch(op.getOp()) {
+			case ADD: utenza.setAutorizzazioneTributiStar(true);
+			break;
+			case DELETE: utenza.setAutorizzazioneTributiStar(false);
+			break;
+			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+			}
+			utenza.getIdDomini().clear();
+		} else if(tributo.equals(AUTODETERMINAZIONE_ENTRATE)) {
+			if(utenza.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
+				Applicazione applicazioneByPrincipal = AnagraficaManager.getApplicazioneByPrincipal(bd, utenza.getPrincipalOriginale());
+				switch(op.getOp()) {
+				case ADD: applicazioneByPrincipal.setTrusted(true);
+				break;
+				case DELETE: applicazioneByPrincipal.setTrusted(false);
+				break;
+				default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+				}
+				utenza.getIdDomini().clear();
+				
+				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+				applicazioniBD.updateApplicazioneTrusted(applicazioneByPrincipal.getId(), applicazioneByPrincipal.isTrusted());
+			} else {
+				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX_DI_UTENZA, op.getValue(), utenza.getTipoUtenza().name()));
+			}
+		} else {
+			try {
+				AnagraficaManager.getTipoTributo(bd, tributo).getId();
+			} catch (NotFoundException e) {
+				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+			}
+			Long idTributo = AnagraficaManager.getTipoTributo(bd, tributo).getId();
+			switch(op.getOp()) {
+			case ADD: utenza.getIdTributi().add(idTributo); 
+			break;
+			case DELETE: utenza.getIdTributi().remove(idTributo);
+			break;
+			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+			}
+		}
 		UtenzeBD utenzaBD = new UtenzeBD(bd);
 		utenzaBD.updateUtenza(utenza);
 
@@ -104,18 +140,29 @@ public class UtenzaPatchUtils {
 		if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 		String dominio = (String) op.getValue();
 
-		try {
-			AnagraficaManager.getDominio(bd, dominio).getId();
-		} catch (NotFoundException e) {
-			throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
-		}
-		Long idDominio = AnagraficaManager.getDominio(bd, dominio).getId();
-		switch(op.getOp()) {
-		case ADD: utenza.getIdDomini().add(idDominio); 
-		break;
-		case DELETE: utenza.getIdDomini().remove(idDominio);
-		break;
-		default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+		if(dominio.equals(DOMINI_STAR)) {
+			switch(op.getOp()) {
+			case ADD: utenza.setAutorizzazioneDominiStar(true);
+			break;
+			case DELETE: utenza.setAutorizzazioneDominiStar(false);
+			break;
+			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+			}
+			utenza.getIdDomini().clear();
+		} else {
+			try {
+				AnagraficaManager.getDominio(bd, dominio).getId();
+			} catch (NotFoundException e) {
+				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+			}
+			Long idDominio = AnagraficaManager.getDominio(bd, dominio).getId();
+			switch(op.getOp()) {
+			case ADD: utenza.getIdDomini().add(idDominio); 
+			break;
+			case DELETE: utenza.getIdDomini().remove(idDominio);
+			break;
+			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+			}
 		}
 		
 		UtenzeBD utenzaBD = new UtenzeBD(bd);

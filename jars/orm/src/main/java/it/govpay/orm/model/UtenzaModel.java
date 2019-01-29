@@ -44,6 +44,8 @@ public class UtenzaModel extends AbstractModel<Utenza> {
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Utenza",Utenza.class);
 		this.PRINCIPAL_ORIGINALE = new Field("principalOriginale",java.lang.String.class,"Utenza",Utenza.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Utenza",Utenza.class);
+		this.AUTORIZZAZIONE_DOMINI_STAR = new Field("autorizzazione_domini_star",boolean.class,"Utenza",Utenza.class);
+		this.AUTORIZZAZIONE_TRIBUTI_STAR = new Field("autorizzazione_tributi_star",boolean.class,"Utenza",Utenza.class);
 	
 	}
 	
@@ -54,6 +56,8 @@ public class UtenzaModel extends AbstractModel<Utenza> {
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Utenza",Utenza.class);
 		this.PRINCIPAL_ORIGINALE = new ComplexField(father,"principalOriginale",java.lang.String.class,"Utenza",Utenza.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Utenza",Utenza.class);
+		this.AUTORIZZAZIONE_DOMINI_STAR = new ComplexField(father,"autorizzazione_domini_star",boolean.class,"Utenza",Utenza.class);
+		this.AUTORIZZAZIONE_TRIBUTI_STAR = new ComplexField(father,"autorizzazione_tributi_star",boolean.class,"Utenza",Utenza.class);
 	
 	}
 	
@@ -64,6 +68,10 @@ public class UtenzaModel extends AbstractModel<Utenza> {
 	public IField PRINCIPAL_ORIGINALE = null;
 	 
 	public IField ABILITATO = null;
+	 
+	public IField AUTORIZZAZIONE_DOMINI_STAR = null;
+	 
+	public IField AUTORIZZAZIONE_TRIBUTI_STAR = null;
 	 
 
 	@Override

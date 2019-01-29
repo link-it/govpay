@@ -88,6 +88,20 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 				return "abilitato";
 			}
 		}
+		if(field.equals(Utenza.model().AUTORIZZAZIONE_DOMINI_STAR)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".autorizzazione_domini_star";
+			}else{
+				return "autorizzazione_domini_star";
+			}
+		}
+		if(field.equals(Utenza.model().AUTORIZZAZIONE_TRIBUTI_STAR)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".autorizzazione_tributi_star";
+			}else{
+				return "autorizzazione_tributi_star";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -108,6 +122,12 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Utenza.model(), returnAlias);
 		}
 		if(field.equals(Utenza.model().ABILITATO)){
+			return this.toTable(Utenza.model(), returnAlias);
+		}
+		if(field.equals(Utenza.model().AUTORIZZAZIONE_DOMINI_STAR)){
+			return this.toTable(Utenza.model(), returnAlias);
+		}
+		if(field.equals(Utenza.model().AUTORIZZAZIONE_TRIBUTI_STAR)){
 			return this.toTable(Utenza.model(), returnAlias);
 		}
 

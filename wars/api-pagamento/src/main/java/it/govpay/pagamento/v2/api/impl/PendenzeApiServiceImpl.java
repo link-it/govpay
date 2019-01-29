@@ -6,7 +6,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
-import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
@@ -15,6 +14,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
+import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
@@ -105,7 +105,8 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -146,7 +147,8 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 

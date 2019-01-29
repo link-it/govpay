@@ -78,7 +78,7 @@ public class TracciatiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			List<String> listaDominiFiltro;
+			List<String> listaDominiFiltro = null;
 			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
@@ -106,7 +106,7 @@ public class TracciatiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			List<String> listaDominiFiltro;
+			List<String> listaDominiFiltro = null;
 			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
@@ -138,7 +138,7 @@ public class TracciatiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			List<String> listaDominiFiltro;
+			List<String> listaDominiFiltro = null;
 			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
@@ -180,7 +180,7 @@ public class TracciatiDAO extends BaseDAO{
 
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 
-		List<String> listaDominiFiltro;
+		List<String> listaDominiFiltro = null;
 		this.autorizzaRichiesta(listaTracciatiDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, listaTracciatiDTO.getIdDominio(), null, bd);
 
 		// Autorizzazione sui domini
@@ -298,7 +298,7 @@ public class TracciatiDAO extends BaseDAO{
 	
 	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 
-		List<String> listaDominiFiltro;
+		List<String> listaDominiFiltro = null;
 		this.autorizzaRichiesta(listaOperazioniTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 
 		// Autorizzazione sui domini

@@ -38,6 +38,8 @@ import java.io.Serializable;
  * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principalOriginale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
+ * 			&lt;element name="autorizzazione_domini_star" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
+ * 			&lt;element name="autorizzazione_tributi_star" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -54,7 +56,9 @@ import java.io.Serializable;
   propOrder = {
   	"principal",
   	"principalOriginale",
-  	"abilitato"
+  	"abilitato",
+  	"autorizzazioneDominiStar",
+  	"autorizzazioneTributiStar"
   }
 )
 
@@ -106,6 +110,30 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.abilitato = abilitato;
   }
 
+  public boolean isAutorizzazioneDominiStar() {
+    return this.autorizzazioneDominiStar;
+  }
+
+  public boolean getAutorizzazioneDominiStar() {
+    return this.autorizzazioneDominiStar;
+  }
+
+  public void setAutorizzazioneDominiStar(boolean autorizzazioneDominiStar) {
+    this.autorizzazioneDominiStar = autorizzazioneDominiStar;
+  }
+
+  public boolean isAutorizzazioneTributiStar() {
+    return this.autorizzazioneTributiStar;
+  }
+
+  public boolean getAutorizzazioneTributiStar() {
+    return this.autorizzazioneTributiStar;
+  }
+
+  public void setAutorizzazioneTributiStar(boolean autorizzazioneTributiStar) {
+    this.autorizzazioneTributiStar = autorizzazioneTributiStar;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -136,5 +164,13 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false,defaultValue="true")
   protected boolean abilitato = true;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="autorizzazione_domini_star",required=true,nillable=false,defaultValue="false")
+  protected boolean autorizzazioneDominiStar = false;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="autorizzazione_tributi_star",required=true,nillable=false,defaultValue="false")
+  protected boolean autorizzazioneTributiStar = false;
 
 }

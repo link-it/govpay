@@ -27,7 +27,6 @@ import it.govpay.backoffice.v1.beans.converter.AclConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.RuoliConverter;
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.cache.AclCache;
 import it.govpay.core.dao.anagrafica.RuoliDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTOResponse;
@@ -176,9 +175,6 @@ public class RuoliController extends BaseController {
 			RuoliDAO ruoliDAO = new RuoliDAO(false);
 			ruoliDAO.patch(ruoloPatchDTO);
 			
-			// reload ruolo nella cache
-			AclCache.getInstance().reloadRuolo(idRuolo); 
-			
 			LeggiRuoloDTO leggiRuoliDTO = new LeggiRuoloDTO(user);
 			leggiRuoliDTO.setRuolo(idRuolo);
 			LeggiRuoloDTOResponse leggiRuoloDTOResponse = ruoliDAO.leggiRuoli(leggiRuoliDTO);
@@ -222,11 +218,6 @@ public class RuoliController extends BaseController {
 			RuoliDAO applicazioniDAO = new RuoliDAO(false);
 			
 			PutRuoloDTOResponse putApplicazioneDTOResponse = applicazioniDAO.createOrUpdate(putRuoloDTO);
-			
-			if(!putApplicazioneDTOResponse.isCreated()) {
-				// 	reload ruolo nella cache
-				AclCache.getInstance().reloadRuolo(idRuolo);
-			}
 			
 			Status responseStatus = putApplicazioneDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			

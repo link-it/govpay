@@ -7,7 +7,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
-import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
@@ -17,6 +16,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
@@ -118,7 +118,8 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -168,7 +169,8 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -203,7 +205,8 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -240,7 +243,8 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		}
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
-			throw FaultCode.ERRORE_INTERNO.toException(e);
+			throw WebApplicationExceptionMapper.handleException(e);
+//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 

@@ -3,6 +3,7 @@ package it.govpay.core.autorizzazione.utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
@@ -12,7 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Utenza;
@@ -22,7 +25,6 @@ import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.cache.AclCache;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -67,8 +69,11 @@ public class AutorizzazioneUtils {
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
+			AclBD aclBD = new AclBD(bd);
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
-				List<Acl> aclsRuolo2 = AclCache.getInstance().getAclsRuolo(grantedAuthority.getAuthority());
+				AclFilter aclFilter = aclBD.newFilter();
+				aclFilter.setRuolo(grantedAuthority.getAuthority());
+				List<Acl> aclsRuolo2 = aclBD.findAll(aclFilter);
 				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
 					aclsRuolo.addAll(aclsRuolo2);
 				
@@ -124,14 +129,17 @@ public class AutorizzazioneUtils {
 	}
 
 	public static UserDetails getUserDetailFromUtenzaCittadino(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, BasicBD bd) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.CITTADINO;
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
+			AclBD aclBD = new AclBD(bd);
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
-				List<Acl> aclsRuolo2 = AclCache.getInstance().getAclsRuolo(grantedAuthority.getAuthority());
+				AclFilter aclFilter = aclBD.newFilter();
+				aclFilter.setRuolo(grantedAuthority.getAuthority());
+				List<Acl> aclsRuolo2 = aclBD.findAll(aclFilter);
 				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
 					aclsRuolo.addAll(aclsRuolo2);
 				
@@ -139,7 +147,7 @@ public class AutorizzazioneUtils {
 			}
 		}
 		
-		Utenza utenza = new UtenzaCittadino(username);
+		Utenza utenza = new UtenzaCittadino(username,headerValues);
 		utenza.setAclRuoli(aclsRuolo);
 		List<Acl> aclPrincipal = new ArrayList<>();
 		Acl acl = new Acl();
@@ -157,6 +165,7 @@ public class AutorizzazioneUtils {
 		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
 		userDetails.setUtenza(utenza);
 		userDetails.setTipoUtenza(tipoUtenza);
+		
 
 		return userDetails;
 	}
@@ -173,8 +182,12 @@ public class AutorizzazioneUtils {
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
+			AclBD aclBD = new AclBD(bd);
+			
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
-				List<Acl> aclsRuolo2 = AclCache.getInstance().getAclsRuolo(grantedAuthority.getAuthority());
+				AclFilter aclFilter = aclBD.newFilter();
+				aclFilter.setRuolo(grantedAuthority.getAuthority());
+				List<Acl> aclsRuolo2 = aclBD.findAll(aclFilter);
 				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
 					aclsRuolo.addAll(aclsRuolo2);
 				

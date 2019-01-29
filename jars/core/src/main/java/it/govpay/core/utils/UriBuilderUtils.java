@@ -26,43 +26,43 @@ public class UriBuilderUtils {
 	}
 
 	public static String getPsp(String codPsp) {
-		return getFromPsp(codPsp).build().toString();
+		return getFromPsp().buildFromEncoded(codPsp).toString();
 	}
 
-	public static String getStazione(String codIntermediari, String codStazione) {
-		return getList(getFromIntermediari(codIntermediari), "stazioni").path(codStazione).build().toString();
+	public static String getStazione(String codIntermediario, String codStazione) {
+		return getFromIntermediari().path("stazioni").path("{idStazione}").buildFromEncoded(codIntermediario,codStazione).toString();
 	}
 	
 	public static String getStazioni(String codIntermediario) {
-		return getList(getFromIntermediari(codIntermediario), "stazioni").build().toString();
+		return getFromIntermediari().path("stazioni").buildFromEncoded(codIntermediario).toString();
 	}
 
 	public static String getDominio(String codCominio) {
-		return getFromDomini(codCominio).build().toString();
+		return getFromDomini().buildFromEncoded(codCominio).toString();
 	}
 
 	public static String getLogoDominio(String codCominio) {
-		return getFromDomini(codCominio).path("logo").build().toString();
+		return getFromDomini().path("logo").buildFromEncoded(codCominio).toString();
 	}
 	
 	public static String getEntrata(String codTipoTributo) {
-		return getFromEntrate(codTipoTributo).build().toString();
+		return getFromEntrate().buildFromEncoded(codTipoTributo).toString();
 	}
 	
 	public static String getUoByDominio(String codCominio, String codUo) {
-		return getFromDomini(codCominio).path("unitaOperative").path(codUo).build().toString();
+		return getFromDomini().path("unitaOperative").path("{idUo}").buildFromEncoded(codCominio,codUo).toString();
 	}
 	
 	public static String getCanali(String codPsp) {
-		return getList(getFromPsp(codPsp), "canali").build().toString();
+		return getFromPsp().path("canali").buildFromEncoded(codPsp).toString();
 	}
 	
 	public static String getCanale(String codPsp, String codCanale, String tipoVersamento) {
-		return getList(getFromPsp(codPsp), "canali").path(codCanale).path(tipoVersamento).build().toString();
+		return getFromPsp().path("canali").path("{codCanale}").path("{tipoVersamento}").buildFromEncoded(codPsp,codCanale,tipoVersamento).toString();
 	}
 	
 	public static String getPendenzaByIdA2AIdPendenza(String idA2A, String idPendenza) {
-		return getListPendenze().path(idA2A).path(idPendenza).build().toString();
+		return getListPendenze().path("{idA2A}").path("{idPendenza}").buildFromEncoded(idA2A,idPendenza).toString();
 	}
 	
 	public static String getPendenzeByPagamento(String idPagamento) {
@@ -86,19 +86,19 @@ public class UriBuilderUtils {
 	}
 
 	public static String getListUoByDominio(String idDominio) {
-		return getFromDomini(idDominio).path("unitaOperative").build().toString();
+		return getFromDomini().path("unitaOperative").buildFromEncoded(idDominio).toString();
 	}
 
 	public static String getEntrateByDominio(String idDominio) {
-		return getFromDomini(idDominio).path("entrate").build().toString();
+		return getFromDomini().path("entrate").buildFromEncoded(idDominio).toString();
 	}
 
 	public static String getContiAccreditoByDominio(String idDominio) {
-		return getFromDomini(idDominio).path("contiAccredito").build().toString();
+		return getFromDomini().path("contiAccredito").buildFromEncoded(idDominio).toString();
 	}
 
 	public static String getIbanAccreditoByDominio(String idDominio) {
-		return getFromDomini(idDominio).path("ibanAccredito").build().toString();
+		return getFromDomini().path("ibanAccredito").buildFromEncoded(idDominio).toString();
 	}
 
 	public static String getByPagamento(UriBuilder base, String idPagamento) {
@@ -109,20 +109,20 @@ public class UriBuilderUtils {
 		return base.queryParam("idPendenza", idPendenza).build().toString();
 	}
 
-	private static UriBuilder getFromPsp(String codPsp) {
-		return getListPsp().path(codPsp);
+	private static UriBuilder getFromPsp() {
+		return getListPsp().path("{idPsp}");
 	}
 	
-	public static UriBuilder getFromIntermediari(String codIntermediari) {
-		return getListIntermediari().path(codIntermediari);
+	public static UriBuilder getFromIntermediari() {
+		return getListIntermediari().path("{idIntermediario}");
 	}
 	
-	private static UriBuilder getFromDomini(String codDominio) {
-		return getListDomini().path(codDominio);
+	private static UriBuilder getFromDomini() {
+		return getListDomini().path("{idDominio}");
 	}
 	
-	private static UriBuilder getFromEntrate(String codEntrata) {
-		return getListEntrate().path(codEntrata);
+	private static UriBuilder getFromEntrate() {
+		return getListEntrate().path("{idEntrata}");
 	}
 
 	private static UriBuilder getListPsp() {
@@ -183,7 +183,7 @@ public class UriBuilderUtils {
 	}
 
 	public static String getIncassiByIdDominioIdIncasso(String idDominio, String idIncasso) {
-		return getListIncassi().path(idDominio).path(idIncasso).build().toString();
+		return getListIncassi().path("{idDominio}").path("{idIncasso}").buildFromEncoded(idDominio,idIncasso).toString();
 	}
 	
 }

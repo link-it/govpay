@@ -1,21 +1,32 @@
 package it.govpay.bd.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UtenzaCittadino extends Utenza {
 
 	public UtenzaCittadino(String codIdentificativo) {
+		this(codIdentificativo, new HashMap<>());
+	}
+	
+	public UtenzaCittadino(String codIdentificativo,Map<String, List<String>> headers) {
 		super();
 		this.setCodIdentificativo(codIdentificativo); 
 		this.setIdDomini(new ArrayList<>());
 		this.setIdTributi(new ArrayList<>());
 		this.setDomini(new ArrayList<>());
 		this.setTributi(new ArrayList<>());
+		this.autorizzazioneDominiStar = false ;
+		this.autorizzazioneTributiStar = false;
+		this.headers = headers;
 	}
 	
 	private static final long serialVersionUID = 1L;
 	
 	private transient String codIdentificativo;
+	private transient Map<String, List<String>> headers;
 
 	public String getCodIdentificativo() {
 		return codIdentificativo;
@@ -33,6 +44,21 @@ public class UtenzaCittadino extends Utenza {
 	@Override
 	public String getIdentificativo() {
 		return this.getCodIdentificativo();
+	}
+	
+	public String getProprieta(String nome) {
+		if(headers.containsKey(nome))
+			return headers.get(nome).get(0);
+		
+		return null;
+	}
+	
+	public Map<String, List<String>> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(Map<String, List<String>> headers) {
+		this.headers = headers;
 	}
 
 }

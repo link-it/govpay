@@ -27,12 +27,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
-import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.service.context.IContext;
-import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
@@ -104,15 +100,15 @@ public class InviaNotificaThread implements Runnable {
 			
 			String url = this.connettoreNotifica!= null ? this.connettoreNotifica.getUrl() : GpContext.NOT_SET;
 			Versione versione = this.connettoreNotifica != null ? this.connettoreNotifica.getVersione() : Versione.GP_REST_01;
-			BaseServer newServer = appContext.setupPaClient(applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, url, versione);
+			appContext.setupPaClient(applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, url, versione);
 			
 			if(this.rpt.getCodCarrello() != null) {
-				newServer.addGenericProperty(new Property("codCarrello", rpt.getCodCarrello()));
+				appContext.getRequest().addGenericProperty(new Property("codCarrello", rpt.getCodCarrello()));
 			} 
-			newServer.addGenericProperty(new Property("codDominio", this.notifica.getRpt(null).getCodDominio()));
-			newServer.addGenericProperty(new Property("iuv", this.notifica.getRpt(null).getIuv()));
-			newServer.addGenericProperty(new Property("ccp", this.notifica.getRpt(null).getCcp()));
-			newServer.addGenericProperty(new Property("tipoNotifica", tipoNotifica.name().toLowerCase()));
+			appContext.getRequest().addGenericProperty(new Property("codDominio", this.notifica.getRpt(null).getCodDominio()));
+			appContext.getRequest().addGenericProperty(new Property("iuv", this.notifica.getRpt(null).getIuv()));
+			appContext.getRequest().addGenericProperty(new Property("ccp", this.notifica.getRpt(null).getCcp()));
+			appContext.getRequest().addGenericProperty(new Property("tipoNotifica", tipoNotifica.name().toLowerCase()));
 			
 			switch (tipoNotifica) {
 			case ATTIVAZIONE:

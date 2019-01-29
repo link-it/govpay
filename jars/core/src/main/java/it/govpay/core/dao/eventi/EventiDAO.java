@@ -8,6 +8,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -21,7 +22,6 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.bd.model.Evento;
 
 public class EventiDAO extends BaseDAO {
 
@@ -32,16 +32,13 @@ public class EventiDAO extends BaseDAO {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			return listaEventi(listaEventiDTO, bd);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
 		}
-
 	}
 
-	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, NotFoundException {
+	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		this.autorizzaRichiesta(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA,bd);
 		// Autorizzazione sui domini
 		List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA);
@@ -63,11 +60,14 @@ public class EventiDAO extends BaseDAO {
 		
 		if(listaEventiDTO.getIdA2A()!=null && listaEventiDTO.getIdPendenza() != null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			Versamento versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, listaEventiDTO.getIdA2A()).getId(), listaEventiDTO.getIdPendenza());
-			
-			filter.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
-			filter.setIuv(versamento.getIuvVersamento());
-			
+			Versamento versamento;
+			try {
+				versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, listaEventiDTO.getIdA2A()).getId(), listaEventiDTO.getIdPendenza());
+				filter.setCodDominio(versamento.getUo(bd).getDominio(bd).getCodDominio());
+				filter.setIuv(versamento.getIuvVersamento());
+			} catch (NotFoundException e) {
+				return new ListaEventiDTOResponse(0, new ArrayList<>());
+			}
 		} else {
 			filter.setCodApplicazione(listaEventiDTO.getIdA2A());
 			filter.setCodVersamentoEnte(listaEventiDTO.getIdPendenza());

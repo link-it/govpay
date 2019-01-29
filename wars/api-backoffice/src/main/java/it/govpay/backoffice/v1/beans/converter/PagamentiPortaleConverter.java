@@ -43,9 +43,11 @@ public class PagamentiPortaleConverter {
 	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) {
 		return getVersamentoFromPendenza(pendenza);
 	}
-
 	public static Pagamento toRsModel(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException, IOException {
-		it.govpay.bd.model.PagamentoPortale pagamentoPortale = dto.getPagamento();
+		return toRsModel(dto.getPagamento(), dto.getListaRpp(),dto.getEventi());
+	}
+
+	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale,List<LeggiRptDTOResponse> listaRpp, List<Evento> eventi) throws ServiceException, IOException {
 		Pagamento rsModel = new Pagamento();
 
 		PagamentoPost pagamentiPortaleRequest = null;
@@ -81,17 +83,17 @@ public class PagamentiPortaleConverter {
 		if(pagamentoPortale.getImporto() != null) 
 			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
 		
-		if(dto.getListaRpp()!=null) {
+		if(listaRpp !=null) {
 			List<Rpp> rpp = new ArrayList<>();
-			for(LeggiRptDTOResponse leggiRptDtoResponse: dto.getListaRpp()) {
+			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRpp) {
 				rpp.add(RptConverter.toRsModel(leggiRptDtoResponse.getRpt()));
 			}
 			rsModel.setRpp(rpp);
 		}
 		
-		if(dto.getEventi() !=null && !dto.getEventi() .isEmpty()) {
+		if(eventi !=null && !eventi.isEmpty()) {
 			List<Nota> note = new ArrayList<>();
-			for(Evento evento: dto.getEventi()) {
+			for(Evento evento: eventi) {
 				switch (evento.getCategoriaEvento()) { 
 				case INTERFACCIA_INTEGRAZIONE:
 				case INTERFACCIA_COOPERAZIONE:

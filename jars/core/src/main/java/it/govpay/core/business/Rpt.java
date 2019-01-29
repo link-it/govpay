@@ -10,7 +10,6 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
-import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -84,6 +83,7 @@ public class Rpt extends BasicBD{
 			if(pagamentoPortale != null) codCarrello = pagamentoPortale.getIdSessione();
 			appContext.getPagamentoCtx().setCodCarrello(codCarrello);
 			appContext.setCorrelationId(codCarrello);
+			appContext.getRequest().addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 			ctx.getApplicationLogger().log("pagamento.avviaTransazioneCarrelloWISP20");
 
 			Stazione stazione = null;
@@ -284,8 +284,8 @@ public class Rpt extends BasicBD{
 			try {
 
 				Risposta risposta = null;
-				BaseServer newServer = appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
-				newServer.addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
+				appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
+				appContext.getRequest().addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
 				risposta = RptUtils.inviaCarrelloRPT(intermediario, stazione, rpts, this);
 				this.setupConnection(GpThreadLocal.get().getTransactionId());
@@ -348,8 +348,8 @@ public class Rpt extends BasicBD{
 				NodoChiediStatoRPTRisposta risposta = null;
 				log.info("Attivazione della procedura di recupero del processo di pagamento.");
 				try {
-					BaseServer newServer = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
-					newServer.addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
+					appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
+					appContext.getRequest().addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 					risposta = RptUtils.chiediStatoRPT(intermediario, stazione, rpts.get(0), this);
 				} catch (ClientException ee) {
 					ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());

@@ -22,6 +22,8 @@ public class UtenzaApplicazione extends Utenza {
 		this.idDomini = utenzaBase.getIdDomini();
 		this.idTributi = utenzaBase.getIdTributi();
 		this.checkSubject = utenzaBase.isCheckSubject();
+		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();
+		this.autorizzazioneTributiStar = utenzaBase.isAutorizzazioneTributiStar();
 	}
 
 	@Override

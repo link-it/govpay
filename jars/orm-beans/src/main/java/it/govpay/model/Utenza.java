@@ -18,6 +18,8 @@ public class Utenza extends BasicModel {
 	protected List<Long> idDomini;
 	protected List<Long> idTributi;
 	protected boolean checkSubject;
+	protected boolean autorizzazioneDominiStar;
+	protected boolean autorizzazioneTributiStar;
 	
 	public String getPrincipal() {
 		return this.principal;
@@ -75,4 +77,21 @@ public class Utenza extends BasicModel {
 	public void setCheckSubject(boolean checkSubject) {
 		this.checkSubject = checkSubject;
 	}
+
+	public boolean isAutorizzazioneDominiStar() {
+		return autorizzazioneDominiStar;
+	}
+
+	public void setAutorizzazioneDominiStar(boolean autorizzazioneDominiStar) {
+		this.autorizzazioneDominiStar = autorizzazioneDominiStar;
+	}
+
+	public boolean isAutorizzazioneTributiStar() {
+		return autorizzazioneTributiStar;
+	}
+
+	public void setAutorizzazioneTributiStar(boolean autorizzazioneTributiStar) {
+		this.autorizzazioneTributiStar = autorizzazioneTributiStar;
+	}
+	
 }

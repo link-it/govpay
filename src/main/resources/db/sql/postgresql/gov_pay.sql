@@ -52,6 +52,8 @@ CREATE TABLE utenze
 	principal VARCHAR(4000) NOT NULL,
 	principal_originale VARCHAR(4000) NOT NULL,
 	abilitato BOOLEAN NOT NULL DEFAULT true,
+	autorizzazione_domini_star BOOLEAN NOT NULL DEFAULT false,
+	autorizzazione_tributi_star BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,
 	-- unique constraints

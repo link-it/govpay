@@ -102,6 +102,7 @@ public class GovpayConfig {
 	private String ambienteDeploy;
 	
 	private String headerAuth;
+	private List<String> elencoHeadersRequest;
 	private boolean checkCfDebitore;
 	
 	private int numeroMassimoEntriesProspettoRiscossione;
@@ -145,6 +146,7 @@ public class GovpayConfig {
 		this.ambienteDeploy = null;
 
 		this.headerAuth = null;
+		this.elencoHeadersRequest = new ArrayList<>();
 		this.checkCfDebitore = true;
 		this.numeroMassimoEntriesProspettoRiscossione = 5000;
 		
@@ -401,6 +403,14 @@ public class GovpayConfig {
 			this.ambienteDeploy = getProperty("it.govpay.backoffice.gui.ambienteDeploy", this.props, false, log);
 			this.headerAuth = getProperty("it.govpay.autenticazione.nomeHeader", this.props, false, log);
 			
+			String headersListS = getProperty("it.govpay.autenticazione.nomiHeadersInfoCittadino", props, false, log);
+			if(StringUtils.isNotEmpty(headersListS)) {
+				String[] split = headersListS.split(",");
+				if(split != null && split.length > 0) {
+					this.elencoHeadersRequest = Arrays.asList(split);
+				}
+			}
+			
 			String checkCFDebitoreString = getProperty("it.govpay.autenticazione.utenzaAnonima.disabilitaCheckCfDebitore", props, false, log);
 			if(StringUtils.isNotEmpty(checkCFDebitoreString) && !checkCFDebitoreString.equalsIgnoreCase("false")) {
 				this.checkCfDebitore = false;
@@ -649,6 +659,10 @@ public class GovpayConfig {
 
 	public String getHeaderAuth() {
 		return headerAuth;
+	}
+
+	public List<String> getElencoHeadersRequest() {
+		return elencoHeadersRequest;
 	}
 
 	public boolean isCheckCfDebitore() {

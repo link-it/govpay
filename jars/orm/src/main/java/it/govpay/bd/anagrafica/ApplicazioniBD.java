@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -160,6 +161,26 @@ public class ApplicazioniBD extends BasicBD {
 
 	}
 
+	
+	/**
+	 * Aggiorna l'applicazione con i dati forniti
+	 * @throws NotFoundException se non esiste
+	 * @throws ServiceException in caso di errore DB.
+	 */
+	public void updateApplicazioneTrusted(Long id, boolean trusted) throws NotFoundException, ServiceException {
+		try {
+			IdApplicazione idVO = new IdApplicazione();
+			idVO.setId(id);
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Applicazione.model().TRUSTED, trusted));
+
+			this.getApplicazioneService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
 	/**
 	 * Aggiorna l'applicazione con i dati forniti
 	 * @param ente

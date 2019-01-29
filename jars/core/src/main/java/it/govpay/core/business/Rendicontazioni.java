@@ -38,7 +38,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -144,9 +143,9 @@ public class Rendicontazioni extends BasicBD {
 					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
 					boolean hasFrAnomalia = false;
 					try {
-						BaseServer newServer = appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediFlussoRendicontazione);
-						newServer.addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
-						newServer.addGenericProperty(new Property("idFlusso", idRendicontazione.getIdentificativoFlusso()));
+						appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediFlussoRendicontazione);
+						appContext.getRequest().addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
+						appContext.getRequest().addGenericProperty(new Property("idFlusso", idRendicontazione.getIdentificativoFlusso()));
 						
 						NodoChiediFlussoRendicontazione richiestaFlusso = new NodoChiediFlussoRendicontazione();
 						richiestaFlusso.setIdentificativoIntermediarioPA(stazione.getIntermediario(this).getCodIntermediario());
@@ -202,7 +201,7 @@ public class Rendicontazioni extends BasicBD {
 							this.setupConnection(ctx.getTransactionId());
 
 							ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlusso");
-							newServer.addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
+							appContext.getRequest().addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
 							
 							Fr fr = new Fr();
 							fr.setCodBicRiversamento(flussoRendicontazione.getCodiceBicBancaDiRiversamento());
@@ -220,18 +219,18 @@ public class Rendicontazioni extends BasicBD {
 							codPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
 							fr.setCodPsp(codPsp);
 							log.debug("Identificativo PSP estratto dall'identificativo flusso: " + codPsp);
-							newServer.addGenericProperty(new Property("codPsp", codPsp));
+							appContext.getRequest().addGenericProperty(new Property("codPsp", codPsp));
 
 							Dominio dominio = null;
 							try {
 								codDominio = flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco();
 								fr.setCodDominio(codDominio);
-								newServer.addGenericProperty(new Property("codDominio", codDominio));
+								appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 								dominio = AnagraficaManager.getDominio(this, codDominio);	
 							} catch (Exception e) {
 								if(codDominio == null) {
 									codDominio = "????";
-									newServer.addGenericProperty(new Property("codDominio", "null"));
+									appContext.getRequest().addGenericProperty(new Property("codDominio", "null"));
 								}
 								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoDominioNonCensito");
 								fr.addAnomalia("007109", "L'indentificativo ricevente [" + codDominio + "] del flusso non riferisce un Dominio censito");
@@ -538,8 +537,8 @@ public class Rendicontazioni extends BasicBD {
 		IContext ctx = GpThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		try {
-			BaseServer newServer = appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, Azione.nodoChiediElencoFlussiRendicontazione);
-			newServer.addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
+			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, Azione.nodoChiediElencoFlussiRendicontazione);
+			appContext.getRequest().addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussi");
 
 			NodoChiediElencoFlussiRendicontazione richiesta = new NodoChiediElencoFlussiRendicontazione();
