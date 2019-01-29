@@ -1142,6 +1142,7 @@ components:
               type: array
               minItems: 1
               maxItems: 5
+              title: x-gov4j-commons-json-deserializer#it.govpay.pagamento.v2.beans.deserializer.TipoRiferimentoVocePendenzaDeserializer
               items:
                 $ref: '#/components/schemas/NuovaVocePendenza'
     NuovaVocePendenza:
@@ -2029,7 +2030,6 @@ components:
           maxLength: 135
     TipoRiferimentoVocePendenza:
       type: object
-      title: x-gov4j-commons-json-deserializer#it.govpay.pagamento.v2.beans.deserializer.TipoRiferimentoVocePendenzaDeserializer
       oneOf:
         - $ref: '#/components/schemas/RiferimentoEntrata'
         - $ref: '#/components/schemas/Entrata'
