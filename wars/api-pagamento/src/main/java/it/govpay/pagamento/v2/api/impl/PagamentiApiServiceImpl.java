@@ -9,6 +9,7 @@ import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
@@ -132,9 +133,12 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
-
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
+			
+			/* default values */
+			if(offset == null || offset < 0) offset = 0;
+			if(limit == null || limit < 0 || limit > 100) limit = BasicFindRequestDTO.DEFAULT_LIMIT;
 
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(context.getAuthentication());
 			listaPagamentiPortaleDTO.setOffset(offset);

@@ -127,9 +127,9 @@ public class PendenzeConverter {
 		fillPendenzaBase(rsModel, versamento);
 		String idA2A = versamento.getApplicazione(null).getCodApplicazione();
 		String idPendenza = versamento.getCodVersamentoEnte();
-		rsModel.setHref(PendenzeApiServiceImpl.basePath.path(idA2A).path(idPendenza).build().toString());
-		rsModel.setPagamenti(PagamentiApiServiceImpl.basePath.queryParam("idA2A", idA2A).queryParam("idPendenza", idPendenza).build().toString());
-		rsModel.setRpps(TransazioniApiServiceImpl.basePath.queryParam("idA2A", idA2A).queryParam("idPendenza", idPendenza).build().toString());
+		rsModel.setHref(PendenzeApiServiceImpl.basePath.clone().path(idA2A).path(idPendenza).build().toString());
+		rsModel.setPagamenti(PagamentiApiServiceImpl.basePath.clone().queryParam("idA2A", idA2A).queryParam("idPendenza", idPendenza).build().toString());
+		rsModel.setRpps(TransazioniApiServiceImpl.basePath.clone().queryParam("idA2A", idA2A).queryParam("idPendenza", idPendenza).build().toString());
 
 		return rsModel;
 	}

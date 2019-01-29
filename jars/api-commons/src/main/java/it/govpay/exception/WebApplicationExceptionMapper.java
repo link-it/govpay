@@ -69,34 +69,26 @@ public class WebApplicationExceptionMapper extends org.openspcoop2.utils.service
 	}
 	
 	public static boolean existsInnerException(Throwable e,Class<?> found){
-		//System.out.println("ANALIZZO ["+e.getClass().getName()+"] ("+found+")");
 		if(found.isAssignableFrom(e.getClass())){
-			//System.out.println("OK ["+e.getClass().getName()+"]");
 			return true;
 		}else{
 			if(e.getCause()!=null){
-				//System.out.println("INNER ["+e.getClass().getName()+"]...");
 				return existsInnerException(e.getCause(), found);
 			}
 			else{
-				//System.out.println("ESCO ["+e.getClass().getName()+"]");
 				return false;
 			}
 		}
 	}
 
 	public static Throwable getInnerException(Throwable e,Class<?> found){
-		//System.out.println("ANALIZZO ["+e.getClass().getName()+"] ("+found+")");
 		if(found.isAssignableFrom(e.getClass())){
-			//System.out.println("OK ["+e.getClass().getName()+"]");
 			return e;
 		}else{
 			if(e.getCause()!=null){
-				//System.out.println("INNER ["+e.getClass().getName()+"]...");
 				return getInnerException(e.getCause(), found);
 			}
 			else{
-				//System.out.println("ESCO ["+e.getClass().getName()+"]");
 				return null;
 			}
 		}

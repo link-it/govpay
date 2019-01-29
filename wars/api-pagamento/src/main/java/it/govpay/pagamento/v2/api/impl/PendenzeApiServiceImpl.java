@@ -9,6 +9,7 @@ import org.openspcoop2.utils.service.context.IContext;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
@@ -68,6 +69,9 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");    
 
+			/* default values */
+			if(offset == null || offset < 0) offset = 0;
+			if(limit == null || limit < 0 || limit > 100) limit = BasicFindRequestDTO.DEFAULT_LIMIT;
 			// Parametri - > DTO Input
 
 			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(context.getAuthentication());

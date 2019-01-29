@@ -16,6 +16,7 @@ import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
 import eu.medsea.mimeutil.MimeUtil;
 import it.govpay.core.dao.anagrafica.DominiDAO;
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
@@ -132,13 +133,13 @@ public class DominiApiServiceImpl extends BaseImpl implements DominiApi {
 		
 		/* default values */
 		if(offset == null || offset < 0) offset = 0;
-		if(limit == null || limit < 0 || limit > 100) limit = 25;
+		if(limit == null || limit < 0 || limit > 100) limit = BasicFindRequestDTO.DEFAULT_LIMIT;
 		
 		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
-			context.getLogger().debug("Autorizzazione completata con successo");     
+			context.getLogger().debug("Autorizzazione completata con successo");  
 
 			FindDominiDTO listaDominiDTO = new FindDominiDTO(context.getAuthentication());
 			listaDominiDTO.setOffset(offset);

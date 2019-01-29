@@ -12,6 +12,7 @@ import org.openspcoop2.utils.service.context.IContext;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
@@ -77,6 +78,9 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");    
 
+			/* default values */
+			if(offset == null || offset < 0) offset = 0;
+			if(limit == null || limit < 0 || limit > 100) limit = BasicFindRequestDTO.DEFAULT_LIMIT;
 			// Parametri - > DTO Input
 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(context.getAuthentication());

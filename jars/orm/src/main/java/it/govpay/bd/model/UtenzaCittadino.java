@@ -18,7 +18,7 @@ public class UtenzaCittadino extends Utenza {
 		this.setIdTributi(new ArrayList<>());
 		this.setDomini(new ArrayList<>());
 		this.setTributi(new ArrayList<>());
-		this.autorizzazioneDominiStar = false ;
+		this.autorizzazioneDominiStar = true ;
 		this.autorizzazioneTributiStar = false;
 		this.headers = headers;
 	}

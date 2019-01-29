@@ -50,8 +50,8 @@ public class RppConverter {
 		String idDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
-		rsModel.setHref(TransazioniApiServiceImpl.basePath.path(idDominio).path(iuv).path(ccp).build().toString());
-		rsModel.setPendenza(PendenzeApiServiceImpl.basePath.path(idA2A).path(idPendenza).build().toString());
+		rsModel.setHref(TransazioniApiServiceImpl.basePath.clone().path(idDominio).path(iuv).path(ccp).build().toString());
+		rsModel.setPendenza(PendenzeApiServiceImpl.basePath.clone().path(idA2A).path(idPendenza).build().toString());
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
 		rsModel.setRpt(ConverterUtils.getRptJson(rpt));

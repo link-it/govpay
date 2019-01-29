@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/frontend/api/pagamento/rs/v1/
+  - url: ${it.govpay.apiurl}/govpay/frontend/api/pagamento/rs/basic/v1/
 tags:
   - name: Pagamenti
     description: Realizzazione e consultazione dei pagamenti delle pendenze

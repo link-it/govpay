@@ -26,7 +26,7 @@ public class DominiConverter {
 		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
 		rsModel.setLocalita(dominio.getAnagrafica().getLocalita());
 		if(dominio.getLogo() != null) {
-			rsModel.setLogo(DominiApiServiceImpl.basePath.path(dominio.getCodDominio()).path("logo").build().toString());
+			rsModel.setLogo(DominiApiServiceImpl.basePath.clone().path(dominio.getCodDominio()).path("logo").build().toString());
 		} 
 		rsModel.setNazione(dominio.getAnagrafica().getNazione());
 		rsModel.setPec(dominio.getAnagrafica().getPec());

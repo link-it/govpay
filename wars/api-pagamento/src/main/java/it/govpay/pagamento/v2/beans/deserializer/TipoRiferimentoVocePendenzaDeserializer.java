@@ -1,0 +1,50 @@
+package it.govpay.pagamento.v2.beans.deserializer;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.openspcoop2.utils.jaxrs.JacksonJsonProvider;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import it.govpay.pagamento.v2.beans.Bollo;
+import it.govpay.pagamento.v2.beans.Entrata;
+import it.govpay.pagamento.v2.beans.RiferimentoEntrata;
+
+public class TipoRiferimentoVocePendenzaDeserializer extends JsonDeserializer<Object> {
+
+	@Override
+	public List<Object> deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+		
+		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper();
+		ObjectCodec oc = jsonParser.getCodec();
+		JsonNode node = oc.readTree(jsonParser);
+        Iterator<JsonNode> elements = node.elements();
+        
+        List<Object> pendenze = new ArrayList<Object>();
+        for (; elements.hasNext();) {
+        	JsonNode next = elements.next();
+        	
+        	if(next.size() == 3 && next.hasNonNull("tipoBollo") && next.hasNonNull("hashDocumento") && next.hasNonNull("provinciaResidenza")) {
+    			pendenze.add(objectMapper.treeToValue(next, Bollo.class));
+    			continue;
+        	}
+        	if(next.size() == 1 && next.hasNonNull("codEntrata")) {
+    			pendenze.add(objectMapper.treeToValue(next, RiferimentoEntrata.class));
+    			continue;
+        	}
+        	
+        	pendenze.add(objectMapper.treeToValue(next, Entrata.class));
+        }
+		return pendenze;
+	}
+
+}

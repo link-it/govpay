@@ -62,7 +62,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		return this.limit;
 	}
 	public void setLimit(Integer limit) {
-		this.limit = limit;
+		this.limit = limit != null ?  limit : DEFAULT_LIMIT;
 	}
 
 	public String getSimpleSearch() {

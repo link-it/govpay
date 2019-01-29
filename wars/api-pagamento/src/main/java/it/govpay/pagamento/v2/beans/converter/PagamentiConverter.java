@@ -127,9 +127,9 @@ public class PagamentiConverter {
 		
 		fillPagamentoBase(rsModel, pagamentoPortale);
 		
-		rsModel.setHref(PagamentiApiServiceImpl.basePath.path(pagamentoPortale.getIdSessione()).build().toString());
-		rsModel.setPendenze(PendenzeApiServiceImpl.basePath.queryParam("idSessionePortale", pagamentoPortale.getIdSessione()).build().toString());
-		rsModel.setRpps(TransazioniApiServiceImpl.basePath.queryParam("idSessionePortale", pagamentoPortale.getIdSessione()).build().toString());
+		rsModel.setHref(PagamentiApiServiceImpl.basePath.clone().path(pagamentoPortale.getIdSessione()).build().toString());
+		rsModel.setPendenze(PendenzeApiServiceImpl.basePath.clone().queryParam("idSessionePortale", pagamentoPortale.getIdSessione()).build().toString());
+		rsModel.setRpps(TransazioniApiServiceImpl.basePath.clone().queryParam("idSessionePortale", pagamentoPortale.getIdSessione()).build().toString());
 
 		return rsModel;
 
@@ -139,7 +139,7 @@ public class PagamentiConverter {
 		PagamentoCreato  json = new PagamentoCreato();
 
 		json.setId(dtoResponse.getId());
-		json.setHref(PagamentiApiServiceImpl.basePath.path(dtoResponse.getId()).build().toString()); 
+		json.setHref(PagamentiApiServiceImpl.basePath.clone().path(dtoResponse.getId()).build().toString()); 
 		json.setRedirect(dtoResponse.getRedirectUrl());
 		json.setIdSession(dtoResponse.getIdSessione()); 
 		json.setIdCarrello(dtoResponse.getIdCarrelloRpt()); 
