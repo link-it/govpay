@@ -74,7 +74,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			if(limit == null || limit < 0 || limit > 100) limit = BasicFindRequestDTO.DEFAULT_LIMIT;
 			// Parametri - > DTO Input
 
-			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(context.getAuthentication());
+			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(context.getAuthentication(),true);
 
 			listaPendenzeDTO.setOffset(offset);
 			listaPendenzeDTO.setLimit(limit);

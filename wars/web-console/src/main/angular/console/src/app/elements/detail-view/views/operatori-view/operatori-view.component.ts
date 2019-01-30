@@ -196,17 +196,22 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
     _mb.editMode = mode;
     _mb.async_callback = this.save.bind(this);
     _mb.closure = this.refresh.bind(this);
+    let _fi: FormInput;
     switch(type) {
       case this.DOMINIO:
         _mb.operation = patchOperation;
         _mb.info.dialogTitle = 'Nuovo dominio';
-        _mb.info.viewModel = new FormInput({ values: this.filterAndMapByList(_viewModel['risultati'], this.domini, 'idDominio', 'ragioneSociale') });
+        _fi = new FormInput({ values: this.filterAndMapByList(_viewModel['risultati'], this.domini, 'idDominio', 'ragioneSociale') });
+        _fi.values.unshift({ label: UtilService.TUTTI_DOMINI.label, value: UtilService.TUTTI_DOMINI.value });
+        _mb.info.viewModel = _fi;
         _mb.info.templateName = this.DOMINIO;
         break;
       case this.ENTRATA:
         _mb.operation = patchOperation;
         _mb.info.dialogTitle = 'Nuova entrata';
-        _mb.info.viewModel = new FormInput({ values: this.filterAndMapByList(_viewModel['risultati'], this.entrate, 'idEntrata', 'descrizione') });
+        _fi = new FormInput({ values: this.filterAndMapByList(_viewModel['risultati'], this.entrate, 'idEntrata', 'descrizione') });
+        _fi.values.unshift({ label: UtilService.TUTTE_ENTRATE.label, value: UtilService.TUTTE_ENTRATE.value });
+        _mb.info.viewModel = _fi;
         _mb.info.templateName = this.ENTRATA;
         break;
       case this.ACL:

@@ -98,7 +98,7 @@ public class PendenzeConverter {
 
 		rsModel.setStato(statoPendenza);
 		if(versamento.getTassonomiaAvviso() != null)
-			rsModel.setTassonomiaAvviso(TassonomiaAvviso.valueOf(versamento.getTassonomiaAvviso()));
+			rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		if(versamento.getUo(null) != null)
 			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModel(versamento.getUo(null)));
 		

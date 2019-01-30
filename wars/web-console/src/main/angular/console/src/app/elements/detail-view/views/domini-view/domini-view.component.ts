@@ -26,7 +26,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   @Input() modified: boolean = false;
   @Input() parent: any;
 
-  protected NO_LOGO: string = 'no-logo';
+  protected NO_LOGO: string = '#';
   protected logo: any = null;
   protected logoError: boolean = false;
 
@@ -63,29 +63,73 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
 
   protected mapJsonDetail(json: any) {
     let _dettaglio = { info: [], iban: [], entrate: [], unita: [] };
-    _dettaglio.info.push(new Dato({ label: Voce.ID_DOMINIO, value: json.idDominio }));
-    _dettaglio.info.push(new Dato({ label: Voce.RAGIONE_SOCIALE, value: json.ragioneSociale }));
-    _dettaglio.info.push(new Dato({ label: Voce.INDIRIZZO, value: json.indirizzo }));
-    _dettaglio.info.push(new Dato({ label: Voce.CIVICO, value: json.civico }));
-    _dettaglio.info.push(new Dato({ label: Voce.CAP, value: json.cap }));
-    _dettaglio.info.push(new Dato({ label: Voce.LUOGO, value: json.localita }));
-    _dettaglio.info.push(new Dato({ label: Voce.PROVINCIA, value: json.provincia }));
-    _dettaglio.info.push(new Dato({ label: Voce.NAZIONE, value: json.nazione }));
-    _dettaglio.info.push(new Dato({ label: Voce.EMAIL, value: json.email }));
-    _dettaglio.info.push(new Dato({ label: Voce.PEC, value: json.pec }));
-    _dettaglio.info.push(new Dato({ label: Voce.TELEFONO, value: json.tel }));
-    _dettaglio.info.push(new Dato({ label: Voce.FAX, value: json.fax }));
-    _dettaglio.info.push(new Dato({ label: Voce.WEB, value: json.web }));
-    _dettaglio.info.push(new Dato({ label: Voce.GLN, value: json.gln }));
-    _dettaglio.info.push(new Dato({ label: Voce.CBILL, value: json.cbill }));
-    _dettaglio.info.push(new Dato({ label: Voce.IUV_PREFIX, value: json.iuvPrefix }));
-    _dettaglio.info.push(new Dato({ label: Voce.STAZIONE, value: json.stazione }));
-    _dettaglio.info.push(new Dato({ label: Voce.AUX, value: json.auxDigit }));
-    _dettaglio.info.push(new Dato({ label: Voce.SECRET_CODE, value: UtilService.defaultDisplay({ value: json.segregationCode }) }));
+    if (json.idDominio) {
+      _dettaglio.info.push(new Dato({ label: Voce.ID_DOMINIO, value: json.idDominio }));
+    }
+    if (json.ragioneSociale) {
+      _dettaglio.info.push(new Dato({ label: Voce.RAGIONE_SOCIALE, value: json.ragioneSociale }));
+    }
+    if (json.area) {
+      _dettaglio.info.push(new Dato({ label: Voce.AREA, value: json.area }));
+    }
+    if (json.indirizzo) {
+      _dettaglio.info.push(new Dato({ label: Voce.INDIRIZZO, value: json.indirizzo }));
+    }
+    if (json.civico) {
+      _dettaglio.info.push(new Dato({ label: Voce.CIVICO, value: json.civico }));
+    }
+    if (json.cap) {
+      _dettaglio.info.push(new Dato({ label: Voce.CAP, value: json.cap }));
+    }
+    if (json.localita) {
+      _dettaglio.info.push(new Dato({ label: Voce.LUOGO, value: json.localita }));
+    }
+    if (json.provincia) {
+      _dettaglio.info.push(new Dato({ label: Voce.PROVINCIA, value: json.provincia }));
+    }
+    if (json.nazione) {
+      _dettaglio.info.push(new Dato({ label: Voce.NAZIONE, value: json.nazione }));
+    }
+    if (json.email) {
+      _dettaglio.info.push(new Dato({ label: Voce.EMAIL, value: json.email }));
+    }
+    if (json.pec) {
+      _dettaglio.info.push(new Dato({ label: Voce.PEC, value: json.pec }));
+    }
+    if (json.tel) {
+      _dettaglio.info.push(new Dato({ label: Voce.TELEFONO, value: json.tel }));
+    }
+    if (json.fax) {
+      _dettaglio.info.push(new Dato({ label: Voce.FAX, value: json.fax }));
+    }
+    if (json.web) {
+      _dettaglio.info.push(new Dato({ label: Voce.WEB, value: json.web }));
+    }
+    if (json.gln) {
+      _dettaglio.info.push(new Dato({ label: Voce.GLN, value: json.gln }));
+    }
+    if (json.cbill) {
+      _dettaglio.info.push(new Dato({ label: Voce.CBILL, value: json.cbill }));
+    }
+    if (json.iuvPrefix) {
+      _dettaglio.info.push(new Dato({ label: Voce.IUV_PREFIX, value: json.iuvPrefix }));
+    }
+    if (json.stazione) {
+      _dettaglio.info.push(new Dato({ label: Voce.STAZIONE, value: json.stazione }));
+    }
+    if (json.auxDigit) {
+      _dettaglio.info.push(new Dato({ label: Voce.AUX, value: json.auxDigit }));
+    }
+    if (json.segregationCode) {
+      _dettaglio.info.push(new Dato({ label: Voce.SECRET_CODE, value: json.segregationCode }));
+    }
+    if (json.autStampaPosteItaliane) {
+      _dettaglio.info.push(new Dato({ label: Voce.AUT_PT, value: json.autStampaPosteItaliane }));
+    }
     _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[json.abilitato.toString()] }));
 
     this.logoError = false;
-    this.logo = json.logo?this._sanitizer.bypassSecurityTrustUrl(json.logo):'no-logo';
+    this.logo = json.logo?this._sanitizer.bypassSecurityTrustUrl(json.logo):this.NO_LOGO;
 
     this.informazioni = _dettaglio.info.slice(0);
 
@@ -127,7 +171,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     this.entrate = _de.slice(0);
   }
 
-  protected _onError() {
+  protected _onError(event) {
     this.logoError = true;
     console.warn('Image not available.')
   }

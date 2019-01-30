@@ -122,7 +122,10 @@ public class AvvisiDAO extends BaseDAO{
 			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.getCodDominio(), null, getAvvisoDTO.isAccessoAnonimo(), bd);
 			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			versamento = versamentiBD.getVersamento(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getIuv());
+			if(getAvvisoDTO.getIuv() != null)
+				versamento = versamentiBD.getVersamento(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getIuv());
+			if(getAvvisoDTO.getNumeroAvviso() != null)
+				versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getNumeroAvviso());
 			
 			Dominio dominio = versamento.getDominio(versamentiBD);
 			// controllo che il dominio sia autorizzato
@@ -132,6 +135,8 @@ public class AvvisiDAO extends BaseDAO{
 			this.autorizzaAccessoAnonimoVersamento(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.isAccessoAnonimo(), getAvvisoDTO.getCfDebitore(), versamento.getAnagraficaDebitore().getCodUnivoco());
 			
 			GetAvvisoDTOResponse response = new GetAvvisoDTOResponse();
+			String pdfFileName = versamento.getDominio(bd).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
+			response.setFilenameAvviso(pdfFileName);
 			switch(getAvvisoDTO.getFormato()) {
 			case PDF:
 				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
@@ -144,8 +149,6 @@ public class AvvisiDAO extends BaseDAO{
 				printAvvisoDTO.setInput(input); 
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
 				response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
-				String pdfFileName = versamento.getDominio(bd).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
-				response.setFilenameAvviso(pdfFileName);
 				break;
 			case JSON:
 			default:

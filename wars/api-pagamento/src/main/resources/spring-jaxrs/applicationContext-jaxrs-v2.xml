@@ -25,6 +25,10 @@
 
 	<!-- Object BodyReader -->
 	<b:bean id="objectMessageBodyReaderV2" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader" />
+	
+	<!-- BodyWriter -->
+	<b:bean id="avvisoMessageBodyWriterV2" class="it.govpay.pagamento.v2.beans.writer.AvvisoWriter" />
+	<b:bean id="rtMessageBodyWriterV2" class="it.govpay.pagamento.v2.beans.writer.RtWriter" />
 
 	<!-- Jackson Provider for JSON/XML -->
 	<b:bean id="jacksonJsonProviderV2" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider" />
@@ -90,7 +94,8 @@
 			<ref bean="jacksonJsonProviderV2" />
 			<ref bean="jacksonXmlProviderV2" />
 			<ref bean="webApplicationExceptionMapperV2" />
-			<ref bean="validationExceptionMapperV2" />
+			<ref bean="avvisoMessageBodyWriterV2" />
+			<ref bean="rtMessageBodyWriterV2" />
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
@@ -117,6 +122,8 @@
 			<ref bean="jacksonXmlProviderV2" />
 			<ref bean="webApplicationExceptionMapperV2" />
 			<ref bean="validationExceptionMapperV2" />
+			<ref bean="avvisoMessageBodyWriterV2" />
+			<ref bean="rtMessageBodyWriterV2" />
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
@@ -142,6 +149,8 @@
 			<ref bean="jacksonXmlProviderV2" />
 			<ref bean="webApplicationExceptionMapperV2" />
 			<ref bean="validationExceptionMapperV2" />
+			<ref bean="avvisoMessageBodyWriterV2" />
+			<ref bean="rtMessageBodyWriterV2" />
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
@@ -168,6 +177,8 @@
 			<ref bean="jacksonXmlProviderV2" />
 			<ref bean="webApplicationExceptionMapperV2" />
 			<ref bean="validationExceptionMapperV2" />
+			<ref bean="avvisoMessageBodyWriterV2" />
+			<ref bean="rtMessageBodyWriterV2" />
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />

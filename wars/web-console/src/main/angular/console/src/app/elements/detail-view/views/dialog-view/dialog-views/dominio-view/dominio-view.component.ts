@@ -4,6 +4,7 @@ import { IFormComponent } from '../../../../../../classes/interfaces/IFormCompon
 import { FormInput } from '../../../../../../classes/view/form-input';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UtilService } from '../../../../../../services/util.service';
+import { MatDialog } from '@angular/material';
 
 declare global {
   interface String {
@@ -27,7 +28,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
   protected _name: string = '';
   protected _base64File: any = null;
 
-  constructor(private _sanitizer: DomSanitizer, public us: UtilService) {
+  constructor(private _sanitizer: DomSanitizer, public us: UtilService, protected askDialog: MatDialog) {
     String.prototype.multiReplace = function(find: string[], replace: string[]): string {
       let replaceString = this;
       for (let i = 0; i < find.length; i++) {
@@ -44,6 +45,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
     } else {
       this.fGroup.addControl('ragioneSociale_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('idDominio_ctrl', new FormControl('', Validators.required));
+      this.fGroup.addControl('area_ctrl', new FormControl(''));
       this.fGroup.addControl('gln_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('stazione_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('abilita_ctrl', new FormControl(false));
@@ -62,6 +64,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       this.fGroup.addControl('iuvPrefix_ctrl', new FormControl(''));
       this.fGroup.addControl('auxDigit_ctrl', new FormControl(''));
       this.fGroup.addControl('segregationCode_ctrl', new FormControl(''));
+      this.fGroup.addControl('autStampaPosteItaliane_ctrl', new FormControl(''));
       this.fGroup.addControl('logo_ctrl', new FormControl(''));
     }
   }
@@ -76,6 +79,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
           this.fGroup.controls['idDominio_ctrl'].disable();
           this.fGroup.controls['idDominio_ctrl'].setValue((this.json.idDominio)?this.json.idDominio:'');
           this.fGroup.controls['ragioneSociale_ctrl'].setValue((this.json.ragioneSociale)?this.json.ragioneSociale:'');
+          this.fGroup.controls['area_ctrl'].setValue((this.json.area)?this.json.area:'');
           this.fGroup.controls['gln_ctrl'].setValue((this.json.gln)?this.json.gln:'');
           this.fGroup.controls['stazione_ctrl'].setValue((this.json.stazione)?this.json.stazione:'');
           this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
@@ -94,9 +98,10 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
           this.fGroup.controls['iuvPrefix_ctrl'].setValue((this.json.iuvPrefix)?this.json.iuvPrefix:'');
           this.fGroup.controls['auxDigit_ctrl'].setValue((this.json.auxDigit)?this.json.auxDigit:'');
           this.fGroup.controls['segregationCode_ctrl'].setValue((this.json.segregationCode)?this.json.segregationCode:'');
+          this.fGroup.controls['autStampaPosteItaliane_ctrl'].setValue((this.json.autStampaPosteItaliane)?this.json.autStampaPosteItaliane:'');
           // this.fGroup.controls['logo_ctrl'].setValue((this.json.logo)?this.json.logo:'');
           if(this.json.logo){
-            this._reloadFile(this.json.logo);
+            this._reloadFile(this.json.logo, true);
           }
         }
       }
@@ -136,27 +141,61 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
     fr.readAsDataURL(_file);
   }
 
-  protected _reloadFile(_url: string) {
+  protected _reloadFile(_url: string, bypass: boolean = false) {
     let _result = _url;
 
-    if(_url.indexOf('svg') != -1 && _url.indexOf('base64,') != -1) {
+    if(!bypass && _url.indexOf('svg') != -1 && _url.indexOf('base64,') != -1) {
+      let _hasColor: boolean = false;
       let _bsvg = _url.split('base64,')[1];
-      let _xsvg = atob(_bsvg).replace(/[\n\r]/g, '');
+      let _xsvg = atob(_bsvg);
       let re = RegExp('(#[a-z0-9]{6})','gmi');
       let _tmp;
       let _results = [];
       while ((_tmp = re.exec(_xsvg)) !== null) {
+        const _atmp = this._getRGB(_tmp[0]);
+        if (_atmp[0] !== _atmp[1] && _atmp[0] !== _atmp[2] && _atmp[1] !== _atmp[2]) {
+          _hasColor = true;
+        }
         _results.push(_tmp[0]);
       }
       let _map_results = _results.map((_color) => {
         return this.us.desaturateColor(_color);
       }, this);
-      if(_results && _results.length != 0 && _map_results && _map_results.length != 0) {
-        _result = _xsvg.multiReplace(_results, _map_results);
+      if(_hasColor && _results && _results.length != 0 && _map_results && _map_results.length != 0) {
+        this._askForConversion({ original: _result, xsvg: _xsvg, results: _results, map: _map_results });
+      } else {
+        this._base64File = this._sanitizer.bypassSecurityTrustUrl(_result);
       }
-      _result = this.SVG+btoa(_result);
+    } else {
+      this._base64File = this._sanitizer.bypassSecurityTrustUrl(_result);
     }
-    this._base64File = this._sanitizer.bypassSecurityTrustUrl(_result);
+  }
+
+  protected _getRGB(hexVal) {
+    let commaSeperated = '';
+    hexVal = hexVal.substring(1, hexVal.length);
+    for (let i = 0; i < hexVal.length; i++) {
+      commaSeperated += hexVal.charAt(i);
+      commaSeperated += (i % 2 == 1 && i != (hexVal.length - 1)) ? ',' : '';
+    }
+    return commaSeperated.split(',');
+  }
+
+
+  protected _askForConversion(data: any) {
+      let askDialogRef = this.askDialog.open(AlertDialog, {
+        width: '50%',
+        data: data
+      });
+
+    askDialogRef.afterClosed().subscribe(response => {
+      let _result = response.data.original;
+      if(response.converti) {
+        _result = response.data.xsvg.multiReplace(response.data.results, response.data.map);
+        _result = this.SVG+btoa(_result);
+      }
+      this._base64File = this._sanitizer.bypassSecurityTrustUrl(_result);
+    });
   }
 
   mapToJson(): any {
@@ -173,6 +212,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
     } else {
       _json.idDominio = (!this.fGroup.controls['idDominio_ctrl'].disabled)?_info['idDominio_ctrl']:this.json.idDominio;
       _json.ragioneSociale = (_info['ragioneSociale_ctrl'])?_info['ragioneSociale_ctrl']:null;
+      _json.area = (_info['area_ctrl'])?_info['area_ctrl']:null;
       _json.gln = (_info['gln_ctrl'])?_info['gln_ctrl']:null;
       _json.stazione = (_info['stazione_ctrl'])?_info['stazione_ctrl']:null;
       _json.abilitato = _info['abilita_ctrl'];
@@ -191,6 +231,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       _json.iuvPrefix = (_info['iuvPrefix_ctrl'])?_info['iuvPrefix_ctrl']:null;
       _json.auxDigit = (_info['auxDigit_ctrl'])?_info['auxDigit_ctrl']:null;
       _json.segregationCode = (_info['segregationCode_ctrl'])?_info['segregationCode_ctrl']:null;
+      _json.autStampaPosteItaliane = (_info['autStampaPosteItaliane_ctrl'])?_info['autStampaPosteItaliane_ctrl']:null;
       //Sanitizer
       if(this._base64File && this._base64File.hasOwnProperty('changingThisBreaksApplicationSecurity')) {
         _json.logo = this._base64File['changingThisBreaksApplicationSecurity'] || null;//_info['logo_ctrl'];
@@ -205,6 +246,36 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
     }
 
     return _json;
+  }
+
+}
+
+import { Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+
+@Component({
+  selector: 'link-alert-dialog',
+  template: `<div class="d-block">
+    <p class="w-100 regular-24 color-gray">Conversione SVG</p>
+      <div class="w-100">
+        <p>E' stato rilevato un documento svg a colori. Si desidera eseguire la conversione in scala di grigi dell'immagine selezionata?</p>
+      </div>
+      <div class="d-flex justify-content-end mt-4">
+        <button mat-button color="accent" type="button" (click)="_close()">Non convertire</button>
+        <button mat-button color="accent" type="button" (click)="_close(true)">Converti</button>
+      </div>
+  </div>`,
+})
+export class AlertDialog {
+
+  protected _data: any;
+
+  constructor(public askDialog: MatDialogRef<AlertDialog>, @Inject(MAT_DIALOG_DATA) public data: any) {
+    this._data = data;
+  }
+
+  _close(converti: boolean = false): void {
+    this.askDialog.close({ converti: converti, data: this._data });
   }
 
 }

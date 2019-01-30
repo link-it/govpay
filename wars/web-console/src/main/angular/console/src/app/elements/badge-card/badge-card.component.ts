@@ -60,7 +60,7 @@ export class BadgeCardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   protected _loadTimer() {
     //Durata intervallo chiamate del timer
-    let _timerInterval = UtilService.GET_BADGE_TIMER();
+    let _timerInterval = UtilService.BADGE_TIMER;
     if(_timerInterval > 0) {
       if(!window[this.GLOBAL_TIMER]) {
         window[ this.GLOBAL_TIMER ] = [];
@@ -117,7 +117,7 @@ export class BadgeCardComponent implements OnInit, OnDestroy, AfterViewInit {
       (error) => {
         this._isLoading = false;
         this._clearTimer();
-        this.us.onError({ message: 'Le informazioni sui pagamenti non sono attualmente disponibili' });
+        this.us.onError(error, 'Le informazioni sui pagamenti non sono attualmente disponibili');
       }
     );
   }

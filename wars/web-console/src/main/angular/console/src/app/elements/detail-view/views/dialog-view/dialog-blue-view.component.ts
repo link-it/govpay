@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, ComponentRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { EventEmitter, Input, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { LinkService } from '../../../../services/link.service';
@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs/Subscription';
   templateUrl: './dialog-blue-view.component.html',
   styleUrls: ['./dialog-blue-view.component.scss']
 })
-export class DialogBlueViewComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DialogBlueViewComponent implements OnInit, AfterViewInit, AfterContentChecked, OnDestroy {
   @HostListener('window:resize', [ '$event' ]) onResize() {
     this._styleTopDialog();
   }
@@ -24,6 +24,8 @@ export class DialogBlueViewComponent implements OnInit, AfterViewInit, OnDestroy
   protected _componentRef: ComponentRef<any>;
   protected _responseSubscription: Subscription;
   protected _Y: number = 64;
+
+  protected _isBlueValid: boolean = false;
 
   info: any;
   blueModalForm: FormGroup;
@@ -45,6 +47,10 @@ export class DialogBlueViewComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngAfterViewInit() {
+  }
+
+  ngAfterContentChecked() {
+    this._isBlueValid = (this.blueModalForm && this.blueModalForm.valid);
   }
 
   ngOnDestroy() {

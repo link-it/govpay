@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UtilService } from '../../../../services/util.service';
 import { LinkService } from '../../../../services/link.service';
 
 import * as moment from 'moment';
+import { GovpayService } from '../../../../services/govpay.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'link-dashboard-view',
   templateUrl: './dashboard-view.component.html',
   styleUrls: ['./dashboard-view.component.scss']
 })
-export class DashboardViewComponent implements OnInit {
+export class DashboardViewComponent implements OnInit, OnDestroy {
 
   news: any[] = [];
   _isLoading:boolean = false;
@@ -22,34 +24,74 @@ export class DashboardViewComponent implements OnInit {
   _PFExamService: string = '';
   _PFDiffService: string = '';
 
-  protected _LinkBasePath: string = UtilService.LINK_BASE_PATH();
-  protected DASHBOARD: string = UtilService.URL_DASHBOARD;
+  protected _user = '';
+  protected _pass = '';
 
-  constructor(private sanitizer: DomSanitizer, private ls: LinkService) {}
+  protected _GovPayInfo: any = UtilService.INFORMATION;
+
+  protected DASHBOARD: string = UtilService.URL_DASHBOARD;
+  protected hasAuthentication: boolean = false;
+  protected profiloSubscription: Subscription;
+
+  constructor(private sanitizer: DomSanitizer, private ls: LinkService, private us: UtilService, private gps: GovpayService) {
+    this.profiloSubscription = UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
+      if(_profilo) {
+        this.hasAuthentication = true;
+        this.initBadges();
+      } else {
+        this.hasAuthentication = false;
+      }
+    });
+    if(!UtilService.PROFILO_UTENTE) {
+      this.gps.isAuthenticated(UtilService.URL_PROFILO).subscribe(
+        (result) => {
+          this.gps.updateSpinner(false);
+          UtilService.cacheUser(result.body);
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          UtilService.cleanUser();
+        });
+    }
+  }
 
   ngOnInit() {
-    this.initBadges();
-    const url = 'https://api.github.com/repos/link-it/GovPay/releases';
-    const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          this._isLoading = false;
-          this.news = xhr.response?JSON.parse(xhr.response):[];
-          this.news.forEach((_news) => {
-            _news.body_html = this._trustHtml(_news.body_html)
-          });
-        } else {
-          this._isLoading = false;
-          console.log('News Error: ' + xhr.status);
+    if(this._GovPayInfo.NEWS.ENABLED) {
+      const url = this._GovPayInfo.NEWS.URL;
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            this._isLoading = false;
+            this.news = xhr.response?JSON.parse(xhr.response):[];
+            this.news.forEach((_news) => {
+              _news.body_html = this._trustHtml(_news.body_html)
+            });
+          } else {
+            this._isLoading = false;
+            // console.log('News Error: ' + xhr.status);
+          }
         }
-      }
-    }.bind(this);
-    this._isLoading = true;
-    xhr.open('GET', url);
-    xhr.timeout = UtilService.TIMEOUT;
-    xhr.setRequestHeader('Accept', 'application/vnd.github.v3.html+json');
-    xhr.send();
+      }.bind(this);
+      this._isLoading = true;
+      xhr.open('GET', url);
+      xhr.timeout = UtilService.TIMEOUT;
+      xhr.setRequestHeader('Accept', 'application/vnd.github.v3.html+json');
+      xhr.send();
+    }
+  }
+
+  ngOnDestroy() {
+    this.profiloSubscription.unsubscribe();
+    this.profiloSubscription = null;
+  }
+
+  onSubmitCredentials(form: any) {
+    const _data = { username: form.value._user, password: form.value._pass };
+    this.gps.authenticate(_data).subscribe(
+      (result) => { this.loginResponse(result, form); },
+      (error) => { this.loginError(error); }
+    );
   }
 
   protected _trustHtml(_html) {
@@ -90,7 +132,7 @@ export class DashboardViewComponent implements OnInit {
     this._PICExamService = '';
     this._PICDiffService = '';
 
-    UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BACK_IN_TIME(), 'h').format('YYYY-MM-DDTHH:mm:ss');
+    UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BACK_IN_TIME, 'h').format('YYYY-MM-DDTHH:mm:ss');
     this._PICService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=false&dataA='+UtilService.BACK_IN_TIME_DATE;
     this._PICExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=true&dataA='+UtilService.BACK_IN_TIME_DATE;
 
@@ -116,6 +158,32 @@ export class DashboardViewComponent implements OnInit {
     } else {
       this._PFDiffService += moment().format('YYYY-MM-DDTHH:mm:ss');
     }
+  }
+
+  /** Handler
+   *
+   * Login response
+   * @param response
+   * @param form
+   */
+  loginResponse(response: any, form: any) {
+    form.reset();
+    this.gps.updateSpinner(false);
+    UtilService.cacheUser(response);
+    this.hasAuthentication = true;
+    this.initBadges();
+  }
+
+  /** Service Error
+   *
+   * login error response
+   * @param error
+   */
+  loginError(error: any) {
+    this.gps.updateSpinner(false);
+    this.hasAuthentication = false;
+    UtilService.cleanUser();
+    this.us.onError(error);
   }
 
 }

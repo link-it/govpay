@@ -20,8 +20,8 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
 
   protected versioni: any[] = UtilService.TIPI_VERSIONE_API;
   protected services: any[] = [
-    { title: 'Servizio verifica', property: 'servizioVerifica', basicAuth: false, sslAuth: false, json: null },
-    { title: 'Servizio notifica', property: 'servizioNotifica', basicAuth: false, sslAuth: false, json: null }
+    { title: 'Servizio verifica', property: 'servizioVerifica', basicAuth: false, sslAuth: false, json: null, required: false },
+    { title: 'Servizio notifica', property: 'servizioNotifica', basicAuth: false, sslAuth: false, json: null, required: false }
   ];
 
   constructor() { }
@@ -34,9 +34,15 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
     this.fGroup.addControl('regExpIuv_ctrl', new FormControl(''));
     this.fGroup.addControl('generazioneIuvInterna_ctrl', new FormControl(false));
     this.services.forEach((item, index) => {
-      this.fGroup.addControl('url_ctrl_'+index, new FormControl('', Validators.required));
-      this.fGroup.addControl('versioneApi_ctrl_'+index, new FormControl('', Validators.required));
+      this.fGroup.addControl('url_ctrl_'+index, new FormControl('', null));
+      this.fGroup.addControl('versioneApi_ctrl_'+index, new FormControl('', null));
       this.fGroup.addControl('auth_ctrl_'+index, new FormControl(''));
+      if(item.required) {
+        this.fGroup.controls['url_ctrl_'+index].setValidators(Validators.required);
+        this.fGroup.controls['url_ctrl_'+index].updateValueAndValidity();
+        this.fGroup.controls['versioneApi_ctrl_'+index].setValidators(Validators.required);
+        this.fGroup.controls['versioneApi_ctrl_'+index].updateValueAndValidity();
+      }
     });
   }
 
@@ -91,6 +97,17 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
         });
       }
     });
+  }
+
+  protected _onUrlChange(trigger, target, index) {
+    if(!this.services[index].required) {
+      let _tc = this.fGroup.controls[target + index];
+      _tc.clearValidators();
+      if(trigger.value.trim() !== '') {
+        _tc.setValidators(Validators.required);
+      }
+      _tc.updateValueAndValidity();
+    }
   }
 
   protected _onAuthChange(target, index) {
@@ -154,8 +171,8 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
     this.services.forEach((item, index) => {
       _json[item.property] = {
         auth: null,
-        url: _info['url_ctrl_' + index],
-        versioneApi: _info['versioneApi_ctrl_' + index]
+        url: _info['url_ctrl_' + index]?_info['url_ctrl_' + index]:null,
+        versioneApi: _info['versioneApi_ctrl_' + index]?_info['versioneApi_ctrl_' + index]:null
       };
       if(_info.hasOwnProperty('username_ctrl_' + index)) {
         _json[item.property].auth = {
@@ -179,6 +196,9 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
         }
       }
       if(_json[item.property].auth == null) { delete _json[item.property].auth; }
+      if(_json[item.property].url == null) {
+        _json[item.property] = null;
+      }
     });
     _json.domini = (this.fGroup.controls['idA2A_ctrl'].disabled)?this.json.domini:[];
     _json.entrate = (this.fGroup.controls['idA2A_ctrl'].disabled)?this.json.entrate:[];

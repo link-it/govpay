@@ -124,6 +124,8 @@ public class OperatoriConverter {
 			}
 		}
 		
+		rsModel.setEntrate(idTributi);
+		
 		if(operatore.getUtenza().getAcls()!=null) {
 			List<AclPost> aclList = new ArrayList<>();
 			

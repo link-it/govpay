@@ -72,7 +72,7 @@ public class ProfiloConverter {
 		Soggetto anagrafica = new Soggetto();
 		
 		anagrafica.setIdentificativo(cittadino.getCodIdentificativo());
-		String nomeCognome = cittadino.getProprieta("X-SPID-NOME") + " " + cittadino.getProprieta("X-SPID-COGNOME");
+		String nomeCognome = cittadino.getProprieta("X-SPID-NAME") + " " + cittadino.getProprieta("X-SPID-FAMILYNAME");
 		anagrafica.setAnagrafica(nomeCognome);
 		anagrafica.setEmail(cittadino.getProprieta("X-SPID-EMAIL"));
 		// TODO completare informazioni utente

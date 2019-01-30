@@ -1,16 +1,14 @@
 {
-  "name": "Govpay",
+  "name": "GovPay",
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "lock modules": "npm shrinkwrap",
-    "start": "ng serve",
     "proxy-start": "ng serve --proxy-config proxy.config.json",
     "proxy-start-ip-fastweb": "ng serve --proxy-config proxy.config.json --host 192.168.1.101",
     "proxy-start-ip-linkit": "ng serve --proxy-config proxy.config.json --host 10.114.87.111",
-    "build": "ng build --prod --aot false",
-    "build baseHref backend": "ng build --prod --aot false  --base-href '/govpay/backend/gui/backoffice/public/'",
+    "build": "ng build --prod --aot false --output-hashing=none",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -33,6 +31,7 @@
     "hammerjs": "^2.0.8",
     "jquery": "^3.3.1",
     "moment": "^2.20.1",
+    "papaparse": "^4.6.1",
     "popper.js": "1.12.9",
     "rxjs": "^5.5.2",
     "web-animations-js": "^2.3.1",

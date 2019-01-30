@@ -95,7 +95,7 @@ public class UtenzaPatchUtils {
 			break;
 			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 			}
-			utenza.getIdDomini().clear();
+			utenza.getIdTributi().clear();
 		} else if(tributo.equals(AUTODETERMINAZIONE_ENTRATE)) {
 			if(utenza.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 				Applicazione applicazioneByPrincipal = AnagraficaManager.getApplicazioneByPrincipal(bd, utenza.getPrincipalOriginale());
@@ -106,10 +106,9 @@ public class UtenzaPatchUtils {
 				break;
 				default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 				}
-				utenza.getIdDomini().clear();
 				
 				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-				applicazioniBD.updateApplicazioneTrusted(applicazioneByPrincipal.getId(), applicazioneByPrincipal.isTrusted());
+				applicazioniBD.updateApplicazioneTrusted(applicazioneByPrincipal.getId(), applicazioneByPrincipal.getCodApplicazione(), applicazioneByPrincipal.isTrusted());
 			} else {
 				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX_DI_UTENZA, op.getValue(), utenza.getTipoUtenza().name()));
 			}

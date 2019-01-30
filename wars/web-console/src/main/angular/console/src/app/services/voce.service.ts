@@ -5,6 +5,8 @@ export class Voce {
 
   public static ABILITATO: string = 'Abilitato';
   public static APPLICAZIONE: string = 'Applicazione';
+  public static AREA: string = 'Area';
+  public static AUT_PT: string = 'Autorizzazione stampa PT';
   public static AUTORIZZAZIONI: string = 'Autorizzazioni';
   public static AUX: string = 'Aux';
   public static AVVISO: string = 'N. avviso';
@@ -53,7 +55,10 @@ export class Voce {
 
   public static GLN: string = 'Global location number';
 
+  public static HOSTNAME: string = 'Hostname';
+
   public static ID_A2A: string = 'Id A2A';
+  public static ID_BOLLO: string = 'Id bollo';
   public static ID_CANALE: string = 'Id canale';
   public static ID_DOMINIO: string = 'Id dominio';
   public static ID_ENTRATA: string = 'Id entrata';
@@ -103,6 +108,7 @@ export class Voce {
   public static PASSWORD: string = 'Password';
   public static PEC: string = 'Pec';
   public static PENDENZA: string = 'Pendenza';
+  public static PORTA: string = 'Porta';
   public static PRINCIPAL: string = 'Principal';
   public static PROVINCIA: string = 'Provincia';
   public static PSP: string = 'Psp';
@@ -112,6 +118,8 @@ export class Voce {
 
   public static SCADENZA: string = 'Scadenza';
   public static SECRET_CODE: string = 'Codice di segregazione';
+  public static SERVIZIO_AVVISATURA: string = 'Servizio avvisatura';
+  public static SERVIZIO_RPT: string = 'Servizio RPT';
   public static SOGGETTO_VERSANTE: string = 'Versante';
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';

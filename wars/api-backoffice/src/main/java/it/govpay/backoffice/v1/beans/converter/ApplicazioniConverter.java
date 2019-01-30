@@ -169,6 +169,8 @@ public class ApplicazioniConverter {
 			}
 		}
 		
+		rsModel.setEntrate(idTributi);
+		
 		if(applicazione.getUtenza().getAcls()!=null) {
 			List<AclPost> aclList = new ArrayList<>();
 			
@@ -179,7 +181,7 @@ public class ApplicazioniConverter {
 			rsModel.setAcl(aclList);
 		}
 		
-		rsModel.setEntrate(idTributi);
+		
 		
 		return rsModel;
 	}

@@ -113,7 +113,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
           default:
             _stato = UtilService.STATI_RPP.IN_CORSO;
         }
-        let _st = new Dato({ value: Dato.concatStrings([ Voce.ENTE_CREDITORE+': '+item.pendenza.dominio.ragioneSociale, Voce.AVVISO+': '+item.pendenza.numeroAvviso ], ', ') });
+        let _st = new Dato({ value: Dato.concatStrings([ Voce.ENTE_CREDITORE+': '+item.pendenza.dominio.ragioneSociale, Voce.IUV+': '+item.rpt.datiVersamento.identificativoUnivocoVersamento ], ', ') });
         let _std = new StandardCollapse();
         _std.titolo = new Dato({ value: item.pendenza.causale });
         _std.sottotitolo = _st;

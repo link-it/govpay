@@ -38,7 +38,12 @@ export class AclViewComponent implements IFormComponent, OnInit {
     let ctrl = this.fGroup.controls[control];
     if(ctrl) {
       this.autorizzazioni.forEach((el) => {
-        el.disabled = (target.value != UtilService.CONFIGURAZIONE_E_MANUTENZIONE && el.label == UtilService._LABEL.ESECUZIONE);
+        el.disabled = false;
+        if (target.value.toLowerCase() != UtilService.CONFIGURAZIONE_E_MANUTENZIONE.toLowerCase() &&
+            target.value.toLowerCase() != UtilService.PAGAMENTI_E_PENDENZE.toLowerCase() &&
+            el.label == UtilService._LABEL.ESECUZIONE) {
+          el.disabled = true;
+        }
       });
       let i = ctrl.value.indexOf(UtilService._CODE.ESECUZIONE);
       if(i != -1 && target.value != UtilService.CONFIGURAZIONE_E_MANUTENZIONE) {
@@ -52,7 +57,9 @@ export class AclViewComponent implements IFormComponent, OnInit {
     let ctrl = this.fGroup.controls[control];
     if(ctrl) {
       let i = ctrl.value.indexOf(UtilService._CODE.ESECUZIONE);
-      if(i != -1 && target.value && target.value != UtilService.CONFIGURAZIONE_E_MANUTENZIONE) {
+      if(i != -1 && target.value &&
+        target.value.toLowerCase() != UtilService.CONFIGURAZIONE_E_MANUTENZIONE.toLowerCase() &&
+        target.value.toLowerCase() != UtilService.PAGAMENTI_E_PENDENZE.toLowerCase()) {
         ctrl.value.splice(i, 1);
         ctrl.setValue(ctrl.value);
       }

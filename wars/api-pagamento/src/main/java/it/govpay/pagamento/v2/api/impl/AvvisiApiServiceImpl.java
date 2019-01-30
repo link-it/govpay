@@ -3,19 +3,14 @@ package it.govpay.pagamento.v2.api.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
-import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.exception.WebApplicationExceptionMapper;
@@ -68,16 +63,8 @@ public class AvvisiApiServiceImpl extends BaseImpl implements AvvisiApi {
 		return ac;
 	}
 
-    /**
-     * Avviso di pagamento
-     *
-     * Fornisce un avviso di pagamento o la pendenza ad esso associata
-     *
-     */
 	@Override
-	@Path("/avvisi/{idDominio}/{iuv}")
-	@Produces({ "application/json", "application/problem+json" })
-    public Avviso getAvviso(String idDominio, String iuv, String idDebitore) {
+	public Avviso getAvviso(String idDominio, String numeroAvviso, String idPagatore) {
 		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
@@ -89,29 +76,22 @@ public class AvvisiApiServiceImpl extends BaseImpl implements AvvisiApi {
 				accept = this.getContext().getServletRequest().getHeader("Accept");
 			}
 			
-			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(context.getAuthentication(), idDominio, iuv);
+			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(context.getAuthentication(), idDominio);
 			getAvvisoDTO.setAccessoAnonimo(true);
-			getAvvisoDTO.setCfDebitore(idDebitore);
+			getAvvisoDTO.setCfDebitore(idPagatore);
+			getAvvisoDTO.setNumeroAvviso(numeroAvviso);
 			
 			AvvisiDAO avvisiDAO = new AvvisiDAO();
 			
-			// TODO quale formato restituire?
+			GetAvvisoDTOResponse getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
+			Avviso avviso = PendenzeConverter.toAvviso(getAvvisoDTOResponse.getVersamento(), getAvvisoDTOResponse.getDominio(), getAvvisoDTOResponse.getBarCode(), getAvvisoDTOResponse.getQrCode());
+			
 			if(accept.toLowerCase().contains("application/pdf")) {
-				getAvvisoDTO.setFormato(FormatoAvviso.PDF);
-				GetAvvisoDTOResponse getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
-				
-				throw new NotAuthorizedException("Avviso di pagamento non disponibile nel formato richiesto");
-//				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(getAvvisoDTOResponse.getAvvisoPdf()).header("content-disposition", "attachment; filename=\""+getAvvisoDTOResponse.getFilenameAvviso()+"\""),transactionId).build();
-			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
-				getAvvisoDTO.setFormato(FormatoAvviso.JSON);
-				GetAvvisoDTOResponse getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
-				Avviso avviso = PendenzeConverter.toAvviso(getAvvisoDTOResponse.getVersamento(), getAvvisoDTOResponse.getDominio(), getAvvisoDTOResponse.getBarCode(), getAvvisoDTOResponse.getQrCode());
-				context.getLogger().debug("Invocazione completata con successo");
-				return avviso;
-			} else {
-				// formato non accettato
-				throw new NotAuthorizedException("Avviso di pagamento non disponibile nel formato richiesto");
+				context.getServletResponse().setHeader("content-disposition", "attachment; filename=\""+getAvvisoDTOResponse.getFilenameAvviso()+"\"");
 			}
+			
+			context.getLogger().info("Invocazione completata con successo");
+			return avviso;
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -121,6 +101,8 @@ public class AvvisiApiServiceImpl extends BaseImpl implements AvvisiApi {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw WebApplicationExceptionMapper.handleException(e);
 		}
-    }
+	}
+
+   
 }
 

@@ -4,7 +4,7 @@
     <p class="d-block matcard-title py-0 regular-16 normal-color" *ngIf="informazioni.length == 0">Nessuna informazione</p>
     <div class="d-block" *ngIf="informazioni.length != 0">
       <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioni" [info]="item"></link-key-value-view>
-      <img class="d-block w-50 link-key-value-fill-mat-card px-3 py-3" [src]="logo" (error)="_onError()" *ngIf="!logoError"/>
+      <img class="d-block w-50 link-key-value-fill-mat-card px-3 py-3" [src]="logo" (error)="_onError($event)" *ngIf="!logoError"/>
     </div>
   </mat-card>
   <mat-card class="shadow no-border-radius mb-4 pb-0">

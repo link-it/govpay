@@ -13,15 +13,6 @@
         <div class="col-5 color-gray">{{extra.label}}</div>
         <div class="col-7">{{extra.value}}</div>
       </div>
-      <p class="mt-3 mb-2 color-gray regular-18" *ngIf="info.cancel">Annullamento</p>
-      <div class="row lh-130 regular-16 mb-2" *ngIf="info.cancel">
-        <div class="col-5 color-gray">Data:</div>
-        <div class="col-7">{{info.dataAnnullamento}}</div>
-      </div>
-      <div class="row lh-130 regular-16 mb-2" *ngIf="info.cancel">
-        <div class="col-5 color-gray">Causale:</div>
-        <div class="col-7">{{info.causale}}</div>
-      </div>
     </div>
     <div class="col-12 col-sm-4 px-0 text-right">
       <p class="text-truncate medium-24 lh-90 mb-1" *ngIf="info.importo">{{info.importo}}</p>

@@ -167,10 +167,11 @@ public class ApplicazioniBD extends BasicBD {
 	 * @throws NotFoundException se non esiste
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public void updateApplicazioneTrusted(Long id, boolean trusted) throws NotFoundException, ServiceException {
+	public void updateApplicazioneTrusted(Long id, String codApplicazione, boolean trusted) throws NotFoundException, ServiceException {
 		try {
 			IdApplicazione idVO = new IdApplicazione();
 			idVO.setId(id);
+			idVO.setCodApplicazione(codApplicazione);
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Applicazione.model().TRUSTED, trusted));
 

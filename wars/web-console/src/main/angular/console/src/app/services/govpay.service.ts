@@ -40,14 +40,15 @@ export class GovpayService {
    * Logout
    */
   logoutService() {
-    location.href = UtilService.LOGOUT_SERVICE;
-  }
-
-  /**
-   * Unauthorized Service
-   */
-  unauthorizedService() {
-    location.href = UtilService.BASE_HREF;
+    this.exit().subscribe(
+      (_response) => {
+        this.updateSpinner(false);
+        UtilService.cleanUser();
+      },
+      (error) => {
+        this.updateSpinner(false);
+        this.us.onError(error);
+      });
   }
 
   /**
@@ -60,9 +61,6 @@ export class GovpayService {
     this.updateSpinner(true);
     let url = UtilService.ROOT_SERVICE + service;
     let headers = new HttpHeaders();
-    if(UtilService.NEED_BASIC_AUTHORIZATION) {
-      headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-    }
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', '*/*');
     let _params = null;
@@ -78,8 +76,7 @@ export class GovpayService {
       .timeout(UtilService.TIMEOUT)
       .map((response) => {
         return response;
-      })
-      .pipe(catchError(this.handleError.bind(this, service)));
+      });
   }
 
   /**
@@ -95,9 +92,6 @@ export class GovpayService {
     method = (method || UtilService.METHODS.PUT);
     let url = UtilService.ROOT_SERVICE + service;
     let headers = new HttpHeaders();
-    if (UtilService.NEED_BASIC_AUTHORIZATION) {
-      headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-    }
     if(!autoHeaders) {
       headers = headers.set('Content-Type', 'application/json');
       headers = headers.set('Accept', '*/*');
@@ -115,15 +109,11 @@ export class GovpayService {
 
     return this.http.request(method, url, { body: body, headers: headers, observe: 'response', params: _params })
       .timeout(UtilService.TIMEOUT)
-      .map((response) => { return response; })
-      .pipe(catchError(this.handleError.bind(this, service)));
+      .map((response) => { return response; });
   }
 
   multiGetService(services: string[], properties: any[], content: any) {
     let headers = new HttpHeaders();
-    if(UtilService.NEED_BASIC_AUTHORIZATION) {
-      headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-    }
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', '*/*');
     let methods = services.map((service) => {
@@ -148,9 +138,6 @@ export class GovpayService {
     let methods = services.map((service, index) => {
       let url = UtilService.ROOT_SERVICE + service;
       let headers = new HttpHeaders();
-      if(UtilService.NEED_BASIC_AUTHORIZATION) {
-        headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-      }
       headers = headers.set('Content-Type', contents[index]);
       headers = headers.set('Accept', contents[index]);
       let method;
@@ -169,19 +156,44 @@ export class GovpayService {
     return forkJoin(methods)
       .map((response) => {
         return response;
-      })
-      .pipe(catchError(this.handleExportError.bind(this)));
+      });
   }
 
+  isAuthenticated(service): Observable<any> {
+    this.updateSpinner(true);
+    let url = UtilService.ROOT_SERVICE + service;
+    let _headers = new HttpHeaders();
+    _headers = _headers.set('Content-Type', 'application/json');
+    _headers = _headers.set('Accept', '*/*');
+    return this.http.get(url, { headers: _headers, observe: 'response' })
+      .timeout(UtilService.TIMEOUT)
+      .map((response) => {
+        return response;
+      })
+  }
+
+  authenticate(data: any): Observable<any> {
+    this.updateSpinner(true);
+    let _headers = new HttpHeaders();
+    _headers = _headers.set('Authorization', 'Basic ' + btoa(data.username + ':' + data.password));
+    const options = { headers: _headers, withCredentials: true };
+
+    return this.http.get(UtilService.ROOT_SERVICE + UtilService.URL_LOGIN_SERVICE, options);
+  }
+
+  exit(): Observable<any> {
+    this.updateSpinner(true);
+    let _headers = new HttpHeaders();
+    _headers = _headers.set('Content-Type', 'application/json');
+
+    return this.http.get(UtilService.URL_LOGOUT_SERVICE, { headers: _headers, observe: 'response' });
+  }
 
   /**
    * FORK DATA SERVICES
    */
   forkService(methods: any[]): Observable<any> {
     let headers = new HttpHeaders();
-    if(UtilService.NEED_BASIC_AUTHORIZATION) {
-      headers = headers.set('Authorization', 'Basic ' + UtilService.AUTHORIZATION);
-    }
     headers = headers.set('Content-Type', 'application/json');
     let fullMethods: any[] = [];
     methods.forEach((_method) => {
@@ -191,39 +203,7 @@ export class GovpayService {
     return forkJoin(fullMethods)
       .map((response) => {
         return response;
-      })
-      .pipe(catchError(this.handleExportError.bind(this)));
+      });
   }
-
-  private handleExportError(error: HttpErrorResponse): ErrorObservable {
-    try {
-      if(error.headers && error.headers.get('content-type') === 'text/html') {
-        this.unauthorizedService();
-        return new ErrorObservable({ message: 'Session expired.', code: 503, instance: error });
-      }
-    } catch(e) {
-      console.log(e);
-    }
-
-    return new ErrorObservable({ message: 'Si è verificato un problema. Esportazione interrotta.', code: error.status, instance: error });
-  }
-
-  private handleError(service: string, error: HttpErrorResponse): ErrorObservable {
-    try {
-      if(error.headers && error.headers.get('content-type') === 'text/html') {
-        this.unauthorizedService();
-        return new ErrorObservable({ message: 'Session expired.', code: 503, instance: error });
-      }
-      if(service == UtilService.URL_PROFILO) {
-        this.logoutService();
-        return new ErrorObservable({ message: 'Profilo utente non presente.', code: 503, instance: error });
-      }
-    } catch(e) {
-      console.log(e);
-    }
-
-    return new ErrorObservable({ message: error.message?error.message:'Error non previsto.', code: error.status, instance: error });
-  }
-
 
 }

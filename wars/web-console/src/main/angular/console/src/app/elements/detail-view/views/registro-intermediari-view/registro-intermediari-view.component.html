@@ -5,10 +5,18 @@
     <div class="d-block" *ngIf="informazioni.length != 0">
       <link-key-value-view *ngFor="let item of informazioni" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
     </div>
-    <p class="d-block matcard-title py-3 color-gray regular-18">Connettore PDD o PPDOE</p>
-    <p class="d-block matcard-title py-0 regular-16 normal-color" *ngIf="connettori.length == 0">Nessuna informazione</p>
-    <div class="d-block" *ngIf="connettori.length != 0">
-      <link-key-value-view *ngFor="let item of connettori" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    <p class="d-block matcard-title py-3 color-gray regular-18">Connettore SOAP</p>
+    <p class="d-block matcard-title py-0 regular-16 normal-color" *ngIf="connettoriSoap.length == 0">Nessuna informazione</p>
+    <div class="d-block" *ngIf="connettoriSoap.length != 0">
+      <link-key-value-view *ngFor="let item of connettoriSoap" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    </div>
+    <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="connettoriSFtp.lettura.length != 0">Connettore SFTP - Lettura</p>
+    <div class="d-block" *ngIf="connettoriSFtp.lettura.length != 0">
+      <link-key-value-view *ngFor="let item of connettoriSFtp.lettura" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+    </div>
+    <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="connettoriSFtp.scrittura.length != 0">Connettore SFTP - Scrittura</p>
+    <div class="d-block" *ngIf="connettoriSFtp.scrittura.length != 0">
+      <link-key-value-view *ngFor="let item of connettoriSFtp.scrittura" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
     </div>
   </mat-card>
   <mat-card class="shadow no-border-radius pb-0">

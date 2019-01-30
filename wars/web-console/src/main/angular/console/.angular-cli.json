@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
-    "name": "Govpay"
+    "name": "GovPay"
   },
   "apps": [
     {
@@ -29,6 +29,7 @@
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/moment/min/moment.min.js",
         "../node_modules/hammerjs/hammer.min.js",
+        "../node_modules/papaparse/papaparse.min.js",
         "./scripts/FileSaver.js",
         "./scripts/jszip.min.js"
       ],

@@ -1,5 +1,5 @@
 <div class="container-fluid p-3">
-  <div class="row align-items-stretch">
+  <div class="row align-items-stretch" *ngIf="hasAuthentication">
     <div class="col-sm-6 col-12 flex-column">
       <link-badge-card class="d-block action" badge-title="Pagamenti rifiutati"
                        [service]="_PFService" [diff-service]="_PFDiffService" [exam-service]="_PFExamService"
@@ -13,20 +13,39 @@
   </div>
   <div class="row">
     <div class="col-sm-4 col-12 flex-column form-col">
-      <mat-card class="mb-3 mat-elevation-card">
+      <form class="w-100" #loginForm="ngForm" *ngIf="!hasAuthentication">
+        <mat-card class="mat-elevation-card mb-3">
+          <mat-card-header>
+            <p class="card-title-margin color-gray regular-24">Autenticazione</p>
+          </mat-card-header>
+            <mat-card-content>
+              <mat-form-field class="w-100" color="accent">
+                <input id="inputEmail" matInput placeholder="Nome utente"
+                       name="_user" [(ngModel)]="_user" required autofocus>
+              </mat-form-field>
+              <mat-form-field class="w-100" color="accent">
+                <input id="inputPassword" matInput placeholder="Password" type="password"
+                       name="_pass" [(ngModel)]="_pass" required>
+              </mat-form-field>
+              <button mat-button mat-raised-button color="accent" class="mat-elevation-z0 mt-3" type="submit"
+                      [disabled]="!loginForm.form.valid" (click)="onSubmitCredentials(loginForm)">ACCEDI</button>
+            </mat-card-content>
+        </mat-card>
+      </form>
+      <mat-card class="mat-elevation-card mb-3">
         <mat-card-header>
-          <p class="card-title-margin color-gray regular-24">Govpay</p>
+          <p class="card-title-margin color-gray regular-24">GovPay</p>
         </mat-card-header>
         <mat-card-content>
           <ul class="regular-16">
             <li class="accent-text d-block">
-              <a class="pt-1" [href]="_LinkBasePath+'/public/GovPay-ManualeUtente.pdf'" target="_blank">Manuale utente</a>
+              <a class="pt-1" [href]="_GovPayInfo.DOCUMENTS.MANUALE_UTENTE" target="_blank">Manuale utente</a>
             </li>
             <li class="accent-text d-block">
-              <a class="pt-1" [href]="_LinkBasePath+'/public/LICENSE'" target="_blank">Licenza</a>
+              <a class="pt-1" [href]="_GovPayInfo.DOCUMENTS.LICENSE" target="_blank">Licenza</a>
             </li>
             <li class="accent-text d-block">
-              <a class="pt-1" href="https://github.com/link-it/GovPay" target="_blank">Progetto Govpay</a>
+              <a class="pt-1" [href]="_GovPayInfo.PROGETTO_GOVPAY" target="_blank">Progetto GovPay</a>
             </li>
           </ul>
         </mat-card-content>
@@ -40,7 +59,7 @@
         <mat-card-content>
           <div *ngFor="let _news of news">
             <div class="py-3 news-title"><a [href]="_news.html_url" target="_blank">{{_news.tag_name}} {{_news.name}}</a></div>
-            <div class="news-body" [innerHTML]="_news.body_html"></div>
+            <div class="news-body overflow-x-hidden" [innerHTML]="_news.body_html"></div>
           </div>
           <div class="regular-16 normal-color" *ngIf="news.length==0">Nessuna notizia.</div>
         </mat-card-content>

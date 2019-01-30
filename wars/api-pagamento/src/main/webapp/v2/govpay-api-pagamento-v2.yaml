@@ -363,6 +363,11 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: visualizzaSoggettoDebitore
+          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
+          schema:
+            type: boolean
       responses:
         '200':
           description: Ricevuta di pagamento
@@ -716,7 +721,7 @@ components:
             instance: "https://govpay.readthedocs.io/it/latest/integrazione/errori/400000.html"
             invalidParams:
               - name: numeroAvviso
-                reason: must match "[0-9]18"
+                reason: must match "[0-9]{18}"
                 value: 12345678901234567890
               - name: importo
                 reason: may not be null
@@ -1111,7 +1116,7 @@ components:
               type: string
               description: Identificativo univoco versamento, assegnato se pagabile da psp
               example: 123456789012345678
-              pattern: "[0-9]18"
+              pattern: "[0-9]{18}"
             tassonomiaAvviso:
               $ref: '#/components/schemas/TassonomiaAvviso'
             dataValidita:
@@ -1128,7 +1133,7 @@ components:
               type: number
               description: Anno di riferimento della pendenza
               example: 2020
-              pattern: "[0-9]4"
+              pattern: "[0-9]{4}"
             cartellaPagamento:
               type: string
               description: Identificativo della cartella di pagamento a cui afferisce la pendenza
@@ -1142,7 +1147,7 @@ components:
               type: array
               minItems: 1
               maxItems: 5
-              title: x-gov4j-commons-json-deserializer#it.govpay.pagamento.v2.beans.deserializer.TipoRiferimentoVocePendenzaDeserializer
+              description: x-gov4j-commons-json-deserializer#it.govpay.pagamento.v2.beans.deserializer.TipoRiferimentoVocePendenzaDeserializer
               items:
                 $ref: '#/components/schemas/NuovaVocePendenza'
     NuovaVocePendenza:
@@ -1618,7 +1623,7 @@ components:
             Numero avviso della pendenza, assegnato se
             pagabile da psp
           example: 123456789012345678
-          pattern: "[0-9]18"
+          pattern: "[0-9]{18}"
         idPagatore:
           type: string
           description: >-

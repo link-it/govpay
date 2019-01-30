@@ -25,4 +25,10 @@
       <input matInput placeholder="Codifica IUV" formControlName="codificaIUV_ctrl" autocomplete="off">
     </mat-form-field>
   </div>
+  <div class="row">
+    <div class="col-12" [formGroup]="fGroup">
+      <mat-slide-toggle formControlName="attivazione_ctrl" color="accent">Pagamento spontaneo</mat-slide-toggle>
+      <mat-slide-toggle class="ml-3" formControlName="pagaTerzi_ctrl" color="accent">Pagabile da altri</mat-slide-toggle>
+    </div>
+  </div>
 </div>

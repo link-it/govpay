@@ -66,6 +66,11 @@ export class LinkService implements OnDestroy{
     this.router.navigate(['/']);
   }
 
+  routeToLoginForm(url: string) {
+    this.routeHistory = [];
+    this.router.navigateByUrl(url);
+  }
+
   navigateToMainList() {
     let _redirect = this.getRouterStateConfig();
     if(_redirect) {
@@ -93,7 +98,7 @@ export class LinkService implements OnDestroy{
   getRouterStateConfig(_url?: string): any {
     _url = _url || this.router.url;
     _url = _url.split('?')[0];
-    let re = _url.substring(1).match(/^[^/]+(\/(\w+)){0,2}/); //TODO: HighPriority - Verificare {0,1} vs {0,2}
+    let re = _url.substring(1).match(/^[^/]+(\/(\w+)){0,2}/); // ROUTING - {0,1} vs {0,2}
     let _redirect;
     let _parent;
     if(re && re[1]) {
@@ -109,7 +114,7 @@ export class LinkService implements OnDestroy{
 
   setRouterStateConfigData(data: any,_url?: string) {
     _url = _url || this.router.url;
-    let re = _url.split('?')[0].substring(1).match(/^[^/]+(\/(\w+)){0,2}/); //TODO: HighPriority - Verificare {0,1} vs {0,2}
+    let re = _url.split('?')[0].substring(1).match(/^[^/]+(\/(\w+)){0,2}/); // ROUTING - {0,1} vs {0,2}
     let s;
     if(re) {
       s = re[0];

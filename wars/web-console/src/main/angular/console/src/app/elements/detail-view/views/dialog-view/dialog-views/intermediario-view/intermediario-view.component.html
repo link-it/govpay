@@ -13,9 +13,12 @@
   <div class="w-100" [formGroup]="fGroup">
     <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
   </div>
-  <p class="color-gray pt-2 mt-3 mb-2">Connettore PDD o PDDOE</p>
+  <p class="color-gray pt-2 mt-3 mb-2">Connettore SOAP</p>
   <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-    <input matInput placeholder="Url" formControlName="url_ctrl" autocomplete="off" required>
+    <input matInput [placeholder]="ph._RPT" formControlName="urlRPT_ctrl" autocomplete="off" required>
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="ph._AVVISATURA" formControlName="urlAvvisatura_ctrl" autocomplete="off">
   </mat-form-field>
   <!--<mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
     <mat-select placeholder="Versione API" formControlName="versioneApi_ctrl" required>
@@ -58,4 +61,30 @@
       <input matInput placeholder="TrustStore password" formControlName="tsPassword_ctrl" autocomplete="off">
     </mat-form-field>
   </div>
+  <p class="color-gray pt-2 mt-3 mb-2">Connettore sFTP Lettura</p>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Hostname" formControlName="hostnameL_ctrl" autocomplete="off" [required]="_isFtpRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Porta" formControlName="portaL_ctrl" autocomplete="off" [required]="_isFtpRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Username" formControlName="usernameL_ctrl" autocomplete="off" [required]="_isFtpRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Password" formControlName="passwordL_ctrl" autocomplete="off" [required]="_isFtpRequired">
+  </mat-form-field>
+  <p class="color-gray pt-2 mt-3 mb-2">Connettore sFTP Scrittura</p>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Hostname" formControlName="hostnameS_ctrl" autocomplete="off" [required]="_isFtpRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Porta" formControlName="portaS_ctrl" autocomplete="off" [required]="_isFtpRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Username" formControlName="usernameS_ctrl" autocomplete="off" [required]="_isFtpRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Password" formControlName="passwordS_ctrl" autocomplete="off" [required]="_isFtpRequired">
+  </mat-form-field>
 </mat-card>

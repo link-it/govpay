@@ -90,6 +90,7 @@ public class VersamentiBD extends BasicBD {
 		try {
 			IExpression exp = this.getVersamentoService().newExpression();
 			exp.equals(it.govpay.orm.Versamento.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().ID_UO.COD_UO);	
 			exp.equals(it.govpay.orm.Versamento.model().IUV_VERSAMENTO,iuv);
 			it.govpay.orm.Versamento versamento = this.getVersamentoService().find(exp);
 			return VersamentoConverter.toDTO(versamento);
@@ -111,6 +112,7 @@ public class VersamentiBD extends BasicBD {
 		try {
 			IExpression exp = this.getVersamentoService().newExpression();
 			exp.equals(it.govpay.orm.Versamento.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().ID_UO.COD_UO);
 			exp.equals(it.govpay.orm.Versamento.model().NUMERO_AVVISO,numeroAvviso);
 			it.govpay.orm.Versamento versamento = this.getVersamentoService().find(exp);
 			return VersamentoConverter.toDTO(versamento);
@@ -156,8 +158,10 @@ public class VersamentiBD extends BasicBD {
 			if(codUnivocoDebitore != null)
 				exp.equals(it.govpay.orm.Versamento.model().DEBITORE_IDENTIFICATIVO, codUnivocoDebitore);
 
-			if(codDominio != null)
+			if(codDominio != null) {
 				exp.equals(it.govpay.orm.Versamento.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
+				exp.and().isNotNull(it.govpay.orm.Versamento.model().ID_UO.COD_UO);
+			}
 
 			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Versamento.model())), idApplicazione);

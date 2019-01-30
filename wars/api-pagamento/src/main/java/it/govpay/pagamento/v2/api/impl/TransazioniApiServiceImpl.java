@@ -10,7 +10,6 @@ import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.pagamenti.RptDAO;
@@ -172,11 +171,6 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
 
-			String accept = "";
-			if(StringUtils.isNotEmpty(this.getContext().getServletRequest().getHeader("Accept"))) {
-				accept = this.getContext().getServletRequest().getHeader("Accept");
-			}
-
 			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(context.getAuthentication());
 			leggiRptDTO.setIdDominio(idDominio);
 			leggiRptDTO.setIuv(iuv);
@@ -187,22 +181,9 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 
-			// TODO quale formato restituire?
-			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
-				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
-
-				
-				//return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
-			}else if(accept.toLowerCase().contains("application/xml")){
-				// return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(leggiRptDTOResponse.getRpt().getXmlRpt()),transactionId).build();
-			} else {
-				// formato non accettato
-				throw new NotAuthorizedException("Rpt non disponibile nel formato richiesto");
-			}
-
+			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
 			context.getLogger().info("Invocazione completata con successo");
-			return null;
-
+			return rpt;
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());
@@ -220,7 +201,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 	 *
 	 */
 	@Override
-	public byte[] getRt(String idDominio, String iuv, String ccp) {
+	public byte[] getRt(String idDominio, String iuv, String ccp,Boolean visualizzaSoggettoDebitore) {
 		IContext context = this.getContext();
 		try {
 			context.getLogger().info("Invocazione in corso ...");     
@@ -238,39 +219,34 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
 			
-			// TODO riportare dalla v1
-//			if(visualizzaSoggettoDebitore != null)
-//				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
+			if(visualizzaSoggettoDebitore != null)
+				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
 
 			RptDAO ricevuteDAO = new RptDAO(); 
-
+ 
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = null; 
 
-			// TODO quale formato restituire?
+			byte[] byteRes = null;
 			if(accept.toLowerCase().contains("application/pdf")) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.PDF);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 				String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
-				byte[] b = ricevutaDTOResponse.getPdf(); 
-
-		//		return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
+				context.getServletResponse().setHeader("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"");
+				byteRes = ricevutaDTOResponse.getPdf(); 
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-				CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-	//			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
+				byteRes = ricevutaDTOResponse.getRpt().getXmlRt();
 			} else if(accept.toLowerCase().contains("application/xml")){
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-//				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
+				byteRes = ricevutaDTOResponse.getRpt().getXmlRt();
 			} else {
-				// formato non accettato
 				throw new NotAuthorizedException("Rt non disponibile nel formato richiesto");
 			}
 			
 			context.getLogger().info("Invocazione completata con successo");
-			return null;
-
+			return byteRes;
 		}
 		catch(javax.ws.rs.WebApplicationException e) {
 			context.getLogger().error("Invocazione terminata con errore '4xx': %s",e, e.getMessage());

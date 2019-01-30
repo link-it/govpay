@@ -44,23 +44,33 @@ export class RiscossioniViewComponent implements IModalDialog, OnInit {
   protected mapJsonDetail() {
     //Riepilogo
     let _dettaglio = [];
-    _dettaglio.push(new Dato({ label: Voce.IUV, value: this.json.iuv }));
-    _dettaglio.push(new Dato({ label: Voce.IUR, value: this.json.iur }));
+    if(this.json.iuv) {
+      _dettaglio.push(new Dato({ label: Voce.IUV, value: this.json.iuv }));
+    }
+    if(this.json.iur) {
+      _dettaglio.push(new Dato({ label: Voce.IUR, value: this.json.iur }));
+    }
     _dettaglio.push(new Dato({ label: Voce.IMPORTO, value: this.us.currencyFormat(this.json.importo) }));
     let _date = this.json.data?moment(this.json.data).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
     _dettaglio.push(new Dato({ label: Voce.DATA_ESECUZIONE_RISCOSSIONE, value: _date }));
-    _dettaglio.push(new Dato({ label: Voce.ID_PENDENZA, value: this.json.idVocePendenza }));
+    if(this.json.idVocePendenza) {
+      _dettaglio.push(new Dato({ label: Voce.ID_PENDENZA, value: this.json.idVocePendenza }));
+    }
     _dettaglio.push(new Dato({ label: Voce.INDICE_PENDENZA, value: this.json.indice }));
-    _dettaglio.push(new Dato({ label: Voce.ID_DOMINIO, value: this.json.idDominio }));
+    if(this.json.idDominio) {
+      _dettaglio.push(new Dato({ label: Voce.ID_DOMINIO, value: this.json.idDominio }));
+    }
     _dettaglio.push(new Dato({ label: Voce.COMMISSIONI, value: this.us.currencyFormat(this.json.commissioni) }));
     _dettaglio.push(new Dato({ label: Voce.STATO, value: UtilService.STATI_RISCOSSIONE[this.json.stato] }));
     _dettaglio.push(new Dato({ label: Voce.TIPO_RISCOSSIONE, value: UtilService.TIPI_RISCOSSIONE[this.json.tipo] }));
-    _dettaglio.push(new Dato({ label: Voce.INCASSO, value: UtilService.defaultDisplay({ value:this.json.incasso }) }));
+    if(this.json.incasso) {
+      _dettaglio.push(new Dato({ label: Voce.INCASSO, value: UtilService.defaultDisplay({ value:this.json.incasso }) }));
+    }
     //_dettaglio.push(new Dato({ label: 'Url pendenza', value: this.json.pendenza }));
     //_dettaglio.push(new Dato({ label: 'Url rpp', value: this.json.rpp }));
-    if(this.json.allegato) {
+    if(this.json.allegato && this.json.allegato.contenuto && this.json.allegato.contenuto.TipoBollo) {
       _dettaglio.push(new Dato({ label: Voce.TIPO_ALLEGATO, value: this.json.allegato.tipo }));
-      _dettaglio.push(new Dato({ label: Voce.CONTENUTO_ALLEGATO, value: this.json.allegato.testo }));
+      _dettaglio.push(new Dato({ label: Voce.ID_BOLLO, value: this.json.allegato.contenuto.IUBD }));
     }
     this.informazioni = _dettaglio.slice(0);
   }

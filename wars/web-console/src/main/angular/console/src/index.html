@@ -2,36 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>GovPay</title>
+  <title></title>
   <base href="/">
 
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <script>
-    function rootService() {
-      return '/govpay/backend/api/backoffice/rs/v1';
-    }
-    function hostname() {
-      return window.location.protocol+'//'+window.location.host;
-    }
-    function httpBase() {
-      return hostname() + '/govpay/backend/gui/backoffice/'; //401
-    }
-    function httpLogoutService() {
-      return hostname() + '/govpay/backend/gui/backoffice/logout'; //exit
-    }
-    function httpBasePath() {
-      return hostname() + '/govpay/backend/gui/backoffice'; //manuale
-    }
-    function backInTime() {
-      //Ore, (filtro badge)
-      return 2;
-    }
-    function badgeTimer() {
-      //Millisecondi, (timer badge)
-      return 30000;
-    }
-  </script>
+  <script src="assets/Config.govpay"></script>
 </head>
 <body>
   <link-root></link-root>

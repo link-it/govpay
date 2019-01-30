@@ -8,15 +8,20 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	
 	private String codDominio;
 	private String iuv;
+	private String numeroAvviso;
 	private FormatoAvviso formato;
 	private boolean accessoAnonimo;
 	private String cfDebitore;
 	
+	public GetAvvisoDTO(Authentication user, String codDominio) {
+		this(user, codDominio, null);
+	}
 	public GetAvvisoDTO(Authentication user, String codDominio, String iuv) {
 		super(user);
 		this.setCodDominio(codDominio);
 		this.setIuv(iuv);
 		this.setAccessoAnonimo(false);
+		this.formato = FormatoAvviso.JSON;
 	}
 
 	public String getIuv() {
@@ -57,6 +62,14 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 
 	public void setCfDebitore(String cfDebitore) {
 		this.cfDebitore = cfDebitore;
+	}
+
+	public String getNumeroAvviso() {
+		return numeroAvviso;
+	}
+
+	public void setNumeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
 	}
 
 	

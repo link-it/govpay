@@ -49,6 +49,8 @@ import org.slf4j.Logger;
 
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdVersamento;
+import it.govpay.orm.SingoloVersamento;
+import it.govpay.orm.Versamento;
 import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoIncassoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.VersamentoIncassoFetch;
@@ -645,6 +647,27 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
 			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_UO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(VersamentoIncasso.model().ID_UO.ID_DOMINIO,false)){
+			
+			if(!expression.inUseModel(VersamentoIncasso.model().ID_UO,false)){
+				String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
+				String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_UO);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
+			}
+
+			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_UO);
+			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_UO.ID_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
+			
+		}
+		
+		if(expression.inUseModel(VersamentoIncasso.model().ID_DOMINIO,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
 
 		if(expression.inUseModel(VersamentoIncasso.model().ID_APPLICAZIONE,false)){

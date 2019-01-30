@@ -19,6 +19,7 @@ export class FormService {
   public static FORM_DEBITORE: string = 'Debitore';
   public static FORM_PH_DEBITORE: string = 'Codice fiscale';
   public static FORM_STATO: string = 'Stato';
+  public static FORM_ENTE_CREDITORE: string = 'Ente creditore';
 
   //Pagamenti
   public static FORM_VERSANTE: string = 'Versante';

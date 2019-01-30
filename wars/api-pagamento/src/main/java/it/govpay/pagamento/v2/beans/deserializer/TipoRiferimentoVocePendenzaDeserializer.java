@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.govpay.pagamento.v2.beans.Bollo;
 import it.govpay.pagamento.v2.beans.Entrata;
+import it.govpay.pagamento.v2.beans.NuovaVocePendenza;
 import it.govpay.pagamento.v2.beans.RiferimentoEntrata;
 
 public class TipoRiferimentoVocePendenzaDeserializer extends JsonDeserializer<Object> {
@@ -32,17 +33,19 @@ public class TipoRiferimentoVocePendenzaDeserializer extends JsonDeserializer<Ob
         List<Object> pendenze = new ArrayList<Object>();
         for (; elements.hasNext();) {
         	JsonNode next = elements.next();
+//        	
+//        	
+//        	if(next.size() == 3 && next.hasNonNull("tipoBollo") && next.hasNonNull("hashDocumento") && next.hasNonNull("provinciaResidenza")) {
+//    			pendenze.add(objectMapper.treeToValue(next, Bollo.class));
+//    			continue;
+//        	}
+//        	if(next.size() == 1 && next.hasNonNull("codEntrata")) {
+//    			pendenze.add(objectMapper.treeToValue(next, RiferimentoEntrata.class));
+//    			continue;
+//        	}
         	
-        	if(next.size() == 3 && next.hasNonNull("tipoBollo") && next.hasNonNull("hashDocumento") && next.hasNonNull("provinciaResidenza")) {
-    			pendenze.add(objectMapper.treeToValue(next, Bollo.class));
-    			continue;
-        	}
-        	if(next.size() == 1 && next.hasNonNull("codEntrata")) {
-    			pendenze.add(objectMapper.treeToValue(next, RiferimentoEntrata.class));
-    			continue;
-        	}
-        	
-        	pendenze.add(objectMapper.treeToValue(next, Entrata.class));
+//        	pendenze.add(objectMapper.treeToValue(next, Entrata.class));
+        	pendenze.add(objectMapper.treeToValue(next, NuovaVocePendenza.class));
         }
 		return pendenze;
 	}

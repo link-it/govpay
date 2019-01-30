@@ -1,28 +1,43 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
 //Restricted Routing
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { UtilService } from './util.service';
 import { LinkService } from './link.service';
+import { GovpayService } from './govpay.service';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class AuthGuardService implements OnDestroy {
 
-  constructor(private ls: LinkService) { }
+  constructor(private ls: LinkService, private gps: GovpayService) { }
 
   ngOnDestroy(){
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean|Observable<boolean> {
 
     if (UtilService.PROFILO_UTENTE) {
-      return this.checkAuthorities(state);
-    } else {
-      this.ls.navigateToRoot();
+      if(state.url.indexOf(UtilService.URL_TRACCIATI) != -1) {
+        return this.checkAuthorities(state);
+      }
+      return true;
     }
-
-    return false;
+    return this.gps.isAuthenticated(UtilService.URL_PROFILO).map(
+      (result) => {
+        this.gps.updateSpinner(false);
+        UtilService.cacheUser(result.body);
+        if(state.url.indexOf(UtilService.URL_TRACCIATI) != -1) {
+          return this.checkAuthorities(state);
+        }
+        return true;
+      }).catch(error => {
+      this.gps.updateSpinner(false);
+      UtilService.cleanUser();
+      this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
+      return Observable.of(false);
+    });
   }
 
   /**

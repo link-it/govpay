@@ -20,13 +20,18 @@ import { ModalBehavior } from './classes/modal-behavior';
 export class AppComponent implements AfterContentChecked {
   @HostListener('window:resize') onResize() {
     let sub = this.ls.getRouterStateConfig();
-    this._headerMenuIcon = (!this.ls.checkLargeMediaMatch().matches && !this._headerBackIcon);
+    this._headerMenuIcon = UtilService.PROFILO_UTENTE && (!this.ls.checkLargeMediaMatch().matches && !this._headerBackIcon);
     //this._headerMenuTitle = !(this.ls.checkLargeMediaMatch().matches);
     this._headerSearchIcon = (this.ls.checkSmallMediaMatch().matches && sub.data.search);
     this._contentMarginTop = this._marginTop();
+    if(this._applicationVersion) {
+      this._once = false;
+      this._facSimile();
+    }
   }
   @ViewChild('matS') matS: MatSidenav;
   @ViewChild('lhm', { read: ElementRef }) linkHead: ElementRef;
+  @ViewChild('facsimile', { read: ElementRef }) facsimile: ElementRef;
 
   _contentMarginTop: number = 0;
   _extraSideNavQueryMatches: MediaQueryList;
@@ -39,14 +44,18 @@ export class AppComponent implements AfterContentChecked {
   _spinner: boolean = false;
   _progress: boolean = false;
   _progressValue: number = 0;
-  _appName: string = 'GovPay';
   _headerSubTitle: string = '';
-  _notificationTitle: string = 'Govpay sta acquisendo le rendicontazioni';
+  _notificationTitle: string = 'GovPay sta acquisendo le rendicontazioni';
   _actions: any[] = [];
 
   _showBlueDialog: boolean = false;
   _blueDialogData: ModalBehavior;
 
+  protected _sideNavSetup: any = { menu: [], secMenu: [], terMenu: [], quaMenu: [], utenteConnesso: '' };
+  protected _preventSideNav: boolean = true;
+  protected _appName: string = UtilService.INFORMATION.APP_NAME;
+  protected _applicationVersion: string;
+  protected _once: boolean = false;
 
   constructor(public router: Router, public ls: LinkService, public gps: GovpayService, private us: UtilService) {
     this._extraSideNavQueryMatches = this.ls.checkLargeMediaMatch();
@@ -59,7 +68,31 @@ export class AppComponent implements AfterContentChecked {
   }
 
   ngOnInit() {
-    this.gps.multiGetService([ UtilService.URL_SERVIZIACL, UtilService.URL_TIPI_VERSIONE_API ], [ 'SERVIZI', 'TIPI_VERSIONE_API' ], UtilService);
+    this.gps.getDataService(UtilService.URL_INFO).subscribe(
+      (response) => {
+        this.gps.updateSpinner(false);
+        UtilService.APPLICATION_VERSION = response.body;
+        if(UtilService.APPLICATION_VERSION && UtilService.APPLICATION_VERSION.ambiente) {
+          this._applicationVersion = UtilService.APPLICATION_VERSION.ambiente;
+        }
+        if(UtilService.APPLICATION_VERSION && UtilService.APPLICATION_VERSION.appName) {
+          this._appName = UtilService.APPLICATION_VERSION.appName;
+          document.title = UtilService.APPLICATION_VERSION.appName;
+        }
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+    UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
+      if(_profilo) {
+        this.gps.multiGetService([ UtilService.URL_SERVIZIACL, UtilService.URL_TIPI_VERSIONE_API ], [ 'SERVIZI', 'TIPI_VERSIONE_API' ], UtilService);
+        this.setupSideNavigator();
+      } else {
+        this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
+      }
+      UtilService.headBehavior.next(this.ls.getRouterStateConfig());
+    });
     this._actions = UtilService.HEADER_ACTIONS;
     UtilService.dialogBehavior.subscribe((_mb: ModalBehavior) => {
       if(_mb) {
@@ -80,20 +113,36 @@ export class AppComponent implements AfterContentChecked {
   }
 
   ngAfterContentChecked() {
+    this._preventSideNav = !UtilService.PROFILO_UTENTE;
     this._spinner = this.gps.spinner;
     this._progress = this.gps.progress;
     this._progressValue = this.gps.progressValue;
     this._contentMarginTop = this._marginTop();
+    if(this._applicationVersion && !this._once) {
+      this._facSimile();
+    }
   }
 
   protected updateHead(rscData: any) {
     this._headerBackIcon = rscData.data.back;
-    this._headerMenuIcon = (!this.ls.checkLargeMediaMatch().matches && !rscData.data.back);
+    this._headerMenuIcon = UtilService.PROFILO_UTENTE && (!this.ls.checkLargeMediaMatch().matches && !rscData.data.back);
     this._headerSearchIcon = (this.ls.checkSmallMediaMatch().matches && rscData.data.search);
     //this._headerMenuTitle = !(this.ls.checkLargeMediaMatch().matches);
     this._headerActionsMenu = rscData.data.actions;
-    this._headerSubTitle = rscData.data.title;
+    this._headerSubTitle = UtilService.PROFILO_UTENTE?rscData.data.title:this._appName;
     this._actions = this._getHeaderActions(rscData);
+  }
+
+  /**
+   * Internal facsimile text rotation
+   */
+  protected _facSimile() {
+    if(this.facsimile) {
+      this._once = true;
+      const facsimile = this.facsimile.nativeElement;
+      const span = facsimile.querySelector('span');
+      span.style.transform = 'rotate(-' + Math.atan((facsimile.clientHeight/facsimile.clientWidth))*180/Math.PI + 'deg)';
+    }
   }
 
   /**
@@ -155,7 +204,7 @@ export class AppComponent implements AfterContentChecked {
         let _showExclude = false;
         if(rsc.data.info) {
           if(rsc.data.info['stato'] == this.us.getKeyByValue(UtilService.STATI_PAGAMENTO, UtilService.STATI_PAGAMENTO.IN_CORSO)) {
-            UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BACK_IN_TIME(), 'h').format('YYYY-MM-DDTHH:mm');
+            UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BACK_IN_TIME, 'h').format('YYYY-MM-DDTHH:mm');
             let dFine = moment(rsc.data.info['dataRichiestaPagamento']);
             let dLimit = moment(UtilService.BACK_IN_TIME_DATE);
             if(dFine < dLimit && !rsc.data.info['verificato']) {
@@ -183,6 +232,68 @@ export class AppComponent implements AfterContentChecked {
         break;
     }
     return a;
+  }
+
+  protected setupSideNavigator() {
+    this._sideNavSetup = {
+      _utenteConnesso: '',
+      menu: [
+        { link: UtilService.URL_DASHBOARD, name: UtilService.TXT_DASHBOARD, xhttp: false, icon: false }
+      ],
+      secMenu: [],
+      terMenu: [],
+      quaMenu: []
+    };
+    this._sideNavSetup.utenteConnesso = UtilService.PROFILO_UTENTE.nome;
+    Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
+    UtilService.PROFILO_UTENTE.acl.forEach((acl) => {
+      switch(acl.servizio) {
+        case 'Anagrafica Applicazioni':
+          UtilService.USER_ACL.hasApplicazioni = true;
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_APPLICAZIONI, name: UtilService.TXT_APPLICAZIONI, xhttp: false, icon: false });
+          break;
+        case 'Anagrafica Creditore':
+          UtilService.USER_ACL.hasCreditore = true;
+          // this._sideNavSetup.secMenu.push({ link: UtilService.URL_ENTRATE, name: UtilService.TXT_ENTRATE, xhttp: false, icon: false });
+          break;
+        case 'Rendicontazioni e Incassi':
+          UtilService.USER_ACL.hasRendiIncassi = true;
+          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RENDICONTAZIONI, name: UtilService.TXT_RENDICONTAZIONI, xhttp: false, icon: false });
+          this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false });
+          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false });
+          break;
+        case 'Pagamenti e Pendenze':
+          UtilService.USER_ACL.hasPagamentiePendenze = true;
+          this._sideNavSetup.menu.push({ link: UtilService.URL_PENDENZE, name: UtilService.TXT_PENDENZE, xhttp: false, icon: false });
+          this._sideNavSetup.menu.push({ link: UtilService.URL_PAGAMENTI, name: UtilService.TXT_PAGAMENTI, xhttp: false, icon: false });
+          if(acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
+            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false });
+          }
+          break;
+        case 'Giornale degli Eventi':
+          UtilService.USER_ACL.hasGdE = true;
+          this._sideNavSetup.menu.push({ link: UtilService.URL_GIORNALE_EVENTI, name: UtilService.TXT_GIORNALE_EVENTI, xhttp: false, icon: false });
+          break;
+        case 'Configurazione e manutenzione':
+          UtilService.USER_ACL.hasConfig = true;
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_OPERATORI, name: UtilService.TXT_OPERATORI, xhttp: false, icon: false });
+          // this._sideNavSetup.quaMenu.push({ link: '#', name: UtilService.TXT_MAN_NOTIFICHE, xhttp: true, icon: false });
+          this._sideNavSetup.quaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false });
+          this._sideNavSetup.quaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false });
+          // this._sideNavSetup.quaMenu.push({ link: '#', name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false });
+          break;
+        case 'Anagrafica PagoPA':
+          UtilService.USER_ACL.hasPagoPA = true;
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_DOMINI, name: UtilService.TXT_DOMINI, xhttp: false, icon: false });
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_REGISTRO_INTERMEDIARI, name: UtilService.TXT_REGISTRO_INTERMEDIARI, xhttp: false, icon: false });
+          //this._sideNavSetup.secMenu.push({ link: UtilService.URL_RPPS, name: UtilService.TXT_RPPS, xhttp: false, icon: false });
+          break;
+        case 'Anagrafica Ruoli':
+          UtilService.USER_ACL.hasRuoli = true;
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_RUOLI, name: UtilService.TXT_RUOLI, xhttp: false, icon: false });
+          break;
+      }
+    });
   }
 
   /**
