@@ -100,15 +100,15 @@ public class InviaNotificaThread implements Runnable {
 			
 			String url = this.connettoreNotifica!= null ? this.connettoreNotifica.getUrl() : GpContext.NOT_SET;
 			Versione versione = this.connettoreNotifica != null ? this.connettoreNotifica.getVersione() : Versione.GP_REST_01;
-			appContext.setupPaClient(applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, url, versione);
+			String operationId = appContext.setupPaClient(applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, url, versione);
 			
 			if(this.rpt.getCodCarrello() != null) {
-				appContext.getRequest().addGenericProperty(new Property("codCarrello", rpt.getCodCarrello()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", rpt.getCodCarrello()));
 			} 
-			appContext.getRequest().addGenericProperty(new Property("codDominio", this.notifica.getRpt(null).getCodDominio()));
-			appContext.getRequest().addGenericProperty(new Property("iuv", this.notifica.getRpt(null).getIuv()));
-			appContext.getRequest().addGenericProperty(new Property("ccp", this.notifica.getRpt(null).getCcp()));
-			appContext.getRequest().addGenericProperty(new Property("tipoNotifica", tipoNotifica.name().toLowerCase()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.notifica.getRpt(null).getCodDominio()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.notifica.getRpt(null).getIuv()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", this.notifica.getRpt(null).getCcp()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoNotifica", tipoNotifica.name().toLowerCase()));
 			
 			switch (tipoNotifica) {
 			case ATTIVAZIONE:
@@ -163,7 +163,7 @@ public class InviaNotificaThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("notifica.spedizione");
 			
-			NotificaClient client = new NotificaClient(applicazione);
+			NotificaClient client = new NotificaClient(applicazione, operationId);
 			
 			messaggioRichiesta = client.getMessaggioRichiesta(this.notifica, bd);
 			
@@ -281,12 +281,12 @@ public class InviaNotificaThread implements Runnable {
 		} finally {
 			this.completed = true;
 			if(bd != null) bd.closeConnection(); 
-			if(ctx != null)
-				try {
-					ctx.getApplicationLogger().log();
-				} catch (UtilsException e) {
-					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
-				}
+//			if(ctx != null)
+//				try {
+//					ctx.getApplicationLogger().log();
+//				} catch (UtilsException e) {
+//					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
+//				}
 			GpThreadLocal.unset();
 		}
 	}

@@ -35,7 +35,9 @@
 
                 <csrf disabled="true"/>
 
-                <intercept-url pattern="*?wsdl" access="permitAll" />
+				<intercept-url pattern="/PagamentiTelematiciRTservice?wsdl" access="permitAll" />
+				<intercept-url pattern="/PagamentiTelematiciCCPservice?wsdl" access="permitAll" />
+<!--                 <intercept-url pattern="*?wsdl" access="permitAll" /> -->
                 
                 <intercept-url pattern="/**" access="isFullyAuthenticated()" />
                 

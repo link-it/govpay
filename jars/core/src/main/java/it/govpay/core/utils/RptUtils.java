@@ -32,7 +32,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -126,12 +125,12 @@ public class RptUtils {
 			return text;
 	}
 	
-	public static it.govpay.core.business.model.Risposta inviaRPT(Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
+	public static it.govpay.core.business.model.Risposta inviaRPT(Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
 		if(bd != null) bd.closeConnection();
 		EventoCooperazione evento = new EventoCooperazione();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
+			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), operationId, bd);
 			NodoInviaRPT inviaRPT = new NodoInviaRPT();
 			inviaRPT.setIdentificativoCanale(rpt.getCodCanale());
 			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCodIntermediarioPsp());
@@ -162,12 +161,12 @@ public class RptUtils {
 		}
 	}
 
-	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
+	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
 		if(bd != null) bd.closeConnection();
 		EventoCooperazione evento = new EventoCooperazione();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
+			NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, bd);
 			NodoInviaCarrelloRPT inviaCarrelloRpt = new NodoInviaCarrelloRPT();
 			inviaCarrelloRpt.setIdentificativoCanale(rpts.get(0).getCodCanale());
 			inviaCarrelloRpt.setIdentificativoIntermediarioPSP(rpts.get(0).getCodIntermediarioPsp());
@@ -245,9 +244,9 @@ public class RptUtils {
 		ThreadExecutorManager.getClientPoolExecutorRPT().execute(t);
 	}
 
-	public static NodoChiediStatoRPTRisposta chiediStatoRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, BasicBD bd) throws GovPayException, ClientException, UtilsException {
+	public static NodoChiediStatoRPTRisposta chiediStatoRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, UtilsException {
 
-		NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
+		NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, bd);
 
 		NodoChiediStatoRPT nodoChiediStatoRPT = new NodoChiediStatoRPT();
 		nodoChiediStatoRPT.setCodiceContestoPagamento(rpt.getCcp());
@@ -318,7 +317,7 @@ public class RptUtils {
 				bd.closeConnection();
 				NodoChiediStatoRPTRisposta risposta = null;
 				try {
-					appContext.setupNodoClient(rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediStatoRPT);
+					String operationId = appContext.setupNodoClient(rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediStatoRPT);
 					NodoChiediStatoRPT richiesta = new NodoChiediStatoRPT();
 					richiesta.setIdentificativoDominio(rpt.getCodDominio());
 					richiesta.setIdentificativoIntermediarioPA(rpt.getStazione(bd).getIntermediario(bd).getCodIntermediario());
@@ -327,6 +326,7 @@ public class RptUtils {
 					richiesta.setIdentificativoUnivocoVersamento(rpt.getIuv());
 					richiesta.setCodiceContestoPagamento(rpt.getCcp());
 	
+					client.setOperationId(operationId); 
 					risposta = client.nodoChiediStatoRpt(richiesta, rpt.getStazione(bd).getIntermediario(bd).getDenominazione());
 				} finally {
 					bd.setupConnection(ctx.getTransactionId());
@@ -369,8 +369,9 @@ public class RptUtils {
 	
 						bd.closeConnection();
 						NodoChiediCopiaRTRisposta nodoChiediCopiaRTRisposta = null;
+						String operationId = null;
 						try {
-							appContext.setupNodoClient(rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediCopiaRT);
+							operationId = appContext.setupNodoClient(rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediCopiaRT);
 							NodoChiediCopiaRT nodoChiediCopiaRT = new NodoChiediCopiaRT();
 							nodoChiediCopiaRT.setIdentificativoDominio(rpt.getCodDominio());
 							nodoChiediCopiaRT.setIdentificativoIntermediarioPA(rpt.getIntermediario(bd).getCodIntermediario());
@@ -378,6 +379,7 @@ public class RptUtils {
 							nodoChiediCopiaRT.setPassword(rpt.getStazione(bd).getPassword());
 							nodoChiediCopiaRT.setIdentificativoUnivocoVersamento(rpt.getIuv());
 							nodoChiediCopiaRT.setCodiceContestoPagamento(rpt.getCcp());
+							client.setOperationId(operationId);
 							nodoChiediCopiaRTRisposta = client.nodoChiediCopiaRT(nodoChiediCopiaRT, rpt.getIntermediario(bd).getDenominazione());
 						} finally {
 							bd.setupConnection(ctx.getTransactionId());
@@ -401,11 +403,17 @@ public class RptUtils {
 							return false;
 						}
 						
-						appContext.getRequest().addGenericProperty(new Property("ccp", rpt.getCcp()));
-						appContext.getRequest().addGenericProperty(new Property("codDominio", rpt.getCodDominio()));
-						appContext.getRequest().addGenericProperty(new Property("iuv", rpt.getIuv()));
+						if(operationId != null) {
+							appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", rpt.getCcp()));
+							appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", rpt.getCodDominio()));
+							appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", rpt.getIuv()));
+						} else {
+							appContext.getTransaction().getLastServer().addGenericProperty(new Property("ccp", rpt.getCcp()));
+							appContext.getTransaction().getLastServer().addGenericProperty(new Property("codDominio", rpt.getCodDominio()));
+							appContext.getTransaction().getLastServer().addGenericProperty(new Property("iuv", rpt.getIuv()));
+						}
 						ctx.getApplicationLogger().log("pagamento.recuperoRt");
-						rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), nodoChiediCopiaRTRisposta.getTipoFirma(), rtByte, bd);
+						rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), nodoChiediCopiaRTRisposta.getTipoFirma(), rtByte, true, bd);
 						appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 						ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
 						return true;

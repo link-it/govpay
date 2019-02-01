@@ -34,6 +34,7 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.logger.constants.Severity;
 import org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext;
+import org.openspcoop2.utils.logger.log4j.Log4jLoggerWithApplicationContext;
 import org.slf4j.Logger;
 
 import it.govpay.core.business.IConservazione;
@@ -113,6 +114,8 @@ public class GovpayConfig {
 	private Integer sizePaginaNumeroVersamentiAvvisaturaDigitale;
 	private Integer limiteNumeroVersamentiAvvisaturaDigitale;
 	private String avvisaturaDigitaleModalitaAnnullamentoAvviso;
+	
+	private boolean contextDumpEnabled;
 
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -125,7 +128,7 @@ public class GovpayConfig {
 		this.ksAlias = null;
 		this.ksLocation = null;
 		this.ksPassword = null;
-		this.mLogClass = Log4JLoggerWithProxyContext.class.getName();
+		this.mLogClass = Log4jLoggerWithApplicationContext.class.getName(); //Log4JLoggerWithProxyContext.class.getName();
 		this.mLogLevel = Severity.INFO;
 		this.mLogOnDB = false;
 		this.mLogOnLog4j = true;
@@ -158,6 +161,7 @@ public class GovpayConfig {
 		this.avvisaturaDigitaleModalitaAnnullamentoAvviso = AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_ASINCRONA;
 		this.intervalloControlloRptPendenti = 30;
 		
+		this.contextDumpEnabled = true;
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -700,4 +704,9 @@ public class GovpayConfig {
 	public Integer getIntervalloControlloRptPendenti() {
 		return intervalloControlloRptPendenti;
 	}
+
+	public boolean isContextDumpEnabled() {
+		return contextDumpEnabled;
+	}
+	
 }

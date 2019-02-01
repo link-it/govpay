@@ -182,6 +182,12 @@
                 <groupId>org.springframework.ldap</groupId>
                 <artifactId>spring-ldap-core</artifactId>
 	    </dependency>
+	    
+	    <!-- CXF Core -->
+	    <dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-api</artifactId>
+		</dependency>
 
 	</dependencies>
 

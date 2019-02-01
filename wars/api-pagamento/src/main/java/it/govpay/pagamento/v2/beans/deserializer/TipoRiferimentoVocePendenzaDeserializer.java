@@ -23,16 +23,30 @@ import it.govpay.pagamento.v2.beans.RiferimentoEntrata;
 public class TipoRiferimentoVocePendenzaDeserializer extends JsonDeserializer<Object> {
 
 	@Override
-	public List<Object> deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+	public Object deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 		
 		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper();
+		
 		ObjectCodec oc = jsonParser.getCodec();
+		
 		JsonNode node = oc.readTree(jsonParser);
-        Iterator<JsonNode> elements = node.elements();
-        
-        List<Object> pendenze = new ArrayList<Object>();
-        for (; elements.hasNext();) {
-        	JsonNode next = elements.next();
+		
+		if(node.size() == 3 && node.hasNonNull("tipoBollo") && node.hasNonNull("hashDocumento") && node.hasNonNull("provinciaResidenza")) {
+			return objectMapper.treeToValue(node,  Bollo.class);
+		} else if(node.size() == 1 && node.hasNonNull("codEntrata")) {
+			return objectMapper.treeToValue(node,  RiferimentoEntrata.class);
+    	}
+		else {
+			return objectMapper.treeToValue(node,  Entrata.class);
+		}
+//
+//		
+//		
+//        Iterator<JsonNode> elements = node.elements();
+//        
+//        List<Object> pendenze = new ArrayList<Object>();
+//        for (; elements.hasNext();) {
+//        	JsonNode next = elements.next();
 //        	
 //        	
 //        	if(next.size() == 3 && next.hasNonNull("tipoBollo") && next.hasNonNull("hashDocumento") && next.hasNonNull("provinciaResidenza")) {
@@ -45,9 +59,12 @@ public class TipoRiferimentoVocePendenzaDeserializer extends JsonDeserializer<Ob
 //        	}
         	
 //        	pendenze.add(objectMapper.treeToValue(next, Entrata.class));
-        	pendenze.add(objectMapper.treeToValue(next, NuovaVocePendenza.class));
-        }
-		return pendenze;
+//        	pendenze.add(objectMapper.treeToValue(next, NuovaVocePendenza.class));
+//        }
+//        
+//        
+//        
+//		return pendenze;
 	}
 
 }

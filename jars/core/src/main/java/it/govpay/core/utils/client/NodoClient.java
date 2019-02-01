@@ -25,8 +25,7 @@ import javax.xml.bind.JAXBElement;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
-import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
+import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -56,6 +55,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Intermediario;
@@ -75,14 +75,24 @@ public class NodoClient extends BasicClient {
 	private static Logger log = LoggerWrapperFactory.getLogger(NodoClient.class);
 	private String azione, dominio, stazione, errore, faultCode;
 	private BasicBD bd;
-
-	public NodoClient(Intermediario intermediario, BasicBD bd) throws ClientException {
+	
+	public NodoClient(Intermediario intermediario, String operationID, BasicBD bd) throws ClientException {
 		super(intermediario, TipoOperazioneNodo.NODO);
 		this.bd = bd;
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}
 		this.isAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
+		this.operationID = operationID;
+	}
+	
+	@Override
+	public String getOperationId() {
+		return this.operationID;
+	}
+	
+	public void setOperationId(String operationID) {
+		this.operationID = operationID;
 	}
 
 	public Risposta send(String azione, byte[] body) throws GovPayException, ClientException, UtilsException {
@@ -92,9 +102,16 @@ public class NodoClient extends BasicClient {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		} 
 		IContext ctx = GpThreadLocal.get();
-		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
-		ApplicationTransaction appTransaction = (ApplicationTransaction) appContext.getTransaction();
-		appTransaction.getLastServer().setEndpoint(urlString);
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		
+		if(operationID != null) {
+			BaseServer serverByOperationId = appContext.getServerByOperationId(this.operationID);
+			if(serverByOperationId != null) {
+				serverByOperationId.setEndpoint(urlString);
+			}
+		} else 
+			appContext.getTransaction().getLastServer().setEndpoint(urlString);
+		
 		ctx.getApplicationLogger().log("ndp_client.invioRichiesta");
 
 		try {

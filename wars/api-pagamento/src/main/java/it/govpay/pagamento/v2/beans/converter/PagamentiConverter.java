@@ -28,7 +28,9 @@ import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pagamento.v2.api.impl.PagamentiApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl;
+import it.govpay.pagamento.v2.beans.Bollo;
 import it.govpay.pagamento.v2.beans.Conto;
+import it.govpay.pagamento.v2.beans.Entrata;
 import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v2.beans.NuovaPendenza;
 import it.govpay.pagamento.v2.beans.NuovaVocePendenza;
@@ -40,6 +42,7 @@ import it.govpay.pagamento.v2.beans.PagamentoCreato;
 import it.govpay.pagamento.v2.beans.PagamentoIndex;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
 import it.govpay.pagamento.v2.beans.RiferimentoAvviso;
+import it.govpay.pagamento.v2.beans.RiferimentoEntrata;
 import it.govpay.pagamento.v2.beans.RiferimentoPendenza;
 import it.govpay.pagamento.v2.beans.RppIndex;
 import it.govpay.pagamento.v2.beans.Soggetto;
@@ -280,22 +283,46 @@ public class PagamentiConverter {
 					sv.setDatiAllegati(vocePendenza.getDatiAllegati().toString());
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
+				 
+				Object dettaglioVoceObj = vocePendenza.getDettaglioVoce();
 
 				// Definisce i dati di un bollo telematico
-				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
+//				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
+//					it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico();
+//					bollo.setHash(vocePendenza.getHashDocumento());
+//					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
+//					bollo.setTipo(vocePendenza.getTipoBollo());
+//					sv.setBolloTelematico(bollo);
+//				} else if(vocePendenza.getCodEntrata() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+//					sv.setCodTributo(vocePendenza.getCodEntrata());
+//
+//				} else { // Definisce i dettagli di incasso della singola entrata.
+//					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
+//					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
+//					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
+//					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
+//					sv.setTributo(tributo);
+//				}
+				
+				
+				// Definisce i dati di un bollo telematico
+				if(dettaglioVoceObj instanceof Bollo) {
+					Bollo dettaglioVoceBollo = (Bollo) dettaglioVoceObj; 
 					it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico();
-					bollo.setHash(vocePendenza.getHashDocumento());
-					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
-					bollo.setTipo(vocePendenza.getTipoBollo());
+					bollo.setHash(dettaglioVoceBollo.getHashDocumento());
+					bollo.setProvincia(dettaglioVoceBollo.getProvinciaResidenza());
+					bollo.setTipo(dettaglioVoceBollo.getTipoBollo());
 					sv.setBolloTelematico(bollo);
-				} else if(vocePendenza.getCodEntrata() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
-					sv.setCodTributo(vocePendenza.getCodEntrata());
+				} else if(dettaglioVoceObj instanceof RiferimentoEntrata) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+					RiferimentoEntrata dettaglioVoceRiferimentoEntrata = (RiferimentoEntrata) dettaglioVoceObj; 
+					sv.setCodTributo(dettaglioVoceRiferimentoEntrata.getCodEntrata());
 
 				} else { // Definisce i dettagli di incasso della singola entrata.
+					Entrata dettaglioVoceEntrata = (Entrata) dettaglioVoceObj; 
 					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
-					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
-					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
-					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
+					tributo.setCodContabilita(dettaglioVoceEntrata.getCodiceContabilita());
+					tributo.setIbanAccredito(dettaglioVoceEntrata.getIbanAccredito());
+					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(dettaglioVoceEntrata.getTipoContabilita().name()));
 					sv.setTributo(tributo);
 				}
 

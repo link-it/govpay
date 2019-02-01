@@ -333,7 +333,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			Rpt rpt = RtUtils.acquisisciRT(codDominio, iuv, ccp, bodyrichiesta.getTipoFirma(), bodyrichiesta.getRt(), bd);
+			Rpt rpt = RtUtils.acquisisciRT(codDominio, iuv, ccp, bodyrichiesta.getTipoFirma(), bodyrichiesta.getRt(), false, bd);
 			
 			idVersamentoLong = rpt.getVersamento(bd).getId();
 			idPagamentoPortaleLong = rpt.getIdPagamentoPortale();

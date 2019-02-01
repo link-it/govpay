@@ -29,10 +29,10 @@ import it.govpay.pagamento.v1.beans.VocePendenza.TipoContabilitaEnum;
 public class PendenzeConverter {
 	
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException {
-		return toRsModel(dto.getVersamento(), dto.getPagamenti(), dto.getRpts());
+		return toRsModel(dto.getVersamentoIncasso(), dto.getPagamenti(), dto.getRpts());
 	}
 	
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts) throws ServiceException {
+	public static Pendenza toRsModel(it.govpay.bd.viste.model.VersamentoIncasso versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts) throws ServiceException {
 		Pendenza rsModel = new Pendenza();
 		
 		if(versamento.getCodAnnoTributario()!= null)
@@ -129,7 +129,7 @@ public class PendenzeConverter {
 		return list;
 	}
 	
-	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento) throws ServiceException {
+	public static PendenzaIndex toRsModelIndex(it.govpay.bd.viste.model.VersamentoIncasso versamento) throws ServiceException {
 		PendenzaIndex rsModel = new PendenzaIndex();
 		
 		if(versamento.getCodAnnoTributario()!= null)

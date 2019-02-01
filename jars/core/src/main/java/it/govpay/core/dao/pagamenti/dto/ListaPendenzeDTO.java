@@ -13,32 +13,18 @@ import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.exceptions.RequestParamException.FaultType;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.orm.Versamento;
 import it.govpay.orm.VersamentoIncasso;
 
 public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	
 	
 	public ListaPendenzeDTO(Authentication user) {
-		this(user, false);
-	}
-	
-	public ListaPendenzeDTO(Authentication user, boolean infoIncasso) {
 		super(user);
-		this.infoIncasso = infoIncasso;
-		if(this.infoIncasso) {
-			this.addSortField("dataCaricamento", VersamentoIncasso.model().DATA_CREAZIONE);
-			this.addSortField("dataValidita", VersamentoIncasso.model().DATA_VALIDITA);
-			this.addSortField("dataScadenza", VersamentoIncasso.model().DATA_SCADENZA);
-			this.addSortField("stato", VersamentoIncasso.model().STATO_VERSAMENTO);
-			this.addDefaultSort(VersamentoIncasso.model().DATA_CREAZIONE,SortOrder.DESC);
-		} else {
-			this.addSortField("dataCaricamento", Versamento.model().DATA_CREAZIONE);
-			this.addSortField("dataValidita", Versamento.model().DATA_VALIDITA);
-			this.addSortField("dataScadenza", Versamento.model().DATA_SCADENZA);
-			this.addSortField("stato", Versamento.model().STATO_VERSAMENTO);
-			this.addDefaultSort(Versamento.model().DATA_CREAZIONE,SortOrder.DESC);
-		}
+		this.addSortField("dataCaricamento", VersamentoIncasso.model().DATA_CREAZIONE);
+		this.addSortField("dataValidita", VersamentoIncasso.model().DATA_VALIDITA);
+		this.addSortField("dataScadenza", VersamentoIncasso.model().DATA_SCADENZA);
+		this.addSortField("stato", VersamentoIncasso.model().STATO_VERSAMENTO);
+		this.addDefaultSort(VersamentoIncasso.model().DATA_CREAZIONE,SortOrder.DESC);
 	}
 	private Date dataA;
 	private Date dataDa;
@@ -49,7 +35,6 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String idA2A;
 	private String idPendenza;
 	private String iuv;
-	private boolean infoIncasso;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -93,12 +78,6 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	public void setIdA2A(String idA2A) {
 		this.idA2A = idA2A;
 	}
-	public boolean isInfoIncasso() {
-		return infoIncasso;
-	}
-	public void setInfoIncasso(boolean infoIncasso) {
-		this.infoIncasso = infoIncasso;
-	}
 	public String getIdPendenza() {
 		return idPendenza;
 	}
@@ -120,7 +99,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 		
 		// visualizzazione smart abilitabile solo se ho infoincasso e se sono un cittadino oppure ho scelto un debitore		
 		String fieldname = "smart";
-		if(this.infoIncasso && orderBy.equals(fieldname) ){ 
+		if(orderBy.equals(fieldname) ){ 
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(this.getUser());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || StringUtils.isNotEmpty(this.idDebitore)) {
 				this.addSortField(VersamentoIncasso.model().SMART_ORDER_RANK, SortOrder.ASC);

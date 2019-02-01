@@ -97,7 +97,7 @@ public class PendenzeController extends BaseController {
 		String methodName = "getByIda2aIdPendenza";  
 		IContext ctx = null;
 		String transactionId = null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -144,7 +144,7 @@ public class PendenzeController extends BaseController {
 
 			// Parametri - > DTO Input
 
-			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user,addInfoIncasso);
+			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
 
 			listaPendenzeDTO.setPagina(pagina);
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
@@ -169,8 +169,6 @@ public class PendenzeController extends BaseController {
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
-			listaPendenzeDTO.setInfoIncasso(addInfoIncasso); 
-
 			// CHIAMATA AL DAO
 
 			ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.listaPendenze(listaPendenzeDTO);
@@ -179,7 +177,7 @@ public class PendenzeController extends BaseController {
 
 			List<PendenzaIndex> results = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				PendenzaIndex rsModel = addInfoIncasso ? PendenzeConverter.toRsModelIndexConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso()) : PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamento()); 
+				PendenzaIndex rsModel = addInfoIncasso ? PendenzeConverter.toRsModelIndexConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso()) : PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamentoIncasso()); 
 				results.add(rsModel);
 			}
 

@@ -10,7 +10,7 @@ import it.govpay.rs.v1.ConverterUtils;
 public class RptConverter {
 
 
-	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		Rpp rsModel = new Rpp();
 
 		rsModel.setStato(rpt.getStato().toString());
@@ -22,7 +22,7 @@ public class RptConverter {
 		return rsModel;
 	}
 
-	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		RppIndex rsModel = new RppIndex();
 
 		rsModel.setStato(rpt.getStato().toString());

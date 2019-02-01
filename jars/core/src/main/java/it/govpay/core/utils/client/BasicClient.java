@@ -26,7 +26,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,21 +47,19 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.logger.beans.Message;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
-import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
-import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
-import org.openspcoop2.utils.logger.constants.MessageType;
+import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.dump.DumpRequest;
+import org.openspcoop2.utils.service.context.dump.DumpResponse;
+import org.openspcoop2.utils.service.context.server.ServerConfig;
+import org.openspcoop2.utils.service.context.server.ServerInfoContextManuallyAdd;
+import org.openspcoop2.utils.service.context.server.ServerInfoRequest;
+import org.openspcoop2.utils.service.context.server.ServerInfoResponse;
+import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.core.utils.GovpayConfig;
-import org.openspcoop2.utils.service.context.IContext;
-import org.openspcoop2.utils.service.context.server.ServerConfig;
-import org.openspcoop2.utils.service.context.server.ServerInfoContextManuallyAdd;
-import org.openspcoop2.utils.service.context.server.ServerInfoRequest;
-
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
@@ -71,7 +68,7 @@ import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.Intermediario;
 
-public class BasicClient {
+public abstract class BasicClient {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(BasicClient.class);
 	
@@ -140,6 +137,8 @@ public class BasicClient {
 	protected String destinatario;
 	protected String mittente;
 	protected ServerInfoContextManuallyAdd serverInfoContext = null;
+	protected String operationID;
+	protected String serverID;
 	
 	protected IntegrationContext integrationCtx;
 	
@@ -168,7 +167,7 @@ public class BasicClient {
 	}
 	
 	protected BasicClient(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
-		this("A_" + tipoConnettore + applicazione.getCodApplicazione(), tipoConnettore == TipoConnettore.NOTIFICA ? applicazione.getConnettoreNotifica() : applicazione.getConnettoreVerifica());
+		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione(), tipoConnettore == TipoConnettore.NOTIFICA ? applicazione.getConnettoreNotifica() : applicazione.getConnettoreVerifica());
 		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();
@@ -181,6 +180,7 @@ public class BasicClient {
 	
 	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
 		
+		this.serverID = bundleKey;
 		if(connettore == null) {
 			throw new ClientException("Connettore non configurato");
 		}
@@ -278,15 +278,15 @@ public class BasicClient {
 	
 	private byte[] send(boolean soap, String azione, byte[] body, boolean isAzioneInUrl) throws ClientException, UtilsException {
 
-		
-//		ServerInfoRequest request = getServerInfoRequest();
+		ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
+		ServerInfoResponse serverInfoResponse = new ServerInfoResponse();
+		DumpRequest dumpRequest = new DumpRequest();
 		
 		// Creazione Connessione
 		int responseCode;
 		HttpURLConnection connection = null;
 		byte[] msg = null;
 		IContext ctx = GpThreadLocal.get();
-		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
 		String urlString = this.url.toExternalForm();
 		if(isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
@@ -298,20 +298,17 @@ public class BasicClient {
 		} 
 		
 		this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
+		serverInfoRequest.setAddress(this.url.toString());
+		serverInfoRequest.setHttpRequestMethod(HttpRequestMethod.POST);
 		
-//		this.serverInfoContext.processBeforeSend(request);
-	
 		try {
-			Message requestMsg = new Message();
-			requestMsg.setType(MessageType.REQUEST_OUT);
-			
 			connection = (HttpURLConnection) this.url.openConnection();
 			connection.setDoOutput(true);
 			if(soap) {
 				connection.setRequestProperty("SOAPAction", "\"" + azione + "\"");
-				requestMsg.addHeader(new Property("SOAPAction", "\"" + azione + "\""));
+				dumpRequest.getHeaders().put("SOAPAction", "\"" + azione + "\"");
 			}
-			requestMsg.setContentType("text/xml");
+			dumpRequest.setContentType("text/xml");
 			connection.setRequestProperty("Content-Type", "text/xml");
 			connection.setRequestMethod("POST");
 	
@@ -328,7 +325,7 @@ public class BasicClient {
 				Base64 base = new Base64();
 				String encoding = new String(base.encode((this.httpBasicUser + ":" + this.httpBasicPassword).getBytes()));
 				connection.setRequestProperty("Authorization", "Basic " + encoding);
-				requestMsg.addHeader(new Property("Authorization", "Basic " + encoding));
+				dumpRequest.getHeaders().put("Authorization", "Basic " + encoding);
 			}
 			
 			integrationCtx.setMsg(body);
@@ -343,11 +340,11 @@ public class BasicClient {
 				log.trace(sb.toString());
 			}
 			
-			requestMsg.setContent(integrationCtx.getMsg());
+			dumpRequest.setPayload(integrationCtx.getMsg());
 			
-			appContext.getRequest().setDate(new Date());
-			appContext.getRequest().setSize(Long.valueOf(integrationCtx.getMsg().length));
-			ctx.getApplicationLogger().log(requestMsg);
+			dumpRequest.getHeaders().put("RequestPath", this.url.toString());
+
+			this.serverInfoContext.processBeforeSend(serverInfoRequest, dumpRequest);
 			
 			connection.getOutputStream().write(integrationCtx.getMsg());
 	
@@ -356,24 +353,20 @@ public class BasicClient {
 		}
 		try {
 			responseCode = connection.getResponseCode();
-			// TODO
-//			ctx.getTransaction().getServers().get(0).setTransportCode(Integer.toString(responseCode));
-			
 		} catch (Exception e) {
 			throw new ClientException(e);
 		}
 		
-		Message responseMsg = new Message();
-		responseMsg.setType(MessageType.RESPONSE_IN);
+		DumpResponse dumpResponse = new DumpResponse();
 		
 		for(String key : connection.getHeaderFields().keySet()) {
 			if(connection.getHeaderFields().get(key) != null) {
 				if(key == null)
-					responseMsg.addHeader(new Property("Status-line", connection.getHeaderFields().get(key).get(0)));
+					dumpResponse.getHeaders().put("Status-line", connection.getHeaderFields().get(key).get(0));
 				else if(connection.getHeaderFields().get(key).size() == 1)
-					responseMsg.addHeader(new Property(key, connection.getHeaderFields().get(key).get(0)));
+					dumpResponse.getHeaders().put(key, connection.getHeaderFields().get(key).get(0));
 				else
-					responseMsg.addHeader(new Property(key, ArrayUtils.toString(connection.getHeaderFields().get(key))));
+					dumpResponse.getHeaders().put(key, ArrayUtils.toString(connection.getHeaderFields().get(key)));
 			}
 		}
 			
@@ -385,7 +378,7 @@ public class BasicClient {
 					}
 					msg = connection.getInputStream() != null ? IOUtils.toByteArray(connection.getInputStream()) : new byte[]{};
 					if(msg.length > 0)
-						responseMsg.setContent(msg);
+						dumpResponse.setPayload(msg);
 					return msg;
 				} catch (Exception e) {
 					throw new ClientException("Messaggio di risposta non valido", e,responseCode);
@@ -393,7 +386,7 @@ public class BasicClient {
 			} else {
 				try {
 					msg = connection.getErrorStream() != null ? IOUtils.toByteArray(connection.getErrorStream()) : new byte[]{};
-					responseMsg.setContent(msg);
+					dumpResponse.setPayload(msg);
 				} catch (IOException e) {
 					msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
 				} finally {
@@ -413,14 +406,8 @@ public class BasicClient {
 				throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode);
 			}
 		} finally {
-			if(responseMsg != null) {
-				appContext.getResponse().setDate(new Date());
-				if(responseMsg.getContent() != null)
-					appContext.getResponse().setSize((long) responseMsg.getContent().length);
-				else
-					appContext.getResponse().setSize(0l);
-				ctx.getApplicationLogger().log(responseMsg);
-			}
+			serverInfoResponse.setResponseCode(responseCode);
+			this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
 
 			if(log.isTraceEnabled() && connection != null && connection.getHeaderFields() != null) {
 				StringBuffer sb = new StringBuffer();
@@ -434,44 +421,40 @@ public class BasicClient {
 		
 	}
 	
-//	public abstract ServerInfoRequest getServerInfoRequest();
-	
+	public abstract String getOperationId();
 	
 	private ServerConfig getServerConfig(IContext ctx) {
 		ServerConfig serverConfig = new ServerConfig();
-		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
-		ApplicationTransaction appTransaction = (ApplicationTransaction) appContext.getTransaction();
-		BaseServer lastServer = appTransaction.getLastServer();
-		
-		serverConfig.setServerId(lastServer.getName());
-		serverConfig.setOperationId(lastServer.getIdOperation());
-		serverConfig.setDump(true);
-		
+		serverConfig.setDump(GovpayConfig.getInstance().isContextDumpEnabled());
+		serverConfig.setOperationId(this.getOperationId());
+		serverConfig.setServerId(this.serverID);
 		return serverConfig;
 	}
 
 	public byte[] getJson(String path, List<Property> headerProperties) throws ClientException, UtilsException {
-		return this.handleJsonRequest(path, null, headerProperties, "GET", null);
+		return this.handleJsonRequest(path, null, headerProperties, HttpRequestMethod.GET, null);
 	}
 	
 	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties) throws ClientException, UtilsException {
-		return this.handleJsonRequest(path, jsonBody, headerProperties, "POST", "application/json");
+		return this.handleJsonRequest(path, jsonBody, headerProperties, HttpRequestMethod.POST, "application/json");
 	}
 	
-	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties, String httpMethod) throws ClientException, UtilsException {
+	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties, HttpRequestMethod httpMethod) throws ClientException, UtilsException {
 		return this.handleJsonRequest(path, jsonBody, headerProperties, httpMethod, "application/json");
 	}
 
 	private byte[] handleJsonRequest(String path, String jsonBody, List<Property> headerProperties, 
-			String httpMethod, String contentType) throws ClientException, UtilsException {
+			HttpRequestMethod httpMethod, String contentType) throws ClientException, UtilsException {
 
+		ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
+		ServerInfoResponse serverInfoResponse = new ServerInfoResponse();
+		DumpRequest dumpRequest = new DumpRequest();
+		
 		// Creazione Connessione
 		int responseCode;
 		HttpURLConnection connection = null;
 		byte[] msg = null;
 		IContext ctx = GpThreadLocal.get();
-		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
-		ApplicationTransaction appTransaction = (ApplicationTransaction) appContext.getTransaction();
 		String urlString = this.url.toExternalForm();
 		if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		try {
@@ -482,26 +465,26 @@ public class BasicClient {
 		} catch (MalformedURLException e) {
 			throw new ClientException("Url di connessione malformata: " + urlString.concat(path), e);
 		}
-		appTransaction.getLastServer().setEndpoint(urlString);
+		
 		this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
+		serverInfoRequest.setAddress(this.url.toString());
+		serverInfoRequest.setHttpRequestMethod(httpMethod);
+		
 		try {
-			Message requestMsg = new Message();
-			requestMsg.setType(MessageType.REQUEST_OUT);
-			
 			connection = (HttpURLConnection) this.url.openConnection();
-			if(httpMethod.equals("POST") || StringUtils.isNotEmpty(jsonBody))
+			if(httpMethod.equals(HttpRequestMethod.POST) || StringUtils.isNotEmpty(jsonBody))
 				connection.setDoOutput(true);
 			
 			if(contentType != null) {
-				requestMsg.setContentType(contentType);
+				dumpRequest.setContentType(contentType);
 				connection.setRequestProperty("Content-Type", contentType);
 			}
-			connection.setRequestMethod(httpMethod);
+			connection.setRequestMethod(httpMethod.name());
 			
 			if(headerProperties!= null  && headerProperties.size() > 0) {
 				for (Property prop : headerProperties) {
 					connection.setRequestProperty(prop.getName(), prop.getValue());
-					requestMsg.addHeader(prop);
+					dumpRequest.getHeaders().put(prop.getName(), prop.getValue());
 				}
 			}
 	
@@ -518,7 +501,7 @@ public class BasicClient {
 				Base64 base = new Base64();
 				String encoding = new String(base.encode((this.httpBasicUser + ":" + this.httpBasicPassword).getBytes()));
 				connection.setRequestProperty("Authorization", "Basic " + encoding);
-				requestMsg.addHeader(new Property("Authorization", "Basic " + encoding));
+				dumpRequest.getHeaders().put("Authorization", "Basic " + encoding);
 			}
 			
 			
@@ -534,17 +517,14 @@ public class BasicClient {
 				log.trace(sb.toString());
 			}
 			
-			requestMsg.setContent(integrationCtx.getMsg());
+			dumpRequest.setPayload(integrationCtx.getMsg());
 			
-			appContext.getRequest().setDate(new Date());
-			appContext.getRequest().setSize(Long.valueOf(integrationCtx.getMsg().length));
+			dumpRequest.getHeaders().put("HTTP-Method", httpMethod.name());
+			dumpRequest.getHeaders().put("RequestPath", this.url.toString());
 			
-			requestMsg.addHeader(new Property("HTTP-Method", httpMethod));
-			requestMsg.addHeader(new Property("RequestPath", this.url.toString()));
-			
-			ctx.getApplicationLogger().log(requestMsg);
-			
-			if(httpMethod.equals("POST"))
+			this.serverInfoContext.processBeforeSend(serverInfoRequest, dumpRequest);
+
+			if(StringUtils.isNotEmpty(jsonBody))
 				connection.getOutputStream().write(integrationCtx.getMsg());
 	
 		} catch (Exception e) {
@@ -552,26 +532,23 @@ public class BasicClient {
 		}
 		try {
 			responseCode = connection.getResponseCode();
-			// TODO
-//			ctx.getTransaction().getServers().get(0).setTransportCode(Integer.toString(responseCode));
-			
 		} catch (Exception e) {
 			throw new ClientException(e);
 		}
 		
-		Message responseMsg = new Message();
-		responseMsg.setType(MessageType.RESPONSE_IN);
-		responseMsg.addHeader(new Property("HTTP-Method", httpMethod));
-		responseMsg.addHeader(new Property("RequestPath", this.url.toString()));
+		DumpResponse dumpResponse = new DumpResponse();
+		
+		dumpResponse.getHeaders().put("HTTP-Method", httpMethod.name());
+		dumpResponse.getHeaders().put("RequestPath", this.url.toString());
 		
 		for(String key : connection.getHeaderFields().keySet()) {
 			if(connection.getHeaderFields().get(key) != null) {
 				if(key == null)
-					responseMsg.addHeader(new Property("Status-line", connection.getHeaderFields().get(key).get(0)));
+					dumpResponse.getHeaders().put("Status-line", connection.getHeaderFields().get(key).get(0));
 				else if(connection.getHeaderFields().get(key).size() == 1)
-					responseMsg.addHeader(new Property(key, connection.getHeaderFields().get(key).get(0)));
+					dumpResponse.getHeaders().put(key, connection.getHeaderFields().get(key).get(0));
 				else
-					responseMsg.addHeader(new Property(key, ArrayUtils.toString(connection.getHeaderFields().get(key))));
+					dumpResponse.getHeaders().put(key, ArrayUtils.toString(connection.getHeaderFields().get(key)));
 			}
 		}
 			
@@ -583,7 +560,7 @@ public class BasicClient {
 					}
 					msg = connection.getInputStream() != null ? IOUtils.toByteArray(connection.getInputStream()) : new byte[]{};
 					if(msg.length > 0)
-						responseMsg.setContent(msg);
+						dumpResponse.setPayload(msg);
 					return msg;
 				} catch (Exception e) {
 					throw new ClientException("Messaggio di risposta non valido", e,responseCode,msg);
@@ -591,7 +568,7 @@ public class BasicClient {
 			} else {
 				try {
 					msg = connection.getErrorStream() != null ? IOUtils.toByteArray(connection.getErrorStream()) : new byte[]{};
-					responseMsg.setContent(msg);
+					dumpResponse.setPayload(msg);
 				} catch (IOException e) {
 					msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
 				} finally {
@@ -601,14 +578,8 @@ public class BasicClient {
 				throw new ClientException("Ricevuto [HTTP " + responseCode + "]",responseCode, msg);
 			}
 		} finally {
-			if(responseMsg != null) {
-				appContext.getResponse().setDate(new Date());
-				if(responseMsg.getContent() != null)
-					appContext.getResponse().setSize((long) responseMsg.getContent().length);
-				else
-					appContext.getResponse().setSize(0l);
-				ctx.getApplicationLogger().log(responseMsg);
-			}
+			serverInfoResponse.setResponseCode(responseCode);
+			this.serverInfoContext.processAfterSend(serverInfoResponse, dumpResponse);
 
 			if(log.isTraceEnabled() && connection != null && connection.getHeaderFields() != null) {
 				StringBuffer sb = new StringBuffer();

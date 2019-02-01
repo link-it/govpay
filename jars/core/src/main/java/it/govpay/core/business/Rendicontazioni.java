@@ -111,7 +111,7 @@ public class Rendicontazioni extends BasicBD {
 
 				this.setupConnection(ctx.getTransactionId());
 				Intermediario intermediario = stazione.getIntermediario(this);
-				NodoClient client = new NodoClient(intermediario, this);
+				NodoClient client = new NodoClient(intermediario, null, this);
 				this.closeConnection();
 
 				if(deep) {

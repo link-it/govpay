@@ -51,7 +51,7 @@ public abstract class AbstractTask {
 	
 	protected IContext initBatchContext(boolean setContext) throws UtilsException {
 		GpContextFactory factory = new GpContextFactory();
-		IContext ctx = factory.newContext();
+		IContext ctx = factory.newBatchContext();
 		MDC.put(MD5Constants.OPERATION_ID, this.name);
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		Service service = new Service();

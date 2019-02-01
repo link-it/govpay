@@ -52,9 +52,10 @@ public class NotificaClient extends BasicClient {
 	private static Logger log = LoggerWrapperFactory.getLogger(NotificaClient.class);
 	private Versione versione;
 
-	public NotificaClient(Applicazione applicazione) throws ClientException {
+	public NotificaClient(Applicazione applicazione, String operationID) throws ClientException {
 		super(applicazione, TipoConnettore.NOTIFICA);
 		this.versione = applicazione.getConnettoreNotifica().getVersione();
+		this.operationID = operationID;
 	}
 
 	/**
@@ -127,7 +128,7 @@ public class NotificaClient extends BasicClient {
 		
 		jsonBody = this.getMessaggioRichiesta(notifica, bd);
 
-		return this.sendJson(sb.toString(), jsonBody, headerProperties, httpMethod.name());
+		return this.sendJson(sb.toString(), jsonBody, headerProperties, httpMethod);
 	}
 
 	public String getMessaggioRichiesta(Notifica notifica, BasicBD bd) throws ServiceException, JAXBException, SAXException {
@@ -175,5 +176,10 @@ public class NotificaClient extends BasicClient {
 		public void setDetail(String detail) {
 			this.detail = detail;
 		}
+	}
+	
+	@Override
+	public String getOperationId() {
+		return this.operationID;
 	}
 }

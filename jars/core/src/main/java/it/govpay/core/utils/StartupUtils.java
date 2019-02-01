@@ -126,7 +126,7 @@ public class StartupUtils {
 		}
 		try {
 			GpContextFactory factory = new GpContextFactory();
-			ctx = factory.newContext();
+			ctx = factory.newBatchContext();
 			MDC.put(MD5Constants.OPERATION_ID, "Inizializzazione " +  warName);
 			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 			Service service = new Service();

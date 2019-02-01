@@ -90,13 +90,11 @@ public class InviaAvvisaturaThread implements Runnable {
 			bd = BasicBD.newInstance(this.idTransazione);
 			giornaleEventi = new GiornaleEventi(bd);
 			versamentiBD = new VersamentiBD(bd);
-//			MDC.put(MD5Constants.OPERATION_ID, "InviaAvvisaturaThread");
-//			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 
-			appContext.setupNodoClient(this.stazione.getCodStazione(), this.avviso.getIdentificativoDominio(), Azione.nodoInviaAvvisoDigitale);
-			appContext.getRequest().addGenericProperty(new Property("codDominio", this.avviso.getIdentificativoDominio()));
-			appContext.getRequest().addGenericProperty(new Property("codAvviso", this.avviso.getCodiceAvviso()));
-			appContext.getRequest().addGenericProperty(new Property("tipoOperazione", this.avviso.getTipoOperazione().name()));
+			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.avviso.getIdentificativoDominio(), Azione.nodoInviaAvvisoDigitale);
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.avviso.getIdentificativoDominio()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codAvviso", this.avviso.getCodiceAvviso()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoOperazione", this.avviso.getTipoOperazione().name()));
 
 			ctx.getApplicationLogger().log("versamento.avvisaturaDigitale");
 
@@ -107,7 +105,7 @@ public class InviaAvvisaturaThread implements Runnable {
 
 			log.info("Spedizione Avvisatura al Nodo [Dominio: " + this.avviso.getIdentificativoDominio() + ", NumeroAvviso: "+this.avviso.getCodiceAvviso()+", TipoAvvisatura: "+this.avviso.getTipoOperazione()+"]");
 
-			AvvisaturaClient client = new AvvisaturaClient(this.intermediario,bd);
+			AvvisaturaClient client = new AvvisaturaClient(this.intermediario,operationId,bd);
 
 			CtNodoInviaAvvisoDigitale ctNodoInviaAvvisoDigitale = new CtNodoInviaAvvisoDigitale();
 			ctNodoInviaAvvisoDigitale.setAvvisoDigitaleWS(this.avviso);
@@ -216,12 +214,12 @@ public class InviaAvvisaturaThread implements Runnable {
 		} finally {
 			this.completed = true;
 			if(bd != null) bd.closeConnection(); 
-			if(ctx != null)
-				try {
-					ctx.getApplicationLogger().log();
-				} catch (UtilsException e) {
-					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
-				}
+//			if(ctx != null)
+//				try {
+//					ctx.getApplicationLogger().log();
+//				} catch (UtilsException e) {
+//					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
+//				}
 			GpThreadLocal.unset();
 		}
 	}

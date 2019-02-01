@@ -284,10 +284,10 @@ public class Rpt extends BasicBD{
 			try {
 
 				Risposta risposta = null;
-				appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
-				appContext.getRequest().addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
+				String operationId = appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
-				risposta = RptUtils.inviaCarrelloRPT(intermediario, stazione, rpts, this);
+				risposta = RptUtils.inviaCarrelloRPT(intermediario, stazione, rpts, operationId, this);
 				this.setupConnection(GpThreadLocal.get().getTransactionId());
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 					// RPT rifiutata dal Nodo
@@ -348,9 +348,9 @@ public class Rpt extends BasicBD{
 				NodoChiediStatoRPTRisposta risposta = null;
 				log.info("Attivazione della procedura di recupero del processo di pagamento.");
 				try {
-					appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
-					appContext.getRequest().addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
-					risposta = RptUtils.chiediStatoRPT(intermediario, stazione, rpts.get(0), this);
+					String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
+					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
+					risposta = RptUtils.chiediStatoRPT(intermediario, stazione, rpts.get(0), operationId, this);
 				} catch (ClientException ee) {
 					ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
 					log.warn("Errore nella richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");
@@ -452,22 +452,6 @@ public class Rpt extends BasicBD{
 
 			log.info("RPT inviata correttamente al nodo");
 			return rpts;
-		}
-	}
-
-	public it.govpay.bd.model.Rpt chiediTransazione(Applicazione applicazioneAutenticata, String codDominio, String iuv, String ccp) throws GovPayException, ServiceException {
-		if(!applicazioneAutenticata.getUtenza().isAbilitato())
-			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
-
-		RptBD rptBD = new RptBD(this);
-		try {
-			it.govpay.bd.model.Rpt rpt = rptBD.getRpt(codDominio, iuv, ccp);
-			if(!applicazioneAutenticata.getId().equals(rpt.getIdApplicazione())) {
-				throw new GovPayException(EsitoOperazione.APP_004); 
-			}
-			return rpt;
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.PAG_008);
 		}
 	}
 }

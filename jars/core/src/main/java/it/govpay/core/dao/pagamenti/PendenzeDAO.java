@@ -47,7 +47,6 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
 import it.govpay.bd.pagamento.filters.RptFilter;
-import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.viste.VersamentiIncassiBD;
 import it.govpay.bd.viste.filters.VersamentoIncassoFilter;
 import it.govpay.bd.viste.model.VersamentoIncasso;
@@ -105,104 +104,15 @@ public class PendenzeDAO extends BaseDAO{
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			return listaPendenzaDTO.isInfoIncasso() ? this.listaPendenzeConInformazioniIncasso(listaPendenzaDTO, bd) : this.listaPendenze(listaPendenzaDTO, bd);
+//			return listaPendenzaDTO.isInfoIncasso() ? this.listaPendenzeConInformazioniIncasso(listaPendenzaDTO, bd) : this.listaPendenze(listaPendenzaDTO, bd);
+			return this.listaPendenze(listaPendenzaDTO, bd);
 		}finally {
 			if(bd != null)
 				bd.closeConnection();
 		}
 	}
-
-	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
-		// Autorizzazione sui domini
-		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
-		if(idDomini == null) {
-			throw new NotAuthorizedException("L'utenza autenticata ["+listaPendenzaDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
-		}
-		
-		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
-		
-		VersamentiBD versamentiBD = new VersamentiBD(bd);
-		VersamentoFilter filter = versamentiBD.newFilter();
-		
-		if(idDomini != null && idDomini.size() > 0)
-			filter.setIdDomini(idDomini);
-
-		filter.setOffset(listaPendenzaDTO.getOffset());
-		filter.setLimit(listaPendenzaDTO.getLimit());
-		filter.setDataInizio(listaPendenzaDTO.getDataDa());
-		filter.setDataFine(listaPendenzaDTO.getDataA());
-		filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
-		if(listaPendenzaDTO.getStato()!=null) {
-			try {
-				StatoVersamento statoVersamento = null;
-				StatoPendenza statoPendenza = StatoPendenza.valueOf(listaPendenzaDTO.getStato());
-				
-				//TODO mapping...piu' stati?
-				switch(statoPendenza) {
-				case ANNULLATA: statoVersamento = StatoVersamento.ANNULLATO;
-					break;
-				case ESEGUITA: statoVersamento = StatoVersamento.ESEGUITO;
-					break;
-				case ESEGUITA_PARZIALE: statoVersamento = StatoVersamento.PARZIALMENTE_ESEGUITO;
-					break;
-				case NON_ESEGUITA: statoVersamento = StatoVersamento.NON_ESEGUITO;
-					break;
-				case SCADUTA: statoVersamento = StatoVersamento.NON_ESEGUITO; //TODO aggiungere data scadenza < ora
-					break;
-				default:
-					break;
-				
-				}
-				filter.setStatoVersamento(statoVersamento);
-			} catch(Exception e) {
-				return new ListaPendenzeDTOResponse(0, new ArrayList<LeggiPendenzaDTOResponse>());
-			}
-		}
-		filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
-		filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
-		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
-		filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
-		
-		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
-		if(!listaPendenzaDTO.isOrderEnabled()) {
-			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
-		}
-		
-		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-			filter.setCfCittadino(userDetails.getIdentificativo()); 
-		}
-
-		long count = versamentiBD.count(filter);
-
-		List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
-		if(count > 0) {
-			List<Versamento> findAll = versamentiBD.findAll(filter);
-
-			for (Versamento versamento : findAll) {
-				LeggiPendenzaDTOResponse elem = new LeggiPendenzaDTOResponse();
-				elem.setVersamento(versamento);
-				elem.setApplicazione(versamento.getApplicazione(versamentiBD));
-				elem.setDominio(versamento.getDominio(versamentiBD));
-				elem.setUnitaOperativa(versamento.getUo(versamentiBD));
-//				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
-//				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-//					singoloVersamento.getCodContabilita(bd);
-//					singoloVersamento.getIbanAccredito(bd);
-//					singoloVersamento.getTipoContabilita(bd);
-//					singoloVersamento.getTributo(bd);
-//					
-//				}
-//				elem.setLstSingoliVersamenti(singoliVersamenti);
-
-				resList.add(elem);
-			}
-		} 
-
-		return new ListaPendenzeDTOResponse(count, resList);
-	}
 	
-	public ListaPendenzeDTOResponse listaPendenzeConInformazioniIncasso(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
 		// Autorizzazione sui domini
 		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
@@ -274,15 +184,15 @@ public class PendenzeDAO extends BaseDAO{
 				elem.setApplicazione(versamentoIncasso.getApplicazione(versamentiBD));
 				elem.setDominio(versamentoIncasso.getDominio(versamentiBD));
 				elem.setUnitaOperativa(versamentoIncasso.getUo(versamentiBD));
-//				List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
-//				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-//					singoloVersamento.getCodContabilita(bd);
-//					singoloVersamento.getIbanAccredito(bd);
-//					singoloVersamento.getTipoContabilita(bd);
-//					singoloVersamento.getTributo(bd);
-//					
-//				}
-//				elem.setLstSingoliVersamenti(singoliVersamenti);
+				List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
+				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+					singoloVersamento.getCodContabilita(bd);
+					singoloVersamento.getIbanAccredito(bd);
+					singoloVersamento.getTipoContabilita(bd);
+					singoloVersamento.getTributo(bd);
+					
+				}
+				elem.setLstSingoliVersamenti(singoliVersamenti);
 
 				resList.add(elem);
 			}
@@ -293,88 +203,8 @@ public class PendenzeDAO extends BaseDAO{
 
 	public LeggiPendenzaDTOResponse leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException{
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
-		if(leggiPendenzaDTO.isInfoIncasso())
-			_leggiPendenzaConInfromazionIncasso(leggiPendenzaDTO, response);
-		else 
-			_leggiPendenza(leggiPendenzaDTO, response);
+		this._leggiPendenzaConInfromazionIncasso(leggiPendenzaDTO, response);
 		return response;
-	}
-
-	private void _leggiPendenza(LeggiPendenzaDTO leggiPendenzaDTO, LeggiPendenzaDTOResponse response)
-			throws ServiceException, NotAuthenticatedException, NotAuthorizedException, PendenzaNonTrovataException, GovPayException {
-		Versamento versamento = null;
-		BasicBD bd = null;
-		
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
-
-			
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			if(leggiPendenzaDTO.getCodA2A() != null)
-				versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
-			else if(leggiPendenzaDTO.getNumeroAvviso() != null)
-				versamento = versamentiBD.getVersamento(leggiPendenzaDTO.getIdDominio(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso()));
-			
-			
-			Dominio dominio = versamento.getDominio(versamentiBD);
-			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), null, bd);
-			
-			response.setVersamento(versamento);
-			response.setApplicazione(versamento.getApplicazione(versamentiBD));
-		
-			response.setDominio(dominio);
-			response.setUnitaOperativa(versamento.getUo(versamentiBD));
-			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(versamentiBD);
-			response.setLstSingoliVersamenti(singoliVersamenti);
-			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-				singoloVersamento.getCodContabilita(bd);
-				singoloVersamento.getIbanAccredito(bd);
-				singoloVersamento.getTipoContabilita(bd);
-				singoloVersamento.getTributo(bd);
-				
-			}
-			
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
-			PagamentoPortaleFilter newFilter = pagamentiPortaleBD.newFilter();
-			List<PagamentoPortaleVersamento> allPagPortVers = pagamentiPortaleBD.getAllPagPortVers(versamento.getId());
-			List<Long> idPagamentiPortale = new ArrayList<>();
-			
-			if(allPagPortVers != null && !allPagPortVers.isEmpty()) {
-				for (PagamentoPortaleVersamento pagamentoPortaleVersamento : allPagPortVers) {
-					idPagamentiPortale.add(pagamentoPortaleVersamento.getIdPagamentoPortale().getId());
-				}
-				
-				newFilter.setIdPagamentiPortale(idPagamentiPortale);
-				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(newFilter);
-				response.setPagamenti(findAll);
-			}
-			
-			RptBD rptBD = new RptBD(bd);
-			RptFilter newFilter2 = rptBD.newFilter();
-			newFilter2.setIdPendenza(versamento.getCodVersamentoEnte());
-			newFilter2.setCodApplicazione(versamento.getApplicazione(bd).getCodApplicazione());
-			long count = rptBD.count(newFilter2);
-
-			if(count > 0) {
-				List<Rpt> findAll = rptBD.findAll(newFilter2);
-
-				for (Rpt rpt : findAll) {
-					rpt.getVersamento(bd).getDominio(bd);
-					rpt.getVersamento(bd).getUo(bd);
-					rpt.getVersamento(bd).getApplicazione(bd);
-				}
-				
-				response.setRpts(findAll);
-			}
-			
-		} catch (NotFoundException e) {
-			throw new PendenzaNonTrovataException(e.getMessage(), e);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
 	}
 	
 	private void _leggiPendenzaConInfromazionIncasso(LeggiPendenzaDTO leggiPendenzaDTO, LeggiPendenzaDTOResponse response)

@@ -20,7 +20,7 @@ public class ContextConfig extends org.openspcoop2.utils.service.context.Context
 			else 
 				this.setClusterId(GovpayConfig.getInstance().getAppName());
 			
-			this.setDump(true);
+			this.setDump(GovpayConfig.getInstance().isContextDumpEnabled());
 			this.setEmitTransaction(true);
 			this.setServiceType("GovPay");
 			this.setServiceVersion(2);

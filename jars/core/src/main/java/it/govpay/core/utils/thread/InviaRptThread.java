@@ -65,17 +65,16 @@ public class InviaRptThread implements Runnable {
 //			MDC.put(MD5Constants.OPERATION_ID, "InviaRptThread");
 //			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 			
-			appContext.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
-			
+			String operationId = appContext.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + "]");
 			
-			appContext.getRequest().addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
-			appContext.getRequest().addGenericProperty(new Property("iuv", this.rpt.getIuv()));
-			appContext.getRequest().addGenericProperty(new Property("ccp", this.rpt.getCcp()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.rpt.getIuv()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", this.rpt.getCcp()));
 			
 			ctx.getApplicationLogger().log("pagamento.invioRptAttivata");
 				
-			Risposta risposta = RptUtils.inviaRPT(rpt, bd);
+			Risposta risposta = RptUtils.inviaRPT(rpt, operationId, bd);
 
 			if(bd == null) {
 				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -138,12 +137,12 @@ public class InviaRptThread implements Runnable {
 			}
 			if(bd != null) bd.rollback();
 		} finally {
-			if(ctx != null)
-				try {
-					ctx.getApplicationLogger().log();
-				} catch (UtilsException e) {
-					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
-				}
+//			if(ctx != null)
+//				try {
+//					ctx.getApplicationLogger().log();
+//				} catch (UtilsException e) {
+//					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
+//				}
 			if(bd != null) bd.closeConnection();
 			GpThreadLocal.unset();
 		}

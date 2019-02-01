@@ -203,8 +203,9 @@ public class Pagamento extends BasicBD {
 				
 				// Costruisco una mappa di tutti i pagamenti pendenti sul nodo
 				// La chiave di lettura e' iuv@ccp
+				
 
-				NodoClient client = new NodoClient(intermediario, this);
+				NodoClient client = new NodoClient(intermediario, null, this);
 
 				// Le pendenze per specifica durano 60 giorni.
 				int finestra = 60;
@@ -496,11 +497,11 @@ public class Pagamento extends BasicBD {
 
 		try {
 
-			appContext.setupNodoClient(rpt.getStazione(this).getCodStazione(), rr.getCodDominio(), Azione.nodoInviaRichiestaStorno);
-			appContext.getRequest().addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
+			String operationId = appContext.setupNodoClient(rpt.getStazione(this).getCodStazione(), rr.getCodDominio(), Azione.nodoInviaRichiestaStorno);
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
 			ctx.getApplicationLogger().log("rr.invioRr");
 
-			Risposta risposta = RrUtils.inviaRr(rr, rpt, this);
+			Risposta risposta = RrUtils.inviaRr(rr, rpt, operationId, this);
 
 			if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 

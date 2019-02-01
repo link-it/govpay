@@ -140,7 +140,7 @@ public class PagamentiController extends BaseController {
 
 			List<PendenzaIndex> pendenze = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
-				pendenze.add(PendenzeConverter.toRsModelIndex(leggiRptDtoResponse.getVersamento()));
+				pendenze.add(PendenzeConverter.toRsModelIndex(leggiRptDtoResponse.getVersamentoIncasso()));
 			}
 			response.setPendenze(pendenze);
 			
@@ -186,7 +186,7 @@ public class PagamentiController extends BaseController {
 
 			List<PendenzaIndex> pendenze = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
-				pendenze.add(PendenzeConverter.toRsModelIndex(leggiRptDtoResponse.getVersamento()));
+				pendenze.add(PendenzeConverter.toRsModelIndex(leggiRptDtoResponse.getVersamentoIncasso()));
 			}
 			response.setPendenze(pendenze);
 			

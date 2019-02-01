@@ -452,11 +452,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}finally {
 			if(ctx != null) {
 				GpContext.setResult(ctx.getApplicationContext().getTransaction(), transazioneResponse);
-				try {
-					ctx.getApplicationLogger().log();
-				} catch (UtilsException e) {
-					LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la chiusura della transazione: "+ e.getMessage(),e);
-				}
+//				try {
+//					ctx.getApplicationLogger().log();
+//				} catch (UtilsException e) {
+//					LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la chiusura della transazione: "+ e.getMessage(),e);
+//				}
 			}
 			if(bd != null)
 				bd.closeConnection();

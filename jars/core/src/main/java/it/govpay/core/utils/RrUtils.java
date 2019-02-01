@@ -234,7 +234,7 @@ public class RrUtils extends NdpValidationUtils {
 		return datiRevoca;
 	}
 	
-	public static it.govpay.core.business.model.Risposta inviaRr(Rr rr, Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
+	public static it.govpay.core.business.model.Risposta inviaRr(Rr rr, Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
 		// Chiamate per acquisire dati prima di chiudere la connessione
 		rpt.getIntermediario(bd);
 		rpt.getStazione(bd);
@@ -243,7 +243,7 @@ public class RrUtils extends NdpValidationUtils {
 		EventoCooperazione evento = new EventoCooperazione();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
+			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), operationId, bd);
 			NodoInviaRichiestaStorno inviaRR = new NodoInviaRichiestaStorno();
 			inviaRR.setCodiceContestoPagamento(rr.getCcp());
 			inviaRR.setIdentificativoDominio(rr.getCodDominio());

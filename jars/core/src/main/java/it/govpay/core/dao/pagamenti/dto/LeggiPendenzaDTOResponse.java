@@ -23,7 +23,6 @@ import it.govpay.bd.model.Applicazione;
 public class LeggiPendenzaDTOResponse {
 
 	private VersamentoIncasso versamentoIncasso;
-	private Versamento versamento;
 	private List<SingoloVersamento> lstSingoliVersamenti;
 	private UnitaOperativa unitaOperativa;
 	private Dominio dominio;
@@ -31,14 +30,6 @@ public class LeggiPendenzaDTOResponse {
 	private byte[] avvisoPdf;
 	private List<PagamentoPortale> pagamenti;
 	private List<Rpt> rpts;
-
-	public Versamento getVersamento() {
-		return this.versamento;
-	}
-
-	public void setVersamento(Versamento versamento) {
-		this.versamento = versamento;
-	}
 
 	public Applicazione getApplicazione() {
 		return this.applicazione;

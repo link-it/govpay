@@ -20,11 +20,15 @@ import it.govpay.pagamento.v2.api.impl.PagamentiApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.TransazioniApiServiceImpl;
 import it.govpay.pagamento.v2.beans.Avviso;
+import it.govpay.pagamento.v2.beans.Bollo;
+import it.govpay.pagamento.v2.beans.Bollo.TipoBolloEnum;
+import it.govpay.pagamento.v2.beans.Entrata;
 import it.govpay.pagamento.v2.beans.PagamentoIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
 import it.govpay.pagamento.v2.beans.PendenzaBase;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
 import it.govpay.pagamento.v2.beans.Pendenze;
+import it.govpay.pagamento.v2.beans.RiferimentoEntrata;
 import it.govpay.pagamento.v2.beans.RppIndex;
 import it.govpay.pagamento.v2.beans.Segnalazione;
 import it.govpay.pagamento.v2.beans.StatoAvviso;
@@ -32,7 +36,6 @@ import it.govpay.pagamento.v2.beans.StatoPendenza;
 import it.govpay.pagamento.v2.beans.StatoVocePendenza;
 import it.govpay.pagamento.v2.beans.TassonomiaAvviso;
 import it.govpay.pagamento.v2.beans.TipoContabilita;
-import it.govpay.pagamento.v2.beans.TipoRiferimentoVocePendenza;
 import it.govpay.pagamento.v2.beans.VocePendenza;
 
 public class PendenzeConverter {
@@ -172,20 +175,41 @@ public class PendenzeConverter {
 		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setStato(StatoVocePendenza.fromValue(singoloVersamento.getStatoSingoloVersamento().name()));
 		
-		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
-			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
-			rsModel.setTipoBollo(TipoRiferimentoVocePendenza.TipoBolloEnum.BOLLO);
-			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
-		} else if(singoloVersamento.getTributo(null) != null && singoloVersamento.getTributo(null).getCodTributo() != null) { 
-			rsModel.setCodEntrata(singoloVersamento.getTributo(null).getCodTributo());
-		} else { // Definisce i dettagli di incasso della singola entrata.
-			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
-			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
-			if(singoloVersamento.getIbanAppoggio(null) != null)
-				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(null).getCodIban());
-			rsModel.setTipoContabilita(TipoContabilita.fromValue(singoloVersamento.getTipoContabilita().name()));
-		}
+//		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
+//			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
+//			rsModel.setTipoBollo(TipoRiferimentoVocePendenza.TipoBolloEnum.BOLLO);
+//			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
+//		} else if(singoloVersamento.getTributo(null) != null && singoloVersamento.getTributo(null).getCodTributo() != null) { 
+//			rsModel.setCodEntrata(singoloVersamento.getTributo(null).getCodTributo());
+//		} else { // Definisce i dettagli di incasso della singola entrata.
+//			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
+//			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
+//			if(singoloVersamento.getIbanAppoggio(null) != null)
+//				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(null).getCodIban());
+//			rsModel.setTipoContabilita(TipoContabilita.fromValue(singoloVersamento.getTipoContabilita().name()));
+//		}
+//		
 		
+		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
+			Bollo bollo = new Bollo();
+			bollo.setHashDocumento(singoloVersamento.getHashDocumento());
+			bollo.setTipoBollo(TipoBolloEnum.BOLLO);
+			bollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
+			rsModel.setDettaglioVoce(bollo);
+		} else if(singoloVersamento.getTributo(null) != null && singoloVersamento.getTributo(null).getCodTributo() != null) { 
+			RiferimentoEntrata riferimentoEntrata = new RiferimentoEntrata();
+			riferimentoEntrata.setCodEntrata(singoloVersamento.getTributo(null).getCodTributo());
+			rsModel.setDettaglioVoce(riferimentoEntrata);
+		} else { // Definisce i dettagli di incasso della singola entrata.
+			Entrata entrata = new Entrata();
+			entrata.setCodiceContabilita(singoloVersamento.getCodContabilita());
+			entrata.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
+			if(singoloVersamento.getIbanAppoggio(null) != null)
+				entrata.setIbanAppoggio(singoloVersamento.getIbanAppoggio(null).getCodIban());
+			entrata.setTipoContabilita(TipoContabilita.fromValue(singoloVersamento.getTipoContabilita().name()));
+			
+			rsModel.setDettaglioVoce(entrata);
+		}
 		
 		return rsModel;
 	}

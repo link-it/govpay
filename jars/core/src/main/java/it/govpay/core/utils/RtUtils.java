@@ -213,7 +213,7 @@ public class RtUtils extends NdpValidationUtils {
 		return null;
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, BasicBD bd) throws ServiceException, NdpException, UtilsException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
@@ -269,11 +269,18 @@ public class RtUtils extends NdpValidationUtils {
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
 		if(esito.validato && esito.errori.size() > 0) {
-			ctx.getApplicationLogger().log("pagamento.validazioneRtWarn", esito.getDiagnostico());
+			if(recupero)
+				ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtWarn", esito.getDiagnostico());
+			else 
+				ctx.getApplicationLogger().log("pagamento.validazioneRtWarn", esito.getDiagnostico());
 		} 
 		
 		if (!esito.validato) {
-			ctx.getApplicationLogger().log("pagamento.validazioneRtFail", esito.getDiagnostico());
+			if(recupero)
+				ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtFail", esito.getDiagnostico());
+			else 
+				ctx.getApplicationLogger().log("pagamento.validazioneRtFail", esito.getDiagnostico());
+			
 			rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
 			rpt.setDescrizioneStato(esito.getFatal());
 			rpt.setXmlRt(rtByte);
@@ -284,11 +291,18 @@ public class RtUtils extends NdpValidationUtils {
 		}
 		
 		log.info("Acquisizione RT per un importo di " + ctRt.getDatiPagamento().getImportoTotalePagato());
-		
-		appContext.getTransaction().getLastServer().addGenericProperty(new Property("codMessaggioRicevuta", ctRt.getIdentificativoMessaggioRicevuta()));
-		appContext.getTransaction().getLastServer().addGenericProperty(new Property("importo", ctRt.getDatiPagamento().getImportoTotalePagato().toString()));
-		appContext.getTransaction().getLastServer().addGenericProperty(new Property("codEsitoPagamento", Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()).toString()));
-		ctx.getApplicationLogger().log("rt.acquisizione");
+	
+		if(recupero) {
+			appContext.getTransaction().getLastServer().addGenericProperty(new Property("codMessaggioRicevuta", ctRt.getIdentificativoMessaggioRicevuta()));
+			appContext.getTransaction().getLastServer().addGenericProperty(new Property("importo", ctRt.getDatiPagamento().getImportoTotalePagato().toString()));
+			appContext.getTransaction().getLastServer().addGenericProperty(new Property("codEsitoPagamento", Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()).toString()));
+			ctx.getApplicationLogger().log("rt.rtRecuperoAcquisizione");
+		} else {
+			appContext.getRequest().addGenericProperty(new Property("codMessaggioRicevuta", ctRt.getIdentificativoMessaggioRicevuta()));
+			appContext.getRequest().addGenericProperty(new Property("importo", ctRt.getDatiPagamento().getImportoTotalePagato().toString()));
+			appContext.getRequest().addGenericProperty(new Property("codEsitoPagamento", Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()).toString()));
+			ctx.getApplicationLogger().log("rt.acquisizione");
+		}
 		
 		// Rileggo per avere la lettura dello stato rpt in transazione
 		rpt.setCodMsgRicevuta(ctRt.getIdentificativoMessaggioRicevuta());
@@ -389,7 +403,10 @@ public class RtUtils extends NdpValidationUtils {
 						anomalie.add(irregolarita);
 						log.warn(irregolarita);
 					}
-					ctx.getApplicationLogger().log("pagamento.acquisizionePagamentoAnomalo", ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), StringUtils.join(anomalie,"\n"));
+					if(recupero)
+						ctx.getApplicationLogger().log("pagamento.recuperoRtAcquisizionePagamentoAnomalo", ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), StringUtils.join(anomalie,"\n"));
+					else 
+						ctx.getApplicationLogger().log("pagamento.acquisizionePagamentoAnomalo", ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione(), StringUtils.join(anomalie,"\n"));
 					
 					irregolare = true;
 					

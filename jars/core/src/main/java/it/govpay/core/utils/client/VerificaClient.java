@@ -82,7 +82,7 @@ public class VerificaClient extends BasicClient {
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 
 		try {
-			appContext.setupPaClient(this.codApplicazione, AZIONE_SOAP_PA_VERIFICA_VERSAMENTO, this.url.toExternalForm(), this.versione);
+			this.operationID = appContext.setupPaClient(this.codApplicazione, AZIONE_SOAP_PA_VERIFICA_VERSAMENTO, this.url.toExternalForm(), this.versione);
 			ctx.getApplicationLogger().log("verifica.verifica", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 
 			//Chiudo la connessione al DB prima della comunicazione HTTP
@@ -165,5 +165,10 @@ public class VerificaClient extends BasicClient {
 		public void setDetail(String detail) {
 			this.detail = detail;
 		}
+	}
+	
+	@Override
+	public String getOperationId() {
+		return this.operationID;
 	}
 }

@@ -8,7 +8,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -19,6 +18,7 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 
