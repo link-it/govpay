@@ -1020,7 +1020,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'             
-  '/avvisi/{idDominio}/{iuv}':
+  '/avvisi/{idDominio}/{numeroAvviso}':
     get:
       tags:
         - Pendenze
@@ -1034,8 +1034,8 @@ paths:
           schema:
             type: string
         - in: path
-          name: iuv
-          description: Identificativo del versamento
+          name: numeroAvviso
+          description: Numero identificativo dell'avviso di pagamento
           required: true
           schema:
             type: string
