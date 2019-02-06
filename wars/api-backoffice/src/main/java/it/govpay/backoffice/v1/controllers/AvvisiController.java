@@ -30,7 +30,7 @@ public class AvvisiController extends BaseController {
 
 
 
-    public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv) {
+    public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
     	String methodName = "avvisiIdDominioIuvGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -44,7 +44,7 @@ public class AvvisiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
-			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(user, idDominio, iuv);
+			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(user, idDominio, numeroAvviso);
 			
 			String accept = "";
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {

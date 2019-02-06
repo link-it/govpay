@@ -122,10 +122,14 @@ public class AvvisiDAO extends BaseDAO{
 			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.getCodDominio(), null, getAvvisoDTO.isAccessoAnonimo(), bd);
 			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			if(getAvvisoDTO.getIuv() != null)
-				versamento = versamentiBD.getVersamento(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getIuv());
+			
 			if(getAvvisoDTO.getNumeroAvviso() != null)
 				versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getNumeroAvviso());
+			else if(getAvvisoDTO.getIuv() != null)
+				versamento = versamentiBD.getVersamento(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getIuv());
+			else 
+				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
+			
 			
 			Dominio dominio = versamento.getDominio(versamentiBD);
 			// controllo che il dominio sia autorizzato

@@ -31,7 +31,7 @@ public class Avvisi extends BaseRsServiceV1{
 
 
     @GET
-    @Path("/{idDominio}/{iuv}")
+    @Path("/{idDominio}/{numeroAvviso}")
     
     @Produces({ "application/json", "application/pdf" })
     public Response avvisiIdDominioIuvGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso, @QueryParam("idDebitore") String idDebitore){
