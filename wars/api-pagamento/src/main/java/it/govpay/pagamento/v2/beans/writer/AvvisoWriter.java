@@ -22,6 +22,7 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.pagamento.v2.beans.Avviso;
@@ -47,7 +48,7 @@ public class AvvisoWriter implements javax.ws.rs.ext.MessageBodyWriter<Avviso> {
 					throws IOException, WebApplicationException {
 		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper();
 		if(mediaType.equals(APPLICATION_PDF_TYPE)) {
-			
+			try {
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), t.getDominio().getIdDominio());
 			getAvvisoDTO.setAccessoAnonimo(true);
 			//getAvvisoDTO.setCfDebitore(idPagatore);
@@ -56,10 +57,10 @@ public class AvvisoWriter implements javax.ws.rs.ext.MessageBodyWriter<Avviso> {
 			
 			AvvisiDAO avvisiDAO = new AvvisiDAO();
 			GetAvvisoDTOResponse getAvvisoDTOResponse;
-			try {
+			
 				getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
 				objectMapper.writeValue(entityStream, getAvvisoDTOResponse.getAvvisoPdf());
-			} catch (PendenzaNonTrovataException | NotAuthorizedException | NotAuthenticatedException | ServiceException e) {
+			} catch (PendenzaNonTrovataException | NotAuthorizedException | NotAuthenticatedException | ServiceException | GovPayException e) {
 				throw FaultCode.ERRORE_INTERNO.toException(e);
 			}
 		} else {
