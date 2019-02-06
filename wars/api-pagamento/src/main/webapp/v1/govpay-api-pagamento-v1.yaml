@@ -1291,10 +1291,11 @@ components:
           example: Non pagato
           type: string
           enum:
-            - Pagato
-            - Non pagato
-            - Scaduto
-            - Annullato
+            - DUPLICATA
+            - NON_ESEGUITA
+            - ANNULLATA
+            - SCONOSCIUTA
+            - SCADUTA
         importo:
           type: number
           description: Importo della pendenza associata all'avviso.

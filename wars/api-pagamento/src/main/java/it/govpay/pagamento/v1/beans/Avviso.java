@@ -32,16 +32,19 @@ public class Avviso extends JSONSerializable {
     
         
             
-    PAGATO("Pagato"),
+    PAGATO("DUPLICATA"),
     
             
-    NON_PAGATO("Non pagato"),
+    NON_PAGATO("NON_ESEGUITA"),
     
             
-    SCADUTO("Scaduto"),
+    SCADUTO("SCADUTA"),
     
             
-    ANNULLATO("Annullato");
+    ANNULLATO("ANNULLATA"),
+    
+    
+    SCONOSCIUTO("SCONOSCIUTA");
             
         
     

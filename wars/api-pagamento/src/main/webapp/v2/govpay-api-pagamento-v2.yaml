@@ -1953,6 +1953,7 @@ components:
         - Non pagato
         - Scaduto
         - Annullato
+        - Sconosciuto
     StatoPagamento:
       type: string
       example: Eseguito
