@@ -39,9 +39,9 @@ public class EventiDAO extends BaseDAO {
 	}
 
 	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		this.autorizzaRichiesta(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA,bd);
+		this.autorizzaRichiesta(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA, true, bd);
 		// Autorizzazione sui domini
-		List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA);
+		List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA, true);
 		if(codDomini == null) {
 			throw new NotAuthorizedException("L'utenza autenticata ["+listaEventiDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.GIORNALE_DEGLI_EVENTI + " per alcun dominio");
 		}

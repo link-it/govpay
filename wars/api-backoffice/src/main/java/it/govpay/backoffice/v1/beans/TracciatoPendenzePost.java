@@ -19,7 +19,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "inserimenti",
 "annullamenti",
 })
-public class TracciatoPendenzePost extends JSONSerializable implements IValidable{
+public class TracciatoPendenzePost extends JSONSerializable implements IValidable{  
   
   @JsonProperty("idTracciato")
   private String idTracciato = null;

@@ -52,6 +52,7 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
 import it.govpay.core.beans.tracciati.DettaglioTracciatoPendenzeEsito;
 import it.govpay.core.beans.tracciati.EsitoOperazionePendenza;
+import it.govpay.core.beans.tracciati.ModalitaAvvisaturaDigitale;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.TracciatoPendenzePost;
 import it.govpay.core.business.model.tracciati.CostantiCaricamento;
@@ -67,6 +68,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.orm.constants.StatoTracciatoType;
 
 public class Tracciati extends BasicBD {
@@ -112,6 +114,12 @@ public class Tracciati extends BasicBD {
 				beanDati.setLineaElaborazioneDel(0);
 				beanDati.setNumAddTotali(inserimenti != null ? inserimenti.size() : 0);
 				beanDati.setNumDelTotali(annullamenti != null ? annullamenti.size() : 0);
+				beanDati.setAvvisaturaAbilitata(tracciatoPendenzeRequest.AvvisaturaDigitale());
+				
+				ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale();
+				String modo = (modalitaAvvisaturaDigitale != null && modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.SINCRONA)) ? "S" : "A";
+				beanDati.setAvvisaturaModalita(modo);
+				
 				tracciato.setBeanDati(serializer.getObject(beanDati));
 				tracciatiBD.update(tracciato);
 				this.commit();

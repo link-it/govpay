@@ -134,10 +134,10 @@ public class RptDAO extends BaseDAO{
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		List<String> listaDominiFiltro;
-		this.autorizzaRichiesta(listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+		this.autorizzaRichiesta(listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true, bd);
 
 		// Autorizzazione sui domini
-		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true);
 		if(listaDominiFiltro == null) {
 			throw new NotAuthorizedException("L'utenza autenticata ["+listaRptDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
 		}

@@ -486,7 +486,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			}
 			if(pagamentoPortale.getMultiBeneficiario() != null) {
 				// controllo che il dominio sia autorizzato
-				this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
+				this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, true, bd);
 			}
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 
