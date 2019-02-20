@@ -23,8 +23,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.viste.VersamentiIncassiBD;
+import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
@@ -114,14 +114,14 @@ public class AvvisiDAO extends BaseDAO{
 
 	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
 		BasicBD bd = null;
-		Versamento versamento = null;
+		VersamentoIncasso versamento = null;
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			// controllo che l'utenza sia autorizzata per il dominio scelto
 			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.getCodDominio(), null, getAvvisoDTO.isAccessoAnonimo(), bd);
 			
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
 			
 			if(getAvvisoDTO.getNumeroAvviso() != null)
 				versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getNumeroAvviso());

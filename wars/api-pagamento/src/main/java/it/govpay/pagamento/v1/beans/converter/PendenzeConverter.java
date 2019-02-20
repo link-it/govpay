@@ -46,6 +46,7 @@ public class PendenzeConverter {
 			}
 		
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
+		rsModel.setDataPagamento(versamento.getDataPagamento());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
@@ -143,8 +144,10 @@ public class PendenzeConverter {
 			}
 		
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
+		rsModel.setDataPagamento(versamento.getDataPagamento());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
+		
 		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
 		
 		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
@@ -225,7 +228,7 @@ public class PendenzeConverter {
 	}
 	
 	
-	public static Avviso toAvvisoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Dominio dominio, String barCode, String qrCode) throws ServiceException {
+	public static Avviso toAvvisoRsModel(it.govpay.bd.viste.model.VersamentoIncasso versamento, it.govpay.bd.model.Dominio dominio, String barCode, String qrCode) throws ServiceException {
 		Avviso rsModel = new Avviso();
 		
 		if(versamento.getCausaleVersamento()!= null)
@@ -236,6 +239,7 @@ public class PendenzeConverter {
 			}
 		
 		rsModel.setDataScadenza(versamento.getDataScadenza());
+		rsModel.setDataPagamento(versamento.getDataPagamento());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setIdDominio(dominio.getCodDominio());
 		rsModel.setImporto(versamento.getImportoTotale());

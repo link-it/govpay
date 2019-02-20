@@ -1,13 +1,13 @@
 package it.govpay.core.dao.anagrafica.dto;
 
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Versamento;
+import it.govpay.bd.viste.model.VersamentoIncasso;
 
 public class GetAvvisoDTOResponse {
 	
 	private byte[] avvisoPdf;
 	private String filenameAvviso;
-	private Versamento versamento;
+	private VersamentoIncasso versamento;
 	private Dominio dominio;
 	private String barCode;
 	private String qrCode;
@@ -31,11 +31,11 @@ public class GetAvvisoDTOResponse {
 		this.filenameAvviso = filenameAvviso;
 	}
 
-	public Versamento getVersamento() {
+	public VersamentoIncasso getVersamento() {
 		return versamento;
 	}
 
-	public void setVersamento(Versamento versamento) {
+	public void setVersamento(VersamentoIncasso versamento) {
 		this.versamento = versamento;
 	}
 

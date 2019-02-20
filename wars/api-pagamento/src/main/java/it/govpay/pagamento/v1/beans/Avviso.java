@@ -16,6 +16,7 @@ import it.govpay.core.beans.JSONSerializable;
 "numeroAvviso",
 "dataValidita",
 "dataScadenza",
+"dataPagamento",
 "descrizione",
 "tassonomiaAvviso",
 "qrcode",
@@ -90,6 +91,9 @@ public class Avviso extends JSONSerializable {
   
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
+  
+  @JsonProperty("dataPagamento")
+  private Date dataPagamento = null;
   
   @JsonProperty("descrizione")
   private String descrizione = null;
@@ -200,6 +204,22 @@ public class Avviso extends JSONSerializable {
   }
 
   /**
+   * Data di pagamento della pendenza
+   **/
+  public Avviso dataPagamento(Date dataPagamento) {
+    this.dataPagamento = dataPagamento;
+    return this;
+  }
+
+  @JsonProperty("dataPagamento")
+  public Date getDataPagamento() {
+    return this.dataPagamento;
+  }
+  public void setDataPagamento(Date dataPagamento) {
+    this.dataPagamento = dataPagamento;
+  }
+  
+  /**
    * Descrizione da inserire nell'avviso di pagamento
    **/
   public Avviso descrizione(String descrizione) {
@@ -277,6 +297,7 @@ public class Avviso extends JSONSerializable {
         Objects.equals(this.numeroAvviso, avviso.numeroAvviso) &&
         Objects.equals(this.dataValidita, avviso.dataValidita) &&
         Objects.equals(this.dataScadenza, avviso.dataScadenza) &&
+        Objects.equals(this.dataPagamento, avviso.dataPagamento) &&
         Objects.equals(this.descrizione, avviso.descrizione) &&
         Objects.equals(this.tassonomiaAvviso, avviso.tassonomiaAvviso) &&
         Objects.equals(this.qrcode, avviso.qrcode) &&
@@ -285,7 +306,7 @@ public class Avviso extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.stato, this.importo, this.idDominio, this.numeroAvviso, this.dataValidita, this.dataScadenza, this.descrizione, this.tassonomiaAvviso, this.qrcode, this.barcode);
+    return Objects.hash(this.stato, this.importo, this.idDominio, this.numeroAvviso, this.dataValidita, this.dataScadenza, this.dataPagamento, this.descrizione, this.tassonomiaAvviso, this.qrcode, this.barcode);
   }
 
   public static Avviso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -308,6 +329,7 @@ public class Avviso extends JSONSerializable {
     sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
     sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
+    sb.append("    dataPagamento: ").append(this.toIndentedString(this.dataPagamento)).append("\n");
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
     sb.append("    qrcode: ").append(this.toIndentedString(this.qrcode)).append("\n");

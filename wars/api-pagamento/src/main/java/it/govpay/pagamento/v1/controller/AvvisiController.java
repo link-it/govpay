@@ -2,6 +2,7 @@ package it.govpay.pagamento.v1.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -18,8 +19,11 @@ import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
+
+import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.pagamento.v1.beans.Avviso;
 import it.govpay.pagamento.v1.beans.Avviso.StatoEnum;
 import it.govpay.pagamento.v1.beans.converter.PendenzeConverter;
@@ -75,9 +79,12 @@ public class AvvisiController extends BaseController {
 					avviso.setNumeroAvviso(numeroAvviso);
 					avviso.setIdDominio(idDominio);
 				}
-				this.logResponse(uriInfo, httpHeaders, methodName, avviso.toJSON(null), Status.OK.getStatusCode());
+				SerializationConfig serializationConfig = new SerializationConfig();
+				serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+				serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+				this.logResponse(uriInfo, httpHeaders, methodName, avviso.toJSON(null, serializationConfig), Status.OK.getStatusCode());
 				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-				return this.handleResponseOk(Response.status(Status.OK).entity(avviso.toJSON(null)),transactionId).build();
+				return this.handleResponseOk(Response.status(Status.OK).entity(avviso.toJSON(null, serializationConfig)),transactionId).build();
 			} else {
 				// formato non accettato
 				throw new NotAuthorizedException("Avviso di pagamento non disponibile nel formato richiesto");

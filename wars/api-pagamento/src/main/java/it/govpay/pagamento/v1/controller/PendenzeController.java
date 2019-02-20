@@ -3,6 +3,7 @@ package it.govpay.pagamento.v1.controller;
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -19,8 +20,11 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
+
+import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.pagamento.v1.beans.ListaPendenzeIndex;
 import it.govpay.pagamento.v1.beans.Pendenza;
 import it.govpay.pagamento.v1.beans.PendenzaIndex;
@@ -58,7 +62,11 @@ public class PendenzeController extends BaseController {
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
 			Pendenza pendenza =  PendenzeConverter.toRsModel(ricevutaDTOResponse);
-			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
+			
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null,serializationConfig)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -118,9 +126,13 @@ public class PendenzeController extends BaseController {
 			ListaPendenzeIndex response = new ListaPendenzeIndex(results, this.getServicePath(uriInfo),
 					listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi, serializationConfig), 200);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi,serializationConfig)),transactionId).build();
 			
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

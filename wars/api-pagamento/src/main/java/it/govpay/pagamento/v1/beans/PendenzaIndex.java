@@ -19,6 +19,7 @@ import it.govpay.core.beans.JSONSerializable;
 "dataCaricamento",
 "dataValidita",
 "dataScadenza",
+"dataPagamento",
 "annoRiferimento",
 "cartellaPagamento",
 "datiAllegati",
@@ -58,6 +59,9 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
+  
+  @JsonProperty("dataPagamento")
+  private Date dataPagamento = null;
   
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
@@ -223,6 +227,22 @@ public class PendenzaIndex extends JSONSerializable {
   }
   public void setDataScadenza(Date dataScadenza) {
     this.dataScadenza = dataScadenza;
+  }
+  
+  /**
+   * Data di pagamento della pendenza
+   **/
+  public PendenzaIndex dataPagamento(Date dataPagamento) {
+    this.dataPagamento = dataPagamento;
+    return this;
+  }
+
+  @JsonProperty("dataPagamento")
+  public Date getDataPagamento() {
+    return this.dataPagamento;
+  }
+  public void setDataPagamento(Date dataPagamento) {
+    this.dataPagamento = dataPagamento;
   }
 
   /**
@@ -445,6 +465,7 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(this.dataCaricamento, pendenzaIndex.dataCaricamento) &&
         Objects.equals(this.dataValidita, pendenzaIndex.dataValidita) &&
         Objects.equals(this.dataScadenza, pendenzaIndex.dataScadenza) &&
+        Objects.equals(this.dataPagamento, pendenzaIndex.dataPagamento) &&
         Objects.equals(this.annoRiferimento, pendenzaIndex.annoRiferimento) &&
         Objects.equals(this.cartellaPagamento, pendenzaIndex.cartellaPagamento) &&
         Objects.equals(this.datiAllegati, pendenzaIndex.datiAllegati) &&
@@ -462,7 +483,7 @@ public class PendenzaIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, segnalazioni, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, dataPagamento, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, segnalazioni, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -487,6 +508,7 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    dataCaricamento: ").append(this.toIndentedString(this.dataCaricamento)).append("\n");
     sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
     sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
+    sb.append("    dataPagamento: ").append(this.toIndentedString(this.dataPagamento)).append("\n");
     sb.append("    annoRiferimento: ").append(this.toIndentedString(this.annoRiferimento)).append("\n");
     sb.append("    cartellaPagamento: ").append(this.toIndentedString(this.cartellaPagamento)).append("\n");
     sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
