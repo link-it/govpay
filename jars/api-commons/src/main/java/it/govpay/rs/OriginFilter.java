@@ -13,6 +13,7 @@ public class OriginFilter implements javax.servlet.Filter {
         res.addHeader("Access-Control-Allow-Methods", "OPTIONS, GET, PUT, POST, PATCH, DELETE");
         res.addHeader("Access-Control-Allow-Credentials", "true");
         res.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+        res.addHeader("Access-Control-Expose-Headers", "content-type, content-disposition");
         chain.doFilter(request, response);
     }
 

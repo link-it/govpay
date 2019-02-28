@@ -117,11 +117,28 @@
         		<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.GovPayAuthenticationDetailsSource"/>
         	</b:property>
         </b:bean>
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/spid/v1/**">
+        <b:bean id="logoutSuccessHandler" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
+        
+        <b:bean id="invalidSessionStrategy" class="it.govpay.rs.v1.authentication.session.NotAuthorizedInvalidSessionStrategy">
+        	<b:property name="createNewSession" value="false" />
+        </b:bean>
+        
+        <b:bean id="expiredSessionStrategy" class="it.govpay.rs.v1.authentication.session.NotAuthorizedSessionInformationExpiredStrategy">
+        </b:bean>
+        <http auto-config="false" use-expressions="true" create-session="ifRequired" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/spid/v1/**">
+
                 <csrf disabled="true"/>
+                
                 <intercept-url pattern="/rs/spid/v1/**" access="isFullyAuthenticated()" />
                 <intercept-url pattern="/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterCit" />
+                
+                <logout logout-url="/rs/spid/v1/logout" success-handler-ref="logoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true" />
+                
+                <session-management session-fixation-protection="changeSessionId" invalid-session-strategy-ref="invalidSessionStrategy">
+                	<concurrency-control max-sessions="2" expired-session-strategy-ref="expiredSessionStrategy" />
+	       		</session-management>
+
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
@@ -129,19 +146,37 @@
                 </headers>
         </http>
         
+        
         <b:bean id="http403ForbiddenEntryPointV2" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
         </b:bean>
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointV2" pattern="/rs/spid/v2/**">
+        <b:bean id="invalidSessionStrategyV2" class="it.govpay.rs.v2.authentication.session.NotAuthorizedInvalidSessionStrategy">
+        	<b:property name="createNewSession" value="false" />
+        </b:bean>
+        
+        <b:bean id="expiredSessionStrategyV2" class="it.govpay.rs.v2.authentication.session.NotAuthorizedSessionInformationExpiredStrategy">
+        </b:bean>
+        <b:bean id="logoutSuccessHandlerV2" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
+        <http auto-config="false" use-expressions="true" create-session="ifRequired" entry-point-ref="http403ForbiddenEntryPointV2" pattern="/rs/spid/v2/**">
+
                 <csrf disabled="true"/>
+                
                 <intercept-url pattern="/rs/spid/v2/**" access="isFullyAuthenticated()" />
                 <intercept-url pattern="/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterCit" />
+                
+                <logout logout-url="/rs/spid/v1/logout" success-handler-ref="logoutSuccessHandlerV2" delete-cookies="JSESSIONID" invalidate-session="true" />
+                
+                <session-management session-fixation-protection="changeSessionId" invalid-session-strategy-ref="invalidSessionStrategyV2">
+                	<concurrency-control max-sessions="2" expired-session-strategy-ref="expiredSessionStrategyV2" />
+	       		</session-management>
+
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
+        
 		<!-- SPID END -->
         
         <!-- PUBLIC START -->

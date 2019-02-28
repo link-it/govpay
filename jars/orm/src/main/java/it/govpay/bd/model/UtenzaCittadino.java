@@ -48,7 +48,8 @@ public class UtenzaCittadino extends Utenza {
 	
 	public String getProprieta(String nome) {
 		if(headers.containsKey(nome))
-			return headers.get(nome).get(0);
+			if(!headers.get(nome).isEmpty())
+				return headers.get(nome).get(0);
 		
 		return null;
 	}

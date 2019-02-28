@@ -16,8 +16,8 @@ import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.pagamento.v1.beans.Profilo;
-import it.govpay.pagamento.v1.beans.converter.ProfiloConverter;
+import it.govpay.pagamento.v2.beans.Profilo;
+import it.govpay.pagamento.v2.beans.converter.ProfiloConverter;
 
 public class ProfiloController extends BaseController {
 
@@ -54,9 +54,9 @@ public class ProfiloController extends BaseController {
 
 			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
-			this.logResponse(uriInfo, httpHeaders, methodName, profilo.toJSON(null), 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, profilo, 200);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(profilo),transactionId).build();
 			
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
