@@ -8,6 +8,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
 import org.openspcoop2.utils.service.context.IContext;
@@ -161,6 +162,9 @@ public class Rpt extends BasicBD{
 								throw new GovPayException(EsitoOperazione.VER_011, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 							} catch (ClientException e) {
 								log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: errore di interazione con il servizio di verifica.");
+								throw new GovPayException(EsitoOperazione.VER_014, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(), e.getMessage());
+							} catch (ValidationException e) {
+								log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: errore di validazine dei dati ricevuti dal servizio di verifica.");
 								throw new GovPayException(EsitoOperazione.VER_014, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(), e.getMessage());
 							}
 						}

@@ -12,6 +12,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.bd.pagamento.RptBD;
@@ -67,11 +68,12 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp);
 
 			response.setRpt(rpt);
-			response.setVersamento(rpt.getVersamento(bd));
-			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
-			response.setDominio(rpt.getVersamento(bd).getDominio(bd));
-			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(bd));
-			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento(bd).getSingoliVersamenti(bd);
+			Versamento versamento = rpt.getVersamento(bd);
+			response.setVersamento(rpt.getVersamentoIncasso(bd));
+			response.setApplicazione(versamento.getApplicazione(bd)); 
+			response.setDominio(versamento.getDominio(bd));
+			response.setUnitaOperativa(versamento.getUo(bd));
+			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 				singoloVersamento.getCodContabilita(bd);
@@ -174,10 +176,11 @@ public class RptDAO extends BaseDAO{
 			for (Rpt rpt : findAll) {
 				LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
 				elem.setRpt(rpt);
-				rpt.getVersamento(bd).getDominio(bd);
-				rpt.getVersamento(bd).getUo(bd);
-				elem.setVersamento(rpt.getVersamento(bd));
-				elem.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
+				Versamento versamento = rpt.getVersamento(bd);
+				versamento.getDominio(bd);
+				versamento.getUo(bd);
+				elem.setVersamento(rpt.getVersamentoIncasso(bd));
+				elem.setApplicazione(versamento.getApplicazione(bd)); 
 				resList.add(elem);
 			}
 		} 

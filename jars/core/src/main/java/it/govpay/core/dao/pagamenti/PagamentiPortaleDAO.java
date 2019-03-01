@@ -76,7 +76,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	public PagamentiPortaleDAO() {
 	}
 
-	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException {
+	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException { 
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpAvviaTransazionePagamentoResponse transazioneResponse = new GpAvviaTransazionePagamentoResponse();
 		Logger log = LoggerWrapperFactory.getLogger(WebControllerDAO.class);

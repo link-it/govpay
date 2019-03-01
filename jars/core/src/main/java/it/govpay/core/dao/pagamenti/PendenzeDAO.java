@@ -504,7 +504,7 @@ public class PendenzeDAO extends BaseDAO{
 		return nuovoStato;
 	}
 	
-	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws GovPayException, NotAuthorizedException, NotAuthenticatedException{ 
+	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException{ 
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
 		BasicBD bd = null;
 		try {

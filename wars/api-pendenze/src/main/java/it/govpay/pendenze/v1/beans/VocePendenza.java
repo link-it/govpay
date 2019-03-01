@@ -37,6 +37,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 	private static final String FIELD_IBAN_APPOGGIO = "ibanAppoggio";
 	private static final String FIELD_TIPO_CONTABILITA = "tipoContabilita";
 	private static final String FIELD_CODICE_CONTABILITA = "codiceContabilita";
+	private static final String FIELD_DESCRIZIONE = "descrizione";
 
 	@JsonProperty("indice")
 	private BigDecimal indice = null;
@@ -399,8 +400,8 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 
 		vf.getValidator(FIELD_ID_VOCE_PENDENZA, this.idVocePendenza).notNull().minLength(1).maxLength(35);
-		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
-
+		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		vf.getValidator(FIELD_DESCRIZIONE, this.descrizione).notNull().minLength(1).maxLength(255);
 
 		if(this.codEntrata != null) {
 			vf.getValidator(FIELD_COD_ENTRATA, this.codEntrata).notNull().minLength(1).maxLength(35);
@@ -439,9 +440,9 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 
 		else if(this.ibanAccredito != null) {
 			vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
-			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");;
+			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
 			vf.getValidator(FIELD_TIPO_CONTABILITA, this.tipoContabilita).notNull();
-			vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).notNull().pattern("\\S{3,138}");;
+			vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).notNull().pattern("\\S{3,138}").maxLength(255);
 
 			try {
 				vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).isNull();

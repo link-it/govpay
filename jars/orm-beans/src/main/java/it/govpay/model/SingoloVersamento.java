@@ -47,7 +47,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per TipoBollo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoBollo.values()));
+			throw new ServiceException("Codifica inesistente per tipoBollo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoBollo.values()));
 		}
 	}
 	

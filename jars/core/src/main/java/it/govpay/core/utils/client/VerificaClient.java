@@ -26,6 +26,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -67,8 +68,9 @@ public class VerificaClient extends BasicClient {
 	 * Fornirla aperta con tutto gia' committato.
 	 * Viene restituita aperta.
 	 * @throws UtilsException 
+	 * @throws ValidationException 
 	 */
-	public Versamento invoke(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException, VersamentoSconosciutoException, GovPayException, UtilsException {
+	public Versamento invoke(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException, VersamentoSconosciutoException, GovPayException, UtilsException, ValidationException {
 
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
 		String bundlekeyD = bundlekey != null ? bundlekey : "-";
@@ -126,6 +128,9 @@ public class VerificaClient extends BasicClient {
 					return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
 				} catch (GovPayException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
+					throw e;
+				} catch (ValidationException e) {
+					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
 					throw e;
 				}
 			case ANNULLATA:

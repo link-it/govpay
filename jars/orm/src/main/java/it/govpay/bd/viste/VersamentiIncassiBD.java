@@ -33,16 +33,15 @@ public class VersamentiIncassiBD  extends BasicBD {
 
 	/**
 	 * Recupera il versamento identificato dalla chiave fisica
+	 * @throws NotFoundException 
 	 */
-	public VersamentoIncasso getVersamento(long id) throws ServiceException {
+	public VersamentoIncasso getVersamento(long id) throws ServiceException, NotFoundException {
 		try {
 			IdVersamento idVersamento = new IdVersamento();
 			idVersamento.setId(id);
 			it.govpay.orm.VersamentoIncasso versamento = this.getVersamentoIncassoServiceSearch().get(idVersamento);
 			return VersamentoIncassoConverter.toDTO(versamento);
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);

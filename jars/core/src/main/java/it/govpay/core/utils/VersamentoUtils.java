@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -46,6 +47,7 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
@@ -91,7 +93,7 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento toVersamentoModel(it.govpay.core.beans.Versamento versamento, BasicBD bd) throws ServiceException, GovPayException {
+	public static Versamento toVersamentoModel(it.govpay.core.beans.Versamento versamento, BasicBD bd) throws ServiceException, GovPayException, ValidationException {
 		Versamento model = new Versamento();
 		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
 		model.setAnagraficaDebitore(toAnagraficaModel(versamento.getDebitore()));
@@ -156,7 +158,7 @@ public class VersamentoUtils {
 		return model;
 	}
 	
-	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.beans.Versamento.SingoloVersamento singoloVersamento, int index, BasicBD bd) throws ServiceException, GovPayException {
+	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.beans.Versamento.SingoloVersamento singoloVersamento, int index, BasicBD bd) throws ServiceException, GovPayException, ValidationException {
 		SingoloVersamento model = new SingoloVersamento();
 		model.setVersamento(versamento);
 		model.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
@@ -175,7 +177,11 @@ public class VersamentoUtils {
 			}
 			model.setHashDocumento(singoloVersamento.getBolloTelematico().getHash());
 			model.setProvinciaResidenza(singoloVersamento.getBolloTelematico().getProvincia());
-			model.setTipoBollo(TipoBollo.toEnum(singoloVersamento.getBolloTelematico().getTipo()));
+			try {
+				model.setTipoBollo(TipoBollo.toEnum(singoloVersamento.getBolloTelematico().getTipo()));
+			} catch (ServiceException e) {
+				throw new ValidationException(e.getMessage());
+			}
 		} 
 		
 		List<Diritti> diritti = new ArrayList<>(); // TODO controllare quale diritto serve in questa fase
@@ -314,7 +320,7 @@ public class VersamentoUtils {
 	}
 	
 	
-	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException {
+	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, ValidationException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
 			return versamento;
@@ -350,7 +356,7 @@ public class VersamentoUtils {
 	}
 	
 	
-	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException {
+	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, ValidationException {
 		
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
 		String bundlekeyD = bundlekey != null ? bundlekey : "-";
@@ -383,6 +389,9 @@ public class VersamentoUtils {
 			throw e;
 		} catch (VersamentoSconosciutoException e) {
 			ctx.getApplicationLogger().log("verifica.Sconosciuto", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+			throw e;
+		} catch (ValidationException e) {
+			ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
 			throw e;
 		} 
 		

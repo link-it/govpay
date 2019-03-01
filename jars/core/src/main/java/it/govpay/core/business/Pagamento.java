@@ -37,6 +37,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -94,7 +95,7 @@ public class Pagamento extends BasicBD {
 		super(bd);
 	}
 
-	public AvviaTransazioneDTOResponse avviaTransazione(AvviaTransazioneDTO dto) throws GovPayException, ServiceException, UtilsException {
+	public AvviaTransazioneDTOResponse avviaTransazione(AvviaTransazioneDTO dto) throws GovPayException, ServiceException, UtilsException, ValidationException {
 
 		IContext ctx = GpThreadLocal.get();
 		List<Versamento> versamenti = new ArrayList<>();
@@ -192,7 +193,7 @@ public class Pagamento extends BasicBD {
 				
 				Intermediario intermediario = stazione.getIntermediario(this);
 
-				this.closeConnection();
+				//this.closeConnection();
 				ctx.getApplicationLogger().log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
 				log.debug("Recupero i pendenti [CodStazione: " + stazione.getCodStazione() + "]");
 				
@@ -220,7 +221,7 @@ public class Pagamento extends BasicBD {
 
 				// Ho acquisito tutti gli stati pendenti. 
 				// Tutte quelle in stato terminale, 
-				this.setupConnection(GpThreadLocal.get().getTransactionId());
+			//	this.setupConnection(GpThreadLocal.get().getTransactionId());
 
 				RptBD rptBD = new RptBD(this);
 
