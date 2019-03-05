@@ -177,7 +177,6 @@ paths:
                 type: object
                 required:
                   - idDominio
-                  - numeroAvviso
                 properties:
                   idDominio:
                     type: string
@@ -199,7 +198,6 @@ paths:
                 type: object
                 required:
                   - idDominio
-                  - numeroAvviso
                 properties:
                   idDominio:
                     type: string
@@ -215,6 +213,8 @@ paths:
                     description: Stampa pdf dell'avviso
         '400':
           $ref: '#/components/responses/400'
+        '422':
+          $ref: '#/components/responses/400'          
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -1255,7 +1255,7 @@ components:
                   description: Tipologia di Bollo digitale
                   type: string
                   enum:
-                    - Imposta di bollo
+                    - 01
                 hashDocumento:
                   description: Digest in base64 del documento informatico associato alla marca da bollo
                   type: string
