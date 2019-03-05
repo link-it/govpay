@@ -299,7 +299,7 @@ components:
           items:
             $ref: '#/components/schemas/vocePendenza'          
     statoPendenzaVerificata:
-      example: NON_ESEGUITO
+      example: NON_ESEGUITA
       type: string
       enum:
         - NON_ESEGUITA
