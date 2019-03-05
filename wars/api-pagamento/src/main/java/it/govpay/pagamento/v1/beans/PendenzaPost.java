@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -94,8 +95,11 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 	@JsonProperty("tassonomia")
 	private String tassonomia = null;
 
+	@JsonIgnore
+	private TassonomiaAvviso tassonomiaAvvisoEnum = null;
+
 	@JsonProperty("tassonomiaAvviso")
-	private TassonomiaAvviso tassonomiaAvviso = null;
+	private String tassonomiaAvviso = null;
 
 	@JsonProperty("voci")
 	private List<VocePendenza> voci = new ArrayList<>();
@@ -337,15 +341,15 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 	/**
 	 **/
 	public PendenzaPost tassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
-		this.tassonomiaAvviso = tassonomiaAvviso;
+		this.tassonomiaAvvisoEnum = tassonomiaAvviso;
 		return this;
 	}
 
 	public TassonomiaAvviso getTassonomiaAvvisoEnum() {
-		return this.tassonomiaAvviso;
+		return this.tassonomiaAvvisoEnum;
 	}
 	public void setTassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
-		this.tassonomiaAvviso = tassonomiaAvviso;
+		this.tassonomiaAvvisoEnum = tassonomiaAvviso;
 	}
 
 	/**
@@ -357,12 +361,10 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("tassonomiaAvviso")
 	public String getTassonomiaAvviso() {
-		if(this.tassonomiaAvviso==null) return null;
-		return this.tassonomiaAvviso.toString();
+		return this.tassonomiaAvviso;
 	}
 	public void setTassonomiaAvviso(String tassonomiaAvviso) {
-		if(tassonomiaAvviso!=null)
-			this.tassonomiaAvviso = TassonomiaAvviso.fromValue(tassonomiaAvviso);
+		this.tassonomiaAvviso = tassonomiaAvviso;
 	}
 
 	/**

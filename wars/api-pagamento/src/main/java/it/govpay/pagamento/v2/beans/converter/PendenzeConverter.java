@@ -159,7 +159,7 @@ public class PendenzeConverter {
 		
 		List<RppIndex> rpps = new ArrayList<>();
 		for (Rpt rpt : transazioni) {
-			rpps.add(RppConverter.toRsModelIndex(rpt, rpt.getVersamentoIncasso(null), rpt.getVersamento(null).getApplicazione(null)));
+			rpps.add(RppConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null)));
 		} 
 		rsModel.setRpps(rpps); 
 		return rsModel;

@@ -129,4 +129,52 @@ public class VersamentoIncassoConverter {
 			throw new ServiceException(e);
 		}
 	}
+	
+	public static VersamentoIncasso frorVersamento(it.govpay.bd.model.Versamento versamentoDTO) throws ServiceException {
+		VersamentoIncasso dto = new VersamentoIncasso();
+		dto.setId(versamentoDTO.getId());
+		dto.setIdApplicazione(versamentoDTO.getIdApplicazione());
+		dto.setIdUo(versamentoDTO.getIdUo());
+		dto.setIdDominio(versamentoDTO.getIdDominio());
+		dto.setNome(versamentoDTO.getNome());
+		dto.setCodVersamentoEnte(versamentoDTO.getCodVersamentoEnte());
+		dto.setStatoVersamento(versamentoDTO.getStatoVersamento());
+		dto.setDescrizioneStato(versamentoDTO.getDescrizioneStato());
+		dto.setImportoTotale(versamentoDTO.getImportoTotale());
+		dto.setAggiornabile(versamentoDTO.isAggiornabile());
+		dto.setDataCreazione(versamentoDTO.getDataCreazione());
+		dto.setDataValidita(versamentoDTO.getDataValidita());
+		dto.setDataScadenza(versamentoDTO.getDataScadenza());
+		dto.setDataUltimoAggiornamento(versamentoDTO.getDataUltimoAggiornamento());
+		dto.setCausaleVersamento(versamentoDTO.getCausaleVersamento());
+		dto.setAnagraficaDebitore(versamentoDTO.getAnagraficaDebitore());
+		dto.setCodAnnoTributario(versamentoDTO.getCodAnnoTributario());
+		
+		dto.setCodLotto(versamentoDTO.getCodLotto());
+		
+		dto.setTassonomiaAvviso(versamentoDTO.getTassonomiaAvviso()); 
+		dto.setTassonomia(versamentoDTO.getTassonomia());
+		
+		dto.setCodVersamentoLotto(versamentoDTO.getCodVersamentoLotto()); 
+		dto.setCodBundlekey(versamentoDTO.getCodBundlekey()); 
+		dto.setDatiAllegati(versamentoDTO.getDatiAllegati());
+		dto.setIncasso(versamentoDTO.getIncasso());
+		dto.setAnomalie(versamentoDTO.getAnomalie());
+		
+		dto.setIuvVersamento(versamentoDTO.getIuvVersamento());
+		dto.setNumeroAvviso(versamentoDTO.getNumeroAvviso());
+		dto.setAvvisaturaAbilitata(versamentoDTO.isAvvisaturaAbilitata());
+		dto.setAvvisaturaDaInviare(versamentoDTO.isAvvisaturaDaInviare());
+		dto.setAvvisaturaCodAvvisatura(versamentoDTO.getAvvisaturaCodAvvisatura());
+		dto.setAvvisaturaModalita(versamentoDTO.getAvvisaturaModalita());
+		dto.setAvvisaturaOperazione(versamentoDTO.getAvvisaturaOperazione());
+		dto.setAvvisaturaTipoPagamento(versamentoDTO.getAvvisaturaTipoPagamento());
+		dto.setIdTracciatoAvvisatura(versamentoDTO.getIdTracciatoAvvisatura());
+		dto.setAck(versamentoDTO.isAck());
+		dto.setAnomalo(versamentoDTO.isAnomalo());
+
+		// N.B. Informazioni incasso non disponibili
+		
+		return dto;
+	}
 }

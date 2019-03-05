@@ -17,6 +17,7 @@ import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -68,8 +69,8 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp);
 
 			response.setRpt(rpt);
-			Versamento versamento = rpt.getVersamento(bd);
-			response.setVersamento(rpt.getVersamentoIncasso(bd));
+			VersamentoIncasso versamento = rpt.getVersamento(bd);
+			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(bd)); 
 			response.setDominio(versamento.getDominio(bd));
 			response.setUnitaOperativa(versamento.getUo(bd));
@@ -176,10 +177,10 @@ public class RptDAO extends BaseDAO{
 			for (Rpt rpt : findAll) {
 				LeggiRptDTOResponse elem = new LeggiRptDTOResponse();
 				elem.setRpt(rpt);
-				Versamento versamento = rpt.getVersamento(bd);
+				VersamentoIncasso versamento = rpt.getVersamento(bd);
 				versamento.getDominio(bd);
 				versamento.getUo(bd);
-				elem.setVersamento(rpt.getVersamentoIncasso(bd));
+				elem.setVersamento(versamento);
 				elem.setApplicazione(versamento.getApplicazione(bd)); 
 				resList.add(elem);
 			}

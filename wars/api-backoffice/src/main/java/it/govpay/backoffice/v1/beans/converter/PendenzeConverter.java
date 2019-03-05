@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.UriBuilder;
-
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IOException;
 
@@ -289,9 +287,6 @@ public class PendenzeConverter {
 		
 		if(versamento.getUo(null) != null && !versamento.getUo(null).getCodUo().equals(it.govpay.model.Dominio.EC))
 			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModel(versamento.getUo(null)));
-		
-		String aaa = "ID{aa}";
-		String path = UriBuilder.fromPath("/pendenze").path("{idPendenze}").buildFromEncoded(aaa).toString();
 		
 		rsModel.setPagamenti(UriBuilderUtils.getPagamentiByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
 		rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));

@@ -23,6 +23,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -141,7 +142,10 @@ public class VerificaClient extends BasicClient {
 				throw new VersamentoDuplicatoException(pendenzaVerificata.getDescrizioneStato());
 			case SCADUTA:
 				ctx.getApplicationLogger().log("verifica.verificaScaduto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
-				throw new VersamentoScadutoException(pendenzaVerificata.getDescrizioneStato());
+				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
+					throw new VersamentoScadutoException(pendenzaVerificata.getDescrizioneStato());
+				else 
+					throw new VersamentoScadutoException(pendenzaVerificata.getDataScadenza() != null ? pendenzaVerificata.getDataScadenza().toDate() : null);
 			case SCONOSCIUTA:
 				ctx.getApplicationLogger().log("verifica.verificaSconosciuto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				throw new VersamentoSconosciutoException();
