@@ -26,6 +26,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -53,7 +54,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class VersamentoUtils {
 	
-	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento, BasicBD bd) throws ServiceException, GovPayException {
+	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento, BasicBD bd) throws ServiceException, GovPayException, ValidationException { 
 		Versamento model = new Versamento();
 		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
 		model.setAnagraficaDebitore(toAnagraficaModel(versamento.getDebitore()));
@@ -153,7 +154,7 @@ public class VersamentoUtils {
 	}
 
 	
-	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, int index, BasicBD bd) throws ServiceException, GovPayException {
+	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, int index, BasicBD bd) throws ServiceException, GovPayException, ValidationException {
 		SingoloVersamento model = new SingoloVersamento();
 		model.setVersamento(versamento);
 		model.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
@@ -173,7 +174,11 @@ public class VersamentoUtils {
 			}
 			model.setHashDocumento(singoloVersamento.getBolloTelematico().getHash());
 			model.setProvinciaResidenza(singoloVersamento.getBolloTelematico().getProvincia());
-			model.setTipoBollo(TipoBollo.toEnum(singoloVersamento.getBolloTelematico().getTipo()));
+			try {
+				model.setTipoBollo(TipoBollo.toEnum(singoloVersamento.getBolloTelematico().getTipo()));
+			} catch (ServiceException e) {
+				throw new ValidationException(e.getMessage());
+			}
 		} 
 		
 		List<Diritti> diritti = new ArrayList<>(); // TODO controllare quale diritto serve in questa fase

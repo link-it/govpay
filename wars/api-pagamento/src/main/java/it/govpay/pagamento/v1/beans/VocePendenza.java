@@ -463,8 +463,10 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
+
 		vf.getValidator("idVocePendenza", this.idVocePendenza).notNull().minLength(1).maxLength(35);
-		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
+		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
 
 		if(this.codEntrata != null) {
 			vf.getValidator("codEntrata", this.codEntrata).notNull().minLength(1).maxLength(35);
@@ -503,9 +505,9 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 
 		else if(this.ibanAccredito != null) {
 			vf.getValidator("ibanAccredito", this.ibanAccredito).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
-			vf.getValidator("ibanAppoggio", this.ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");;
+			vf.getValidator("ibanAppoggio", this.ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
 			vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
-			vf.getValidator("codiceContabilita", this.codiceContabilita).notNull().pattern("\\S{3,138}");;
+			vf.getValidator("codiceContabilita", this.codiceContabilita).notNull().pattern("\\S{3,138}").maxLength(255);
 
 			try {
 				vf.getValidator("hashDocumento", this.hashDocumento).isNull();

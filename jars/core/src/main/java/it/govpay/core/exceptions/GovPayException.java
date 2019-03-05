@@ -213,7 +213,6 @@ public class GovPayException extends Exception {
 		case APP_006: return "Nessuna applicazione trovata per gestire lo IUV ("+this.params[0]+") per il dominio ("+this.params[1]+")";
 		case UAN_001: return "Non e' possibile effettuare il pagamento della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") in maniera anonima senza specificare l'entrata da pagare.";
 		case UAN_002: return "Non e' possibile effettuare il pagamento della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") in maniera anonima poiche' l'entrata ("+ this.params[2] +") non e' abilitata ai pagamenti spontanei.";
-		
 		}
 		
 		return "";

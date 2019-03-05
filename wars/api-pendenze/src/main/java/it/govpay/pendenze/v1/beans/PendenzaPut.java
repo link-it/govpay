@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -84,8 +85,11 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 	@JsonProperty("tassonomia")
 	private String tassonomia = null;
 
+	@JsonIgnore
+	private TassonomiaAvviso tassonomiaAvvisoEnum = null;
+
 	@JsonProperty("tassonomiaAvviso")
-	private TassonomiaAvviso tassonomiaAvviso = null;
+	private String tassonomiaAvviso = null;
 
 	@JsonProperty("idDominio")
 	private String idDominio = null;
@@ -289,16 +293,30 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 
 	/**
 	 **/
-	public PendenzaPut tassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {
-		this.tassonomiaAvviso = tassonomiaAvviso;
+	public PendenzaPut tassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
+		this.tassonomiaAvvisoEnum = tassonomiaAvviso;
+		return this;
+	}
+
+	public TassonomiaAvviso getTassonomiaAvvisoEnum() {
+		return this.tassonomiaAvvisoEnum;
+	}
+	public void setTassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
+		this.tassonomiaAvvisoEnum = tassonomiaAvviso;
+	}
+
+	/**
+	 **/
+	public PendenzaPut tassonomiaAvviso(String tassonomiaAvviso) {
+		this.setTassonomiaAvviso(tassonomiaAvviso);
 		return this;
 	}
 
 	@JsonProperty("tassonomiaAvviso")
-	public TassonomiaAvviso getTassonomiaAvviso() {
+	public String getTassonomiaAvviso() {
 		return this.tassonomiaAvviso;
 	}
-	public void setTassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {
+	public void setTassonomiaAvviso(String tassonomiaAvviso) {
 		this.tassonomiaAvviso = tassonomiaAvviso;
 	}
 
@@ -435,10 +453,10 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 		vf.getValidator(FIELD_NOME, this.nome).minLength(1).maxLength(35);
 		vf.getValidator(FIELD_CAUSALE, this.causale).notNull().minLength(1).maxLength(140);
 		vf.getValidator(FIELD_SOGGETTO_PAGATORE, this.soggettoPagatore).notNull().validateFields();
-		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
+		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
 		vf.getValidator(FIELD_NUMERO_AVVISO, this.numeroAvviso).pattern("[0-9]{18}");
-		vf.getValidator(FIELD_DATA_VALIDITA, this.dataValidita).after(LocalDate.now());
-		vf.getValidator(FIELD_DATA_SCADENZA, this.dataScadenza).after(LocalDate.now());
+		vf.getValidator(FIELD_DATA_VALIDITA, this.dataValidita);
+		vf.getValidator(FIELD_DATA_SCADENZA, this.dataScadenza);
 		if(this.annoRiferimento != null)
 			vf.getValidator(FIELD_ANNORIFERIMENTO, this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
 		vf.getValidator(FIELD_CARTELLA_PAGAMENTO, this.cartellaPagamento).minLength(1).maxLength(35);

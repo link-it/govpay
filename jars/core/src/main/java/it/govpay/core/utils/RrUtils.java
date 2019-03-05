@@ -314,7 +314,7 @@ public class RrUtils extends NdpValidationUtils {
 			ctEr = JaxbUtils.toER(er);
 		} catch (Exception e) {
 			log.error("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
-			throw new NdpException(FaultPa.PAA_SINTASSI_XSD, identificativoDominio, e.getCause().getMessage());
+			throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), identificativoDominio);
 		}
 		
 		appContext.getRequest().addGenericProperty(new Property("codMessaggioEsito", ctEr.getIdentificativoMessaggioEsito()));
@@ -326,7 +326,7 @@ public class RrUtils extends NdpValidationUtils {
 		try {
 			rr = rrBD.getRr(ctEr.getRiferimentoMessaggioRevoca());
 		} catch (NotFoundException e) {
-			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, identificativoDominio, "RR con identificativo " + ctEr.getRiferimentoMessaggioRevoca() + " sconosciuta");
+			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, "RR con identificativo " + ctEr.getRiferimentoMessaggioRevoca() + " sconosciuta", identificativoDominio);
 		}
 		
 		if(rr.getStato().equals(StatoRr.ER_ACCETTATA_PA)) {
@@ -353,7 +353,7 @@ public class RrUtils extends NdpValidationUtils {
 			rr.setDescrizioneStato(esito.getFatal());
 			rr.setXmlEr(er);
 			rrBD.updateRr(rr.getId(), rr);
-			throw new NdpException(FaultPa.PAA_SEMANTICA, identificativoDominio, esito.getFatal());
+			throw new NdpException(FaultPa.PAA_SEMANTICA, esito.getFatal(), identificativoDominio);
 		}
 		
 		// Rileggo per avere la lettura dello stato rpt in transazione

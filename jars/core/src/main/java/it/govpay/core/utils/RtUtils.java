@@ -222,7 +222,7 @@ public class RtUtils extends NdpValidationUtils {
 		try {
 			rpt = rptBD.getRpt(codDominio, iuv, ccp);
 		} catch (NotFoundException e) {
-			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio, null);
+			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 		}
 		
 		if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
@@ -239,9 +239,9 @@ public class RtUtils extends NdpValidationUtils {
 			} catch (Exception e) {
 				log.warn("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
 				if(e.getCause() != null)
-					throw new NdpException(FaultPa.PAA_SINTASSI_XSD, codDominio, e.getCause().getMessage());
+					throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), codDominio);
 				else
-					throw new NdpException(FaultPa.PAA_SINTASSI_XSD, codDominio, e.getMessage());
+					throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getMessage(), codDominio);
 			}
 		} catch (NdpException e) {
 			log.warn("Rt rifiutata: " + e.getDescrizione());
@@ -287,7 +287,7 @@ public class RtUtils extends NdpValidationUtils {
 			rptBD.updateRpt(rpt.getId(), rpt);
 			bd.commit();
 			bd.disableSelectForUpdate();
-			throw new NdpException(FaultPa.PAA_SEMANTICA, codDominio, esito.getFatal());
+			throw new NdpException(FaultPa.PAA_SEMANTICA, esito.getFatal(), codDominio);
 		}
 		
 		log.info("Acquisizione RT per un importo di " + ctRt.getDatiPagamento().getImportoTotalePagato());

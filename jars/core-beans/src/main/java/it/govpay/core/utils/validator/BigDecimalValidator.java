@@ -2,6 +2,7 @@ package it.govpay.core.utils.validator;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 import org.openspcoop2.utils.json.ValidationException;
 
@@ -16,6 +17,21 @@ public class BigDecimalValidator {
 		this.fieldName = fieldName;
 		this.fieldValue = fieldValue;
 		this.df = new DecimalFormat("#0.##");
+	}
+	
+	public BigDecimalValidator checkDecimalDigits() throws ValidationException {
+		
+		String value = String.valueOf(this.fieldValue.doubleValue());
+		DecimalFormatSymbols symbols = this.df.getDecimalFormatSymbols();
+		
+		int i = value.lastIndexOf(symbols.getDecimalSeparator());
+		if(i != -1) {
+//			System.out.println("Il campo " + this.fieldName + " contiene un valore non valido: " + value + " has "+value.substring(i + 1).length()+" digits after dot");
+			if(value.substring(i + 1).length() > 2) {
+				throw new ValidationException("Il campo " + this.fieldName + " contiene un valore non valido.");
+			} 
+		}
+		return this;
 	}
 
 	public BigDecimalValidator notNull() throws ValidationException {

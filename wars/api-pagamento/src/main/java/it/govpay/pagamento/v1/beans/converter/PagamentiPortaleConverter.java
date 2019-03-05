@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.json.ValidationException;
+import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -26,6 +29,7 @@ import it.govpay.pagamento.v1.beans.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.pagamento.v1.beans.PendenzaPost;
 import it.govpay.pagamento.v1.beans.Soggetto;
 import it.govpay.pagamento.v1.beans.StatoPagamento;
+import it.govpay.pagamento.v1.beans.TassonomiaAvviso;
 import it.govpay.pagamento.v1.beans.VocePendenza;
 
 public class PagamentiPortaleConverter {
@@ -36,6 +40,8 @@ public class PagamentiPortaleConverter {
 	public static final String ID_PENDENZA_KEY = "idPendenza";
 	public static final String ID_DOMINIO_KEY = "idDominio";
 	public static final String IUV_KEY = "iuv";
+	
+	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiPortaleConverter.class);
 
 	public static PagamentiPortaleResponseOk getPagamentiPortaleResponseOk(PagamentiPortaleDTOResponse dtoResponse) {
 		PagamentiPortaleResponseOk  json = new PagamentiPortaleResponseOk();
@@ -125,7 +131,7 @@ public class PagamentiPortaleConverter {
 		return pagamentiPortaleDTO;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) throws ValidationException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -144,8 +150,14 @@ public class PagamentiPortaleConverter {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setTassonomia(pendenza.getTassonomia());
-		if(pendenza.getTassonomiaAvviso() != null)
-			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
+		if(pendenza.getTassonomiaAvviso() != null) {
+			// valore tassonomia avviso non valido
+			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
+				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+			}
+			
+			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
+		}
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
 		
@@ -157,7 +169,7 @@ public class PagamentiPortaleConverter {
 		return versamento;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ValidationException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -178,9 +190,15 @@ public class PagamentiPortaleConverter {
 	
 		versamento.setNome(pendenza.getNome());
 		versamento.setTassonomia(pendenza.getTassonomia());
-		if(pendenza.getTassonomiaAvviso() != null)
-			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
-		
+		if(pendenza.getTassonomiaAvviso() != null) {
+			// valore tassonomia avviso non valido
+			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
+				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+			}
+			
+			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
+
+		}
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		versamento.setCartellaPagamento(pendenza.getCartellaPagamento());
 		

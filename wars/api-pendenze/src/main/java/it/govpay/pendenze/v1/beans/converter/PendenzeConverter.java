@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -242,7 +244,7 @@ public class PendenzeConverter {
 	}
 	
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -261,8 +263,16 @@ public class PendenzeConverter {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setTassonomia(pendenza.getTassonomia());
-		if(pendenza.getTassonomiaAvviso() != null)
-			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso().toString());
+		
+		if(pendenza.getTassonomiaAvviso() != null) {
+			// valore tassonomia avviso non valido
+			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
+				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+			}
+			
+			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
+		}
+		
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
 		// voci pagamento

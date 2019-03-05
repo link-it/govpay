@@ -1070,50 +1070,13 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
      JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id; 
 
 CREATE VIEW v_riscossioni AS
- SELECT a.cod_dominio,
-    a.iuv,
-    a.iur,
-    a.cod_flusso,
-    a.fr_iur,
-    a.data_regolamento,
-    a.importo_totale_pagamenti,
-    a.numero_pagamenti,
-    a.importo_pagato,
-    a.data,
-    a.cod_singolo_versamento_ente,
-    a.indice_dati,
-    a.cod_versamento_ente,
-    applicazioni.cod_applicazione
-   FROM ( SELECT v_riscossioni_senza_rpt.cod_dominio,
-            v_riscossioni_senza_rpt.iuv,
-            v_riscossioni_senza_rpt.iur,
-            v_riscossioni_senza_rpt.cod_flusso,
-            v_riscossioni_senza_rpt.fr_iur,
-            v_riscossioni_senza_rpt.data_regolamento,
-            v_riscossioni_senza_rpt.importo_totale_pagamenti,
-            v_riscossioni_senza_rpt.numero_pagamenti,
-            v_riscossioni_senza_rpt.importo_pagato,
-            v_riscossioni_senza_rpt.data,
-            v_riscossioni_senza_rpt.cod_singolo_versamento_ente,
-            v_riscossioni_senza_rpt.indice_dati,
-            v_riscossioni_senza_rpt.cod_versamento_ente,
-            v_riscossioni_senza_rpt.id_applicazione
-           FROM v_riscossioni_senza_rpt
+        SELECT
+                cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti,
+                numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione
+        FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id
         UNION
-         SELECT v_riscossioni_con_rpt.cod_dominio,
-            v_riscossioni_con_rpt.iuv,
-            v_riscossioni_con_rpt.iur,
-            v_riscossioni_con_rpt.cod_flusso,
-            v_riscossioni_con_rpt.fr_iur,
-            v_riscossioni_con_rpt.data_regolamento,
-            v_riscossioni_con_rpt.importo_totale_pagamenti,
-            v_riscossioni_con_rpt.numero_pagamenti,
-            v_riscossioni_con_rpt.importo_pagato,
-            v_riscossioni_con_rpt.data,
-            v_riscossioni_con_rpt.cod_singolo_versamento_ente,
-            v_riscossioni_con_rpt.indice_dati,
-            v_riscossioni_con_rpt.cod_versamento_ente,
-            v_riscossioni_con_rpt.id_applicazione
-           FROM v_riscossioni_con_rpt) a
-     JOIN applicazioni ON a.id_applicazione = applicazioni.id;
+        SELECT
+                cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti,
+                numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione
+        FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id;
 

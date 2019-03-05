@@ -28,8 +28,10 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.viste.VersamentiIncassiBD;
 import it.govpay.bd.viste.model.VersamentoIncasso;
+import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.model.Intermediario;
 
 public class Rpt extends it.govpay.model.Rpt{
@@ -38,23 +40,30 @@ public class Rpt extends it.govpay.model.Rpt{
 	 
 	// Business
 	
-	private transient VersamentoIncasso versamentoIncasso;
+	private transient VersamentoIncasso versamento;
 	private transient Dominio dominio;
 	private transient List<Pagamento> pagamenti;
 	private transient PagamentoPortale pagamentoPortale;
 	
 	public VersamentoIncasso getVersamento(BasicBD bd) throws ServiceException {
-		if(this.versamentoIncasso == null) {
-			VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
-			this.versamentoIncasso = versamentiBD.getVersamento(this.getIdVersamento());
+		if(this.versamento == null) {
+			VersamentiIncassiBD versamentiIncassiBD = new VersamentiIncassiBD(bd);
+			try {
+				this.versamento = versamentiIncassiBD.getVersamento(this.getIdVersamento());
+			}catch(NotFoundException e) { // se non e' stato ancora incassato non verra' trovato  
+				VersamentiBD versamentiBD = new VersamentiBD(bd);
+				Versamento versamento = versamentiBD.getVersamento(this.getIdVersamento());
+				if(versamento != null)
+					this.versamento = VersamentoIncassoConverter.frorVersamento(versamento);
+			} // puo' essere null perche' nella vista non e' presente
 		}
-		return this.versamentoIncasso;
+		return this.versamento;
 	}
-	
-	public void setVersamento(VersamentoIncasso versamentoIncasso) {
-		this.versamentoIncasso = versamentoIncasso;
+
+	public void setVersamento(VersamentoIncasso versamento) {
+		this.versamento = versamento;
 	}
-	
+
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(this.dominio == null) {
 			try {

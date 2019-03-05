@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 public class UtenzaAnonima extends Utenza {
 
 	public static final String ID_UTENZA_ANONIMA = "UTENZA_ANONIMA"; 
@@ -32,7 +34,7 @@ public class UtenzaAnonima extends Utenza {
 
 	@Override
 	public String getIdentificativo() {
-		return ID_UTENZA_ANONIMA;
+		return StringUtils.isEmpty(this.getPrincipal()) ?  ID_UTENZA_ANONIMA : this.getPrincipal();
 	}
 
 	public Map<String, List<String>> getHeaders() {
