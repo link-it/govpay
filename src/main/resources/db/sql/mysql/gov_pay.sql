@@ -1,20 +1,21 @@
 CREATE TABLE intermediari
 (
-	cod_intermediario VARCHAR(35) NOT NULL,
-	cod_connettore_pdd VARCHAR(35) NOT NULL,
-	cod_connettore_ftp VARCHAR(35),
-	denominazione VARCHAR(255) NOT NULL,
-	principal VARCHAR(756) NOT NULL,
-	principal_originale VARCHAR(756) NOT NULL,
-	abilitato BOOLEAN NOT NULL,
+	cod_intermediario VARCHAR(35) NOT NULL COMMENT 'Identificativo intermediario su pagopa',
+	cod_connettore_pdd VARCHAR(35) NOT NULL COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore http verso pagopa',
+	cod_connettore_ftp VARCHAR(35) COMMENT 'Riferimento alle properties in tabella connettori di configurazione dele connettore ftp verso pagopa',
+	denominazione VARCHAR(255) NOT NULL COMMENT 'Nome dell\'intermediario',
+	principal VARCHAR(756) NOT NULL COMMENT 'Principal in forma canonica con cui si autentica l\'intermediario a govpay',
+	principal_originale VARCHAR(756) NOT NULL COMMENT 'Principal con cui si autentica l\'intermediario a govpay',
+	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
 	CONSTRAINT unique_intermediari_1 UNIQUE (cod_intermediario),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_intermediari PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Intermediari pagoPA';
 
+ALTER TABLE intermediari 
 -- index
 CREATE INDEX index_intermediari_1 ON intermediari (cod_intermediario);
 
@@ -22,23 +23,23 @@ CREATE INDEX index_intermediari_1 ON intermediari (cod_intermediario);
 
 CREATE TABLE stazioni
 (
-	cod_stazione VARCHAR(35) NOT NULL,
-	password VARCHAR(35) NOT NULL,
-	abilitato BOOLEAN NOT NULL,
-	application_code INT NOT NULL,
-	ndp_stato INT,
-	ndp_operazione VARCHAR(256),
-	ndp_descrizione VARCHAR(1024),
-	ndp_data TIMESTAMP(3),
+	cod_stazione VARCHAR(35) NOT NULL COMMENT 'Identificativo della stazione su pagopa',
+	password VARCHAR(35) NOT NULL COMMENT 'Password assegnata da pagopa',
+	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
+	application_code INT NOT NULL COMMENT 'Application code estratto della stazione,
+	ndp_stato INT COMMENT 'Stato dell\'ultima interazione con pagopa',
+	ndp_operazione VARCHAR(256) COMMENT 'Ultima operazione richiesta a pagopa',
+	ndp_descrizione VARCHAR(1024) COMMENT 'Descrizione dell'esito dell\'ultima interazione con pagopa',
+	ndp_data TIMESTAMP(3) COMMENT 'Data dell\'ultima interazione con pagopa',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_intermediario BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_intermediario BIGINT NOT NULL COMMENT 'Riferimento all\'intermediario,
 	-- unique constraints
 	CONSTRAINT unique_stazioni_1 UNIQUE (cod_stazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_stz_id_intermediario FOREIGN KEY (id_intermediario) REFERENCES intermediari(id),
 	CONSTRAINT pk_stazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stazioni pagoPA';
 
 -- index
 CREATE INDEX index_stazioni_1 ON stazioni (cod_stazione);
@@ -47,18 +48,18 @@ CREATE INDEX index_stazioni_1 ON stazioni (cod_stazione);
 
 CREATE TABLE utenze
 (
-	principal VARCHAR(756) NOT NULL,
-	principal_originale VARCHAR(756) NOT NULL,
-	abilitato BOOLEAN NOT NULL DEFAULT true,
-	autorizzazione_domini_star BOOLEAN NOT NULL DEFAULT false,
-	autorizzazione_tributi_star BOOLEAN NOT NULL DEFAULT false,
+	principal VARCHAR(756) NOT NULL COMMENT 'Principal di autenticazione in forma canonica',
+	principal_originale VARCHAR(756) NOT NULL COMMENT 'Principal di autenticazione in forma originale',
+	abilitato BOOLEAN NOT NULL DEFAULT true COMMENT 'Indicazione se e\' abilitato ad operare',
+	autorizzazione_domini_star BOOLEAN NOT NULL DEFAULT false COMMENT 'Indicazione se l\'utenza e\' autorizzata ad operare su tutti i domini',
+	autorizzazione_tributi_star BOOLEAN NOT NULL DEFAULT false COMMENT 'Indicazione se l\'utenza e\' autorizzata ad operare su tutte le entrate',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
 	CONSTRAINT unique_utenze_1 UNIQUE (principal),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_utenze PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+) ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Utenze di sistema';
 
 -- index
 CREATE INDEX index_utenze_1 ON utenze (principal);
@@ -67,24 +68,24 @@ CREATE INDEX index_utenze_1 ON utenze (principal);
 
 CREATE TABLE applicazioni
 (
-	cod_applicazione VARCHAR(35) NOT NULL,
-	auto_iuv BOOLEAN NOT NULL,
-	firma_ricevuta VARCHAR(1) NOT NULL,
-	cod_connettore_esito VARCHAR(255),
-	cod_connettore_verifica VARCHAR(255),
-	trusted BOOLEAN NOT NULL,
-	cod_applicazione_iuv VARCHAR(3),
-	reg_exp VARCHAR(1024),
+	cod_applicazione VARCHAR(35) NOT NULL COMMENT 'Codice identificativo del verticale',
+	auto_iuv BOOLEAN NOT NULL COMMENT 'Indicazione se il verticale genera in autonomia gli IUV dei pagamenti',
+	firma_ricevuta VARCHAR(1) NOT NULL COMMENT 'Indicazione se le RT ricevute da pagoPA devono essere richieste firmate',
+	cod_connettore_esito VARCHAR(255) COMMENT 'Riferimento alle properties di configurazione del connettore per il servizio di notifica',
+	cod_connettore_verifica VARCHAR(255) COMMENT 'Riferimento alle properties di configurazione del connettore per il servizio di verifica',
+	trusted BOOLEAN NOT NULL COMMENT 'Indicazione se il verticale e\' autorizzato alla definizione delle entrate',
+	cod_applicazione_iuv VARCHAR(3) 'Codifica del verticale negli IUV',
+	reg_exp VARCHAR(1024) 'Espressione regolare per l'identificazione degli IUV afferenti al verticale',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_utenza BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza che identifica il verticale',
 	-- unique constraints
 	CONSTRAINT unique_applicazioni_1 UNIQUE (cod_applicazione),
 	CONSTRAINT unique_applicazioni_2 UNIQUE (id_utenza),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_app_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Verticali abilitati';
 
 -- index
 CREATE INDEX index_applicazioni_1 ON applicazioni (cod_applicazione);
@@ -94,31 +95,31 @@ CREATE INDEX index_applicazioni_2 ON applicazioni (id_utenza);
 
 CREATE TABLE domini
 (
-	cod_dominio VARCHAR(35) NOT NULL,
-	gln VARCHAR(35) NOT NULL,
-	abilitato BOOLEAN NOT NULL,
-	ragione_sociale VARCHAR(70) NOT NULL,
-	aux_digit INT NOT NULL DEFAULT 0,
-	iuv_prefix VARCHAR(255),
-	segregation_code INT,
-	ndp_stato INT,
-	ndp_operazione VARCHAR(256),
-	ndp_descrizione VARCHAR(1024),
-	ndp_data TIMESTAMP(3),
-	logo MEDIUMBLOB,
-	cbill VARCHAR(255),
-	aut_stampa_poste VARCHAR(255),
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del\'ente creditore su pagopa',
+	gln VARCHAR(35) NOT NULL COMMENT 'Global location number assegnato da pagopa',
+	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
+	ragione_sociale VARCHAR(70) NOT NULL COMMENT 'Ragione sociale dell\'ente creditore',
+	aux_digit INT NOT NULL DEFAULT 0 COMMENT 'Aux digit di generazione dei numeri avviso',
+	iuv_prefix VARCHAR(255) COMMENT 'Sintassi del prefisso degli iuv generati per il dominio',
+	segregation_code INT COMMENT 'Codice di segregazione in caso di aux digit multi-intermediato',
+	ndp_stato INT COMMENT 'Stato dell\'ultima interazione con pagopa',
+	ndp_operazione VARCHAR(256) COMMENT 'Ultima operazione richiesta a pagopa',
+	ndp_descrizione VARCHAR(1024) COMMENT 'Descrizione dell'esito dell\'ultima interazione con pagopa',
+	ndp_data TIMESTAMP(3) COMMENT 'Data dell\'ultima interazione con pagopa',
+	logo MEDIUMBLOB COMMENT 'Logo dell\'ente creditore codificato in base64',
+	cbill VARCHAR(255) COMMENT 'Codice cbill assegnato da pagopa in caso di adesione su modello 3',
+	aut_stampa_poste VARCHAR(255) COMMENT 'Autorizzazione alla stampa in poprio di poste italiane',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_stazione BIGINT NOT NULL,
-	id_applicazione_default BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_stazione BIGINT NOT NULL COMMENT 'Riferimento alla stazione',
+	id_applicazione_default BIGINT COMMENT 'Rferimento all\'appplicazione di default in caso di non risoluzione dello iuv',
 	-- unique constraints
 	CONSTRAINT unique_domini_1 UNIQUE (cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_dom_id_stazione FOREIGN KEY (id_stazione) REFERENCES stazioni(id),
 	CONSTRAINT fk_dom_id_applicazione_default FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id),
 	CONSTRAINT pk_domini PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Enti creditori';
 
 -- index
 CREATE INDEX index_domini_1 ON domini (cod_dominio);
@@ -127,20 +128,20 @@ CREATE INDEX index_domini_1 ON domini (cod_dominio);
 
 CREATE TABLE iban_accredito
 (
-	cod_iban VARCHAR(255) NOT NULL,
-	bic_accredito VARCHAR(255),
-	postale BOOLEAN NOT NULL,
-	attivato BOOLEAN NOT NULL,
-	abilitato BOOLEAN NOT NULL,
+	cod_iban VARCHAR(255) NOT NULL COMMENT 'Iban del conto di accredito',
+	bic_accredito VARCHAR(255) COMMENT 'Bic del conto di accredito',
+	postale BOOLEAN NOT NULL COMMENT 'Indicazione se il conto di accredito e\' postale',
+	attivato BOOLEAN NOT NULL COMMENT 'Indicazione se il conto e\' stato attivato su pagopa',
+	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_dominio BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al Ente proprietario del conto',
 	-- unique constraints
 	CONSTRAINT unique_iban_accredito_1 UNIQUE (cod_iban,id_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_iba_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_iban_accredito PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Conti di accredito';
 
 -- index
 CREATE INDEX index_iban_accredito_1 ON iban_accredito (cod_iban,id_dominio);
@@ -149,20 +150,20 @@ CREATE INDEX index_iban_accredito_1 ON iban_accredito (cod_iban,id_dominio);
 
 CREATE TABLE tipi_tributo
 (
-	cod_tributo VARCHAR(255) NOT NULL,
-	descrizione VARCHAR(255),
-	tipo_contabilita VARCHAR(1),
-	cod_contabilita VARCHAR(255),
-	cod_tributo_iuv VARCHAR(4),
-	on_line BOOLEAN NOT NULL DEFAULT false,
-	paga_terzi BOOLEAN NOT NULL DEFAULT false,
+	cod_tributo VARCHAR(255) NOT NULL COMMENT 'Codice identificativo dell\'entrata',
+	descrizione VARCHAR(255) COMMENT 'Descrizione dell\'entrata',
+	tipo_contabilita VARCHAR(1) COMMENT 'Tipo di codifica della contabilita',
+	cod_contabilita VARCHAR(255) COMMENT 'Codifica della contabilita',
+	cod_tributo_iuv VARCHAR(4) COMMENT 'Codifica dell\'entrata nello iuv',
+	on_line BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se l\'entrata e\' pagabile spontaneamente',
+	paga_terzi BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se l\'entrata e\' pagabile da soggetti terzi',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
 	CONSTRAINT unique_tipi_tributo_1 UNIQUE (cod_tributo),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_tipi_tributo PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Tipologie entrate';
 
 -- index
 CREATE INDEX index_tipi_tributo_1 ON tipi_tributo (cod_tributo);
@@ -171,18 +172,18 @@ CREATE INDEX index_tipi_tributo_1 ON tipi_tributo (cod_tributo);
 
 CREATE TABLE tributi
 (
-	abilitato BOOLEAN NOT NULL,
-	tipo_contabilita VARCHAR(1),
-	codice_contabilita VARCHAR(255),
-	cod_tributo_iuv VARCHAR(4),
-	on_line BOOLEAN,
-	paga_terzi BOOLEAN,
+	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
+	tipo_contabilita VARCHAR(1) COMMENT 'Tipo di codifica della contabilita',
+	cod_contabilita VARCHAR(255) COMMENT 'Codifica della contabilita',
+	cod_tributo_iuv VARCHAR(4) COMMENT 'Codifica dell\'entrata nello iuv',
+	on_line BOOLEAN COMMENT 'Indica se l\'entrata e\' pagabile spontaneamente',
+	paga_terzi BOOLEAN COMMENT 'Indica se l\'entrata e\' pagabile da soggetti terzi',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_dominio BIGINT NOT NULL,
-	id_iban_accredito BIGINT,
-	id_iban_appoggio BIGINT,
-	id_tipo_tributo BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio',
+	id_iban_accredito BIGINT COMMENT 'Conto di accredito dell\'entrata',
+	id_iban_appoggio BIGINT COMMENT 'Conto di appoggio dell\'entrata',
+	id_tipo_tributo BIGINT NOT NULL COMMENT 'Riferimento alla tipologia di entrata',
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
@@ -191,7 +192,7 @@ CREATE TABLE tributi
 	CONSTRAINT fk_trb_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
 	CONSTRAINT fk_trb_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Istanze di entrate';
 
 -- index
 CREATE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
@@ -201,14 +202,14 @@ CREATE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
 CREATE TABLE utenze_domini
 (
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_utenza BIGINT NOT NULL,
-	id_dominio BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
+	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sui domini';
 
 
 
@@ -216,45 +217,45 @@ CREATE TABLE utenze_domini
 CREATE TABLE utenze_tributi
 (
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_utenza BIGINT NOT NULL,
-	id_tributo BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
+	id_tributo BIGINT NOT NULL COMMENT 'Riferimento all\'entrata,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT fk_nzt_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
 	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sulle entrate';
 
 
 
 
 CREATE TABLE uo
 (
-	cod_uo VARCHAR(35) NOT NULL,
-	abilitato BOOLEAN NOT NULL,
-	uo_codice_identificativo VARCHAR(35),
-	uo_denominazione VARCHAR(70),
-	uo_indirizzo VARCHAR(70),
-	uo_civico VARCHAR(16),
-	uo_cap VARCHAR(16),
-	uo_localita VARCHAR(35),
-	uo_provincia VARCHAR(35),
-	uo_nazione VARCHAR(2),
-	uo_area VARCHAR(255),
-	uo_url_sito_web VARCHAR(255),
-	uo_email VARCHAR(255),
-	uo_pec VARCHAR(255),
-	uo_tel VARCHAR(255),
-	uo_fax VARCHAR(255),
+	cod_uo VARCHAR(35) NOT NULL COMMENT 'Codice identificativo dell\'unita operativa',
+	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
+	uo_codice_identificativo VARCHAR(35) COMMENT 'Codice fiscale dell\'unita operativa',
+	uo_denominazione VARCHAR(70) COMMENT 'Denominazione dell\'unita operativa',
+	uo_indirizzo VARCHAR(70) COMMENT 'Indirizzo dell\'unita operativa',
+	uo_civico VARCHAR(16) COMMENT 'Numero civico dell\'unita operativa',
+	uo_cap VARCHAR(16) COMMENT 'Cap dell\'unita operativa',
+	uo_localita VARCHAR(35) COMMENT 'Localita dell\'unita operativa',
+	uo_provincia VARCHAR(35) COMMENT 'Provincia dell\'unita operativa',
+	uo_nazione VARCHAR(2) COMMENT 'Sigla della nazione dell\'unita operativa',
+	uo_area VARCHAR(255) COMMENT 'Descrizione dell\'area di competenza dell\'unita operativa',
+	uo_url_sito_web VARCHAR(255) COMMENT 'URL del sito di riferimento dell\'unita operativa',
+	uo_email VARCHAR(255) COMMENT 'Indirizzo email ordinario dell\'unita operativa',
+	uo_pec VARCHAR(255) COMMENT 'Indirizzo email certificato dell\'unita operativa',
+	uo_tel VARCHAR(255) COMMENT 'Numero di telefono dell\'unita operativa',
+	uo_fax VARCHAR(255) COMMENT 'Numero di fax dell\'unita operativa',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_dominio BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio',
 	-- unique constraints
 	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_uo_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_uo PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Unita operative';
 
 -- index
 CREATE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
@@ -263,16 +264,16 @@ CREATE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
 
 CREATE TABLE operatori
 (
-	nome VARCHAR(35) NOT NULL,
+	nome VARCHAR(35) NOT NULL COMMENT 'Nome dell\'operatore',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_utenza BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza dell\'operatore,
 	-- unique constraints
 	CONSTRAINT unique_operatori_1 UNIQUE (id_utenza),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_opr_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_operatori PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Operatori di backoffice';
 
 -- index
 CREATE INDEX index_operatori_1 ON operatori (id_utenza);
@@ -281,11 +282,11 @@ CREATE INDEX index_operatori_1 ON operatori (id_utenza);
 
 CREATE TABLE connettori
 (
-	cod_connettore VARCHAR(255) NOT NULL,
-	cod_proprieta VARCHAR(255) NOT NULL,
-	valore VARCHAR(255) NOT NULL,
+	cod_connettore VARCHAR(255) NOT NULL COMMENT 'Codice identificativo del connettore',
+	cod_proprieta VARCHAR(255) NOT NULL COMMENT 'Codice identificativo della proprieta',
+	valore VARCHAR(255) NOT NULL COMMENT 'Valore della proprieta',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
 	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
 	-- fk/pk keys constraints
@@ -293,43 +294,43 @@ CREATE TABLE connettori
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 -- index
-CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta);
+CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta) COMMENT 'Configurazione dei connettori';
 
 
 
 CREATE TABLE acl
 (
-	ruolo VARCHAR(255),
-	principal VARCHAR(255),
-	servizio VARCHAR(255) NOT NULL,
-	diritti VARCHAR(255) NOT NULL,
+	ruolo VARCHAR(255) COMMENT 'Ruolo a cui si riferisce la ACL',
+	principal VARCHAR(255) COMMENT 'Principal dell\'utenza a cui si riferisce l\'ACL,
+	servizio VARCHAR(255) NOT NULL COMMENT 'Servizio su cui si riferisce l\'ACL,
+	diritti VARCHAR(255) NOT NULL COMMENT 'Autorizzazione dell\'ACL',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- fk/pk keys constraints
 	CONSTRAINT pk_acl PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni di accesso';
 
 
 
 
 CREATE TABLE tracciati
 (
-	cod_dominio VARCHAR(35) NOT NULL,
-	tipo VARCHAR(10) NOT NULL,
-	stato VARCHAR(12) NOT NULL,
-	descrizione_stato VARCHAR(256),
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del dominio a cui si riferisce il tracciato',
+	tipo VARCHAR(10) NOT NULL COMMENT 'Tipologia di tracciato',
+	stato VARCHAR(12) NOT NULL COMMENT 'Stato di lavorazione del tracciato',
+	descrizione_stato VARCHAR(256) COMMENT 'Descrizione dello stato di lavorazione del tracciato',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data di caricamento del tracciato',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_completamento TIMESTAMP(3) DEFAULT 0,
-	bean_dati LONGTEXT,
-	file_name_richiesta VARCHAR(256),
-	raw_richiesta MEDIUMBLOB,
-	file_name_esito VARCHAR(256),
-	raw_esito MEDIUMBLOB,
+	data_completamento TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di fine lavorazione del tracciato',
+	bean_dati LONGTEXT COMMENT 'Dataset custom del tracciato',
+	file_name_richiesta VARCHAR(256) COMMENT 'Filename del tracciato',
+	raw_richiesta MEDIUMBLOB COMMENT 'Tracciato nel formato originale',
+	file_name_esito VARCHAR(256) COMMENT 'Filename del tracciato di esito',
+	raw_esito MEDIUMBLOB COMMENT 'Tracciato di esito nel formato originale',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_operatore BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_operatore BIGINT COMMENT 'Riferimento all\'operatore di backoffice che ha caricato il tracciato',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_tracciati PRIMARY KEY (id)
@@ -340,60 +341,60 @@ CREATE TABLE tracciati
 
 CREATE TABLE versamenti
 (
-	cod_versamento_ente VARCHAR(35) NOT NULL,
-	nome VARCHAR(35),
-	importo_totale DOUBLE NOT NULL,
-	stato_versamento VARCHAR(35) NOT NULL,
-	descrizione_stato VARCHAR(255),
+	cod_versamento_ente VARCHAR(35) NOT NULL COMMENT 'Identificativo della pendenza nel verticale di competenza',
+	nome VARCHAR(35) COMMENT 'Nome della pendenza',
+	importo_totale DOUBLE NOT NULL COMMENT 'Importo della pendenza',
+	stato_versamento VARCHAR(35) NOT NULL COMMENT 'Stato di pagamento della pendenza',
+	descrizione_stato VARCHAR(255) COMMENT 'Descrizione dello stato di pagamento della pendenza',
 	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto
-	aggiornabile BOOLEAN NOT NULL,
+	aggiornabile BOOLEAN NOT NULL COMMENT 'Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di inserimento della pendenza',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_validita TIMESTAMP(3),
+	data_validita TIMESTAMP(3) COMMENT 'Data entro la quale i dati della pendenza risultano validi e non richiedono aggiornamenti',
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
-	data_scadenza TIMESTAMP(3), 
+	data_scadenza TIMESTAMP(3) COMMENT 'Data oltre la quale la pendenza non e\' pagabile', 
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-	causale_versamento VARCHAR(1024),
-	debitore_tipo VARCHAR(1),
-	debitore_identificativo VARCHAR(35) NOT NULL,
-	debitore_anagrafica VARCHAR(70) NOT NULL,
-	debitore_indirizzo VARCHAR(70),
-	debitore_civico VARCHAR(16),
-	debitore_cap VARCHAR(16),
-	debitore_localita VARCHAR(35),
-	debitore_provincia VARCHAR(35),
-	debitore_nazione VARCHAR(2),
-	debitore_email VARCHAR(256),
-	debitore_telefono VARCHAR(35),
-	debitore_cellulare VARCHAR(35),
-	debitore_fax VARCHAR(35),
-	tassonomia_avviso VARCHAR(35),
-	tassonomia VARCHAR(35),
-	cod_lotto VARCHAR(35),
-	cod_versamento_lotto VARCHAR(35),
-	cod_anno_tributario VARCHAR(35),
-	cod_bundlekey VARCHAR(256),
-	dati_allegati LONGTEXT,
-	incasso VARCHAR(1),
-	anomalie LONGTEXT,
-	iuv_versamento VARCHAR(35),
-	numero_avviso VARCHAR(35),
-	avvisatura_abilitata BOOLEAN NOT NULL,
-	avvisatura_da_inviare BOOLEAN NOT NULL,
-	avvisatura_operazione VARCHAR(1),
-	avvisatura_modalita VARCHAR(1),
-	avvisatura_tipo_pagamento INT,
-	avvisatura_cod_avvisatura VARCHAR(20),
-	ack BOOLEAN NOT NULL,
-	anomalo BOOLEAN NOT NULL,
+	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data dell\'ultima variazione dei dati della pendenza',
+	causale_versamento VARCHAR(1024) COMMENT 'Descrizione dell\'avviso di pagamento associato alla pendenza',
+	debitore_tipo VARCHAR(1) COMMENT 'Tipo dell\'identificativo del debitore',
+	debitore_identificativo VARCHAR(35) NOT NULL COMMENT 'Codice fiscale o partita iva del soggetto debitore',
+	debitore_anagrafica VARCHAR(70) NOT NULL COMMENT 'Nome e cognome o ragione sociale del soggetto debitore',
+	debitore_indirizzo VARCHAR(70) COMMENT 'Indirizzo del debitore',
+	debitore_civico VARCHAR(16) COMMENT 'Numero civico del debitore',
+	debitore_cap VARCHAR(16) COMMENT 'Cap del debitore',
+	debitore_localita VARCHAR(35) COMMENT 'Localita del debitore',
+	debitore_provincia VARCHAR(35) COMMENT 'Provincia del debitore',
+	debitore_nazione VARCHAR(2) COMMENT 'Nazione del debitore',
+	debitore_email VARCHAR(256) COMMENT 'Email del debitore',
+	debitore_telefono VARCHAR(35) COMMENT 'Telefono del debitore',
+	debitore_cellulare VARCHAR(35) COMMENT 'Cellulare del debitore',
+	debitore_fax VARCHAR(35) COMMENT 'Numero di fax del debitore',
+	tassonomia_avviso VARCHAR(35) COMMENT 'Tassonomia dell\'avviso di pagamento secondo la codifica agid,
+	tassonomia VARCHAR(35) COMMENT 'Tassonomia della pendenza secondo la codifica dell\'ente,
+	cod_lotto VARCHAR(35) COMMENT 'Codice identificativo della cartella di pagamento',
+	cod_versamento_lotto VARCHAR(35) COMMENT 'Codice identificativo del versamento all\'interno del lotto',
+	cod_anno_tributario VARCHAR(35) COMMENT 'Annualita della pendenza,
+	cod_bundlekey VARCHAR(256) COMMENT 'Codice identificativo della pendenza per costruzione di dati noti all\'utente',
+	dati_allegati LONGTEXT COMMENT 'Campo dati a disposizione dell\'ente,
+	incasso VARCHAR(1) COMMENT 'Indicazione sullo stato di riconciliazione',
+	anomalie LONGTEXT COMMENT 'Anomalie riscontrate nel pagamento della pendenza',
+	iuv_versamento VARCHAR(35) COMMENT 'IUV di pagamento',
+	numero_avviso VARCHAR(35) COMMENT 'Numero avviso associato alla pendenza',
+	avvisatura_abilitata BOOLEAN NOT NULL COMMENT 'Indicazione se la pendenza viene avvisata digitalmente',
+	avvisatura_da_inviare BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato di avvisatura della pendenza',
+	avvisatura_operazione VARCHAR(1) COMMENT 'Indicazione sull\'operazione di avvisatura da comunicare',
+	avvisatura_modalita VARCHAR(1) COMMENT 'Indicazione sulla modalita di avvisatura della pendenza',
+	avvisatura_tipo_pagamento INT COMMENT 'Tipologia di pagamento nella codifica agid di avvisatura telematica',
+	avvisatura_cod_avvisatura VARCHAR(20) COMMENT 'Identificativo di avvisatura',
+	ack BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato di ack dell\'avviso telematico',
+	anomalo BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato della pendenza',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_dominio BIGINT NOT NULL,
-	id_uo BIGINT,
-	id_applicazione BIGINT NOT NULL,
-	id_tracciato BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio afferente',
+	id_uo BIGINT COMMENT 'Riferimento all\'unita operativa afferente',
+	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale afferente',
+	id_tracciato BIGINT COMMENT 'Riferimento al tracciato che ha caricato la pendenza',
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
@@ -402,7 +403,7 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Arichivio dei pagamenti in attesa';
 
 -- index
 CREATE INDEX index_versamenti_1 ON versamenti (cod_versamento_ente,id_applicazione);
@@ -411,27 +412,27 @@ CREATE INDEX index_versamenti_1 ON versamenti (cod_versamento_ente,id_applicazio
 
 CREATE TABLE singoli_versamenti
 (
-	cod_singolo_versamento_ente VARCHAR(70) NOT NULL,
-	stato_singolo_versamento VARCHAR(35) NOT NULL,
-	importo_singolo_versamento DOUBLE NOT NULL,
-	anno_riferimento INT,
+	cod_singolo_versamento_ente VARCHAR(70) NOT NULL COMMENT 'Identificativo della voce di pendenza',
+	stato_singolo_versamento VARCHAR(35) NOT NULL COMMENT 'Stato di pagamento della voce di pendenza',
+	importo_singolo_versamento DOUBLE NOT NULL COMMENT 'Importo della voce di pendenza',
+	anno_riferimento INT COMMENT 'Anno di riferimento',
 	-- MARCA BOLLO Valori possibili:\n01: Imposta di bollo
-	tipo_bollo VARCHAR(2),
+	tipo_bollo VARCHAR(2) COMMENT 'Tipologia della marca da bollo telematica',
 	-- MARCA BOLLO: Digest in Base64 del documento da bollare
-	hash_documento VARCHAR(70),
+	hash_documento VARCHAR(70) COMMENT 'Digest in Base64 del documento da bollare',
 	-- MARCA BOLLO: Sigla automobilistica della provincia di residenza
-	provincia_residenza VARCHAR(2),
-	tipo_contabilita VARCHAR(1),
-	codice_contabilita VARCHAR(255),
-	descrizione VARCHAR(256),
-	dati_allegati LONGTEXT,
-	indice_dati INT NOT NULL,
+	provincia_residenza VARCHAR(2) COMMENT 'Sigla automobilistica della provincia di residenza',
+	tipo_contabilita VARCHAR(1) COMMENT 'Tipologia di contabilita nelle codifiche agid',
+	codice_contabilita VARCHAR(255) COMMENT 'Codice di contabilita nella tipologia scelta',
+	descrizione VARCHAR(256) COMMENT 'Descrizione della voce di pendenza',
+	dati_allegati LONGTEXT COMMENT 'Campo dati a disposizione dell\'ente',
+	indice_dati INT NOT NULL COMMENT 'Numero progressivo della voce di pendenza',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_versamento BIGINT NOT NULL,
-	id_tributo BIGINT,
-	id_iban_accredito BIGINT,
-	id_iban_appoggio BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
+	id_tributo BIGINT COMMENT 'Riferimento alla tipologia di tribuito',
+	id_iban_accredito BIGINT COMMENT 'Riferimento al conto di accredito',
+	id_iban_appoggio BIGINT COMMENT 'Riferimento al conto di appoggio',
 	-- unique constraints
 	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati),
 	-- fk/pk keys constraints
@@ -440,7 +441,7 @@ CREATE TABLE singoli_versamenti
 	CONSTRAINT fk_sng_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
 	CONSTRAINT fk_sng_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Voci di pendenza';
 
 -- index
 CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
@@ -449,40 +450,40 @@ CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod
 
 CREATE TABLE pagamenti_portale
 (
-	cod_canale VARCHAR(35),
-	nome VARCHAR(255) NOT NULL,
-	importo DOUBLE NOT NULL,
-	versante_identificativo VARCHAR(35),
-	id_sessione VARCHAR(35) NOT NULL,
-	id_sessione_portale VARCHAR(255),
-	id_sessione_psp VARCHAR(255),
-	stato VARCHAR(35) NOT NULL,
-	codice_stato VARCHAR(35) NOT NULL,
-	descrizione_stato VARCHAR(1024),
-	psp_redirect_url VARCHAR(1024),
-	psp_esito VARCHAR(255),
-	json_request LONGTEXT,
-	wisp_id_dominio VARCHAR(255),
-	wisp_key_pa VARCHAR(255),
-	wisp_key_wisp VARCHAR(255),
-	wisp_html LONGTEXT,
+	cod_canale VARCHAR(35) COMMENT 'Codice identificativo del canale scelto per il pagamento (WISP 1.3)',
+	nome VARCHAR(255) NOT NULL COMMENT 'Nome del pagamento',
+	importo DOUBLE NOT NULL COMMENT 'Importo del pagamento',
+	versante_identificativo VARCHAR(35) COMMENT 'Codice fiscale o partita iva del versante, se diverso dal pagatore',
+	id_sessione VARCHAR(35) NOT NULL COMMENT 'Identificativo della sessione di pagamento assegnata da GovPay',
+	id_sessione_portale VARCHAR(255) COMMENT 'Identificativo della sessione di pagamento assegnata dal portale richiedente',
+	id_sessione_psp VARCHAR(255) COMMENT 'Identificativo della sessione di pagamento assegnata da pagoPA',
+	stato VARCHAR(35) NOT NULL COMMENT 'Stato del pagamento',
+	codice_stato VARCHAR(35) NOT NULL COMMENT 'Codice dello stato del pagamento',
+	descrizione_stato VARCHAR(1024) COMMENT 'Descrizione dello stato di pagamento',
+	psp_redirect_url VARCHAR(1024) COMMENT 'Url di redirezione per pagamenti ad iniziativa ente',
+	psp_esito VARCHAR(255) COMMENT 'Esito del pagamento fornito dal PSP',
+	json_request LONGTEXT COMMENT 'Richiesta di pagamento originale inviata dal portale',
+	wisp_id_dominio VARCHAR(255) COMMENT 'Identificativo dominio nella richiesta (WISP 1.3)',
+	wisp_key_pa VARCHAR(255) COMMENT 'Identificativo di scelta WISP assegnato dalla PA (WISP 1.3)',
+	wisp_key_wisp VARCHAR(255) COMMENT 'Identificativo di scelta WISP assegnato da pagopa (WISP 1.3)',
+	wisp_html LONGTEXT COMMENT 'Codice http per la pagina di redirezione al WISP (WISP 1.3)',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_richiesta TIMESTAMP(3) DEFAULT 0,
-	url_ritorno VARCHAR(1024),
-	cod_psp VARCHAR(35),
-	tipo_versamento VARCHAR(4),
-	multi_beneficiario VARCHAR(35),
-	ack BOOLEAN NOT NULL,
-	tipo INT NOT NULL,
-	principal VARCHAR(4000) NOT NULL,
-	tipo_utenza VARCHAR(35) NOT NULL,
+	data_richiesta TIMESTAMP(3) DEFAULT 0 COMMENT 'Data della richiesta di pagamento',
+	url_ritorno VARCHAR(1024) COMMENT 'Url di redirezione al portale di pagamento',
+	cod_psp VARCHAR(35) COMMENT 'Codice identificativo del psp scelto per il pagamento (WISP 1.3)',
+	tipo_versamento VARCHAR(4) COMMENT 'Tipologia di pagamento scelto (WISP 1.3)',
+	multi_beneficiario VARCHAR(35) COMMENT 'Indicazione se il pagmento e' per un carrello multibeneficiario (WISP 1.3)',,
+	ack BOOLEAN NOT NULL COMMENT '',
+	tipo INT NOT NULL COMMENT 'Tipologia di pagamento (Modello 1, 2 o 3)',
+	principal VARCHAR(4000) NOT NULL COMMENT 'Principal del richiedente',
+	tipo_utenza VARCHAR(35) NOT NULL COMMENT 'Tipologia dell\'utenza richiedente',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
 	CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Richieste di pagamento';
 
 -- index
 CREATE UNIQUE INDEX index_pagamenti_portale_1 ON pagamenti_portale (id_sessione);
@@ -492,70 +493,70 @@ CREATE UNIQUE INDEX index_pagamenti_portale_1 ON pagamenti_portale (id_sessione)
 CREATE TABLE pag_port_versamenti
 (
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_pagamento_portale BIGINT NOT NULL,
-	id_versamento BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_pagamento_portale BIGINT NOT NULL COMMENT 'Riferimento alla richeista di pagamento',
+	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto di pagamento',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ppv_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
 	CONSTRAINT fk_ppv_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_pag_port_versamenti PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Pendenze oggetto di pagamento';
 
 
 
 
 CREATE TABLE rpt
 (
-	cod_carrello VARCHAR(35),
-	iuv VARCHAR(35) NOT NULL,
-	ccp VARCHAR(35) NOT NULL,
-	cod_dominio VARCHAR(35) NOT NULL,
+	cod_carrello VARCHAR(35) COMMENT 'Codice identificativo assegnato al carrello di RPT',
+	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo Univoco di Versamento della RPT',
+	ccp VARCHAR(35) NOT NULL COMMENT 'Codice Contesto di Pagamento della RPT',
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo dell\'ente creditore',
 	-- Identificativo dell'RPT utilizzato come riferimento nell'RT
-	cod_msg_richiesta VARCHAR(35) NOT NULL,
+	cod_msg_richiesta VARCHAR(35) NOT NULL COMMENT 'Identificativo dell'RPT',
 	-- Data di creazione dell'RPT
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_richiesta TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	data_msg_richiesta TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione della RPT',
 	-- Stato RPT secondo la codifica AgID
-	stato VARCHAR(35) NOT NULL,
-	descrizione_stato LONGTEXT,
-	cod_sessione VARCHAR(255),
-	cod_sessione_portale VARCHAR(255),
+	stato VARCHAR(35) NOT NULL COMMENT 'Stato della RPT',
+	descrizione_stato LONGTEXT COMMENT 'Descrizione dello stato della RPT',
+	cod_sessione VARCHAR(255) 'Codice della sessione di pagamento assegnata da GovPay',
+	cod_sessione_portale VARCHAR(255) 'Codice della sessione di pagamento assegnato dal Portale',
 	-- Indirizzo del portale psp a cui redirigere il cittadino per eseguire il pagamento
-	psp_redirect_url VARCHAR(512),
-	xml_rpt MEDIUMBLOB NOT NULL,
+	psp_redirect_url VARCHAR(512) COMMENT 'Url di redirezione per procedere al pagamento',
+	xml_rpt MEDIUMBLOB NOT NULL COMMENT 'XML della RPT codificato in base64',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data dell\'ultimo aggiornamento di stato della RPT',
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
-	callback_url LONGTEXT,
-	modello_pagamento VARCHAR(16) NOT NULL,
-	cod_msg_ricevuta VARCHAR(35),
+	callback_url LONGTEXT COMMENT 'Url di ritorno al portale di pagamento',
+	modello_pagamento VARCHAR(16) NOT NULL COMMENT 'Indicazione sul modello di pagamento della RPT',
+	cod_msg_ricevuta VARCHAR(35) COMMENT 'Codice identificativo della RT',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
-	data_msg_ricevuta TIMESTAMP(3),
+	data_msg_ricevuta TIMESTAMP(3) COMMENT 'Data di produzione della RT',
 	-- Esito del pagamento:\n0: Eseguito\n1: Non eseguito\n2: Parzialmente eseguito\n3: Decorrenza\n4: Decorrenza Parziale
-	cod_esito_pagamento INT,
-	importo_totale_pagato DOUBLE,
-	xml_rt MEDIUMBLOB,
-	cod_canale VARCHAR(35),
-	cod_psp VARCHAR(35),
-	cod_intermediario_psp VARCHAR(35),
-	tipo_versamento VARCHAR(4),
-	tipo_identificativo_attestante VARCHAR(1),
-	identificativo_attestante VARCHAR(35),
-	denominazione_attestante VARCHAR(70),
-	cod_stazione VARCHAR(35) NOT NULL,
-	cod_transazione_rpt VARCHAR(36),
-	cod_transazione_rt VARCHAR(36),
-	stato_conservazione VARCHAR(35),
-	descrizione_stato_cons VARCHAR(512),
+	cod_esito_pagamento INT COMMENT 'Codice di esito del pagamento estratto dalla RT',
+	importo_totale_pagato DOUBLE 'Importo pagato estratto dalla RT',
+	xml_rt MEDIUMBLOB COMMENT 'XML della RT codificato in base64',
+	cod_canale VARCHAR(35) COMMENT 'Identificativo del canale con cui e\' stato eseguito il pagamento',
+	cod_psp VARCHAR(35) COMMENT 'Identificativo del psp con cui e\' stato eseguito il pagamento',
+	cod_intermediario_psp VARCHAR(35) COMMENT 'Identificativo dell\'intermediario psp con cui e\' stato eseguito il pagamento',
+	tipo_versamento VARCHAR(4) COMMENT 'Tipo di versamento scelto per il pagamento',
+	tipo_identificativo_attestante VARCHAR(1) COMMENT 'Identificativo del canale con cui e\' stato eseguito il pagamento',
+	identificativo_attestante VARCHAR(35) COMMENT 'Identificativo del\'attestante',
+	denominazione_attestante VARCHAR(70) 'Ragione sociale dell\'attestante',
+	cod_stazione VARCHAR(35) NOT NULL COMMENT 'Identificativo della stazione intermediaria',
+	cod_transazione_rpt VARCHAR(36) COMMENT 'Identificativo della comunicazione RPT',
+	cod_transazione_rt VARCHAR(36) COMMENT 'Identificativo della comunicazione RT',
+	stato_conservazione VARCHAR(35) COMMENT 'Indicazione sullo stato di conservazione a norma della RT',
+	descrizione_stato_cons VARCHAR(512) COMMENT 'Descrizione dello stato di conservazione a norma della RT',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_conservazione TIMESTAMP(3) DEFAULT 0,
-	bloccante BOOLEAN NOT NULL DEFAULT true,
+	data_conservazione TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di gestione del processo di conservazione a norma della RT',
+	bloccante BOOLEAN NOT NULL DEFAULT true COMMENT 'Indicazione se la RPT risulta bloccante per ulteriori transazioni di pagamento',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_versamento BIGINT NOT NULL,
-	id_pagamento_portale BIGINT,
-	id_applicazione BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
+	id_pagamento_portale BIGINT COMMENT 'Identificativo della richiesta di pagamento assegnato dal portale chiamante',
+	id_applicazione BIGINT COMMENT 'Riferimento al verticale proprietario della pendenza oggetto del pagamento',
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
@@ -564,7 +565,7 @@ CREATE TABLE rpt
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
 	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Transazioni di pagmaento';
 
 -- index
 CREATE INDEX index_rpt_1 ON rpt (cod_msg_richiesta);
@@ -576,33 +577,33 @@ CREATE INDEX index_rpt_4 ON rpt (id_versamento);
 
 CREATE TABLE rr
 (
-	cod_dominio VARCHAR(35) NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
-	ccp VARCHAR(35) NOT NULL,
-	cod_msg_revoca VARCHAR(35) NOT NULL,
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
+	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo univoco di versamento',
+	ccp VARCHAR(35) NOT NULL COMMENT 'Codice contesto di pagamento',
+	cod_msg_revoca VARCHAR(35) NOT NULL COMMENT 'Identificativo della richiesta di revoca',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_revoca TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	data_msg_revoca TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di emissione della revoca',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
-	data_msg_esito TIMESTAMP(3),
-	stato VARCHAR(35) NOT NULL,
-	descrizione_stato VARCHAR(512),
-	importo_totale_richiesto DOUBLE NOT NULL,
-	cod_msg_esito VARCHAR(35),
-	importo_totale_revocato DOUBLE,
-	xml_rr MEDIUMBLOB NOT NULL,
-	xml_er MEDIUMBLOB,
-	cod_transazione_rr VARCHAR(36),
-	cod_transazione_er VARCHAR(36),
+	data_msg_esito TIMESTAMP(3) COMMENT 'Data del messaggio di esito',
+	stato VARCHAR(35) NOT NULL COMMENT 'Stato della revoca',
+	descrizione_stato VARCHAR(512) COMMENT 'Descrizione dello stato della revoca',
+	importo_totale_richiesto DOUBLE NOT NULL COMMENT 'Importo della richiesta',
+	cod_msg_esito VARCHAR(35) COMMENT 'Codice di esito della revoca,
+	importo_totale_revocato DOUBLE COMMENT 'Importo revocato',
+	xml_rr MEDIUMBLOB NOT NULL COMMENT 'XML della richiesta di revoca in base64',
+	xml_er MEDIUMBLOB COMMENT 'XML dell\'esito della revoca di revoca in base64',
+	cod_transazione_rr VARCHAR(36) COMMENT 'Identificativo della comunicazione della richiesta di revoca',
+	cod_transazione_er VARCHAR(36) COMMENT 'Identificativo della comunicazione dell\'esito di revoca',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_rpt BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_rpt BIGINT NOT NULL COMMENT 'Riferimento alla richiesta di pagamento oggetto della revoca',
 	-- unique constraints
 	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rr_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_rr PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Richieste di revoca';
 
 -- index
 CREATE INDEX index_rr_1 ON rr (cod_msg_revoca);
@@ -611,51 +612,51 @@ CREATE INDEX index_rr_1 ON rr (cod_msg_revoca);
 
 CREATE TABLE notifiche
 (
-	tipo_esito VARCHAR(16) NOT NULL,
+	tipo_esito VARCHAR(16) NOT NULL COMMENT 'Tipologia della notifica',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-	stato VARCHAR(16) NOT NULL,
-	descrizione_stato VARCHAR(255),
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione della notifica',
+	stato VARCHAR(16) NOT NULL COMMENT 'Stato di comunicazione della notifica',
+	descrizione_stato VARCHAR(255) COMMENT 'Descrizione dello stato di comunicazione della notifica',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data dell\'ultimo aggiornamento',
 	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999
-	data_prossima_spedizione DATETIME NOT NULL,
-	tentativi_spedizione BIGINT,
+	data_prossima_spedizione DATETIME NOT NULL COMMENT 'Data di prossima spedizione della notiifca',
+	tentativi_spedizione BIGINT COMMENT 'Numero di tentativi di consegna della notifica',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_applicazione BIGINT NOT NULL,
-	id_rpt BIGINT,
-	id_rr BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale destinatario della notifica',
+	id_rpt BIGINT COMMENT 'Riferimento alla transazione di pagamento oggetto della notifica',
+	id_rr BIGINT COMMENT 'Riferimento alla transazione di revoca oggetto della notifica',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ntf_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Notifiche';
 
 
 
 
 CREATE TABLE iuv
 (
-	prg BIGINT NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
-	application_code INT NOT NULL,
-	data_generazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-	tipo_iuv VARCHAR(1) NOT NULL,
-	cod_versamento_ente VARCHAR(35),
-	aux_digit INT NOT NULL DEFAULT 0,
+	prg BIGINT NOT NULL COMMENT 'Seme di generazione dello IUV',
+	iuv VARCHAR(35) NOT NULL COMMENT 'IUV generato',
+	application_code INT NOT NULL COMMENT 'Application code codificato nello IUV',
+	data_generazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di generazione dello IUV',
+	tipo_iuv VARCHAR(1) NOT NULL COMMENT 'Tipologia di IUV generato',
+	cod_versamento_ente VARCHAR(35) COMMENT 'Identificativo della pendenza associata allo IUV',
+	aux_digit INT NOT NULL DEFAULT 0 COMMENT 'Aux digit codificato nello IUV',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_applicazione BIGINT NOT NULL,
-	id_dominio BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_applicazione BIGINT NOT NULL COMMENT 'Identificativo dell\'applicazione che ha richiesto lo IUV',
+	id_dominio BIGINT NOT NULL COMMENT 'Identificativo del creditore proprietario dello IUV',
 	-- unique constraints
 	CONSTRAINT unique_iuv_1 UNIQUE (id_dominio,iuv),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_iuv_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_iuv_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_iuv PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'IUV emessi';
 
 -- index
 CREATE INDEX index_iuv_1 ON iuv (id_dominio,iuv);
@@ -665,30 +666,30 @@ CREATE INDEX index_iuv_2 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
 
 CREATE TABLE fr
 (
-	cod_psp VARCHAR(35) NOT NULL,
-	cod_dominio VARCHAR(35) NOT NULL,
-	cod_flusso VARCHAR(35) NOT NULL,
-	stato VARCHAR(35) NOT NULL,
-	descrizione_stato LONGTEXT,
-	iur VARCHAR(35) NOT NULL,
+	cod_psp VARCHAR(35) NOT NULL COMMENT 'Identificativo del PSP che ha emesso il flusso ',
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo dell\'Ente creditore',
+	cod_flusso VARCHAR(35) NOT NULL COMMENT 'Identificativo del flusso',
+	stato VARCHAR(35) NOT NULL COMMENT 'Stato di acquisizione del flusso',
+	descrizione_stato LONGTEXT COMMENT 'Descrizione dello stato di acquisizione del flusso',
+	iur VARCHAR(35) NOT NULL COMMENT 'Identificativo Univoco di Riversamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
-	data_ora_flusso TIMESTAMP(3),
+	data_ora_flusso TIMESTAMP(3) COMMENT 'Data di emissione del flusso',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
-	data_regolamento TIMESTAMP(3),
-	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-	numero_pagamenti BIGINT,
-	importo_totale_pagamenti DOUBLE,
-	cod_bic_riversamento VARCHAR(35),
-	xml MEDIUMBLOB NOT NULL,
+	data_regolamento TIMESTAMP(3) COMMENT 'Data dell\'operazione di regolamento bancario',
+	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di acquisizione del flusso',
+	numero_pagamenti BIGINT COMMENT 'Numero di pagamenti rendicontati',
+	importo_totale_pagamenti DOUBLE COMMENT 'Importo totale rendicontato',
+	cod_bic_riversamento VARCHAR(35) COMMENT 'Bic del conto di riversamento',
+	xml MEDIUMBLOB NOT NULL COMMENT 'XML del flusso codfificato in base64',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_fr PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Flussi di rendicontazione';
 
 -- index
 CREATE INDEX index_fr_1 ON fr (cod_flusso);
@@ -697,27 +698,27 @@ CREATE INDEX index_fr_1 ON fr (cod_flusso);
 
 CREATE TABLE incassi
 (
-	trn VARCHAR(35) NOT NULL,
-	cod_dominio VARCHAR(35) NOT NULL,
-	causale VARCHAR(512) NOT NULL,
-	importo DOUBLE NOT NULL,
-	data_valuta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3),
-	data_contabile TIMESTAMP(3) DEFAULT  CURRENT_TIMESTAMP(3),
+	trn VARCHAR(35) NOT NULL COMMENT 'Identificativo del movimento bancario riconciliato',
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificaitvo dell\'ente',
+	causale VARCHAR(512) NOT NULL COMMENT 'Causale del bonifico',
+	importo DOUBLE NOT NULL COMMENT 'Importo riconciliato',
+	data_valuta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data valuta del bonifico',
+	data_contabile TIMESTAMP(3) DEFAULT  CURRENT_TIMESTAMP(3) COMMENT 'Data contabile del bonifico',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3),
-	nome_dispositivo VARCHAR(512),
-	iban_accredito VARCHAR(35),
+	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3) COMMENT 'Data della riconciliazione',
+	nome_dispositivo VARCHAR(512) COMMENT 'Riferimento al giornale di cassa',
+	iban_accredito VARCHAR(35) COMMENT 'Conto di accredito',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_applicazione BIGINT,
-	id_operatore BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_applicazione BIGINT COMMENT 'Riferimento all\'applicativo che ha registrato l\'inccasso',
+	id_operatore BIGINT COMMENT 'Riferimento all\'operatore che ha registrato l\'inccasso',
 	-- unique constraints
 	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_incassi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Riconciliazioni';
 
 -- index
 CREATE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
@@ -726,34 +727,34 @@ CREATE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
 
 CREATE TABLE pagamenti
 (
-	cod_dominio VARCHAR(35) NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
-	indice_dati INT NOT NULL,
-	importo_pagato DOUBLE NOT NULL DEFAULT 1,
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
+	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo univoco di versamento',
+	indice_dati INT NOT NULL COMMENT 'Indice progressivo della voce di pendenza',
+	importo_pagato DOUBLE NOT NULL DEFAULT 1 'Importo del pagamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT 0,
-	iur VARCHAR(35) NOT NULL,
+	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data acquisizione del pagamento',
+	iur VARCHAR(35) NOT NULL COMMENT 'Identificativo di riscossione',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-	commissioni_psp DOUBLE,
+	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data del pagamento',
+	commissioni_psp DOUBLE COMMENT 'Importo delle commissioni applicate dal psp',
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
-	tipo_allegato VARCHAR(2),
-	allegato MEDIUMBLOB,
+	tipo_allegato VARCHAR(2) COMMENT 'Tipo di allegato al pagamento',
+	allegato MEDIUMBLOB COMMENT 'Allegato al pagamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_acquisizione_revoca TIMESTAMP(3) DEFAULT 0,
-	causale_revoca VARCHAR(140),
-	dati_revoca VARCHAR(140),
-	importo_revocato DOUBLE,
-	esito_revoca VARCHAR(140),
-	dati_esito_revoca VARCHAR(140),
-	stato VARCHAR(35),
-	tipo VARCHAR(35) NOT NULL,
+	data_acquisizione_revoca TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di revoca del pagamento',
+	causale_revoca VARCHAR(140) COMMENT 'Causale della revoca del pagamento',
+	dati_revoca VARCHAR(140) COMMENT 'Dati allegati alla revoca',
+	importo_revocato DOUBLE COMMENT 'Importo revocato',
+	esito_revoca VARCHAR(140) COMMENT 'Esito della revoca',
+	dati_esito_revoca VARCHAR(140) COMMENT 'Dati allegati all\'esito della revoca',
+	stato VARCHAR(35) COMMENT 'Stato del pagamento',
+	tipo VARCHAR(35) NOT NULL COMMENT 'Tipo di pagamento',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_rpt BIGINT,
-	id_singolo_versamento BIGINT,
-	id_rr BIGINT,
-	id_incasso BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_rpt BIGINT COMMENT 'Riferimento alla transazione di pagmaento',
+	id_singolo_versamento BIGINT COMMENT 'Riferimento alla voce della pendenza pagata',
+	id_rr BIGINT COMMENT 'Riferimento alla transazione di revoca',
+	id_incasso BIGINT COMMENT 'Riferimento all\'operazione di riconciliazione',
 	-- unique constraints
 	CONSTRAINT unique_pagamenti_1 UNIQUE (cod_dominio,iuv,iur,indice_dati),
 	-- fk/pk keys constraints
@@ -762,7 +763,7 @@ CREATE TABLE pagamenti
 	CONSTRAINT fk_pag_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT fk_pag_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Pagamenti';
 
 -- index
 CREATE UNIQUE INDEX index_pagamenti_1 ON pagamenti (cod_dominio,iuv,iur,indice_dati);
@@ -771,72 +772,72 @@ CREATE UNIQUE INDEX index_pagamenti_1 ON pagamenti (cod_dominio,iuv,iur,indice_d
 
 CREATE TABLE rendicontazioni
 (
-	iuv VARCHAR(35) NOT NULL,
-	iur VARCHAR(35) NOT NULL,
-	indice_dati INT,
-	importo_pagato DOUBLE,
-	esito INT,
+	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo Univoco di Versamento',
+	iur VARCHAR(35) NOT NULL COMMENT 'Identificativo Univoco di Riscossione',
+	indice_dati INT COMMENT 'Progressivo di voce di penendza',
+	importo_pagato DOUBLE COMMENT 'Importo rendicontato',
+	esito INT COMMENT 'Codice di esito della rendicontazione',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data TIMESTAMP(3) DEFAULT 0,
-	stato VARCHAR(35) NOT NULL,
-	anomalie LONGTEXT,
+	data TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di rendicontazione',
+	stato VARCHAR(35) NOT NULL COMMENT 'Stato della rendicontazione',
+	anomalie LONGTEXT COMMENT 'Anomalie riscontrate nella rendicontazione',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_fr BIGINT NOT NULL,
-	id_pagamento BIGINT,
-	id_singolo_versamento BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_fr BIGINT NOT NULL COMMENT 'Riferimento al flusso di rendicontazione',
+	id_pagamento BIGINT COMMENT 'Riferimento al pagamento rendicotnato',
+	id_singolo_versamento BIGINT COMMENT 'Riferimento alla voce di pendenza rendicontata',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rnd_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
 	CONSTRAINT fk_rnd_id_pagamento FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id),
 	CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Rendicontazioni';
 
 
 
 
 CREATE TABLE eventi
 (
-	cod_dominio VARCHAR(35),
-	iuv VARCHAR(35),
-	ccp VARCHAR(35),
-	categoria_evento VARCHAR(1),
-	tipo_evento VARCHAR(35),
-	sottotipo_evento VARCHAR(35),
+	cod_dominio VARCHAR(35) COMMENT 'Identificativo dell\'Ente creditore',
+	iuv VARCHAR(35) COMMENT 'Identificativo univoco di versamento',
+	ccp VARCHAR(35) COMMENT 'Codice contesto di pagamento',
+	categoria_evento VARCHAR(1) COMMENT 'Categoria dell\'evento',
+	tipo_evento VARCHAR(35) COMMENT 'Tipologia dell\'evento',
+	sottotipo_evento VARCHAR(35) COMMENT 'Sotto tipologia dell\'evento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
-	data TIMESTAMP(3),
-	intervallo BIGINT,
-	classname_dettaglio VARCHAR(255),
-	dettaglio LONGTEXT,
+	data TIMESTAMP(3) COMMENT 'Data di emissione dell\'evento',
+	intervallo BIGINT COMMENT 'Intermvallo tra l\'evento di richiesta e risposta',
+	classname_dettaglio VARCHAR(255) COMMENT 'Classe per interpretare il dettaglio dell\'evento',
+	dettaglio LONGTEXT COMMENT 'Dati di dettaglio dell\'evento',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_versamento BIGINT,
-	id_pagamento_portale BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_versamento BIGINT COMMENT 'Riferimento alla pendenza',
+	id_pagamento_portale BIGINT COMMENT 'Riferimento al pagamento',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Giornale degli eventi';
 
 
 
 
 CREATE TABLE batch
 (
-	cod_batch VARCHAR(255) NOT NULL,
-	nodo INT,
+	cod_batch VARCHAR(255) NOT NULL COMMENT 'Identificativo del batch',
+	nodo INT COMMENT 'Nodo del cluster che possiede il token',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	inizio TIMESTAMP(3),
+	inizio TIMESTAMP(3) COMMENT 'Data di cattura del token',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	aggiornamento TIMESTAMP(3),
+	aggiornamento TIMESTAMP(3) COMMENT 'Data dell\'ultimo aggiornamento ricevuto',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
 	CONSTRAINT unique_batch_1 UNIQUE (cod_batch),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_batch PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Gestione concorrenza batch';
 
 -- index
 CREATE INDEX index_batch_1 ON batch (cod_batch);
@@ -845,46 +846,46 @@ CREATE INDEX index_batch_1 ON batch (cod_batch);
 
 CREATE TABLE esiti_avvisatura
 (
-	cod_dominio VARCHAR(35) NOT NULL,
-	identificativo_avvisatura VARCHAR(20) NOT NULL,
-	tipo_canale INT NOT NULL,
-	cod_canale VARCHAR(35),
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
+	identificativo_avvisatura VARCHAR(20) NOT NULL COMMENT 'Identificativo avvisatura,
+	tipo_canale INT NOT NULL COMMENT 'Tipo di canale di avvisatura',
+	cod_canale VARCHAR(35) COMMENT 'Identificativo del canale di avvisatura',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data TIMESTAMP(3) NOT NULL DEFAULT 0,
-	cod_esito INT NOT NULL,
-	descrizione_esito VARCHAR(140) NOT NULL,
+	data TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data avvisatura',
+	cod_esito INT NOT NULL COMMENT 'Codice esito avvisatura',
+	descrizione_esito VARCHAR(140) NOT NULL COMMENT 'Descrizione esito avvisatura',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_tracciato BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_tracciato BIGINT NOT NULL COMMENT 'Riferimento al tracciato di avvisatura',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Esiti delle avvisature digitali';
 
 
 
 
 CREATE TABLE operazioni
 (
-	tipo_operazione VARCHAR(255) NOT NULL,
-	linea_elaborazione BIGINT NOT NULL,
-	stato VARCHAR(255) NOT NULL,
-	dati_richiesta MEDIUMBLOB NOT NULL,
-	dati_risposta MEDIUMBLOB,
-	dettaglio_esito VARCHAR(255),
-	cod_versamento_ente VARCHAR(255),
-	cod_dominio VARCHAR(35),
-	iuv VARCHAR(35),
-	trn VARCHAR(35),
+	tipo_operazione VARCHAR(255) NOT NULL COMMENT 'Tipo di operazione',
+	linea_elaborazione BIGINT NOT NULL COMMENT 'Numero linea nel tracciato di origine',
+	stato VARCHAR(255) NOT NULL COMMENT 'Stato di elaborazione',
+	dati_richiesta MEDIUMBLOB NOT NULL COMMENT 'Dati raw di richiesta',
+	dati_risposta MEDIUMBLOB COMMENT 'Dati raw di risposta',
+	dettaglio_esito VARCHAR(255) COMMENT 'Descrizione dell\'esito',
+	cod_versamento_ente VARCHAR(255) COMMENT 'Identificativo pendenza',
+	cod_dominio VARCHAR(35) COMMENT 'Identificativo ente creditore',
+	iuv VARCHAR(35) COMMENT 'Identificativo unico di versamento',
+	trn VARCHAR(35) COMMENT 'Identificativo operazione contabile',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_tracciato BIGINT NOT NULL,
-	id_applicazione BIGINT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_tracciato BIGINT NOT NULL COMMENT 'Riferimento al tracciato di origine',
+	id_applicazione BIGINT COMMENT 'Riferiemnto all\'applicazione chiamante,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Operazioni richieste da tracciato';
 
 
 
@@ -892,13 +893,13 @@ CREATE TABLE operazioni
 CREATE TABLE gp_audit
 (
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data TIMESTAMP(3) NOT NULL DEFAULT 0,
-	id_oggetto BIGINT NOT NULL,
-	tipo_oggetto VARCHAR(255) NOT NULL,
-	oggetto LONGTEXT NOT NULL,
+	data TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data di emissione dell\'audit',
+	id_oggetto BIGINT NOT NULL COMMENT 'Identificativo dell\'elemento modificato',
+	tipo_oggetto VARCHAR(255) NOT NULL COMMENT 'Tipo dell\'elemento modificato',
+	oggetto LONGTEXT NOT NULL COMMENT 'Serializzazione dell\'elemento modificato',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_operatore BIGINT NOT NULL,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_operatore BIGINT NOT NULL COMMENT 'Riferimento all\utente che ha richiesto la modifica',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_aud_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_gp_audit PRIMARY KEY (id)
@@ -909,17 +910,17 @@ CREATE TABLE gp_audit
 
 CREATE TABLE avvisi
 (
-	cod_dominio VARCHAR(35) NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
+	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo unico di versamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0,
-	stato VARCHAR(255) NOT NULL,
-	pdf MEDIUMBLOB,
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data di stampa dell\'avviso',
+	stato VARCHAR(255) NOT NULL COMMENT 'Stato di stampa',
+	pdf MEDIUMBLOB COMMENT 'Stampa dell\'avviso',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- fk/pk keys constraints
 	CONSTRAINT pk_avvisi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stampe degli avvisi di pagameneto';
 
 -- index
 CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
@@ -929,37 +930,37 @@ CREATE INDEX index_avvisi_2 ON avvisi (stato);
 
 CREATE TABLE ID_MESSAGGIO_RELATIVO
 (
-	COUNTER BIGINT NOT NULL,
-	PROTOCOLLO VARCHAR(255) NOT NULL,
-	INFO_ASSOCIATA VARCHAR(255) NOT NULL,
+	COUNTER BIGINT NOT NULL COMMENT 'Contatore progressivo',
+	PROTOCOLLO VARCHAR(255) NOT NULL COMMENT 'Tipologia di progressivo',
+	INFO_ASSOCIATA VARCHAR(255) NOT NULL COMMENT 'Namespace di generazione',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	ora_registrazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3),
+	ora_registrazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) 'Ora di registrazione',
 	-- fk/pk columns
 	-- fk/pk keys constraints
 	CONSTRAINT pk_ID_MESSAGGIO_RELATIVO PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Generatore di progressivi';
 
 
 CREATE TABLE sonde
 (
-	nome VARCHAR(35) NOT NULL,
-	classe VARCHAR(255) NOT NULL,
-	soglia_warn BIGINT NOT NULL,
-	soglia_error BIGINT NOT NULL,
+	nome VARCHAR(35) NOT NULL COMMENT 'Nome della sonda',
+	classe VARCHAR(255) NOT NULL COMMENT 'Classe che implementa il check',
+	soglia_warn BIGINT NOT NULL COMMENT 'Soglia di warning',
+	soglia_error BIGINT NOT NULL COMMENT 'Soglia di errore',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ok TIMESTAMP(3) DEFAULT 0,
+	data_ok TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di ultima esecuzione del check con esito ok',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_warn TIMESTAMP(3) DEFAULT 0,
+	data_warn TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di ultima esecuzione del check con esito warning',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_error TIMESTAMP(3) DEFAULT 0,
+	data_error TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di ultima esecuzione del check con esito errore',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ultimo_check TIMESTAMP(3) DEFAULT 0,
-	dati_check LONGTEXT,
-	stato_ultimo_check INT,
+	data_ultimo_check TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di ultima esecuzione del check',
+	dati_check LONGTEXT COMMENT 'Data di configurazione del check',
+	stato_ultimo_check INT COMMENT 'Esito dell\'ultima esecuzione del check',
 	-- fk/pk columns
 	-- fk/pk keys constraints
 	CONSTRAINT pk_sonde PRIMARY KEY (nome)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Sonde di controllo della piattaforma';
 
 -- Sezione Viste
 
