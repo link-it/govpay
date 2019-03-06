@@ -19,7 +19,7 @@ import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO.FormatoRichie
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTOResponse;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
@@ -29,7 +29,7 @@ import it.govpay.orm.VistaRiscossioni;
 public class EntratePrevisteDAO extends BaseDAO{
 
 	public ListaEntratePrevisteDTOResponse listaEntrate(ListaEntratePrevisteDTO listaEntratePrevisteDTO) 
-			throws NotAuthenticatedException, NotAuthorizedException, UnprocessableEntityException, ServiceException {
+			throws NotAuthenticatedException, NotAuthorizedException, RequestParamException, ServiceException {
 		BasicBD bd = null;
 
 		try {
@@ -70,7 +70,7 @@ public class EntratePrevisteDAO extends BaseDAO{
 				// PDF!
 				int numeroMassimoEntriesProspettoRiscossione = GovpayConfig.getInstance().getNumeroMassimoEntriesProspettoRiscossione();
 				if(count > numeroMassimoEntriesProspettoRiscossione)
-					throw new UnprocessableEntityException("Il numero di risultati trovati supera il limite massimo serializzabile su file pdf, affinare la ricerca per ridurre il numero di risultati.");
+					throw new RequestParamException("Il numero di risultati trovati supera il limite massimo serializzabile su file pdf, affinare la ricerca per ridurre il numero di risultati.");
 				
 				
 				filter.setOffset(0);

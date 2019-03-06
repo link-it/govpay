@@ -28,6 +28,10 @@ public class RequestParamException extends BaseExceptionV1 {
 		super("Errore nella valorizzazione dei parametri della richiesta", faultType.faultSubCode, details, CategoriaEnum.RICHIESTA);
 	}
 	
+	public RequestParamException(String cause) {
+		super("Errore nella valorizzazione dei parametri della richiesta", "4220000", cause, CategoriaEnum.RICHIESTA);
+	}
+	
 	@Override
 	public int getTransportErrorCode() {
 		return 422;

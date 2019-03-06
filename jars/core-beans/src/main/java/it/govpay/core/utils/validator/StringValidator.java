@@ -1,5 +1,7 @@
 package it.govpay.core.utils.validator;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,4 +64,14 @@ public class StringValidator {
 		return this;
 	}
 
+	public StringValidator isUrl() throws ValidationException {
+		if(this.fieldValue != null) {
+			try {
+				new URL(this.fieldValue);
+			} catch (MalformedURLException e) {
+				throw new ValidationException("Il campo " + this.fieldName + " non contiene una URL valida.");
+			}
+		}
+		return this;
+	}
 }

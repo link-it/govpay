@@ -670,7 +670,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 				sqlQueryObject.addFromTable(tableSingoliVersamenti);
 
 				String tablePagamenti = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model());
-				sqlQueryObject.addWhereCondition(tablePagamenti+".id_versamento="+tableSingoliVersamenti+".id");
+				sqlQueryObject.addWhereCondition(tablePagamenti+".id_singolo_versamento="+tableSingoliVersamenti+".id");
 
 			}
 

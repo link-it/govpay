@@ -1,10 +1,14 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "denominazione",
@@ -13,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "servizioFtp",
 "abilitato",
 })
-public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable {
+public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
   
   @JsonProperty("denominazione")
   private String denominazione = null;
@@ -162,6 +166,16 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		vf.getValidator("denominazione", this.denominazione).notNull().minLength(1).maxLength(255);
+		vf.getValidator("principalPagoPa", this.principalPagoPa).notNull().minLength(1).maxLength(4000);
+		vf.getValidator("servizioPagoPa", this.servizioPagoPa).notNull().validateFields();
+		vf.getValidator("servizioFtp", this.servizioFtp).validateFields();
+		vf.getValidator("abilitato", this.abilitato).notNull();
+	}
 }
 
 

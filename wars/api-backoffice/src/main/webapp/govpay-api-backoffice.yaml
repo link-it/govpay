@@ -3163,6 +3163,7 @@ components:
       type: object
       required:
         - denominazione
+        - principalPagoPa
         - servizioPagoPa
       properties:
         denominazione:
@@ -4812,8 +4813,8 @@ components:
       type: object
       required:
         - tipo
-        - ksLocation
-        - ksPassword
+        - tsLocation
+        - tsPassword
       properties:
         tipo:
           type: string

@@ -1069,13 +1069,7 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
      JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id; 
 
 CREATE VIEW v_riscossioni AS
-        SELECT
-                cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti,
-                numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione
-        FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id
+        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id
         UNION
-        SELECT
-                cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti,
-                numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione
-        FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id;
+        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id;
 

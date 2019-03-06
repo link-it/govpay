@@ -9,13 +9,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @JsonPropertyOrder({
 "host",
 "porta",
 "username",
 "password",
 })
-public class ConnettoreFtp extends JSONSerializable {
+public class ConnettoreFtp extends JSONSerializable implements IValidable {
   
   @JsonProperty("host")
   private String host = null;
@@ -145,6 +147,18 @@ public class ConnettoreFtp extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		// se e' definito almeno uno devono essere valorizzati tutti
+		if(this.host != null || this.porta != null || this.username != null || this.password != null) {
+			vf.getValidator("host", this.host).notNull().minLength(1).maxLength(255);
+			vf.getValidator("porta", this.porta).notNull().minLength(1).maxLength(255);
+			vf.getValidator("username", this.host).notNull().minLength(1).maxLength(255);
+			vf.getValidator("password", this.porta).notNull().minLength(1).maxLength(255);
+		}
+	}
 }
 
 

@@ -23,7 +23,17 @@ public class ConnettorePagopaConverter {
 			
 			if(connector.getAuth().getTipo() != null) {
 				connettore.setTipoAutenticazione(EnumAuthType.SSL);
-				connettore.setTipoSsl(EnumSslType.valueOf(connector.getAuth().getTipo().toString()));
+				if(connector.getAuth().getTipo() != null) {
+					switch (connector.getAuth().getTipo()) {
+					case CLIENT:
+						connettore.setTipoSsl(EnumSslType.CLIENT);
+						break;
+					case SERVER:
+					default:
+						connettore.setTipoSsl(EnumSslType.SERVER);
+						break;
+					}
+				}
 			} else {
 				connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
 			}
@@ -57,8 +67,20 @@ public class ConnettorePagopaConverter {
 		.tsLocation(connettore.getSslTsLocation())
 		.tsPassword(connettore.getSslTsPasswd());
 		
-		if(connettore.getSslType() != null)
-			rsModel.tipo(TipoEnum.fromValue(connettore.getSslType().toString()));
+		if(connettore.getTipoSsl() != null) {
+			switch (connettore.getTipoSsl() ) {
+			case CLIENT:
+				rsModel.setTipo(TipoEnum.CLIENT);
+				break;
+			case SERVER:
+			default:
+				rsModel.setTipo(TipoEnum.SERVER);
+				break;
+			}
+		}
+		
+//		if(connettore.getSslType() != null)
+//			rsModel.tipo(TipoEnum.fromValue(connettore.getSslType().toString()));
 		
 		return rsModel;
 	}

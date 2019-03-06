@@ -122,13 +122,14 @@ public class IntermediariController extends BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			StazionePost inrtermediarioRequest= JSONSerializable.parse(jsonRequest, StazionePost.class);
+			StazionePost stazioneRequest= JSONSerializable.parse(jsonRequest, StazionePost.class);
+			stazioneRequest.validate();
 			
-			PutStazioneDTO putIntermediarioDTO = StazioniConverter.getPutStazioneDTO(inrtermediarioRequest, idIntermediario, idStazione, user);
+			PutStazioneDTO putStazioneDTO = StazioniConverter.getPutStazioneDTO(stazioneRequest, idIntermediario, idStazione, user);
 			
 			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
 			
-			PutStazioneDTOResponse putIntermediarioDTOResponse = intermediariDAO.createOrUpdateStazione(putIntermediarioDTO);
+			PutStazioneDTOResponse putIntermediarioDTOResponse = intermediariDAO.createOrUpdateStazione(putStazioneDTO);
 			
 			Status responseStatus = putIntermediarioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			
@@ -213,9 +214,10 @@ public class IntermediariController extends BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
-			IntermediarioPost inrtermediarioRequest= JSONSerializable.parse(jsonRequest, IntermediarioPost.class);
+			IntermediarioPost intermediarioRequest= JSONSerializable.parse(jsonRequest, IntermediarioPost.class);
+			intermediarioRequest.validate();
 			
-			PutIntermediarioDTO putIntermediarioDTO = IntermediariConverter.getPutIntermediarioDTO(inrtermediarioRequest, idIntermediario, user);
+			PutIntermediarioDTO putIntermediarioDTO = IntermediariConverter.getPutIntermediarioDTO(intermediarioRequest, idIntermediario, user);
 			
 			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
 			

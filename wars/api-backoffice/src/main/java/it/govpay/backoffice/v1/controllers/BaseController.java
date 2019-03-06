@@ -39,6 +39,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.exceptions.ResponseValidationException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -191,6 +192,10 @@ public abstract class BaseController {
 	
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
 		
+		if(e instanceof UnprocessableEntityException) {
+			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, (UnprocessableEntityException)e,transactionId);
+		}
+		
 		if(e instanceof BaseExceptionV1) {
 			return this.handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
 		}
@@ -246,6 +251,25 @@ public abstract class BaseController {
 		respKo.setCategoria(FaultBean.CategoriaEnum.fromValue(e.getCategoria().name()));
 		respKo.setCodice(e.getCode());
 		respKo.setDescrizione(e.getMessage());
+		respKo.setDettaglio(e.getDetails());
+		
+		try {
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo, e.getTransportErrorCode());
+		}catch(Exception e1) {
+			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
+		}
+
+		String respJson = this.getRespJson(respKo);
+		return handleResponseKo(Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+	}
+	
+	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
+		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+		
+		FaultBean respKo = new FaultBean();
+		respKo.setCategoria(CategoriaEnum.RICHIESTA);
+		respKo.setCodice("SEMANTICA");
+		respKo.setDescrizione("Richiesta non valida");
 		respKo.setDettaglio(e.getDetails());
 		
 		try {
