@@ -255,11 +255,19 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
-		if(this.username != null) {
-			vf.getValidator("username", this.username).notNull();
-			vf.getValidator("password", this.password).notNull();
+		// validazione credenziali httpbasic
+		if(this.username != null || this.password != null) {
+			vf.getValidator("username", this.username).notNull().minLength(1).maxLength(255);
+			vf.getValidator("password", this.password).notNull().minLength(1).maxLength(255);
 		} else {
-			// TODO
+			vf.getValidator("tipo", this.tipo).notNull();
+			vf.getValidator("tsLocation", this.tsLocation).notNull().minLength(1).maxLength(255);
+			vf.getValidator("tsPassword", this.tsPassword).notNull().minLength(1).maxLength(255);
+			
+			if(this.tipo.equals(TipoEnum.CLIENT)) {
+				vf.getValidator("ksLocation", this.ksLocation).notNull().minLength(1).maxLength(255);
+				vf.getValidator("ksPassword", this.ksPassword).notNull().minLength(1).maxLength(255);
+			}
 		}
 	}
 }

@@ -93,6 +93,7 @@ public class VerificaConverter {
 					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
 					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
+					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
 					sv.setTributo(tributo);
 				}
 

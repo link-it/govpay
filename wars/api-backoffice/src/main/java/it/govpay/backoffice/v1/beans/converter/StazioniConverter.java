@@ -11,18 +11,36 @@ import it.govpay.backoffice.v1.beans.Stazione;
 import it.govpay.backoffice.v1.beans.StazioneIndex;
 import it.govpay.backoffice.v1.beans.StazionePost;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class StazioniConverter {
 
-	public static PutStazioneDTO getPutStazioneDTO(StazionePost stazionePost, String idIntermediario, String idStazione, Authentication user) throws ServiceException {
+	public static PutStazioneDTO getPutStazioneDTO(StazionePost stazionePost, String idIntermediario, String idStazione, Authentication user) throws ServiceException, UnprocessableEntityException {
 		PutStazioneDTO stazioneDTO = new PutStazioneDTO(user);
 		
 		it.govpay.bd.model.Stazione stazione = new it.govpay.bd.model.Stazione();
 
 		stazione.setAbilitato(stazionePost.isAbilitato());
-		String applicationCodeS = idStazione.substring(idStazione.indexOf("_")+1);
-		stazione.setApplicationCode(Integer.parseInt(applicationCodeS)); 
+		int indexOfIdStazione = idStazione.indexOf("_");
+		
+		if(indexOfIdStazione == -1) {
+			throw new UnprocessableEntityException("Il formato dell'IdStazione non e' valido, previsto IdIntermediario_ApplicationCode.");
+		}
+		
+		String baseIdStazione = idStazione.substring(0, indexOfIdStazione);
+		
+		if(!baseIdStazione.equals(idIntermediario)) {
+			throw new UnprocessableEntityException("Il formato dell'IdStazione non e' valido, IdIntermediario non presente all'interno dell'IdStazione.");
+		}
+		
+		String applicationCodeS = idStazione.substring(indexOfIdStazione+1);
+		int applicationCode = Integer.parseInt(applicationCodeS);
+		
+		if(applicationCode < 1 || applicationCode > 99)
+			throw new UnprocessableEntityException("Identificativo Stazione deve avere un ApplicationCode compreso tra 01 e 99.");
+		
+		stazione.setApplicationCode(applicationCode); 
 		stazione.setCodStazione(idStazione);
 		stazione.setPassword(stazionePost.getPassword());
 		

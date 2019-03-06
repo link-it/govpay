@@ -7,12 +7,14 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "urlRPT",
 "urlAvvisatura",
 "auth",
 })
-public class ConnettorePagopa extends JSONSerializable {
+public class ConnettorePagopa extends JSONSerializable implements IValidable{
   
   @JsonProperty("urlRPT")
   private String urlRPT = null;
@@ -120,6 +122,14 @@ public class ConnettorePagopa extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		vf.getValidator("urlRPT", this.urlRPT).notNull().minLength(1).maxLength(255).isUrl();
+		vf.getValidator("urlAvvisatura", this.urlAvvisatura).minLength(1).maxLength(255).isUrl();
+		vf.getValidator("auth", this.auth).validateFields();
+	}
 }
 
 

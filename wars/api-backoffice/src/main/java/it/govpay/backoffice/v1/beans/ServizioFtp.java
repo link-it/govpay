@@ -9,11 +9,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @JsonPropertyOrder({
 "ftp_lettura",
 "ftp_scrittura",
 })
-public class ServizioFtp extends JSONSerializable {
+public class ServizioFtp extends JSONSerializable implements IValidable{
   
   @JsonProperty("ftp_lettura")
   private ConnettoreFtp ftpLettura = null;
@@ -99,6 +101,13 @@ public class ServizioFtp extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		vf.getValidator("ftpLettura", this.ftpLettura).validateFields();
+		vf.getValidator("ftpScrittura", this.ftpScrittura).validateFields();
+	}
 }
 
 
