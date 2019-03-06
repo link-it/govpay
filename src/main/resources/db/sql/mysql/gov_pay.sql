@@ -15,7 +15,6 @@ CREATE TABLE intermediari
 	CONSTRAINT pk_intermediari PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Intermediari pagoPA';
 
-ALTER TABLE intermediari 
 -- index
 CREATE INDEX index_intermediari_1 ON intermediari (cod_intermediario);
 
@@ -26,14 +25,14 @@ CREATE TABLE stazioni
 	cod_stazione VARCHAR(35) NOT NULL COMMENT 'Identificativo della stazione su pagopa',
 	password VARCHAR(35) NOT NULL COMMENT 'Password assegnata da pagopa',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
-	application_code INT NOT NULL COMMENT 'Application code estratto della stazione,
+	application_code INT NOT NULL COMMENT 'Application code estratto della stazione',
 	ndp_stato INT COMMENT 'Stato dell\'ultima interazione con pagopa',
 	ndp_operazione VARCHAR(256) COMMENT 'Ultima operazione richiesta a pagopa',
-	ndp_descrizione VARCHAR(1024) COMMENT 'Descrizione dell'esito dell\'ultima interazione con pagopa',
+	ndp_descrizione VARCHAR(1024) COMMENT 'Descrizione dell\'esito dell\'ultima interazione con pagopa',
 	ndp_data TIMESTAMP(3) COMMENT 'Data dell\'ultima interazione con pagopa',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_intermediario BIGINT NOT NULL COMMENT 'Riferimento all\'intermediario,
+	id_intermediario BIGINT NOT NULL COMMENT 'Riferimento all\'intermediario',
 	-- unique constraints
 	CONSTRAINT unique_stazioni_1 UNIQUE (cod_stazione),
 	-- fk/pk keys constraints
@@ -74,8 +73,8 @@ CREATE TABLE applicazioni
 	cod_connettore_esito VARCHAR(255) COMMENT 'Riferimento alle properties di configurazione del connettore per il servizio di notifica',
 	cod_connettore_verifica VARCHAR(255) COMMENT 'Riferimento alle properties di configurazione del connettore per il servizio di verifica',
 	trusted BOOLEAN NOT NULL COMMENT 'Indicazione se il verticale e\' autorizzato alla definizione delle entrate',
-	cod_applicazione_iuv VARCHAR(3) 'Codifica del verticale negli IUV',
-	reg_exp VARCHAR(1024) 'Espressione regolare per l'identificazione degli IUV afferenti al verticale',
+	cod_applicazione_iuv VARCHAR(3) COMMENT 'Codifica del verticale negli IUV',
+	reg_exp VARCHAR(1024) COMMENT 'Espressione regolare per l\'identificazione degli IUV afferenti al verticale',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza che identifica il verticale',
@@ -104,7 +103,7 @@ CREATE TABLE domini
 	segregation_code INT COMMENT 'Codice di segregazione in caso di aux digit multi-intermediato',
 	ndp_stato INT COMMENT 'Stato dell\'ultima interazione con pagopa',
 	ndp_operazione VARCHAR(256) COMMENT 'Ultima operazione richiesta a pagopa',
-	ndp_descrizione VARCHAR(1024) COMMENT 'Descrizione dell'esito dell\'ultima interazione con pagopa',
+	ndp_descrizione VARCHAR(1024) COMMENT 'Descrizione dell\'esito dell\'ultima interazione con pagopa',
 	ndp_data TIMESTAMP(3) COMMENT 'Data dell\'ultima interazione con pagopa',
 	logo MEDIUMBLOB COMMENT 'Logo dell\'ente creditore codificato in base64',
 	cbill VARCHAR(255) COMMENT 'Codice cbill assegnato da pagopa in caso di adesione su modello 3',
@@ -219,7 +218,7 @@ CREATE TABLE utenze_tributi
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
-	id_tributo BIGINT NOT NULL COMMENT 'Riferimento all\'entrata,
+	id_tributo BIGINT NOT NULL COMMENT 'Riferimento all\'entrata',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT fk_nzt_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
@@ -267,7 +266,7 @@ CREATE TABLE operatori
 	nome VARCHAR(35) NOT NULL COMMENT 'Nome dell\'operatore',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza dell\'operatore,
+	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza dell\'operatore',
 	-- unique constraints
 	CONSTRAINT unique_operatori_1 UNIQUE (id_utenza),
 	-- fk/pk keys constraints
@@ -301,8 +300,8 @@ CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta) COM
 CREATE TABLE acl
 (
 	ruolo VARCHAR(255) COMMENT 'Ruolo a cui si riferisce la ACL',
-	principal VARCHAR(255) COMMENT 'Principal dell\'utenza a cui si riferisce l\'ACL,
-	servizio VARCHAR(255) NOT NULL COMMENT 'Servizio su cui si riferisce l\'ACL,
+	principal VARCHAR(255) COMMENT 'Principal dell\'utenza a cui si riferisce l\'ACL',
+	servizio VARCHAR(255) NOT NULL COMMENT 'Servizio su cui si riferisce l\'ACL',
 	diritti VARCHAR(255) NOT NULL COMMENT 'Autorizzazione dell\'ACL',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
@@ -320,9 +319,9 @@ CREATE TABLE tracciati
 	stato VARCHAR(12) NOT NULL COMMENT 'Stato di lavorazione del tracciato',
 	descrizione_stato VARCHAR(256) COMMENT 'Descrizione dello stato di lavorazione del tracciato',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data di caricamento del tracciato',
+	data_caricamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di caricamento del tracciato',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_completamento TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di fine lavorazione del tracciato',
+	data_completamento TIMESTAMP(3) COMMENT 'Data di fine lavorazione del tracciato',
 	bean_dati LONGTEXT COMMENT 'Dataset custom del tracciato',
 	file_name_richiesta VARCHAR(256) COMMENT 'Filename del tracciato',
 	raw_richiesta MEDIUMBLOB COMMENT 'Tracciato nel formato originale',
@@ -346,7 +345,7 @@ CREATE TABLE versamenti
 	importo_totale DOUBLE NOT NULL COMMENT 'Importo della pendenza',
 	stato_versamento VARCHAR(35) NOT NULL COMMENT 'Stato di pagamento della pendenza',
 	descrizione_stato VARCHAR(255) COMMENT 'Descrizione dello stato di pagamento della pendenza',
-	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto
+	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto'
 	aggiornabile BOOLEAN NOT NULL COMMENT 'Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di inserimento della pendenza',
@@ -370,13 +369,13 @@ CREATE TABLE versamenti
 	debitore_telefono VARCHAR(35) COMMENT 'Telefono del debitore',
 	debitore_cellulare VARCHAR(35) COMMENT 'Cellulare del debitore',
 	debitore_fax VARCHAR(35) COMMENT 'Numero di fax del debitore',
-	tassonomia_avviso VARCHAR(35) COMMENT 'Tassonomia dell\'avviso di pagamento secondo la codifica agid,
-	tassonomia VARCHAR(35) COMMENT 'Tassonomia della pendenza secondo la codifica dell\'ente,
+	tassonomia_avviso VARCHAR(35) COMMENT 'Tassonomia dell\'avviso di pagamento secondo la codifica agid',
+	tassonomia VARCHAR(35) COMMENT 'Tassonomia della pendenza secondo la codifica dell\'ente',
 	cod_lotto VARCHAR(35) COMMENT 'Codice identificativo della cartella di pagamento',
 	cod_versamento_lotto VARCHAR(35) COMMENT 'Codice identificativo del versamento all\'interno del lotto',
-	cod_anno_tributario VARCHAR(35) COMMENT 'Annualita della pendenza,
+	cod_anno_tributario VARCHAR(35) COMMENT 'Annualita della pendenza',
 	cod_bundlekey VARCHAR(256) COMMENT 'Codice identificativo della pendenza per costruzione di dati noti all\'utente',
-	dati_allegati LONGTEXT COMMENT 'Campo dati a disposizione dell\'ente,
+	dati_allegati LONGTEXT COMMENT 'Campo dati a disposizione dell\'ente',
 	incasso VARCHAR(1) COMMENT 'Indicazione sullo stato di riconciliazione',
 	anomalie LONGTEXT COMMENT 'Anomalie riscontrate nel pagamento della pendenza',
 	iuv_versamento VARCHAR(35) COMMENT 'IUV di pagamento',
@@ -468,11 +467,11 @@ CREATE TABLE pagamenti_portale
 	wisp_key_wisp VARCHAR(255) COMMENT 'Identificativo di scelta WISP assegnato da pagopa (WISP 1.3)',
 	wisp_html LONGTEXT COMMENT 'Codice http per la pagina di redirezione al WISP (WISP 1.3)',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_richiesta TIMESTAMP(3) DEFAULT 0 COMMENT 'Data della richiesta di pagamento',
+	data_richiesta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data della richiesta di pagamento',
 	url_ritorno VARCHAR(1024) COMMENT 'Url di redirezione al portale di pagamento',
 	cod_psp VARCHAR(35) COMMENT 'Codice identificativo del psp scelto per il pagamento (WISP 1.3)',
 	tipo_versamento VARCHAR(4) COMMENT 'Tipologia di pagamento scelto (WISP 1.3)',
-	multi_beneficiario VARCHAR(35) COMMENT 'Indicazione se il pagmento e' per un carrello multibeneficiario (WISP 1.3)',,
+	multi_beneficiario VARCHAR(35) COMMENT 'Indicazione se il pagmento e\' per un carrello multibeneficiario (WISP 1.3)',
 	ack BOOLEAN NOT NULL COMMENT '',
 	tipo INT NOT NULL COMMENT 'Tipologia di pagamento (Modello 1, 2 o 3)',
 	principal VARCHAR(4000) NOT NULL COMMENT 'Principal del richiedente',
@@ -511,16 +510,16 @@ CREATE TABLE rpt
 	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo Univoco di Versamento della RPT',
 	ccp VARCHAR(35) NOT NULL COMMENT 'Codice Contesto di Pagamento della RPT',
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo dell\'ente creditore',
-	-- Identificativo dell'RPT utilizzato come riferimento nell'RT
-	cod_msg_richiesta VARCHAR(35) NOT NULL COMMENT 'Identificativo dell'RPT',
+	-- Identificativo de RPT utilizzato come riferimento nell'RT
+	cod_msg_richiesta VARCHAR(35) NOT NULL COMMENT 'Identificativo dell\'RPT',
 	-- Data di creazione dell'RPT
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_msg_richiesta TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione della RPT',
 	-- Stato RPT secondo la codifica AgID
 	stato VARCHAR(35) NOT NULL COMMENT 'Stato della RPT',
 	descrizione_stato LONGTEXT COMMENT 'Descrizione dello stato della RPT',
-	cod_sessione VARCHAR(255) 'Codice della sessione di pagamento assegnata da GovPay',
-	cod_sessione_portale VARCHAR(255) 'Codice della sessione di pagamento assegnato dal Portale',
+	cod_sessione VARCHAR(255) COMMENT 'Codice della sessione di pagamento assegnata da GovPay',
+	cod_sessione_portale VARCHAR(255) COMMENT 'Codice della sessione di pagamento assegnato dal Portale',
 	-- Indirizzo del portale psp a cui redirigere il cittadino per eseguire il pagamento
 	psp_redirect_url VARCHAR(512) COMMENT 'Url di redirezione per procedere al pagamento',
 	xml_rpt MEDIUMBLOB NOT NULL COMMENT 'XML della RPT codificato in base64',
@@ -535,7 +534,7 @@ CREATE TABLE rpt
 	data_msg_ricevuta TIMESTAMP(3) COMMENT 'Data di produzione della RT',
 	-- Esito del pagamento:\n0: Eseguito\n1: Non eseguito\n2: Parzialmente eseguito\n3: Decorrenza\n4: Decorrenza Parziale
 	cod_esito_pagamento INT COMMENT 'Codice di esito del pagamento estratto dalla RT',
-	importo_totale_pagato DOUBLE 'Importo pagato estratto dalla RT',
+	importo_totale_pagato DOUBLE COMMENT 'Importo pagato estratto dalla RT',
 	xml_rt MEDIUMBLOB COMMENT 'XML della RT codificato in base64',
 	cod_canale VARCHAR(35) COMMENT 'Identificativo del canale con cui e\' stato eseguito il pagamento',
 	cod_psp VARCHAR(35) COMMENT 'Identificativo del psp con cui e\' stato eseguito il pagamento',
@@ -543,14 +542,14 @@ CREATE TABLE rpt
 	tipo_versamento VARCHAR(4) COMMENT 'Tipo di versamento scelto per il pagamento',
 	tipo_identificativo_attestante VARCHAR(1) COMMENT 'Identificativo del canale con cui e\' stato eseguito il pagamento',
 	identificativo_attestante VARCHAR(35) COMMENT 'Identificativo del\'attestante',
-	denominazione_attestante VARCHAR(70) 'Ragione sociale dell\'attestante',
+	denominazione_attestante VARCHAR(70) COMMENT 'Ragione sociale dell\'attestante',
 	cod_stazione VARCHAR(35) NOT NULL COMMENT 'Identificativo della stazione intermediaria',
 	cod_transazione_rpt VARCHAR(36) COMMENT 'Identificativo della comunicazione RPT',
 	cod_transazione_rt VARCHAR(36) COMMENT 'Identificativo della comunicazione RT',
 	stato_conservazione VARCHAR(35) COMMENT 'Indicazione sullo stato di conservazione a norma della RT',
 	descrizione_stato_cons VARCHAR(512) COMMENT 'Descrizione dello stato di conservazione a norma della RT',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_conservazione TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di gestione del processo di conservazione a norma della RT',
+	data_conservazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di gestione del processo di conservazione a norma della RT',
 	bloccante BOOLEAN NOT NULL DEFAULT true COMMENT 'Indicazione se la RPT risulta bloccante per ulteriori transazioni di pagamento',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
@@ -589,7 +588,7 @@ CREATE TABLE rr
 	stato VARCHAR(35) NOT NULL COMMENT 'Stato della revoca',
 	descrizione_stato VARCHAR(512) COMMENT 'Descrizione dello stato della revoca',
 	importo_totale_richiesto DOUBLE NOT NULL COMMENT 'Importo della richiesta',
-	cod_msg_esito VARCHAR(35) COMMENT 'Codice di esito della revoca,
+	cod_msg_esito VARCHAR(35) COMMENT 'Codice di esito della revoca',
 	importo_totale_revocato DOUBLE COMMENT 'Importo revocato',
 	xml_rr MEDIUMBLOB NOT NULL COMMENT 'XML della richiesta di revoca in base64',
 	xml_er MEDIUMBLOB COMMENT 'XML dell\'esito della revoca di revoca in base64',
@@ -730,9 +729,9 @@ CREATE TABLE pagamenti
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
 	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo univoco di versamento',
 	indice_dati INT NOT NULL COMMENT 'Indice progressivo della voce di pendenza',
-	importo_pagato DOUBLE NOT NULL DEFAULT 1 'Importo del pagamento',
+	importo_pagato DOUBLE NOT NULL COMMENT'Importo del pagamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data acquisizione del pagamento',
+	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data acquisizione del pagamento',
 	iur VARCHAR(35) NOT NULL COMMENT 'Identificativo di riscossione',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data del pagamento',
@@ -741,7 +740,7 @@ CREATE TABLE pagamenti
 	tipo_allegato VARCHAR(2) COMMENT 'Tipo di allegato al pagamento',
 	allegato MEDIUMBLOB COMMENT 'Allegato al pagamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_acquisizione_revoca TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di revoca del pagamento',
+	data_acquisizione_revoca TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di revoca del pagamento',
 	causale_revoca VARCHAR(140) COMMENT 'Causale della revoca del pagamento',
 	dati_revoca VARCHAR(140) COMMENT 'Dati allegati alla revoca',
 	importo_revocato DOUBLE COMMENT 'Importo revocato',
@@ -778,7 +777,7 @@ CREATE TABLE rendicontazioni
 	importo_pagato DOUBLE COMMENT 'Importo rendicontato',
 	esito INT COMMENT 'Codice di esito della rendicontazione',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di rendicontazione',
+	data TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di rendicontazione',
 	stato VARCHAR(35) NOT NULL COMMENT 'Stato della rendicontazione',
 	anomalie LONGTEXT COMMENT 'Anomalie riscontrate nella rendicontazione',
 	-- fk/pk columns
@@ -847,11 +846,11 @@ CREATE INDEX index_batch_1 ON batch (cod_batch);
 CREATE TABLE esiti_avvisatura
 (
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
-	identificativo_avvisatura VARCHAR(20) NOT NULL COMMENT 'Identificativo avvisatura,
+	identificativo_avvisatura VARCHAR(20) NOT NULL COMMENT 'Identificativo avvisatura',
 	tipo_canale INT NOT NULL COMMENT 'Tipo di canale di avvisatura',
 	cod_canale VARCHAR(35) COMMENT 'Identificativo del canale di avvisatura',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data avvisatura',
+	data TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data avvisatura',
 	cod_esito INT NOT NULL COMMENT 'Codice esito avvisatura',
 	descrizione_esito VARCHAR(140) NOT NULL COMMENT 'Descrizione esito avvisatura',
 	-- fk/pk columns
@@ -880,7 +879,7 @@ CREATE TABLE operazioni
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tracciato BIGINT NOT NULL COMMENT 'Riferimento al tracciato di origine',
-	id_applicazione BIGINT COMMENT 'Riferiemnto all\'applicazione chiamante,
+	id_applicazione BIGINT COMMENT 'Riferiemnto all\'applicazione chiamante',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
 	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -893,7 +892,7 @@ CREATE TABLE operazioni
 CREATE TABLE gp_audit
 (
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data di emissione dell\'audit',
+	data TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di emissione dell\'audit',
 	id_oggetto BIGINT NOT NULL COMMENT 'Identificativo dell\'elemento modificato',
 	tipo_oggetto VARCHAR(255) NOT NULL COMMENT 'Tipo dell\'elemento modificato',
 	oggetto LONGTEXT NOT NULL COMMENT 'Serializzazione dell\'elemento modificato',
@@ -913,7 +912,7 @@ CREATE TABLE avvisi
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
 	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo unico di versamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0 COMMENT 'Data di stampa dell\'avviso',
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di stampa dell\'avviso',
 	stato VARCHAR(255) NOT NULL COMMENT 'Stato di stampa',
 	pdf MEDIUMBLOB COMMENT 'Stampa dell\'avviso',
 	-- fk/pk columns
@@ -934,7 +933,7 @@ CREATE TABLE ID_MESSAGGIO_RELATIVO
 	PROTOCOLLO VARCHAR(255) NOT NULL COMMENT 'Tipologia di progressivo',
 	INFO_ASSOCIATA VARCHAR(255) NOT NULL COMMENT 'Namespace di generazione',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	ora_registrazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) 'Ora di registrazione',
+	ora_registrazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Ora di registrazione',
 	-- fk/pk columns
 	-- fk/pk keys constraints
 	CONSTRAINT pk_ID_MESSAGGIO_RELATIVO PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
@@ -948,13 +947,13 @@ CREATE TABLE sonde
 	soglia_warn BIGINT NOT NULL COMMENT 'Soglia di warning',
 	soglia_error BIGINT NOT NULL COMMENT 'Soglia di errore',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ok TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di ultima esecuzione del check con esito ok',
+	data_ok TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di ultima esecuzione del check con esito ok',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_warn TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di ultima esecuzione del check con esito warning',
+	data_warn TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di ultima esecuzione del check con esito warning',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_error TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di ultima esecuzione del check con esito errore',
+	data_error TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di ultima esecuzione del check con esito errore',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ultimo_check TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di ultima esecuzione del check',
+	data_ultimo_check TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di ultima esecuzione del check',
 	dati_check LONGTEXT COMMENT 'Data di configurazione del check',
 	stato_ultimo_check INT COMMENT 'Esito dell\'ultima esecuzione del check',
 	-- fk/pk columns
