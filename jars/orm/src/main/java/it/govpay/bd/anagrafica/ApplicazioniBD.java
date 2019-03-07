@@ -38,11 +38,14 @@ import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
+import it.govpay.model.Acl;
 import it.govpay.model.Connettore;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.dao.jdbc.JDBCApplicazioneServiceSearch;
@@ -62,7 +65,7 @@ public class ApplicazioniBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public Applicazione getApplicazione(Long idApplicazione) throws NotFoundException, ServiceException, MultipleResultException {
+	public Applicazione getApplicazione(Long idApplicazione) throws NotFoundException, ServiceException {
 
 		if(idApplicazione == null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
@@ -75,7 +78,7 @@ public class ApplicazioniBD extends BasicBD {
 			Applicazione applicazione = this.getApplicazione(applicazioneVO);
 
 			return applicazione;
-		} catch (NotImplementedException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -89,14 +92,14 @@ public class ApplicazioniBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public Applicazione getApplicazione(String codApplicazione) throws NotFoundException, MultipleResultException, ServiceException {
+	public Applicazione getApplicazione(String codApplicazione) throws NotFoundException, ServiceException {
 		try {
 			IdApplicazione id = new IdApplicazione();
 			id.setCodApplicazione(codApplicazione);
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().get(id);
 			Applicazione applicazione = this.getApplicazione(applicazioneVO);
 			return applicazione;
-		} catch (NotImplementedException e) {
+		} catch (NotImplementedException | MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -195,16 +198,46 @@ public class ApplicazioniBD extends BasicBD {
 			// autocommit false		
 			this.setAutoCommit(false);
 			
-			if(!utenzeBD.exists(applicazione.getUtenza())) {
-				utenzeBD.insertUtenza(applicazione.getUtenza());
+			// prelevo la vecchia utenza
+			Applicazione applicazioneOld = this.getApplicazione(applicazione.getCodApplicazione());
+									
+			Utenza utenzaApplicazione = applicazione.getUtenza();
+			boolean insertNuovaUtenza = !utenzeBD.exists(utenzaApplicazione);
+			if(insertNuovaUtenza) { // se ho cambiato il principal dell'applicazione non trovero' una utenza associata
+				
+				// copio ACL
+				AclBD aclBD = new AclBD(this);
+				AclFilter filter = aclBD.newFilter();
+				filter.setPrincipal(applicazioneOld.getUtenza().getPrincipalOriginale());
+				List<Acl> alcEsistenti = aclBD.findAll(filter);
+
+				List<Acl> listaAclPrincipal =  null;
+				if(alcEsistenti != null) {
+					listaAclPrincipal = new ArrayList<Acl>();
+					for (Acl aclPrincipalOld : alcEsistenti) {
+						aclPrincipalOld.setPrincipal(utenzaApplicazione.getPrincipalOriginale());
+						listaAclPrincipal.add(aclPrincipalOld);
+					}
+				}
+				
+				utenzaApplicazione.setAclPrincipal(listaAclPrincipal);
+				
+				// Domini
+				utenzaApplicazione.setIdDomini(applicazioneOld.getUtenza().getIdDomini());
+				
+				// Tributi
+				utenzaApplicazione.setIdTributi(applicazioneOld.getUtenza().getIdTributi());
+				
+				utenzeBD.insertUtenza(utenzaApplicazione);
 			} else {
 				try {
-					utenzeBD.updateUtenza(applicazione.getUtenza());
+					utenzeBD.updateUtenza(utenzaApplicazione);
 				} catch(NotFoundException e) {
 					throw new ServiceException(e);
 				}
 			}
-			applicazione.setIdUtenza(applicazione.getUtenza().getId());
+
+			applicazione.setIdUtenza(utenzaApplicazione.getId());
 
 			it.govpay.orm.Applicazione vo = ApplicazioneConverter.toVO(applicazione);
 			IdApplicazione id = this.getApplicazioneService().convertToId(vo);
@@ -242,6 +275,12 @@ public class ApplicazioniBD extends BasicBD {
 					this.getConnettoreService().create(connettore);
 				}
 			}
+			
+			if(insertNuovaUtenza) {
+				// elimino la vecchia utenza
+				utenzeBD.deleteUtenza(applicazioneOld.getUtenza(), true);
+			}
+			
 
 			this.emitAudit(applicazione);
 			this.commit();

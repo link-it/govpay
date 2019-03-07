@@ -30,6 +30,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
+import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;
@@ -44,6 +45,7 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -104,7 +106,7 @@ public class ApplicazioniDAO extends BaseDAO {
 
 
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
-	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException { 
+	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException { 
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
 		BasicBD bd = null;
 
@@ -113,6 +115,7 @@ public class ApplicazioniDAO extends BaseDAO {
 			this.autorizzaRichiesta(putApplicazioneDTO.getUser(), Servizio.ANAGRAFICA_APPLICAZIONI, Diritti.SCRITTURA,bd);
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			UtenzeBD utenzeBD = new UtenzeBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
 			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
 
@@ -139,8 +142,21 @@ public class ApplicazioniDAO extends BaseDAO {
 			boolean isCreate = applicazioniBD.count(filter) == 0;
 			applicazioneDTOResponse.setCreated(isCreate);
 			if(isCreate) {
+				// controllo che il principal scelto non sia gia' utilizzato
+				if(utenzeBD.existsByPrincipalOriginale(putApplicazioneDTO.getApplicazione().getPrincipal()))
+					throw new UnprocessableEntityException("Impossibile aggiungere l'Applicazione ["+putApplicazioneDTO.getIdApplicazione()+"], il Principal indicato non e' disponibile.");			
+				
 				applicazioniBD.insertApplicazione(putApplicazioneDTO.getApplicazione());
 			} else {
+				// prelevo la vecchia utenza
+				Applicazione applicazioneOld = applicazioniBD.getApplicazione(putApplicazioneDTO.getIdApplicazione());
+				
+				if(!applicazioneOld.getPrincipal().equals(putApplicazioneDTO.getApplicazione().getPrincipal())) {
+					// se ho cambiato il principal controllo che sia disponibile
+					if(utenzeBD.existsByPrincipalOriginale(putApplicazioneDTO.getApplicazione().getPrincipal()))
+						throw new UnprocessableEntityException("Impossibile modificare l'Applicazione ["+putApplicazioneDTO.getIdApplicazione()+"], il Principal indicato non e' disponibile.");	
+				}
+				
 				applicazioniBD.updateApplicazione(putApplicazioneDTO.getApplicazione());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
@@ -178,7 +194,7 @@ public class ApplicazioniDAO extends BaseDAO {
 			getApplicazioneDTOResponse.setApplicazione(applicazione);
 
 			return getApplicazioneDTOResponse;
-		}catch(NotFoundException | MultipleResultException e) {
+		}catch(NotFoundException e) {
 			throw new ApplicazioneNonTrovataException("Non esiste un'applicazione associata all'ID ["+patchDTO.getCodApplicazione()+"]");
 		}finally {
 			if(bd != null)

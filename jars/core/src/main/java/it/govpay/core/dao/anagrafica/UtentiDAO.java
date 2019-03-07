@@ -31,7 +31,9 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.OperatoriBD;
+import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -52,6 +54,7 @@ import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -138,7 +141,7 @@ public class UtentiDAO extends BaseDAO{
 		}
 	}
 
-	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoTributoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException {
+	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoTributoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {
 		PutOperatoreDTOResponse operatoreDTOResponse = new PutOperatoreDTOResponse();
 		BasicBD bd = null;
 
@@ -146,6 +149,7 @@ public class UtentiDAO extends BaseDAO{
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 			this.autorizzaRichiesta(putOperatoreDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd);
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
+			UtenzeBD utenzeBD = new UtenzeBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter(false);
 			filter.setPrincipal(putOperatoreDTO.getPrincipal());
 			filter.setSearchModeEquals(true); // ricerca esatta del principal che sto inserendo
@@ -182,6 +186,10 @@ public class UtentiDAO extends BaseDAO{
 
 
 			if(isCreate) {
+				// controllo che il principal scelto non sia gia' utilizzato
+				if(utenzeBD.existsByPrincipalOriginale(putOperatoreDTO.getPrincipal()))
+					throw new UnprocessableEntityException("Impossibile aggiungere l'operatore ["+putOperatoreDTO.getOperatore().getNome() +"], il principal scelto non e' disponibile.");		
+				
 				operatoriBD.insertOperatore(putOperatoreDTO.getOperatore());
 			} else {
 				putOperatoreDTO.getOperatore().setIdUtenza(AnagraficaManager.getUtenza(bd, putOperatoreDTO.getOperatore().getUtenza().getPrincipal()).getId());

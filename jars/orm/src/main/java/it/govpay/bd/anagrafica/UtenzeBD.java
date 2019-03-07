@@ -103,6 +103,23 @@ public class UtenzeBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	
+	/**
+	 *  check esistenza dell'utenza identificata dalla chiave fisica
+	 * 
+	 * @param principal
+	 * @return
+	 * @throws ServiceException
+	 */
+	public boolean existsByPrincipalOriginale(String principal) throws ServiceException {
+		try {
+			IExpression expr = this.getUtenzaService().newExpression();
+			expr.equals(it.govpay.orm.Utenza.model().PRINCIPAL_ORIGINALE, principal);
+			return  this.getUtenzaService().count(expr).longValue() > 0 ;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException  e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	/**
 	 * Recupera l'utenza identificato dalla chiave logica
@@ -153,7 +170,7 @@ public class UtenzeBD extends BasicBD {
 		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, utenzaDominioLst, utenzaTributoLst, this);
 		AclBD aclDB = new AclBD(this);
 		AclFilter filter = aclDB.newFilter();
-		filter.setPrincipal(utenza.getPrincipal());
+		filter.setPrincipal(utenza.getPrincipalOriginale());
 
 		utenza.setAclPrincipal(aclDB.findAll(filter));
 		return utenza;
@@ -325,13 +342,13 @@ public class UtenzeBD extends BasicBD {
 			// Copio la lista delle ACL nuove
 			
 			List<Acl> aclNuove = new ArrayList<Acl>();
-			for(Acl aclNuova : utenza.getAcls())
+			for(Acl aclNuova : utenza.getAclPrincipal())
 				aclNuove.add(aclNuova);
 			
 			
 			for(Acl aclEsistente : alcEsistenti) {
 				boolean found = false;
-				for(Acl aclNuova : utenza.getAcls()) {
+				for(Acl aclNuova : utenza.getAclPrincipal()) {
 					if(aclNuova.getServizio().equals(aclEsistente.getServizio())) {
 						found = true;
 						aclNuova.setId(aclEsistente.getId());
@@ -480,9 +497,9 @@ public class UtenzeBD extends BasicBD {
 			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDomini());
 			this.updateUtenzeTributo(utenza.getId(), utenza.getIdTributi());
 			
-			if(utenza.getAcls() != null && utenza.getAcls().size() > 0) {
+			if(utenza.getAclPrincipal() != null && utenza.getAclPrincipal().size() > 0) {
 				AclBD aclBD = new AclBD(this);
-				for(Acl aclNuova : utenza.getAcls())
+				for(Acl aclNuova : utenza.getAclPrincipal())
 					aclBD.insertAcl(aclNuova);
 			}
 			
@@ -516,6 +533,19 @@ public class UtenzeBD extends BasicBD {
 			}
 			this.deleteUtenzeDominio(vo.getId());
 			this.deleteUtenzeTributo(vo.getId());
+			
+			AclBD aclDB = new AclBD(this);
+			AclFilter filter = aclDB.newFilter();
+			filter.setPrincipal(utenza.getPrincipalOriginale());
+			List<Acl> findAll = aclDB.findAll(filter);
+			
+			if(findAll != null) {
+				AclBD aclBD = new AclBD(this);
+				for (Acl aclToDelete : findAll) {
+					aclBD.deleteAcl(aclToDelete);
+				}
+			}
+			
 			this.getUtenzaService().delete(vo);
 			if(!commitParent)
 				this.commit();

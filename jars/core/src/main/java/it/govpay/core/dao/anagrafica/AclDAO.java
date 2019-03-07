@@ -45,19 +45,6 @@ public class AclDAO extends BaseDAO{
 		return this._listaAcl(listaAclDTO);
 	}
 
-	public ListaAclDTOResponse listaAcl(ListaAclDTO listaAclDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException  {
-		BasicBD bd = null;
-
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(listaAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd);
-			return this._listaAcl(listaAclDTO, bd);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
-	}
-
 	private ListaAclDTOResponse _listaAcl(ListaAclDTO listaAclDTO) throws ServiceException {
 		BasicBD bd = null;
 
@@ -100,25 +87,6 @@ public class AclDAO extends BaseDAO{
 		ListaAclDTO listaAclDTO = new ListaAclDTO(null);
 		listaAclDTO.setForcePrincipal(true);
 		return this._listaAcl(listaAclDTO);
-	}
-
-	public LeggiAclDTOResponse leggiAcl(LeggiAclDTO leggiAclDTO) throws NotAuthorizedException, NotFoundException, ServiceException, NotAuthenticatedException {
-		BasicBD bd = null;
-
-		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(leggiAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA,bd); 
-
-			AclBD aclBD = new AclBD(bd);
-			LeggiAclDTOResponse leggiAclDTOResponse = new LeggiAclDTOResponse();
-			leggiAclDTOResponse.setAcl(aclBD.getAcl(leggiAclDTO.getIdAcl()));
-			return leggiAclDTOResponse;
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		} finally {
-			if(bd != null)
-				bd.closeConnection();
-		}
 	}
 
 	/**

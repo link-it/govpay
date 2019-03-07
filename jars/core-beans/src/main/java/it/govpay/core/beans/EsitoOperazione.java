@@ -398,7 +398,7 @@ public enum EsitoOperazione {
     VER_005,
 
     /**
-     * Non è possibile aggiornare un versamento modificando i  codSingoliVersamenti dei singoli versamenti
+     * Non è possibile aggiornare un versamento modificando i codSingoliVersamenti dei singoli versamenti
      * 
      */
     VER_006,
@@ -634,7 +634,24 @@ public enum EsitoOperazione {
      * Utenza anonima non autorizzata a effettuare il pagamento di un tributo non spontaneo.
      * 
      */
-    UAN_002;
+    UAN_002,
+
+    /**
+     * Tributo disabilitato
+     * 
+     */
+    TRB_001,
+    /**
+     * Versamento multivoce non puo' essere caricato fornendo il numero avviso
+     * 
+     */
+    VER_031,
+
+    /**
+     * Iban Accredito disabilitato 
+     * 
+     */
+    VER_032;
 	
 
     public String value() {

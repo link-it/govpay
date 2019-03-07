@@ -213,7 +213,7 @@ public class UtenzaPatchUtils {
 		setAutorizzazioniAcl(map, acl);
 		
 		AclBD aclBD = new AclBD(bd);
-		acl.setPrincipal(utenza.getPrincipal()); 
+		acl.setPrincipal(utenza.getPrincipalOriginale()); 
 		
 		boolean found = false;
 		for(Acl aclPresente : utenza.getAcls()) {

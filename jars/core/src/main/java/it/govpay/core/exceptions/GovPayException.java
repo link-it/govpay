@@ -164,8 +164,8 @@ public class GovPayException extends Exception {
 		case TRB_000: return "Tributo (" + this.params[1] + ") inesistente per il dominio (" + this.params[0] + ")";
 		case UOP_000: return "Unita' operativa (" + this.params[0] + ") del dominio (" + this.params[1] + ") inesistente";
 		case UOP_001: return "Unita' operativa (" + this.params[0] + ") del dominio (" + this.params[1] + ") disabilitata";
-		case VER_000: return "Il versamento (" + this.params[1] + ") dell'applicazione (" + this.params[0] + ") non pagabile ad iniziativa PSP";
-		case VER_001: return "Il versamento (" + this.params[1] + ") dell'applicazione (" + this.params[0] + ") presenta il codSingoloPagamentoEnte (" + this.params[2] + ") piu' di una volta";
+		case VER_000: return "Il versamento (" + this.params[1] + ") dell'applicazione (" + this.params[0] + ") non pagabile ad iniziativa PSP"; 
+		case VER_001: return "Il versamento (" + this.params[1] + ") dell'applicazione (" + this.params[0] + ") presenta il codSingoloVersamentoEnte (" + this.params[2] + ") piu' di una volta";
 		case VER_002: return "Il versamento (" + this.params[1] + ") dell'applicazione (" + this.params[0] + ") ha un importo totale (" + this.params[3] + ") diverso dalla somma dei singoli importi (" + this.params[2] + ")";
 		case VER_003: return "Il versamento (" + this.params[1] + ") dell'applicazione (" + this.params[0] + ") e' in uno stato che non consente l'aggiornamento (" + this.params[2] + ")";
 		case VER_004: return "Il versamento (" + this.params[1] + ") dell'applicazione (" + this.params[0] + ") inviato ha un'unita' operativa beneficiaria (" + this.params[2] + ") diversa da quello originale (" + this.params[3] + ")";
@@ -184,7 +184,7 @@ public class GovPayException extends Exception {
 		case VER_017: return "Lo IUV (" + this.params[0] + ") non e' conforme alle specifiche agid";
 		case VER_018: return "Lo IUV (" + this.params[0] + ") e' gia' associato al versamento (" + this.params[1] + ")";
 		case VER_019: return "Applicazione non autorizzata all'autodeterminazione dei tributi";
-		case VER_020: return "Iban di accredito non censito";
+		case VER_020: return "Iban di accredito (" + this.params[1] + ") non censito per il dominio (" + this.params[0] + ")";
 		case VER_021: return "Applicazione non autorizzata all'autodeterminazione dei tributi per il dominio indicato";
 		case VER_022: return "Applicazione non autorizzata alla gestione del tributo indicato";
 		case VER_023: return "Il versamento (" + this.params[1] + ") dell'applicazione (" + this.params[0] + ") ha il singolo versamento con codSingoloVersamentoEnte (" + this.params[2] + ") inviato ha un iban di accredito diverso dall'originale.";
@@ -213,6 +213,9 @@ public class GovPayException extends Exception {
 		case APP_006: return "Nessuna applicazione trovata per gestire lo IUV ("+this.params[0]+") per il dominio ("+this.params[1]+")";
 		case UAN_001: return "Non e' possibile effettuare il pagamento della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") in maniera anonima senza specificare l'entrata da pagare.";
 		case UAN_002: return "Non e' possibile effettuare il pagamento della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") in maniera anonima poiche' l'entrata ("+ this.params[2] +") non e' abilitata ai pagamenti spontanei.";
+		case TRB_001: return "Tributo (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
+		case VER_031: return "Non e' possibile indicare il numero avviso per una pendenza di tipo multivoce.";
+		case VER_032: return "Iban di accredito (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
 		}
 		
 		return "";
@@ -348,6 +351,9 @@ public class GovPayException extends Exception {
 		case APP_006: return 422; // "Richiesta non valida";
 		case UAN_001: return 422; // "Richiesta non valida";
 		case UAN_002: return 422; // "Richiesta non valida";
+		case TRB_001: return 422; // "Richiesta non valida";
+		case VER_031: return 422; // "Richiesta non valida";
+		case VER_032: return 422; // "Richiesta non valida";
 		}
 		
 		return 500;
@@ -448,6 +454,9 @@ public class GovPayException extends Exception {
 		case APP_006: return "Richiesta non valida";
 		case UAN_001: return "Richiesta non valida";
 		case UAN_002: return "Richiesta non valida";
+		case TRB_001: return "Richiesta non valida";	
+		case VER_031: return "Richiesta non valida";
+		case VER_032: return "Richiesta non valida";
 		}
 		
 		return "";

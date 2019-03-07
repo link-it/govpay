@@ -91,8 +91,16 @@ public class Utenza extends it.govpay.model.Utenza {
 		this.aclPrincipal = aclPrincipal;
 	}
 
+	public List<Acl> getAclPrincipal() {
+		return aclPrincipal;
+	}
+	
 	public void setAclRuoli(List<Acl> aclRuoli) {
 		this.aclRuoli = aclRuoli;
+	}
+	
+	public List<Acl> getAclRuoli() {
+		return aclRuoli;
 	}
 
 //	@Override

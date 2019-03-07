@@ -28,6 +28,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -132,6 +133,9 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.APP_000, versamento.getCodApplicazione());
 		}
 		
+		if(!model.getApplicazione(bd).getUtenza().isAbilitato())
+			throw new GovPayException(EsitoOperazione.APP_001, versamento.getCodApplicazione());
+		
 		Dominio dominio = null;
 		try {
 			dominio = AnagraficaManager.getDominio(bd, versamento.getCodDominio());
@@ -140,12 +144,18 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.DOM_000, versamento.getCodDominio());
 		}
 		
+		if(!dominio.isAbilitato())
+			throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
+		
 		try {
 			String codUnitaOperativa = (versamento.getCodUnitaOperativa() == null) ? Dominio.EC : versamento.getCodUnitaOperativa();
 			model.setUo(dominio.getId(), codUnitaOperativa, bd);
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.UOP_000, versamento.getCodUnitaOperativa(), versamento.getCodDominio());
 		}
+		
+		if(!model.getUo(bd).isAbilitato())
+			throw new GovPayException(EsitoOperazione.UOP_001, versamento.getCodUnitaOperativa(), versamento.getCodDominio());
 		
 		model.setImportoTotale(versamento.getImportoTotale());
 		model.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
@@ -175,6 +185,12 @@ public class VersamentoUtils {
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.TRB_000, dominio.getCodDominio(), Tributo.BOLLOT);
 			}
+			
+			if(model.getTributo(bd)!= null) {
+				if(!model.getTributo(bd).isAbilitato())
+					throw new GovPayException(EsitoOperazione.TRB_001, dominio.getCodDominio(), Tributo.BOLLOT);
+			}
+			
 			model.setHashDocumento(singoloVersamento.getBolloTelematico().getHash());
 			model.setProvinciaResidenza(singoloVersamento.getBolloTelematico().getProvincia());
 			try {
@@ -193,6 +209,11 @@ public class VersamentoUtils {
 				model.setTributo(singoloVersamento.getCodTributo(), bd);
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.TRB_000, dominio.getCodDominio(), singoloVersamento.getCodTributo());
+			}
+			
+			if(model.getTributo(bd)!= null) {
+				if(!model.getTributo(bd).isAbilitato())
+					throw new GovPayException(EsitoOperazione.TRB_001, dominio.getCodDominio(), singoloVersamento.getCodTributo());
 			}
 			
 			if(!applicazione.isTrusted() && !AuthorizationManager.isAuthorized(applicazione.getUtenza(), applicazione.getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, dominio.getCodDominio(), singoloVersamento.getCodTributo(),diritti)) {
@@ -214,6 +235,9 @@ public class VersamentoUtils {
 					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), singoloVersamento.getTributo().getIbanAppoggio()));
 				model.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
 				model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
+				
+				if(!model.getIbanAccredito(bd).isAbilitato())
+					throw new GovPayException(EsitoOperazione.VER_032, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.VER_020, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
 			}
@@ -396,7 +420,8 @@ public class VersamentoUtils {
 		} 
 		
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-		versamentoBusiness.caricaVersamento(versamento, versamento.getNumeroAvviso() == null, true);
+		boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(bd).size() == 1;
+		versamentoBusiness.caricaVersamento(versamento, generaIuv, true);
 		return versamento;
 	}
 	
