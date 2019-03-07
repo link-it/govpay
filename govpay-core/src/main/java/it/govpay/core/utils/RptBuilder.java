@@ -105,24 +105,44 @@ public class RptBuilder {
 			String redirect, 
 			BasicBD bd) throws ServiceException {
 		
-		return buildRpt(
-				codCarrello,
-				versamento,
-				iuv,
-				ccp,
-				portale,
-				Rpt.codIntermediarioPspWISP20,
-				Rpt.codPspWISP20,
-				Rpt.codCanaleWISP20,
-				Rpt.tipoVersamentoWISP20,
-				Rpt.modelloPagamentoWISP20,
-				versante,
-				autenticazione,
-				ibanAddebito,
-				null,
-				redirect,
-				bd
-				);
+		if(canale == null)
+			return buildRpt(
+					codCarrello,
+					versamento,
+					iuv,
+					ccp,
+					portale,
+					Rpt.codIntermediarioPspWISP20,
+					Rpt.codPspWISP20,
+					Rpt.codCanaleWISP20,
+					Rpt.tipoVersamentoWISP20,
+					Rpt.modelloPagamentoWISP20,
+					versante,
+					autenticazione,
+					ibanAddebito,
+					null,
+					redirect,
+					bd
+					);
+		else 
+			return buildRpt(
+					codCarrello,
+					versamento,
+					iuv,
+					ccp,
+					portale,
+					canale.getPsp().getCodIntermediarioPsp(),
+					canale.getPsp().getCodPsp(),
+					canale.getCodCanale(),
+					canale.getTipoVersamento(),
+					ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO,
+					versante,
+					autenticazione,
+					ibanAddebito,
+					null,
+					redirect,
+					bd
+					);
 		
 	}
 
