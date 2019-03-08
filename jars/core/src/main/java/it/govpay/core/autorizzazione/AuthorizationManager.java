@@ -6,6 +6,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.UtilsException;
@@ -115,7 +116,7 @@ public class AuthorizationManager {
 			sbDiritti.append(diritti);
 		}
 		
-		sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non possiede i Diritti [").append(sbDiritti.toString()).append("] necessari per i Servizi [").append(sbServizi).append("]");
+		sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non possiede i Diritti di [").append(sbDiritti.toString()).append("] per i Servizi [").append(sbServizi).append("]");
 		
 		return new NotAuthorizedException(sb.toString());
 
@@ -139,7 +140,7 @@ public class AuthorizationManager {
 			sbDiritti.append(diritti);
 		}
 		
-		sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non possiede i Diritti [").append(sbDiritti.toString()).append("] necessari per il Servizio [").append(servizio).append("]");
+		sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non possiede i Diritti di [").append(sbDiritti.toString()).append("] per il Servizio [").append(servizio).append("]");
 		
 		
 		return new NotAuthorizedException(sb.toString());
@@ -151,6 +152,15 @@ public class AuthorizationManager {
 		
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO) && !accessoAnonimo) {
 			sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non puo' accedere in maniera anonima al Servizio [").append(servizio).append("]");
+			
+			if(StringUtils.isNotEmpty(codDominio)) {
+				sb.append(", Dominio ["+codDominio+"]");
+			}
+			
+			if(StringUtils.isNotEmpty(codTributo)) {
+				sb.append(", Tributo ["+codTributo+"]");
+			}
+			
 			return new NotAuthorizedException(sb.toString());
 		}
 		
@@ -163,8 +173,15 @@ public class AuthorizationManager {
 			sbDiritti.append(diritti);
 		}
 		
-		sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non possiede i Diritti [").append(sbDiritti.toString()).append("] necessari per il Servizio [").append(servizio).append("]");
+		sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non possiede i Diritti di [").append(sbDiritti.toString()).append("] per il Servizio [").append(servizio).append("]");
 		
+		if(StringUtils.isNotEmpty(codDominio)) {
+			sb.append(", Dominio ["+codDominio+"]");
+		}
+		
+		if(StringUtils.isNotEmpty(codTributo)) {
+			sb.append(", Tributo ["+codTributo+"]");
+		}
 		
 		return new NotAuthorizedException(sb.toString());
 	}
@@ -186,7 +203,7 @@ public class AuthorizationManager {
 			sbDiritti.append(diritti);
 		}
 		
-		sb.append("L'utenza autenticata [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non possiede i Diritti [").append(sbDiritti.toString()).append("] per nessun Dominio necessari per il Servizio [").append(servizio).append("] ");
+		sb.append("L'utenza autenticata [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non possiede i Diritti di [").append(sbDiritti.toString()).append("] per il Servizio [").append(servizio).append("] per nessun Dominio.");
 		return new NotAuthorizedException(sb.toString());
 	}
 	

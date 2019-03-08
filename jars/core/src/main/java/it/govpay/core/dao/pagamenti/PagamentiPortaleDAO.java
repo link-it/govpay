@@ -158,6 +158,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					String cfToCheck = ((RefVersamentoAvviso)v).getIdDebitore();
 					try {
 						Dominio dominio = dominiBD.getDominio(idDominio);
+						
+						if(!dominio.isAbilitato())
+							throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
+						
 						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v,dominio);
 
 						// controllo che l'utenza anonima possa effettuare il pagamento dell'avviso	

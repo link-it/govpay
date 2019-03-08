@@ -41,6 +41,7 @@ import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 public class IntermediariController extends BaseController {
 
@@ -123,6 +124,11 @@ public class IntermediariController extends BaseController {
 			
 			String jsonRequest = baos.toString();
 			StazionePost stazioneRequest= JSONSerializable.parse(jsonRequest, StazionePost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idIntermediario", idIntermediario).notNull().minLength(1).maxLength(35);
+			vf.getValidator("idStazione", idStazione).notNull().minLength(1).maxLength(35);
+			
 			stazioneRequest.validate();
 			
 			PutStazioneDTO putStazioneDTO = StazioniConverter.getPutStazioneDTO(stazioneRequest, idIntermediario, idStazione, user);
@@ -215,6 +221,10 @@ public class IntermediariController extends BaseController {
 			
 			String jsonRequest = baos.toString();
 			IntermediarioPost intermediarioRequest= JSONSerializable.parse(jsonRequest, IntermediarioPost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idIntermediario", idIntermediario).notNull().minLength(1).maxLength(35);
+						
 			intermediarioRequest.validate();
 			
 			PutIntermediarioDTO putIntermediarioDTO = IntermediariConverter.getPutIntermediarioDTO(intermediarioRequest, idIntermediario, user);

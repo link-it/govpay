@@ -53,6 +53,7 @@ import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.business.Applicazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.business.model.PrintAvvisoDTO;
@@ -517,6 +518,11 @@ public class PendenzeDAO extends BaseDAO{
 			// controllo che il dominio sia autorizzato
 			this.autorizzaRichiesta(putVersamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, chiediVersamento.getDominio(bd).getCodDominio(), null, bd);
 			
+			Applicazione applicazioniBD = new Applicazione(bd);
+			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(putVersamentoDTO.getUser());
+			it.govpay.bd.model.Applicazione applicazioneAutenticata = details.getApplicazione();
+			if(applicazioneAutenticata != null) // le API pendenze possono essere utilizzate da utenze che non sono Applicazioni?
+				applicazioniBD.autorizzaApplicazione(putVersamentoDTO.getVersamento().getCodApplicazione(), applicazioneAutenticata, bd);
 			
 			createOrUpdatePendenzaResponse.setCreated(false);
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -527,7 +533,8 @@ public class PendenzeDAO extends BaseDAO{
 				createOrUpdatePendenzaResponse.setCreated(true);
 			}
 			
-			versamentoBusiness.caricaVersamento(chiediVersamento, chiediVersamento.getNumeroAvviso() == null, true);
+			boolean generaIuv = chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1;
+			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true);
 			
 			// restituisco il versamento creato
 			createOrUpdatePendenzaResponse.setVersamento(chiediVersamento);

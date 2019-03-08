@@ -42,6 +42,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 	private List<Long> listaIdApplicazioni = null;
 	private CustomField cf;
 	private String codApplicazione = null;
+	private String principalOriginale = null;
 	
 	
 	public enum SortFields {
@@ -81,6 +82,13 @@ public class ApplicazioneFilter extends AbstractFilter {
 				newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione,LikeMode.ANYWHERE);
 			}
 			
+			if(this.principalOriginale != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.ilike(Applicazione.model().ID_UTENZA.PRINCIPAL_ORIGINALE, this.principalOriginale,LikeMode.ANYWHERE);
+			}
+			
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
@@ -113,6 +121,14 @@ public class ApplicazioneFilter extends AbstractFilter {
 
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
+	}
+
+	public String getPrincipalOriginale() {
+		return principalOriginale;
+	}
+
+	public void setPrincipalOriginale(String principalOriginale) {
+		this.principalOriginale = principalOriginale;
 	}
 
 	

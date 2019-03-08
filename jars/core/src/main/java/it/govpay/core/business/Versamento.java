@@ -366,6 +366,9 @@ public class Versamento extends BasicBD {
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
 			}
+			
+			if(!applicazione.getUtenza().isAbilitato())
+				throw new GovPayException(EsitoOperazione.APP_001, applicazione.getCodApplicazione());
 
 			try {
 				versamentoModel = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
@@ -386,6 +389,9 @@ public class Versamento extends BasicBD {
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.DOM_000, codDominio);
 			}
+			
+			if(!dominio.isAbilitato())
+				throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
 
 			IuvBD iuvBD = new IuvBD(this);
 			

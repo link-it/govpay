@@ -3,9 +3,11 @@ package it.govpay.core.business;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EsitoOperazione;
@@ -52,5 +54,18 @@ public class Applicazione extends BasicBD{
 		return null;
 	}
 	
-	
+	public void autorizzaApplicazione(String codApplicazione, it.govpay.bd.model.Applicazione applicazioneAutenticata, BasicBD bd) throws GovPayException, ServiceException {
+		it.govpay.bd.model.Applicazione applicazione = null;
+		try {
+			applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+		} catch (NotFoundException e) {
+			throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
+		}
+
+		if(!applicazione.getUtenza().isAbilitato())
+			throw new GovPayException(EsitoOperazione.APP_001, codApplicazione);
+
+		if(!applicazione.getCodApplicazione().equals(applicazioneAutenticata.getCodApplicazione()))
+			throw new GovPayException(EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
+	}
 }
