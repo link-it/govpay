@@ -3,6 +3,7 @@ package it.govpay.backoffice.v1.beans.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 
@@ -14,12 +15,12 @@ import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.TipoEntrata;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Acl;
 import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.TipoTributo;
 
 public class ApplicazioniConverter {
 	
@@ -75,14 +76,12 @@ public class ApplicazioniConverter {
 		}
 		applicazione.getUtenza().setAutorizzazioneDominiStar(appAuthDominiAll);
 		
-		CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
-		codificaAvvisi.setCodificaIuv(applicazione.getCodApplicazioneIuv());
-		codificaAvvisi.setRegExpIuv(applicazione.getRegExp());
-		codificaAvvisi.setGenerazioneIuvInterna(applicazione.isAutoIuv());
+		if(applicazionePost.getCodificaAvvisi() != null) {
+			applicazione.setCodApplicazioneIuv(applicazionePost.getCodificaAvvisi().getCodificaIuv());
+			applicazione.setRegExp(applicazionePost.getCodificaAvvisi().getRegExpIuv());
+			applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna());
+		}
 		
-		applicazione.setCodApplicazioneIuv(applicazionePost.getCodificaAvvisi().getCodificaIuv());
-		applicazione.setRegExp(applicazionePost.getCodificaAvvisi().getRegExpIuv());
-		applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna());
 		applicazione.setCodApplicazione(idA2A);
 		applicazione.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 		
@@ -111,11 +110,21 @@ public class ApplicazioniConverter {
 		Applicazione rsModel = new Applicazione();
 		rsModel.setAbilitato(applicazione.getUtenza().isAbilitato());
 		
-		CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
-		codificaAvvisi.setCodificaIuv(applicazione.getCodApplicazioneIuv());
-		codificaAvvisi.setRegExpIuv(applicazione.getRegExp());
-		codificaAvvisi.setGenerazioneIuvInterna(applicazione.isAutoIuv());
-		rsModel.setCodificaAvvisi(codificaAvvisi);
+		if(!(StringUtils.isEmpty(applicazione.getRegExp()) && StringUtils.isEmpty(applicazione.getCodApplicazioneIuv()))) {
+			CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
+			codificaAvvisi.setCodificaIuv(applicazione.getCodApplicazioneIuv());
+			codificaAvvisi.setRegExpIuv(applicazione.getRegExp());
+			codificaAvvisi.setGenerazioneIuvInterna(applicazione.isAutoIuv());
+			rsModel.setCodificaAvvisi(codificaAvvisi);
+		} else {
+			if(applicazione.isAutoIuv()) {
+				CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
+				codificaAvvisi.setGenerazioneIuvInterna(applicazione.isAutoIuv());
+				rsModel.setCodificaAvvisi(codificaAvvisi);
+			}
+		}
+		
+
 		
 		rsModel.setIdA2A(applicazione.getCodApplicazione());
 		rsModel.setPrincipal(applicazione.getUtenza().getPrincipalOriginale());
@@ -142,7 +151,7 @@ public class ApplicazioniConverter {
 		rsModel.setDomini(idDomini);
 
 		List<TipoEntrata> idTributi = new ArrayList<>();
-		List<Tributo> tributi = applicazione.getUtenza().getTributi(null);
+		List<TipoTributo> tributi = applicazione.getUtenza().getTipiTributo(null);
 		if(tributi == null)
 			tributi = new ArrayList<>();
 		
@@ -161,7 +170,7 @@ public class ApplicazioniConverter {
 		} 
 		
 		if(!applicazione.isTrusted() && !applicazione.getUtenza().isAutorizzazioneTributiStar()) {
-			for (Tributo tributo : tributi) {
+			for (TipoTributo tributo : tributi) {
 				TipoEntrata tEI = new TipoEntrata();
 				tEI.setIdEntrata(tributo.getCodTributo());
 				tEI.setDescrizione(tributo.getDescrizione());

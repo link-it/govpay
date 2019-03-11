@@ -9,9 +9,9 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
+import it.govpay.model.TipoTributo;
 import it.govpay.pendenze.v1.beans.AclPost;
 import it.govpay.pendenze.v1.beans.DominioIndex;
 import it.govpay.pendenze.v1.beans.Profilo;
@@ -50,9 +50,9 @@ public class ProfiloConverter {
 			}
 			profilo.setDomini(dominiLst); 
 		}
-		if(leggiProfilo.getTributi()!=null) {
+		if(leggiProfilo.getTipiTributi()!=null) {
 			List<TipoEntrata> entrateLst = new ArrayList<>();
-			for(Tributo tributo: leggiProfilo.getTributi()) {
+			for(TipoTributo tributo: leggiProfilo.getTipiTributi()) {
 				entrateLst.add(EntrateConverter.toTipoEntrataRsModel(tributo));
 			}
 			profilo.setEntrate(entrateLst);

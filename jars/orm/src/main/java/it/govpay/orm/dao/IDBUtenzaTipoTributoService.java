@@ -19,12 +19,11 @@
  */
 package it.govpay.orm.dao;
 
-import it.govpay.orm.UtenzaTributo;
-import org.openspcoop2.generic_project.dao.IServiceSearchWithoutId;
+import it.govpay.orm.UtenzaTipoTributo;
+import org.openspcoop2.generic_project.dao.IDBServiceWithoutId;
 
-
-/** 
-* Service can be used for research objects on the backend of type it.govpay.orm.UtenzaTributo  
+/**     
+ * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.UtenzaTipoTributo 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -32,5 +31,6 @@ import org.openspcoop2.generic_project.dao.IServiceSearchWithoutId;
  * @version $Rev$, $Date$
  */
 
-public interface IUtenzaTributoServiceSearch extends IServiceSearchWithoutId<UtenzaTributo> {
+public interface IDBUtenzaTipoTributoService extends IUtenzaTipoTributoService,IDBServiceWithoutId<UtenzaTipoTributo> {
+
 }

@@ -19,7 +19,7 @@
  */
 package it.govpay.orm.model;
 
-import it.govpay.orm.UtenzaTributo;
+import it.govpay.orm.UtenzaTipoTributo;
 
 import org.openspcoop2.generic_project.beans.AbstractModel;
 import org.openspcoop2.generic_project.beans.IField;
@@ -28,30 +28,30 @@ import org.openspcoop2.generic_project.beans.ComplexField;
 
 
 /**     
- * Model UtenzaTributo 
+ * Model UtenzaTipoTributo 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class UtenzaTributoModel extends AbstractModel<UtenzaTributo> {
+public class UtenzaTipoTributoModel extends AbstractModel<UtenzaTipoTributo> {
 
-	public UtenzaTributoModel(){
+	public UtenzaTipoTributoModel(){
 	
 		super();
 	
-		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new Field("idUtenza",it.govpay.orm.IdUtenza.class,"UtenzaTributo",UtenzaTributo.class));
-		this.ID_TRIBUTO = new it.govpay.orm.model.IdTributoModel(new Field("idTributo",it.govpay.orm.IdTributo.class,"UtenzaTributo",UtenzaTributo.class));
+		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new Field("idUtenza",it.govpay.orm.IdUtenza.class,"UtenzaTipoTributo",UtenzaTipoTributo.class));
+		this.ID_TIPO_TRIBUTO = new it.govpay.orm.model.IdTipoTributoModel(new Field("idTipoTributo",it.govpay.orm.IdTipoTributo.class,"UtenzaTipoTributo",UtenzaTipoTributo.class));
 	
 	}
 	
-	public UtenzaTributoModel(IField father){
+	public UtenzaTipoTributoModel(IField father){
 	
 		super(father);
 	
-		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new ComplexField(father,"idUtenza",it.govpay.orm.IdUtenza.class,"UtenzaTributo",UtenzaTributo.class));
-		this.ID_TRIBUTO = new it.govpay.orm.model.IdTributoModel(new ComplexField(father,"idTributo",it.govpay.orm.IdTributo.class,"UtenzaTributo",UtenzaTributo.class));
+		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new ComplexField(father,"idUtenza",it.govpay.orm.IdUtenza.class,"UtenzaTipoTributo",UtenzaTipoTributo.class));
+		this.ID_TIPO_TRIBUTO = new it.govpay.orm.model.IdTipoTributoModel(new ComplexField(father,"idTipoTributo",it.govpay.orm.IdTipoTributo.class,"UtenzaTipoTributo",UtenzaTipoTributo.class));
 	
 	}
 	
@@ -59,12 +59,12 @@ public class UtenzaTributoModel extends AbstractModel<UtenzaTributo> {
 
 	public it.govpay.orm.model.IdUtenzaModel ID_UTENZA = null;
 	 
-	public it.govpay.orm.model.IdTributoModel ID_TRIBUTO = null;
+	public it.govpay.orm.model.IdTipoTributoModel ID_TIPO_TRIBUTO = null;
 	 
 
 	@Override
-	public Class<UtenzaTributo> getModeledClass(){
-		return UtenzaTributo.class;
+	public Class<UtenzaTipoTributo> getModeledClass(){
+		return UtenzaTipoTributo.class;
 	}
 	
 	@Override

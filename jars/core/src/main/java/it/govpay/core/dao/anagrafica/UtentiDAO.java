@@ -33,7 +33,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -81,7 +80,7 @@ public class UtentiDAO extends BaseDAO{
 			response.setNome(userDetails.getIdentificativo());
 			response.setUtente(userDetails.getUtenza());
 			response.setDomini(userDetails.getUtenza().getDomini(bd));
-			response.setTributi(userDetails.getUtenza().getTributi(bd));
+			response.setTipiTributi(userDetails.getUtenza().getTipiTributo(bd));
 			
 		} finally {
 			if(bd != null)
@@ -181,7 +180,7 @@ public class UtentiDAO extends BaseDAO{
 					}
 				}
 
-				putOperatoreDTO.getOperatore().getUtenza().setIdTributi(idTributi);
+				putOperatoreDTO.getOperatore().getUtenza().setIdTipiTributo(idTributi);
 			}
 
 

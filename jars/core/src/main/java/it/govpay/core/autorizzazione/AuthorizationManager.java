@@ -379,7 +379,7 @@ public class AuthorizationManager {
 	
 	public static List<String> getTributiAutorizzati(Utenza utenza, TIPO_UTENZA tipoUtenza, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo) {
 		if(isAuthorized(utenza,tipoUtenza, servizio, diritti, accessoAnonimo)) {
-			return utenza.getIdTributo();
+			return utenza.getIdTipoTributo();
 		} else {
 			return null;
 		}
@@ -388,7 +388,7 @@ public class AuthorizationManager {
 	public static List<Long> getIdTributiAutorizzati(Authentication authentication, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo) {
 		if(isAuthorized(authentication, servizio, diritti, accessoAnonimo)) {
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-			return details.getUtenza().getIdTributi();
+			return details.getUtenza().getIdTipiTributo();
 		} else {
 			return null;
 		}

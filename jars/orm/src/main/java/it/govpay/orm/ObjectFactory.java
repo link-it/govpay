@@ -172,10 +172,10 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link UtenzaTributo }
+     * Create an instance of {@link UtenzaTipoTributo }
      */
-    public UtenzaTributo createUtenzaTributo() {
-        return new UtenzaTributo();
+    public UtenzaTipoTributo createUtenzaTipoTributo() {
+        return new UtenzaTipoTributo();
     }
 
     /**

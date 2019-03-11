@@ -17,6 +17,7 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.model.Acl;
+import it.govpay.model.TipoTributo;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -51,9 +52,9 @@ public class ProfiloConverter {
 			}
 			profilo.setDomini(dominiLst);
 		}
-		if(leggiProfilo.getTributi()!=null) {
+		if(leggiProfilo.getTipiTributi()!=null) {
 			List<TipoEntrata> entrateLst = new ArrayList<>();
-			for(Tributo tributo: leggiProfilo.getTributi()) {
+			for(TipoTributo tributo: leggiProfilo.getTipiTributi()) {
 				entrateLst.add(EntrateConverter.toTipoEntrataRsModel(tributo));
 			}
 			profilo.setEntrate(entrateLst);

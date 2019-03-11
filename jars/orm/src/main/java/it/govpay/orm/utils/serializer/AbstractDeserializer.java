@@ -97,7 +97,7 @@ import it.govpay.orm.Tributo;
 import it.govpay.orm.Uo;
 import it.govpay.orm.Utenza;
 import it.govpay.orm.UtenzaDominio;
-import it.govpay.orm.UtenzaTributo;
+import it.govpay.orm.UtenzaTipoTributo;
 import it.govpay.orm.Versamento;
 
 /**     
@@ -4069,63 +4069,63 @@ public abstract class AbstractDeserializer {
 	
 	/*
 	 =================================================================================
-	 Object: UtenzaTributo
+	 Object: UtenzaTipoTributo
 	 =================================================================================
 	*/
 	
 	/**
-	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.UtenzaTributo}
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * 
-	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTributo}
-	 * @return Object type {@link it.govpay.orm.UtenzaTributo}
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTipoTributo}
+	 * @return Object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
 	 */
-	public UtenzaTributo readUtenzaTributo(String fileName) throws DeserializerException {
-		return (UtenzaTributo) this.xmlToObj(fileName, UtenzaTributo.class);
+	public UtenzaTipoTributo readUtenzaTipoTributo(String fileName) throws DeserializerException {
+		return (UtenzaTipoTributo) this.xmlToObj(fileName, UtenzaTipoTributo.class);
 	}
 	
 	/**
-	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.UtenzaTributo}
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * 
-	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTributo}
-	 * @return Object type {@link it.govpay.orm.UtenzaTributo}
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTipoTributo}
+	 * @return Object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
 	 */
-	public UtenzaTributo readUtenzaTributo(File file) throws DeserializerException {
-		return (UtenzaTributo) this.xmlToObj(file, UtenzaTributo.class);
+	public UtenzaTipoTributo readUtenzaTipoTributo(File file) throws DeserializerException {
+		return (UtenzaTipoTributo) this.xmlToObj(file, UtenzaTipoTributo.class);
 	}
 	
 	/**
-	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.UtenzaTributo}
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * 
-	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTributo}
-	 * @return Object type {@link it.govpay.orm.UtenzaTributo}
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTipoTributo}
+	 * @return Object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
 	 */
-	public UtenzaTributo readUtenzaTributo(InputStream in) throws DeserializerException {
-		return (UtenzaTributo) this.xmlToObj(in, UtenzaTributo.class);
+	public UtenzaTipoTributo readUtenzaTipoTributo(InputStream in) throws DeserializerException {
+		return (UtenzaTipoTributo) this.xmlToObj(in, UtenzaTipoTributo.class);
 	}	
 	
 	/**
-	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.UtenzaTributo}
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * 
-	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTributo}
-	 * @return Object type {@link it.govpay.orm.UtenzaTributo}
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTipoTributo}
+	 * @return Object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
 	 */
-	public UtenzaTributo readUtenzaTributo(byte[] in) throws DeserializerException {
-		return (UtenzaTributo) this.xmlToObj(in, UtenzaTributo.class);
+	public UtenzaTipoTributo readUtenzaTipoTributo(byte[] in) throws DeserializerException {
+		return (UtenzaTipoTributo) this.xmlToObj(in, UtenzaTipoTributo.class);
 	}	
 	
 	/**
-	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.UtenzaTributo}
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * 
-	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTributo}
-	 * @return Object type {@link it.govpay.orm.UtenzaTributo}
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.UtenzaTipoTributo}
+	 * @return Object type {@link it.govpay.orm.UtenzaTipoTributo}
 	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
 	 */
-	public UtenzaTributo readUtenzaTributoFromString(String in) throws DeserializerException {
-		return (UtenzaTributo) this.xmlToObj(in.getBytes(), UtenzaTributo.class);
+	public UtenzaTipoTributo readUtenzaTipoTributoFromString(String in) throws DeserializerException {
+		return (UtenzaTipoTributo) this.xmlToObj(in.getBytes(), UtenzaTipoTributo.class);
 	}	
 	
 	

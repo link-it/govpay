@@ -339,10 +339,10 @@ CREATE TABLE utenze_tributi
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_utenza NUMBER NOT NULL,
-	id_tributo NUMBER NOT NULL,
+	id_tipo_tributo NUMBER NOT NULL,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_nzt_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	CONSTRAINT fk_nzt_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
 );
 

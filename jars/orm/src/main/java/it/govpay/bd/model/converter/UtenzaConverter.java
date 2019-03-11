@@ -10,7 +10,7 @@ import it.govpay.bd.model.Utenza;
 
 public class UtenzaConverter {
 
-	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<Long> utenzaDominioLst, List<Long> utenzaTributoLst, BasicBD bd) throws ServiceException {
+	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<Long> utenzaDominioLst, List<Long> utenzaTipiTributoLst, BasicBD bd) throws ServiceException {
 		Utenza dto = new Utenza();
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setPrincipalOriginale(vo.getPrincipalOriginale());
@@ -18,10 +18,10 @@ public class UtenzaConverter {
 		dto.setAutorizzazioneTributiStar(vo.isAutorizzazioneTributiStar());
 		dto.setId(vo.getId());
 		dto.setAbilitato(vo.isAbilitato());
-		dto.setIdTributi(utenzaTributoLst);
+		dto.setIdTipiTributo(utenzaTipiTributoLst);
 		dto.setIdDomini(utenzaDominioLst);
 		dto.getDomini(bd);
-		dto.getTributi(bd);
+		dto.getTipiTributo(bd);
 
 		return dto;
 	}

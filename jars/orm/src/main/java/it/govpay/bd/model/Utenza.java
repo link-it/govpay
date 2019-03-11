@@ -9,6 +9,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.model.Acl;
+import it.govpay.model.TipoTributo;
 
 public class Utenza extends it.govpay.model.Utenza {
 	
@@ -17,7 +18,7 @@ public class Utenza extends it.govpay.model.Utenza {
 	private static final long serialVersionUID = 1L;
 
 	protected transient List<Dominio> domini;
-	protected transient List<Tributo> tributi;
+	protected transient List<TipoTributo> tipiTributo;
 	protected transient List<Acl> aclPrincipal;
 	protected transient List<Acl> aclRuoli;
 	protected List<String> ruoli;
@@ -42,8 +43,8 @@ public class Utenza extends it.govpay.model.Utenza {
 		return this.domini != null ? this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList()) : null;
 	}
 
-	public List<String> getIdTributo() {
-		return this.tributi != null ? this.tributi.stream().map(d -> d.getCodTributo()).collect(Collectors.toList()) : null;
+	public List<String> getIdTipoTributo() {
+		return this.tipiTributo != null ? this.tipiTributo.stream().map(d -> d.getCodTributo()).collect(Collectors.toList()) : null;
 	}
 
 	public List<String> getRuoli() {
@@ -66,16 +67,16 @@ public class Utenza extends it.govpay.model.Utenza {
 		return this.domini;
 	}
 
-	public List<Tributo> getTributi(BasicBD bd) throws ServiceException {
-		if(this.tributi == null) {
-			this.tributi = new ArrayList<>();
-			if(this.getIdTributi() != null) {
-				for(Long id: this.getIdTributi()) {
-					this.tributi.add(AnagraficaManager.getTributo(bd, id));
+	public List<TipoTributo> getTipiTributo(BasicBD bd) throws ServiceException {
+		if(this.tipiTributo == null) {
+			this.tipiTributo = new ArrayList<>();
+			if(this.getIdTipiTributo() != null) {
+				for(Long id: this.getIdTipiTributo()) {
+					this.tipiTributo.add(AnagraficaManager.getTipoTributo(bd, id));
 				}
 			}
 		}
-		return this.tributi;
+		return this.tipiTributo;
 	}
 
 
@@ -83,8 +84,8 @@ public class Utenza extends it.govpay.model.Utenza {
 		this.domini = domini;
 	}
 
-	public void setTributi(List<Tributo> tributi) {
-		this.tributi = tributi;
+	public void setTipiributo(List<TipoTributo> tributi) {
+		this.tipiTributo = tributi;
 	}
 
 	public void setAclPrincipal(List<Acl> aclPrincipal) {

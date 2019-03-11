@@ -33,8 +33,8 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-import it.govpay.orm.UtenzaTributo;
-import it.govpay.orm.dao.IDBUtenzaTributoService;
+import it.govpay.orm.UtenzaTipoTributo;
+import it.govpay.orm.dao.IDBUtenzaTipoTributoService;
 import it.govpay.orm.utils.ProjectInfo;
 
 import java.sql.Connection;
@@ -42,7 +42,7 @@ import java.sql.Connection;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
- * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.UtenzaTributo} 
+ * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.UtenzaTipoTributo} 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -50,22 +50,22 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
  * @version $Rev$, $Date$
  */
 
-public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  implements IDBUtenzaTributoService {
+public class JDBCUtenzaTipoTributoService extends JDBCUtenzaTipoTributoServiceSearch  implements IDBUtenzaTipoTributoService {
 
 
-	private IJDBCServiceCRUDWithoutId<UtenzaTributo, JDBCServiceManager> serviceCRUD = null;
-	public JDBCUtenzaTributoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
+	private IJDBCServiceCRUDWithoutId<UtenzaTipoTributo, JDBCServiceManager> serviceCRUD = null;
+	public JDBCUtenzaTipoTributoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCUtenzaTributoService.class.getName()+ " initialized");
-		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("utenzaTributo");
+		this.log.debug(JDBCUtenzaTipoTributoService.class.getName()+ " initialized");
+		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("utenzaTipoTributo");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
 
 	
 	@Override
-	public void create(UtenzaTributo utenzaTributo) throws ServiceException, NotImplementedException {
+	public void create(UtenzaTipoTributo utenzaTipoTributo) throws ServiceException, NotImplementedException {
 		try{
-			this.create(utenzaTributo, false, null);
+			this.create(utenzaTipoTributo, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -73,9 +73,9 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void create(UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void create(UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.create(utenzaTributo, false, idMappingResolutionBehaviour);
+			this.create(utenzaTipoTributo, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -83,12 +83,12 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void create(UtenzaTributo utenzaTributo, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.create(utenzaTributo, validate, null);
+	public void create(UtenzaTipoTributo utenzaTipoTributo, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.create(utenzaTipoTributo, validate, null);
 	}
 	
 	@Override
-	public void create(UtenzaTributo utenzaTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void create(UtenzaTipoTributo utenzaTipoTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 		
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -96,13 +96,13 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 		try{
 			
 			// check parameters
-			if(utenzaTributo==null){
-				throw new Exception("Parameter (type:"+UtenzaTributo.class.getName()+") 'utenzaTributo' is null");
+			if(utenzaTipoTributo==null){
+				throw new Exception("Parameter (type:"+UtenzaTipoTributo.class.getName()+") 'utenzaTipoTributo' is null");
 			}
 			
 			// validate
 			if(validate){
-				this.validate(utenzaTributo);
+				this.validate(utenzaTipoTributo);
 			}
 
 			// ISQLQueryObject
@@ -117,7 +117,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 				connection.setAutoCommit(false);
 			}
 		
-			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTributo,idMappingResolutionBehaviour);			
+			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoTributo,idMappingResolutionBehaviour);			
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -157,9 +157,9 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 
 	@Override
-	public void update(UtenzaTributo utenzaTributo) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(UtenzaTipoTributo utenzaTipoTributo) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(utenzaTributo, false, null);
+			this.update(utenzaTipoTributo, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -167,9 +167,9 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void update(UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(utenzaTributo, false, idMappingResolutionBehaviour);
+			this.update(utenzaTipoTributo, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -177,12 +177,12 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void update(UtenzaTributo utenzaTributo, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(utenzaTributo, validate, null);
+	public void update(UtenzaTipoTributo utenzaTipoTributo, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(utenzaTipoTributo, validate, null);
 	}
 		
 	@Override
-	public void update(UtenzaTributo utenzaTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(UtenzaTipoTributo utenzaTipoTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -190,13 +190,13 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 		try{
 			
 			// check parameters
-			if(utenzaTributo==null){
-				throw new Exception("Parameter (type:"+UtenzaTributo.class.getName()+") 'utenzaTributo' is null");
+			if(utenzaTipoTributo==null){
+				throw new Exception("Parameter (type:"+UtenzaTipoTributo.class.getName()+") 'utenzaTipoTributo' is null");
 			}
 
 			// validate
 			if(validate){
-				this.validate(utenzaTributo);
+				this.validate(utenzaTipoTributo);
 			}
 
 			// ISQLQueryObject
@@ -211,7 +211,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTributo,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoTributo,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -254,9 +254,9 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void update(long tableId, UtenzaTributo utenzaTributo) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(long tableId, UtenzaTipoTributo utenzaTipoTributo) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(tableId, utenzaTributo, false, null);
+			this.update(tableId, utenzaTipoTributo, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -264,9 +264,9 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void update(long tableId, UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(long tableId, UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(tableId, utenzaTributo, false, idMappingResolutionBehaviour);
+			this.update(tableId, utenzaTipoTributo, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -274,12 +274,12 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void update(long tableId, UtenzaTributo utenzaTributo, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(tableId, utenzaTributo, validate, null);
+	public void update(long tableId, UtenzaTipoTributo utenzaTipoTributo, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(tableId, utenzaTipoTributo, validate, null);
 	}
 		
 	@Override
-	public void update(long tableId, UtenzaTributo utenzaTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(long tableId, UtenzaTipoTributo utenzaTipoTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -287,8 +287,8 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 		try{
 			
 			// check parameters
-			if(utenzaTributo==null){
-				throw new Exception("Parameter (type:"+UtenzaTributo.class.getName()+") 'utenzaTributo' is null");
+			if(utenzaTipoTributo==null){
+				throw new Exception("Parameter (type:"+UtenzaTipoTributo.class.getName()+") 'utenzaTipoTributo' is null");
 			}
 			if(tableId<=0){
 				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
@@ -296,7 +296,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 
 			// validate
 			if(validate){
-				this.validate(utenzaTributo);
+				this.validate(utenzaTipoTributo);
 			}
 
 			// ISQLQueryObject
@@ -311,7 +311,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,utenzaTributo,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,utenzaTipoTributo,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -354,7 +354,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void updateFields(UtenzaTributo utenzaTributo, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(UtenzaTipoTributo utenzaTipoTributo, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -362,8 +362,8 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 		try{
 			
 			// check parameters
-			if(utenzaTributo==null){
-				throw new Exception("Parameter (type:"+UtenzaTributo.class.getName()+") 'utenzaTributo' is null");
+			if(utenzaTipoTributo==null){
+				throw new Exception("Parameter (type:"+UtenzaTipoTributo.class.getName()+") 'utenzaTipoTributo' is null");
 			}
 			if(updateFields==null){
 				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
@@ -381,7 +381,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTributo,updateFields);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoTributo,updateFields);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -421,7 +421,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void updateFields(UtenzaTributo utenzaTributo, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(UtenzaTipoTributo utenzaTipoTributo, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -429,8 +429,8 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 		try{
 			
 			// check parameters
-			if(utenzaTributo==null){
-				throw new Exception("Parameter (type:"+UtenzaTributo.class.getName()+") 'utenzaTributo' is null");
+			if(utenzaTipoTributo==null){
+				throw new Exception("Parameter (type:"+UtenzaTipoTributo.class.getName()+") 'utenzaTipoTributo' is null");
 			}
 			if(condition==null){
 				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
@@ -451,7 +451,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTributo,condition,updateFields);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoTributo,condition,updateFields);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -491,7 +491,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 
 	@Override
-	public void updateFields(UtenzaTributo utenzaTributo, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(UtenzaTipoTributo utenzaTipoTributo, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -499,8 +499,8 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 		try{
 			
 			// check parameters
-			if(utenzaTributo==null){
-				throw new Exception("Parameter (type:"+UtenzaTributo.class.getName()+") 'utenzaTributo' is null");
+			if(utenzaTipoTributo==null){
+				throw new Exception("Parameter (type:"+UtenzaTipoTributo.class.getName()+") 'utenzaTipoTributo' is null");
 			}
 			if(updateModels==null){
 				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
@@ -518,7 +518,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTributo,updateModels);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoTributo,updateModels);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -762,9 +762,9 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 
 	@Override
-	public void updateOrCreate(UtenzaTributo utenzaTributo) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(UtenzaTipoTributo utenzaTipoTributo) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(utenzaTributo, false, null);
+			this.updateOrCreate(utenzaTipoTributo, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -772,9 +772,9 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void updateOrCreate(UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(utenzaTributo, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(utenzaTipoTributo, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -782,12 +782,12 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 
 	@Override
-	public void updateOrCreate(UtenzaTributo utenzaTributo, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(utenzaTributo, validate, null);
+	public void updateOrCreate(UtenzaTipoTributo utenzaTipoTributo, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(utenzaTipoTributo, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(UtenzaTributo utenzaTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(UtenzaTipoTributo utenzaTipoTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -795,13 +795,13 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 		try{
 			
 			// check parameters
-			if(utenzaTributo==null){
-				throw new Exception("Parameter (type:"+UtenzaTributo.class.getName()+") 'utenzaTributo' is null");
+			if(utenzaTipoTributo==null){
+				throw new Exception("Parameter (type:"+UtenzaTipoTributo.class.getName()+") 'utenzaTipoTributo' is null");
 			}
 
 			// validate
 			if(validate){
-				this.validate(utenzaTributo);
+				this.validate(utenzaTipoTributo);
 			}
 
 			// ISQLQueryObject
@@ -816,7 +816,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTributo,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoTributo,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -856,9 +856,9 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void updateOrCreate(long tableId, UtenzaTributo utenzaTributo) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(long tableId, UtenzaTipoTributo utenzaTipoTributo) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(tableId, utenzaTributo, false, null);
+			this.updateOrCreate(tableId, utenzaTipoTributo, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -866,9 +866,9 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void updateOrCreate(long tableId, UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(long tableId, UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(tableId, utenzaTributo, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(tableId, utenzaTipoTributo, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -876,12 +876,12 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 
 	@Override
-	public void updateOrCreate(long tableId, UtenzaTributo utenzaTributo, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(tableId, utenzaTributo, validate, null);
+	public void updateOrCreate(long tableId, UtenzaTipoTributo utenzaTipoTributo, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(tableId, utenzaTipoTributo, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(long tableId, UtenzaTributo utenzaTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(long tableId, UtenzaTipoTributo utenzaTipoTributo, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -889,8 +889,8 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 		try{
 			
 			// check parameters
-			if(utenzaTributo==null){
-				throw new Exception("Parameter (type:"+UtenzaTributo.class.getName()+") 'utenzaTributo' is null");
+			if(utenzaTipoTributo==null){
+				throw new Exception("Parameter (type:"+UtenzaTipoTributo.class.getName()+") 'utenzaTipoTributo' is null");
 			}
 			if(tableId<=0){
 				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
@@ -898,7 +898,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 
 			// validate
 			if(validate){
-				this.validate(utenzaTributo);
+				this.validate(utenzaTipoTributo);
 			}
 
 			// ISQLQueryObject
@@ -913,7 +913,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,utenzaTributo,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,utenzaTipoTributo,idMappingResolutionBehaviour);
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -953,7 +953,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 	}
 	
 	@Override
-	public void delete(UtenzaTributo utenzaTributo) throws ServiceException,NotImplementedException {
+	public void delete(UtenzaTipoTributo utenzaTipoTributo) throws ServiceException,NotImplementedException {
 		
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -961,8 +961,8 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 		try{
 			
 			// check parameters
-			if(utenzaTributo==null){
-				throw new Exception("Parameter (type:"+UtenzaTributo.class.getName()+") 'utenzaTributo' is null");
+			if(utenzaTipoTributo==null){
+				throw new Exception("Parameter (type:"+UtenzaTipoTributo.class.getName()+") 'utenzaTipoTributo' is null");
 			}
 
 			// ISQLQueryObject
@@ -977,7 +977,7 @@ public class JDBCUtenzaTributoService extends JDBCUtenzaTributoServiceSearch  im
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTributo);	
+			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,utenzaTipoTributo);	
 
 		}catch(ServiceException e){
 			rollback = true;

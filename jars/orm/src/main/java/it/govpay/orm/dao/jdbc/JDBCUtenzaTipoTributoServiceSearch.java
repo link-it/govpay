@@ -44,47 +44,47 @@ import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 import it.govpay.orm.dao.jdbc.JDBCLimitedServiceManager;
-import it.govpay.orm.UtenzaTributo;
-import it.govpay.orm.dao.IDBUtenzaTributoServiceSearch;
+import it.govpay.orm.UtenzaTipoTributo;
+import it.govpay.orm.dao.IDBUtenzaTipoTributoServiceSearch;
 import it.govpay.orm.utils.ProjectInfo;
 
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
 /**     
- * Service can be used to search for the backend objects of type {@link it.govpay.orm.UtenzaTributo} 
+ * Service can be used to search for the backend objects of type {@link it.govpay.orm.UtenzaTipoTributo} 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
 */
-public class JDBCUtenzaTributoServiceSearch implements IDBUtenzaTributoServiceSearch, IDBServiceUtilities<UtenzaTributo> {
+public class JDBCUtenzaTipoTributoServiceSearch implements IDBUtenzaTipoTributoServiceSearch, IDBServiceUtilities<UtenzaTipoTributo> {
 
 
 	protected JDBCServiceManagerProperties jdbcProperties = null;
 	protected JDBCServiceManager jdbcServiceManager = null;
 	protected Logger log = null;
-	protected IJDBCServiceSearchWithoutId<UtenzaTributo, JDBCServiceManager> serviceSearch = null;
+	protected IJDBCServiceSearchWithoutId<UtenzaTipoTributo, JDBCServiceManager> serviceSearch = null;
 	protected JDBC_SQLObjectFactory jdbcSqlObjectFactory = null;
-	public JDBCUtenzaTributoServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
+	public JDBCUtenzaTipoTributoServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		this.log.debug(JDBCUtenzaTributoServiceSearch.class.getName()+ " initialized");
-		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("utenzaTributo");
+		this.log.debug(JDBCUtenzaTipoTributoServiceSearch.class.getName()+ " initialized");
+		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("utenzaTipoTributo");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 	}
 	
 	@Override
-	public void validate(UtenzaTributo utenzaTributo) throws ServiceException,
+	public void validate(UtenzaTipoTributo utenzaTipoTributo) throws ServiceException,
 			ValidationException, NotImplementedException {
-		org.openspcoop2.generic_project.utils.XSDValidator.validate(utenzaTributo, this.log, 
+		org.openspcoop2.generic_project.utils.XSDValidator.validate(utenzaTipoTributo, this.log, 
 				it.govpay.orm.utils.XSDValidator.getXSDValidator(this.log));
 	}
 	
@@ -104,7 +104,7 @@ public class JDBCUtenzaTributoServiceSearch implements IDBUtenzaTributoServiceSe
 	
 
 	@Override
-	public List<UtenzaTributo> findAll(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
+	public List<UtenzaTipoTributo> findAll(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -142,7 +142,7 @@ public class JDBCUtenzaTributoServiceSearch implements IDBUtenzaTributoServiceSe
 	}
 	
 	@Override
-	public List<UtenzaTributo> findAll(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public List<UtenzaTipoTributo> findAll(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -183,7 +183,7 @@ public class JDBCUtenzaTributoServiceSearch implements IDBUtenzaTributoServiceSe
 	}
 
 	@Override
-	public UtenzaTributo find(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	public UtenzaTipoTributo find(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -225,7 +225,7 @@ public class JDBCUtenzaTributoServiceSearch implements IDBUtenzaTributoServiceSe
 	}
 	
 	@Override
-	public UtenzaTributo find(IExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	public UtenzaTipoTributo find(IExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -730,7 +730,7 @@ public class JDBCUtenzaTributoServiceSearch implements IDBUtenzaTributoServiceSe
 	
 		
 	@Override
-	public UtenzaTributo get(long tableId) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public UtenzaTipoTributo get(long tableId) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
@@ -767,7 +767,7 @@ public class JDBCUtenzaTributoServiceSearch implements IDBUtenzaTributoServiceSe
 	}
 	
 	@Override
-	public UtenzaTributo get(long tableId,org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public UtenzaTipoTributo get(long tableId,org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{

@@ -22,7 +22,6 @@ package it.govpay.core.dao.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
@@ -134,7 +133,7 @@ public class ApplicazioniDAO extends BaseDAO {
 					idTributi.add(AnagraficaManager.getTipoTributo(bd, codTributo).getId());
 				}
 
-				putApplicazioneDTO.getApplicazione().getUtenza().setIdTributi(idTributi);
+				putApplicazioneDTO.getApplicazione().getUtenza().setIdTipiTributo(idTributi);
 			}
 
 

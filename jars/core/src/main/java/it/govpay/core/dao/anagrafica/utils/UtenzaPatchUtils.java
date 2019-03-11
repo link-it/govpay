@@ -95,7 +95,7 @@ public class UtenzaPatchUtils {
 			break;
 			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 			}
-			utenza.getIdTributi().clear();
+			utenza.getIdTipiTributo().clear();
 		} else if(tributo.equals(AUTODETERMINAZIONE_ENTRATE)) {
 			if(utenza.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 				Applicazione applicazioneByPrincipal = AnagraficaManager.getApplicazioneByPrincipal(bd, utenza.getPrincipalOriginale());
@@ -120,9 +120,9 @@ public class UtenzaPatchUtils {
 			}
 			Long idTributo = AnagraficaManager.getTipoTributo(bd, tributo).getId();
 			switch(op.getOp()) {
-			case ADD: utenza.getIdTributi().add(idTributo); 
+			case ADD: utenza.getIdTipiTributo().add(idTributo); 
 			break;
-			case DELETE: utenza.getIdTributi().remove(idTributo);
+			case DELETE: utenza.getIdTipiTributo().remove(idTributo);
 			break;
 			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 			}
@@ -130,8 +130,8 @@ public class UtenzaPatchUtils {
 		UtenzeBD utenzaBD = new UtenzeBD(bd);
 		utenzaBD.updateUtenza(utenza);
 
-		utenza.setTributi(null);
-		utenza.getTributi(bd);
+		utenza.setTipiributo(null);
+		utenza.getTipiTributo(bd);
 	}
 
 	private static void patchDominio(PatchOp op, Utenza utenza, BasicBD bd)

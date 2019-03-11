@@ -6,8 +6,8 @@ package it.govpay.core.dao.anagrafica.dto;
 import java.util.List;
 
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Utenza;
+import it.govpay.model.TipoTributo;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -20,7 +20,7 @@ public class LeggiProfiloDTOResponse {
 	private String nome;
 	private Utenza utente;
 	private List<Dominio> domini;
-	private List<Tributo> tributi;
+	private List<TipoTributo> tipiTributi;
 	public Utenza getUtente() {
 		return this.utente;
 	}
@@ -33,11 +33,11 @@ public class LeggiProfiloDTOResponse {
 	public void setDomini(List<Dominio> domini) {
 		this.domini = domini;
 	}
-	public List<Tributo> getTributi() {
-		return this.tributi;
+	public List<TipoTributo> getTipiTributi() {
+		return this.tipiTributi;
 	}
-	public void setTributi(List<Tributo> tributi) {
-		this.tributi = tributi;
+	public void setTipiTributi(List<TipoTributo> tributi) {
+		this.tipiTributi = tributi;
 	}
 	public String getNome() {
 		return this.nome;

@@ -226,7 +226,7 @@ public class ApplicazioniBD extends BasicBD {
 				utenzaApplicazione.setIdDomini(applicazioneOld.getUtenza().getIdDomini());
 				
 				// Tributi
-				utenzaApplicazione.setIdTributi(applicazioneOld.getUtenza().getIdTributi());
+				utenzaApplicazione.setIdTipiTributo(applicazioneOld.getUtenza().getIdTipiTributo());
 				
 				utenzeBD.insertUtenza(utenzaApplicazione);
 			} else {

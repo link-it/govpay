@@ -235,7 +235,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("principal", this.principal).notNull().minLength(1).maxLength(4000);
-		vf.getValidator("codificaAvvisi", this.codificaAvvisi).notNull().validateFields();
+		vf.getValidator("codificaAvvisi", this.codificaAvvisi).validateFields();
 		vf.getValidator("servizioVerifica", this.servizioVerifica).validateFields();
 		vf.getValidator("servizioNotifica", this.servizioNotifica).validateFields();
 		vf.getValidator("abilitato", this.abilitato).notNull();

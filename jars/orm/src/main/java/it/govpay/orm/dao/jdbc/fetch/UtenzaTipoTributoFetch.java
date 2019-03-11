@@ -30,18 +30,18 @@ import java.util.Map;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 
-import it.govpay.orm.UtenzaTributo;
+import it.govpay.orm.UtenzaTipoTributo;
 
 
 /**     
- * UtenzaTributoFetch
+ * UtenzaTipoTributoFetch
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class UtenzaTributoFetch extends AbstractJDBCFetch {
+public class UtenzaTipoTributoFetch extends AbstractJDBCFetch {
 
 	@Override
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
@@ -50,9 +50,9 @@ public class UtenzaTributoFetch extends AbstractJDBCFetch {
 			JDBCParameterUtilities jdbcParameterUtilities =  
 					new JDBCParameterUtilities(tipoDatabase);
 
-			if(model.equals(UtenzaTributo.model())){
-				UtenzaTributo object = new UtenzaTributo();
-				this.setParameter(object, "setId", Long.class,
+			if(model.equals(UtenzaTipoTributo.model())){
+				UtenzaTipoTributo object = new UtenzaTipoTributo();
+				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				return object;
 			}
@@ -72,9 +72,9 @@ public class UtenzaTributoFetch extends AbstractJDBCFetch {
 		
 		try{
 
-			if(model.equals(UtenzaTributo.model())){
-				UtenzaTributo object = new UtenzaTributo();
-				this.setParameter(object, "setId", Long.class,
+			if(model.equals(UtenzaTipoTributo.model())){
+				UtenzaTipoTributo object = new UtenzaTipoTributo();
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
 				return object;
 			}
@@ -95,7 +95,7 @@ public class UtenzaTributoFetch extends AbstractJDBCFetch {
 		
 		try{
 
-			if(model.equals(UtenzaTributo.model())){
+			if(model.equals(UtenzaTipoTributo.model())){
 				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("utenze_tributi","id","seq_utenze_tributi","utenze_tributi_init_seq");
 			}
 			

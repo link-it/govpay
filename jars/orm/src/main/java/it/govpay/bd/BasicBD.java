@@ -67,7 +67,7 @@ import it.govpay.orm.dao.IDBTributoService;
 import it.govpay.orm.dao.IDBUoService;
 import it.govpay.orm.dao.IDBUtenzaDominioService;
 import it.govpay.orm.dao.IDBUtenzaService;
-import it.govpay.orm.dao.IDBUtenzaTributoService;
+import it.govpay.orm.dao.IDBUtenzaTipoTributoService;
 import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEsitoAvvisaturaService;
@@ -95,7 +95,7 @@ import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IUtenzaDominioService;
 import it.govpay.orm.dao.IUtenzaService;
-import it.govpay.orm.dao.IUtenzaTributoService;
+import it.govpay.orm.dao.IUtenzaTipoTributoService;
 import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
@@ -114,7 +114,7 @@ public class BasicBD {
 	private ITributoService tributoService;
 	private IUtenzaService utenzaService;
 	private IUtenzaDominioService utenzaDominioService;
-	private IUtenzaTributoService utenzaTributoService;
+	private IUtenzaTipoTributoService utenzaTributoService;
 	private IApplicazioneService applicazioneService;
 	private IUoService uoService;
 	private IOperatoreService operatoreService;
@@ -201,7 +201,7 @@ public class BasicBD {
 				this.tributoService = this.serviceManager.getTributoService();
 				this.utenzaService = this.serviceManager.getUtenzaService();
 				this.utenzaDominioService = this.serviceManager.getUtenzaDominioService();
-				this.utenzaTributoService = this.serviceManager.getUtenzaTributoService();
+				this.utenzaTributoService = this.serviceManager.getUtenzaTipoTributoService();
 				this.applicazioneService = this.serviceManager.getApplicazioneService();
 				this.uoService = this.serviceManager.getUoService();
 				this.operatoreService = this.serviceManager.getOperatoreService();
@@ -252,7 +252,7 @@ public class BasicBD {
 			((IDBTributoService)this.tributoService).enableSelectForUpdate();
 			((IDBUtenzaService)this.utenzaService).enableSelectForUpdate();
 			((IDBUtenzaDominioService)this.utenzaDominioService).enableSelectForUpdate();
-			((IDBUtenzaTributoService)this.utenzaTributoService).enableSelectForUpdate();
+			((IDBUtenzaTipoTributoService)this.utenzaTributoService).enableSelectForUpdate();
 			((IDBApplicazioneService)this.applicazioneService).enableSelectForUpdate();
 			((IDBUoService)this.uoService).enableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).enableSelectForUpdate();
@@ -297,7 +297,7 @@ public class BasicBD {
 			((IDBTributoService)this.tributoService).disableSelectForUpdate();
 			((IDBUtenzaService)this.utenzaService).disableSelectForUpdate();
 			((IDBUtenzaDominioService)this.utenzaDominioService).disableSelectForUpdate();
-			((IDBUtenzaTributoService)this.utenzaTributoService).disableSelectForUpdate();
+			((IDBUtenzaTipoTributoService)this.utenzaTributoService).disableSelectForUpdate();
 			((IDBApplicazioneService)this.applicazioneService).disableSelectForUpdate();
 			((IDBUoService)this.uoService).disableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).disableSelectForUpdate();
@@ -393,9 +393,9 @@ public class BasicBD {
 		return this.utenzaDominioService;
 	}
 	
-	public IUtenzaTributoService getUtenzaTributoService() {
+	public IUtenzaTipoTributoService getUtenzaTipoTributoService() {
 		if(this.father != null) {
-			return this.father.getUtenzaTributoService();
+			return this.father.getUtenzaTipoTributoService();
 		}
 		return this.utenzaTributoService;
 	}

@@ -25,32 +25,32 @@ import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.expression.impl.sql.AbstractSQLFieldConverter;
 import org.openspcoop2.utils.TipiDatabase;
 
-import it.govpay.orm.UtenzaTributo;
+import it.govpay.orm.UtenzaTipoTributo;
 
 
 /**     
- * UtenzaTributoFieldConverter
+ * UtenzaTipoTributoFieldConverter
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class UtenzaTributoFieldConverter extends AbstractSQLFieldConverter {
+public class UtenzaTipoTributoFieldConverter extends AbstractSQLFieldConverter {
 
 	private TipiDatabase databaseType;
 	
-	public UtenzaTributoFieldConverter(String databaseType){
+	public UtenzaTipoTributoFieldConverter(String databaseType){
 		this.databaseType = TipiDatabase.toEnumConstant(databaseType);
 	}
-	public UtenzaTributoFieldConverter(TipiDatabase databaseType){
+	public UtenzaTipoTributoFieldConverter(TipiDatabase databaseType){
 		this.databaseType = databaseType;
 	}
 
 
 	@Override
 	public IModel<?> getRootModel() throws ExpressionException {
-		return UtenzaTributo.model();
+		return UtenzaTipoTributo.model();
 	}
 	
 	@Override
@@ -67,35 +67,28 @@ public class UtenzaTributoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(UtenzaTributo.model().ID_UTENZA.PRINCIPAL)){
+		if(field.equals(UtenzaTipoTributo.model().ID_UTENZA.PRINCIPAL)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".principal";
 			}else{
 				return "principal";
 			}
 		}
-		if(field.equals(UtenzaTributo.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
+		if(field.equals(UtenzaTipoTributo.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".principal_originale";
 			}else{
 				return "principal_originale";
 			}
 		}
-		if(field.equals(UtenzaTributo.model().ID_UTENZA.ABILITATO)){
+		if(field.equals(UtenzaTipoTributo.model().ID_UTENZA.ABILITATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".abilitato";
 			}else{
 				return "abilitato";
 			}
 		}
-		if(field.equals(UtenzaTributo.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_dominio";
-			}else{
-				return "cod_dominio";
-			}
-		}
-		if(field.equals(UtenzaTributo.model().ID_TRIBUTO.ID_TIPO_TRIBUTO.COD_TRIBUTO)){
+		if(field.equals(UtenzaTipoTributo.model().ID_TIPO_TRIBUTO.COD_TRIBUTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_tributo";
 			}else{
@@ -115,20 +108,17 @@ public class UtenzaTributoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(UtenzaTributo.model().ID_UTENZA.PRINCIPAL)){
-			return this.toTable(UtenzaTributo.model().ID_UTENZA, returnAlias);
+		if(field.equals(UtenzaTipoTributo.model().ID_UTENZA.PRINCIPAL)){
+			return this.toTable(UtenzaTipoTributo.model().ID_UTENZA, returnAlias);
 		}
-		if(field.equals(UtenzaTributo.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
-			return this.toTable(UtenzaTributo.model().ID_UTENZA, returnAlias);
+		if(field.equals(UtenzaTipoTributo.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
+			return this.toTable(UtenzaTipoTributo.model().ID_UTENZA, returnAlias);
 		}
-		if(field.equals(UtenzaTributo.model().ID_UTENZA.ABILITATO)){
-			return this.toTable(UtenzaTributo.model().ID_UTENZA, returnAlias);
+		if(field.equals(UtenzaTipoTributo.model().ID_UTENZA.ABILITATO)){
+			return this.toTable(UtenzaTipoTributo.model().ID_UTENZA, returnAlias);
 		}
-		if(field.equals(UtenzaTributo.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
-			return this.toTable(UtenzaTributo.model().ID_TRIBUTO.ID_DOMINIO, returnAlias);
-		}
-		if(field.equals(UtenzaTributo.model().ID_TRIBUTO.ID_TIPO_TRIBUTO.COD_TRIBUTO)){
-			return this.toTable(UtenzaTributo.model().ID_TRIBUTO.ID_TIPO_TRIBUTO, returnAlias);
+		if(field.equals(UtenzaTipoTributo.model().ID_TIPO_TRIBUTO.COD_TRIBUTO)){
+			return this.toTable(UtenzaTipoTributo.model().ID_TIPO_TRIBUTO, returnAlias);
 		}
 
 
@@ -143,20 +133,14 @@ public class UtenzaTributoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(model.equals(UtenzaTributo.model())){
+		if(model.equals(UtenzaTipoTributo.model())){
 			return "utenze_tributi";
 		}
-		if(model.equals(UtenzaTributo.model().ID_UTENZA)){
+		if(model.equals(UtenzaTipoTributo.model().ID_UTENZA)){
 			return "utenze";
 		}
-		if(model.equals(UtenzaTributo.model().ID_TRIBUTO)){
-			return "tributi";
-		}
-		if(model.equals(UtenzaTributo.model().ID_TRIBUTO.ID_DOMINIO)){
-			return "id_dominio";
-		}
-		if(model.equals(UtenzaTributo.model().ID_TRIBUTO.ID_TIPO_TRIBUTO)){
-			return "id_tipo_tributo";
+		if(model.equals(UtenzaTipoTributo.model().ID_TIPO_TRIBUTO)){
+			return "tipi_tributo";
 		}
 
 

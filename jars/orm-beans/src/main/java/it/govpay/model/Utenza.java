@@ -16,7 +16,7 @@ public class Utenza extends BasicModel {
 	protected String principalOriginale;
 	protected boolean abilitato;
 	protected List<Long> idDomini;
-	protected List<Long> idTributi;
+	protected List<Long> idTipiTributo;
 	protected boolean checkSubject;
 	protected boolean autorizzazioneDominiStar;
 	protected boolean autorizzazioneTributiStar;
@@ -54,12 +54,12 @@ public class Utenza extends BasicModel {
 		this.abilitato = abilitato;
 	}
 
-	public List<Long> getIdTributi() {
-		return this.idTributi;
+	public List<Long> getIdTipiTributo() {
+		return this.idTipiTributo;
 	}
 
-	public void setIdTributi(List<Long> idTributi) {
-		this.idTributi = idTributi;
+	public void setIdTipiTributo(List<Long> idTributi) {
+		this.idTipiTributo = idTributi;
 	}
 
 	public List<Long> getIdDomini() {

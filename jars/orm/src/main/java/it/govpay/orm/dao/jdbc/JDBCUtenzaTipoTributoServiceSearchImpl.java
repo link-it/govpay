@@ -47,39 +47,39 @@ import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
-import it.govpay.orm.UtenzaTributo;
-import it.govpay.orm.dao.jdbc.converter.UtenzaTributoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.UtenzaTributoFetch;
+import it.govpay.orm.UtenzaTipoTributo;
+import it.govpay.orm.dao.jdbc.converter.UtenzaTipoTributoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.UtenzaTipoTributoFetch;
 
 /**     
- * JDBCUtenzaTributoServiceSearchImpl
+ * JDBCUtenzaTipoTributoServiceSearchImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWithoutId<UtenzaTributo, JDBCServiceManager> {
+public class JDBCUtenzaTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithoutId<UtenzaTipoTributo, JDBCServiceManager> {
 
-	private UtenzaTributoFieldConverter _utenzaTributoFieldConverter = null;
-	public UtenzaTributoFieldConverter getUtenzaTributoFieldConverter() {
-		if(this._utenzaTributoFieldConverter==null){
-			this._utenzaTributoFieldConverter = new UtenzaTributoFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
+	private UtenzaTipoTributoFieldConverter _utenzaTipoTributoFieldConverter = null;
+	public UtenzaTipoTributoFieldConverter getUtenzaTipoTributoFieldConverter() {
+		if(this._utenzaTipoTributoFieldConverter==null){
+			this._utenzaTipoTributoFieldConverter = new UtenzaTipoTributoFieldConverter(this.jdbcServiceManager.getJdbcProperties().getDatabaseType());
 		}		
-		return this._utenzaTributoFieldConverter;
+		return this._utenzaTipoTributoFieldConverter;
 	}
 	@Override
 	public ISQLFieldConverter getFieldConverter() {
-		return this.getUtenzaTributoFieldConverter();
+		return this.getUtenzaTipoTributoFieldConverter();
 	}
 	
-	private UtenzaTributoFetch utenzaTributoFetch = new UtenzaTributoFetch();
-	public UtenzaTributoFetch getUtenzaTributoFetch() {
-		return this.utenzaTributoFetch;
+	private UtenzaTipoTributoFetch utenzaTipoTributoFetch = new UtenzaTipoTributoFetch();
+	public UtenzaTipoTributoFetch getUtenzaTipoTributoFetch() {
+		return this.utenzaTipoTributoFetch;
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return this.getUtenzaTributoFetch();
+		return getUtenzaTipoTributoFetch();
 	}
 	
 	
@@ -101,20 +101,20 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 	
 	
 	@Override
-	public List<UtenzaTributo> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
+	public List<UtenzaTipoTributo> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        List<UtenzaTributo> list = new ArrayList<>();
+        List<UtenzaTipoTributo> list = new ArrayList<UtenzaTipoTributo>();
         
         try {
         	
 	        List<IField> fields = new ArrayList<>();
-	        fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(UtenzaTributo.model())));
-	        fields.add(new CustomField("id_utenza", Long.class, "id_utenza", this.getFieldConverter().toTable(UtenzaTributo.model())));
-	        fields.add(new CustomField("id_tributo", Long.class, "id_tributo", this.getFieldConverter().toTable(UtenzaTributo.model())));
+	        fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(UtenzaTipoTributo.model())));
+	        fields.add(new CustomField("id_utenza", Long.class, "id_utenza", this.getFieldConverter().toTable(UtenzaTipoTributo.model())));
+	        fields.add(new CustomField("id_tipo_tributo", Long.class, "id_tipo_tributo", this.getFieldConverter().toTable(UtenzaTipoTributo.model())));
 			List<Map<String,Object>> select = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[]{}));
 			
 	        for(Map<String, Object> record: select) {
-	        	UtenzaTributo utenzaTributo = (UtenzaTributo) this.getFetch().fetch(jdbcProperties.getDatabase(), UtenzaTributo.model(), record);
+	        	UtenzaTipoTributo utenzaTributo = (UtenzaTipoTributo) this.getFetch().fetch(jdbcProperties.getDatabase(), UtenzaTipoTributo.model(), record);
 	
 	    		if(idMappingResolutionBehaviour==null ||
 	    			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
@@ -134,16 +134,16 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 	    		if(idMappingResolutionBehaviour==null ||
 	    			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
 	    		){
-	    			Long idFK_utenzaTributo_tributo = (Long) record.get("id_tributo");
+	    			Long idFK_utenzaTributo_tipoTributo = (Long) record.get("id_tipo_tributo");
 	    			
-	    			it.govpay.orm.IdTributo id_utenzaTributo_tributo = null;
+	    			it.govpay.orm.IdTipoTributo id_utenzaTributo_tipoTributo = null;
 	    			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	    				id_utenzaTributo_tributo = ((JDBCTributoServiceSearch)(this.getServiceManager().getTributoServiceSearch())).findId(idFK_utenzaTributo_tributo, false);
+	    				id_utenzaTributo_tipoTributo = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findId(idFK_utenzaTributo_tipoTributo, false);
 	    			}else{
-	    				id_utenzaTributo_tributo = new it.govpay.orm.IdTributo();
+	    				id_utenzaTributo_tipoTributo = new it.govpay.orm.IdTipoTributo();
 	    			}
-	    			id_utenzaTributo_tributo.setId(idFK_utenzaTributo_tributo);
-	    			utenzaTributo.setIdTributo(id_utenzaTributo_tributo);
+	    			id_utenzaTributo_tipoTributo.setId(idFK_utenzaTributo_tipoTributo);
+	    			utenzaTributo.setIdTipoTributo(id_utenzaTributo_tipoTributo);
 	    		}
 	
 				list.add(utenzaTributo);
@@ -155,7 +155,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 	}
 	
 	@Override
-	public UtenzaTributo find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+	public UtenzaTipoTributo find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
 		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
 
         long id = this.findTableId(jdbcProperties, log, connection, sqlQueryObject, expression);
@@ -171,14 +171,14 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getUtenzaTributoFieldConverter(), UtenzaTributo.model());
+												this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model());
 		
-		sqlQueryObject.addSelectCountField(this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model())+".id","tot",true);
+		sqlQueryObject.addSelectCountField(this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model())+".id","tot",true);
 		
 		this._join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
-																			this.getUtenzaTributoFieldConverter(), UtenzaTributo.model(),listaQuery);
+																			this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model(),listaQuery);
 	}
 
 
@@ -213,7 +213,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 		
 			ISQLQueryObject sqlQueryObjectDistinct = 
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
-												this.getUtenzaTributoFieldConverter(), field);
+												this.getUtenzaTipoTributoFieldConverter(), field);
 
 			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
@@ -286,14 +286,14 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 		List<Object> listaQuery = new ArrayList<>();
 		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
-        						expression, this.getUtenzaTributoFieldConverter(), UtenzaTributo.model(), 
+        						expression, this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model(), 
         						listaQuery,listaParams);
 		
 		this._join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
-        								expression, this.getUtenzaTributoFieldConverter(), UtenzaTributo.model(),
+        								expression, this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model(),
         								listaQuery,listaParams,returnField);
 		if(list!=null && list.size()>0){
 			return list;
@@ -310,7 +310,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
 		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getUtenzaTributoFieldConverter(), UtenzaTributo.model(), 
+        						this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
@@ -322,7 +322,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 		}
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getUtenzaTributoFieldConverter(), UtenzaTributo.model(), 
+        								this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(list!=null && list.size()>0){
 			return list;
@@ -339,7 +339,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
 		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        						this.getUtenzaTributoFieldConverter(), UtenzaTributo.model(), 
+        						this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
 		
 		if(unionExpression!=null){
@@ -351,7 +351,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 		}
         
         NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject, 
-        								this.getUtenzaTributoFieldConverter(), UtenzaTributo.model(), 
+        								this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model(), 
         								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
         if(number!=null && number.longValue()>=0){
 			return number;
@@ -368,7 +368,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 	@Override
 	public JDBCExpression newExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCExpression(this.getUtenzaTributoFieldConverter());
+			return new JDBCExpression(this.getUtenzaTipoTributoFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -378,7 +378,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 	@Override
 	public JDBCPaginatedExpression newPaginatedExpression(Logger log) throws NotImplementedException, ServiceException {
 		try{
-			return new JDBCPaginatedExpression(this.getUtenzaTributoFieldConverter());
+			return new JDBCPaginatedExpression(this.getUtenzaTipoTributoFieldConverter());
 		}catch(Exception e){
 			throw new ServiceException(e);
 		}
@@ -408,17 +408,17 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 
 	
 	@Override
-	public UtenzaTributo get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	public UtenzaTipoTributo get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._get(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId), idMappingResolutionBehaviour);
 	}
 	
-	private UtenzaTributo _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
+	private UtenzaTipoTributo _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 		
 		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(this.getFieldConverter().getRootModel()));
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
-		List<UtenzaTributo> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+		List<UtenzaTipoTributo> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
@@ -441,7 +441,7 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 				
-		boolean existsUtenzaTributo = false;
+		boolean existsUtenzaTipoTributo = false;
 
 		sqlQueryObject = sqlQueryObject.newSQLQueryObject();
 		sqlQueryObject.setANDLogicOperator(true);
@@ -449,76 +449,63 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 		sqlQueryObject.addWhereCondition("id=?");
 
 
-		// Exists utenzaTributo
-		existsUtenzaTributo = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
+		// Exists utenzaTipoTributo
+		existsUtenzaTipoTributo = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
 			new JDBCObject(tableId,Long.class));
 
 		
-        return existsUtenzaTributo;
+        return existsUtenzaTipoTributo;
 	
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 		
-		if(expression.inUseModel(UtenzaTributo.model().ID_TRIBUTO,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(UtenzaTributo.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(UtenzaTributo.model().ID_TRIBUTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
+		if(expression.inUseModel(UtenzaTipoTributo.model().ID_TIPO_TRIBUTO,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(UtenzaTipoTributo.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(UtenzaTipoTributo.model().ID_TIPO_TRIBUTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_tributo="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(UtenzaTributo.model().ID_UTENZA,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(UtenzaTributo.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(UtenzaTributo.model().ID_UTENZA);
+		if(expression.inUseModel(UtenzaTipoTributo.model().ID_UTENZA,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(UtenzaTipoTributo.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(UtenzaTipoTributo.model().ID_UTENZA);
 			sqlQueryObject.addWhereCondition(tableName1+".id_utenza="+tableName2+".id");
 		}
 
         
 	}
 	
-	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTributo utenzaTributo) throws NotFoundException, ServiceException, NotImplementedException, Exception{
+	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTipoTributo utenzaTipoTributo) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<>();
-		rootTableIdValues.add(utenzaTributo.getId());
+		rootTableIdValues.add(utenzaTipoTributo.getId());
         
         return rootTableIdValues;
 	}
 	
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
 	
-		UtenzaTributoFieldConverter converter = this.getUtenzaTributoFieldConverter();
+		UtenzaTipoTributoFieldConverter converter = this.getUtenzaTipoTributoFieldConverter();
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<>();
 
-		// UtenzaTributo.model()
-		mapTableToPKColumn.put(converter.toTable(UtenzaTributo.model()),
+		// UtenzaTipoTributo.model()
+		mapTableToPKColumn.put(converter.toTable(UtenzaTipoTributo.model()),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(UtenzaTributo.model()))
+				new CustomField("id", Long.class, "id", converter.toTable(UtenzaTipoTributo.model()))
 			));
 
-		// UtenzaTributo.model().ID_UTENZA
-		mapTableToPKColumn.put(converter.toTable(UtenzaTributo.model().ID_UTENZA),
+		// UtenzaTipoTributo.model().ID_UTENZA
+		mapTableToPKColumn.put(converter.toTable(UtenzaTipoTributo.model().ID_UTENZA),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(UtenzaTributo.model().ID_UTENZA))
+				new CustomField("id", Long.class, "id", converter.toTable(UtenzaTipoTributo.model().ID_UTENZA))
 			));
 
-		// UtenzaTributo.model().ID_TRIBUTO
-		mapTableToPKColumn.put(converter.toTable(UtenzaTributo.model().ID_TRIBUTO),
+		// UtenzaTipoTributo.model().ID_TIPO_TRIBUTO
+		mapTableToPKColumn.put(converter.toTable(UtenzaTipoTributo.model().ID_TIPO_TRIBUTO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(UtenzaTributo.model().ID_TRIBUTO))
+				new CustomField("id", Long.class, "id", converter.toTable(UtenzaTipoTributo.model().ID_TIPO_TRIBUTO))
 			));
-
-		// UtenzaTributo.model().ID_TRIBUTO.ID_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(UtenzaTributo.model().ID_TRIBUTO.ID_DOMINIO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(UtenzaTributo.model().ID_TRIBUTO.ID_DOMINIO))
-			));
-
-		// UtenzaTributo.model().ID_TRIBUTO.ID_TIPO_TRIBUTO
-		mapTableToPKColumn.put(converter.toTable(UtenzaTributo.model().ID_TRIBUTO.ID_TIPO_TRIBUTO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(UtenzaTributo.model().ID_TRIBUTO.ID_TIPO_TRIBUTO))
-			));
-
 
         return mapTableToPKColumn;		
 	}
@@ -530,16 +517,16 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model())+".id");
+		sqlQueryObject.addSelectField(this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFindAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-												this.getUtenzaTributoFieldConverter(), UtenzaTributo.model());
+												this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model());
 		
 		this._join(paginatedExpression,sqlQueryObject);
 		
 		List<Object> listObjects = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.findAll(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression,
-																			this.getUtenzaTributoFieldConverter(), UtenzaTributo.model(), objectIdClass, listaQuery);
+																			this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model(), objectIdClass, listaQuery);
 		for(Object object: listObjects) {
 			list.add((Long)object);
 		}
@@ -553,16 +540,16 @@ public class JDBCUtenzaTributoServiceSearchImpl implements IJDBCServiceSearchWit
 	
 		sqlQueryObject.setSelectDistinct(true);
 		sqlQueryObject.setANDLogicOperator(true);
-		sqlQueryObject.addSelectField(this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model())+".id");
+		sqlQueryObject.addSelectField(this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model())+".id");
 		Class<?> objectIdClass = Long.class;
 		
 		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareFind(jdbcProperties, log, connection, sqlQueryObject, expression,
-												this.getUtenzaTributoFieldConverter(), UtenzaTributo.model());
+												this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model());
 		
 		this._join(expression,sqlQueryObject);
 
 		Object res = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.find(jdbcProperties, log, connection, sqlQueryObject, expression,
-														this.getUtenzaTributoFieldConverter(), UtenzaTributo.model(), objectIdClass, listaQuery);
+														this.getUtenzaTipoTributoFieldConverter(), UtenzaTipoTributo.model(), objectIdClass, listaQuery);
 		if(res!=null && (((Long) res).longValue()>0) ){
 			return ((Long) res).longValue();
 		}

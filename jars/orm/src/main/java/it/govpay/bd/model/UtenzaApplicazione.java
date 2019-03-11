@@ -13,14 +13,14 @@ public class UtenzaApplicazione extends Utenza {
 		this.codApplicazione = codApplicazione;
 		this.domini = utenzaBase.domini;
 		this.ruoli = utenzaBase.ruoli;
-		this.tributi = utenzaBase.tributi;
+		this.tipiTributo = utenzaBase.tipiTributo;
 		// dati model
 		this.id = utenzaBase.getId();
 		this.principal = utenzaBase.getPrincipal();
 		this.principalOriginale = utenzaBase.getPrincipalOriginale();
 		this.abilitato = utenzaBase.isAbilitato();
 		this.idDomini = utenzaBase.getIdDomini();
-		this.idTributi = utenzaBase.getIdTributi();
+		this.idTipiTributo = utenzaBase.getIdTipiTributo();
 		this.checkSubject = utenzaBase.isCheckSubject();
 		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();
 		this.autorizzazioneTributiStar = utenzaBase.isAutorizzazioneTributiStar();

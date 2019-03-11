@@ -13,10 +13,10 @@ import it.govpay.backoffice.v1.beans.OperatorePost;
 import it.govpay.backoffice.v1.beans.TipoEntrata;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Acl;
+import it.govpay.model.TipoTributo;
 
 public class OperatoriConverter {
 
@@ -106,7 +106,7 @@ public class OperatoriConverter {
 		rsModel.setDomini(idDomini);
 
 		List<TipoEntrata> idTributi = new ArrayList<>();
-		List<Tributo> tributi = operatore.getUtenza().getTributi(null);
+		List<TipoTributo> tributi = operatore.getUtenza().getTipiTributo(null);
 		if(tributi == null)
 			tributi = new ArrayList<>();
 		
@@ -116,7 +116,7 @@ public class OperatoriConverter {
 			tEI.setDescrizione(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR_LABEL);
 			idTributi.add(tEI);
 		} else {
-			for (Tributo tributo : tributi) {
+			for (TipoTributo tributo : tributi) {
 				TipoEntrata tEI = new TipoEntrata();
 				tEI.setIdEntrata(tributo.getCodTributo());
 				tEI.setDescrizione(tributo.getDescrizione());

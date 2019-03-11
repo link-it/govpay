@@ -22,9 +22,7 @@ package it.govpay.orm.dao.jdbc;
 import java.sql.Connection;
 
 import org.openspcoop2.utils.sql.ISQLQueryObject;
-
 import org.slf4j.Logger;
-
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -41,22 +39,22 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 
-import it.govpay.orm.UtenzaTributo;
+import it.govpay.orm.UtenzaTipoTributo;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
- * JDBCUtenzaTributoServiceImpl
+ * JDBCUtenzaTipoTributoServiceImpl
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearchImpl
-	implements IJDBCServiceCRUDWithoutId<UtenzaTributo, JDBCServiceManager> {
+public class JDBCUtenzaTipoTributoServiceImpl extends JDBCUtenzaTipoTributoServiceSearchImpl
+	implements IJDBCServiceCRUDWithoutId<UtenzaTipoTributo, JDBCServiceManager> {
 
 	@Override
-	public void create(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
+	public void create(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
@@ -72,7 +70,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 		// Object _utenza
 		Long id_utenza = null;
 		it.govpay.orm.IdUtenza idLogic_utenza = null;
-		idLogic_utenza = utenzaTributo.getIdUtenza();
+		idLogic_utenza = utenzaTipoTributo.getIdUtenza();
 		if(idLogic_utenza!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
@@ -86,51 +84,51 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 			}
 		}
 
-		// Object _tributo
-		Long id_tributo = null;
-		it.govpay.orm.IdTributo idLogic_tributo = null;
-		idLogic_tributo = utenzaTributo.getIdTributo();
-		if(idLogic_tributo!=null){
+		// Object _tipoTributo
+		Long id_tipoTributo = null;
+		it.govpay.orm.IdTipoTributo idLogic_tipoTributo = null;
+		idLogic_tipoTributo = utenzaTipoTributo.getIdTipoTributo();
+		if(idLogic_tipoTributo!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_tributo = ((JDBCTributoServiceSearch)(this.getServiceManager().getTributoServiceSearch())).findTableId(idLogic_tributo, false);
+				id_tipoTributo = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findTableId(idLogic_tipoTributo, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_tributo = idLogic_tributo.getId();
-				if(id_tributo==null || id_tributo<=0){
+				id_tipoTributo = idLogic_tipoTributo.getId();
+				if(id_tipoTributo==null || id_tipoTributo<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
 		}
 
 
-		// Object utenzaTributo
-		sqlQueryObjectInsert.addInsertTable(this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()));
+		// Object utenzaTipoTributo
+		sqlQueryObjectInsert.addInsertTable(this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model()));
 		sqlQueryObjectInsert.addInsertField("id_utenza","?");
-		sqlQueryObjectInsert.addInsertField("id_tributo","?");
+		sqlQueryObjectInsert.addInsertField("id_tipo_tributo","?");
 
-		// Insert utenzaTributo
-		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getUtenzaTributoFetch().getKeyGeneratorObject(UtenzaTributo.model());
+		// Insert utenzaTipoTributo
+		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getUtenzaTipoTributoFetch().getKeyGeneratorObject(UtenzaTipoTributo.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_utenza,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tributo,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoTributo,Long.class)
 		);
-		utenzaTributo.setId(id);
+		utenzaTipoTributo.setId(id);
 
 	}
 
 	@Override
-	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
-		Long tableId = utenzaTributo.getId();
+		Long tableId = utenzaTipoTributo.getId();
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
 
-		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, utenzaTributo, idMappingResolutionBehaviour);
+		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, utenzaTipoTributo, idMappingResolutionBehaviour);
 	}
 	@Override
-	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
@@ -151,176 +149,176 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
-		// Object _utenzaTributo_utenza
-		Long id_utenzaTributo_utenza = null;
-		it.govpay.orm.IdUtenza idLogic_utenzaTributo_utenza = null;
-		idLogic_utenzaTributo_utenza = utenzaTributo.getIdUtenza();
-		if(idLogic_utenzaTributo_utenza!=null){
+		// Object _utenzaTipoTributo_utenza
+		Long id_utenzaTipoTributo_utenza = null;
+		it.govpay.orm.IdUtenza idLogic_utenzaTipoTributo_utenza = null;
+		idLogic_utenzaTipoTributo_utenza = utenzaTipoTributo.getIdUtenza();
+		if(idLogic_utenzaTipoTributo_utenza!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_utenzaTributo_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findTableId(idLogic_utenzaTributo_utenza, false);
+				id_utenzaTipoTributo_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findTableId(idLogic_utenzaTipoTributo_utenza, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_utenzaTributo_utenza = idLogic_utenzaTributo_utenza.getId();
-				if(id_utenzaTributo_utenza==null || id_utenzaTributo_utenza<=0){
+				id_utenzaTipoTributo_utenza = idLogic_utenzaTipoTributo_utenza.getId();
+				if(id_utenzaTipoTributo_utenza==null || id_utenzaTipoTributo_utenza<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
 		}
 
-		// Object _utenzaTributo_tributo
-		Long id_utenzaTributo_tributo = null;
-		it.govpay.orm.IdTributo idLogic_utenzaTributo_tributo = null;
-		idLogic_utenzaTributo_tributo = utenzaTributo.getIdTributo();
-		if(idLogic_utenzaTributo_tributo!=null){
+		// Object _utenzaTipoTributo_tipoTributo
+		Long id_utenzaTipoTributo_tipoTributo = null;
+		it.govpay.orm.IdTipoTributo idLogic_utenzaTipoTributo_tipoTributo = null;
+		idLogic_utenzaTipoTributo_tipoTributo = utenzaTipoTributo.getIdTipoTributo();
+		if(idLogic_utenzaTipoTributo_tipoTributo!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_utenzaTributo_tributo = ((JDBCTributoServiceSearch)(this.getServiceManager().getTributoServiceSearch())).findTableId(idLogic_utenzaTributo_tributo, false);
+				id_utenzaTipoTributo_tipoTributo = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findTableId(idLogic_utenzaTipoTributo_tipoTributo, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_utenzaTributo_tributo = idLogic_utenzaTributo_tributo.getId();
-				if(id_utenzaTributo_tributo==null || id_utenzaTributo_tributo<=0){
+				id_utenzaTipoTributo_tipoTributo = idLogic_utenzaTipoTributo_tipoTributo.getId();
+				if(id_utenzaTipoTributo_tipoTributo==null || id_utenzaTipoTributo_tipoTributo<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
 		}
 
 
-		// Object utenzaTributo
+		// Object utenzaTipoTributo
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
-		sqlQueryObjectUpdate.addUpdateTable(this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()));
-		boolean isUpdate_utenzaTributo = true;
-		java.util.List<JDBCObject> lstObjects_utenzaTributo = new java.util.ArrayList<>();
+		sqlQueryObjectUpdate.addUpdateTable(this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model()));
+		boolean isUpdate_utenzaTipoTributo = true;
+		java.util.List<JDBCObject> lstObjects_utenzaTipoTributo = new java.util.ArrayList<JDBCObject>();
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_utenza","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_tributo","?");
+			sqlQueryObjectUpdate.addUpdateField("id_tipo_tributo","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			lstObjects_utenzaTributo.add(new JDBCObject(id_utenzaTributo_utenza, Long.class));
+			lstObjects_utenzaTipoTributo.add(new JDBCObject(id_utenzaTipoTributo_utenza, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
-			lstObjects_utenzaTributo.add(new JDBCObject(id_utenzaTributo_tributo, Long.class));
+			lstObjects_utenzaTipoTributo.add(new JDBCObject(id_utenzaTipoTributo_tipoTributo, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
-		lstObjects_utenzaTributo.add(new JDBCObject(tableId, Long.class));
+		lstObjects_utenzaTipoTributo.add(new JDBCObject(tableId, Long.class));
 
-		if(isUpdate_utenzaTributo) {
-			// Update utenzaTributo
+		if(isUpdate_utenzaTipoTributo) {
+			// Update utenzaTipoTributo
 			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
-				lstObjects_utenzaTributo.toArray(new JDBCObject[]{}));
+				lstObjects_utenzaTipoTributo.toArray(new JDBCObject[]{}));
 		}
 
 
 	}
 	
 	@Override
-	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTributo utenzaTributo, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTipoTributo utenzaTipoTributo, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()), 
+				this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model()), 
 				this._getMapTableToPKColumn(), 
-				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, utenzaTributo),
-				this.getUtenzaTributoFieldConverter(), this, null, updateFields);
+				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, utenzaTipoTributo),
+				this.getUtenzaTipoTributoFieldConverter(), this, null, updateFields);
 	}
 	
 	@Override
-	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTributo utenzaTributo, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTipoTributo utenzaTipoTributo, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()), 
+				this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model()), 
 				this._getMapTableToPKColumn(), 
-				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, utenzaTributo),
-				this.getUtenzaTributoFieldConverter(), this, condition, updateFields);
+				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, utenzaTipoTributo),
+				this.getUtenzaTipoTributoFieldConverter(), this, condition, updateFields);
 	}
 	
 	@Override
-	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTributo utenzaTributo, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTipoTributo utenzaTipoTributo, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()), 
+				this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model()), 
 				this._getMapTableToPKColumn(), 
-				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, utenzaTributo),
-				this.getUtenzaTributoFieldConverter(), this, updateModels);
+				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, utenzaTipoTributo),
+				this.getUtenzaTipoTributoFieldConverter(), this, updateModels);
 	}	
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<>();
+		java.util.List<Object> ids = new java.util.ArrayList<Object>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()), 
+				this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
-				this.getUtenzaTributoFieldConverter(), this, null, updateFields);
+				this.getUtenzaTipoTributoFieldConverter(), this, null, updateFields);
 	}
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<>();
+		java.util.List<Object> ids = new java.util.ArrayList<Object>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()), 
+				this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
-				this.getUtenzaTributoFieldConverter(), this, condition, updateFields);
+				this.getUtenzaTipoTributoFieldConverter(), this, condition, updateFields);
 	}
 	
 	@Override
 	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		java.util.List<Object> ids = new java.util.ArrayList<>();
+		java.util.List<Object> ids = new java.util.ArrayList<Object>();
 		ids.add(tableId);
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
-				this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()), 
+				this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model()), 
 				this._getMapTableToPKColumn(), 
 				ids,
-				this.getUtenzaTributoFieldConverter(), this, updateModels);
+				this.getUtenzaTipoTributoFieldConverter(), this, updateModels);
 	}
 	
 	@Override
-	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
+	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 	
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
 		
-		Long id = utenzaTributo.getId();
+		Long id = utenzaTipoTributo.getId();
 		if(id != null && this.exists(jdbcProperties, log, connection, sqlQueryObject, id)) {
-			this.update(jdbcProperties, log, connection, sqlQueryObject, utenzaTributo,idMappingResolutionBehaviour);		
+			this.update(jdbcProperties, log, connection, sqlQueryObject, utenzaTipoTributo,idMappingResolutionBehaviour);		
 		} else {
-			this.create(jdbcProperties, log, connection, sqlQueryObject, utenzaTributo,idMappingResolutionBehaviour);
+			this.create(jdbcProperties, log, connection, sqlQueryObject, utenzaTipoTributo,idMappingResolutionBehaviour);
 		}
 		
 	}
 	
 	@Override
-	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UtenzaTributo utenzaTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
+	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, UtenzaTipoTributo utenzaTipoTributo, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
 		
 		if(this.exists(jdbcProperties, log, connection, sqlQueryObject, tableId)) {
-			this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, utenzaTributo,idMappingResolutionBehaviour);
+			this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, utenzaTipoTributo,idMappingResolutionBehaviour);
 		} else {
-			this.create(jdbcProperties, log, connection, sqlQueryObject, utenzaTributo,idMappingResolutionBehaviour);
+			this.create(jdbcProperties, log, connection, sqlQueryObject, utenzaTipoTributo,idMappingResolutionBehaviour);
 		}
 	}
 	
 	@Override
-	public void delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTributo utenzaTributo) throws NotImplementedException,ServiceException,Exception {
+	public void delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, UtenzaTipoTributo utenzaTipoTributo) throws NotImplementedException,ServiceException,Exception {
 		
 		
 		Long longId = null;
-		if(utenzaTributo.getId()==null){
-			throw new Exception("Parameter "+utenzaTributo.getClass().getName()+".id is null");
+		if(utenzaTipoTributo.getId()==null){
+			throw new Exception("Parameter "+utenzaTipoTributo.getClass().getName()+".id is null");
 		}
-		if(utenzaTributo.getId()<=0){
-			throw new Exception("Parameter "+utenzaTributo.getClass().getName()+".id is less equals 0");
+		if(utenzaTipoTributo.getId()<=0){
+			throw new Exception("Parameter "+utenzaTipoTributo.getClass().getName()+".id is less equals 0");
 		}
-		longId = utenzaTributo.getId();
+		longId = utenzaTipoTributo.getId();
 		
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, longId);
 		
@@ -338,13 +336,13 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 		ISQLQueryObject sqlQueryObjectDelete = sqlQueryObject.newSQLQueryObject();
 		
 
-		// Object utenzaTributo
+		// Object utenzaTipoTributo
 		sqlQueryObjectDelete.setANDLogicOperator(true);
-		sqlQueryObjectDelete.addDeleteTable(this.getUtenzaTributoFieldConverter().toTable(UtenzaTributo.model()));
+		sqlQueryObjectDelete.addDeleteTable(this.getUtenzaTipoTributoFieldConverter().toTable(UtenzaTipoTributo.model()));
 		if(id != null)
 			sqlQueryObjectDelete.addWhereCondition("id=?");
 
-		// Delete utenzaTributo
+		// Delete utenzaTipoTributo
 		jdbcUtilities.execute(sqlQueryObjectDelete.createSQLDelete(), jdbcProperties.isShowSql(), 
 			new JDBCObject(id,Long.class));
 
@@ -354,7 +352,7 @@ public class JDBCUtenzaTributoServiceImpl extends JDBCUtenzaTributoServiceSearch
 	@Override
 	public NonNegativeNumber deleteAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject) throws NotImplementedException,ServiceException,Exception {
 		
-		return this.deleteAll(jdbcProperties, log, connection, sqlQueryObject, new JDBCExpression(this.getUtenzaTributoFieldConverter()));
+		return this.deleteAll(jdbcProperties, log, connection, sqlQueryObject, new JDBCExpression(this.getUtenzaTipoTributoFieldConverter()));
 
 	}
 

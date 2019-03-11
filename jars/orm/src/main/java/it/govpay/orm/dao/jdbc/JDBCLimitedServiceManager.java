@@ -87,8 +87,8 @@ import it.govpay.orm.dao.IUtenzaDominioService;
 import it.govpay.orm.dao.IUtenzaDominioServiceSearch;
 import it.govpay.orm.dao.IUtenzaService;
 import it.govpay.orm.dao.IUtenzaServiceSearch;
-import it.govpay.orm.dao.IUtenzaTributoService;
-import it.govpay.orm.dao.IUtenzaTributoServiceSearch;
+import it.govpay.orm.dao.IUtenzaTipoTributoService;
+import it.govpay.orm.dao.IUtenzaTipoTributoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
 
@@ -162,8 +162,6 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	public IDominioService getDominioService() throws ServiceException,NotImplementedException{
 		return new JDBCDominioService(this.unlimitedJdbcServiceManager);
 	}
-	
-	
 	
 	
 	
@@ -522,32 +520,32 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:UtenzaTributo type:UtenzaTributo
+	 Services relating to the object with name:UtenzaTipoTributo type:UtenzaTipoTributo
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IUtenzaTributoServiceSearch getUtenzaTributoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCUtenzaTributoServiceSearch(this.unlimitedJdbcServiceManager);
+	public IUtenzaTipoTributoServiceSearch getUtenzaTipoTributoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTipoTributoServiceSearch(this.unlimitedJdbcServiceManager);
 	}
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IUtenzaTributoService getUtenzaTributoService() throws ServiceException,NotImplementedException{
-		return new JDBCUtenzaTributoService(this.unlimitedJdbcServiceManager);
+	public IUtenzaTipoTributoService getUtenzaTipoTributoService() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTipoTributoService(this.unlimitedJdbcServiceManager);
 	}
 	
 	

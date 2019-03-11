@@ -44,13 +44,13 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.converter.UtenzaConverter;
 import it.govpay.model.Acl;
 import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdTributo;
+import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.IdUtenza;
 import it.govpay.orm.UtenzaDominio;
-import it.govpay.orm.UtenzaTributo;
+import it.govpay.orm.UtenzaTipoTributo;
 import it.govpay.orm.dao.jdbc.JDBCUtenzaServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.UtenzaDominioFieldConverter;
-import it.govpay.orm.dao.jdbc.converter.UtenzaTributoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.UtenzaTipoTributoFieldConverter;
 
 public class UtenzeBD extends BasicBD {
 
@@ -166,7 +166,7 @@ public class UtenzeBD extends BasicBD {
 	private Utenza getUtenza(it.govpay.orm.Utenza utenzaVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
 		List<Long> utenzaDominioLst = this.getUtenzeDominio(utenzaVO.getId());
-		List<Long> utenzaTributoLst = this.getUtenzeTributo(utenzaVO.getId());
+		List<Long> utenzaTributoLst = this.getUtenzeTipoTributo(utenzaVO.getId());
 		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, utenzaDominioLst, utenzaTributoLst, this);
 		AclBD aclDB = new AclBD(this);
 		AclFilter filter = aclDB.newFilter();
@@ -332,7 +332,7 @@ public class UtenzeBD extends BasicBD {
 
 			this.getUtenzaService().update(idUtenza, vo);
 			this.updateUtenzeDominio(vo.getId(), utenza.getIdDomini());
-			this.updateUtenzeTributo(vo.getId(), utenza.getIdTributi());
+			this.updateUtenzeTipoTributo(vo.getId(), utenza.getIdTipiTributo());
 			
 			AclBD aclBD = new AclBD(this);
 			AclFilter filter = aclBD.newFilter();
@@ -342,21 +342,23 @@ public class UtenzeBD extends BasicBD {
 			// Copio la lista delle ACL nuove
 			
 			List<Acl> aclNuove = new ArrayList<Acl>();
-			for(Acl aclNuova : utenza.getAclPrincipal())
-				aclNuove.add(aclNuova);
+			if(utenza.getAclPrincipal() != null)
+				for(Acl aclNuova : utenza.getAclPrincipal())
+					aclNuove.add(aclNuova);
 			
 			
 			for(Acl aclEsistente : alcEsistenti) {
 				boolean found = false;
-				for(Acl aclNuova : utenza.getAclPrincipal()) {
-					if(aclNuova.getServizio().equals(aclEsistente.getServizio())) {
-						found = true;
-						aclNuova.setId(aclEsistente.getId());
-						aclBD.updateAcl(aclNuova);
-						aclNuove.remove(aclNuova);
-						break;
+				if(utenza.getAclPrincipal() != null)
+					for(Acl aclNuova : utenza.getAclPrincipal()) {
+						if(aclNuova.getServizio().equals(aclEsistente.getServizio())) {
+							found = true;
+							aclNuova.setId(aclEsistente.getId());
+							aclBD.updateAcl(aclNuova);
+							aclNuove.remove(aclNuova);
+							break;
+						}
 					}
-				}
 				
 				if(!found) {
 					aclBD.deleteAcl(aclEsistente);
@@ -413,20 +415,20 @@ public class UtenzeBD extends BasicBD {
 		} 
 	}
 
-	private void updateUtenzeTributo(Long utenza, List<Long> idTributi) throws ServiceException {
+	private void updateUtenzeTipoTributo(Long utenza, List<Long> idTributi) throws ServiceException {
 		try {
-			this.deleteUtenzeTributo(utenza);
+			this.deleteUtenzeTipoTributo(utenza);
 
 			if(idTributi != null) {
 				for(Long tributo: idTributi) {
-					UtenzaTributo utenzaTributo = new UtenzaTributo();
-					IdTributo idDominio = new IdTributo();
-					idDominio.setId(tributo);
-					utenzaTributo.setIdTributo(idDominio);
+					UtenzaTipoTributo utenzaTributo = new UtenzaTipoTributo();
+					IdTipoTributo idTipoTributo = new IdTipoTributo();
+					idTipoTributo.setId(tributo);
+					utenzaTributo.setIdTipoTributo(idTipoTributo);
 					IdUtenza idUtenza = new IdUtenza();
 					idUtenza.setId(utenza);
 					utenzaTributo.setIdUtenza(idUtenza);
-					this.getUtenzaTributoService().create(utenzaTributo);
+					this.getUtenzaTipoTributoService().create(utenzaTributo);
 				}
 			}
 		} catch (NotImplementedException e) {
@@ -434,13 +436,13 @@ public class UtenzeBD extends BasicBD {
 		} 
 	}
 
-	private void deleteUtenzeTributo(Long utenza) throws ServiceException{
+	private void deleteUtenzeTipoTributo(Long utenza) throws ServiceException{
 		try {
-			IExpression exp = this.getUtenzaTributoService().newExpression();
-			UtenzaTributoFieldConverter converter = new UtenzaTributoFieldConverter(this.getJdbcProperties().getDatabase());
-			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTributo.model()));
+			IExpression exp = this.getUtenzaTipoTributoService().newExpression();
+			UtenzaTipoTributoFieldConverter converter = new UtenzaTipoTributoFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTipoTributo.model()));
 			exp.equals(field, utenza);
-			this.getUtenzaTributoService().deleteAll(exp);
+			this.getUtenzaTipoTributoService().deleteAll(exp);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
@@ -450,13 +452,13 @@ public class UtenzeBD extends BasicBD {
 		}
 	}
 
-	private List<Long> getUtenzeTributo(Long utenza) throws ServiceException {
+	private List<Long> getUtenzeTipoTributo(Long utenza) throws ServiceException {
 		try {
-			IPaginatedExpression exp = this.getUtenzaTributoService().newPaginatedExpression();
-			UtenzaTributoFieldConverter converter = new UtenzaTributoFieldConverter(this.getJdbcProperties().getDatabase());
-			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTributo.model()));
+			IPaginatedExpression exp = this.getUtenzaTipoTributoService().newPaginatedExpression();
+			UtenzaTipoTributoFieldConverter converter = new UtenzaTipoTributoFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField field = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(UtenzaTipoTributo.model()));
 			exp.equals(field, utenza);
-			return this.getUtenzaTributoService().findAll(exp).stream().map(a -> a.getIdTributo().getId()).collect(Collectors.toList());
+			return this.getUtenzaTipoTributoService().findAll(exp).stream().map(a -> a.getIdTipoTributo().getId()).collect(Collectors.toList());
 		} catch(ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
@@ -495,7 +497,7 @@ public class UtenzeBD extends BasicBD {
 			this.getUtenzaService().create(vo);
 			utenza.setId(vo.getId());
 			this.updateUtenzeDominio(utenza.getId(), utenza.getIdDomini());
-			this.updateUtenzeTributo(utenza.getId(), utenza.getIdTributi());
+			this.updateUtenzeTipoTributo(utenza.getId(), utenza.getIdTipiTributo());
 			
 			if(utenza.getAclPrincipal() != null && utenza.getAclPrincipal().size() > 0) {
 				AclBD aclBD = new AclBD(this);
@@ -532,7 +534,7 @@ public class UtenzeBD extends BasicBD {
 				throw new NotFoundException("Utenza con id ["+idUtenza.toJson()+"] non trovato");
 			}
 			this.deleteUtenzeDominio(vo.getId());
-			this.deleteUtenzeTributo(vo.getId());
+			this.deleteUtenzeTipoTributo(vo.getId());
 			
 			AclBD aclDB = new AclBD(this);
 			AclFilter filter = aclDB.newFilter();

@@ -1,6 +1,8 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -90,8 +92,11 @@ public class AclConverter {
 				rsModel.setServizio(serv.toString());
 		}
 		
-		if(acl.getListaDiritti() != null)
-			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList()));
+		if(acl.getListaDiritti() != null) {
+			List<String> autorizzazioni = acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList());
+			Collections.sort(autorizzazioni);
+			rsModel.autorizzazioni(autorizzazioni);
+		}
 		
 		return rsModel;
 	}

@@ -44,6 +44,8 @@ import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IConnettoreServiceSearch;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IDominioServiceSearch;
+import it.govpay.orm.dao.IEsitoAvvisaturaService;
+import it.govpay.orm.dao.IEsitoAvvisaturaServiceSearch;
 import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IEventoServiceSearch;
 import it.govpay.orm.dao.IFRService;
@@ -92,13 +94,11 @@ import it.govpay.orm.dao.IUtenzaDominioService;
 import it.govpay.orm.dao.IUtenzaDominioServiceSearch;
 import it.govpay.orm.dao.IUtenzaService;
 import it.govpay.orm.dao.IUtenzaServiceSearch;
-import it.govpay.orm.dao.IUtenzaTributoService;
-import it.govpay.orm.dao.IUtenzaTributoServiceSearch;
+import it.govpay.orm.dao.IUtenzaTipoTributoService;
+import it.govpay.orm.dao.IUtenzaTipoTributoServiceSearch;
 import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
-import it.govpay.orm.dao.IEsitoAvvisaturaServiceSearch;
-import it.govpay.orm.dao.IEsitoAvvisaturaService;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 
 /**     
@@ -610,8 +610,8 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IUtenzaTributoServiceSearch getUtenzaTributoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCUtenzaTributoServiceSearch(this);
+	public IUtenzaTipoTributoServiceSearch getUtenzaTipoTributoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTipoTributoServiceSearch(this);
 	}
 	
 	/**
@@ -622,8 +622,8 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IUtenzaTributoService getUtenzaTributoService() throws ServiceException,NotImplementedException{
-		return new JDBCUtenzaTributoService(this);
+	public IUtenzaTipoTributoService getUtenzaTipoTributoService() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTipoTributoService(this);
 	}
 	
 	

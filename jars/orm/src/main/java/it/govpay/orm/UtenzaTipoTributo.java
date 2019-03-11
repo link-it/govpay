@@ -28,15 +28,15 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for UtenzaTributo complex type.
+/** <p>Java class for UtenzaTipoTributo complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="UtenzaTributo">
+ * &lt;complexType name="UtenzaTipoTributo">
  * 		&lt;sequence>
  * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idTributo" type="{http://www.govpay.it/orm}id-tributo" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idTipoTributo" type="{http://www.govpay.it/orm}id-tipo-tributo" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -49,17 +49,17 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "UtenzaTributo", 
+@XmlType(name = "UtenzaTipoTributo", 
   propOrder = {
   	"idUtenza",
-  	"idTributo"
+  	"idTipoTributo"
   }
 )
 
-@XmlRootElement(name = "UtenzaTributo")
+@XmlRootElement(name = "UtenzaTipoTributo")
 
-public class UtenzaTributo extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public UtenzaTributo() {
+public class UtenzaTipoTributo extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public UtenzaTipoTributo() {
   }
 
   public Long getId() {
@@ -84,12 +84,12 @@ public class UtenzaTributo extends org.openspcoop2.utils.beans.BaseBean implemen
     this.idUtenza = idUtenza;
   }
 
-  public IdTributo getIdTributo() {
-    return this.idTributo;
+  public IdTipoTributo getIdTipoTributo() {
+    return this.idTipoTributo;
   }
 
-  public void setIdTributo(IdTributo idTributo) {
-    this.idTributo = idTributo;
+  public void setIdTipoTributo(IdTipoTributo idTipoTributo) {
+    this.idTipoTributo = idTipoTributo;
   }
 
   private static final long serialVersionUID = 1L;
@@ -97,24 +97,24 @@ public class UtenzaTributo extends org.openspcoop2.utils.beans.BaseBean implemen
   @XmlTransient
   private Long id;
 
-  private static it.govpay.orm.model.UtenzaTributoModel modelStaticInstance = null;
+  private static it.govpay.orm.model.UtenzaTipoTributoModel modelStaticInstance = null;
   private static synchronized void initModelStaticInstance(){
-	  if(it.govpay.orm.UtenzaTributo.modelStaticInstance==null){
-  			it.govpay.orm.UtenzaTributo.modelStaticInstance = new it.govpay.orm.model.UtenzaTributoModel();
+	  if(it.govpay.orm.UtenzaTipoTributo.modelStaticInstance==null){
+  			it.govpay.orm.UtenzaTipoTributo.modelStaticInstance = new it.govpay.orm.model.UtenzaTipoTributoModel();
 	  }
   }
-  public static it.govpay.orm.model.UtenzaTributoModel model(){
-	  if(it.govpay.orm.UtenzaTributo.modelStaticInstance==null){
+  public static it.govpay.orm.model.UtenzaTipoTributoModel model(){
+	  if(it.govpay.orm.UtenzaTipoTributo.modelStaticInstance==null){
 	  		initModelStaticInstance();
 	  }
-	  return it.govpay.orm.UtenzaTributo.modelStaticInstance;
+	  return it.govpay.orm.UtenzaTipoTributo.modelStaticInstance;
   }
 
 
   @XmlElement(name="idUtenza",required=true,nillable=false)
   protected IdUtenza idUtenza;
 
-  @XmlElement(name="idTributo",required=true,nillable=false)
-  protected IdTributo idTributo;
+  @XmlElement(name="idTipoTributo",required=true,nillable=false)
+  protected IdTipoTributo idTipoTributo;
 
 }
