@@ -105,8 +105,7 @@ public class RendicontazioniDAO extends BaseDAO{
 		return response;
 	}
 
-	private Fr populateRendicontazione(Fr flussoRendicontazione, BasicBD bd)
-			throws ServiceException, NotFoundException {
+	private Fr populateRendicontazione(Fr flussoRendicontazione, BasicBD bd) throws ServiceException, NotFoundException {
 
 		List<Rendicontazione> rendicontazioni = flussoRendicontazione.getRendicontazioni(bd);
 
@@ -128,6 +127,4 @@ public class RendicontazioniDAO extends BaseDAO{
 		}
 		return flussoRendicontazione;
 	}
-
-
 }

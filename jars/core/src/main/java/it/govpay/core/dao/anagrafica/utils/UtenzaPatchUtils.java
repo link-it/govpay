@@ -44,7 +44,9 @@ public class UtenzaPatchUtils {
 	public static final String PATH_DOMINI = "/domini";
 	public static final String PATH_ACL = "/acl";
 	public static final String PATH_XX_NON_VALIDO = "Path ''{0}'' non valido";
+	public static final String PATH_NON_VALIDO = "Il campo path non e' valido.";
 	public static final String VALUE_NON_VALIDO_PER_IL_PATH_XX = "Value non valido per il path ''{0}''";
+	public static final String VALUE_NON_VALIDO_PER_IL_PATH = "Il campo value non e' valido per il path indicato.";
 	public static final String OP_XX_NON_VALIDO_PER_IL_PATH_YY = "Op ''{0}'' non valido per il path ''{1}''";
 	public static final String ACL_NON_VALIDA_SERVIZIO_XX_NON_GESTITO = "ACL non valida: servizio `{0}` non gestito.";
 	public static final String VALUE_NON_VALIDO_PER_IL_PATH_XX_DI_UTENZA = "Value non valido per il path ''{0}'' di un'utenza di tipo ''{1}''";

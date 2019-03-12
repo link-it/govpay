@@ -5,6 +5,9 @@ import java.util.Objects;
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ragioneSociale",
 "indirizzo",
@@ -21,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "area",
 "abilitato",
 })
-public class UnitaOperativaPost extends it.govpay.core.beans.JSONSerializable {
+public class UnitaOperativaPost extends it.govpay.core.beans.JSONSerializable implements IValidable {
   
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
@@ -361,6 +364,26 @@ public class UnitaOperativaPost extends it.govpay.core.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws org.openspcoop2.utils.json.ValidationException {
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+	
+			vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(70);
+			vf.getValidator("indirizzo", this.indirizzo).minLength(1).maxLength(70);
+			vf.getValidator("civico", this.civico).minLength(1).maxLength(16);
+			vf.getValidator("cap", this.cap).minLength(1).maxLength(16);
+			vf.getValidator("localita", this.localita).minLength(1).maxLength(35);
+			vf.getValidator("provincia", this.provincia).minLength(1).maxLength(35);
+			vf.getValidator("nazione", this.nazione).length(2).pattern("(^[A-Z]{2,2}$)");
+			vf.getValidator("email", this.email).minLength(1).maxLength(255).pattern("(^([\\w\\.\\-_]+)?\\w+@[\\w-_]+(\\.\\w+){1,}$)");
+			vf.getValidator("pec", this.pec).minLength(1).maxLength(255).pattern("(^([\\w\\.\\-_]+)?\\w+@[\\w-_]+(\\.\\w+){1,}$)");
+			vf.getValidator("tel", this.tel).minLength(1).maxLength(255);
+			vf.getValidator("fax", this.fax).minLength(1).maxLength(255);
+			vf.getValidator("web", this.web).minLength(1).maxLength(255);
+			vf.getValidator("area", this.area).minLength(1).maxLength(255);
+			vf.getValidator("abilitato", this.abilitato).notNull();
+	  }
 }
 
 

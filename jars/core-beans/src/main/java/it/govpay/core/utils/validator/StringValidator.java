@@ -33,7 +33,7 @@ public class StringValidator {
 
 	public StringValidator minLength(int length) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.length() < length) {
-			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lungezza minima di" + length + " caratteri.");
+			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lunghezza minima di " + length + " caratteri.");
 
 		}
 		return this;
@@ -41,7 +41,7 @@ public class StringValidator {
 
 	public StringValidator maxLength(int length) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.length() > length) {
-			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lungezza massima di" + length + " caratteri.");
+			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lunghezza massima di " + length + " caratteri.");
 
 		}
 		return this;
@@ -49,7 +49,7 @@ public class StringValidator {
 	
 	public StringValidator length(int length) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.length() != length) {
-			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lunghezza di" + length + " caratteri.");
+			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lunghezza di " + length + " caratteri.");
 		}
 		return this;
 	}

@@ -30,6 +30,7 @@ import it.govpay.core.beans.JSONSerializable;
 "dominio",
 "unitaOperativa",
 "stato",
+"descrizioneStato",
 "segnalazioni",
 "voci",
 "rpp",
@@ -89,6 +90,9 @@ public class Pendenza extends JSONSerializable {
   
   @JsonProperty("stato")
   private StatoPendenza stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
   
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
@@ -383,6 +387,22 @@ public class Pendenza extends JSONSerializable {
   }
 
   /**
+   * Descrizione estesa dello stato di elaborazione della pendenza
+   **/
+  public Pendenza descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return this.descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
+  /**
    **/
   public Pendenza segnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
@@ -454,6 +474,7 @@ public class Pendenza extends JSONSerializable {
         Objects.equals(this.dominio, pendenza.dominio) &&
         Objects.equals(this.unitaOperativa, pendenza.unitaOperativa) &&
         Objects.equals(this.stato, pendenza.stato) &&
+        Objects.equals(this.descrizioneStato, pendenza.descrizioneStato) &&
         Objects.equals(this.segnalazioni, pendenza.segnalazioni) &&
         Objects.equals(this.voci, pendenza.voci) &&
         Objects.equals(this.rpp, pendenza.rpp);
@@ -461,7 +482,7 @@ public class Pendenza extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idA2A, this.idPendenza, this.dominio, this.unitaOperativa, this.stato, this.segnalazioni, this.voci, this.rpp);
+    return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idA2A, this.idPendenza, this.dominio, this.unitaOperativa, this.stato, this.descrizioneStato, this.segnalazioni, this.voci, this.rpp);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -496,6 +517,7 @@ public class Pendenza extends JSONSerializable {
     sb.append("    dominio: ").append(this.toIndentedString(this.dominio)).append("\n");
     sb.append("    unitaOperativa: ").append(this.toIndentedString(this.unitaOperativa)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(this.descrizioneStato)).append("\n");
     sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
     sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
     sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");

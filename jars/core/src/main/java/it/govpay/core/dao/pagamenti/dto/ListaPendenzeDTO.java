@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
-import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.exceptions.RequestParamException.FaultType;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -92,7 +91,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	}
 
 	@Override
-	public void setOrderBy(String orderBy) throws RequestParamException, InternalException {
+	public void setOrderBy(String orderBy) throws RequestParamException {
 		this.resetSort();
 		
 		if(orderBy==null || orderBy.trim().isEmpty()) return;

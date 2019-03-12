@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.AclPost;
@@ -77,6 +78,8 @@ public class ApplicazioniConverter {
 		applicazione.getUtenza().setAutorizzazioneDominiStar(appAuthDominiAll);
 		
 		if(applicazionePost.getCodificaAvvisi() != null) {
+			LoggerWrapperFactory.getLogger(ApplicazioniConverter.class).debug("<< Auto IUV : " + applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna()); 
+			
 			applicazione.setCodApplicazioneIuv(applicazionePost.getCodificaAvvisi().getCodificaIuv());
 			applicazione.setRegExp(applicazionePost.getCodificaAvvisi().getRegExpIuv());
 			applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna());
@@ -109,6 +112,9 @@ public class ApplicazioniConverter {
 	public static Applicazione toRsModel(it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		Applicazione rsModel = new Applicazione();
 		rsModel.setAbilitato(applicazione.getUtenza().isAbilitato());
+		
+		
+		LoggerWrapperFactory.getLogger(ApplicazioniConverter.class).debug(">> Auto IUV : " + applicazione.isAutoIuv()); 
 		
 		if(!(StringUtils.isEmpty(applicazione.getRegExp()) && StringUtils.isEmpty(applicazione.getCodApplicazioneIuv()))) {
 			CodificaAvvisi codificaAvvisi = new CodificaAvvisi();

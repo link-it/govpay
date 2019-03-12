@@ -11,7 +11,6 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.exceptions.RequestParamException.FaultType;
 
@@ -104,7 +103,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		return this.fieldsSort.isEmpty() ? this.defaultSort : this.fieldsSort;
 	}
 
-	public void setOrderBy(String orderBy) throws RequestParamException, InternalException {
+	public void setOrderBy(String orderBy) throws RequestParamException {
 		resetSort();
 		
 		if(orderBy==null || orderBy.trim().isEmpty()) return;
@@ -123,16 +122,12 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 			
 			boolean added = false;
 			 
-			try {
-				for (String key : this.fieldMap.keySet()) {
-					if(key.equals(fieldname)) {
-						this.addSort(this.fieldMap.get(key), sortOrder);
-						added = true;
-						continue;
-					}
+			for (String key : this.fieldMap.keySet()) {
+				if(key.equals(fieldname)) {
+					this.addSort(this.fieldMap.get(key), sortOrder);
+					added = true;
+					continue;
 				}
-			} catch (Exception e) {
-				throw new InternalException(e);
 			}
 			
 			if(!added)

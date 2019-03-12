@@ -24,7 +24,7 @@ import it.govpay.core.business.model.ListaAvvisiDTO;
 import it.govpay.core.business.model.ListaAvvisiDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
-import it.govpay.core.exceptions.InternalException;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.IbanAccredito;
@@ -44,7 +44,7 @@ public class AvvisoPagamento extends BasicBD {
 		super(basicBD);
 	}
 
-	public InserisciAvvisoDTOResponse inserisciAvviso(InserisciAvvisoDTO inserisciAvviso) throws InternalException {
+	public InserisciAvvisoDTOResponse inserisciAvviso(InserisciAvvisoDTO inserisciAvviso) throws GovPayException {
 		InserisciAvvisoDTOResponse response = new InserisciAvvisoDTOResponse();
 		try {
 			log.info("Inserimento Avviso Pagamento [Dominio: " + inserisciAvviso.getCodDominio() +" | IUV: " + inserisciAvviso.getIuv() + "]");
@@ -64,7 +64,7 @@ public class AvvisoPagamento extends BasicBD {
 			return response;
 		} catch (ServiceException e) {
 			log.error("Inserimento Avviso Pagamento fallito", e);
-			throw new InternalException(e);
+			throw new GovPayException(e);
 		}
 	}
 

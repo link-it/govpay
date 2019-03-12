@@ -64,5 +64,4 @@ public class IncassiException extends BaseException {
 	public int getTransportErrorCode() {
 		return 422;
 	}
-	
 }

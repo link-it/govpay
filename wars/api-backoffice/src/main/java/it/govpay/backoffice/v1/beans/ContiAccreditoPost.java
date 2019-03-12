@@ -7,13 +7,15 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "bic",
 "postale",
 "mybank",
 "abilitato",
 })
-public class ContiAccreditoPost extends JSONSerializable {
+public class ContiAccreditoPost extends JSONSerializable implements IValidable {
   
   @JsonProperty("bic")
   private String bic = null;
@@ -141,6 +143,15 @@ public class ContiAccreditoPost extends JSONSerializable {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
+  }
+  
+  @Override
+  public void validate() throws ValidationException {
+	ValidatorFactory vf = ValidatorFactory.newInstance();
+	vf.getValidator("abilitato", this.abilitato).notNull();
+	vf.getValidator("bic", this.bic).minLength(1).maxLength(255);
+	vf.getValidator("postale", this.postale).notNull();
+	vf.getValidator("mybank", this.mybank).notNull();
   }
 }
 

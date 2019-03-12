@@ -58,6 +58,7 @@ import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 public class DominiController extends BaseController {
 
@@ -323,7 +324,7 @@ public class DominiController extends BaseController {
 			
 			List<it.govpay.backoffice.v1.beans.Entrata> results = new ArrayList<>();
 			for(GetTributoDTOResponse tributo: listaDominiEntrateDTOResponse.getResults()) {
-				results.add(DominiConverter.toEntrataRsModel(tributo.getTributo(), tributo.getIbanAppoggio()));
+				results.add(DominiConverter.toEntrataRsModel(tributo));
 			}
 			
 			ListaEntrate response = new ListaEntrate(results, this.getServicePath(uriInfo),
@@ -422,7 +423,7 @@ public class DominiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Entrata response = DominiConverter.toEntrataRsModel(listaDominiEntrateDTOResponse.getTributo(), listaDominiEntrateDTOResponse.getIbanAppoggio());
+			Entrata response = DominiConverter.toEntrataRsModel(listaDominiEntrateDTOResponse);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
@@ -454,6 +455,12 @@ public class DominiController extends BaseController {
 			
 			String jsonRequest = baos.toString();
 			ContiAccreditoPost ibanAccreditoRequest= JSONSerializable.parse(jsonRequest, ContiAccreditoPost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
+			vf.getValidator("ibanAccredito", ibanAccredito).notNull().minLength(1).maxLength(255);
+			
+			ibanAccreditoRequest.validate();
 			
 			PutIbanAccreditoDTO putibanAccreditoDTO = DominiConverter.getPutIbanAccreditoDTO(ibanAccreditoRequest, idDominio, ibanAccredito, user);
 			
@@ -493,6 +500,12 @@ public class DominiController extends BaseController {
 			String jsonRequest = baos.toString();
 			UnitaOperativaPost unitaOperativaRequest= JSONSerializable.parse(jsonRequest, UnitaOperativaPost.class);
 			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
+			vf.getValidator("idUnitaOperativa", idUnitaOperativa).notNull().minLength(1).maxLength(35);
+			
+			unitaOperativaRequest.validate();
+			
 			PutUnitaOperativaDTO putUnitaOperativaDTO = DominiConverter.getPutUnitaOperativaDTO(unitaOperativaRequest, idDominio, idUnitaOperativa, user);
 			
 			DominiDAO dominiDAO = new DominiDAO(false);
@@ -531,6 +544,12 @@ public class DominiController extends BaseController {
 			String jsonRequest = baos.toString();
 			EntrataPost entrataRequest= JSONSerializable.parse(jsonRequest, EntrataPost.class);
 			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
+			vf.getValidator("idEntrata", idEntrata).notNull().minLength(1).maxLength(255);
+			
+			entrataRequest.validate();
+			
 			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
 			
 			DominiDAO dominiDAO = new DominiDAO(false);
@@ -568,6 +587,10 @@ public class DominiController extends BaseController {
 			
 			String jsonRequest = baos.toString();
 			DominioPost dominioRequest= JSONSerializable.parse(jsonRequest, DominioPost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
+			
 			dominioRequest.validate();
 			
 			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 

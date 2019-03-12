@@ -30,6 +30,7 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 public class ApplicazioniController extends BaseController {
 	
@@ -163,6 +164,10 @@ public class ApplicazioniController extends BaseController {
 			
 			String jsonRequest = baos.toString();
 			ApplicazionePost applicazioneRequest= JSONSerializable.parse(jsonRequest, ApplicazionePost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idA2A", idA2A).notNull().minLength(1).maxLength(35);
+			
 			applicazioneRequest.validate();
 			
 			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user); 

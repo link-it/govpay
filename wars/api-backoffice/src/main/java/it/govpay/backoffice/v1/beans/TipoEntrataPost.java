@@ -191,6 +191,9 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
+	vf.getValidator("descrizione", this.descrizione).minLength(1).maxLength(255);
+	vf.getValidator("codiceContabilita", this.codiceContabilita).minLength(1).maxLength(255);
+	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4);
 	vf.getValidator("online", this.online).notNull();
 	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();
   }

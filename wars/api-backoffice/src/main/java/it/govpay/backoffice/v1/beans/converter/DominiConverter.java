@@ -18,6 +18,7 @@ import it.govpay.backoffice.v1.beans.TipoContabilita;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.bd.model.Tributo;
+import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
@@ -258,7 +259,7 @@ public class DominiConverter {
 			List<Entrata> entrate = new ArrayList<>();
 			
 			for(Tributo tributo: tributoLst) {
-				entrate.add(toEntrataRsModel(tributo, tributo.getIbanAccredito()));
+				entrate.add(toEntrataRsModel(tributo, tributo.getIbanAccredito(), tributo.getIbanAppoggio()));
 			}
 			rsModel.setEntrate(entrate);
 		}
@@ -287,7 +288,7 @@ public class DominiConverter {
 	public static UnitaOperativa toUnitaOperativaRsModel(it.govpay.bd.model.UnitaOperativa uo) throws IllegalArgumentException, ServiceException {
 		UnitaOperativa rsModel = new UnitaOperativa();
 		
-		rsModel.setCap(uo.getAnagrafica().getRagioneSociale());
+		rsModel.setCap(uo.getAnagrafica().getCap());
 		rsModel.setCivico(uo.getAnagrafica().getCivico());
 		rsModel.setIdUnita(uo.getAnagrafica().getCodUnivoco());
 		rsModel.setIndirizzo(uo.getAnagrafica().getIndirizzo());
@@ -306,15 +307,20 @@ public class DominiConverter {
 		return rsModel;
 	}
 	
-	public static Entrata toEntrataRsModel(it.govpay.bd.model.Tributo tributo, it.govpay.model.IbanAccredito ibanAccredito) throws ServiceException {
+	public static Entrata toEntrataRsModel(GetTributoDTOResponse response) throws ServiceException {
+		return toEntrataRsModel(response.getTributo(), response.getIbanAccredito(), response.getIbanAppoggio());
+	}
+	
+	public static Entrata toEntrataRsModel(it.govpay.bd.model.Tributo tributo, it.govpay.model.IbanAccredito ibanAccredito,
+			it.govpay.model.IbanAccredito ibanAppoggio) throws ServiceException {
 		Entrata rsModel = new Entrata();
-		rsModel.codiceContabilita(tributo.getCodContabilita())
+		rsModel.codiceContabilita(tributo.getCodContabilitaCustom())
 		.abilitato(tributo.isAbilitato())
 		.idEntrata(tributo.getCodTributo())
 		.tipoEntrata(EntrateConverter.toTipoEntrataRsModel(tributo));
 		
-		if(tributo.getTipoContabilita() != null) {
-			switch (tributo.getTipoContabilita()) {
+		if(tributo.getTipoContabilitaCustom() != null) {
+			switch (tributo.getTipoContabilitaCustom()) {
 			case ALTRO:
 				rsModel.tipoContabilita(TipoContabilita.ALTRO);
 				break;
@@ -330,11 +336,17 @@ public class DominiConverter {
 			}
 		}
 		
-		if(tributo.getCodTributoIuv()!=null)
-			rsModel.codificaIUV(tributo.getCodTributoIuv());
+		if(tributo.getCodTributoIuvCustom()!=null)
+			rsModel.codificaIUV(tributo.getCodTributoIuvCustom());
 		
-		rsModel.setOnline(tributo.getOnline());
-		rsModel.setPagaTerzi(tributo.getPagaTerzi());
+		rsModel.setOnline(tributo.getOnlineCustom());
+		rsModel.setPagaTerzi(tributo.getPagaTerziCustom());
+		
+		if(ibanAccredito != null)
+			rsModel.setIbanAccredito(ibanAccredito.getCodIban());
+		
+		if(ibanAppoggio != null)
+			rsModel.setIbanAppoggio(ibanAppoggio.getCodIban());
 		
 		return rsModel;
 	}

@@ -1,14 +1,20 @@
 package it.govpay.core.dao.pagamenti;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.pagamento.IncassiBD;
+import it.govpay.bd.pagamento.filters.IncassoFilter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -28,14 +34,37 @@ import it.govpay.model.Acl.Servizio;
 
 public class IncassiDAO extends BaseDAO{
 
-	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthorizedException, ServiceException{
+	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
-			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
-			ListaIncassiDTOResponse listaIncassiDTOResponse = incassi.listaIncassi(listaIncassoDTO);
+
+			List<String> domini = null;
+			domini = AuthorizationManager.getDominiAutorizzati(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA); 
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
+			}
+
+			IncassiBD incassiBD = new IncassiBD(bd);
+			IncassoFilter newFilter = incassiBD.newFilter();
+			if(domini != null)
+				newFilter.setCodDomini(new ArrayList<>(domini));
+			newFilter.setDataInizio(listaIncassoDTO.getInizio());
+			newFilter.setDataFine(listaIncassoDTO.getFine());
+			newFilter.setOffset(listaIncassoDTO.getOffset());
+			newFilter.setLimit(listaIncassoDTO.getLimit());
+
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO);
+			fsw.setSortOrder(SortOrder.DESC);
+			newFilter.getFilterSortList().add(fsw);
+
+			List<Incasso> findAll = incassiBD.findAll(newFilter);
+			long count = incassiBD.count(newFilter);
+
+			ListaIncassiDTOResponse listaIncassiDTOResponse = new ListaIncassiDTOResponse(count, findAll);
 
 			if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {
 				for (Incasso incasso : listaIncassiDTOResponse.getResults()) {
@@ -44,7 +73,7 @@ public class IncassiDAO extends BaseDAO{
 
 					if(pagamenti != null) {
 						for(Pagamento pagamento: pagamenti) {
-							pagamento.getDominio(bd);
+							try { pagamento.getDominio(bd); } catch (NotFoundException e) {	}
 							pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
 							pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
 							pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
@@ -60,12 +89,6 @@ public class IncassiDAO extends BaseDAO{
 			}
 
 			return listaIncassiDTOResponse;
-		}catch (NotAuthorizedException e) {
-			// TODO
-			throw e;
-		} catch (Exception e) {
-			// TODO
-			throw new ServiceException(e);
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
@@ -81,9 +104,18 @@ public class IncassiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			this.autorizzaRichiesta(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
-			
-			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
-			response = incassi.leggiIncasso(leggiIncassoDTO);
+
+			IncassiBD incassiBD = new IncassiBD(bd);
+			List<Diritti> diritti = new ArrayList<>();
+			diritti.add(Diritti.LETTURA);
+
+			boolean isAuthorized = AuthorizationManager.isAuthorized(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, leggiIncassoDTO.getIdDominio(), null, diritti);
+			if(!isAuthorized) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti, false, leggiIncassoDTO.getIdDominio(), null);
+			}
+			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
+
+			response.setIncasso(incasso);
 			List<Pagamento> pagamenti = response.getIncasso().getPagamenti(bd);
 
 			if(pagamenti != null) {
@@ -100,11 +132,7 @@ public class IncassiDAO extends BaseDAO{
 
 			response.getIncasso().getApplicazione(bd);
 			response.getIncasso().getDominio(bd);
-			
 
-		}catch (NotAuthorizedException e) {
-			// TODO
-			throw e;
 		} catch (NotFoundException e) {
 			throw new IncassoNonTrovatoException(e.getMessage(), e);
 		} finally {

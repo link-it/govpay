@@ -28,6 +28,7 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 public class EntrateController extends BaseController {
 
@@ -54,6 +55,10 @@ public class EntrateController extends BaseController {
 			
 			String jsonRequest = baos.toString();
 			TipoEntrataPost entrataRequest= JSONSerializable.parse(jsonRequest, TipoEntrataPost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idEntrata", idEntrata).notNull().minLength(1).maxLength(255);
+			
 			entrataRequest.validate();
 			
 			PutEntrataDTO putIntermediarioDTO = EntrateConverter.getPutEntrataDTO(entrataRequest, idEntrata, user);

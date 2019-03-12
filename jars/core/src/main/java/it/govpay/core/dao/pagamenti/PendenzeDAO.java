@@ -22,10 +22,12 @@ package it.govpay.core.dao.pagamenti;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
@@ -92,10 +94,12 @@ import it.govpay.stampe.model.AvvisoPagamentoInput;
 public class PendenzeDAO extends BaseDAO{
 
 	private static final String NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0 = "Non e'' consentito aggiornare lo stato di una pendenza ad {0}";
-	private static final String PATH_DESCRIZIONE_STATO = "/descrizioneStato";
-	private static final String PATH_STATO = "/stato";
-	private static final String PATH_ACK = "/ack";
+	private static final String NUOVO_STATO_PENDENZA_NON_VALIDO = "Il campo value indicato per il path ''{0}'' non e'' valido.";
+	public static final String PATH_DESCRIZIONE_STATO = "/descrizioneStato";
+	public static final String PATH_STATO = "/stato";
+	public static final String PATH_ACK = "/ack";
 	public static final String PATH_NOTA = "/nota";
+	public static final String[] OPERAZIONI_CONSENTITE_PENDENZE = { PATH_DESCRIZIONE_STATO, PATH_STATO, PATH_ACK, PATH_NOTA }; 
 
 	public PendenzeDAO() {
 	}
@@ -118,7 +122,7 @@ public class PendenzeDAO extends BaseDAO{
 		// Autorizzazione sui domini
 		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true);
 		if(idDomini == null) {
-			throw new NotAuthorizedException("L'utenza autenticata ["+listaPendenzaDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 		}
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
 		
@@ -306,6 +310,21 @@ public class PendenzeDAO extends BaseDAO{
 	}
 	
 	
+	private void validaPath(String path) throws ValidationException {
+		if(!Arrays.asList(OPERAZIONI_CONSENTITE_PENDENZE).contains(path))
+			throw new ValidationException(UtenzaPatchUtils.PATH_NON_VALIDO);
+	}
+	
+	private void validaValue(Object object) throws ValidationException {
+		if(object == null)
+			throw new ValidationException(UtenzaPatchUtils.VALUE_NON_VALIDO_PER_IL_PATH);
+		
+		String value = (String) object;
+		if(StringUtils.isEmpty(value))
+			throw new ValidationException(UtenzaPatchUtils.VALUE_NON_VALIDO_PER_IL_PATH);
+	}
+	
+	
 	public PatchPendenzaDTOResponse patch(PatchPendenzaDTO patchPendenzaDTO) throws PendenzaNonTrovataException, GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		
 		PatchPendenzaDTOResponse response = new PatchPendenzaDTOResponse();
@@ -325,6 +344,12 @@ public class PendenzeDAO extends BaseDAO{
 			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, versamentoLetto.getDominio(bd).getCodDominio(), null, bd);
 			
 			for(PatchOp op: patchPendenzaDTO.getOp()) {
+				
+				// validazione del path richiesto
+				this.validaPath(op.getPath());
+				
+				// validazione del value
+				this.validaValue(op.getValue());
 				
 				if(PATH_STATO.equals(op.getPath())) {
 					String motivazione = null;
@@ -404,7 +429,6 @@ public class PendenzeDAO extends BaseDAO{
 			if(bd != null)
 				bd.closeConnection();
 		}
-
 	}
 
 	private void patchDescrizioneStato(it.govpay.bd.model.Versamento versamentoLetto, PatchOp op) throws ValidationException {
@@ -413,6 +437,10 @@ public class PendenzeDAO extends BaseDAO{
 		}
 		
 		String descrizioneStato = (String) op.getValue();
+		
+		if(StringUtils.isEmpty(descrizioneStato))
+			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+		
 		versamentoLetto.setDescrizioneStato(descrizioneStato);
 	}
 
@@ -489,7 +517,11 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	private StatoVersamento getNuovoStatoVersamento(PatchOp op) throws ValidationException {
-		StatoPendenza nuovoStatoPendenza = StatoPendenza.valueOf((String) op.getValue());
+		String nuovoStatoPendenzaValue = (String) op.getValue();
+		StatoPendenza nuovoStatoPendenza = StatoPendenza.fromValue(nuovoStatoPendenzaValue);
+		
+		if(nuovoStatoPendenza == null && StringUtils.isNotEmpty(nuovoStatoPendenzaValue))
+			throw new ValidationException(MessageFormat.format(NUOVO_STATO_PENDENZA_NON_VALIDO, op.getPath()));
 		
 		StatoVersamento nuovoStato = null;
 		switch (nuovoStatoPendenza) {

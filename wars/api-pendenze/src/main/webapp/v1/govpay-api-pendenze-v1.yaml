@@ -1162,6 +1162,10 @@ components:
               $ref: '#/components/schemas/unitaOperativa'
             stato:
               $ref: '#/components/schemas/statoPendenza'
+            descrizioneStato:
+              type: string
+              description: Descrizione estesa dello stato di elaborazione della pendenza
+              example: 'Pendenza in stato...'
             segnalazioni:
               type: array
               items: 

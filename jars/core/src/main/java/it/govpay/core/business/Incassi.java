@@ -27,13 +27,12 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
@@ -51,16 +50,11 @@ import it.govpay.bd.pagamento.filters.IncassoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
-import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
-import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
-import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
@@ -87,30 +81,31 @@ public class Incassi extends BasicBD {
 		super(basicBD);
 	}
 
-	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncasso) throws NotAuthorizedException, InternalException, IncassiException {
+	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncasso) throws NotAuthorizedException, GovPayException, IncassiException {
 		
 		try {
-			GpThreadLocal.get().getApplicationLogger().log("incasso.richiesta");
+			IContext ctx = GpThreadLocal.get();
+			ctx.getApplicationLogger().log("incasso.richiesta");
 			
 			// Validazione dati obbligatori
 			
 			if(richiestaIncasso.getCausale() == null) {
-				GpThreadLocal.get().getApplicationLogger().log("incasso.sintassi", "causale mancante");
+				ctx.getApplicationLogger().log("incasso.sintassi", "causale mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
 			}
 			
 			if(richiestaIncasso.getCausale().length() > 512) {
-				GpThreadLocal.get().getApplicationLogger().log("incasso.sintassi", "causale troppo lunga");
+				ctx.getApplicationLogger().log("incasso.sintassi", "causale troppo lunga");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificata una causale che eccede il massimo numero di caratteri consentiti (512)");
 			}
 			
 			if(richiestaIncasso.getCodDominio() == null) {
-				GpThreadLocal.get().getApplicationLogger().log("incasso.sintassi", "dominio mancante");
+				ctx.getApplicationLogger().log("incasso.sintassi", "dominio mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio cod_dominio");
 			}
 			
 			if(richiestaIncasso.getImporto() == null) {
-				GpThreadLocal.get().getApplicationLogger().log("incasso.sintassi", "importo mancante");
+				ctx.getApplicationLogger().log("incasso.sintassi", "importo mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio importo");
 			}
 			
@@ -119,7 +114,7 @@ public class Incassi extends BasicBD {
 			try {
 				dominio = AnagraficaManager.getDominio(this, richiestaIncasso.getCodDominio());
 			} catch (NotFoundException e) {
-				GpThreadLocal.get().getApplicationLogger().log("incasso.dominioInesistente", richiestaIncasso.getCodDominio());
+				ctx.getApplicationLogger().log("incasso.dominioInesistente", richiestaIncasso.getCodDominio());
 				throw new IncassiException(FaultType.DOMINIO_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
 			}
 			
@@ -128,7 +123,7 @@ public class Incassi extends BasicBD {
 			try {
 				AnagraficaManager.getIbanAccredito(this, dominio.getId(), richiestaIncasso.getIbanAccredito());
 			} catch (NotFoundException e) {
-				GpThreadLocal.get().getApplicationLogger().log("incasso.ibanInesistente", richiestaIncasso.getIbanAccredito());
+				ctx.getApplicationLogger().log("incasso.ibanInesistente", richiestaIncasso.getIbanAccredito());
 				throw new IncassiException(FaultType.IBAN_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
 			}
 			
@@ -167,7 +162,7 @@ public class Incassi extends BasicBD {
 				log.error("Riscontrato errore durante il parsing della causale",e);
 			} finally {
 				if(iuv == null && idf==null) {
-					GpThreadLocal.get().getApplicationLogger().log("incasso.causaleNonValida", causale);
+					ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
 					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
 				}
 			}
@@ -186,7 +181,7 @@ public class Incassi extends BasicBD {
 				incassoFilter.setCausale(iuv);
 			List<Incasso> findAll = incassiBD.findAll(incassoFilter);
 			if(findAll.size() != 0) {
-				GpThreadLocal.get().getApplicationLogger().log("incasso.causaleGiaIncassata", causale);
+				ctx.getApplicationLogger().log("incasso.causaleGiaIncassata", causale);
 				if(idf != null)
 					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Il flusso di rendicontazione [" + idf + "] indicato in causale risulta gia' incassato");
 				else
@@ -203,15 +198,15 @@ public class Incassi extends BasicBD {
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
 				if(!richiestaIncasso.getCausale().equals(incasso.getCausale())) {
-					GpThreadLocal.get().getApplicationLogger().log("incasso.sintassi", "causale");
+					ctx.getApplicationLogger().log("incasso.sintassi", "causale");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con causale diversa");
 				}
 				if(!richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
-					GpThreadLocal.get().getApplicationLogger().log("incasso.sintassi", "dominio");
+					ctx.getApplicationLogger().log("incasso.sintassi", "dominio");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso");
 				}
 				if(richiestaIncasso.getImporto().compareTo(incasso.getImporto()) != 0) {
-					GpThreadLocal.get().getApplicationLogger().log("incasso.sintassi", "importo");
+					ctx.getApplicationLogger().log("incasso.sintassi", "importo");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
 				}
 				
@@ -236,10 +231,10 @@ public class Incassi extends BasicBD {
 					it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(richiestaIncasso.getCodDominio(), iuv);
 					pagamenti.add(pagamento);
 				} catch (NotFoundException nfe) {
-					GpThreadLocal.get().getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
+					ctx.getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
 					throw new IncassiException(FaultType.PAGAMENTO_NON_TROVATO, "Lo IUV " + iuv + " estratto dalla causale di incasso non identifica alcun pagamento per il creditore " + richiestaIncasso.getCodDominio());
 				} catch (MultipleResultException mre) {
-					GpThreadLocal.get().getApplicationLogger().log("incasso.iuvPagamentiMultipli", iuv, richiestaIncasso.getCodDominio());
+					ctx.getApplicationLogger().log("incasso.iuvPagamentiMultipli", iuv, richiestaIncasso.getCodDominio());
 					throw new IncassiException(FaultType.PAGAMENTO_NON_IDENTIFICATO, "Lo IUV " + iuv + " estratto dalla causale di incasso identifica piu' di un pagamento per il creditore " + richiestaIncasso.getCodDominio());
 				}
 			}
@@ -260,7 +255,7 @@ public class Incassi extends BasicBD {
 					if(fr == null) throw new NotFoundException();
 					
 					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
-						GpThreadLocal.get().getApplicationLogger().log("incasso.frAnomala", idf);
+						ctx.getApplicationLogger().log("incasso.frAnomala", idf);
 						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
 					}
 					
@@ -271,7 +266,7 @@ public class Incassi extends BasicBD {
 					
 					for(Rendicontazione rendicontazione : fr.getRendicontazioni(this)) {
 						if(!rendicontazione.getStato().equals(StatoRendicontazione.OK)) {
-							GpThreadLocal.get().getApplicationLogger().log("incasso.frAnomala", idf);
+							ctx.getApplicationLogger().log("incasso.frAnomala", idf);
 							throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
 						}
 						
@@ -347,7 +342,7 @@ public class Incassi extends BasicBD {
 								eventoNota.setTipoEvento(TipoNota.SistemaInfo);
 								giornaleEventi.registraEventoNota(eventoNota);
 							} catch (MultipleResultException e) {
-								GpThreadLocal.get().getApplicationLogger().log("incasso.frAnomala", idf);
+								ctx.getApplicationLogger().log("incasso.frAnomala", idf);
 								throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");
 							}
 						}
@@ -359,7 +354,7 @@ public class Incassi extends BasicBD {
 						pagamenti.add(pagamento);
 					}
 				} catch (NotFoundException nfe) {
-					GpThreadLocal.get().getApplicationLogger().log("incasso.idfNonTrovato", idf);
+					ctx.getApplicationLogger().log("incasso.idfNonTrovato", idf);
 					throw new IncassiException(FaultType.IDF_NON_TROVATO, "L'identificativo " + idf + " estratto dalla causale di incasso non identifica alcun flusso di rendicontazione");
 				} 
 			}
@@ -368,7 +363,7 @@ public class Incassi extends BasicBD {
 			BigDecimal totalePagato = BigDecimal.ZERO;
 			for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
 				if(Stato.INCASSATO.equals(pagamento.getStato())) {
-					GpThreadLocal.get().getApplicationLogger().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
+					ctx.getApplicationLogger().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
 					throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, "Uno dei pagamenti incassati [Dominio:" + pagamento.getCodDominio() + " Iuv:" + pagamento.getIuv() + " Iur:" + pagamento.getIur() + "] risuta gia' incassato.");
 				}
 				totalePagato = totalePagato.add(pagamento.getImportoPagato());
@@ -376,7 +371,7 @@ public class Incassi extends BasicBD {
 			
 			// Verifica importo pagato con l'incassato
 			if(totalePagato.doubleValue() != richiestaIncasso.getImporto().doubleValue()) {
-				GpThreadLocal.get().getApplicationLogger().log("incasso.importoErrato", totalePagato.doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
+				ctx.getApplicationLogger().log("incasso.importoErrato", totalePagato.doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
 				throw new IncassiException(FaultType.IMPORTO_ERRATO, "L'importo incassato [" + richiestaIncasso.getImporto() + "] non corriponde alla somma dei pagamenti [" + totalePagato.doubleValue() + "]");
 			}
 			
@@ -406,70 +401,20 @@ public class Incassi extends BasicBD {
 				this.commit();
 			} catch(Exception e) {
 				this.rollback();
-				throw new InternalException(e);
+				throw new GovPayException(e);
 			} finally {
 				this.setAutoCommit(true);
 			}
 			
 			return richiestaIncassoResponse;
 		} catch (ServiceException e) {
-			throw new InternalException(e);
+			throw new GovPayException(e);
 		} catch (UtilsException e) {
-			throw new InternalException(e);
+			throw new GovPayException(e);
 		} finally {
 			try {
 				this.disableSelectForUpdate();
 			} catch (ServiceException e) {}
-		}
-	}
-
-	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthorizedException, ServiceException {
-		List<String> domini = null;
-		List<Diritti> diritti = new ArrayList<>(); 
-		diritti.add(Diritti.LETTURA);
-		domini = AuthorizationManager.getDominiAutorizzati(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti); 
-		if(domini == null) {
-			throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
-		}
-		
-		IncassiBD incassiBD = new IncassiBD(this);
-		IncassoFilter newFilter = incassiBD.newFilter();
-		if(domini != null)
-			newFilter.setCodDomini(new ArrayList<>(domini));
-		newFilter.setDataInizio(listaIncassoDTO.getInizio());
-		newFilter.setDataFine(listaIncassoDTO.getFine());
-		newFilter.setOffset(listaIncassoDTO.getOffset());
-		newFilter.setLimit(listaIncassoDTO.getLimit());
-		
-		FilterSortWrapper fsw = new FilterSortWrapper();
-		fsw.setField(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO);
-		fsw.setSortOrder(SortOrder.DESC);
-		newFilter.getFilterSortList().add(fsw);
-
-		List<Incasso> findAll = incassiBD.findAll(newFilter);
-		long count = incassiBD.count(newFilter);
-		
-		ListaIncassiDTOResponse response = new ListaIncassiDTOResponse(count, findAll);
-		return response;
-	}
-	
-	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws NotFoundException,NotAuthorizedException, ServiceException {
-		IncassiBD incassiBD = new IncassiBD(this);
-		try {
-			List<Diritti> diritti = new ArrayList<>();
-			diritti.add(Diritti.LETTURA);
-			
-			boolean isAuthorized = AuthorizationManager.isAuthorized(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, leggiIncassoDTO.getIdDominio(), null, diritti);
-			if(!isAuthorized) {
-				throw new NotAuthorizedException("L'utente autenticato non e' autorizzato ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per il dominio " + leggiIncassoDTO.getIdDominio());
-			}
-			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
-			
-			LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();
-			response.setIncasso(incasso);
-			return response;
-		} catch (NotFoundException e) {
-			throw e;
 		}
 	}
 }

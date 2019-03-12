@@ -543,11 +543,33 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   }
   
   @Override
-public void validate() throws org.openspcoop2.utils.json.ValidationException {
-		ValidatorFactory vf = ValidatorFactory.newInstance();
-
-		vf.getValidator("segregationCode", this.segregationCode).pattern("(^[0-4][0-9]$)");
-  }
+	public void validate() throws org.openspcoop2.utils.json.ValidationException {
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+	
+			vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(70);
+			vf.getValidator("gln", this.gln).notNull().length(13).pattern("(^([0-9]){13}$)");
+			vf.getValidator("auxDigit", this.auxDigit).notNull().length(1).pattern("(^([0-3]){1}$)");;
+			vf.getValidator("stazione", this.stazione).notNull();
+			vf.getValidator("segregationCode", this.segregationCode).length(2).pattern("(^[0-4][0-9]$)");
+			vf.getValidator("cbill", this.cbill).length(5).pattern("(^([0-9]){5}$)");;
+			vf.getValidator("autStampaPosteItaliane", this.autStampaPosteItaliane).maxLength(255);
+			vf.getValidator("iuvPrefix", this.iuvPrefix).maxLength(255);
+			vf.getValidator("abilitato", this.abilitato).notNull();
+			
+			// uo associata al dominio
+			vf.getValidator("indirizzo", this.indirizzo).minLength(1).maxLength(70);
+			vf.getValidator("civico", this.civico).minLength(1).maxLength(16);
+			vf.getValidator("cap", this.cap).minLength(1).maxLength(16);
+			vf.getValidator("localita", this.localita).minLength(1).maxLength(35);
+			vf.getValidator("provincia", this.provincia).minLength(1).maxLength(35);
+			vf.getValidator("nazione", this.nazione).length(2).pattern("(^[A-Z]{2,2}$)");
+			vf.getValidator("email", this.email).minLength(1).maxLength(255).pattern("(^([\\w\\.\\-_]+)?\\w+@[\\w-_]+(\\.\\w+){1,}$)");
+			vf.getValidator("pec", this.pec).minLength(1).maxLength(255).pattern("(^([\\w\\.\\-_]+)?\\w+@[\\w-_]+(\\.\\w+){1,}$)");
+			vf.getValidator("tel", this.tel).minLength(1).maxLength(255);
+			vf.getValidator("fax", this.fax).minLength(1).maxLength(255);
+			vf.getValidator("web", this.web).minLength(1).maxLength(255);
+			vf.getValidator("area", this.area).minLength(1).maxLength(255);
+	  }
 }
 
 

@@ -166,7 +166,7 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 			fields.add(Applicazione.model().TRUSTED);
 			fields.add(Applicazione.model().COD_APPLICAZIONE_IUV);
 			fields.add(Applicazione.model().REG_EXP);
-			
+			fields.add(Applicazione.model().AUTO_IUV);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
