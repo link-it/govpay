@@ -13,7 +13,6 @@ import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.Profilo;
 import it.govpay.backoffice.v1.beans.TipoEntrata;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.model.Acl;

@@ -1,6 +1,5 @@
 package it.govpay.backoffice.v1.beans;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;

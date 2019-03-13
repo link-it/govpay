@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
@@ -21,8 +22,11 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
   @JsonProperty("descrizione")
   private String descrizione = null;
   
+  @JsonIgnore
+  private TipoContabilita tipoContabilitaEnum = null;
+  
   @JsonProperty("tipoContabilita")
-  private TipoContabilita tipoContabilita = null;
+  private String tipoContabilita = null;
   
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
@@ -54,16 +58,32 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
   /**
    * Tipologia di codifica del capitolo di bilancio
    **/
-  public TipoEntrataPost tipoContabilita(TipoContabilita tipoContabilita) {
+  public TipoEntrataPost tipoContabilitaEnum(TipoContabilita tipoContabilitaEnum) {
+    this.tipoContabilitaEnum = tipoContabilitaEnum;
+    return this;
+  }
+
+  @JsonIgnore
+  public TipoContabilita getTipoContabilitaEnum() {
+    return this.tipoContabilitaEnum;
+  }
+  public void setTipoContabilitaEnum(TipoContabilita tipoContabilitaEnum) {
+    this.tipoContabilitaEnum = tipoContabilitaEnum;
+  }
+  
+  /**
+   * Tipologia di codifica del capitolo di bilancio
+   **/
+  public TipoEntrataPost tipoContabilita(String tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
     return this;
   }
 
   @JsonProperty("tipoContabilita")
-  public TipoContabilita getTipoContabilita() {
+  public String getTipoContabilita() {
     return this.tipoContabilita;
   }
-  public void setTipoContabilita(TipoContabilita tipoContabilita) {
+  public void setTipoContabilita(String tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
   }
 
@@ -191,8 +211,9 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	vf.getValidator("descrizione", this.descrizione).minLength(1).maxLength(255);
-	vf.getValidator("codiceContabilita", this.codiceContabilita).minLength(1).maxLength(255);
+	vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
+	vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
+	vf.getValidator("codiceContabilita", this.codiceContabilita).notNull().minLength(1).maxLength(255);
 	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4);
 	vf.getValidator("online", this.online).notNull();
 	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();

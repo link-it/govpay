@@ -238,6 +238,9 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		vf.getValidator("codificaAvvisi", this.codificaAvvisi).validateFields();
 		vf.getValidator("servizioVerifica", this.servizioVerifica).validateFields();
 		vf.getValidator("servizioNotifica", this.servizioNotifica).validateFields();
+		vf.getValidator("acl", this.acl).validateObjects();
+//		vf.getValidator("domini", this.domini).validateObjects();
+//		vf.getValidator("entrate", this.entrate).validateObjects();
 		vf.getValidator("abilitato", this.abilitato).notNull();
 	}
 }

@@ -2,17 +2,22 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "servizio",
 "autorizzazioni",
 })
-public class AclPost extends it.govpay.core.beans.JSONSerializable {
+public class AclPost extends it.govpay.core.beans.JSONSerializable  implements IValidable{
   
   @JsonProperty("servizio")
   private String servizio = null;
@@ -140,6 +145,25 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		vf.getValidator("servizio", this.servizio).notNull();
+		
+		if(ServizioEnum.fromValue(this.servizio) == null)
+			throw new ValidationException("Codifica inesistente per servizio. Valore fornito [" + this.servizio + "] valori possibili " + ArrayUtils.toString(ServizioEnum.values()));
+
+		
+		if(this.autorizzazioni == null || this.autorizzazioni.isEmpty())
+			throw new ValidationException("Il campo " + "autorizzazioni" + " non deve essere vuoto.");
+		
+		for (String string : this.autorizzazioni) {
+			if(AutorizzazioniEnum.fromValue(string) == null)
+				throw new ValidationException("Codifica inesistente per autorizzazioni. Valore fornito [" + string + "] valori possibili " + ArrayUtils.toString(AutorizzazioniEnum.values()));
+		}
+		
+	}
 }
 
 

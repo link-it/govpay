@@ -4,7 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.ContiAccredito;
@@ -28,7 +30,7 @@ import it.govpay.model.Anagrafica;
 
 public class DominiConverter {
 	
-	public static PutEntrataDominioDTO getPutEntrataDominioDTO(EntrataPost entrataRequest, String idDominio, String idEntrata, Authentication user) {
+	public static PutEntrataDominioDTO getPutEntrataDominioDTO(EntrataPost entrataRequest, String idDominio, String idEntrata, Authentication user) throws ValidationException {
 		PutEntrataDominioDTO entrataDTO = new PutEntrataDominioDTO(user);
 		
 		it.govpay.bd.model.Tributo tributo = new it.govpay.bd.model.Tributo();
@@ -38,9 +40,18 @@ public class DominiConverter {
 		tributo.setCodTributo(idEntrata);
 		if(entrataRequest.getCodificaIUV()!=null)
 			tributo.setCodTributoIuvCustom(entrataRequest.getCodificaIUV()+"");
-//		tributo.setDescrizione(entrataRequest.getDescrizione()); //TODO
+		
 		if(entrataRequest.getTipoContabilita() != null) {
-			switch (entrataRequest.getTipoContabilita()) {
+			
+			// valore tipo contabilita non valido
+			if(TipoContabilita.fromValue(entrataRequest.getTipoContabilita()) == null) {
+				throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + entrataRequest.getTipoContabilita() + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+			}
+			
+			entrataRequest.setTipoContabilitaEnum(TipoContabilita.fromValue(entrataRequest.getTipoContabilita()));
+			
+			
+			switch (entrataRequest.getTipoContabilitaEnum()) {
 			case ALTRO:
 				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.ALTRO);
 				break;

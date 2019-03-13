@@ -26,6 +26,7 @@ public class IncassiException extends BaseException {
 	public static final String faultString = "Richiesta di incasso non processabile";
 	
 	public enum FaultType {
+		RICHIESTA_NON_PROCESSABILE("021400",faultString),
 		CAUSALE_NON_VALIDA("021401","Il formato della causale non e' conforme alle specifiche AgID."),
 		PAGAMENTO_NON_TROVATO("021402","Pagamento non trovato."),
 		PAGAMENTO_NON_IDENTIFICATO("021403","Pagamento non identificato."),
@@ -56,8 +57,12 @@ public class IncassiException extends BaseException {
 		}
 	}
 	
+	public IncassiException(String description) {
+		super(description, FaultType.RICHIESTA_NON_PROCESSABILE.getFaultSubCode(), FaultType.RICHIESTA_NON_PROCESSABILE.getDescription());
+	}
+	
 	public IncassiException(FaultType faultType, String description) {
-		super(faultString, faultType.getFaultSubCode(), description);
+		super(description, faultType.getFaultSubCode(), faultType.getDescription());
 	}
 
 	@Override

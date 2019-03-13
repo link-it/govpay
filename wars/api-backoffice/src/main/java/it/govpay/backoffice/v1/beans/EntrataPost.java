@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
@@ -26,8 +27,11 @@ public class EntrataPost extends it.govpay.core.beans.JSONSerializable implement
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio = null;
   
+  @JsonIgnore
+  private TipoContabilita tipoContabilitaEnum = null;
+  
   @JsonProperty("tipoContabilita")
-  private TipoContabilita tipoContabilita = null;
+  private String tipoContabilita = null;
   
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
@@ -75,17 +79,34 @@ public class EntrataPost extends it.govpay.core.beans.JSONSerializable implement
   }
 
   /**
+   * Tipologia di codifica del capitolo di bilancio
    **/
-  public EntrataPost tipoContabilita(TipoContabilita tipoContabilita) {
+  public EntrataPost tipoContabilitaEnum(TipoContabilita tipoContabilitaEnum) {
+    this.tipoContabilitaEnum = tipoContabilitaEnum;
+    return this;
+  }
+
+  @JsonIgnore
+  public TipoContabilita getTipoContabilitaEnum() {
+    return this.tipoContabilitaEnum;
+  }
+  public void setTipoContabilitaEnum(TipoContabilita tipoContabilitaEnum) {
+    this.tipoContabilitaEnum = tipoContabilitaEnum;
+  }
+  
+  /**
+   * Tipologia di codifica del capitolo di bilancio
+   **/
+  public EntrataPost tipoContabilita(String tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
     return this;
   }
 
   @JsonProperty("tipoContabilita")
-  public TipoContabilita getTipoContabilita() {
+  public String getTipoContabilita() {
     return this.tipoContabilita;
   }
-  public void setTipoContabilita(TipoContabilita tipoContabilita) {
+  public void setTipoContabilita(String tipoContabilita) {
     this.tipoContabilita = tipoContabilita;
   }
 

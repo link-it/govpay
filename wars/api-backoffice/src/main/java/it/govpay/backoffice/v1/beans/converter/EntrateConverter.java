@@ -1,6 +1,8 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.TipoContabilita;
@@ -10,7 +12,7 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 
 public class EntrateConverter {
 
-	public static PutEntrataDTO getPutEntrataDTO(TipoEntrataPost entrataPost, String idEntrata, Authentication user) throws ServiceException {
+	public static PutEntrataDTO getPutEntrataDTO(TipoEntrataPost entrataPost, String idEntrata, Authentication user) throws ServiceException, ValidationException {
 		PutEntrataDTO entrataDTO = new PutEntrataDTO(user);
 		
 		it.govpay.model.TipoTributo tipoTributo = new it.govpay.model.TipoTributo();
@@ -21,7 +23,15 @@ public class EntrateConverter {
 		tipoTributo.setCodTributo(idEntrata);
 		tipoTributo.setDescrizione(entrataPost.getDescrizione());
 		if(entrataPost.getTipoContabilita() != null) {
-			switch (entrataPost.getTipoContabilita()) {
+			
+			// valore tipo contabilita non valido
+			if(TipoContabilita.fromValue(entrataPost.getTipoContabilita()) == null) {
+				throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + entrataPost.getTipoContabilita() + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+			}
+			
+			entrataPost.setTipoContabilitaEnum(TipoContabilita.fromValue(entrataPost.getTipoContabilita()));
+
+			switch (entrataPost.getTipoContabilitaEnum()) {
 			case ALTRO:
 				tipoTributo.setTipoContabilitaDefault(it.govpay.model.Tributo.TipoContabilita.ALTRO);
 				break;

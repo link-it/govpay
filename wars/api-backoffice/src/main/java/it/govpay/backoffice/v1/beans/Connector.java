@@ -136,8 +136,8 @@ public void validate() throws ValidationException {
 		} catch (IllegalArgumentException e) {
 			throw new ValidationException("Il valore [" + this.versioneApi + "] del campo versioneApi corrisponde con uno dei valori consentiti: " + Arrays.asList(VersioneApiEnum.values()));
 		}
-		if(this.auth != null)
-			vf.getValidator("auth", this.auth).validateFields();
+		
+		vf.getValidator("auth", this.auth).validateFields();
 	}
 }
 

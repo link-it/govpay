@@ -8,6 +8,8 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "causale",
 "importo",
@@ -15,7 +17,7 @@ import it.govpay.core.beans.JSONSerializable;
 "dataContabile",
 "ibanAccredito",
 })
-public class IncassoPost extends JSONSerializable {
+public class IncassoPost extends JSONSerializable  implements IValidable {
   
   @JsonProperty("causale")
   private String causale = null;
@@ -166,6 +168,15 @@ public class IncassoPost extends JSONSerializable {
     return o.toString().replace("\n", "\n    ");
   }
   
+  @Override
+  public void validate() throws ValidationException {
+	ValidatorFactory vf = ValidatorFactory.newInstance();
+	vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(512);
+	vf.getValidator("importo", this.importo).notNull().checkDecimalDigits();
+	vf.getValidator("dataValuta", this.dataValuta);
+	vf.getValidator("dataContabile", this.dataContabile);
+	vf.getValidator("ibanAccredito", this.ibanAccredito).minLength(1).maxLength(35);
+  }
   
 }
 

@@ -7,19 +7,19 @@ import java.text.DecimalFormatSymbols;
 import org.openspcoop2.utils.json.ValidationException;
 
 
-public class BigDecimalValidator {
+public class DoubleValidator {
 
 	private String fieldName;
-	private BigDecimal fieldValue;
+	private Double fieldValue;
 	private DecimalFormat df;
 
-	protected BigDecimalValidator(String fieldName, BigDecimal fieldValue) { 
+	protected DoubleValidator(String fieldName, Double fieldValue) { 
 		this.fieldName = fieldName;
 		this.fieldValue = fieldValue;
 		this.df = new DecimalFormat("#0.##");
 	}
 	
-	public BigDecimalValidator checkDecimalDigits() throws ValidationException {
+	public DoubleValidator checkDecimalDigits() throws ValidationException {
 		
 		notNull(); // check not null di default
 		
@@ -36,28 +36,28 @@ public class BigDecimalValidator {
 		return this;
 	}
 
-	public BigDecimalValidator notNull() throws ValidationException {
+	public DoubleValidator notNull() throws ValidationException {
 		if(this.fieldValue == null) {
 			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
 		}
 		return this;
 	}
 	
-	public BigDecimalValidator isNull() throws ValidationException {
+	public DoubleValidator isNull() throws ValidationException {
 		if(this.fieldValue != null) {
 			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
 		}
 		return this;
 	}
 	
-	public BigDecimalValidator max(BigDecimal max) throws ValidationException {
+	public DoubleValidator max(Double max) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(max) > 0) {
 			throw new ValidationException("Il campo " + this.fieldName + " deve essere inferiore a " + this.df.format(max) + ".");
 		}
 		return this;
 	}
 	
-	public BigDecimalValidator min(BigDecimal min) throws ValidationException {
+	public DoubleValidator min(Double min) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(min) <= 0) {
 			throw new ValidationException("Il campo " + this.fieldName + " deve essere superiore a " + this.df.format(min) + ".");
 		}
@@ -65,14 +65,14 @@ public class BigDecimalValidator {
 	}
 
 	
-	public BigDecimalValidator maxOrEquals(BigDecimal max) throws ValidationException {
+	public DoubleValidator maxOrEquals(Double max) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(max) >= 0) {
 			throw new ValidationException("Il campo " + this.fieldName + " deve essere inferiore o uguale a " + this.df.format(max) + ".");
 		}
 		return this;
 	}
 	
-	public BigDecimalValidator minOrEquals(BigDecimal min) throws ValidationException {
+	public DoubleValidator minOrEquals(Double min) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(min) <= 0) {
 			throw new ValidationException("Il campo " + this.fieldName + " deve essere superiore o uguale a " + this.df.format(min) + ".");
 		}

@@ -149,6 +149,8 @@ public class IncassiController extends BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			IncassoPost incasso = JSONSerializable.parse(baos.toString(), IncassoPost.class);
+			incasso.validate();
+			
 			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();

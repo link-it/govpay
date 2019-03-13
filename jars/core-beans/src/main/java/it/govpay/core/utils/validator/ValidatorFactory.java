@@ -44,6 +44,11 @@ public class ValidatorFactory {
 		return new BigDecimalValidator(fieldName, fieldValue);
 	}
 	
+	public DoubleValidator getValidator(String fieldName, Double fieldValue) {
+		if(fieldName == null) throw FIELDNAME_NULLPOINTEREXCEPTION;
+		return new DoubleValidator(fieldName, fieldValue);
+	}
+	
 	public BooleanValidator getValidator(String fieldName, Boolean fieldValue) {
 		if(fieldName == null) throw FIELDNAME_NULLPOINTEREXCEPTION;
 		return new BooleanValidator(fieldName, fieldValue);

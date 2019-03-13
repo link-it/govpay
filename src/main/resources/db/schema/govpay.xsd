@@ -30,7 +30,7 @@
 								<linkit:sql-table object-name="TipoTributo" object-type="TipoTributo"/>
 								<linkit:sql-table object-name="Tributo" object-type="Tributo"/>
 								<linkit:sql-table object-name="UtenzaDominio" object-type="UtenzaDominio"/>
-								<linkit:sql-table object-name="UtenzaTributo" object-type="UtenzaTipoTributo"/>
+									<linkit:sql-table object-name="UtenzaTributo" object-type="UtenzaTipoTributo"/>
 								<linkit:sql-table object-name="Uo" object-type="Uo"/>
 								<linkit:sql-table object-name="Operatore" object-type="Operatore"/>
 								<linkit:sql-table object-name="Connettore" object-type="Connettore"/>
@@ -931,7 +931,16 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="ruolo" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="principal" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="idUtenza" type="id-utenza" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Utenza"
+								object-type="Utenza" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="servizio" type="xsd:string"/>
 			<xsd:element name="diritti" type="xsd:string"/>
 		</xsd:sequence>
