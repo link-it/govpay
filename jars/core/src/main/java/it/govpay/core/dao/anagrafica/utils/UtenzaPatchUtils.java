@@ -26,7 +26,7 @@ import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.PatchOp;
@@ -215,11 +215,11 @@ public class UtenzaPatchUtils {
 		setAutorizzazioniAcl(map, acl);
 		
 		AclBD aclBD = new AclBD(bd);
-		acl.setPrincipal(utenza.getPrincipalOriginale()); 
+		acl.setIdUtenza(utenza.getId()); 
 		
 		boolean found = false;
 		for(Acl aclPresente : utenza.getAcls()) {
-			if(aclPresente.getServizio().equals(acl.getServizio()) && (aclPresente.getPrincipal() != null && acl.getPrincipal().equals(aclPresente.getPrincipal()))) {
+			if(aclPresente.getServizio().equals(acl.getServizio()) && (aclPresente.getIdUtenza() != null && acl.getIdUtenza().equals(aclPresente.getIdUtenza()))) {
 				found = true;
 				break;
 			}

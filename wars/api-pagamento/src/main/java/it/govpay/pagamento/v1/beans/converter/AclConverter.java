@@ -1,54 +1,14 @@
 package it.govpay.pagamento.v1.beans.converter;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.springframework.security.core.Authentication;
-
-import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
-import it.govpay.model.Acl;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.pagamento.v1.beans.AclPost;
-import it.govpay.pagamento.v1.beans.AclPost.AutorizzazioniEnum;
 import it.govpay.pagamento.v1.beans.AclPost.ServizioEnum;
 
 public class AclConverter {
 	
-	public static PostAclDTO getPostAclDTO(AclPost aclPost, Authentication user) throws ServiceException {
-		
-		PostAclDTO aclDTO = new PostAclDTO(user);
-		Acl acl = new Acl();
-		
-		Set<Diritti> lst = new HashSet<>();
-		for(String authS: aclPost.getAutorizzazioni()) {
-			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
-			switch(auth) {
-			case ESECUZIONE: lst.add(Acl.Diritti.ESECUZIONE);
-				break;
-			case LETTURA: lst.add(Acl.Diritti.LETTURA);
-				break;
-			case SCRITTURA: lst.add(Acl.Diritti.SCRITTURA);
-				break;
-			default:
-				break;
-			}
-		}
-
-		acl.setListaDiritti(lst);
-		acl.setPrincipal(aclPost.getPrincipal());
-		acl.setRuolo(aclPost.getRuolo());
-		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
-		aclDTO.setAcl(acl);
-
-		return aclDTO;		
-	}
-	
-	public static it.govpay.pagamento.v1.beans.AclPost toRsModel(it.govpay.model.Acl acl) {
+	public static it.govpay.pagamento.v1.beans.AclPost toRsModel(it.govpay.bd.model.Acl acl) {
 		it.govpay.pagamento.v1.beans.AclPost rsModel = new it.govpay.pagamento.v1.beans.AclPost();
-		rsModel.principal(acl.getPrincipal())
+		rsModel.principal(acl.getUtenzaPrincipalOriginale())
 		.ruolo(acl.getRuolo());
 		
 		if(acl.getServizio() != null) {

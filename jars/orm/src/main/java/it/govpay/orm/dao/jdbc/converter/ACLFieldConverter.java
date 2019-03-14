@@ -74,11 +74,25 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 				return "ruolo";
 			}
 		}
-		if(field.equals(ACL.model().PRINCIPAL)){
+		if(field.equals(ACL.model().ID_UTENZA.PRINCIPAL)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".principal";
 			}else{
 				return "principal";
+			}
+		}
+		if(field.equals(ACL.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".principal_originale";
+			}else{
+				return "principal_originale";
+			}
+		}
+		if(field.equals(ACL.model().ID_UTENZA.ABILITATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".abilitato";
+			}else{
+				return "abilitato";
 			}
 		}
 		if(field.equals(ACL.model().SERVIZIO)){
@@ -111,8 +125,14 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(ACL.model().RUOLO)){
 			return this.toTable(ACL.model(), returnAlias);
 		}
-		if(field.equals(ACL.model().PRINCIPAL)){
-			return this.toTable(ACL.model(), returnAlias);
+		if(field.equals(ACL.model().ID_UTENZA.PRINCIPAL)){
+			return this.toTable(ACL.model().ID_UTENZA, returnAlias);
+		}
+		if(field.equals(ACL.model().ID_UTENZA.PRINCIPAL_ORIGINALE)){
+			return this.toTable(ACL.model().ID_UTENZA, returnAlias);
+		}
+		if(field.equals(ACL.model().ID_UTENZA.ABILITATO)){
+			return this.toTable(ACL.model().ID_UTENZA, returnAlias);
 		}
 		if(field.equals(ACL.model().SERVIZIO)){
 			return this.toTable(ACL.model(), returnAlias);
@@ -135,6 +155,9 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(ACL.model())){
 			return "acl";
+		}
+		if(model.equals(ACL.model().ID_UTENZA)){
+			return "utenze";
 		}
 
 

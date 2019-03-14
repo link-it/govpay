@@ -1,6 +1,3 @@
-/**
- * 
- */
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.util.ArrayList;
@@ -15,7 +12,7 @@ import it.govpay.backoffice.v1.beans.TipoEntrata;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 import it.govpay.model.TipoTributo;
 
 /**

@@ -32,11 +32,12 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.converter.AclConverter;
-import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.orm.ACL;
 import it.govpay.orm.IdAcl;
+import it.govpay.orm.IdUtenza;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.jdbc.JDBCACLServiceSearch;
 
@@ -204,12 +205,12 @@ public class AclBD extends BasicBD {
 		} 
 	}
 
-	public boolean existsAcl(String ruolo, String principal, Servizio servizio) throws ServiceException {
+	public boolean existsAcl(String ruolo, IdUtenza idUtenza, Servizio servizio) throws ServiceException {
 		try {
 
 			IdAcl id = new IdAcl();
 			id.setRuolo(ruolo);
-			id.setPrincipal(principal);
+			id.setIdUtenza(idUtenza);
 			id.setServizio(servizio.getCodifica());
 			
 			return this.getAclService().exists(id);

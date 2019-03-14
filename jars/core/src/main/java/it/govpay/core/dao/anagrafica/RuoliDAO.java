@@ -21,7 +21,7 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.PatchOp;

@@ -8,9 +8,9 @@ import it.govpay.model.Acl.Diritti;
 
 public class AclConverter {
 	
-	public static AclPost toRsModel(it.govpay.model.Acl acl) {
+	public static AclPost toRsModel(it.govpay.bd.model.Acl acl) {
 		AclPost rsModel = new AclPost();
-		rsModel.principal(acl.getPrincipal())
+		rsModel.principal(acl.getUtenzaPrincipalOriginale())
 		.ruolo(acl.getRuolo());
 		
 		if(acl.getServizio() != null) {

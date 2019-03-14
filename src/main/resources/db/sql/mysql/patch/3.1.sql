@@ -21,3 +21,9 @@ ALTER TABLE utenze_tributi DROP FOREIGN KEY fk_nzt_id_tributo;
 ALTER TABLE utenze_tributi DROP COLUMN id_tributo;
 ALTER TABLE utenze_tributi ADD CONSTRAINT fk_nzt_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id);
 
+-- 13/03/2019 (Eliminazione colonna principal dalla tabella Acl e sostituzione con la foreign key verso l'utenza)
+ALTER TABLE acl ADD COLUMN id_utenza BIGINT;
+UPDATE acl a, utenze u SET a.id_utenza = u.id WHERE a.principal is not null and a.principal = u.principal_originale;
+ALTER TABLE acl DROP COLUMN principal;
+ALTER TABLE acl ADD CONSTRAINT fk_acl_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id);
+

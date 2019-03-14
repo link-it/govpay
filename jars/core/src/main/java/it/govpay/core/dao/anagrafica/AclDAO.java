@@ -1,6 +1,5 @@
 package it.govpay.core.dao.anagrafica;
 
-import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -8,8 +7,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.core.dao.anagrafica.dto.DeleteAclDTO;
-import it.govpay.core.dao.anagrafica.dto.LeggiAclDTO;
-import it.govpay.core.dao.anagrafica.dto.LeggiAclDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaAclDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaAclDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
@@ -103,7 +100,7 @@ public class AclDAO extends BaseDAO{
 
 			AclBD aclBD = new AclBD(bd);
 			PostAclDTOResponse leggiAclDTOResponse = new PostAclDTOResponse();
-			boolean exists = aclBD.existsAcl(postAclDTO.getAcl().getRuolo(), postAclDTO.getAcl().getPrincipal(), postAclDTO.getAcl().getServizio());
+			boolean exists = aclBD.existsAcl(postAclDTO.getAcl().getRuolo(), postAclDTO.getAcl().getIdUtenza(bd), postAclDTO.getAcl().getServizio());
 			leggiAclDTOResponse.setCreated(!exists);
 			if(exists) {
 				try {

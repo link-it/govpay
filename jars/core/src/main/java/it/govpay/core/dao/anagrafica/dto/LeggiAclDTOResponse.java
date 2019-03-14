@@ -1,9 +1,6 @@
-/**
- * 
- */
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

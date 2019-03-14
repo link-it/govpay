@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -28,13 +29,16 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.ACL;
+import it.govpay.orm.dao.jdbc.converter.ACLFieldConverter;
 
 public class AclFilter extends AbstractFilter {
 
 	private String ruolo = null;
 	private String principal = null;
+	private Long idUtenza = null;
 	private String servizio = null;
 	private Boolean forceServizio = null;
 	private Boolean forceRuolo = null;
@@ -81,7 +85,7 @@ public class AclFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(ACL.model().PRINCIPAL, this.principal);
+				newExpression.equals(ACL.model().ID_UTENZA.PRINCIPAL_ORIGINALE, this.principal);
 				
 				addAnd = true;
 			}
@@ -90,7 +94,21 @@ public class AclFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.isNotNull(ACL.model().PRINCIPAL);
+				ACLFieldConverter converter = new ACLFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField cf = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(it.govpay.orm.ACL.model()));
+				
+				newExpression.isNotNull(cf); //ACL.model().ID_UTENZA.PRINCIPAL_ORIGINALE);
+				
+				addAnd = true;
+			}
+			
+			if(this.idUtenza != null){
+				if(addAnd)
+					newExpression.and();
+				
+				ACLFieldConverter converter = new ACLFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField cf = new CustomField("id_utenza", Long.class, "id_utenza", converter.toTable(it.govpay.orm.ACL.model()));
+				newExpression.equals(cf, this.idUtenza); 
 				
 				addAnd = true;
 			}
@@ -165,6 +183,14 @@ public class AclFilter extends AbstractFilter {
 
 	public void setServizio(String servizio) {
 		this.servizio = servizio;
+	}
+
+	public Long getIdUtenza() {
+		return idUtenza;
+	}
+
+	public void setIdUtenza(Long idUtenza) {
+		this.idUtenza = idUtenza;
 	}
 	
 }

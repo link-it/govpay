@@ -46,6 +46,7 @@ import it.govpay.backoffice.v1.beans.StatoOperazionePendenza;
 import it.govpay.backoffice.v1.beans.StatoTracciatoPendenza;
 import it.govpay.backoffice.v1.beans.TracciatoPendenze;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzeEsito;
+import it.govpay.backoffice.v1.beans.TracciatoPendenzeIndex;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzePost;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
@@ -67,6 +68,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTO;
+import it.govpay.core.dao.pagamenti.dto.PostTracciatoDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
@@ -360,13 +362,14 @@ public class PendenzeController extends BaseController {
 			}
 			postTracciatoDTO.setContenuto(baos.toByteArray()); 
 
-			tracciatiDAO.create(postTracciatoDTO);
+			PostTracciatoDTOResponse postTracciatoDTOResponse = tracciatiDAO.create(postTracciatoDTO);
+			
+			TracciatoPendenzeIndex rsModel = TracciatiConverter.toTracciatoPendenzeRsModelIndex(postTracciatoDTOResponse.getTracciato());
 
-			Status responseStatus = Status.OK;
-
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			Status responseStatus = Status.CREATED;
+			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), responseStatus.getStatusCode());
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).entity(rsModel.toJSON(null,this.serializationConfig)).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -412,9 +415,9 @@ public class PendenzeController extends BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			List<TracciatoPendenze> results = new ArrayList<>();
+			List<TracciatoPendenzeIndex> results = new ArrayList<>();
 			for(Tracciato tracciato: listaTracciatiDTOResponse.getResults()) {
-				TracciatoPendenze rsModel = TracciatiConverter.toTracciatoPendenzeRsModel(tracciato);
+				TracciatoPendenzeIndex rsModel = TracciatiConverter.toTracciatoPendenzeRsModelIndex(tracciato);
 				results.add(rsModel);
 			}
 

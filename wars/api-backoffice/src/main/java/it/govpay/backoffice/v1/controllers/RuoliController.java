@@ -37,7 +37,7 @@ import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 
 public class RuoliController extends BaseController {
 

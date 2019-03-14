@@ -149,7 +149,7 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("abilitato", this.abilitato).notNull();
-	vf.getValidator("bic", this.bic).minLength(1).maxLength(255);
+	vf.getValidator("bic", this.bic).minLength(1).maxLength(255).pattern("([a-zA-Z]{4})([a-zA-Z]{2})(([2-9a-zA-Z]{1})([0-9a-np-zA-NP-Z]{1}))((([0-9a-wy-zA-WY-Z]{1})([0-9a-zA-Z]{2}))|([xX]{3})|)");
 	vf.getValidator("postale", this.postale).notNull();
 	vf.getValidator("mybank", this.mybank).notNull();
   }

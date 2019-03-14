@@ -258,7 +258,7 @@ public class EntrataPost extends it.govpay.core.beans.JSONSerializable implement
 	vf.getValidator("ibanAccredito", this.ibanAccredito).minLength(1).maxLength(255);
 	vf.getValidator("ibanAppoggio", this.ibanAppoggio).minLength(1).maxLength(255);
 	vf.getValidator("codiceContabilita", this.codiceContabilita).minLength(1).maxLength(255);
-	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4);
+	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
 	vf.getValidator("online", this.online).notNull();
 	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();
   }

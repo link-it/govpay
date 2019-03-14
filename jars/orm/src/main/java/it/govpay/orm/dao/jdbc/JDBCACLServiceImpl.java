@@ -70,21 +70,38 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
+		// Object _utenza
+		Long id_utenza = null;
+		it.govpay.orm.IdUtenza idLogic_utenza = null;
+		idLogic_utenza = acl.getIdUtenza();
+		if(idLogic_utenza!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findTableId(idLogic_utenza, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_utenza = idLogic_utenza.getId();
+				if(id_utenza==null || id_utenza<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object acl
 		sqlQueryObjectInsert.addInsertTable(this.getACLFieldConverter().toTable(ACL.model()));
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().RUOLO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().DIRITTI,false),"?");
+		sqlQueryObjectInsert.addInsertField("id_utenza","?");
 
 		// Insert acl
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getACLFetch().getKeyGeneratorObject(ACL.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getRuolo(),ACL.model().RUOLO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getPrincipal(),ACL.model().PRINCIPAL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getServizio(),ACL.model().SERVIZIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getDiritti(),ACL.model().DIRITTI.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getDiritti(),ACL.model().DIRITTI.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_utenza,Long.class)
 		);
 		acl.setId(id);
 
@@ -126,11 +143,28 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-//		boolean setIdMappingResolutionBehaviour = 
-//			(idMappingResolutionBehaviour==null) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+		boolean setIdMappingResolutionBehaviour = 
+			(idMappingResolutionBehaviour==null) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
+
+		// Object _acl_utenza
+		Long id_acl_utenza = null;
+		it.govpay.orm.IdUtenza idLogic_acl_utenza = null;
+		idLogic_acl_utenza = acl.getIdUtenza();
+		if(idLogic_acl_utenza!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_acl_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findTableId(idLogic_acl_utenza, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_acl_utenza = idLogic_acl_utenza.getId();
+				if(id_acl_utenza==null || id_acl_utenza<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 
 
 		// Object acl
@@ -140,12 +174,16 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		java.util.List<JDBCObject> lstObjects_acl = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().RUOLO,false), "?");
 		lstObjects_acl.add(new JDBCObject(acl.getRuolo(), ACL.model().RUOLO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,false), "?");
-		lstObjects_acl.add(new JDBCObject(acl.getPrincipal(), ACL.model().PRINCIPAL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,false), "?");
 		lstObjects_acl.add(new JDBCObject(acl.getServizio(), ACL.model().SERVIZIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().DIRITTI,false), "?");
 		lstObjects_acl.add(new JDBCObject(acl.getDiritti(), ACL.model().DIRITTI.getFieldType()));
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_utenza","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_acl.add(new JDBCObject(id_acl_utenza, Long.class));
+		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_acl.add(new JDBCObject(tableId, Long.class));
 

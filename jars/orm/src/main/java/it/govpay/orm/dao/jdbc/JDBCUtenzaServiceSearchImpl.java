@@ -102,6 +102,9 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 	
 		IdUtenza idUtenza = new IdUtenza();
 		idUtenza.setPrincipal(utenza.getPrincipal());
+		idUtenza.setPrincipalOriginale(utenza.getPrincipalOriginale());
+		idUtenza.setId(utenza.getId());
+		idUtenza.setAbilitato(utenza.isAbilitato());
 	
 		return idUtenza;
 	}

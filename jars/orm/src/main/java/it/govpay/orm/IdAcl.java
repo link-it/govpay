@@ -36,7 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-acl">
  * 		&lt;sequence>
  * 			&lt;element name="ruolo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="servizio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -53,7 +53,7 @@ import java.io.Serializable;
 @XmlType(name = "id-acl", 
   propOrder = {
   	"ruolo",
-  	"principal",
+  	"idUtenza",
   	"servizio"
   }
 )
@@ -86,12 +86,12 @@ public class IdAcl extends org.openspcoop2.utils.beans.BaseBean implements Seria
     this.ruolo = ruolo;
   }
 
-  public java.lang.String getPrincipal() {
-    return this.principal;
+  public IdUtenza getIdUtenza() {
+    return this.idUtenza;
   }
 
-  public void setPrincipal(java.lang.String principal) {
-    this.principal = principal;
+  public void setIdUtenza(IdUtenza idUtenza) {
+    this.idUtenza = idUtenza;
   }
 
   public java.lang.String getServizio() {
@@ -113,9 +113,8 @@ public class IdAcl extends org.openspcoop2.utils.beans.BaseBean implements Seria
   @XmlElement(name="ruolo",required=true,nillable=false)
   protected java.lang.String ruolo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="principal",required=true,nillable=false)
-  protected java.lang.String principal;
+  @XmlElement(name="idUtenza",required=true,nillable=false)
+  protected IdUtenza idUtenza;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="servizio",required=true,nillable=false)

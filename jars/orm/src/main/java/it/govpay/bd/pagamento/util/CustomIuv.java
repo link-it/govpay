@@ -2,9 +2,7 @@ package it.govpay.bd.pagamento.util;
 
 import java.util.Map;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.text.StrSubstitutor;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Dominio;
@@ -18,10 +16,11 @@ public class CustomIuv {
 //			return applicazioneDefault != null ? applicazioneDefault.getCodApplicazione() : null;
 //		}
 //	}
+	public String buildPrefix(Applicazione applicazione, Dominio dominio, Map<String, String> values) {
+		return buildPrefix(applicazione, dominio.getIuvPrefix(), values);
+	}
 
-	public String buildPrefix(Applicazione applicazione, Dominio dominio, Map<String, String> values) throws ServiceException, NotImplementedException {
-		String prefix = dominio.getIuvPrefix();
-
+	public String buildPrefix(Applicazione applicazione, String prefix, Map<String, String> values) {
 		if(prefix == null) return "";
 		
 		StrSubstitutor sub = new StrSubstitutor(values, "%(", ")");

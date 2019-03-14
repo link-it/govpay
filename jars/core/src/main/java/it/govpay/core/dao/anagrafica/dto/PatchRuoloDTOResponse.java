@@ -2,7 +2,7 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 
 public class PatchRuoloDTOResponse {
 	

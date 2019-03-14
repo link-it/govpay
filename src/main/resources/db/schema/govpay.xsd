@@ -461,7 +461,7 @@
 	<xsd:complexType name="id-acl">
 		<xsd:sequence>
 			<xsd:element name="ruolo" type="xsd:string"/>
-			<xsd:element name="principal" type="xsd:string"/>
+			<xsd:element name="idUtenza" type="id-utenza"/>
 			<xsd:element name="servizio" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>

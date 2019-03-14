@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.AclPost;
@@ -15,11 +14,11 @@ import it.govpay.backoffice.v1.beans.CodificaAvvisi;
 import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.TipoEntrata;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.model.Acl;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.TipoTributo;
 
@@ -78,8 +77,6 @@ public class ApplicazioniConverter {
 		applicazione.getUtenza().setAutorizzazioneDominiStar(appAuthDominiAll);
 		
 		if(applicazionePost.getCodificaAvvisi() != null) {
-			LoggerWrapperFactory.getLogger(ApplicazioniConverter.class).debug("<< Auto IUV : " + applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna()); 
-			
 			applicazione.setCodApplicazioneIuv(applicazionePost.getCodificaAvvisi().getCodificaIuv());
 			applicazione.setRegExp(applicazionePost.getCodificaAvvisi().getRegExpIuv());
 			applicazione.setAutoIuv(applicazionePost.getCodificaAvvisi().isGenerazioneIuvInterna());
@@ -100,7 +97,7 @@ public class ApplicazioniConverter {
 			List<Acl> aclPrincipal = new ArrayList<Acl>();
 			for(AclPost aclPost: applicazionePost.getAcl()) {
 				Acl acl = AclConverter.getAcl(aclPost, user);
-				acl.setPrincipal(applicazionePost.getPrincipal());
+				acl.setUtenza(applicazione.getUtenza());
 				aclPrincipal.add(acl);
 			}
 			applicazione.getUtenza().setAclPrincipal(aclPrincipal);
@@ -112,9 +109,6 @@ public class ApplicazioniConverter {
 	public static Applicazione toRsModel(it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
 		Applicazione rsModel = new Applicazione();
 		rsModel.setAbilitato(applicazione.getUtenza().isAbilitato());
-		
-		
-		LoggerWrapperFactory.getLogger(ApplicazioniConverter.class).debug(">> Auto IUV : " + applicazione.isAutoIuv()); 
 		
 		if(!(StringUtils.isEmpty(applicazione.getRegExp()) && StringUtils.isEmpty(applicazione.getCodApplicazioneIuv()))) {
 			CodificaAvvisi codificaAvvisi = new CodificaAvvisi();
@@ -129,8 +123,6 @@ public class ApplicazioniConverter {
 				rsModel.setCodificaAvvisi(codificaAvvisi);
 			}
 		}
-		
-
 		
 		rsModel.setIdA2A(applicazione.getCodApplicazione());
 		rsModel.setPrincipal(applicazione.getUtenza().getPrincipalOriginale());

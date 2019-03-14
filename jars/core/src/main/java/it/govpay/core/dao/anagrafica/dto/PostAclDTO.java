@@ -2,7 +2,7 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import org.springframework.security.core.Authentication;
 
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 
 public class PostAclDTO extends BasicCreateRequestDTO  {
 	

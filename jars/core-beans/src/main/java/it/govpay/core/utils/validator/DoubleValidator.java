@@ -1,6 +1,5 @@
 package it.govpay.core.utils.validator;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 

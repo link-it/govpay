@@ -36,7 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="ACL">
  * 		&lt;sequence>
  * 			&lt;element name="ruolo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idUtenza" type="{http://www.govpay.it/orm}id-utenza" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="servizio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="diritti" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -54,7 +54,7 @@ import java.io.Serializable;
 @XmlType(name = "ACL", 
   propOrder = {
   	"ruolo",
-  	"principal",
+  	"idUtenza",
   	"servizio",
   	"diritti"
   }
@@ -88,12 +88,12 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.ruolo = ruolo;
   }
 
-  public java.lang.String getPrincipal() {
-    return this.principal;
+  public IdUtenza getIdUtenza() {
+    return this.idUtenza;
   }
 
-  public void setPrincipal(java.lang.String principal) {
-    this.principal = principal;
+  public void setIdUtenza(IdUtenza idUtenza) {
+    this.idUtenza = idUtenza;
   }
 
   public java.lang.String getServizio() {
@@ -135,9 +135,8 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @XmlElement(name="ruolo",required=false,nillable=false)
   protected java.lang.String ruolo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="principal",required=false,nillable=false)
-  protected java.lang.String principal;
+  @XmlElement(name="idUtenza",required=false,nillable=false)
+  protected IdUtenza idUtenza;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="servizio",required=true,nillable=false)

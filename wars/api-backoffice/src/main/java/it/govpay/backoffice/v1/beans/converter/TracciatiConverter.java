@@ -24,6 +24,7 @@ import it.govpay.backoffice.v1.beans.TipoOperazionePendenza;
 import it.govpay.backoffice.v1.beans.Tracciato;
 import it.govpay.backoffice.v1.beans.TracciatoPendenze;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzeEsito;
+import it.govpay.backoffice.v1.beans.TracciatoPendenzeIndex;
 import it.govpay.backoffice.v1.beans.TracciatoPendenzePost;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.orm.constants.StatoTracciatoType;
@@ -101,6 +102,58 @@ public class TracciatiConverter {
 			rsModel.setContenuto(TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta())));
 		}catch(Exception e) {}
 
+		return rsModel;
+	}
+	
+	public static TracciatoPendenzeIndex toTracciatoPendenzeRsModelIndex(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
+		TracciatoPendenzeIndex rsModel = new TracciatoPendenzeIndex();
+
+		rsModel.setId(BigDecimal.valueOf(tracciato.getId()));
+		rsModel.setDataOraCaricamento(tracciato.getDataCaricamento());
+		rsModel.setNomeFile(tracciato.getFileNameRichiesta());
+		
+		SerializationConfig config = new SerializationConfig();
+		config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+		config.setIgnoreNullValues(true);
+		
+		IDeserializer deserializer;
+		try {
+			deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
+			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = (it.govpay.core.beans.tracciati.TracciatoPendenza) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoPendenza.class);
+			
+			if(tracciato.getOperatore(null) != null)
+				rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
+			rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
+			rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
+			rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));
+			rsModel.setDataOraUltimoAggiornamento(beanDati.getDataUltimoAggiornamento());
+			
+			StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
+			
+			if(tracciato.getStato() != null) {
+				switch(tracciato.getStato()){
+				case COMPLETATO:
+					if(statoTracciato.equals(StatoTracciatoType.CARICAMENTO_OK))
+						rsModel.setStato(StatoTracciatoPendenza.ESEGUITO);
+					else
+						rsModel.setStato(StatoTracciatoPendenza.ESEGUITO_CON_ERRORI);
+					break;
+				case ELABORAZIONE:
+					if(statoTracciato.equals(StatoTracciatoType.NUOVO))
+						rsModel.setStato(StatoTracciatoPendenza.IN_ATTESA);
+					else
+						rsModel.setStato(StatoTracciatoPendenza.IN_ELABORAZIONE);
+					break;
+				case SCARTATO:
+				default:
+					rsModel.setStato(StatoTracciatoPendenza.SCARTATO);
+					break;
+				}
+			}
+		} catch (IOException e) {
+			throw new ServiceException(e);
+		}
+		
 		return rsModel;
 	}
 	

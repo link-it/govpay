@@ -42,7 +42,7 @@ public class ACLModel extends AbstractModel<ACL> {
 		super();
 	
 		this.RUOLO = new Field("ruolo",java.lang.String.class,"ACL",ACL.class);
-		this.PRINCIPAL = new Field("principal",java.lang.String.class,"ACL",ACL.class);
+		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new Field("idUtenza",it.govpay.orm.IdUtenza.class,"ACL",ACL.class));
 		this.SERVIZIO = new Field("servizio",java.lang.String.class,"ACL",ACL.class);
 		this.DIRITTI = new Field("diritti",java.lang.String.class,"ACL",ACL.class);
 	
@@ -53,7 +53,7 @@ public class ACLModel extends AbstractModel<ACL> {
 		super(father);
 	
 		this.RUOLO = new ComplexField(father,"ruolo",java.lang.String.class,"ACL",ACL.class);
-		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"ACL",ACL.class);
+		this.ID_UTENZA = new it.govpay.orm.model.IdUtenzaModel(new ComplexField(father,"idUtenza",it.govpay.orm.IdUtenza.class,"ACL",ACL.class));
 		this.SERVIZIO = new ComplexField(father,"servizio",java.lang.String.class,"ACL",ACL.class);
 		this.DIRITTI = new ComplexField(father,"diritti",java.lang.String.class,"ACL",ACL.class);
 	
@@ -63,7 +63,7 @@ public class ACLModel extends AbstractModel<ACL> {
 
 	public IField RUOLO = null;
 	 
-	public IField PRINCIPAL = null;
+	public it.govpay.orm.model.IdUtenzaModel ID_UTENZA = null;
 	 
 	public IField SERVIZIO = null;
 	 

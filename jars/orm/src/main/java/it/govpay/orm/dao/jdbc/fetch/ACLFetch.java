@@ -56,8 +56,6 @@ public class ACLFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ruolo", ACL.model().RUOLO.getFieldType()));
-				this.setParameter(object, "setPrincipal", ACL.model().PRINCIPAL.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "principal", ACL.model().PRINCIPAL.getFieldType()));
 				this.setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "servizio", ACL.model().SERVIZIO.getFieldType()));
 				this.setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
@@ -86,8 +84,6 @@ public class ACLFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				this.setParameter(object, "setRuolo", ACL.model().RUOLO.getFieldType(),
 					this.getObjectFromMap(map,"ruolo"));
-				this.setParameter(object, "setPrincipal", ACL.model().PRINCIPAL.getFieldType(),
-					this.getObjectFromMap(map,"principal"));
 				this.setParameter(object, "setServizio", ACL.model().SERVIZIO.getFieldType(),
 					this.getObjectFromMap(map,"servizio"));
 				this.setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),

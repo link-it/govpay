@@ -79,7 +79,7 @@ public class ListaAclDTO extends BasicFindRequestDTO{
 
 	public ListaAclDTO(Authentication user) {
 		super(user);
-		this.addSortField("principal", ACL.model().PRINCIPAL);
+		this.addSortField("principal", ACL.model().ID_UTENZA.PRINCIPAL_ORIGINALE);
 		this.addSortField("ruolo", ACL.model().RUOLO);
 		this.addSortField("servizio", ACL.model().SERVIZIO);
 	}

@@ -7,9 +7,9 @@ import it.govpay.pagamento.v2.beans.TipoServizio;
 
 public class AclConverter {
 
-	public static it.govpay.pagamento.v2.beans.Acl toRsModel(it.govpay.model.Acl acl) {
+	public static it.govpay.pagamento.v2.beans.Acl toRsModel(it.govpay.bd.model.Acl acl) {
 		it.govpay.pagamento.v2.beans.Acl rsModel = new it.govpay.pagamento.v2.beans.Acl();
-		rsModel.principal(acl.getPrincipal())
+		rsModel.principal(acl.getUtenzaPrincipalOriginale())
 		.ruolo(acl.getRuolo());
 		
 		if(acl.getServizio() != null) {

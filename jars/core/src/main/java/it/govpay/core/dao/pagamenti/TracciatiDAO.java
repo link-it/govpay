@@ -232,7 +232,7 @@ public class TracciatiDAO extends BaseDAO{
 	}
 	
 	public PostTracciatoDTOResponse create(PostTracciatoDTO postTracciatoDTO) throws NotAuthenticatedException, NotAuthorizedException, GovPayException {
-		
+		PostTracciatoDTOResponse postTracciatoDTOResponse = new PostTracciatoDTOResponse();
 		BasicBD bd = null;
 
 		try {
@@ -271,9 +271,10 @@ public class TracciatiDAO extends BaseDAO{
 			
 			// avvio elaborazione tracciato
 			it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
-			return new PostTracciatoDTOResponse();
-
 			
+			postTracciatoDTOResponse.setCreated(true);
+			postTracciatoDTOResponse.setTracciato(tracciato);
+			return postTracciatoDTOResponse;
 		} catch (ServiceException | IOException e) {
 			throw new GovPayException(e);
 		} finally {

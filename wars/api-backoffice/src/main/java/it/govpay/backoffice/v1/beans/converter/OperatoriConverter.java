@@ -15,7 +15,7 @@ import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 import it.govpay.model.TipoTributo;
 
 public class OperatoriConverter {

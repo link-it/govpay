@@ -28,7 +28,7 @@ public class ProfiloConverter {
 		Utenza user = leggiProfilo.getUtente();
 		if(user.getAcls()!=null) {
 			List<Acl> aclLst = new ArrayList<>();
-			for(it.govpay.model.Acl acl: user.getAcls()) {
+			for(it.govpay.bd.model.Acl acl: user.getAcls()) {
 				aclLst.add(AclConverter.toRsModel(acl));
 
 			}

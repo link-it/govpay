@@ -299,13 +299,14 @@ CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta) COM
 
 CREATE TABLE acl
 (
-	ruolo VARCHAR(255) COMMENT 'Ruolo a cui si riferisce la ACL',
-	principal VARCHAR(255) COMMENT 'Principal dell\'utenza a cui si riferisce l\'ACL',
+	ruolo VARCHAR(255) COMMENT 'Ruolo a cui si riferisce la ACL'
 	servizio VARCHAR(255) NOT NULL COMMENT 'Servizio su cui si riferisce l\'ACL',
 	diritti VARCHAR(255) NOT NULL COMMENT 'Autorizzazione dell\'ACL',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_utenza BIGINT COMMENT 'Id fisico dell\'utenza a cui si riferisce l\'ACL',
 	-- fk/pk keys constraints
+	CONSTRAINT fk_acl_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni di accesso';
 

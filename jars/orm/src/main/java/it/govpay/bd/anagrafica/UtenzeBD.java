@@ -42,7 +42,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.converter.UtenzaConverter;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.IdUtenza;
@@ -170,7 +170,7 @@ public class UtenzeBD extends BasicBD {
 		Utenza utenza = UtenzaConverter.toDTO(utenzaVO, utenzaDominioLst, utenzaTributoLst, this);
 		AclBD aclDB = new AclBD(this);
 		AclFilter filter = aclDB.newFilter();
-		filter.setPrincipal(utenza.getPrincipalOriginale());
+		filter.setIdUtenza(utenza.getId());
 
 		utenza.setAclPrincipal(aclDB.findAll(filter));
 		return utenza;
@@ -343,8 +343,10 @@ public class UtenzeBD extends BasicBD {
 			
 			List<Acl> aclNuove = new ArrayList<Acl>();
 			if(utenza.getAclPrincipal() != null)
-				for(Acl aclNuova : utenza.getAclPrincipal())
+				for(Acl aclNuova : utenza.getAclPrincipal()) {
+					aclNuova.setIdUtenza(vo.getId());
 					aclNuove.add(aclNuova);
+				}
 			
 			
 			for(Acl aclEsistente : alcEsistenti) {
@@ -354,6 +356,7 @@ public class UtenzeBD extends BasicBD {
 						if(aclNuova.getServizio().equals(aclEsistente.getServizio())) {
 							found = true;
 							aclNuova.setId(aclEsistente.getId());
+							aclNuova.setIdUtenza(vo.getId());
 							aclBD.updateAcl(aclNuova);
 							aclNuove.remove(aclNuova);
 							break;
@@ -501,8 +504,10 @@ public class UtenzeBD extends BasicBD {
 			
 			if(utenza.getAclPrincipal() != null && utenza.getAclPrincipal().size() > 0) {
 				AclBD aclBD = new AclBD(this);
-				for(Acl aclNuova : utenza.getAclPrincipal())
+				for(Acl aclNuova : utenza.getAclPrincipal()) {
+					aclNuova.setIdUtenza(utenza.getId());
 					aclBD.insertAcl(aclNuova);
+				}
 			}
 			
 			this.emitAudit(utenza);

@@ -214,7 +214,7 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
 	vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
 	vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
 	vf.getValidator("codiceContabilita", this.codiceContabilita).notNull().minLength(1).maxLength(255);
-	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4);
+	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
 	vf.getValidator("online", this.online).notNull();
 	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();
   }

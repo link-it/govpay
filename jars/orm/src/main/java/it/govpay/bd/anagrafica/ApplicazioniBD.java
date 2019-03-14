@@ -45,7 +45,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 import it.govpay.model.Connettore;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.dao.jdbc.JDBCApplicazioneServiceSearch;
@@ -208,14 +208,14 @@ public class ApplicazioniBD extends BasicBD {
 				// copio ACL
 				AclBD aclBD = new AclBD(this);
 				AclFilter filter = aclBD.newFilter();
-				filter.setPrincipal(applicazioneOld.getUtenza().getPrincipalOriginale());
+				filter.setIdUtenza(applicazioneOld.getUtenza().getId());
 				List<Acl> alcEsistenti = aclBD.findAll(filter);
 
 				List<Acl> listaAclPrincipal =  null;
 				if(alcEsistenti != null) {
 					listaAclPrincipal = new ArrayList<Acl>();
 					for (Acl aclPrincipalOld : alcEsistenti) {
-						aclPrincipalOld.setPrincipal(utenzaApplicazione.getPrincipalOriginale());
+						aclPrincipalOld.setIdUtenza(utenzaApplicazione.getId());
 						listaAclPrincipal.add(aclPrincipalOld);
 					}
 				}

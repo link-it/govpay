@@ -1887,6 +1887,10 @@ paths:
       responses:
         '201':
           description: Tracciato aggiunto con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tracciatoPendenzeIndex'
         '400':
           $ref: '#/components/responses/400'
         '401':

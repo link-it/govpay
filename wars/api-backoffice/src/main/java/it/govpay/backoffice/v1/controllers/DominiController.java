@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import eu.medsea.mimeutil.MimeUtil;
+import it.govpay.backoffice.utils.validazione.semantica.DominioValidator;
 import it.govpay.backoffice.v1.beans.ContiAccredito;
 import it.govpay.backoffice.v1.beans.ContiAccreditoPost;
 import it.govpay.backoffice.v1.beans.DominioPost;
@@ -62,7 +63,9 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 
 public class DominiController extends BaseController {
 
-     public DominiController(String nomeServizio,Logger log) {
+     private static final String PATTERN_IBAN_ACCREDITO = "^(?:(?:IT|SM)\\d{2}[A-Z]\\d{22}|CY\\d{2}[A-Z]\\d{23}|NL\\d{2}[A-Z]{4}\\d{10}|LV\\d{2}[A-Z]{4}\\d{13}|(?:BG|BH|GB|IE)\\d{2}[A-Z]{4}\\d{14}|GI\\d{2}[A-Z]{4}\\d{15}|RO\\d{2}[A-Z]{4}\\d{16}|KW\\d{2}[A-Z]{4}\\d{22}|MT\\d{2}[A-Z]{4}\\d{23}|NO\\d{13}|(?:DK|FI|GL|FO)\\d{16}|MK\\d{17}|(?:AT|EE|KZ|LU|XK)\\d{18}|(?:BA|HR|LI|CH|CR)\\d{19}|(?:GE|DE|LT|ME|RS)\\d{20}|IL\\d{21}|(?:AD|CZ|ES|MD|SA)\\d{22}|PT\\d{23}|(?:BE|IS)\\d{24}|(?:FR|MR|MC)\\d{25}|(?:AL|DO|LB|PL)\\d{26}|(?:AZ|HU)\\d{27}|(?:GR|MU)\\d{28})$";
+
+	public DominiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
      }
 
@@ -457,8 +460,8 @@ public class DominiController extends BaseController {
 			ContiAccreditoPost ibanAccreditoRequest= JSONSerializable.parse(jsonRequest, ContiAccreditoPost.class);
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
-			vf.getValidator("ibanAccredito", ibanAccredito).notNull().minLength(1).maxLength(255);
+			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
+			vf.getValidator("ibanAccredito", ibanAccredito).notNull().minLength(1).maxLength(255).pattern(PATTERN_IBAN_ACCREDITO);
 			
 			ibanAccreditoRequest.validate();
 			
@@ -501,7 +504,7 @@ public class DominiController extends BaseController {
 			UnitaOperativaPost unitaOperativaRequest= JSONSerializable.parse(jsonRequest, UnitaOperativaPost.class);
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
+			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
 			vf.getValidator("idUnitaOperativa", idUnitaOperativa).notNull().minLength(1).maxLength(35);
 			
 			unitaOperativaRequest.validate();
@@ -545,7 +548,7 @@ public class DominiController extends BaseController {
 			EntrataPost entrataRequest= JSONSerializable.parse(jsonRequest, EntrataPost.class);
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
+			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
 			vf.getValidator("idEntrata", idEntrata).notNull().minLength(1).maxLength(255);
 			
 			entrataRequest.validate();
@@ -589,11 +592,13 @@ public class DominiController extends BaseController {
 			DominioPost dominioRequest= JSONSerializable.parse(jsonRequest, DominioPost.class);
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
+			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
 			
 			dominioRequest.validate();
 			
 			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 
+			
+			new DominioValidator(putDominioDTO.getDominio()).validate();
 			
 			DominiDAO dominiDAO = new DominiDAO();
 			

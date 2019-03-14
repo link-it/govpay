@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.security.core.Authentication;
 
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 
 public class PutRuoloDTO extends BasicCreateRequestDTO  {
 	

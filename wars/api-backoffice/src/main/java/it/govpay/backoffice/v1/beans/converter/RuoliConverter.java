@@ -13,7 +13,7 @@ import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.RuoloIndex;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

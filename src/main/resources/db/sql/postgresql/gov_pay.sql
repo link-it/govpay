@@ -305,12 +305,13 @@ CREATE SEQUENCE seq_acl start 1 increment 1 maxvalue 9223372036854775807 minvalu
 CREATE TABLE acl
 (
 	ruolo VARCHAR(255),
-	principal VARCHAR(255),
 	servizio VARCHAR(255) NOT NULL,
 	diritti VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_acl') NOT NULL,
+	id_utenza BIGINT,
 	-- fk/pk keys constraints
+	CONSTRAINT fk_acl_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
 

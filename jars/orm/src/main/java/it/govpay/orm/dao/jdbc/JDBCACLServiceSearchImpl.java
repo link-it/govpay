@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 
 import it.govpay.orm.ACL;
 import it.govpay.orm.IdAcl;
+import it.govpay.orm.IdUtenza;
 import it.govpay.orm.dao.jdbc.converter.ACLFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.ACLFetch;
 
@@ -102,7 +103,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 	
 		IdAcl idACL = new IdAcl();
 		idACL.setRuolo(acl.getRuolo());
-		idACL.setPrincipal(acl.getPrincipal());
+		idACL.setIdUtenza(acl.getIdUtenza());
 		idACL.setServizio(acl.getServizio());
 	
 		return idACL;
@@ -132,13 +133,30 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
         try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(ACL.model().RUOLO);
-			fields.add(ACL.model().PRINCIPAL);
+			fields.add(new CustomField("id_utenza", Long.class, "id_utenza", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(ACL.model().SERVIZIO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				ACL acl = (ACL)this.getFetch().fetch(jdbcProperties.getDatabase(), ACL.model(), map);
+				
+				Object idUtenzaObj = map.remove("id_utenza");
+				Long idUtenza = null;
+				if(idUtenzaObj instanceof Long) {
+					idUtenza = (Long) idUtenzaObj;
+				}
+				
+				if(idUtenza != null) {
+					it.govpay.orm.IdUtenza id_acl_utenza = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_acl_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findId(idUtenza, false);
+					}else{
+						id_acl_utenza = new it.govpay.orm.IdUtenza();
+					}
+					id_acl_utenza.setId(idUtenza);
+					acl.setIdUtenza(id_acl_utenza);
+				}
 				
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, acl));
 			}
@@ -161,15 +179,34 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(ACL.model().RUOLO);
-			fields.add(ACL.model().PRINCIPAL);
 			fields.add(ACL.model().SERVIZIO);
 			fields.add(ACL.model().DIRITTI);
+			fields.add(new CustomField("id_utenza", Long.class, "id_utenza", this.getFieldConverter().toTable(ACL.model())));
+	        
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
+				
+				Object idUtenzaObj = map.remove("id_utenza");
+				Long idUtenza = null;
+				if(idUtenzaObj instanceof Long) {
+					idUtenza = (Long) idUtenzaObj;
+				}
 
 				ACL acl = (ACL)this.getFetch().fetch(jdbcProperties.getDatabase(), ACL.model(), map);
+				
+				if(idUtenza != null) {
+					it.govpay.orm.IdUtenza id_acl_utenza = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_acl_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findId(idUtenza, false);
+					}else{
+						id_acl_utenza = new it.govpay.orm.IdUtenza();
+					}
+					id_acl_utenza.setId(idUtenza);
+					acl.setIdUtenza(id_acl_utenza);
+				}
+				
 				list.add(acl);
 			}
 		} catch(NotFoundException e) {}
@@ -496,7 +533,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getACLFieldConverter().toTable(ACL.model()));
-		sqlQueryObject.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,true));
+		sqlQueryObject.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
@@ -510,8 +547,11 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-
-        
+		if(expression.inUseModel(ACL.model().ID_UTENZA,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(ACL.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(ACL.model().ID_UTENZA);
+			sqlQueryObject.addWhereCondition(tableName1+".id_utenza="+tableName2+".id");
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdAcl id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -615,7 +655,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		// Object _acl
 		sqlQueryObjectGet.addFromTable(this.getACLFieldConverter().toTable(ACL.model()));
 		sqlQueryObjectGet.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().RUOLO,false));
-		sqlQueryObjectGet.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,false));
+		sqlQueryObjectGet.addSelectField("id_utenza");
 		sqlQueryObjectGet.addSelectField(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,false));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		
@@ -627,7 +667,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		};
 		List<Class<?>> listaFieldIdReturnType_acl = new ArrayList<>();
 		listaFieldIdReturnType_acl.add(ACL.model().RUOLO.getFieldType());
-		listaFieldIdReturnType_acl.add(ACL.model().PRINCIPAL.getFieldType());
+		listaFieldIdReturnType_acl.add(Long.class);
 		listaFieldIdReturnType_acl.add(ACL.model().SERVIZIO.getFieldType());
 		it.govpay.orm.IdAcl id_acl = null;
 		List<Object> listaFieldId_acl = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
@@ -643,8 +683,11 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			if(listaFieldId_acl.get(0) != null)
 				id_acl.setRuolo((String)listaFieldId_acl.get(0));
 			
-			if(listaFieldId_acl.get(1) != null)
-				id_acl.setPrincipal((String)listaFieldId_acl.get(1));
+			if(listaFieldId_acl.get(1) != null) {
+				IdUtenza idUtenza = new IdUtenza();
+				idUtenza.setId((Long)listaFieldId_acl.get(1));
+				id_acl.setIdUtenza(idUtenza );
+			}
 			
 			id_acl.setServizio((String)listaFieldId_acl.get(2));
 		}
@@ -680,13 +723,16 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		// Object _acl
 		sqlQueryObjectGet.addFromTable(this.getACLFieldConverter().toTable(ACL.model()));
 		sqlQueryObjectGet.addSelectField("id");
-		// Devono essere mappati nella where condition i metodi dell'oggetto id.getXXX
 		sqlQueryObjectGet.setANDLogicOperator(true);
-//		sqlQueryObjectGet.setSelectDistinct(true);
 		if(id.getRuolo()!=null)
 			sqlQueryObjectGet.addWhereCondition(this.getACLFieldConverter().toColumn(ACL.model().RUOLO,true)+"=?");
-		if(id.getPrincipal()!=null)
-			sqlQueryObjectGet.addWhereCondition(this.getACLFieldConverter().toColumn(ACL.model().PRINCIPAL,true)+"=?");
+		if(id.getIdUtenza()!=null) {
+			if(id.getIdUtenza().getId() != null) {
+				sqlQueryObjectGet.addWhereCondition("id_utenza =?");
+			} else {
+				sqlQueryObjectGet.addWhereCondition(this.getACLFieldConverter().toColumn(ACL.model().ID_UTENZA.PRINCIPAL_ORIGINALE,true)+"=?");
+			}
+		}
 		
 		sqlQueryObjectGet.addWhereCondition(this.getACLFieldConverter().toColumn(ACL.model().SERVIZIO,true)+"=?");
 
@@ -694,8 +740,13 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 		if(id.getRuolo()!=null)
 			lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getRuolo(),ACL.model().RUOLO.getFieldType()));
 		
-		if(id.getPrincipal()!=null)
-			lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getPrincipal(),ACL.model().PRINCIPAL.getFieldType()));
+		if(id.getIdUtenza()!=null) {
+			if(id.getIdUtenza().getId() != null) {
+				lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdUtenza().getId(),Long.class));
+			} else {
+				lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdUtenza().getPrincipalOriginale(),ACL.model().ID_UTENZA.PRINCIPAL_ORIGINALE.getFieldType()));
+			}
+		}
 		
 		lst.add(new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getServizio(),ACL.model().SERVIZIO.getFieldType()));
 

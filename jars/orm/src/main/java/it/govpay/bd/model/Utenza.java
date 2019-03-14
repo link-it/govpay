@@ -8,7 +8,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 import it.govpay.model.TipoTributo;
 
 public class Utenza extends it.govpay.model.Utenza {

@@ -12,9 +12,10 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.AclPost.AutorizzazioniEnum;
 import it.govpay.backoffice.v1.beans.ServizioEnum;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
-import it.govpay.model.Acl;
+import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 
@@ -50,11 +51,12 @@ public class AclConverter {
 
 		acl.setListaDiritti(lst);
 		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
-		acl.setPrincipal(AutorizzazioneUtils.getPrincipal(user));
+		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+		acl.setUtenza(authenticationDetails.getUtenza());
 		return acl;
 	}
 	
-	public static AclPost toRsModel(it.govpay.model.Acl acl) {
+	public static AclPost toRsModel(it.govpay.bd.model.Acl acl) {
 		AclPost rsModel = new AclPost();
 		
 		if(acl.getServizio() != null) {

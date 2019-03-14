@@ -32,7 +32,7 @@ public class OperatoreConverter {
 		Operatore dto = new Operatore();
 		dto.setId(vo.getId());
 		if(vo.getIdUtenza() != null)
-		dto.setIdUtenza(vo.getIdUtenza().getId());
+			dto.setIdUtenza(vo.getIdUtenza().getId());
 		dto.setNome(vo.getNome());
 		return dto;
 	}
