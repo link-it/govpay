@@ -527,7 +527,7 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codDominio" type="String35"/>
-			<xsd:element name="gln" type="String35"/>
+			<xsd:element name="gln" type="String35" minOccurs="0"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 			<xsd:element name="ragioneSociale" type="String70"/>
 			<xsd:element name="idApplicazioneDefault" type="id-applicazione" minOccurs="0">

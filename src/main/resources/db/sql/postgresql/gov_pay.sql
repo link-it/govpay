@@ -96,7 +96,7 @@ CREATE SEQUENCE seq_domini start 1 increment 1 maxvalue 9223372036854775807 minv
 CREATE TABLE domini
 (
 	cod_dominio VARCHAR(35) NOT NULL,
-	gln VARCHAR(35) NOT NULL,
+	gln VARCHAR(35),
 	abilitato BOOLEAN NOT NULL,
 	ragione_sociale VARCHAR(70) NOT NULL,
 	aux_digit INT NOT NULL DEFAULT 0,

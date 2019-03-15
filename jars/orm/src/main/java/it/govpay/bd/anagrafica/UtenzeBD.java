@@ -172,7 +172,15 @@ public class UtenzeBD extends BasicBD {
 		AclFilter filter = aclDB.newFilter();
 		filter.setIdUtenza(utenza.getId());
 
-		utenza.setAclPrincipal(aclDB.findAll(filter));
+		List<Acl> findAll = aclDB.findAll(filter);
+		
+		if(findAll != null && findAll.size() > 0) {
+			for (Acl acl : findAll) {
+				acl.setUtenza(utenza);
+			} 
+		}
+		
+		utenza.setAclPrincipal(findAll);
 		return utenza;
 	}
 	

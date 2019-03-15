@@ -1,5 +1,7 @@
 package it.govpay.pagamento.v1.beans.converter;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import it.govpay.pagamento.v1.beans.AclPost.ServizioEnum;
@@ -42,8 +44,11 @@ public class AclConverter {
 			}
 		}
 		
-		if(acl.getListaDiritti() != null)
-			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> a.toString()).collect(Collectors.toList()));
+		if(acl.getListaDiritti() != null) {
+			List<String> diritti = acl.getListaDiritti().stream().map(a -> a.toString()).collect(Collectors.toList());
+			Collections.sort(diritti);
+			rsModel.autorizzazioni(diritti);
+		}
 		
 		return rsModel;
 	}

@@ -133,6 +133,8 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 			List<IField> fields = new ArrayList<>();
             fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(this.getFieldConverter().getRootModel())));
 			fields.add(Utenza.model().PRINCIPAL);
+			fields.add(Utenza.model().PRINCIPAL_ORIGINALE);
+			fields.add(Utenza.model().ABILITATO);
 
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
@@ -610,6 +612,8 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 		// Object _utenza
 		sqlQueryObjectGet.addFromTable(this.getUtenzaFieldConverter().toTable(Utenza.model()));
 		sqlQueryObjectGet.addSelectField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL,true));
+		sqlQueryObjectGet.addSelectField(this.getUtenzaFieldConverter().toColumn(Utenza.model().PRINCIPAL_ORIGINALE,true));
+		sqlQueryObjectGet.addSelectField(this.getUtenzaFieldConverter().toColumn(Utenza.model().ABILITATO,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -619,6 +623,8 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 		};
 		List<Class<?>> listaFieldIdReturnType_utenza = new ArrayList<>();
 		listaFieldIdReturnType_utenza.add(Utenza.model().PRINCIPAL.getFieldType());
+		listaFieldIdReturnType_utenza.add(Utenza.model().PRINCIPAL_ORIGINALE.getFieldType());
+		listaFieldIdReturnType_utenza.add(Utenza.model().ABILITATO.getFieldType());
 
 		it.govpay.orm.IdUtenza id_utenza = null;
 		List<Object> listaFieldId_utenza = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
@@ -632,6 +638,8 @@ public class JDBCUtenzaServiceSearchImpl implements IJDBCServiceSearchWithId<Ute
 			// set _utenza
 			id_utenza = new it.govpay.orm.IdUtenza();
 			id_utenza.setPrincipal((String)listaFieldId_utenza.get(0));
+			id_utenza.setPrincipalOriginale((String)listaFieldId_utenza.get(1));
+			id_utenza.setAbilitato((Boolean)listaFieldId_utenza.get(2));
 		}
 		
 		return id_utenza;

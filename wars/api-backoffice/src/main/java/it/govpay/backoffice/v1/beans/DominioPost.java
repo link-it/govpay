@@ -547,7 +547,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 	
 			vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(70);
-			vf.getValidator("gln", this.gln).notNull().length(13).pattern("(^([0-9]){13}$)");
+			vf.getValidator("gln", this.gln).length(13).pattern("(^([0-9]){13}$)");
 			vf.getValidator("auxDigit", this.auxDigit).notNull().length(1).pattern("(^([0-3]){1}$)");;
 			vf.getValidator("stazione", this.stazione).notNull();
 			vf.getValidator("segregationCode", this.segregationCode).length(2).pattern("(^[0-4][0-9]$)");

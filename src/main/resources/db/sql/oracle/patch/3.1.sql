@@ -27,3 +27,6 @@ ALTER TABLE acl ADD COLUMN id_utenza NUMBER;
 UPDATE a SET a.id_utenza = u.id FROM acl a, utenze u WHERE a.principal is not null and a.principal = u.principal_originale;
 ALTER TABLE acl DROP COLUMN principal;
 ALTER TABLE acl ADD CONSTRAINT fk_acl_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id);
+
+-- 15/03/2019 campo GLN della tabella Domini non piu' obbligatorio
+ALTER TABLE domini MODIFY (gln NULL);

@@ -1,5 +1,7 @@
 package it.govpay.pagamento.v2.beans.converter;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import it.govpay.pagamento.v2.beans.TipoAutorizzazione;
@@ -45,7 +47,9 @@ public class AclConverter {
 		
 		if(acl.getListaDiritti() != null) {
 			TipoAutorizzazione tipoAutorizzazione = new TipoAutorizzazione();
-			tipoAutorizzazione.addAll(acl.getListaDiritti().stream().map(a -> a.toString()).collect(Collectors.toList()));
+			List<String> diritti = acl.getListaDiritti().stream().map(a -> a.toString()).collect(Collectors.toList());
+			Collections.sort(diritti);
+			tipoAutorizzazione.addAll(diritti);
 			rsModel.autorizzazioni(tipoAutorizzazione);
 		}
 		

@@ -95,7 +95,7 @@ CREATE INDEX index_applicazioni_2 ON applicazioni (id_utenza);
 CREATE TABLE domini
 (
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del\'ente creditore su pagopa',
-	gln VARCHAR(35) NOT NULL COMMENT 'Global location number assegnato da pagopa',
+	gln VARCHAR(35) COMMENT 'Global location number assegnato da pagopa',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
 	ragione_sociale VARCHAR(70) NOT NULL COMMENT 'Ragione sociale dell\'ente creditore',
 	aux_digit INT NOT NULL DEFAULT 0 COMMENT 'Aux digit di generazione dei numeri avviso',

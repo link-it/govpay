@@ -19,6 +19,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagamento.utils.validazione.semantica.NuovoPagamentoValidator;
 import it.govpay.pagamento.v2.acl.Acl;
 import it.govpay.pagamento.v2.acl.AuthorizationRules;
 import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
@@ -104,6 +105,8 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiConverter.getPagamentiPortaleDTO(body, context.getAuthentication(),idSession, idSessionePortale, avvisaturaDigitale,modalitaAvvisaturaDigitale);
 			
 			PagamentiConverter.controlloUtenzaVersante(pagamentiPortaleDTO, context.getAuthentication());
+			
+			new NuovoPagamentoValidator().valida(pagamentiPortaleDTO);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			

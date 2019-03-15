@@ -30,6 +30,7 @@ import it.govpay.core.utils.GovpayConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.pagamento.utils.validazione.semantica.NuovoPagamentoValidator;
 import it.govpay.pagamento.v1.beans.FaultBean;
 import it.govpay.pagamento.v1.beans.FaultBeanEsteso;
 import it.govpay.pagamento.v1.beans.FaultBeanEsteso.CategoriaEnum;
@@ -77,6 +78,8 @@ public class PagamentiController extends BaseController {
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale, avvisaturaDigitale,modalitaAvvisaturaDigitale);
 			
 			PagamentiPortaleConverter.controlloUtenzaVersante(pagamentiPortaleDTO, user);
+			
+			new NuovoPagamentoValidator().valida(pagamentiPortaleDTO);
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			

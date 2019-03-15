@@ -2,8 +2,10 @@ package it.govpay.core.utils.validator;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.json.ValidationException;
 
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.VocePendenza;
 
@@ -28,11 +30,14 @@ public class PendenzaVerificataValidator  implements IValidable{
 			vf.getValidator("causale", this.pendenzaVerificata.getCausale()).notNull().minLength(1).maxLength(140);
 			new SoggettoPagatoreValidator(this.pendenzaVerificata.getSoggettoPagatore()).validate();
 			vf.getValidator("importo", this.pendenzaVerificata.getImporto()).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
-			vf.getValidator("numeroAvviso", this.pendenzaVerificata.getNumeroAvviso()).pattern("[0-9]{18}");
+			vf.getValidator("numeroAvviso", this.pendenzaVerificata.getNumeroAvviso()).maxLength(18).pattern("[0-9]{18}");
+			if(StringUtils.isNotEmpty(this.pendenzaVerificata.getNumeroAvviso()))
+				IuvUtils.toIuv(this.pendenzaVerificata.getNumeroAvviso());
+			
 			if(this.pendenzaVerificata.getDataValidita() != null)
-				vf.getValidator("dataValidita", this.pendenzaVerificata.getDataValidita().toDate());
+				vf.getValidator("dataValidita", this.pendenzaVerificata.getDataValidita().toDate()).isValid();
 			if(this.pendenzaVerificata.getDataScadenza() != null)
-				vf.getValidator("dataScadenza", this.pendenzaVerificata.getDataScadenza().toDate());
+				vf.getValidator("dataScadenza", this.pendenzaVerificata.getDataScadenza().toDate()).isValid();
 			if(this.pendenzaVerificata.getAnnoRiferimento() != null)
 				vf.getValidator("annoRiferimento", this.pendenzaVerificata.getAnnoRiferimento().toBigInteger().toString()).pattern("[0-9]{4}");
 			vf.getValidator("cartellaPagamento", this.pendenzaVerificata.getCartellaPagamento()).minLength(1).maxLength(35);

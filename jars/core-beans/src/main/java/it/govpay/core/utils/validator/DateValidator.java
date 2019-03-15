@@ -1,5 +1,6 @@
 package it.govpay.core.utils.validator;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +19,17 @@ public class DateValidator {
 		this.fieldName = fieldName;
 		this.fieldValue = fieldValue == null ? null : fieldValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		this.formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+	}
+	
+	public DateValidator isValid() throws ValidationException {
+		if(this.fieldValue != null) {
+			try {
+				this.formatter.format(this.fieldValue);
+			}catch(DateTimeException e) {
+				throw new ValidationException("Il campo " + this.fieldName + " non contiene una data valida.");
+			}
+		}
+		return this;
 	}
 
 	public DateValidator notNull() throws ValidationException {

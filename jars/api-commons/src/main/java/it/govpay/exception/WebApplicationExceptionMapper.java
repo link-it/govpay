@@ -10,6 +10,7 @@ import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 
 /**
  * Gestione automatica delle eccezioni lanciate dal DAO V1 in Problem V2.
@@ -32,6 +33,13 @@ public class WebApplicationExceptionMapper extends org.openspcoop2.utils.service
 	
 	@Override
 	public void updateProblem(org.openspcoop2.utils.service.fault.jaxrs.Problem problem, WebApplicationException e) {
+		
+		if(WebApplicationExceptionMapper.existsInnerException(e, UnprocessableEntityException.class)) {
+			UnprocessableEntityException innerException = (UnprocessableEntityException) WebApplicationExceptionMapper.getInnerException(e, UnprocessableEntityException.class);
+			int statusCode = 422;
+			problem.setStatus(statusCode);
+			problem.setDetail(innerException.getMessage());
+		}
 	
 		if(WebApplicationExceptionMapper.existsInnerException(e, BaseExceptionV1.class)) {
 			BaseExceptionV1 innerException = (BaseExceptionV1) WebApplicationExceptionMapper.getInnerException(e, BaseExceptionV1.class);
@@ -61,7 +69,7 @@ public class WebApplicationExceptionMapper extends org.openspcoop2.utils.service
 	
 	public static WebApplicationException handleException(Throwable e) {
 
-		if(e instanceof BaseExceptionV1 || e instanceof RedirectException || e instanceof GovPayException || e instanceof ValidationException) {
+		if(e instanceof BaseExceptionV1 || e instanceof RedirectException || e instanceof GovPayException || e instanceof ValidationException || e instanceof UnprocessableEntityException) {
 			return new WebApplicationException(e);
 		}
 

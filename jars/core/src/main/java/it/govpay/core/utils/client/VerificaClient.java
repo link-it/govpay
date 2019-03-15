@@ -122,12 +122,15 @@ public class VerificaClient extends BasicClient {
 				bd.setupConnection(GpThreadLocal.get().getTransactionId());
 			}
 			
-			new PendenzaVerificataValidator(pendenzaVerificata).validate();
-
 			StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
+			
+			if(stato == null)
+				throw new ServiceException("Stato pendenza non gestito: null");
+			
 			switch (stato) {
 			case NON_ESEGUITA: // CASO OK su
 				ctx.getApplicationLogger().log("verifica.avvio", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
+				new PendenzaVerificataValidator(pendenzaVerificata).validate();
 				try {
 					return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
 				} catch (GovPayException e) {
@@ -153,7 +156,7 @@ public class VerificaClient extends BasicClient {
 				ctx.getApplicationLogger().log("verifica.verificaSconosciuto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				throw new VersamentoSconosciutoException();
 			default:
-				throw new ServiceException("Stato pendenza non gestito: " + stato.name());
+				throw new ValidationException("Stato pendenza non gestito: " + stato.name());
 			}
 		} catch (ServiceException e) {
 			ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, codDominioD, iuvD, e.getMessage());
