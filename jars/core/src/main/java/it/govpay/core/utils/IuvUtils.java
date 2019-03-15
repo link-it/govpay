@@ -27,6 +27,7 @@ import java.util.Locale;
 
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -115,17 +116,17 @@ public class IuvUtils {
 		return iuvGenerato;
 	}
 
-	public static String toIuv(String numeroAvviso) throws GovPayException {
+	public static String toIuv(String numeroAvviso) throws ValidationException {
 		if(numeroAvviso == null)
 			return null;
 
 		if(numeroAvviso.length() != 18)
-			throw new GovPayException(EsitoOperazione.VER_026, "Numero Avviso [" + numeroAvviso + "] fornito non valido: Consentite 18 cifre trovate ["+numeroAvviso.length()+"].");
+			throw new ValidationException("Numero Avviso [" + numeroAvviso + "] fornito non valido: Consentite 18 cifre trovate ["+numeroAvviso.length()+"].");
 
 		try {
 			Long.parseLong(numeroAvviso);
 		}catch(Exception e) {
-			throw new GovPayException(EsitoOperazione.VER_026, "Numero Avviso [" + numeroAvviso + "] fornito non valido: non e' in formato numerico.");
+			throw new ValidationException("Numero Avviso [" + numeroAvviso + "] fornito non valido: non e' in formato numerico.");
 		}
 
 		if(numeroAvviso.startsWith("0")) // '0' + applicationCode(2) + ref(13) + check(2)
@@ -137,6 +138,6 @@ public class IuvUtils {
 		else if(numeroAvviso.startsWith("3")) // '3' + segregationCode(2) +  ref(13) + check(2) 
 			return numeroAvviso.substring(1);
 		else 
-			throw new GovPayException(EsitoOperazione.VER_026, "Numero Avviso [" + numeroAvviso + "] fornito non valido: prima cifra non e' [0|1|2|3]");
+			throw new ValidationException("Numero Avviso [" + numeroAvviso + "] fornito non valido: prima cifra non e' [0|1|2|3]");
 	}
 }

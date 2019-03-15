@@ -1,8 +1,8 @@
 package it.govpay.core.dao.anagrafica.dto;
 
+import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.IuvUtils;
 
 public class GetAvvisoDTO extends BasicRequestDTO {
@@ -16,14 +16,15 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	private boolean accessoAnonimo;
 	private String cfDebitore;
 	
-	public GetAvvisoDTO(Authentication user, String codDominio) throws GovPayException {
+	public GetAvvisoDTO(Authentication user, String codDominio) throws ValidationException {
 		this(user, codDominio, null);
 	}
-	public GetAvvisoDTO(Authentication user, String codDominio, String numeroAvviso) throws GovPayException {
+	public GetAvvisoDTO(Authentication user, String codDominio, String numeroAvviso) throws ValidationException {
 		super(user);
 		this.setCodDominio(codDominio);
 		this.setNumeroAvviso(numeroAvviso);
 		this.setIuv(IuvUtils.toIuv(numeroAvviso));
+		
 		this.setAccessoAnonimo(false);
 		this.formato = FormatoAvviso.JSON;
 	}

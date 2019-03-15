@@ -12,6 +12,7 @@ import javax.ws.rs.ext.Provider;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.JacksonJsonProvider;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -22,7 +23,6 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.pagamento.v2.beans.Avviso;
@@ -60,7 +60,7 @@ public class AvvisoWriter implements javax.ws.rs.ext.MessageBodyWriter<Avviso> {
 			
 				getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
 				objectMapper.writeValue(entityStream, getAvvisoDTOResponse.getAvvisoPdf());
-			} catch (PendenzaNonTrovataException | NotAuthorizedException | NotAuthenticatedException | ServiceException | GovPayException e) {
+			} catch (PendenzaNonTrovataException | NotAuthorizedException | NotAuthenticatedException | ServiceException | ValidationException e) {
 				throw FaultCode.ERRORE_INTERNO.toException(e);
 			}
 		} else {

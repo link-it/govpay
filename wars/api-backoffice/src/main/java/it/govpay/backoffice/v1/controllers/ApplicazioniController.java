@@ -15,6 +15,7 @@ import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.utils.validazione.semantica.ApplicazioneValidator;
 import it.govpay.backoffice.v1.beans.Applicazione;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.ListaApplicazioni;
@@ -171,6 +172,8 @@ public class ApplicazioniController extends BaseController {
 			applicazioneRequest.validate();
 			
 			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user); 
+			
+			new ApplicazioneValidator(putApplicazioneDTO.getApplicazione()).validate();
 			
 			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
 			

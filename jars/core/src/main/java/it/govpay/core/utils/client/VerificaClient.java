@@ -44,6 +44,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.v1.VerificaConverter;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.core.utils.validator.PendenzaVerificataValidator;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.StatoPendenzaVerificata;
 import it.govpay.model.Versionabile.Versione;
@@ -120,6 +121,8 @@ public class VerificaClient extends BasicClient {
 			} finally {
 				bd.setupConnection(GpThreadLocal.get().getTransactionId());
 			}
+			
+			new PendenzaVerificataValidator(pendenzaVerificata).validate();
 
 			StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
 			switch (stato) {

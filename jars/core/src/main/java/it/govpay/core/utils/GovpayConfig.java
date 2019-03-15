@@ -33,7 +33,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.logger.constants.Severity;
-import org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext;
 import org.openspcoop2.utils.logger.log4j.Log4jLoggerWithApplicationContext;
 import org.slf4j.Logger;
 
@@ -115,6 +114,8 @@ public class GovpayConfig {
 	private Integer limiteNumeroVersamentiAvvisaturaDigitale;
 	private String avvisaturaDigitaleModalitaAnnullamentoAvviso;
 	
+	private Integer intervalloDisponibilitaPagamentoUtenzaAnonima;
+	
 	private boolean contextDumpEnabled;
 
 	public GovpayConfig(InputStream is) throws Exception {
@@ -160,6 +161,7 @@ public class GovpayConfig {
 		this.limiteNumeroVersamentiAvvisaturaDigitale = 100000;
 		this.avvisaturaDigitaleModalitaAnnullamentoAvviso = AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_ASINCRONA;
 		this.intervalloControlloRptPendenti = 30;
+		this.intervalloDisponibilitaPagamentoUtenzaAnonima = 24;
 		
 		this.contextDumpEnabled = true;
 		try {
@@ -463,6 +465,14 @@ public class GovpayConfig {
 				this.intervalloControlloRptPendenti = 100000;
 			}
 			
+			String intervalloDisponibilitaPagamentoUtenzaAnonimaString = getProperty("it.govpay.autenticazione.utenzaAnonima.intervalloDisponibilitaPagamento", props, false, log);
+			try {
+				this.intervalloDisponibilitaPagamentoUtenzaAnonima = Integer.parseInt(intervalloDisponibilitaPagamentoUtenzaAnonimaString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.recuperoRptPendenti.intervalloControlloCreazioneRpt\" impostata com valore di default (100000)");
+				this.intervalloDisponibilitaPagamentoUtenzaAnonima = 24;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -708,5 +718,8 @@ public class GovpayConfig {
 	public boolean isContextDumpEnabled() {
 		return contextDumpEnabled;
 	}
-	
+
+	public Integer getIntervalloDisponibilitaPagamentoUtenzaAnonima() {
+		return intervalloDisponibilitaPagamentoUtenzaAnonima;
+	}
 }

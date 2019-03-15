@@ -21,8 +21,12 @@ package it.govpay.core.utils.client.v1;
 
 import java.util.List;
 
+//import org.apache.commons.lang.ArrayUtils;
+//import org.openspcoop2.utils.json.ValidationException;
+
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.Soggetto;
+//import it.govpay.ec.v1.beans.TassonomiaAvviso;
 import it.govpay.ec.v1.beans.VocePendenza;
 import it.govpay.model.Versamento.StatoVersamento;
 
@@ -50,8 +54,16 @@ public class VerificaConverter {
 		versamento.setDatiAllegati(pendenzaVerificata.getDatiAllegati());
 		
 		versamento.setTassonomia(pendenzaVerificata.getTassonomia());
-		if(pendenzaVerificata.getTassonomiaAvviso() != null)
+		
+		if(pendenzaVerificata.getTassonomiaAvviso() != null) {
+			// valore tassonomia avviso non valido
+//			if(TassonomiaAvviso.fromValue(pendenzaVerificata.getTassonomiaAvviso()) == null) {
+//				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenzaVerificata.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+//			}
+
 			versamento.setTassonomiaAvviso(pendenzaVerificata.getTassonomiaAvviso().toString());
+		}
+		
 		versamento.setNome(pendenzaVerificata.getNome());
 		
 		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);

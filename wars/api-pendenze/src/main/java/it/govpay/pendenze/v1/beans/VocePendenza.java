@@ -7,6 +7,7 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -439,8 +440,8 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 
 
 		else if(this.ibanAccredito != null) {
-			vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
-			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
+			vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
+			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator(FIELD_TIPO_CONTABILITA, this.tipoContabilita).notNull();
 			vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).notNull().pattern("\\S{3,138}").maxLength(255);
 

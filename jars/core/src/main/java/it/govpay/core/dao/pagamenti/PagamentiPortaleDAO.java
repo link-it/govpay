@@ -24,6 +24,9 @@ import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.UtenzaAnonima;
+import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
@@ -65,6 +68,7 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.PatchOp;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.orm.IdVersamento;
@@ -105,7 +109,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			StringBuilder sbNomeVersamenti = new StringBuilder();
 			List<String> listaMultibeneficiari = new ArrayList<>();
-			Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(pagamentiPortaleDTO.getVersante());
+			Anagrafica versanteModel = controlloUtenzaVersante(VersamentoUtils.toAnagraficaModel(pagamentiPortaleDTO.getVersante()), userDetails);
 			// 1. Lista Id_versamento
 			for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 				Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
@@ -529,9 +533,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		try {
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPagamentiPortaleDTO.getUser());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,true,bd);
+			this.autorizzaRichiesta(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
 			// Autorizzazione sui domini
-			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,true);
+			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
 			if(codDomini == null) {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Arrays.asList(Diritti.LETTURA)); 
 			}
@@ -710,5 +714,51 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(bd != null)
 				bd.closeConnection();
 		}
+	}
+	
+	private static Anagrafica controlloUtenzaVersante(Anagrafica versanteModel, GovpayLdapUserDetails userDetails) {
+		if(versanteModel == null) return versanteModel;
+		
+		
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
+			versanteModel.setCodUnivoco(cittadino.getCodIdentificativo());
+			String nomeCognome = cittadino.getProprieta("X-SPID-NAME") + " " + cittadino.getProprieta("X-SPID-FAMILYNAME");
+			versanteModel.setRagioneSociale(nomeCognome);
+			versanteModel.setEmail(cittadino.getProprieta("X-SPID-EMAIL"));
+			versanteModel.setTipo(TIPO.F);
+			versanteModel.setArea(null);
+			versanteModel.setCap(null);
+			versanteModel.setCellulare(null);
+			versanteModel.setCivico(null);
+			versanteModel.setFax(null);
+			versanteModel.setIndirizzo(null);
+			versanteModel.setLocalita(null);
+			versanteModel.setNazione(null);
+			versanteModel.setPec(null);
+			versanteModel.setProvincia(null);
+			versanteModel.setTelefono(null);
+			versanteModel.setUrlSitoWeb(null);
+		}
+		
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			versanteModel.setCodUnivoco(TIPO_UTENZA.ANONIMO.toString());
+			versanteModel.setRagioneSociale(TIPO_UTENZA.ANONIMO.toString());
+			versanteModel.setTipo(TIPO.F);
+			versanteModel.setArea(null);
+			versanteModel.setCap(null);
+			versanteModel.setCellulare(null);
+			versanteModel.setCivico(null);
+			versanteModel.setFax(null);
+			versanteModel.setIndirizzo(null);
+			versanteModel.setLocalita(null);
+			versanteModel.setNazione(null);
+			versanteModel.setPec(null);
+			versanteModel.setProvincia(null);
+			versanteModel.setTelefono(null);
+			versanteModel.setUrlSitoWeb(null);
+		}
+		
+		return versanteModel;
 	}
 }

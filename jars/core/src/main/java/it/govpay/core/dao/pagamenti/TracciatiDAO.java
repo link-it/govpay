@@ -273,6 +273,8 @@ public class TracciatiDAO extends BaseDAO{
 			it.govpay.core.business.Operazioni.setEseguiElaborazioneTracciati();
 			
 			postTracciatoDTOResponse.setCreated(true);
+			
+			tracciato.getOperatore(bd);
 			postTracciatoDTOResponse.setTracciato(tracciato);
 			return postTracciatoDTOResponse;
 		} catch (ServiceException | IOException e) {

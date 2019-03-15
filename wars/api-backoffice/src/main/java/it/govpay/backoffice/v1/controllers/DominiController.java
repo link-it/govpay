@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -57,13 +58,14 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
 public class DominiController extends BaseController {
-
-     private static final String PATTERN_IBAN_ACCREDITO = "^(?:(?:IT|SM)\\d{2}[A-Z]\\d{22}|CY\\d{2}[A-Z]\\d{23}|NL\\d{2}[A-Z]{4}\\d{10}|LV\\d{2}[A-Z]{4}\\d{13}|(?:BG|BH|GB|IE)\\d{2}[A-Z]{4}\\d{14}|GI\\d{2}[A-Z]{4}\\d{15}|RO\\d{2}[A-Z]{4}\\d{16}|KW\\d{2}[A-Z]{4}\\d{22}|MT\\d{2}[A-Z]{4}\\d{23}|NO\\d{13}|(?:DK|FI|GL|FO)\\d{16}|MK\\d{17}|(?:AT|EE|KZ|LU|XK)\\d{18}|(?:BA|HR|LI|CH|CR)\\d{19}|(?:GE|DE|LT|ME|RS)\\d{20}|IL\\d{21}|(?:AD|CZ|ES|MD|SA)\\d{22}|PT\\d{23}|(?:BE|IS)\\d{24}|(?:FR|MR|MC)\\d{25}|(?:AL|DO|LB|PL)\\d{26}|(?:AZ|HU)\\d{27}|(?:GR|MU)\\d{28})$";
 
 	public DominiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
@@ -461,7 +463,7 @@ public class DominiController extends BaseController {
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
-			vf.getValidator("ibanAccredito", ibanAccredito).notNull().minLength(1).maxLength(255).pattern(PATTERN_IBAN_ACCREDITO);
+			vf.getValidator("ibanAccredito", ibanAccredito).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			
 			ibanAccreditoRequest.validate();
 			
@@ -556,8 +558,12 @@ public class DominiController extends BaseController {
 			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
 			
 			DominiDAO dominiDAO = new DominiDAO(false);
-			
-			PutEntrataDominioDTOResponse putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
+			PutEntrataDominioDTOResponse putEntrataDTOResponse = null;
+			try {
+				putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
+			} catch(TipoTributoNonTrovatoException e) {
+				throw new UnprocessableEntityException("Il tipo entrata indicato non e' disponibile per il dominio.");
+			}
 			
 			Status responseStatus = putEntrataDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			
