@@ -58,7 +58,7 @@ public class PendenzeController extends BaseController {
 			
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza =  PendenzeConverter.toRsModel(ricevutaDTOResponse);
+			Pendenza pendenza =  PendenzeConverter.toRsModel(ricevutaDTOResponse,user);
 			
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {

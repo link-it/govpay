@@ -103,6 +103,8 @@ public class PagamentiApiServiceImpl extends BaseImpl implements PagamentiApi {
 			String idSession = context.getTransactionId().replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiConverter.getPagamentiPortaleDTO(body, context.getAuthentication(),idSession, idSessionePortale, avvisaturaDigitale,modalitaAvvisaturaDigitale);
 			
+			PagamentiConverter.controlloUtenzaVersante(pagamentiPortaleDTO, context.getAuthentication());
+			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
 			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);

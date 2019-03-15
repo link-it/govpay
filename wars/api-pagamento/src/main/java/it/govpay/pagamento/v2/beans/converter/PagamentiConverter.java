@@ -17,6 +17,9 @@ import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.UtenzaCittadino;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
@@ -24,6 +27,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pagamento.v2.api.impl.PagamentiApiServiceImpl;
 import it.govpay.pagamento.v2.api.impl.PendenzeApiServiceImpl;
@@ -48,6 +52,7 @@ import it.govpay.pagamento.v2.beans.RppIndex;
 import it.govpay.pagamento.v2.beans.Soggetto;
 import it.govpay.pagamento.v2.beans.StatoPagamento;
 import it.govpay.pagamento.v2.beans.TipoAutenticazioneSoggetto;
+import it.govpay.pagamento.v2.beans.TipoSoggetto;
 
 public class PagamentiConverter {
 
@@ -349,5 +354,52 @@ public class PagamentiConverter {
 		}
 
 		return anagraficaCommons;
+	}
+	
+	public static void controlloUtenzaVersante(PagamentiPortaleDTO pagamentiPortaleDTO, Authentication user) {
+		it.govpay.core.dao.commons.Anagrafica versante = pagamentiPortaleDTO.getVersante();
+		if(versante == null) return;
+		
+		 GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+		
+		
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
+			versante.setCodUnivoco(cittadino.getCodIdentificativo());
+			String nomeCognome = cittadino.getProprieta("X-SPID-NAME") + " " + cittadino.getProprieta("X-SPID-FAMILYNAME");
+			versante.setRagioneSociale(nomeCognome);
+			versante.setEmail(cittadino.getProprieta("X-SPID-EMAIL"));
+			versante.setTipo(TipoSoggetto.F.toString());
+//			versante.setArea(null);
+			versante.setCap(null);
+			versante.setCellulare(null);
+			versante.setCivico(null);
+			versante.setFax(null);
+			versante.setIndirizzo(null);
+			versante.setLocalita(null);
+			versante.setNazione(null);
+//			versante.setPec(null);
+			versante.setProvincia(null);
+			versante.setTelefono(null);
+//			versante.setUrlSitoWeb(null);
+		}
+		
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			versante.setCodUnivoco(TIPO_UTENZA.ANONIMO.toString());
+			versante.setRagioneSociale(TIPO_UTENZA.ANONIMO.toString());
+			versante.setTipo(TipoSoggetto.F.toString());
+//			versante.setArea(null);
+			versante.setCap(null);
+			versante.setCellulare(null);
+			versante.setCivico(null);
+			versante.setFax(null);
+			versante.setIndirizzo(null);
+			versante.setLocalita(null);
+			versante.setNazione(null);
+//			versante.setPec(null);
+			versante.setProvincia(null);
+			versante.setTelefono(null);
+//			versante.setUrlSitoWeb(null);
+		}
 	}
 }

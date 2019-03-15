@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
@@ -28,11 +29,11 @@ import it.govpay.pagamento.v1.beans.VocePendenza.TipoContabilitaEnum;
 
 public class PendenzeConverter {
 	
-	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException {
-		return toRsModel(dto.getVersamentoIncasso(), dto.getPagamenti(), dto.getRpts());
+	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException {
+		return toRsModel(dto.getVersamentoIncasso(), dto.getPagamenti(), dto.getRpts(),user);
 	}
 	
-	public static Pendenza toRsModel(it.govpay.bd.viste.model.VersamentoIncasso versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts) throws ServiceException {
+	public static Pendenza toRsModel(it.govpay.bd.viste.model.VersamentoIncasso versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user) throws ServiceException {
 		Pendenza rsModel = new Pendenza();
 		
 		if(versamento.getCodAnnoTributario()!= null)
@@ -106,7 +107,7 @@ public class PendenzeConverter {
 		List<Rpp> rpps = new ArrayList<>();
 		if(rpts != null && rpts.size() > 0) {
 			for (Rpt rpt : rpts) {
-				rpps.add(RptConverter.toRsModel(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null)));
+				rpps.add(RptConverter.toRsModel(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null), user));
 			} 
 		}
 		rsModel.setRpp(rpps); 

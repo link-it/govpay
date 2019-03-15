@@ -7,17 +7,20 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.json.ValidationException;
-import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.UtenzaCittadino;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.dao.commons.Anagrafica;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pagamento.v1.beans.ContoAddebito;
 import it.govpay.pagamento.v1.beans.ModalitaAvvisaturaDigitale;
@@ -28,6 +31,7 @@ import it.govpay.pagamento.v1.beans.PagamentoPost;
 import it.govpay.pagamento.v1.beans.PagamentoPost.AutenticazioneSoggettoEnum;
 import it.govpay.pagamento.v1.beans.PendenzaPost;
 import it.govpay.pagamento.v1.beans.Soggetto;
+import it.govpay.pagamento.v1.beans.Soggetto.TipoEnum;
 import it.govpay.pagamento.v1.beans.StatoPagamento;
 import it.govpay.pagamento.v1.beans.TassonomiaAvviso;
 import it.govpay.pagamento.v1.beans.VocePendenza;
@@ -41,8 +45,6 @@ public class PagamentiPortaleConverter {
 	public static final String ID_DOMINIO_KEY = "idDominio";
 	public static final String IUV_KEY = "iuv";
 	
-	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiPortaleConverter.class);
-
 	public static PagamentiPortaleResponseOk getPagamentiPortaleResponseOk(PagamentiPortaleDTOResponse dtoResponse) {
 		PagamentiPortaleResponseOk  json = new PagamentiPortaleResponseOk();
 
@@ -343,5 +345,61 @@ public class PagamentiPortaleConverter {
 
 		return rsModel;
 
+	}
+	
+	public static void controlloUtenzaVersante(PagamentiPortaleDTO pagamentiPortaleDTO, Authentication user) {
+		it.govpay.core.dao.commons.Anagrafica versante = pagamentiPortaleDTO.getVersante();
+		
+		 GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+		
+		
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			if(versante == null) {
+				versante = new it.govpay.core.dao.commons.Anagrafica();
+				pagamentiPortaleDTO.setVersante(versante);
+			}
+			
+			UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
+			versante.setCodUnivoco(cittadino.getCodIdentificativo());
+			String nomeCognome = cittadino.getProprieta("X-SPID-NAME") + " " + cittadino.getProprieta("X-SPID-FAMILYNAME");
+			versante.setRagioneSociale(nomeCognome);
+			versante.setEmail(cittadino.getProprieta("X-SPID-EMAIL"));
+			versante.setTipo(TipoEnum.F.toString());
+//			versante.setArea(null);
+			versante.setCap(null);
+			versante.setCellulare(null);
+			versante.setCivico(null);
+			versante.setFax(null);
+			versante.setIndirizzo(null);
+			versante.setLocalita(null);
+			versante.setNazione(null);
+//			versante.setPec(null);
+			versante.setProvincia(null);
+			versante.setTelefono(null);
+//			versante.setUrlSitoWeb(null);
+		}
+		
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			if(versante == null) {
+				versante = new it.govpay.core.dao.commons.Anagrafica();
+				pagamentiPortaleDTO.setVersante(versante);
+			}
+			
+			versante.setCodUnivoco(TIPO_UTENZA.ANONIMO.toString());
+			versante.setRagioneSociale(TIPO_UTENZA.ANONIMO.toString());
+			versante.setTipo(TipoEnum.F.toString());
+//			versante.setArea(null);
+			versante.setCap(null);
+			versante.setCellulare(null);
+			versante.setCivico(null);
+			versante.setFax(null);
+			versante.setIndirizzo(null);
+			versante.setLocalita(null);
+			versante.setNazione(null);
+//			versante.setPec(null);
+			versante.setProvincia(null);
+			versante.setTelefono(null);
+//			versante.setUrlSitoWeb(null);
+		}
 	}
 }

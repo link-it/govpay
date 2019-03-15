@@ -34,6 +34,17 @@ public class ConverterUtils {
 
 		try {
 			CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
+			return getRptJson(ctRpt);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public static String getRptJson(CtRichiestaPagamentoTelematico ctRpt) throws ServiceException {
+		if(ctRpt == null)
+			return null;
+
+		try {
 			return mapper.writeValueAsString(ctRpt);
 		} catch (Exception e) {
 			throw new ServiceException(e);
@@ -47,6 +58,17 @@ public class ConverterUtils {
 
 		try {
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
+			return getRtJson(ctRt);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public static String getRtJson(CtRicevutaTelematica ctRt ) throws ServiceException {
+		if(ctRt == null)
+			return null;
+
+		try {
 			return mapper.writeValueAsString(ctRt);
 		} catch (Exception e) {
 			throw new ServiceException(e);
