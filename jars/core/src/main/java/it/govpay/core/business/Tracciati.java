@@ -68,7 +68,6 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
-import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.orm.constants.StatoTracciatoType;
 
 public class Tracciati extends BasicBD {

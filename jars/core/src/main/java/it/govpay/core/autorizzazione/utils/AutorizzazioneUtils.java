@@ -156,12 +156,6 @@ public class AutorizzazioneUtils {
 		acl.setServizio(Servizio.PAGAMENTI_E_PENDENZE); 
 		acl.getProprieta().put(AuthorizationManager.CODICE_FISCALE_CITTADINO, username);
 		aclPrincipal.add(acl);
-		Acl aclEventi = new Acl();
-		aclEventi.setUtenza(utenza);
-		aclEventi.setListaDiritti(Diritti.LETTURA.getCodifica());
-		aclEventi.setServizio(Servizio.GIORNALE_DEGLI_EVENTI); 
-		aclEventi.getProprieta().put(AuthorizationManager.UTENZA_ANONIMA, "true");
-		aclPrincipal.add(aclEventi);
 		utenza.setAclPrincipal(aclPrincipal);
 		utenza.setAbilitato(true);
 		utenza.setPrincipalOriginale(username);
@@ -210,12 +204,6 @@ public class AutorizzazioneUtils {
 		acl.setServizio(Servizio.PAGAMENTI_E_PENDENZE); 
 		acl.getProprieta().put(AuthorizationManager.UTENZA_ANONIMA, "true");
 		aclPrincipal.add(acl);
-		Acl aclEventi = new Acl();
-		aclEventi.setUtenza(utenza);
-		aclEventi.setListaDiritti(Diritti.LETTURA.getCodifica());
-		aclEventi.setServizio(Servizio.GIORNALE_DEGLI_EVENTI); 
-		aclEventi.getProprieta().put(AuthorizationManager.UTENZA_ANONIMA, "true");
-		aclPrincipal.add(aclEventi);
 		utenza.setAclPrincipal(aclPrincipal);
 		utenza.setAbilitato(true);
 		utenza.setPrincipalOriginale(username);

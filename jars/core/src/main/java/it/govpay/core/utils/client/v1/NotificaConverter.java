@@ -26,7 +26,6 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.joda.time.LocalDate;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.xml.sax.SAXException;
@@ -83,7 +82,7 @@ public class NotificaConverter {
 			riscossione.setAllegato(allegato);
 		}
 		riscossione.setCommissioni(pagamento.getCommissioniPsp());
-		riscossione.setData(new LocalDate(pagamento.getDataPagamento()));
+		riscossione.setData(pagamento.getDataPagamento());
 		riscossione.setIdDominio(pagamento.getCodDominio());
 		riscossione.setIdVocePendenza(pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
 		riscossione.setImporto(pagamento.getImportoPagato());

@@ -5,14 +5,13 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.List;
 
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.Versamento;
 import it.govpay.bd.viste.model.VersamentoIncasso;
-import it.govpay.bd.model.Applicazione;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

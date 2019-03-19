@@ -2,8 +2,10 @@ package it.govpay.core.utils.validator;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 
+import it.govpay.ec.v1.beans.DatiEntrata.TipoBolloEnum;
 import it.govpay.ec.v1.beans.VocePendenza;
 
 public class VocePendenzaValidator implements IValidable{
@@ -44,6 +46,13 @@ public class VocePendenzaValidator implements IValidable{
 
 			else if(this.vocePendenza.getTipoBollo() != null) {
 				vf.getValidator("tipoBollo", this.vocePendenza.getTipoBollo()).notNull();
+				
+				if(TipoBolloEnum.fromValue(this.vocePendenza.getTipoBollo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipoBollo. Valore fornito [" + this.vocePendenza.getTipoBollo() + "] valori possibili " + ArrayUtils.toString(TipoBolloEnum.values()));
+					
+				}
+				
+				
 				vf.getValidator("hashDocumento", this.vocePendenza.getHashDocumento()).notNull().minLength(1).maxLength(70);
 				vf.getValidator("provinciaResidenza", this.vocePendenza.getProvinciaResidenza()).notNull().pattern("[A-Z]{2,2}");
 

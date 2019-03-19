@@ -36,6 +36,7 @@
 								<linkit:sql-table object-name="Connettore" object-type="Connettore"/>
 								<linkit:sql-table object-name="ACL" object-type="ACL"/>
 								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
+								<linkit:sql-table object-name="TipoVersamento" object-type="TipoVersamento"/>
 								<linkit:sql-table object-name="Versamento" object-type="Versamento"/>
 								<linkit:sql-table object-name="SingoloVersamento"
 									object-type="SingoloVersamento"/>
@@ -357,6 +358,12 @@
 	<xsd:complexType name="id-tipo-tributo">
 		<xsd:sequence>
 			<xsd:element name="codTributo" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="id-tipo-versamento">
+		<xsd:sequence>
+			<xsd:element name="codTipoVersamento" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -1022,6 +1029,43 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	<xsd:element name="UtenzaTipoVersamento" type="UtenzaTipoVersamento"/>
+	<xsd:complexType name="UtenzaTipoVersamento">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true"/>
+					<linkit:sql-table-mapping generate-sql="true" name="utenze_tipo_vers"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_utv"/>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="idUtenza" type="id-utenza">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Utenza"
+								object-type="Utenza" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idTipoVersamento" type="id-tipo-versamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TipoVersamento"
+								object-type="TipoVersamento" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	
 	<xsd:element name="Utenza" type="Utenza"/>
 	<xsd:complexType name="Utenza">
@@ -1135,6 +1179,28 @@
 			<xsd:element name="auxDigit" type="Int1" default="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:element name="TipoVersamento" type="TipoVersamento"/>
+	<xsd:complexType name="TipoVersamento">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-tipo-versamento"/>
+					<linkit:sql-table-mapping generate-sql="true" name="tipi_versamento"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_tpv"/>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="codTipoVersamento"/>
+						</linkit:sql-table-unique>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="codTipoVersamento" type="String35" />
+			<xsd:element name="descrizione" type="String255" />
+		</xsd:sequence>
+	</xsd:complexType>
 
 	<xsd:element name="Versamento" type="Versamento"/>
 	<xsd:complexType name="Versamento">
@@ -1156,6 +1222,17 @@
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="String35"/>
 			<xsd:element name="nome" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="idTipoVersamento" type="id-tipo-versamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TipoVersamento" object-type="TipoVersamento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 
 			<xsd:element name="idDominio" type="id-dominio">
 				<xsd:annotation>
@@ -2430,6 +2507,17 @@
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="String35"/>
 			<xsd:element name="nome" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="idTipoVersamento" type="id-tipo-versamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TipoVersamento" object-type="TipoVersamento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			
 			<xsd:element name="idDominio" type="id-dominio">
 				<xsd:annotation>

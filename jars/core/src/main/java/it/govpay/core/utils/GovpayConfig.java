@@ -151,7 +151,7 @@ public class GovpayConfig {
 
 		this.headerAuth = null;
 		this.elencoHeadersRequest = new ArrayList<>();
-		this.checkCfDebitore = true;
+		this.checkCfDebitore = false;
 		this.numeroMassimoEntriesProspettoRiscossione = 5000;
 		
 		this.avvisaturaDigitaleEnabled= false;
@@ -161,7 +161,7 @@ public class GovpayConfig {
 		this.limiteNumeroVersamentiAvvisaturaDigitale = 100000;
 		this.avvisaturaDigitaleModalitaAnnullamentoAvviso = AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_ASINCRONA;
 		this.intervalloControlloRptPendenti = 30;
-		this.intervalloDisponibilitaPagamentoUtenzaAnonima = 24;
+		this.intervalloDisponibilitaPagamentoUtenzaAnonima = 60;
 		
 		this.contextDumpEnabled = true;
 		try {
@@ -417,9 +417,9 @@ public class GovpayConfig {
 				}
 			}
 			
-			String checkCFDebitoreString = getProperty("it.govpay.autenticazione.utenzaAnonima.disabilitaCheckCfDebitore", props, false, log);
+			String checkCFDebitoreString = getProperty("it.govpay.autenticazione.utenzaAnonima.checkCfDebitore.enabled", props, false, log);
 			if(StringUtils.isNotEmpty(checkCFDebitoreString) && !checkCFDebitoreString.equalsIgnoreCase("false")) {
-				this.checkCfDebitore = false;
+				this.checkCfDebitore = true;
 			}
 			
 			String numeroMassimoEntriesProspettoRiscossioneString = getProperty("it.govpay.reportistica.prospettoRiscossione.numeroMassimoEntries", props, false, log);
@@ -469,8 +469,8 @@ public class GovpayConfig {
 			try {
 				this.intervalloDisponibilitaPagamentoUtenzaAnonima = Integer.parseInt(intervalloDisponibilitaPagamentoUtenzaAnonimaString);
 			} catch(Throwable t) {
-				log.info("Proprieta \"it.govpay.recuperoRptPendenti.intervalloControlloCreazioneRpt\" impostata com valore di default (100000)");
-				this.intervalloDisponibilitaPagamentoUtenzaAnonima = 24;
+				log.info("Proprieta \"it.govpay.autenticazione.utenzaAnonima.intervalloDisponibilitaPagamento\" impostata com valore di default (60) minuti");
+				this.intervalloDisponibilitaPagamentoUtenzaAnonima = 60;
 			}
 			
 		} catch (Exception e) {

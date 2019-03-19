@@ -1,8 +1,10 @@
 package it.govpay.core.dao.pagamenti;
 
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -58,6 +60,7 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
@@ -473,14 +476,30 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(leggiPagamentoPortaleDTO.getUser());
 			this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,true,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = null;
 			if(leggiPagamentoPortaleDTO.getId() != null) 
 				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getId());
-			else
+			else {
 				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessionePsp(leggiPagamentoPortaleDTO.getIdSessionePsp());
+				if(!details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+					// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
+					if(pagamentoPortale.getDataRichiesta() != null) {
+						long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(new Date());
+						calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
+						long riferimentoTime = calendar.getTimeInMillis();
+						
+						// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
+						if(dataPagamentoTime < riferimentoTime)
+							throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
+					}
+				}
+			}
 
 			if(pagamentoPortale.getVersamenti(bd) != null && pagamentoPortale.getVersamenti(bd).size() > 0) {
 				for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
@@ -508,11 +527,14 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 			}
 			
-			EventiDAO eventiDAO = new EventiDAO();
-			ListaEventiDTO listaEventiDTO = new ListaEventiDTO(leggiPagamentoPortaleDTO.getUser());
-			listaEventiDTO.setIdPagamento(pagamentoPortale.getIdSessione());
-			ListaEventiDTOResponse listaEventi = eventiDAO.listaEventi(listaEventiDTO, bd);
-			leggiPagamentoPortaleDTOResponse.setEventi(listaEventi.getResults());
+			// giornale degli eventi disponibile solo per le utenze autenticate
+			if(!details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO) && !details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				EventiDAO eventiDAO = new EventiDAO();
+				ListaEventiDTO listaEventiDTO = new ListaEventiDTO(leggiPagamentoPortaleDTO.getUser());
+				listaEventiDTO.setIdPagamento(pagamentoPortale.getIdSessione());
+				ListaEventiDTOResponse listaEventi = eventiDAO.listaEventi(listaEventiDTO, bd);
+				leggiPagamentoPortaleDTOResponse.setEventi(listaEventi.getResults());
+			}
 
 			return leggiPagamentoPortaleDTOResponse;
 		}catch(NotFoundException e) {
@@ -567,15 +589,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(count > 0) {
 				List<LeggiPagamentoPortaleDTOResponse> lst = new ArrayList<>();
 				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(filter);
-//				EventiDAO eventiDAO = new EventiDAO();
 				
 				for (PagamentoPortale pagamentoPortale : findAll) {
 					LeggiPagamentoPortaleDTOResponse dto = new LeggiPagamentoPortaleDTOResponse();
 					dto.setPagamento(pagamentoPortale);
-//					ListaEventiDTO listaEventiDTO = new ListaEventiDTO(listaPagamentiPortaleDTO.getUser());
-//					listaEventiDTO.setIdPagamento(pagamentoPortale.getIdSessione());
-//					ListaEventiDTOResponse listaEventi = eventiDAO.listaEventi(listaEventiDTO, bd);
-//					dto.setEventi(listaEventi.getResults());
 					lst.add(dto);
 				}
 				
@@ -643,7 +660,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
+			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(patchDTO.getIdSessione());
@@ -654,7 +671,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			}
 			if(pagamentoPortale.getMultiBeneficiario() != null) {
 				// controllo che il dominio sia autorizzato
-				this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
+				this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
 			}
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 

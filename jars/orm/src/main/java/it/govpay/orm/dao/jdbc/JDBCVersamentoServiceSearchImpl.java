@@ -50,7 +50,6 @@ import org.slf4j.Logger;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.Versamento;
-import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.VersamentoFetch;
 

@@ -62,7 +62,8 @@ public class RiscossioniConverter {
 			
 			rsModel.setPendenza(PendenzeConverter.toRsIndexModel(input.getSingoloVersamento(null).getVersamento(null)));
 			rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(input.getSingoloVersamento(null), input.getIndiceDati()));
-			rsModel.setRpp(RptConverter.toRsModelIndex(input.getRpt(null), input.getSingoloVersamento(null).getVersamento(null), input.getSingoloVersamento(null).getVersamento(null).getApplicazione(null)));
+			if(input.getRpt(null) != null)
+				rsModel.setRpp(RptConverter.toRsModelIndex(input.getRpt(null), input.getSingoloVersamento(null).getVersamento(null), input.getSingoloVersamento(null).getVersamento(null).getApplicazione(null)));
 			
 			if(input.getIncasso(null) != null)
 				rsModel.setIncasso(IncassiConverter.toRsIndexModel(input.getIncasso(null)));

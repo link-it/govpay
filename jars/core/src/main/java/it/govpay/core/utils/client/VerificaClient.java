@@ -113,7 +113,10 @@ public class VerificaClient extends BasicClient {
 					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
 					throw e;
-				}catch(Exception e) {
+				} catch (ValidationException e) {
+					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
+					throw e;
+				} catch(ServiceException e) {
 					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
 					throw new ClientException(e);
@@ -151,7 +154,7 @@ public class VerificaClient extends BasicClient {
 				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
 					throw new VersamentoScadutoException(pendenzaVerificata.getDescrizioneStato());
 				else 
-					throw new VersamentoScadutoException(pendenzaVerificata.getDataScadenza() != null ? pendenzaVerificata.getDataScadenza().toDate() : null);
+					throw new VersamentoScadutoException(pendenzaVerificata.getDataScadenza() != null ? pendenzaVerificata.getDataScadenza() : null);
 			case SCONOSCIUTA:
 				ctx.getApplicationLogger().log("verifica.verificaSconosciuto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				throw new VersamentoSconosciutoException();

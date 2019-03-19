@@ -5,22 +5,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.exception.ValidationException;
+import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 
 public class ConverterUtils {
 
@@ -32,6 +34,9 @@ public class ConverterUtils {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JaxbAnnotationModule());
 		mapper.registerModule(new DateModule());
+		mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		mapper.setDateFormat(DateFormatUtils.newSimpleDateFormatSoloData());
 	}
 
 	public static String getRptJson(Rpt rpt) throws ServiceException {
@@ -81,17 +86,32 @@ public class ConverterUtils {
 	}
 	
 	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException, ValidationException  {
-		try {
-			return mapper.readValue(jsonString, t);
-		} catch (JsonMappingException | JsonParseException e) {
-			throw new ValidationException(e);
-		} catch (Exception  e) {
-			throw new ServiceException(e);
-		}
-//		SerializationConfig serializationConfig = new SerializationConfig();
-//		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
-//		serializationConfig.setIgnoreNullValues(true);
-//		return parse(jsonString, t, serializationConfig);
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		serializationConfig.setIgnoreNullValues(true);
+		return parse(jsonString, t, serializationConfig);
 	}
+	
+	public static <T> T parse(String jsonString, Class<T> t, SerializationConfig serializationConfig) throws ServiceException, ValidationException  {
+		try {
+			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			
+			@SuppressWarnings("unchecked")
+			T object = (T) deserializer.getObject(jsonString, t);
+			return object;
+		} catch(org.openspcoop2.utils.serialization.IOException e) {
+			throw new ValidationException(e.getMessage(), e);
+		}
+	}
+	
+//	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException, ValidationException  {
+//		try {
+//			return mapper.readValue(jsonString, t);
+//		} catch (JsonMappingException | JsonParseException e) {
+//			throw new ValidationException(e);
+//		} catch (Exception  e) {
+//			throw new ServiceException(e);
+//		}
+//	}
 	
 }

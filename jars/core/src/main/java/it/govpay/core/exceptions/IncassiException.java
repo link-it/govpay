@@ -58,11 +58,11 @@ public class IncassiException extends BaseException {
 	}
 	
 	public IncassiException(String description) {
-		super(description, FaultType.RICHIESTA_NON_PROCESSABILE.getFaultSubCode(), FaultType.RICHIESTA_NON_PROCESSABILE.getDescription());
+		super(FaultType.RICHIESTA_NON_PROCESSABILE.getDescription(), FaultType.RICHIESTA_NON_PROCESSABILE.getFaultSubCode(), description);
 	}
 	
 	public IncassiException(FaultType faultType, String description) {
-		super(description, faultType.getFaultSubCode(), faultType.getDescription());
+		super(faultType.getDescription(),faultType.getFaultSubCode(), description);
 	}
 
 	@Override

@@ -21,18 +21,22 @@ package it.govpay.core.utils.client.v1;
 
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.utils.json.ValidationException;
+
 //import org.apache.commons.lang.ArrayUtils;
 //import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.Soggetto;
+import it.govpay.ec.v1.beans.TassonomiaAvviso;
 //import it.govpay.ec.v1.beans.TassonomiaAvviso;
 import it.govpay.ec.v1.beans.VocePendenza;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 		
 		if(pendenzaVerificata.getAnnoRiferimento() != null)
@@ -44,10 +48,10 @@ public class VerificaConverter {
 		versamento.setCodDominio(pendenzaVerificata.getIdDominio());
 		versamento.setCodUnitaOperativa(pendenzaVerificata.getIdUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
-		if(pendenzaVerificata.getDataScadenza() != null)
-			versamento.setDataScadenza(pendenzaVerificata.getDataScadenza().toDate());
-		if(pendenzaVerificata.getDataValidita() != null)
-			versamento.setDataValidita(pendenzaVerificata.getDataValidita().toDate());
+//		if(pendenzaVerificata.getDataScadenza() != null)
+			versamento.setDataScadenza(pendenzaVerificata.getDataScadenza()); 
+//		if(pendenzaVerificata.getDataValidita() != null)
+			versamento.setDataValidita(pendenzaVerificata.getDataValidita());
 		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));;
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
 		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
@@ -57,9 +61,9 @@ public class VerificaConverter {
 		
 		if(pendenzaVerificata.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
-//			if(TassonomiaAvviso.fromValue(pendenzaVerificata.getTassonomiaAvviso()) == null) {
-//				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenzaVerificata.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
-//			}
+			if(TassonomiaAvviso.fromValue(pendenzaVerificata.getTassonomiaAvviso()) == null) {
+				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenzaVerificata.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+			}
 
 			versamento.setTassonomiaAvviso(pendenzaVerificata.getTassonomiaAvviso().toString());
 		}
