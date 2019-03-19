@@ -150,6 +150,34 @@ paths:
           $ref: '#/components/responses/404NotFound'
         '503':
           $ref: '#/components/responses/503ServiceUnavailable'
+  '/tipiPendenza':
+    get:
+      tags:
+        - Pendenze
+      summary: Elenco delle  tipologie di pendenza
+      operationId: findTipiPendenza
+      description: Fornisce la lista delle tipologie di pendenza filtrata ed ordinata.
+      parameters:
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/fields'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/idDominio'
+      responses:
+        '200':
+          description: Elenco delle tipologie di pendenza che rispettano i filtri di ricerca
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipiPendenza'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'  
   '/pendenze':
     get:
       tags:
@@ -1407,6 +1435,10 @@ components:
           $ref: '#/components/schemas/UnitaOperativa'
         stato:
           $ref: '#/components/schemas/StatoPendenza'
+        tipoPendenza:
+          type: string
+          description: Codice identificativo del tipo di pendenza
+          example: abcdef12345
         segnalazioni:
           type: array
           items:
@@ -1999,6 +2031,16 @@ components:
         - Trasporti, mobilità e parcheggi
       example:
         Ticket e prestazioni sanitarie
+    TipiPendenza:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Lista'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/TipoPendenzaIndex'        
     TipoAutorizzazione:
       type: array
       items:
@@ -2045,6 +2087,22 @@ components:
           example: 3321
           minLength: 1
           maxLength: 135
+    TipoPendenza:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/TipoPendenzaIndex'
+    TipoPendenzaIndex:
+      type: object
+      required:
+        - idTipoPendenza
+        - descrizione
+      properties:
+        idTipoPendenza:
+          type: string
+          example: REFNIDO
+        descrizione:
+          type: string
+          example: Refezione scolastica Asilo Nido
     TipoRiferimentoVocePendenza:
       type: object
       oneOf:

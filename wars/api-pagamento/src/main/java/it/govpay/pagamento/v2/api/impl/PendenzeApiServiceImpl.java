@@ -6,6 +6,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
@@ -24,6 +25,7 @@ import it.govpay.pagamento.v2.api.PendenzeApi;
 import it.govpay.pagamento.v2.beans.Pendenza;
 import it.govpay.pagamento.v2.beans.Pendenze;
 import it.govpay.pagamento.v2.beans.StatoPendenza;
+import it.govpay.pagamento.v2.beans.TipiPendenza;
 import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 /**
  * GovPay - API Pagamento
@@ -154,6 +156,11 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			throw WebApplicationExceptionMapper.handleException(e);
 //			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
+	}
+
+	@Override
+	public TipiPendenza findTipiPendenza(Integer offset, Integer limit, String fields, String sort, String idDominio) {
+		throw FaultCode.ERRORE_INTERNO.toException("TODO");
 	}
 
 }
