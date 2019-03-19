@@ -1217,6 +1217,119 @@ paths:
           $ref: '#/components/responses/403' 
         '500':
           $ref: '#/components/responses/500'
+  '/tipiPendenza':
+    get:
+      tags:
+        - Enti Creditori
+      summary: Elenco delle tipologie di pendenza
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            default: 25
+            maximum: 200
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * idEntrata
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +idEntrata
+        - name: campi
+          in: query
+          description: >-
+            csv dei campi da includere nella risposta (default tutti)
+          required: false
+          schema:
+            type: string
+            format: csv
+      responses:
+        '200':
+          description: Lista paginata delle entrate ricercate
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/tipoPendenza'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+  '/tipiPendenza/{idTipoPendenza}':
+    get:
+      tags:
+        - Enti Creditori
+      summary: Lettura dei dati di una tipologia di pendenza
+      parameters:
+        - name: idTipoPendenza
+          in: path
+          description: Identificativo della tipologia di entrata
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio della tipologia di pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tipoPendenza'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      tags:
+        - Enti Creditori
+      summary: Aggiunge o aggiorna una entrata
+      parameters:
+        - in: path
+          name: idTipoPendenza
+          schema:
+            type: string
+          description: Identificativo della tipologia di entrata
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tipoPendenzaPost'
+      responses:
+        '200':
+          description: Entrata aggiornata con successo
+        '201':
+          description: Entrata aggiunta con successo
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '500':
+          $ref: '#/components/responses/500'          
   '/entrate':
     get:
       tags:
@@ -1329,7 +1442,7 @@ paths:
         '403':
           $ref: '#/components/responses/403' 
         '500':
-          $ref: '#/components/responses/500'          
+          $ref: '#/components/responses/500'                 
   '/applicazioni':
     get:
       tags:
@@ -3405,6 +3518,7 @@ components:
             - unitaOperative
             - contiAccredito
             - entrate
+            - tipiPendenza
           properties:
             unitaOperative:
               type: string
@@ -3417,7 +3531,11 @@ components:
             entrate:
               type: string
               description: Tipologie di entrata censite per il dominio beneficiario
-              example: /domini/01234567890/entrate               
+              example: /domini/01234567890/entrate        
+            tipiPendenza:
+              type: string
+              description: Tipologie di pendenza censite per il dominio beneficiario
+              example: /domini/01234567890/tipiPendenza         
     dominio:
       type: object
       allOf:
@@ -3443,7 +3561,7 @@ components:
             entrate:
               type: array
               items:
-                $ref: '#/components/schemas/entrata'                  
+                $ref: '#/components/schemas/entrata'     
     codificaAvvisi:
       type: object
       description: informazioni sulla codifica e decodifica degli iuv
@@ -3480,9 +3598,9 @@ components:
               - 01234567890
               - 01234567891
               - 01234567893
-        entrate:
+        tipiPendenza:
           type: array
-          description: entrate su cui e' abilitato ad operare
+          description: tipologie di pendenza su cui e' abilitato ad operare
           items: 
             type: string
             example:
@@ -3545,11 +3663,11 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/dominioIndex'
-        entrate:
+        tipiPendenza:
           type: array
-          description: entrate su cui e' abilitato ad operare
+          description: tipologie di pendenza su cui e' abilitato ad operare
           items: 
-            $ref: '#/components/schemas/tipoEntrata'
+            $ref: '#/components/schemas/tipoPendenza'
         acl:
           type: array
           description: lista delle acl attive sull'applicazione
@@ -3580,9 +3698,9 @@ components:
               - 01234567890
               - 01234567891
               - 01234567893
-        entrate:
+        tipiPendenza:
           type: array
-          description: entrate su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutte le entrate
+          description: tipologie di pendenza su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutte le entrate
           items: 
             type: string
             example:
@@ -3623,7 +3741,7 @@ components:
         - principal   
         - ragioneSociale
         - domini
-        - entrate
+        - tipiPendenza
       properties:
         principal:
           type: string
@@ -3638,11 +3756,11 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/dominioIndex'
-        entrate:
+        tipiPendenza:
           type: array
-          description: entrate su cui e' abilitato ad operare
+          description: tipologie di pendenza su cui e' abilitato ad operare
           items: 
-            $ref: '#/components/schemas/tipoEntrata'
+            $ref: '#/components/schemas/tipoPendenza'
         acl:
           type: array
           description: lista delle acl attive sull'applicazione
@@ -3853,6 +3971,25 @@ components:
           properties:
             tipoEntrata:
               $ref: '#/components/schemas/tipoEntrata'
+    tipoPendenzaPost:
+      type: object
+      required: 
+        - descrizione
+      properties:
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
+    tipoPendenza:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idTipoPendenza
+          properties:
+            idTipoPendenza:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/tipoPendenzaPost'        
     pagamentoIndex:
       type: object
       required:
@@ -4184,6 +4321,10 @@ components:
               type: string
               description: Identificativo della pendenza nel gestionale responsabile
               example: abcdef12345
+            tipoPendenza:
+              type: string
+              description: Tipologia di pendenza
+              example: Corso di formazione
             dominio:
               $ref: '#/components/schemas/dominioIndex'
             unitaOperativa:
@@ -4262,6 +4403,10 @@ components:
               type: string
               description: Identificativo della pendenza nel gestionale responsabile
               example: abcdef12345
+            tipoPendenza:
+              type: string
+              description: Tipologia di pendenza
+              example: Corso di formazione              
             dominio:
               $ref: '#/components/schemas/dominioIndex'
             unitaOperativa:
