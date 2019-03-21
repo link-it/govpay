@@ -10,6 +10,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -19,6 +20,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
@@ -167,6 +169,18 @@ public class PagamentiPortaleConverter {
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		
+		// tipo Pendenza
+		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
+			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+			if(sv.getBolloTelematico() != null) {
+				versamento.setCodTipoVersamento(Tributo.BOLLOT);
+			} else if(sv.getCodTributo() != null) {
+				versamento.setCodTipoVersamento(sv.getCodTributo());
+			} else {
+				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+			}
+		}
 
 		return versamento;
 	}
@@ -209,6 +223,18 @@ public class PagamentiPortaleConverter {
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		
+		// tipo Pendenza
+		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
+			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+			if(sv.getBolloTelematico() != null) {
+				versamento.setCodTipoVersamento(Tributo.BOLLOT);
+			} else if(sv.getCodTributo() != null) {
+				versamento.setCodTipoVersamento(sv.getCodTributo());
+			} else {
+				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+			}
+		}
 
 		return versamento;
 	}

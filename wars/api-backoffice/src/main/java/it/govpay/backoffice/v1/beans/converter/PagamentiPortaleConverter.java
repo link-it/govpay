@@ -14,7 +14,6 @@ import it.govpay.backoffice.v1.beans.Pagamento;
 import it.govpay.backoffice.v1.beans.Pagamento.ModelloEnum;
 import it.govpay.backoffice.v1.beans.PagamentoIndex;
 import it.govpay.backoffice.v1.beans.PagamentoPost;
-import it.govpay.backoffice.v1.beans.PendenzaPost;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.StatoPagamento;
 import it.govpay.bd.model.Evento;
@@ -34,15 +33,6 @@ public class PagamentiPortaleConverter {
 	public static final String ID_DOMINIO_KEY = "idDominio";
 	public static final String IUV_KEY = "iuv";
 
-
-
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(it.govpay.backoffice.v1.beans.PendenzaPost pendenza, String ida2a, String idPendenza) {
-		return getVersamentoFromPendenza(pendenza, ida2a, idPendenza);
-	}
-
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) {
-		return getVersamentoFromPendenza(pendenza);
-	}
 	public static Pagamento toRsModel(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException, IOException {
 		return toRsModel(dto.getPagamento(), dto.getListaRpp(),dto.getEventi());
 	}

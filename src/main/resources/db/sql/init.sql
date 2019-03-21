@@ -33,6 +33,9 @@ INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Operatore',null,'Gior
 
 INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, descrizione, on_line, paga_terzi) VALUES ('BOLLOT', '9', 'MBT', 'Marca da Bollo Telematica',false,false);
 
+-- Censimento Tipo Pendenza Libera
+INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione) VALUES ('LIBERO', 'Pendenza libera');
+
 -- Configurazione delle sonde
 
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('update-psp', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);

@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 
 import it.govpay.core.business.IConservazione;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
+import it.govpay.model.Versamento;
 
 public class GovpayConfig {
 
@@ -117,6 +118,9 @@ public class GovpayConfig {
 	private Integer intervalloDisponibilitaPagamentoUtenzaAnonima;
 	
 	private boolean contextDumpEnabled;
+	
+	private String codTipoVersamentoPendenzeLibere;
+	private String codTipoVersamentoPendenzeNonCensite;
 
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -162,6 +166,9 @@ public class GovpayConfig {
 		this.avvisaturaDigitaleModalitaAnnullamentoAvviso = AvvisaturaUtils.AVVISATURA_DIGITALE_MODALITA_ASINCRONA;
 		this.intervalloControlloRptPendenti = 30;
 		this.intervalloDisponibilitaPagamentoUtenzaAnonima = 60;
+		
+		this.codTipoVersamentoPendenzeLibere = Versamento.TIPO_VERSAMENTO_LIBERO;
+		this.codTipoVersamentoPendenzeNonCensite = Versamento.TIPO_VERSAMENTO_LIBERO;
 		
 		this.contextDumpEnabled = true;
 		try {
@@ -473,6 +480,9 @@ public class GovpayConfig {
 				this.intervalloDisponibilitaPagamentoUtenzaAnonima = 60;
 			}
 			
+			this.codTipoVersamentoPendenzeLibere = getProperty("it.govpay.versamenti.codTipoVersamentoPerPagamentiLiberi", this.props, true, log);
+			this.codTipoVersamentoPendenzeNonCensite = getProperty("it.govpay.versamenti.codTipoVersamentoPerTipiPendenzeNonCensiti", this.props, true, log);
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -721,5 +731,13 @@ public class GovpayConfig {
 
 	public Integer getIntervalloDisponibilitaPagamentoUtenzaAnonima() {
 		return intervalloDisponibilitaPagamentoUtenzaAnonima;
+	}
+
+	public String getCodTipoVersamentoPendenzeLibere() {
+		return codTipoVersamentoPendenzeLibere;
+	}
+
+	public String getCodTipoVersamentoPendenzeNonCensite() {
+		return codTipoVersamentoPendenzeNonCensite;
 	}
 }

@@ -55,6 +55,7 @@
    	<b:bean id="rpp" class="it.govpay.backoffice.v1.Rpp"/>
    	<b:bean id="ruoli" class="it.govpay.backoffice.v1.Ruoli"/>
    	<b:bean id="tracciati" class="it.govpay.backoffice.v1.Tracciati"/>
+   	<b:bean id="tipiPendenza" class="it.govpay.backoffice.v1.TipiPendenza"/>
        
    	<!-- JAX-RS Configuration -->
    
@@ -85,6 +86,7 @@
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
 			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -123,6 +125,7 @@
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
 			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -161,6 +164,7 @@
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
 			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />

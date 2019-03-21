@@ -22,6 +22,7 @@ package it.govpay.core.utils;
 import java.util.Date;
 import java.util.List;
 
+import it.govpay.bd.model.Tributo;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.VocePendenza;
@@ -55,6 +56,18 @@ public class TracciatiConverter {
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		
+		// tipo Pendenza
+		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
+			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+			if(sv.getBolloTelematico() != null) {
+				versamento.setCodTipoVersamento(Tributo.BOLLOT);
+			} else if(sv.getCodTributo() != null) {
+				versamento.setCodTipoVersamento(sv.getCodTributo());
+			} else {
+				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+			}
+		}
 
 		return versamento;
 		

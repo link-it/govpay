@@ -25,19 +25,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -56,16 +52,12 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
-import it.govpay.core.business.model.AvviaTransazioneDTO;
-import it.govpay.core.business.model.AvviaTransazioneDTOResponse;
-import it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -74,13 +66,11 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
-import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -93,86 +83,6 @@ public class Pagamento extends BasicBD {
 
 	public Pagamento(BasicBD bd) {
 		super(bd);
-	}
-
-	public AvviaTransazioneDTOResponse avviaTransazione(AvviaTransazioneDTO dto) throws GovPayException, ServiceException, UtilsException, ValidationException {
-
-		IContext ctx = GpThreadLocal.get();
-		List<Versamento> versamenti = new ArrayList<>();
- 
-		for(Object v : dto.getVersamentoOrVersamentoRef()) {
-			Versamento versamentoModel = null;
-
-			if(v instanceof it.govpay.core.beans.Versamento) {
-				it.govpay.core.beans.Versamento versamento = (it.govpay.core.beans.Versamento) v;
-				ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
-				versamentoModel = VersamentoUtils.toVersamentoModel(versamento, this);
-				versamentoModel.setIuvProposto(versamento.getIuv());
-			} else {
-				it.govpay.core.beans.VersamentoKey versamento = (it.govpay.core.beans.VersamentoKey) v;
-
-				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null, codUnivocoDebitore = null;
-
-				Iterator<JAXBElement<String>> iterator = versamento.getContent().iterator();
-				while(iterator.hasNext()){
-					JAXBElement<String> element = iterator.next();
-
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyBundlekey_QNAME)) {
-						bundlekey = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME)) {
-						codUnivocoDebitore = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodApplicazione_QNAME)) {
-						codApplicazione = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodDominio_QNAME)) {
-						codDominio = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME)) {
-						codVersamentoEnte = element.getValue();
-					}
-					if(element.getName().equals(VersamentoUtils._VersamentoKeyIuv_QNAME)) {
-						iuv = element.getValue();
-					}
-				}
-
-				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(this);
-				versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
-			}
-			
-			if(!versamentoModel.getUo(this).isAbilitato()) {
-				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+versamentoModel.getUo(this).getCodUo()+"].", EsitoOperazione.UOP_001, versamentoModel.getUo(this).getCodUo());
-			}
-			
-			if(!versamentoModel.getUo(this).getDominio(this).isAbilitato()) {
-				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+versamentoModel.getUo(this).getDominio(this).getCodDominio()+"].", EsitoOperazione.DOM_001, versamentoModel.getUo(this).getDominio(this).getCodDominio());
-			}
-			
-			versamenti.add(versamentoModel);
-		}
-
-		Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(dto.getVersante());
-		boolean aggiornaSeEsiste = dto.getAggiornaSeEsisteB() != null ? dto.getAggiornaSeEsisteB() : true;
-		it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(this);
-		List<Rpt> rpts = rptBD.avviaTransazione(versamenti, dto.getUser(), dto.getCanale(), dto.getIbanAddebito(), versanteModel, dto.getAutenticazione(), dto.getUrlRitorno(), aggiornaSeEsiste);
-
-		AvviaTransazioneDTOResponse response = new AvviaTransazioneDTOResponse();
-
-		response.setCodSessione(rpts.get(0).getCodSessione());
-		response.setPspRedirectURL(rpts.get(0).getPspRedirectURL());
-
-		for(Rpt rpt : rpts) {
-			RifTransazione rifTransazione = response.new RifTransazione();
-			rifTransazione.setCcp(rpt.getCcp());
-			rifTransazione.setCodApplicazione(rpt.getVersamento(this).getApplicazione(this).getCodApplicazione());
-			rifTransazione.setCodDominio(rpt.getCodDominio());
-			rifTransazione.setCodVersamentoEnte(rpt.getVersamento(this).getCodVersamentoEnte());
-			rifTransazione.setIuv(rpt.getIuv());
-			response.getRifTransazioni().add(rifTransazione);
-		}
-
-		return response;
 	}
 
 	public String verificaTransazioniPendenti() throws GovPayException {

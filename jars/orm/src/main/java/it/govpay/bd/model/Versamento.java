@@ -37,7 +37,7 @@ import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.TipoVersamento;
 
 public class Versamento extends it.govpay.model.Versamento {
-
+	
 	private static final long serialVersionUID = 1L;
 	// BUSINESS
 	

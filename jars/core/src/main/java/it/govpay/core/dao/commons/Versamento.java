@@ -276,6 +276,14 @@ public class Versamento {
 		this.cartellaPagamento = cartellaPagamento;
 	}
 
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
+
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -286,6 +294,7 @@ public class Versamento {
     private String codVersamentoLotto;
     private String tassonomia;
     private String tassonomiaAvviso;
+    private String codTipoVersamento;
     
     private String codUnitaOperativa;
     private Anagrafica debitore;

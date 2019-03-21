@@ -12,6 +12,8 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Tributo;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.pendenze.v1.beans.Avviso;
 import it.govpay.pendenze.v1.beans.Avviso.StatoEnum;
@@ -298,6 +300,18 @@ public class PendenzeConverter {
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		
+		// tipo Pendenza
+		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
+			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+			if(sv.getBolloTelematico() != null) {
+				versamento.setCodTipoVersamento(Tributo.BOLLOT);
+			} else if(sv.getCodTributo() != null) {
+				versamento.setCodTipoVersamento(sv.getCodTributo());
+			} else {
+				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+			}
+		}
 
 		return versamento;
 	}

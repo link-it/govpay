@@ -42,6 +42,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 
@@ -59,7 +60,7 @@ public class OperazioneFactory {
 		caricamentoResponse.setTipo(TipoOperazioneType.ADD);
 		
 		try {
-			it.govpay.bd.model.Versamento versamentoModel = it.govpay.core.business.VersamentoUtils.toVersamentoModel(request.getVersamento(), basicBD);
+			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(request.getVersamento(), basicBD);
 
 			Versamento versamento = new Versamento(basicBD);
 			

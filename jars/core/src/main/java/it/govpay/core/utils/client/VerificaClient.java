@@ -42,6 +42,7 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.v1.VerificaConverter;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.validator.PendenzaVerificataValidator;
@@ -135,7 +136,7 @@ public class VerificaClient extends BasicClient {
 				ctx.getApplicationLogger().log("verifica.avvio", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				new PendenzaVerificataValidator(pendenzaVerificata).validate();
 				try {
-					return it.govpay.core.business.VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
+					return VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
 				} catch (GovPayException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
 					throw e;
