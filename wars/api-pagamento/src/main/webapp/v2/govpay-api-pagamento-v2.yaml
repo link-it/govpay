@@ -541,6 +541,22 @@ components:
       required: false
       schema:
         type: string
+    dataDa:
+      name: dataDa
+      in: query
+      description: Inizio della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string  
+        format: date-time     
+    dataA:
+      name: dataA
+      in: query
+      description: Fine della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string  
+        format: date-time            
     idA2A:
       name: idA2A
       in: query
