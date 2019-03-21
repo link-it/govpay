@@ -34,6 +34,7 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.TipoVersamento;
 
 public class Versamento extends it.govpay.model.Versamento {
 
@@ -46,6 +47,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient Dominio dominio;
 	private transient UnitaOperativa uo;
 	private transient Iuv iuv;
+	private transient TipoVersamento tipoVersamento;
 	
 	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {
@@ -123,5 +125,12 @@ public class Versamento extends it.govpay.model.Versamento {
 			}
 		}
 		return this.iuv;
+	}
+	
+	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
+		if(this.tipoVersamento == null) {
+			this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getIdTipoVersamento());
+		} 
+		return this.tipoVersamento;
 	}
 }

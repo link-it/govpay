@@ -107,6 +107,7 @@ public class Versamento extends BasicModel {
 	private Long idUo;
 	private long idDominio;
 	private long idApplicazione;
+	private long idTipoVersamento;
 
 	private String nome;
 	private String codVersamentoEnte;
@@ -625,6 +626,14 @@ public class Versamento extends BasicModel {
 		this.anomalo = anomalo;
 	}
 	
+	public long getIdTipoVersamento() {
+		return idTipoVersamento;
+	}
+
+	public void setIdTipoVersamento(long idTipoVersamento) {
+		this.idTipoVersamento = idTipoVersamento;
+	}
+
 	public boolean checkEsecuzioneUpdate(Versamento oldVersamento) {
 		
 		boolean equals = 

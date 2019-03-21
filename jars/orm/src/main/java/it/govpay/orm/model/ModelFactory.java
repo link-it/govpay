@@ -53,13 +53,15 @@ public class ModelFactory {
 	
 	public static UtenzaDominioModel UTENZA_DOMINIO = new UtenzaDominioModel();
 	
-	public static UtenzaTipoTributoModel UTENZA_TIPO_TRIBUTO = new UtenzaTipoTributoModel();
+	public static UtenzaTipoVersamentoModel UTENZA_TIPO_VERSAMENTO = new UtenzaTipoVersamentoModel();
 	
 	public static UtenzaModel UTENZA = new UtenzaModel();
 	
 	public static OperatoreModel OPERATORE = new OperatoreModel();
 	
 	public static IUVModel IUV = new IUVModel();
+	
+	public static TipoVersamentoModel TIPO_VERSAMENTO = new TipoVersamentoModel();
 	
 	public static VersamentoModel VERSAMENTO = new VersamentoModel();
 	

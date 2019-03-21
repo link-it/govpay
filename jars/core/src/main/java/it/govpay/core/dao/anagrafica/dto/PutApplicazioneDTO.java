@@ -12,7 +12,7 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 	private String idApplicazione;
 	private String idUtenza;
 	private List<String> idDomini;
-	private List<String> idTributi;
+	private List<String> idTipiVersamento;
 	
 	public List<String> getIdDomini() {
 		return this.idDomini;
@@ -22,13 +22,6 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 		this.idDomini = idDomini;
 	}
 
-	public List<String> getIdTributi() {
-		return this.idTributi;
-	}
-
-	public void setIdTributi(List<String> idTributi) {
-		this.idTributi = idTributi;
-	}
 
 	public PutApplicazioneDTO(Authentication user) {
 		super(user);
@@ -56,6 +49,14 @@ public class PutApplicazioneDTO extends BasicCreateRequestDTO  {
 
 	public void setIdUtenza(String idUtenza) {
 		this.idUtenza = idUtenza;
+	}
+
+	public List<String> getIdTipiVersamento() {
+		return idTipiVersamento;
+	}
+
+	public void setIdTipiVersamento(List<String> idTipiVersamento) {
+		this.idTipiVersamento = idTipiVersamento;
 	}
 
 }

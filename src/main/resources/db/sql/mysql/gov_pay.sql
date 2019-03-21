@@ -51,7 +51,7 @@ CREATE TABLE utenze
 	principal_originale VARCHAR(756) NOT NULL COMMENT 'Principal di autenticazione in forma originale',
 	abilitato BOOLEAN NOT NULL DEFAULT true COMMENT 'Indicazione se e\' abilitato ad operare',
 	autorizzazione_domini_star BOOLEAN NOT NULL DEFAULT false COMMENT 'Indicazione se l\'utenza e\' autorizzata ad operare su tutti i domini',
-	autorizzazione_tributi_star BOOLEAN NOT NULL DEFAULT false COMMENT 'Indicazione se l\'utenza e\' autorizzata ad operare su tutte le entrate',
+	autorizzazione_tipi_vers BOOLEAN NOT NULL DEFAULT false COMMENT 'Indicazione se l\'utenza e\' autorizzata ad operare su tutti i tipi pendenza',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -213,17 +213,17 @@ CREATE TABLE utenze_domini
 
 
 
-CREATE TABLE utenze_tributi
+CREATE TABLE utenze_tipo_vers
 (
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
-	id_tipo_tributo BIGINT NOT NULL COMMENT 'Riferimento all\'entrata',
+	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza',
 	-- fk/pk keys constraints
-	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_nzt_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
-	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sulle entrate';
+	CONSTRAINT fk_utv_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_utv_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT pk_utenze_tipo_vers PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sui tipi pendenza';
 
 
 
@@ -339,6 +339,23 @@ CREATE TABLE tracciati
 
 
 
+CREATE TABLE tipi_versamento
+(
+	cod_tipo_versamento VARCHAR(35) NOT NULL,
+	descrizione VARCHAR(255) NOT NULL,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	-- unique constraints
+	CONSTRAINT unique_tipi_versamento_1 UNIQUE (cod_tipo_versamento),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_tipi_versamento PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE UNIQUE INDEX index_tipi_versamento_1 ON tipi_versamento (cod_tipo_versamento);
+
+
+
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR(35) NOT NULL COMMENT 'Identificativo della pendenza nel verticale di competenza',
@@ -391,6 +408,7 @@ CREATE TABLE versamenti
 	anomalo BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato della pendenza',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio afferente',
 	id_uo BIGINT COMMENT 'Riferimento all\'unita operativa afferente',
 	id_applicazione BIGINT NOT NULL COMMENT 'Riferimento al verticale afferente',
@@ -398,6 +416,7 @@ CREATE TABLE versamenti
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -1001,6 +1020,7 @@ MAX(versamenti.incasso) as incasso,
 MAX(versamenti.anomalie) as anomalie,                     
 MAX(versamenti.iuv_versamento) as iuv_versamento,               
 MAX(versamenti.numero_avviso) as numero_avviso,  
+MAX(versamenti.id_tipo_versamento) as id_tipo_versamento,
 MAX(versamenti.id_dominio) as id_dominio,                   
 MAX(versamenti.id_uo) as id_uo,                        
 MAX(versamenti.id_applicazione) as id_applicazione,             

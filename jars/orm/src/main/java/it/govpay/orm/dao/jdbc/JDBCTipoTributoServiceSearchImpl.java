@@ -695,7 +695,7 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 
 		// Recupero _tipoTributo
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tipoTributo = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodTributo(),TipoTributo.model().COD_TRIBUTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodTributo(),TipoTributo.model().COD_TRIBUTO.getFieldType())
 		};
 		Long id_tipoTributo = null;
 		try{

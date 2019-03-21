@@ -34,6 +34,7 @@ import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 public class OperatoriController extends BaseController {
 
@@ -60,6 +61,11 @@ public class OperatoriController extends BaseController {
 			
 			String jsonRequest = baos.toString();
 			OperatorePost operatoreRequest= JSONSerializable.parse(jsonRequest, OperatorePost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("principal", principal).notNull().minLength(1).maxLength(4000);
+			
+			operatoreRequest.validate();
 			
 			PutOperatoreDTO putOperatoreDTO = OperatoriConverter.getPutOperatoreDTO(operatoreRequest, principal, user); 
 			

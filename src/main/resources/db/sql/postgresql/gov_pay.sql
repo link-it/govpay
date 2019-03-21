@@ -53,7 +53,7 @@ CREATE TABLE utenze
 	principal_originale VARCHAR(4000) NOT NULL,
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	autorizzazione_domini_star BOOLEAN NOT NULL DEFAULT false,
-	autorizzazione_tributi_star BOOLEAN NOT NULL DEFAULT false,
+	autorizzazione_tipi_vers_star BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_utenze') NOT NULL,
 	-- unique constraints
@@ -214,18 +214,18 @@ CREATE TABLE utenze_domini
 
 
 
-CREATE SEQUENCE seq_utenze_tributi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+CREATE SEQUENCE seq_utenze_tipo_vers start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
-CREATE TABLE utenze_tributi
+CREATE TABLE utenze_tipo_vers
 (
 	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_utenze_tributi') NOT NULL,
+	id BIGINT DEFAULT nextval('seq_utenze_tipo_vers') NOT NULL,
 	id_utenza BIGINT NOT NULL,
-	id_tipo_tributo BIGINT NOT NULL,
+	id_tipo_versamento BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_nzt_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
-	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
+	CONSTRAINT fk_utv_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_utv_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT pk_utenze_tipo_vers PRIMARY KEY (id)
 );
 
 
@@ -344,6 +344,23 @@ CREATE TABLE tracciati
 
 
 
+CREATE SEQUENCE seq_tipi_versamento start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE tipi_versamento
+(
+	cod_tipo_versamento VARCHAR(35) NOT NULL,
+	descrizione VARCHAR(255) NOT NULL,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_tipi_versamento') NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_tipi_versamento_1 UNIQUE (cod_tipo_versamento),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_tipi_versamento PRIMARY KEY (id)
+);
+
+
+
+
 CREATE SEQUENCE seq_versamenti start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE versamenti
@@ -394,6 +411,7 @@ CREATE TABLE versamenti
 	anomalo BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
+	id_tipo_versamento BIGINT NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	id_uo BIGINT,
 	id_applicazione BIGINT NOT NULL,
@@ -401,6 +419,7 @@ CREATE TABLE versamenti
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -989,6 +1008,7 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
     max(versamenti.iuv_versamento::text) AS iuv_versamento,
     max(versamenti.numero_avviso::text) AS numero_avviso,
     max(versamenti.id_dominio) AS id_dominio,
+    max(versamenti.id_tipo_versamento) AS id_tipo_versamento,
     max(versamenti.id_uo) AS id_uo,
     max(versamenti.id_applicazione) AS id_applicazione,
     MAX(CASE WHEN versamenti.avvisatura_abilitata = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_abilitata,

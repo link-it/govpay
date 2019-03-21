@@ -40,7 +40,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
  */
 public class UtenzaPatchUtils {
 
-	public static final String PATH_ENTRATE = "/entrate";
+	public static final String PATH_TIPI_PENDENZA = "/tipiPendenza";
 	public static final String PATH_DOMINI = "/domini";
 	public static final String PATH_ACL = "/acl";
 	public static final String PATH_XX_NON_VALIDO = "Path ''{0}'' non valido";
@@ -65,8 +65,8 @@ public class UtenzaPatchUtils {
 	public static final String TESTO_NOTA_KEY = "testo";
 	
 	public static final String DOMINI_STAR = "*";
-	public static final String ENTRATE_STAR = "*";
-	public static final String AUTODETERMINAZIONE_ENTRATE = "autodeterminazione";
+	public static final String TIPI_PENDENZA_STAR = "*";
+	public static final String AUTODETERMINAZIONE_TIPI_PENDENZA = "autodeterminazione";
 
 	
 	public static Utenza patchUtenza(PatchOp op, Utenza utenza, BasicBD bd) throws ServiceException, NotFoundException, ValidationException {
@@ -75,8 +75,8 @@ public class UtenzaPatchUtils {
 			patchACL(op, utenza, bd);
 		} else if(PATH_DOMINI.equals(op.getPath())) {
 			patchDominio(op, utenza, bd);
-		} else if(PATH_ENTRATE.equals(op.getPath())) {
-			patchEntrata(op, utenza, bd);
+		} else if(PATH_TIPI_PENDENZA.equals(op.getPath())) {
+			patchTipoPendenza(op, utenza, bd);
 		} else {
 			throw new ValidationException(MessageFormat.format(PATH_XX_NON_VALIDO, op.getPath()));
 		}
@@ -84,21 +84,21 @@ public class UtenzaPatchUtils {
 		return utenza;
 	}
 
-	private static void patchEntrata(PatchOp op, Utenza utenza, BasicBD bd)
+	private static void patchTipoPendenza(PatchOp op, Utenza utenza, BasicBD bd)
 			throws ValidationException, ServiceException, NotFoundException {
 		if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
-		String tributo = (String) op.getValue();
+		String tipoVersamento = (String) op.getValue();
 		
-		if(tributo.equals(ENTRATE_STAR)) {
+		if(tipoVersamento.equals(TIPI_PENDENZA_STAR)) {
 			switch(op.getOp()) {
-			case ADD: utenza.setAutorizzazioneTributiStar(true);
+			case ADD: utenza.setAutorizzazioneTipiVersamentoStar(true);
 			break;
-			case DELETE: utenza.setAutorizzazioneTributiStar(false);
+			case DELETE: utenza.setAutorizzazioneTipiVersamentoStar(false);
 			break;
 			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 			}
-			utenza.getIdTipiTributo().clear();
-		} else if(tributo.equals(AUTODETERMINAZIONE_ENTRATE)) {
+			utenza.getIdTipiVersamento().clear();
+		} else if(tipoVersamento.equals(AUTODETERMINAZIONE_TIPI_PENDENZA)) {
 			if(utenza.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 				Applicazione applicazioneByPrincipal = AnagraficaManager.getApplicazioneByPrincipal(bd, utenza.getPrincipalOriginale());
 				switch(op.getOp()) {
@@ -116,15 +116,15 @@ public class UtenzaPatchUtils {
 			}
 		} else {
 			try {
-				AnagraficaManager.getTipoTributo(bd, tributo).getId();
+				AnagraficaManager.getTipoVersamento(bd, tipoVersamento).getId();
 			} catch (NotFoundException e) {
 				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
 			}
-			Long idTributo = AnagraficaManager.getTipoTributo(bd, tributo).getId();
+			Long idTipoVersamento = AnagraficaManager.getTipoVersamento(bd, tipoVersamento).getId();
 			switch(op.getOp()) {
-			case ADD: utenza.getIdTipiTributo().add(idTributo); 
+			case ADD: utenza.getIdTipiVersamento().add(idTipoVersamento); 
 			break;
-			case DELETE: utenza.getIdTipiTributo().remove(idTributo);
+			case DELETE: utenza.getIdTipiVersamento().remove(idTipoVersamento);
 			break;
 			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
 			}
@@ -132,8 +132,8 @@ public class UtenzaPatchUtils {
 		UtenzeBD utenzaBD = new UtenzeBD(bd);
 		utenzaBD.updateUtenza(utenza);
 
-		utenza.setTipiributo(null);
-		utenza.getTipiTributo(bd);
+		utenza.setTipiVersamento(null);
+		utenza.getTipiVersamento(bd);
 	}
 
 	private static void patchDominio(PatchOp op, Utenza utenza, BasicBD bd)

@@ -40,6 +40,8 @@ import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IConnettoreServiceSearch;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IDominioServiceSearch;
+import it.govpay.orm.dao.IEsitoAvvisaturaService;
+import it.govpay.orm.dao.IEsitoAvvisaturaServiceSearch;
 import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IEventoServiceSearch;
 import it.govpay.orm.dao.IFRService;
@@ -77,6 +79,8 @@ import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.IStazioneServiceSearch;
 import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITipoTributoServiceSearch;
+import it.govpay.orm.dao.ITipoVersamentoService;
+import it.govpay.orm.dao.ITipoVersamentoServiceSearch;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITracciatoServiceSearch;
 import it.govpay.orm.dao.ITributoService;
@@ -87,10 +91,12 @@ import it.govpay.orm.dao.IUtenzaDominioService;
 import it.govpay.orm.dao.IUtenzaDominioServiceSearch;
 import it.govpay.orm.dao.IUtenzaService;
 import it.govpay.orm.dao.IUtenzaServiceSearch;
-import it.govpay.orm.dao.IUtenzaTipoTributoService;
-import it.govpay.orm.dao.IUtenzaTipoTributoServiceSearch;
+import it.govpay.orm.dao.IUtenzaTipoVersamentoService;
+import it.govpay.orm.dao.IUtenzaTipoVersamentoServiceSearch;
+import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 
 /**     
  * Manager that allows you to obtain the services of research and management of objects
@@ -421,7 +427,6 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	
 	
 	
-	
 	/*
 	 =====================================================================================================================
 	 Services relating to the object with name:Audit type:Audit
@@ -520,32 +525,32 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:UtenzaTipoTributo type:UtenzaTipoTributo
+	 Services relating to the object with name:UtenzaTipoVersamento type:UtenzaTipoVersamento
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IUtenzaTipoTributoServiceSearch getUtenzaTipoTributoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCUtenzaTipoTributoServiceSearch(this.unlimitedJdbcServiceManager);
+	public IUtenzaTipoVersamentoServiceSearch getUtenzaTipoVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTipoVersamentoServiceSearch(this.unlimitedJdbcServiceManager);
 	}
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IUtenzaTipoTributoService getUtenzaTipoTributoService() throws ServiceException,NotImplementedException{
-		return new JDBCUtenzaTipoTributoService(this.unlimitedJdbcServiceManager);
+	public IUtenzaTipoVersamentoService getUtenzaTipoVersamentoService() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTipoVersamentoService(this.unlimitedJdbcServiceManager);
 	}
 	
 	
@@ -642,6 +647,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public IIUVService getIUVService() throws ServiceException,NotImplementedException{
 		return new JDBCIUVService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:TipoVersamento type:TipoVersamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TipoVersamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TipoVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITipoVersamentoServiceSearch getTipoVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCTipoVersamentoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoVersamento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITipoVersamentoService getTipoVersamentoService() throws ServiceException,NotImplementedException{
+		return new JDBCTipoVersamentoService(this.unlimitedJdbcServiceManager);
 	}
 	
 	
@@ -1149,6 +1186,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:EsitoAvvisatura type:EsitoAvvisatura
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IEsitoAvvisaturaServiceSearch getEsitoAvvisaturaServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCEsitoAvvisaturaServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.EsitoAvvisatura}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IEsitoAvvisaturaService getEsitoAvvisaturaService() throws ServiceException,NotImplementedException{
+		return new JDBCEsitoAvvisaturaService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:Avviso type:Avviso
 	 =====================================================================================================================
 	*/
@@ -1176,6 +1245,48 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	public IAvvisoService getAvvisoService() throws ServiceException,NotImplementedException{
 		return new JDBCAvvisoService(this.unlimitedJdbcServiceManager);
 	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VersamentoIncasso type:VersamentoIncasso
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VersamentoIncasso}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VersamentoIncasso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVersamentoIncassoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaRiscossioni type:VistaRiscossioni
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioni}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaRiscossioni}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaRiscossioniServiceSearch getVistaRiscossioniServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaRiscossioniServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
 	
 	
 	

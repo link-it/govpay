@@ -62,6 +62,8 @@ public class VersamentoFilter extends AbstractFilter {
 	private String cfCittadino;
 	private String modoAvvisatura = null;
 	private Boolean avvisaturaAbilitata;
+	private List<Long> idTipiVersamento = null;
+	private String codTipoVersamento = null;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -298,6 +300,23 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.avvisaturaAbilitata!=null) {
 				newExpression.equals(Versamento.model().AVVISATURA_ABILITATA, this.avvisaturaAbilitata);
 			}
+			
+			if(this.getIdTipiVersamento() != null){
+				this.getIdTipiVersamento().removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(Versamento.model()));
+				newExpression.in(cf, this.getIdTipiVersamento());
+				addAnd = true;
+			}
+			
+			if(this.getCodTipoVersamento() != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.getCodTipoVersamento(), LikeMode.ANYWHERE);
+				addAnd = true;
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -521,6 +540,22 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setAvvisaturaAbilitata(Boolean avvisaturaAbilitata) {
 		this.avvisaturaAbilitata = avvisaturaAbilitata;
+	}
+
+	public List<Long> getIdTipiVersamento() {
+		return idTipiVersamento;
+	}
+
+	public void setIdTipiVersamento(List<Long> idTipiVersamento) {
+		this.idTipiVersamento = idTipiVersamento;
+	}
+
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
 	}
 	
 }

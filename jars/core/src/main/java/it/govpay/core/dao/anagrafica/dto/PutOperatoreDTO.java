@@ -12,7 +12,7 @@ public class PutOperatoreDTO extends BasicCreateRequestDTO  {
 	private String principal;
 	
 	private List<String> idDomini;
-	private List<String> idTributi;
+	private List<String> idTipiVersamento;
 	
 	public PutOperatoreDTO(Authentication user) {
 		super(user);
@@ -34,12 +34,12 @@ public class PutOperatoreDTO extends BasicCreateRequestDTO  {
 		this.principal = principal;
 	}
 
-	public List<String> getIdTributi() {
-		return this.idTributi;
+	public List<String> getIdTipiVersamento() {
+		return idTipiVersamento;
 	}
 
-	public void setIdTributi(List<String> idTributi) {
-		this.idTributi = idTributi;
+	public void setIdTipiVersamento(List<String> idTipiVersamento) {
+		this.idTipiVersamento = idTipiVersamento;
 	}
 
 	public List<String> getIdDomini() {

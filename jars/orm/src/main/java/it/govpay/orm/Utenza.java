@@ -39,7 +39,7 @@ import java.io.Serializable;
  * 			&lt;element name="principalOriginale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
  * 			&lt;element name="autorizzazione_domini_star" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
- * 			&lt;element name="autorizzazione_tributi_star" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
+ * 			&lt;element name="autorizzazione_tipi_vers_star" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -58,7 +58,7 @@ import java.io.Serializable;
   	"principalOriginale",
   	"abilitato",
   	"autorizzazioneDominiStar",
-  	"autorizzazioneTributiStar"
+  	"autorizzazioneTipiVersStar"
   }
 )
 
@@ -122,16 +122,16 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.autorizzazioneDominiStar = autorizzazioneDominiStar;
   }
 
-  public boolean isAutorizzazioneTributiStar() {
-    return this.autorizzazioneTributiStar;
+  public boolean isAutorizzazioneTipiVersStar() {
+    return this.autorizzazioneTipiVersStar;
   }
 
-  public boolean getAutorizzazioneTributiStar() {
-    return this.autorizzazioneTributiStar;
+  public boolean getAutorizzazioneTipiVersStar() {
+    return this.autorizzazioneTipiVersStar;
   }
 
-  public void setAutorizzazioneTributiStar(boolean autorizzazioneTributiStar) {
-    this.autorizzazioneTributiStar = autorizzazioneTributiStar;
+  public void setAutorizzazioneTipiVersStar(boolean autorizzazioneTipiVersStar) {
+    this.autorizzazioneTipiVersStar = autorizzazioneTipiVersStar;
   }
 
   private static final long serialVersionUID = 1L;
@@ -170,7 +170,7 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
   protected boolean autorizzazioneDominiStar = false;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="autorizzazione_tributi_star",required=true,nillable=false,defaultValue="false")
-  protected boolean autorizzazioneTributiStar = false;
+  @XmlElement(name="autorizzazione_tipi_vers_star",required=true,nillable=false,defaultValue="false")
+  protected boolean autorizzazioneTipiVersStar = false;
 
 }

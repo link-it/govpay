@@ -62,8 +62,8 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Utenza.model().ABILITATO.getFieldType()));
 				setParameter(object, "setAutorizzazioneDominiStar", Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "autorizzazione_domini_star", Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType()));
-				setParameter(object, "setAutorizzazioneTributiStar", Utenza.model().AUTORIZZAZIONE_TRIBUTI_STAR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "autorizzazione_tributi_star", Utenza.model().AUTORIZZAZIONE_TRIBUTI_STAR.getFieldType()));
+				setParameter(object, "setAutorizzazioneTipiVersStar", Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "autorizzazione_tipi_vers_star", Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType()));
 				return object;
 			}
 			
@@ -94,8 +94,8 @@ public class UtenzaFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"abilitato"));
 				setParameter(object, "setAutorizzazioneDominiStar", Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType(),
 					this.getObjectFromMap(map,"autorizzazione_domini_star"));
-				setParameter(object, "setAutorizzazioneTributiStar", Utenza.model().AUTORIZZAZIONE_TRIBUTI_STAR.getFieldType(),
-					this.getObjectFromMap(map,"autorizzazione_tributi_star"));
+				setParameter(object, "setAutorizzazioneTipiVersStar", Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType(),
+					this.getObjectFromMap(map,"autorizzazione_tipi_vers_star"));
 				return object;
 			}
 			

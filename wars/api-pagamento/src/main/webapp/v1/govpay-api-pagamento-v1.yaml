@@ -2427,7 +2427,7 @@ components:
       required: 
         - nome
         - domini
-        - entrate
+        - tipiPendenza
         - acl
       properties:
         nome:
@@ -2438,11 +2438,11 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/dominioIndex'
-        entrate:
+        tipiPendenza:
           type: array
-          description: entrate su cui e' abilitato ad operare
+          description: tipologie di pendenza su cui e' abilitato ad operare
           items: 
-            $ref: '#/components/schemas/tipoEntrata'
+            $ref: '#/components/schemas/tipoPendenza'
         acl:
           type: array
           items:
@@ -2451,6 +2451,25 @@ components:
           $ref: '#/components/schemas/soggetto'
         identityData:
           type: object
+    tipoPendenzaPost:
+      type: object
+      required: 
+        - descrizione
+      properties:
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
+    tipoPendenza:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idTipoPendenza
+          properties:
+            idTipoPendenza:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/tipoPendenzaPost'
     tipoContabilita:
       description: Tipologia di codifica del capitolo di bilancio
       type: string

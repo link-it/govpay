@@ -95,11 +95,11 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 				return "autorizzazione_domini_star";
 			}
 		}
-		if(field.equals(Utenza.model().AUTORIZZAZIONE_TRIBUTI_STAR)){
+		if(field.equals(Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".autorizzazione_tributi_star";
+				return this.toAliasTable(field)+".autorizzazione_tipi_vers_star";
 			}else{
-				return "autorizzazione_tributi_star";
+				return "autorizzazione_tipi_vers_star";
 			}
 		}
 
@@ -127,7 +127,7 @@ public class UtenzaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Utenza.model().AUTORIZZAZIONE_DOMINI_STAR)){
 			return this.toTable(Utenza.model(), returnAlias);
 		}
-		if(field.equals(Utenza.model().AUTORIZZAZIONE_TRIBUTI_STAR)){
+		if(field.equals(Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR)){
 			return this.toTable(Utenza.model(), returnAlias);
 		}
 

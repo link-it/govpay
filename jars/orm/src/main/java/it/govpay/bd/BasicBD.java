@@ -62,12 +62,13 @@ import it.govpay.orm.dao.IDBRendicontazioneService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
+import it.govpay.orm.dao.IDBTipoVersamentoService;
 import it.govpay.orm.dao.IDBTracciatoService;
 import it.govpay.orm.dao.IDBTributoService;
 import it.govpay.orm.dao.IDBUoService;
 import it.govpay.orm.dao.IDBUtenzaDominioService;
 import it.govpay.orm.dao.IDBUtenzaService;
-import it.govpay.orm.dao.IDBUtenzaTipoTributoService;
+import it.govpay.orm.dao.IDBUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEsitoAvvisaturaService;
@@ -90,12 +91,13 @@ import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
+import it.govpay.orm.dao.ITipoVersamentoService;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IUtenzaDominioService;
 import it.govpay.orm.dao.IUtenzaService;
-import it.govpay.orm.dao.IUtenzaTipoTributoService;
+import it.govpay.orm.dao.IUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
@@ -114,13 +116,14 @@ public class BasicBD {
 	private ITributoService tributoService;
 	private IUtenzaService utenzaService;
 	private IUtenzaDominioService utenzaDominioService;
-	private IUtenzaTipoTributoService utenzaTributoService;
+	private IUtenzaTipoVersamentoService utenzaTipoVersamentoService;
 	private IApplicazioneService applicazioneService;
 	private IUoService uoService;
 	private IOperatoreService operatoreService;
 	private IConnettoreService connettoreService;
 	private IACLService aclService;
 	private IVersamentoService versamentoService;
+	private ITipoVersamentoService tipoVersamentoService;
 	private ISingoloVersamentoService singoloVersamentoService;
 	private IPagamentoPortaleService pagamentoPortaleService;
 	private IPagamentoPortaleVersamentoService pagamentoPortaleVersamentoService;
@@ -201,12 +204,13 @@ public class BasicBD {
 				this.tributoService = this.serviceManager.getTributoService();
 				this.utenzaService = this.serviceManager.getUtenzaService();
 				this.utenzaDominioService = this.serviceManager.getUtenzaDominioService();
-				this.utenzaTributoService = this.serviceManager.getUtenzaTipoTributoService();
+				this.utenzaTipoVersamentoService = this.serviceManager.getUtenzaTipoVersamentoService();
 				this.applicazioneService = this.serviceManager.getApplicazioneService();
 				this.uoService = this.serviceManager.getUoService();
 				this.operatoreService = this.serviceManager.getOperatoreService();
 				this.connettoreService = this.serviceManager.getConnettoreService();
 				this.aclService = this.serviceManager.getACLService();
+				this.tipoVersamentoService = this.serviceManager.getTipoVersamentoService();
 				this.versamentoService = this.serviceManager.getVersamentoService();
 				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
 				this.pagamentoPortaleService = this.serviceManager.getPagamentoPortaleService();
@@ -252,12 +256,13 @@ public class BasicBD {
 			((IDBTributoService)this.tributoService).enableSelectForUpdate();
 			((IDBUtenzaService)this.utenzaService).enableSelectForUpdate();
 			((IDBUtenzaDominioService)this.utenzaDominioService).enableSelectForUpdate();
-			((IDBUtenzaTipoTributoService)this.utenzaTributoService).enableSelectForUpdate();
+			((IDBUtenzaTipoVersamentoService)this.utenzaTipoVersamentoService).enableSelectForUpdate();
 			((IDBApplicazioneService)this.applicazioneService).enableSelectForUpdate();
 			((IDBUoService)this.uoService).enableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).enableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
 			((IDBACLService)this.aclService).enableSelectForUpdate();
+			((IDBTipoVersamentoService)this.tipoVersamentoService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
 			((IDBPagamentoPortaleService)this.pagamentoPortaleService).enableSelectForUpdate();
@@ -297,12 +302,13 @@ public class BasicBD {
 			((IDBTributoService)this.tributoService).disableSelectForUpdate();
 			((IDBUtenzaService)this.utenzaService).disableSelectForUpdate();
 			((IDBUtenzaDominioService)this.utenzaDominioService).disableSelectForUpdate();
-			((IDBUtenzaTipoTributoService)this.utenzaTributoService).disableSelectForUpdate();
+			((IDBUtenzaTipoVersamentoService)this.utenzaTipoVersamentoService).disableSelectForUpdate();
 			((IDBApplicazioneService)this.applicazioneService).disableSelectForUpdate();
 			((IDBUoService)this.uoService).disableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).disableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
 			((IDBACLService)this.aclService).disableSelectForUpdate();
+			((IDBTipoVersamentoService)this.tipoVersamentoService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
 			((IDBPagamentoPortaleService)this.pagamentoPortaleService).disableSelectForUpdate();
@@ -393,11 +399,11 @@ public class BasicBD {
 		return this.utenzaDominioService;
 	}
 	
-	public IUtenzaTipoTributoService getUtenzaTipoTributoService() {
+	public IUtenzaTipoVersamentoService getUtenzaTipoVersamentoService() {
 		if(this.father != null) {
-			return this.father.getUtenzaTipoTributoService();
+			return this.father.getUtenzaTipoVersamentoService();
 		}
-		return this.utenzaTributoService;
+		return this.utenzaTipoVersamentoService;
 	}
 	
 	public IApplicazioneService getApplicazioneService() {
@@ -433,6 +439,13 @@ public class BasicBD {
 			return this.father.getAclService();
 		}
 		return this.aclService;
+	}
+	
+	public ITipoVersamentoService getTipoVersamentoService() {
+		if(this.father != null) {
+			return this.father.getTipoVersamentoService();
+		}
+		return this.tipoVersamentoService;
 	}
 	
 	public IVersamentoService getVersamentoService() {

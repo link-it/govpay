@@ -13,7 +13,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 	"principal",
 	"codificaAvvisi",
 	"domini",
-	"entrate",
+	"tipiPendenza",
 	"acl",
 	"servizioVerifica",
 	"servizioNotifica",
@@ -30,8 +30,8 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 	@JsonProperty("domini")
 	private List<String> domini = null;
 
-	@JsonProperty("entrate")
-	private List<String> entrate = null;
+	@JsonProperty("tipiPendenza")
+  	private List<String> tipiPendenza = null;
 
 	@JsonProperty("acl")
 	private List<AclPost> acl = null;
@@ -92,21 +92,21 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		this.domini = domini;
 	}
 
-	/**
-	 * entrate su cui e' abilitato ad operare
-	 **/
-	public ApplicazionePost entrate(List<String> entrate) {
-		this.entrate = entrate;
-		return this;
-	}
+	  /**
+	   * tipologie di pendenza su cui e' abilitato ad operare
+	   **/
+	  public ApplicazionePost tipiPendenza(List<String> tipiPendenza) {
+	    this.tipiPendenza = tipiPendenza;
+	    return this;
+	  }
 
-	@JsonProperty("entrate")
-	public List<String> getEntrate() {
-		return this.entrate;
-	}
-	public void setEntrate(List<String> entrate) {
-		this.entrate = entrate;
-	}
+	  @JsonProperty("tipiPendenza")
+	  public List<String> getTipiPendenza() {
+	    return tipiPendenza;
+	  }
+	  public void setTipiPendenza(List<String> tipiPendenza) {
+	    this.tipiPendenza = tipiPendenza;
+	  }
 
 	/**
 	 * lista delle acl attive sull'operatore
@@ -182,7 +182,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		return Objects.equals(this.principal, applicazionePost.principal) &&
 				Objects.equals(this.codificaAvvisi, applicazionePost.codificaAvvisi) &&
 				Objects.equals(this.domini, applicazionePost.domini) &&
-				Objects.equals(this.entrate, applicazionePost.entrate) &&
+				Objects.equals(this.tipiPendenza, applicazionePost.tipiPendenza) &&
 				Objects.equals(this.acl, applicazionePost.acl) &&
 				Objects.equals(this.servizioVerifica, applicazionePost.servizioVerifica) &&
 				Objects.equals(this.servizioNotifica, applicazionePost.servizioNotifica) &&
@@ -191,7 +191,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.principal, this.codificaAvvisi, this.domini, this.entrate, this.acl, this.servizioVerifica, this.servizioNotifica, this.abilitato);
+		return Objects.hash(this.principal, this.codificaAvvisi, this.domini, this.tipiPendenza, this.acl, this.servizioVerifica, this.servizioNotifica, this.abilitato);
 	}
 
 	public static ApplicazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -211,7 +211,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
 		sb.append("    codificaAvvisi: ").append(this.toIndentedString(this.codificaAvvisi)).append("\n");
 		sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-		sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+		sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
 		sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
 		sb.append("    servizioVerifica: ").append(this.toIndentedString(this.servizioVerifica)).append("\n");
 		sb.append("    servizioNotifica: ").append(this.toIndentedString(this.servizioNotifica)).append("\n");
@@ -240,7 +240,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		vf.getValidator("servizioNotifica", this.servizioNotifica).validateFields();
 		vf.getValidator("acl", this.acl).validateObjects();
 //		vf.getValidator("domini", this.domini).validateObjects();
-//		vf.getValidator("entrate", this.entrate).validateObjects();
+//		vf.getValidator("tipiPendenza", this.tipiPendenza).validateObjects();
 		vf.getValidator("abilitato", this.abilitato).notNull();
 	}
 }

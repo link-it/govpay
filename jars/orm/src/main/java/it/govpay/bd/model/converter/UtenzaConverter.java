@@ -10,18 +10,18 @@ import it.govpay.bd.model.Utenza;
 
 public class UtenzaConverter {
 
-	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<Long> utenzaDominioLst, List<Long> utenzaTipiTributoLst, BasicBD bd) throws ServiceException {
+	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<Long> utenzaDominioLst, List<Long> utenzaTipiVersamentoLst, BasicBD bd) throws ServiceException {
 		Utenza dto = new Utenza();
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setPrincipalOriginale(vo.getPrincipalOriginale());
 		dto.setAutorizzazioneDominiStar(vo.isAutorizzazioneDominiStar());
-		dto.setAutorizzazioneTributiStar(vo.isAutorizzazioneTributiStar());
+		dto.setAutorizzazioneTipiVersamentoStar(vo.isAutorizzazioneTipiVersStar());
 		dto.setId(vo.getId());
 		dto.setAbilitato(vo.isAbilitato());
-		dto.setIdTipiTributo(utenzaTipiTributoLst);
+		dto.setIdTipiVersamento(utenzaTipiVersamentoLst);
 		dto.setIdDomini(utenzaDominioLst);
 		dto.getDomini(bd);
-		dto.getTipiTributo(bd);
+		dto.getTipiVersamento(bd);
 
 		return dto;
 	}
@@ -37,7 +37,7 @@ public class UtenzaConverter {
 		vo.setPrincipalOriginale(dto.getPrincipalOriginale());
 		vo.setAbilitato(dto.isAbilitato());
 		vo.setAutorizzazioneDominiStar(dto.isAutorizzazioneDominiStar());
-		vo.setAutorizzazioneTributiStar(dto.isAutorizzazioneTributiStar());
+		vo.setAutorizzazioneTipiVersStar(dto.isAutorizzazioneTipiVersamentoStar());
 		return vo;
 	}
 

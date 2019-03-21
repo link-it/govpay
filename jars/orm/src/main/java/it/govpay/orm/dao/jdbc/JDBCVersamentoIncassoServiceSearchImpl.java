@@ -219,7 +219,8 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(VersamentoIncasso.model())));
 			fields.add(new CustomField("id_uo", Long.class, "id_uo", this.getFieldConverter().toTable(VersamentoIncasso.model())));
 			fields.add(new CustomField("id_tracciato", Long.class, "id_tracciato", this.getFieldConverter().toTable(VersamentoIncasso.model())));
-	
+			fields.add(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", this.getFieldConverter().toTable(VersamentoIncasso.model())));
+			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 	
 			for(Map<String, Object> map: returnMap) {
@@ -227,6 +228,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 				Long idDominio = (Long)map.remove("id_dominio");
 				Object idUoObject = map.remove("id_uo");
 				Object idTracciatoObject = map.remove("id_tracciato");
+				Object idTipoVersamentoObject = map.remove("id_tipo_versamento");
 	
 				VersamentoIncasso versamento = (VersamentoIncasso)this.getFetch().fetch(jdbcProperties.getDatabase(), VersamentoIncasso.model(), map);
 	
@@ -270,6 +272,18 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 					}
 					id_versamento_ente.setId(idTracciato);
 					versamento.setIdTracciatoAvvisatura(id_versamento_ente);
+				}
+				
+				if(idTipoVersamentoObject instanceof Long) {
+					Long idTipoVersamento = (Long) idTipoVersamentoObject;
+					it.govpay.orm.IdTipoVersamento id_versamento_tipoVersamento = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_versamento_tipoVersamento = ((JDBCTipoVersamentoServiceSearch)(this.getServiceManager().getTipoVersamentoServiceSearch())).findId(idTipoVersamento, false);
+					}else{
+						id_versamento_tipoVersamento = new it.govpay.orm.IdTipoVersamento();
+					}
+					id_versamento_tipoVersamento.setId(idTipoVersamento);
+					versamento.setIdTipoVersamento(id_versamento_tipoVersamento);
 				}
 	
 				list.add(versamento);
@@ -691,6 +705,11 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			sqlQueryObject.addWhereCondition(pagPortVers+".id_pagamento_portale="+pagPort+".id");
 		}
         
+		if(expression.inUseModel(VersamentoIncasso.model().ID_TIPO_VERSAMENTO,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -753,6 +772,12 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_TRACCIATO_AVVISATURA),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_TRACCIATO_AVVISATURA))
+			));
+		
+		// VersamentoIncasso.model().ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO))
 			));
 
         return mapTableToPKColumn;		

@@ -6,6 +6,9 @@ import java.util.Objects;
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ragioneSociale",
 "domini",
@@ -13,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "acl",
 "abilitato",
 })
-public class OperatorePost extends it.govpay.core.beans.JSONSerializable {
+public class OperatorePost extends it.govpay.core.beans.JSONSerializable implements IValidable{
   
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
@@ -21,8 +24,8 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("domini")
   private List<String> domini = null;
   
-  @JsonProperty("entrate")
-  private List<String> entrate = null;
+  @JsonProperty("tipiPendenza")
+  private List<String> tipiPendenza = null;
   
   @JsonProperty("acl")
   private List<AclPost> acl = null;
@@ -63,19 +66,19 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * entrate su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutte le entrate
+   * tipologie di pendenza su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutte le entrate
    **/
-  public OperatorePost entrate(List<String> entrate) {
-    this.entrate = entrate;
+  public OperatorePost tipiPendenza(List<String> tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
     return this;
   }
 
-  @JsonProperty("entrate")
-  public List<String> getEntrate() {
-    return this.entrate;
+  @JsonProperty("tipiPendenza")
+  public List<String> getTipiPendenza() {
+    return tipiPendenza;
   }
-  public void setEntrate(List<String> entrate) {
-    this.entrate = entrate;
+  public void setTipiPendenza(List<String> tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
   }
 
   /**
@@ -121,14 +124,14 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable {
     OperatorePost operatorePost = (OperatorePost) o;
     return Objects.equals(this.ragioneSociale, operatorePost.ragioneSociale) &&
         Objects.equals(this.domini, operatorePost.domini) &&
-        Objects.equals(this.entrate, operatorePost.entrate) &&
+        Objects.equals(this.tipiPendenza, operatorePost.tipiPendenza) &&
         Objects.equals(this.acl, operatorePost.acl) &&
         Objects.equals(this.abilitato, operatorePost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.ragioneSociale, this.domini, this.entrate, this.acl, this.abilitato);
+    return Objects.hash(this.ragioneSociale, this.domini, this.tipiPendenza, this.acl, this.abilitato);
   }
 
   public static OperatorePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -147,7 +150,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable {
     
     sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
     sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
     sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
@@ -164,6 +167,16 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+	@Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(35);
+		vf.getValidator("acl", this.acl).validateObjects();
+//		vf.getValidator("domini", this.domini).validateObjects();
+//		vf.getValidator("tipiPendenza", this.tipiPendenza).validateObjects();
+		vf.getValidator("abilitato", this.abilitato).notNull();
+	}
 }
 
 

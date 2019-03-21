@@ -1626,7 +1626,7 @@ components:
       required:
         - nome
         - domini
-        - entrate
+        - tipiPendenza
         - acl
       properties:
         nome:
@@ -1637,11 +1637,11 @@ components:
           description: domini su cui e' abilitato ad operare
           items:
             $ref: '#/components/schemas/Dominio'
-        entrate:
+        tipiPendenza:
           type: array
-          description: entrate su cui e' abilitato ad operare
+          description: tipologie di pendenza su cui e' abilitato ad operare
           items:
-            $ref: '#/components/schemas/TipoEntrata'
+            $ref: '#/components/schemas/TipoPendenza'
         acl:
           type: array
           items:

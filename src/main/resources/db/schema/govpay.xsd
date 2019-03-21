@@ -30,7 +30,7 @@
 								<linkit:sql-table object-name="TipoTributo" object-type="TipoTributo"/>
 								<linkit:sql-table object-name="Tributo" object-type="Tributo"/>
 								<linkit:sql-table object-name="UtenzaDominio" object-type="UtenzaDominio"/>
-									<linkit:sql-table object-name="UtenzaTributo" object-type="UtenzaTipoTributo"/>
+								<linkit:sql-table object-name="UtenzaTipoVersamento" object-type="UtenzaTipoVersamento"/>
 								<linkit:sql-table object-name="Uo" object-type="Uo"/>
 								<linkit:sql-table object-name="Operatore" object-type="Operatore"/>
 								<linkit:sql-table object-name="Connettore" object-type="Connettore"/>
@@ -992,43 +992,6 @@
 	</xsd:complexType>
 	
 	
-	<xsd:element name="UtenzaTipoTributo" type="UtenzaTipoTributo"/>
-	<xsd:complexType name="UtenzaTipoTributo">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true"/>
-					<linkit:sql-table-mapping generate-sql="true" name="utenze_tributi"
-						on-delete-cascade="false">
-						<linkit:sql-table-constraint foreign-key="fk_nzt"/>
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="idUtenza" type="id-utenza">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Utenza"
-								object-type="Utenza" relationship="reversed"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="idTipoTributo" type="id-tipo-tributo">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="TipoTributo"
-								object-type="TipoTributo" relationship="reversed"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
-	
 	<xsd:element name="UtenzaTipoVersamento" type="UtenzaTipoVersamento"/>
 	<xsd:complexType name="UtenzaTipoVersamento">
 		<xsd:annotation>
@@ -1088,7 +1051,7 @@
 			<xsd:element name="principalOriginale" type="String4000"/>
 			<xsd:element name="abilitato" type="xsd:boolean" default="true"/>
 			<xsd:element name="autorizzazione_domini_star" type="xsd:boolean" default="false"/>
-			<xsd:element name="autorizzazione_tributi_star" type="xsd:boolean" default="false"/>
+			<xsd:element name="autorizzazione_tipi_vers_star" type="xsd:boolean" default="false"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

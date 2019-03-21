@@ -9,11 +9,11 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.model.TipoTributo;
+import it.govpay.model.TipoVersamento;
 import it.govpay.pagamento.v2.beans.Acl;
 import it.govpay.pagamento.v2.beans.Profilo;
 import it.govpay.pagamento.v2.beans.Soggetto;
-import it.govpay.pagamento.v2.beans.TipoEntrata;
+import it.govpay.pagamento.v2.beans.TipoPendenza;
 
 public class ProfiloConverter {
 
@@ -42,12 +42,12 @@ public class ProfiloConverter {
 			}
 			profilo.setDomini(dominiLst);
 		}
-		if(leggiProfilo.getTipiTributi()!=null) {
-			List<TipoEntrata> entrateLst = new ArrayList<>();
-			for(TipoTributo tributo: leggiProfilo.getTipiTributi()) {
-				entrateLst.add(EntrateConverter.toTipoEntrataRsModel(tributo));
+		if(leggiProfilo.getTipiVersamento()!=null) {
+			List<TipoPendenza> tipiPendenzaLst = new ArrayList<>();
+			for(TipoVersamento tipoPendenza: leggiProfilo.getTipiVersamento()) {
+				tipiPendenzaLst.add(TipiPendenzaConverter.toTipoPendenzaRsModel(tipoPendenza));
 			}
-			profilo.setEntrate(entrateLst);
+			profilo.setTipiPendenza(tipiPendenzaLst);
 		}
 		
 		switch(user.getTipoUtenza()) {

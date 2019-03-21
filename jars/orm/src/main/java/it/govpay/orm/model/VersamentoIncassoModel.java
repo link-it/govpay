@@ -43,6 +43,7 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 	
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.NOME = new Field("nome",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new Field("idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new Field("idUo",it.govpay.orm.IdUo.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"VersamentoIncasso",VersamentoIncasso.class));
@@ -106,6 +107,7 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 	
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.ID_TIPO_VERSAMENTO = new it.govpay.orm.model.IdTipoVersamentoModel(new ComplexField(father,"idTipoVersamento",it.govpay.orm.IdTipoVersamento.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"idUo",it.govpay.orm.IdUo.class,"VersamentoIncasso",VersamentoIncasso.class));
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"VersamentoIncasso",VersamentoIncasso.class));
@@ -168,6 +170,8 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 	public IField COD_VERSAMENTO_ENTE = null;
 	 
 	public IField NOME = null;
+	 
+	public it.govpay.orm.model.IdTipoVersamentoModel ID_TIPO_VERSAMENTO = null;
 	 
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 

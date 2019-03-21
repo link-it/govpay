@@ -46,7 +46,7 @@ import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.OperatoreNonTrovatoException;
-import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
@@ -80,7 +80,7 @@ public class UtentiDAO extends BaseDAO{
 			response.setNome(userDetails.getIdentificativo());
 			response.setUtente(userDetails.getUtenza());
 			response.setDomini(userDetails.getUtenza().getDomini(bd));
-			response.setTipiTributi(userDetails.getUtenza().getTipiTributo(bd));
+			response.setTipiVersamento(userDetails.getUtenza().getTipiVersamento(bd));
 			
 		} finally {
 			if(bd != null)
@@ -140,7 +140,7 @@ public class UtentiDAO extends BaseDAO{
 		}
 	}
 
-	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoTributoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {
+	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoVersamentoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {
 		PutOperatoreDTOResponse operatoreDTOResponse = new PutOperatoreDTOResponse();
 		BasicBD bd = null;
 
@@ -170,17 +170,17 @@ public class UtentiDAO extends BaseDAO{
 				putOperatoreDTO.getOperatore().getUtenza().setIdDomini(idDomini );
 			}
 
-			if(putOperatoreDTO.getIdTributi() != null) {
-				List<Long> idTributi = new ArrayList<>();
-				for (String codTributo : putOperatoreDTO.getIdTributi()) {
+			if(putOperatoreDTO.getIdTipiVersamento() != null) {
+				List<Long> idTipiVersamento = new ArrayList<>();
+				for (String codTipoVersamento : putOperatoreDTO.getIdTipiVersamento()) {
 					try {
-						idTributi.add(AnagraficaManager.getTipoTributo(bd, codTributo).getId());
+						idTipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, codTipoVersamento).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-						throw new TipoTributoNonTrovatoException(e.getMessage(), e);
+						throw new TipoVersamentoNonTrovatoException(e.getMessage(), e);
 					}
 				}
 
-				putOperatoreDTO.getOperatore().getUtenza().setIdTipiTributo(idTributi);
+				putOperatoreDTO.getOperatore().getUtenza().setIdTipiVersamento(idTipiVersamento);
 			}
 
 

@@ -23,8 +23,8 @@ public class Profilo extends JSONSerializable {
   @JsonProperty("domini")
   private List<DominioIndex> domini = new ArrayList<>();
   
-  @JsonProperty("entrate")
-  private List<TipoEntrata> entrate = new ArrayList<>();
+  @JsonProperty("tipiPendenza")
+  private List<TipoPendenza> tipiPendenza = new ArrayList<>();
   
   @JsonProperty("acl")
   private List<AclPost> acl = new ArrayList<>();
@@ -62,19 +62,19 @@ public class Profilo extends JSONSerializable {
   }
 
   /**
-   * entrate su cui e' abilitato ad operare
+   * tipologie di pendenza su cui e' abilitato ad operare
    **/
-  public Profilo entrate(List<TipoEntrata> entrate) {
-    this.entrate = entrate;
+  public Profilo tipiPendenza(List<TipoPendenza> tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
     return this;
   }
 
-  @JsonProperty("entrate")
-  public List<TipoEntrata> getEntrate() {
-    return this.entrate;
+  @JsonProperty("tipiPendenza")
+  public List<TipoPendenza> getTipiPendenza() {
+    return this.tipiPendenza;
   }
-  public void setEntrate(List<TipoEntrata> entrate) {
-    this.entrate = entrate;
+  public void setTipiPendenza(List<TipoPendenza> tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
   }
 
   /**
@@ -103,13 +103,13 @@ public class Profilo extends JSONSerializable {
     Profilo profilo = (Profilo) o;
     return Objects.equals(this.nome, profilo.nome) &&
         Objects.equals(this.domini, profilo.domini) &&
-        Objects.equals(this.entrate, profilo.entrate) &&
+        Objects.equals(this.tipiPendenza, profilo.tipiPendenza) &&
         Objects.equals(this.acl, profilo.acl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.nome, this.domini, this.entrate, this.acl);
+    return Objects.hash(this.nome, this.domini, this.tipiPendenza, this.acl);
   }
 
   public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -128,7 +128,7 @@ public class Profilo extends JSONSerializable {
     
     sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
     sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
     sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
     sb.append("}");
     return sb.toString();

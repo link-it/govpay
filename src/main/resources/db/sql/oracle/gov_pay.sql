@@ -332,27 +332,27 @@ end;
 
 
 
-CREATE SEQUENCE seq_utenze_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+CREATE SEQUENCE seq_utenze_tipo_vers MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
-CREATE TABLE utenze_tributi
+CREATE TABLE utenze_tipo_vers
 (
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_utenza NUMBER NOT NULL,
-	id_tipo_tributo NUMBER NOT NULL,
+	id_tipo_versamento NUMBER NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_nzt_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_nzt_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
-	CONSTRAINT pk_utenze_tributi PRIMARY KEY (id)
+	CONSTRAINT fk_utv_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_utv_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT pk_utenze_tipo_vers PRIMARY KEY (id)
 );
 
-CREATE TRIGGER trg_utenze_tributi
+CREATE TRIGGER trg_utenze_tipo_vers
 BEFORE
-insert on utenze_tributi
+insert on utenze_tipo_vers
 for each row
 begin
    IF (:new.id IS NULL) THEN
-      SELECT seq_utenze_tributi.nextval INTO :new.id
+      SELECT seq_utenze_tipo_vers.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -528,6 +528,34 @@ end;
 
 
 
+CREATE SEQUENCE seq_tipi_versamento MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE tipi_versamento
+(
+	cod_tipo_versamento VARCHAR2(35 CHAR) NOT NULL,
+	descrizione VARCHAR2(255 CHAR) NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_tipi_versamento_1 UNIQUE (cod_tipo_versamento),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_tipi_versamento PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_tipi_versamento
+BEFORE
+insert on tipi_versamento
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_tipi_versamento.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE versamenti
@@ -578,6 +606,7 @@ CREATE TABLE versamenti
 	anomalo NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_tipo_versamento NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
 	id_uo NUMBER,
 	id_applicazione NUMBER NOT NULL,
@@ -585,6 +614,7 @@ CREATE TABLE versamenti
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT fk_vrs_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -1381,6 +1411,7 @@ MAX(dbms_lob.substr(versamenti.anomalie)) as anomalie,
 MAX(versamenti.iuv_versamento) as iuv_versamento,
 MAX(versamenti.numero_avviso) as numero_avviso,
 MAX(versamenti.id_dominio) as id_dominio,
+MAX(versamenti.id_tipo_versamento) AS id_tipo_versamento,
 MAX(versamenti.id_uo) as id_uo,
 MAX(versamenti.id_applicazione) as id_applicazione,
 MAX(CASE WHEN versamenti.avvisatura_abilitata = 1 THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_abilitata,

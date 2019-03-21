@@ -15,11 +15,11 @@ public class UtenzaCittadino extends Utenza {
 		super();
 		this.setCodIdentificativo(codIdentificativo); 
 		this.setIdDomini(new ArrayList<>());
-		this.setIdTipiTributo(new ArrayList<>());
+		this.setIdTipiVersamento(new ArrayList<>());
 		this.setDomini(new ArrayList<>());
-		this.setTipiributo(new ArrayList<>());
+		this.setTipiVersamento(new ArrayList<>());
 		this.autorizzazioneDominiStar = true ;
-		this.autorizzazioneTributiStar = false;
+		this.autorizzazioneTipiVersamentoStar = false;
 		this.headers = headers;
 	}
 	

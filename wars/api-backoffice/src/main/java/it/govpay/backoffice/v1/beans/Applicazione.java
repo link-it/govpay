@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "principal",
 "codificaAvvisi",
 "domini",
-"entrate",
+"tipiPendenza",
 "acl",
 "servizioVerifica",
 "servizioNotifica",
@@ -31,8 +31,8 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("domini")
   private List<DominioIndex> domini = null;
   
-  @JsonProperty("entrate")
-  private List<TipoEntrata> entrate = null;
+  @JsonProperty("tipiPendenza")
+  private List<TipoPendenza> tipiPendenza = null;
   
   @JsonProperty("acl")
   private List<AclPost> acl = null;
@@ -78,7 +78,6 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
     this.principal = principal;
   }
 
-  
   /**
    **/
   public Applicazione codificaAvvisi(CodificaAvvisi codificaAvvisi) {
@@ -111,19 +110,19 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * entrate su cui e' abilitato ad operare
+   * tipologie di pendenza su cui e' abilitato ad operare
    **/
-  public Applicazione entrate(List<TipoEntrata> entrate) {
-    this.entrate = entrate;
+  public Applicazione tipiPendenza(List<TipoPendenza> tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
     return this;
   }
 
-  @JsonProperty("entrate")
-  public List<TipoEntrata> getEntrate() {
-    return this.entrate;
+  @JsonProperty("tipiPendenza")
+  public List<TipoPendenza> getTipiPendenza() {
+    return tipiPendenza;
   }
-  public void setEntrate(List<TipoEntrata> entrate) {
-    this.entrate = entrate;
+  public void setTipiPendenza(List<TipoPendenza> tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
   }
 
   /**
@@ -201,7 +200,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.principal, applicazione.principal) &&
         Objects.equals(this.codificaAvvisi, applicazione.codificaAvvisi) &&
         Objects.equals(this.domini, applicazione.domini) &&
-        Objects.equals(this.entrate, applicazione.entrate) &&
+        Objects.equals(this.tipiPendenza, applicazione.tipiPendenza) &&
         Objects.equals(this.acl, applicazione.acl) &&
         Objects.equals(this.servizioVerifica, applicazione.servizioVerifica) &&
         Objects.equals(this.servizioNotifica, applicazione.servizioNotifica) &&
@@ -210,7 +209,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idA2A, this.principal, this.codificaAvvisi, this.domini, this.entrate, this.acl, this.servizioVerifica, this.servizioNotifica, this.abilitato);
+    return Objects.hash(this.idA2A, this.principal, this.codificaAvvisi, this.domini, this.tipiPendenza, this.acl, this.servizioVerifica, this.servizioNotifica, this.abilitato);
   }
 
   public static Applicazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -231,7 +230,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
     sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
     sb.append("    codificaAvvisi: ").append(this.toIndentedString(this.codificaAvvisi)).append("\n");
     sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
     sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
     sb.append("    servizioVerifica: ").append(this.toIndentedString(this.servizioVerifica)).append("\n");
     sb.append("    servizioNotifica: ").append(this.toIndentedString(this.servizioNotifica)).append("\n");

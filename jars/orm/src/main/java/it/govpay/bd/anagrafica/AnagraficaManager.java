@@ -41,6 +41,8 @@ import it.govpay.bd.anagrafica.cache.StazioniBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.StazioniBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.TipiTributoBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.TipiTributoBDCacheWrapper;
+import it.govpay.bd.anagrafica.cache.TipiVersamentoBDCacheJmx;
+import it.govpay.bd.anagrafica.cache.TipiVersamentoBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.TributiBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.TributiBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.UoBDCacheJmx;
@@ -56,6 +58,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
+import it.govpay.model.TipoVersamento;
 import it.govpay.bd.model.Utenza;
 
 public class AnagraficaManager {
@@ -73,6 +76,7 @@ public class AnagraficaManager {
 	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT = "getApplicazioneBySubject";
 	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL = "getApplicazioneByPrincipal";
 	private static final String CACHE_KEY_GET_APPLICAZIONE = "getApplicazione";
+	private static final String CACHE_KEY_GET_TIPO_VERSAMENTO = "getTipoVersamento";
 
 	private static final boolean DEBUG = false;
 	
@@ -86,6 +90,7 @@ public class AnagraficaManager {
 	private static TributiBDCacheWrapper tributiBDCacheWrapper, tributiBDNoCacheWrapper;
 	private static TipiTributoBDCacheWrapper tipiTributoBDCacheWrapper, tipiTributoBDNoCacheWrapper;
 	private static UtenzeBDCacheWrapper utenzeBDCacheWrapper, utenzeBDNoCacheWrapper;
+	private static TipiVersamentoBDCacheWrapper tipiVersamentoBDCacheWrapper, tipiVersamentoBDNoCacheWrapper;
 
 	private AnagraficaManager(String domain) throws UtilsException {
 		
@@ -99,6 +104,7 @@ public class AnagraficaManager {
 		tributiBDCacheWrapper = new TributiBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TributiBDCacheWrapper.class));
 		tipiTributoBDCacheWrapper = new TipiTributoBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TipiTributoBDCacheWrapper.class));
 		utenzeBDCacheWrapper = new UtenzeBDCacheWrapper(true, LoggerWrapperFactory.getLogger(UtenzeBDCacheWrapper.class));
+		tipiVersamentoBDCacheWrapper = new TipiVersamentoBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TipiVersamentoBDCacheWrapper.class));
 		
 		dominiBDNoCacheWrapper = new DominiBDCacheWrapper(false, LoggerWrapperFactory.getLogger(DominiBDCacheWrapper.class));
 		applicazioniBDNoCacheWrapper = new ApplicazioniBDCacheWrapper(false, LoggerWrapperFactory.getLogger(ApplicazioniBDCacheWrapper.class));
@@ -110,6 +116,7 @@ public class AnagraficaManager {
 		tributiBDNoCacheWrapper = new TributiBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TributiBDCacheWrapper.class));
 		tipiTributoBDNoCacheWrapper = new TipiTributoBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TipiTributoBDCacheWrapper.class));
 		utenzeBDNoCacheWrapper = new UtenzeBDCacheWrapper(false, LoggerWrapperFactory.getLogger(UtenzeBDCacheWrapper.class));
+		tipiVersamentoBDNoCacheWrapper = new TipiVersamentoBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TipiVersamentoBDCacheWrapper.class));
 
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), domain, "domini");
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new ApplicazioniBDCacheJmx(), domain, "applicazioni");
@@ -121,6 +128,7 @@ public class AnagraficaManager {
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), domain, "tributi");
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiTributoBDCacheJmx(), domain, "tipiTributo");
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UtenzeBDCacheJmx(), domain, "utenze");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiVersamentoBDCacheJmx(), domain, "tipiVersamento");
 	}
 
 	public static AnagraficaManager newInstance(String dominio) throws UtilsException {
@@ -167,6 +175,10 @@ public class AnagraficaManager {
 		return tipiTributoBDCacheWrapper;
 	}
 	
+	public static TipiVersamentoBDCacheWrapper getTipiVersamentoBDCacheWrapper() {
+		return tipiVersamentoBDCacheWrapper;
+	}
+	
 	public static DominiBDCacheWrapper getDominiBDWrapper(BasicBD bd) {
 		return bd.isUseCache() ? dominiBDCacheWrapper : dominiBDNoCacheWrapper;
 	}
@@ -205,6 +217,10 @@ public class AnagraficaManager {
 	
 	public static TipiTributoBDCacheWrapper getTipiTributoBDWrapper(BasicBD bd) {
 		return bd.isUseCache() ? tipiTributoBDCacheWrapper : tipiTributoBDNoCacheWrapper;
+	}
+	
+	public static TipiVersamentoBDCacheWrapper getTipiVersamentoBDWrapper(BasicBD bd) {
+		return bd.isUseCache() ? tipiVersamentoBDCacheWrapper : tipiVersamentoBDNoCacheWrapper;
 	}
 	
 	public static void removeFromCache(Applicazione applicazione) {
@@ -259,6 +275,11 @@ public class AnagraficaManager {
 	public static void removeFromCache(TipoTributo tipoTributo) {
 		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_TRIBUTO, String.valueOf(tipoTributo.getId())));} catch (Exception e) {	}
 		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_TRIBUTO, String.valueOf(tipoTributo.getCodTributo())));} catch (Exception e) {	}
+	}
+	
+	public static void removeFromCache(TipoVersamento tipoVersamento) {
+		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_VERSAMENTO, String.valueOf(tipoVersamento.getId())));} catch (Exception e) {	}
+		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_VERSAMENTO, String.valueOf(tipoVersamento.getCodTipoVersamento())));} catch (Exception e) {	}
 	}
 	
 	public static Dominio getDominio(BasicBD basicBD, long id) throws ServiceException {
@@ -723,6 +744,44 @@ public class AnagraficaManager {
 			throw new ServiceException(t);
 		}
 	}
+	
+	public static TipoVersamento getTipoVersamento(BasicBD basicBD, long id) throws ServiceException {
+		try {
+			String method = CACHE_KEY_GET_TIPO_VERSAMENTO;
+			Object tipoVersamento = getTipiVersamentoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			return (TipoVersamento) tipoVersamento;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}
+	}
+
+	public static TipoVersamento getTipoVersamento(BasicBD basicBD, String codTipoVersamento) throws ServiceException, NotFoundException {
+		try {
+			String method = CACHE_KEY_GET_TIPO_VERSAMENTO;
+			Object tipoVersamento = getTipiVersamentoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, codTipoVersamento, method, codTipoVersamento);
+			return (TipoVersamento) tipoVersamento;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}
+	}
 
 	public static void unregister() {
 		CacheJMXUtils.unregister();
@@ -738,6 +797,7 @@ public class AnagraficaManager {
 		stazioniBDCacheWrapper.resetCache();
 		tributiBDCacheWrapper.resetCache();
 		tipiTributoBDCacheWrapper.resetCache();
+		tipiVersamentoBDCacheWrapper.resetCache();
 	}
 
 }

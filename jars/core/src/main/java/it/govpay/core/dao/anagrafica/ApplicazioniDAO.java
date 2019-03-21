@@ -127,13 +127,13 @@ public class ApplicazioniDAO extends BaseDAO {
 				putApplicazioneDTO.getApplicazione().getUtenza().setIdDomini(idDomini );
 			}
 
-			if(putApplicazioneDTO.getIdTributi() != null) {
-				List<Long> idTributi = new ArrayList<>();
-				for (String codTributo : putApplicazioneDTO.getIdTributi()) {
-					idTributi.add(AnagraficaManager.getTipoTributo(bd, codTributo).getId());
+			if(putApplicazioneDTO.getIdTipiVersamento() != null) {
+				List<Long> idTipiVersamento = new ArrayList<>();
+				for (String codTipoVersamento : putApplicazioneDTO.getIdTipiVersamento()) {
+					idTipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, codTipoVersamento).getId());
 				}
 
-				putApplicazioneDTO.getApplicazione().getUtenza().setIdTipiTributo(idTributi);
+				putApplicazioneDTO.getApplicazione().getUtenza().setIdTipiVersamento(idTipiVersamento);
 			}
 
 

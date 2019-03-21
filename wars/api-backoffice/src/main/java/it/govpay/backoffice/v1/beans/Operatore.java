@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "principal",
 "ragioneSociale",
 "domini",
-"entrate",
+"tipiPendenza",
 "acl",
 "abilitato",
 })
@@ -24,10 +24,10 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   private String ragioneSociale = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = new ArrayList<>();
+  private List<DominioIndex> domini = new ArrayList<DominioIndex>();
   
-  @JsonProperty("entrate")
-  private List<TipoEntrata> entrate = new ArrayList<>();
+  @JsonProperty("tipiPendenza")
+  private List<TipoPendenza> tipiPendenza = new ArrayList<TipoPendenza>();
   
   @JsonProperty("acl")
   private List<AclPost> acl = null;
@@ -84,19 +84,19 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * entrate su cui e' abilitato ad operare
+   * tipologie di pendenza su cui e' abilitato ad operare
    **/
-  public Operatore entrate(List<TipoEntrata> entrate) {
-    this.entrate = entrate;
+  public Operatore tipiPendenza(List<TipoPendenza> tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
     return this;
   }
 
-  @JsonProperty("entrate")
-  public List<TipoEntrata> getEntrate() {
-    return this.entrate;
+  @JsonProperty("tipiPendenza")
+  public List<TipoPendenza> getTipiPendenza() {
+    return tipiPendenza;
   }
-  public void setEntrate(List<TipoEntrata> entrate) {
-    this.entrate = entrate;
+  public void setTipiPendenza(List<TipoPendenza> tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
   }
 
   /**
@@ -143,14 +143,14 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
     return Objects.equals(this.principal, operatore.principal) &&
         Objects.equals(this.ragioneSociale, operatore.ragioneSociale) &&
         Objects.equals(this.domini, operatore.domini) &&
-        Objects.equals(this.entrate, operatore.entrate) &&
+        Objects.equals(this.tipiPendenza, operatore.tipiPendenza) &&
         Objects.equals(this.acl, operatore.acl) &&
         Objects.equals(this.abilitato, operatore.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.principal, this.ragioneSociale, this.domini, this.entrate, this.acl, this.abilitato);
+    return Objects.hash(this.principal, this.ragioneSociale, this.domini, this.tipiPendenza, this.acl, this.abilitato);
   }
 
   public static Operatore parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -170,7 +170,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
     sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
     sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
     sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
     sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");

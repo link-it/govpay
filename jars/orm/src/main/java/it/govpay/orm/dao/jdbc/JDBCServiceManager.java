@@ -84,6 +84,8 @@ import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.IStazioneServiceSearch;
 import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITipoTributoServiceSearch;
+import it.govpay.orm.dao.ITipoVersamentoService;
+import it.govpay.orm.dao.ITipoVersamentoServiceSearch;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITracciatoServiceSearch;
 import it.govpay.orm.dao.ITributoService;
@@ -94,8 +96,8 @@ import it.govpay.orm.dao.IUtenzaDominioService;
 import it.govpay.orm.dao.IUtenzaDominioServiceSearch;
 import it.govpay.orm.dao.IUtenzaService;
 import it.govpay.orm.dao.IUtenzaServiceSearch;
-import it.govpay.orm.dao.IUtenzaTipoTributoService;
-import it.govpay.orm.dao.IUtenzaTipoTributoServiceSearch;
+import it.govpay.orm.dao.IUtenzaTipoVersamentoService;
+import it.govpay.orm.dao.IUtenzaTipoVersamentoServiceSearch;
 import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
@@ -470,7 +472,7 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:TipoTributo type:TipoTributo
+	 Services relating to the object with name:tipoTributo type:TipoTributo
 	 =====================================================================================================================
 	*/
 	
@@ -598,32 +600,32 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:UtenzaTributo type:UtenzaTributo
+	 Services relating to the object with name:UtenzaTipoVersamento type:UtenzaTipoVersamento
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IUtenzaTipoTributoServiceSearch getUtenzaTipoTributoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCUtenzaTipoTributoServiceSearch(this);
+	public IUtenzaTipoVersamentoServiceSearch getUtenzaTipoVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTipoVersamentoServiceSearch(this);
 	}
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTributo}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IUtenzaTipoTributoService getUtenzaTipoTributoService() throws ServiceException,NotImplementedException{
-		return new JDBCUtenzaTipoTributoService(this);
+	public IUtenzaTipoVersamentoService getUtenzaTipoVersamentoService() throws ServiceException,NotImplementedException{
+		return new JDBCUtenzaTipoVersamentoService(this);
 	}
 	
 	
@@ -720,6 +722,38 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IIUVService getIUVService() throws ServiceException,NotImplementedException{
 		return new JDBCIUVService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:TipoVersamento type:TipoVersamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TipoVersamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TipoVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITipoVersamentoServiceSearch getTipoVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCTipoVersamentoServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoVersamento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITipoVersamentoService getTipoVersamentoService() throws ServiceException,NotImplementedException{
+		return new JDBCTipoVersamentoService(this);
 	}
 	
 	
@@ -1159,39 +1193,7 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 		return new JDBCBatchService(this);
 	}
 	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Operazione type:Operazione
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Operazione}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Operazione}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IOperazioneServiceSearch getOperazioneServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCOperazioneServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Operazione}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Operazione}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IOperazioneService getOperazioneService() throws ServiceException,NotImplementedException{
-		return new JDBCOperazioneService(this);
-	}
-	
-	
+
 	
 	/*
 	 =====================================================================================================================
@@ -1286,7 +1288,40 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	public IAvvisoService getAvvisoService() throws ServiceException,NotImplementedException{
 		return new JDBCAvvisoService(this);
 	}
-
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:operazione type:Operazione
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Operazione}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Operazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IOperazioneServiceSearch getOperazioneServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCOperazioneServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Operazione}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Operazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IOperazioneService getOperazioneService() throws ServiceException,NotImplementedException{
+		return new JDBCOperazioneService(this);
+	}
+	
+	
 	
 	/*
 	 =====================================================================================================================

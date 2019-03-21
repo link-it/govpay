@@ -15,12 +15,12 @@ public class UtenzaAnonima extends Utenza {
 		super();
 		this.setPrincipal(null); 
 		this.setIdDomini(new ArrayList<>());
-		this.setIdTipiTributo(new ArrayList<>());
+		this.setIdTipiVersamento(new ArrayList<>());
 		this.setDomini(new ArrayList<>());
-		this.setTipiributo(new ArrayList<>());
+		this.setTipiVersamento(new ArrayList<>());
 		this.headers = new HashMap<>();
 		this.autorizzazioneDominiStar = true;
-		this.autorizzazioneTributiStar = false;
+		this.autorizzazioneTipiVersamentoStar = false;
 	}
 	
 	private static final long serialVersionUID = 1L;

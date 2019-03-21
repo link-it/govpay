@@ -11,11 +11,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.model.TipoTributo;
+import it.govpay.model.TipoVersamento;
 import it.govpay.pendenze.v1.beans.AclPost;
 import it.govpay.pendenze.v1.beans.DominioIndex;
 import it.govpay.pendenze.v1.beans.Profilo;
-import it.govpay.pendenze.v1.beans.TipoEntrata;
+import it.govpay.pendenze.v1.beans.TipoPendenza;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -46,16 +46,16 @@ public class ProfiloConverter {
 		if(leggiProfilo.getDomini()!=null) {
 			List<DominioIndex> dominiLst = new ArrayList<>();
 			for(Dominio dominio: leggiProfilo.getDomini()) {
-				dominiLst.add(DominiConverter.toRsIndexModel(dominio));
+				dominiLst.add(DominiConverter.toRsModelIndex(dominio));
 			}
 			profilo.setDomini(dominiLst); 
 		}
-		if(leggiProfilo.getTipiTributi()!=null) {
-			List<TipoEntrata> entrateLst = new ArrayList<>();
-			for(TipoTributo tributo: leggiProfilo.getTipiTributi()) {
-				entrateLst.add(EntrateConverter.toTipoEntrataRsModel(tributo));
+		if(leggiProfilo.getTipiVersamento()!=null) {
+			List<TipoPendenza> tipiPendenzaLst = new ArrayList<>();
+			for(TipoVersamento tipoPendenza: leggiProfilo.getTipiVersamento()) {
+				tipiPendenzaLst.add(TipiPendenzaConverter.toTipoPendenzaRsModel(tipoPendenza));
 			}
-			profilo.setEntrate(entrateLst);
+			profilo.setTipiPendenza(tipiPendenzaLst);
 		}
 		return profilo;
 	}

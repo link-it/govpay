@@ -267,6 +267,7 @@ public interface IServiceManager {
 	public ITipoTributoService getTipoTributoService() throws ServiceException,NotImplementedException;
 	
 	
+	
 	/*
 	 =====================================================================================================================
 	 Services relating to the object with name:Audit type:Audit
@@ -347,27 +348,27 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:UtenzaTipoTributo type:UtenzaTipoTributo
+	 Services relating to the object with name:UtenzaTipoVersamento type:UtenzaTipoVersamento
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public IUtenzaTipoTributoServiceSearch getUtenzaTipoTributoServiceSearch() throws ServiceException,NotImplementedException;
+	public IUtenzaTipoVersamentoServiceSearch getUtenzaTipoVersamentoServiceSearch() throws ServiceException,NotImplementedException;
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoTributo}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.UtenzaTipoVersamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public IUtenzaTipoTributoService getUtenzaTipoTributoService() throws ServiceException,NotImplementedException;
+	public IUtenzaTipoVersamentoService getUtenzaTipoVersamentoService() throws ServiceException,NotImplementedException;
 	
 	
 	
@@ -446,6 +447,32 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IIUVService getIUVService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:TipoVersamento type:TipoVersamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TipoVersamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TipoVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public ITipoVersamentoServiceSearch getTipoVersamentoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoVersamento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public ITipoVersamentoService getTipoVersamentoService() throws ServiceException,NotImplementedException;
 	
 	
 	

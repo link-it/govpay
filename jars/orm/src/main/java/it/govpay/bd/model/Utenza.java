@@ -8,17 +8,14 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Acl;
-import it.govpay.model.TipoTributo;
+import it.govpay.model.TipoVersamento;
 
 public class Utenza extends it.govpay.model.Utenza {
-	
-	
 
 	private static final long serialVersionUID = 1L;
 
 	protected transient List<Dominio> domini;
-	protected transient List<TipoTributo> tipiTributo;
+	protected transient List<TipoVersamento> tipiVersamento;
 	protected transient List<Acl> aclPrincipal;
 	protected transient List<Acl> aclRuoli;
 	protected List<String> ruoli;
@@ -43,8 +40,8 @@ public class Utenza extends it.govpay.model.Utenza {
 		return this.domini != null ? this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList()) : null;
 	}
 
-	public List<String> getIdTipoTributo() {
-		return this.tipiTributo != null ? this.tipiTributo.stream().map(d -> d.getCodTributo()).collect(Collectors.toList()) : null;
+	public List<String> getIdTipoVersamento() {
+		return this.tipiVersamento != null ? this.tipiVersamento.stream().map(d -> d.getCodTipoVersamento()).collect(Collectors.toList()) : null;
 	}
 
 	public List<String> getRuoli() {
@@ -67,16 +64,16 @@ public class Utenza extends it.govpay.model.Utenza {
 		return this.domini;
 	}
 
-	public List<TipoTributo> getTipiTributo(BasicBD bd) throws ServiceException {
-		if(this.tipiTributo == null) {
-			this.tipiTributo = new ArrayList<>();
-			if(this.getIdTipiTributo() != null) {
-				for(Long id: this.getIdTipiTributo()) {
-					this.tipiTributo.add(AnagraficaManager.getTipoTributo(bd, id));
+	public List<TipoVersamento> getTipiVersamento(BasicBD bd) throws ServiceException {
+		if(this.tipiVersamento == null) {
+			this.tipiVersamento = new ArrayList<>();
+			if(this.getIdTipiVersamento() != null) {
+				for(Long id: this.getIdTipiVersamento()) {
+					this.tipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, id));
 				}
 			}
 		}
-		return this.tipiTributo;
+		return this.tipiVersamento;
 	}
 
 
@@ -84,8 +81,8 @@ public class Utenza extends it.govpay.model.Utenza {
 		this.domini = domini;
 	}
 
-	public void setTipiributo(List<TipoTributo> tributi) {
-		this.tipiTributo = tributi;
+	public void setTipiVersamento(List<TipoVersamento> tributi) {
+		this.tipiVersamento = tributi;
 	}
 
 	public void setAclPrincipal(List<Acl> aclPrincipal) {
@@ -103,20 +100,4 @@ public class Utenza extends it.govpay.model.Utenza {
 	public List<Acl> getAclRuoli() {
 		return aclRuoli;
 	}
-
-//	@Override
-//	public void merge(IAutorizzato src) throws ServiceException  {
-//		if(src instanceof Utenza) {
-//			Utenza srcUtenza = (Utenza) src;
-//
-//			this.setAbilitato(srcUtenza.isAbilitato());
-//			this.setAclPrincipal(srcUtenza.getAcls());
-//			this.setIdDomini(srcUtenza.getIdDomini());
-//			this.setIdTributi(srcUtenza.getIdTributi());
-//			this.setId(srcUtenza.getId());
-//			this.setRuoli(srcUtenza.getRuoli());
-//			this.setDomini(srcUtenza.getDomini(null));
-//			this.setTributi(srcUtenza.getTributi(null));
-//		}
-//	}
 }

@@ -81,6 +81,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "nome";
 			}
 		}
+		if(field.equals(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tipo_versamento";
+			}else{
+				return "cod_tipo_versamento";
+			}
+		}
 		if(field.equals(Versamento.model().ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -436,6 +443,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().NOME)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
+		if(field.equals(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
+			return this.toTable(Versamento.model().ID_TIPO_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(Versamento.model().ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(Versamento.model().ID_DOMINIO, returnAlias);
 		}
@@ -595,6 +605,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Versamento.model())){
 			return "versamenti";
+		}
+		if(model.equals(Versamento.model().ID_TIPO_VERSAMENTO)){
+			return "tipi_versamento";
 		}
 		if(model.equals(Versamento.model().ID_DOMINIO)){
 			return "domini";

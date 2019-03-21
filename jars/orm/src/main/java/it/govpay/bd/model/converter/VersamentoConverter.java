@@ -32,6 +32,7 @@ import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTracciato;
 import it.govpay.orm.IdUo;
 
@@ -58,6 +59,9 @@ public class VersamentoConverter {
 			
 			if(vo.getIdDominio() != null)
 				dto.setIdDominio(vo.getIdDominio().getId());
+			
+			if(vo.getIdTipoVersamento() != null)
+				dto.setIdTipoVersamento(vo.getIdTipoVersamento().getId());
 			dto.setNome(vo.getNome());
 			dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 			dto.setStatoVersamento(StatoVersamento.valueOf(vo.getStatoVersamento()));
@@ -146,6 +150,12 @@ public class VersamentoConverter {
 				IdDominio idDominio = new IdDominio();
 				idDominio.setId(dto.getIdDominio());
 				vo.setIdDominio(idDominio);
+			}
+			
+			if(dto.getIdTipoVersamento() > 0) {
+				IdTipoVersamento idTipoVersamento = new IdTipoVersamento();
+				idTipoVersamento.setId(dto.getIdTipoVersamento());
+				vo.setIdTipoVersamento(idTipoVersamento);
 			}
 
 			vo.setNome(dto.getNome());

@@ -766,37 +766,6 @@ components:
               description: Codice fiscale dell'unita
               example: 01234567890
         - $ref: '#/components/schemas/unitaOperativaPost'
-    tipoEntrataPost:
-      type: object
-      required: 
-        - descrizione
-        - tipoContabilita
-        - codiceContabilita
-      properties:
-        descrizione:
-          type: string
-          example: Imposta municipale urbana
-        tipoContabilita:
-          $ref: '#/components/schemas/tipoContabilita'
-        codiceContabilita:
-          description: Codifica del capitolo di bilancio
-          type: string
-          example: 3321
-        codificaIUV:
-          type: string
-          description: Cifra identificativa negli IUV
-          example: 01
-    tipoEntrata:
-      type: object
-      allOf:
-        - type: object
-          required:
-           - idEntrata
-          properties:
-            idEntrata:
-              type: string
-              example: IMU
-        - $ref: '#/components/schemas/tipoEntrataPost'
     pendenzaBase:
       type: object
       required:
@@ -1378,7 +1347,7 @@ components:
       required: 
         - nome
         - domini
-        - entrate
+        - tipiPendenza
         - acl
       properties:
         nome:
@@ -1389,12 +1358,31 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/dominioIndex'
-        entrate:
+        tipiPendenza:
           type: array
-          description: entrate su cui e' abilitato ad operare
+          description: tipologie di pendenza su cui e' abilitato ad operare
           items: 
-            $ref: '#/components/schemas/tipoEntrata'
+            $ref: '#/components/schemas/tipoPendenza'
         acl:
           type: array
           items:
-            $ref: '#/components/schemas/aclPost'     
+            $ref: '#/components/schemas/aclPost'
+    tipoPendenzaPost:
+      type: object
+      required: 
+        - descrizione
+      properties:
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
+    tipoPendenza:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idTipoPendenza
+          properties:
+            idTipoPendenza:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/tipoPendenzaPost'

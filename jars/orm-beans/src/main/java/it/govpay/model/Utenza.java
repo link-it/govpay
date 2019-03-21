@@ -16,10 +16,10 @@ public class Utenza extends BasicModel {
 	protected String principalOriginale;
 	protected boolean abilitato;
 	protected List<Long> idDomini;
-	protected List<Long> idTipiTributo;
+	protected List<Long> idTipiVersamento;
 	protected boolean checkSubject;
 	protected boolean autorizzazioneDominiStar;
-	protected boolean autorizzazioneTributiStar;
+	protected boolean autorizzazioneTipiVersamentoStar;
 	
 	public String getPrincipal() {
 		return this.principal;
@@ -54,12 +54,12 @@ public class Utenza extends BasicModel {
 		this.abilitato = abilitato;
 	}
 
-	public List<Long> getIdTipiTributo() {
-		return this.idTipiTributo;
+	public List<Long> getIdTipiVersamento() {
+		return idTipiVersamento;
 	}
 
-	public void setIdTipiTributo(List<Long> idTributi) {
-		this.idTipiTributo = idTributi;
+	public void setIdTipiVersamento(List<Long> idTipiVersamento) {
+		this.idTipiVersamento = idTipiVersamento;
 	}
 
 	public List<Long> getIdDomini() {
@@ -86,12 +86,12 @@ public class Utenza extends BasicModel {
 		this.autorizzazioneDominiStar = autorizzazioneDominiStar;
 	}
 
-	public boolean isAutorizzazioneTributiStar() {
-		return autorizzazioneTributiStar;
+	public boolean isAutorizzazioneTipiVersamentoStar() {
+		return autorizzazioneTipiVersamentoStar;
 	}
 
-	public void setAutorizzazioneTributiStar(boolean autorizzazioneTributiStar) {
-		this.autorizzazioneTributiStar = autorizzazioneTributiStar;
+	public void setAutorizzazioneTipiVersamentoStar(boolean autorizzazioneTipiVersamentoStar) {
+		this.autorizzazioneTipiVersamentoStar = autorizzazioneTipiVersamentoStar;
 	}
 	
 }

@@ -146,7 +146,7 @@ public class AuthorizationManager {
 		return new NotAuthorizedException(sb.toString());
 	}
 	
-	public static NotAuthorizedException toNotAuthorizedException(Authentication authentication, Servizio servizio, List<Diritti> listaDiritti, boolean accessoAnonimo, String codDominio, String codTributo) {
+	public static NotAuthorizedException toNotAuthorizedException(Authentication authentication, Servizio servizio, List<Diritti> listaDiritti, boolean accessoAnonimo, String codDominio, String codTipoVersamento) {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
 		
@@ -157,8 +157,8 @@ public class AuthorizationManager {
 				sb.append(", Dominio ["+codDominio+"]");
 			}
 			
-			if(StringUtils.isNotEmpty(codTributo)) {
-				sb.append(", Tributo ["+codTributo+"]");
+			if(StringUtils.isNotEmpty(codTipoVersamento)) {
+				sb.append(", TipoPendenza ["+codTipoVersamento+"]");
 			}
 			
 			return new NotAuthorizedException(sb.toString());
@@ -179,8 +179,8 @@ public class AuthorizationManager {
 			sb.append(", Dominio ["+codDominio+"]");
 		}
 		
-		if(StringUtils.isNotEmpty(codTributo)) {
-			sb.append(", Tributo ["+codTributo+"]");
+		if(StringUtils.isNotEmpty(codTipoVersamento)) {
+			sb.append(", TipoPendenza ["+codTipoVersamento+"]");
 		}
 		
 		return new NotAuthorizedException(sb.toString());
@@ -250,20 +250,20 @@ public class AuthorizationManager {
 		return false;
 	}
 	
-	public static boolean isAuthorized(Authentication authentication, Servizio servizio, String codDominio, String codTributo, List<Diritti> listaDiritti) {
-		return isAuthorized(authentication, servizio, codDominio, codTributo, listaDiritti, false);
+	public static boolean isAuthorized(Authentication authentication, Servizio servizio, String codDominio, String codTipoVersamento, List<Diritti> listaDiritti) {
+		return isAuthorized(authentication, servizio, codDominio, codTipoVersamento, listaDiritti, false);
 	}
 	
-	public static boolean isAuthorized(Authentication authentication, Servizio servizio, String codDominio, String codTributo, List<Diritti> listaDiritti, boolean accessoAnonimo) {
+	public static boolean isAuthorized(Authentication authentication, Servizio servizio, String codDominio, String codTipoVersamento, List<Diritti> listaDiritti, boolean accessoAnonimo) {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return isAuthorized(details.getUtenza(), details.getTipoUtenza(), servizio, codDominio, codTributo, listaDiritti, accessoAnonimo);
+		return isAuthorized(details.getUtenza(), details.getTipoUtenza(), servizio, codDominio, codTipoVersamento, listaDiritti, accessoAnonimo);
 	}
 	
-	public static boolean isAuthorized(Utenza utenza, TIPO_UTENZA tipoUtenza, Servizio servizio, String codDominio, String codTributo, List<Diritti> listaDiritti) {
-		return isAuthorized(utenza, tipoUtenza, servizio, codDominio, codTributo, listaDiritti, false);
+	public static boolean isAuthorized(Utenza utenza, TIPO_UTENZA tipoUtenza, Servizio servizio, String codDominio, String codTipoVersamento, List<Diritti> listaDiritti) {
+		return isAuthorized(utenza, tipoUtenza, servizio, codDominio, codTipoVersamento, listaDiritti, false);
 	}
 	
-	public static boolean isAuthorized(Utenza utenza, TIPO_UTENZA tipoUtenza, Servizio servizio, String codDominio, String codTributo, List<Diritti> listaDiritti, boolean accessoAnonimo) {
+	public static boolean isAuthorized(Utenza utenza, TIPO_UTENZA tipoUtenza, Servizio servizio, String codDominio, String codTipoVersamento, List<Diritti> listaDiritti, boolean accessoAnonimo) {
 		
 		boolean authorized = isAuthorized(utenza,tipoUtenza, servizio, listaDiritti, accessoAnonimo); 
 		
@@ -290,17 +290,17 @@ public class AuthorizationManager {
 						authorized = authorized && dominiAutorizzati.contains(codDominio);
 				}
 				
-				if(codTributo != null) {
-					if(utenza.isAutorizzazioneTributiStar())
+				if(codTipoVersamento != null) {
+					if(utenza.isAutorizzazioneTipiVersamentoStar())
 						return true;
 					
-					List<String> tributiAutorizzati = getTributiAutorizzati(utenza,tipoUtenza, servizio, listaDiritti, accessoAnonimo);
+					List<String> tributiAutorizzati = getTipiVersamentoAutorizzati(utenza,tipoUtenza, servizio, listaDiritti, accessoAnonimo);
 					
 					if(tributiAutorizzati == null) 
 						return false;
 					
 					if(!tributiAutorizzati.isEmpty())
-						authorized = authorized && tributiAutorizzati.contains(codTributo);
+						authorized = authorized && tributiAutorizzati.contains(codTipoVersamento);
 				}
 				break;
 			}
@@ -329,16 +329,16 @@ public class AuthorizationManager {
 		return getDominiAutorizzati(authentication, servizio, listaDiritti, accessoAnonimo);
 	}
 
-	public static List<String> getTributiAutorizzati(Authentication authentication, Servizio servizio, Diritti diritto, boolean accessoAnonimo) {
+	public static List<String> getTipiVersamentoAutorizzati(Authentication authentication, Servizio servizio, Diritti diritto, boolean accessoAnonimo) {
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritto);
-		return getTributiAutorizzati(authentication, servizio, listaDiritti, accessoAnonimo);
+		return getTipiVersamentoAutorizzati(authentication, servizio, listaDiritti, accessoAnonimo);
 	}
 
-	public static List<Long> getIdTributiAutorizzati(Authentication authentication, Servizio servizio, Diritti diritto, boolean accessoAnonimo) {
+	public static List<Long> getIdTipiVersamentoAutorizzati(Authentication authentication, Servizio servizio, Diritti diritto, boolean accessoAnonimo) {
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritto);
-		return getIdTributiAutorizzati(authentication, servizio, listaDiritti, accessoAnonimo);
+		return getIdTipiVersamentoAutorizzati(authentication, servizio, listaDiritti, accessoAnonimo);
 	}
 	
 
@@ -372,23 +372,23 @@ public class AuthorizationManager {
 		}
 	}
 
-	public static List<String> getTributiAutorizzati(Authentication authentication, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo) {
+	public static List<String> getTipiVersamentoAutorizzati(Authentication authentication, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo) {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		return getTributiAutorizzati(details.getUtenza(), details.getTipoUtenza(), servizio, diritti, accessoAnonimo);
+		return getTipiVersamentoAutorizzati(details.getUtenza(), details.getTipoUtenza(), servizio, diritti, accessoAnonimo);
 	}
 	
-	public static List<String> getTributiAutorizzati(Utenza utenza, TIPO_UTENZA tipoUtenza, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo) {
+	public static List<String> getTipiVersamentoAutorizzati(Utenza utenza, TIPO_UTENZA tipoUtenza, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo) {
 		if(isAuthorized(utenza,tipoUtenza, servizio, diritti, accessoAnonimo)) {
-			return utenza.getIdTipoTributo();
+			return utenza.getIdTipoVersamento();
 		} else {
 			return null;
 		}
 	}
 
-	public static List<Long> getIdTributiAutorizzati(Authentication authentication, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo) {
+	public static List<Long> getIdTipiVersamentoAutorizzati(Authentication authentication, Servizio servizio, List<Diritti> diritti, boolean accessoAnonimo) {
 		if(isAuthorized(authentication, servizio, diritti, accessoAnonimo)) {
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-			return details.getUtenza().getIdTipiTributo();
+			return details.getUtenza().getIdTipiVersamento();
 		} else {
 			return null;
 		}

@@ -12,7 +12,7 @@ import it.govpay.backoffice.v1.beans.Applicazione;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.CodificaAvvisi;
 import it.govpay.backoffice.v1.beans.DominioIndex;
-import it.govpay.backoffice.v1.beans.TipoEntrata;
+import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Dominio;
@@ -20,7 +20,7 @@ import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Rpt.FirmaRichiesta;
-import it.govpay.model.TipoTributo;
+import it.govpay.model.TipoVersamento;
 
 public class ApplicazioniConverter {
 	
@@ -35,30 +35,30 @@ public class ApplicazioniConverter {
 		applicazioneDTO.setIdUtenza(applicazionePost.getPrincipal());
 		
 		boolean appTrusted = false;
-		boolean appAuthEntrateAll = false;
+		boolean appAuthTipiPendenzaAll = false;
 		boolean appAuthDominiAll = false;
 		
-		if(applicazionePost.getEntrate() != null) {
-			List<String> idTributi = new ArrayList<>();
+		if(applicazionePost.getTipiPendenza() != null) {
+			List<String> idTipiVersamento = new ArrayList<>();
 						
-			for (String id : applicazionePost.getEntrate()) {
-				if(id.equals(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_VALUE)) {
+			for (String id : applicazionePost.getTipiPendenza()) {
+				if(id.equals(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE)) {
 					appTrusted = true;
-				} else if(id.equals(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR)) {
-					appAuthEntrateAll = true;
+				} else if(id.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
+					appAuthTipiPendenzaAll = true;
 				} else{
-					idTributi.add(id);
+					idTipiVersamento.add(id);
 				}
 			}
 			
-			if(appAuthEntrateAll || appTrusted)
-				applicazioneDTO.setIdTributi(new ArrayList<>());				
+			if(appAuthTipiPendenzaAll || appTrusted)
+				applicazioneDTO.setIdTipiVersamento(new ArrayList<>());				
 			else
-				applicazioneDTO.setIdTributi(idTributi);
+				applicazioneDTO.setIdTipiVersamento(idTipiVersamento);
 		}
 		
 		applicazione.setTrusted(appTrusted);
-		applicazione.getUtenza().setAutorizzazioneTributiStar(appAuthEntrateAll);
+		applicazione.getUtenza().setAutorizzazioneTipiVersamentoStar(appAuthTipiPendenzaAll);
 		
 		if(applicazionePost.getDomini() != null) {
 			List<String> idDomini = new ArrayList<>();
@@ -148,35 +148,35 @@ public class ApplicazioniConverter {
 		
 		rsModel.setDomini(idDomini);
 
-		List<TipoEntrata> idTributi = new ArrayList<>();
-		List<TipoTributo> tributi = applicazione.getUtenza().getTipiTributo(null);
-		if(tributi == null)
-			tributi = new ArrayList<>();
+		List<TipoPendenza> idTipiPendenza = new ArrayList<>();
+		List<TipoVersamento> tipiVersamento = applicazione.getUtenza().getTipiVersamento(null);
+		if(tipiVersamento == null)
+			tipiVersamento = new ArrayList<>();
 		
 		if(applicazione.isTrusted()) {
-			TipoEntrata tEI = new TipoEntrata();
-			tEI.setIdEntrata(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_VALUE);
-			tEI.setDescrizione(ApplicazioniController.AUTODETERMINAZIONE_TRIBUTI_LABEL);
-			idTributi.add(tEI);
+			TipoPendenza tPI = new TipoPendenza();
+			tPI.setIdTipoPendenza(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE);
+			tPI.setDescrizione(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_LABEL);
+			idTipiPendenza.add(tPI);
 		}
 		
-		if(applicazione.getUtenza().isAutorizzazioneTributiStar()) {
-			TipoEntrata tEI = new TipoEntrata();
-			tEI.setIdEntrata(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR);
-			tEI.setDescrizione(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR_LABEL);
-			idTributi.add(tEI);
+		if(applicazione.getUtenza().isAutorizzazioneTipiVersamentoStar()) {
+			TipoPendenza tPI = new TipoPendenza();
+			tPI.setIdTipoPendenza(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR);
+			tPI.setDescrizione(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR_LABEL);
+			idTipiPendenza.add(tPI);
 		} 
 		
-		if(!applicazione.isTrusted() && !applicazione.getUtenza().isAutorizzazioneTributiStar()) {
-			for (TipoTributo tributo : tributi) {
-				TipoEntrata tEI = new TipoEntrata();
-				tEI.setIdEntrata(tributo.getCodTributo());
-				tEI.setDescrizione(tributo.getDescrizione());
-				idTributi.add(tEI);
+		if(!applicazione.isTrusted() && !applicazione.getUtenza().isAutorizzazioneTipiVersamentoStar()) {
+			for (TipoVersamento tipoVersamento : tipiVersamento) {
+				TipoPendenza tPI = new TipoPendenza();
+				tPI.setIdTipoPendenza(tipoVersamento.getCodTipoVersamento());
+				tPI.setDescrizione(tipoVersamento.getDescrizione());
+				idTipiPendenza.add(tPI);
 			}
 		}
 		
-		rsModel.setEntrate(idTributi);
+		rsModel.setTipiPendenza(idTipiPendenza);
 		
 		if(applicazione.getUtenza().getAcls()!=null) {
 			List<AclPost> aclList = new ArrayList<>();

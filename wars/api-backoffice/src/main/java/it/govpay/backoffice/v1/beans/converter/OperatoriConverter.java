@@ -10,13 +10,13 @@ import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.Operatore;
 import it.govpay.backoffice.v1.beans.OperatorePost;
-import it.govpay.backoffice.v1.beans.TipoEntrata;
+import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.bd.model.Acl;
-import it.govpay.model.TipoTributo;
+import it.govpay.model.TipoVersamento;
 
 public class OperatoriConverter {
 
@@ -39,26 +39,26 @@ public class OperatoriConverter {
 		operatore.setUtenza(utenza);
 		operatore.setNome(operatoreRequest.getRagioneSociale()); 
 		
-		boolean appAuthEntrateAll = false;
+		boolean appAuthTipiPendenzaAll = false;
 		boolean appAuthDominiAll = false;
 		
-		if(operatoreRequest.getEntrate() != null) {
-			List<String> idTributi = new ArrayList<>();
+		if(operatoreRequest.getTipiPendenza() != null) {
+			List<String> idTipiVersamento = new ArrayList<>();
 						
-			for (String id : operatoreRequest.getEntrate()) {
-				if(id.equals(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR)) {
-					appAuthEntrateAll = true;
-					idTributi.clear();
+			for (String id : operatoreRequest.getTipiPendenza()) {
+				if(id.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
+					appAuthTipiPendenzaAll = true;
+					idTipiVersamento.clear();
 					break;
 				} 
 
-				idTributi.add(id.toString());
+				idTipiVersamento.add(id.toString());
 			}
 			
-			putOperatoreDTO.setIdTributi(idTributi);
+			putOperatoreDTO.setIdTipiVersamento(idTipiVersamento);
 		}
 		
-		operatore.getUtenza().setAutorizzazioneTributiStar(appAuthEntrateAll);
+		operatore.getUtenza().setAutorizzazioneTipiVersamentoStar(appAuthTipiPendenzaAll);
 		
 		if(operatoreRequest.getDomini() != null) {
 			List<String> idDomini = new ArrayList<>();
@@ -105,26 +105,26 @@ public class OperatoriConverter {
 		
 		rsModel.setDomini(idDomini);
 
-		List<TipoEntrata> idTributi = new ArrayList<>();
-		List<TipoTributo> tributi = operatore.getUtenza().getTipiTributo(null);
-		if(tributi == null)
-			tributi = new ArrayList<>();
+		List<TipoPendenza> idTipiPendenza = new ArrayList<>();
+		List<TipoVersamento> tipiVersamento = operatore.getUtenza().getTipiVersamento(null);
+		if(tipiVersamento == null)
+			tipiVersamento = new ArrayList<>();
 		
-		if(operatore.getUtenza().isAutorizzazioneTributiStar()) {
-			TipoEntrata tEI = new TipoEntrata();
-			tEI.setIdEntrata(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR);
-			tEI.setDescrizione(ApplicazioniController.AUTORIZZA_TRIBUTI_STAR_LABEL);
-			idTributi.add(tEI);
+		if(operatore.getUtenza().isAutorizzazioneTipiVersamentoStar()) {
+			TipoPendenza tPI = new TipoPendenza();
+			tPI.setIdTipoPendenza(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR);
+			tPI.setDescrizione(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR_LABEL);
+			idTipiPendenza.add(tPI);
 		} else {
-			for (TipoTributo tributo : tributi) {
-				TipoEntrata tEI = new TipoEntrata();
-				tEI.setIdEntrata(tributo.getCodTributo());
-				tEI.setDescrizione(tributo.getDescrizione());
-				idTributi.add(tEI);
+			for (TipoVersamento tipoVersamento : tipiVersamento) {
+				TipoPendenza tPI = new TipoPendenza();
+				tPI.setIdTipoPendenza(tipoVersamento.getCodTipoVersamento());
+				tPI.setDescrizione(tipoVersamento.getDescrizione());
+				idTipiPendenza.add(tPI);
 			}
 		}
 		
-		rsModel.setEntrate(idTributi);
+		rsModel.setTipiPendenza(idTipiPendenza);
 		
 		if(operatore.getUtenza().getAcls()!=null) {
 			List<AclPost> aclList = new ArrayList<>();

@@ -16,17 +16,17 @@ public class UtenzaOperatore extends Utenza {
 		this.aclRuoli = utenzaBase.aclRuoli;
 		this.domini = utenzaBase.domini;
 		this.ruoli = utenzaBase.ruoli;
-		this.tipiTributo = utenzaBase.tipiTributo;
+		this.tipiVersamento = utenzaBase.tipiVersamento;
 		// dati model
 		this.id = utenzaBase.getId();
 		this.principal = utenzaBase.getPrincipal();
 		this.principalOriginale = utenzaBase.getPrincipalOriginale();
 		this.abilitato = utenzaBase.isAbilitato();
 		this.idDomini = utenzaBase.getIdDomini();
-		this.idTipiTributo = utenzaBase.getIdTipiTributo();
+		this.idTipiVersamento = utenzaBase.getIdTipiVersamento();
 		this.checkSubject = utenzaBase.isCheckSubject();
 		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();
-		this.autorizzazioneTributiStar = utenzaBase.isAutorizzazioneTributiStar();
+		this.autorizzazioneTipiVersamentoStar = utenzaBase.isAutorizzazioneTipiVersamentoStar();
 		
 		this.nome = nome;
 	}

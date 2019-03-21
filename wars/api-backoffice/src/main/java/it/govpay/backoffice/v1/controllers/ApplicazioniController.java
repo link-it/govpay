@@ -35,11 +35,11 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 
 public class ApplicazioniController extends BaseController {
 	
-	public static final String AUTODETERMINAZIONE_TRIBUTI_VALUE= "autodeterminazione";
-	public static final String AUTODETERMINAZIONE_TRIBUTI_LABEL= "Autodeterminazione delle Entrate";
+	public static final String AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE= "autodeterminazione";
+	public static final String AUTODETERMINAZIONE_TIPI_PENDENZA_LABEL= "Autodeterminazione delle Entrate";
 	
-	public static final String AUTORIZZA_TRIBUTI_STAR = "*";
-	public static final String AUTORIZZA_TRIBUTI_STAR_LABEL= "Tutte";
+	public static final String AUTORIZZA_TIPI_PENDENZA_STAR = "*";
+	public static final String AUTORIZZA_TIPI_PENDENZA_STAR_LABEL= "Tutte";
 	public static final String AUTORIZZA_DOMINI_STAR = "*";
 	public static final String AUTORIZZA_DOMINI_STAR_LABEL= "Tutti";
 
