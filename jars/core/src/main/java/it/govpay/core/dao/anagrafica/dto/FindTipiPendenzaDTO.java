@@ -24,19 +24,39 @@ import org.springframework.security.core.Authentication;
 
 public class FindTipiPendenzaDTO extends BasicFindRequestDTO {
 	
-	private Boolean abilitato = null;
+	
+	private String codDominio;
+	private String codTipoVersamento;
+	private String descrizione;
 	
 	public FindTipiPendenzaDTO(Authentication user) throws ServiceException {
 		super(user);
-		this.addSortField("idEntrata", it.govpay.orm.TipoTributo.model().COD_TRIBUTO);
+		this.addSortField("idTipoPendenza", it.govpay.orm.TipoVersamento.model().COD_TIPO_VERSAMENTO);
 	}
 
-	public Boolean getAbilitato() {
-		return this.abilitato;
+	public String getCodDominio() {
+		return codDominio;
 	}
 
-	public void setAbilitato(Boolean abilitato) {
-		this.abilitato = abilitato;
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
 	}
+
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
+	}
+
 	
 }

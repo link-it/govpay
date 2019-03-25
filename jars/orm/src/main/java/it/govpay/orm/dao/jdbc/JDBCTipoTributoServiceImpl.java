@@ -77,9 +77,6 @@ public class JDBCTipoTributoServiceImpl extends JDBCTipoTributoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().DESCRIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().TIPO_CONTABILITA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_CONTABILITA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO_IUV,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().ON_LINE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().PAGA_TERZI,false),"?");
 
 		// Insert tipoTributo
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getTipoTributoFetch().getKeyGeneratorObject(TipoTributo.model());
@@ -87,10 +84,7 @@ public class JDBCTipoTributoServiceImpl extends JDBCTipoTributoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoTributo.getCodTributo(),TipoTributo.model().COD_TRIBUTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoTributo.getDescrizione(),TipoTributo.model().DESCRIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoTributo.getTipoContabilita(),TipoTributo.model().TIPO_CONTABILITA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoTributo.getCodContabilita(),TipoTributo.model().COD_CONTABILITA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoTributo.getCodTributoIuv(),TipoTributo.model().COD_TRIBUTO_IUV.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoTributo.getOnLine(),TipoTributo.model().ON_LINE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoTributo.getPagaTerzi(),TipoTributo.model().PAGA_TERZI.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoTributo.getCodContabilita(),TipoTributo.model().COD_CONTABILITA.getFieldType())
 		);
 		tipoTributo.setId(id);
 
@@ -152,12 +146,6 @@ public class JDBCTipoTributoServiceImpl extends JDBCTipoTributoServiceSearchImpl
 		lstObjects_tipoTributo.add(new JDBCObject(tipoTributo.getTipoContabilita(), TipoTributo.model().TIPO_CONTABILITA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_CONTABILITA,false), "?");
 		lstObjects_tipoTributo.add(new JDBCObject(tipoTributo.getCodContabilita(), TipoTributo.model().COD_CONTABILITA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO_IUV,false), "?");
-		lstObjects_tipoTributo.add(new JDBCObject(tipoTributo.getCodTributoIuv(), TipoTributo.model().COD_TRIBUTO_IUV.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().ON_LINE,false), "?");
-		lstObjects_tipoTributo.add(new JDBCObject(tipoTributo.getOnLine(), TipoTributo.model().ON_LINE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().PAGA_TERZI,false), "?");
-		lstObjects_tipoTributo.add(new JDBCObject(tipoTributo.getPagaTerzi(), TipoTributo.model().PAGA_TERZI.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_tipoTributo.add(new JDBCObject(tableId, Long.class));
 

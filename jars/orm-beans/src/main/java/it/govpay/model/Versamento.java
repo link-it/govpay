@@ -110,6 +110,7 @@ public class Versamento extends BasicModel {
 	private long idDominio;
 	private long idApplicazione;
 	private long idTipoVersamento;
+	private long idTipoVersamentoDominio;
 
 	private String nome;
 	private String codVersamentoEnte;
@@ -647,5 +648,13 @@ public class Versamento extends BasicModel {
 				Objects.equals(this.getCausaleVersamento(), oldVersamento.getCausaleVersamento());
 		
 		return !equals;
+	}
+
+	public long getIdTipoVersamentoDominio() {
+		return idTipoVersamentoDominio;
+	}
+
+	public void setIdTipoVersamentoDominio(long idTipoVersamentoDominio) {
+		this.idTipoVersamentoDominio = idTipoVersamentoDominio;
 	}
 }

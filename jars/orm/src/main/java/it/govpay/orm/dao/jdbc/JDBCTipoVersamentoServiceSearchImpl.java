@@ -19,43 +19,38 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.util.List;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import java.sql.Connection;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdTipoVersamento;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import it.govpay.orm.IdTipoVersamento;
+import it.govpay.orm.TipoVersamento;
 import it.govpay.orm.dao.jdbc.converter.TipoVersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.TipoVersamentoFetch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-
-import it.govpay.orm.TipoVersamento;
 
 /**     
  * JDBCTipoVersamentoServiceSearchImpl
@@ -165,11 +160,9 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(new CustomField("id", Long.class, "id", this.getTipoVersamentoFieldConverter().toTable(TipoVersamento.model())));
 			fields.add(TipoVersamento.model().COD_TIPO_VERSAMENTO);
 			fields.add(TipoVersamento.model().DESCRIZIONE);
-//			fields.add(TipoTributo.model().TIPO_CONTABILITA);
-//			fields.add(TipoTributo.model().COD_CONTABILITA);
-//			fields.add(TipoTributo.model().COD_TRIBUTO_IUV);
-//			fields.add(TipoTributo.model().ON_LINE);
-//			fields.add(TipoTributo.model().PAGA_TERZI);
+			fields.add(TipoVersamento.model().CODIFICA_IUV);
+			fields.add(TipoVersamento.model().TIPO);
+			fields.add(TipoVersamento.model().PAGA_TERZI);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -466,37 +459,21 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 	}
 	
 	private TipoVersamento _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
-		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-				
-		TipoVersamento tipoVersamento = new TipoVersamento();
-		
+		IField idField = new CustomField("id", Long.class, "id", this.getTipoVersamentoFieldConverter().toTable(TipoVersamento.model()));
 
-		// Object tipoVersamento
-		ISQLQueryObject sqlQueryObjectGet_tipoVersamento = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_tipoVersamento.setANDLogicOperator(true);
-		sqlQueryObjectGet_tipoVersamento.addFromTable(this.getTipoVersamentoFieldConverter().toTable(TipoVersamento.model()));
-		sqlQueryObjectGet_tipoVersamento.addSelectField("id");
-		sqlQueryObjectGet_tipoVersamento.addSelectField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().COD_TIPO_VERSAMENTO,true));
-		sqlQueryObjectGet_tipoVersamento.addSelectField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().DESCRIZIONE,true));
-		sqlQueryObjectGet_tipoVersamento.addWhereCondition("id=?");
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
-		// Get tipoVersamento
-		tipoVersamento = (TipoVersamento) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_tipoVersamento.createSQLQuery(), jdbcProperties.isShowSql(), TipoVersamento.model(), this.getTipoVersamentoFetch(),
-			new JDBCObject(tableId,Long.class));
+		expression.equals(idField, tableId);
+		List<TipoVersamento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
+
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 
 
-
-		
-        return tipoVersamento;  
+		return lst.get(0);
 	
 	} 
 	

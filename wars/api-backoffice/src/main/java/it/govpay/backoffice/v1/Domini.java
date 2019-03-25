@@ -32,130 +32,148 @@ public class Domini extends BaseRsServiceV1{
 		this.controller = new DominiController(this.nomeServizio,this.log);
 	}
 
-	@GET
-	@Path("/")
-	@Produces({ "application/json" })
-	public Response dominiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("idStazione") String idStazione){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, idStazione);
-	}
+    @GET
+    @Path("/{idDominio}/unitaOperative/{idUnitaOperativa}")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idUnitaOperativa") String idUnitaOperativa){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioUnitaOperativeIdUnitaOperativaGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idUnitaOperativa);
+    }
 
-	@GET
-	@Path("/{idDominio}")
-	@Produces({ "application/json" })
-	public Response dominiIdDominioGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
-	}
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response dominiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25")  Integer risultatiPerPagina, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("ordinamento") String ordinamento, @QueryParam("idStazione") String idStazione){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, campi, abilitato, ordinamento, idStazione);
+    }
 
-	@PUT
-	@Path("/{idDominio}")
-	@Consumes({ "application/json" })
-	public Response dominiIdDominioPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioPUT(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
-	}
+    @GET
+    @Path("/{idDominio}/contiAccredito")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioContiAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25")  Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioContiAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
 
-	@GET
-	@Path("/{idDominio}/logo")
-	@Produces({ "application/json" })
-	public Response dominiIdDominioLogoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioLogoGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
-	}
+    @GET
+    @Path("/{idDominio}/entrate")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioEntrateGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25")  Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioEntrateGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
 
-	@GET
-	@Path("/{idDominio}/entrate")
-	@Produces({ "application/json" })
-	public Response dominiIdDominioEntrateGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioEntrateGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
-	}
+    @GET
+    @Path("/{idDominio}/unitaOperative")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioUnitaOperativeGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25")  Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioUnitaOperativeGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
 
-	@GET
-	@Path("/{idDominio}/entrate/{idEntrata}")
-	@Produces({ "application/json" })
-	public Response dominiIdDominioEntrateIdEntrataGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idEntrata") String idEntrata){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioEntrateIdEntrataGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idEntrata);
-	}
+    @GET
+    @Path("/{idDominio}/tipiPendenza")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioTipiPendenzaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25")  Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioTipiPendenzaGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
+    }
 
-	@PUT
-	@Path("/{idDominio}/entrate/{idEntrata}")
-	@Consumes({ "application/json" })
-	public Response dominiIdDominioEntrateIdEntrataPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idEntrata") String idEntrata, java.io.InputStream is){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioEntrateIdEntrataPUT(this.getUser(), uriInfo, httpHeaders,  idDominio,  idEntrata, is);
-	}
+    @PUT
+    @Path("/{idDominio}/unitaOperative/{idUnitaOperativa}")
+    @Consumes({ "application/json" })
+    
+    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idUnitaOperativa") String idUnitaOperativa, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(this.getUser(), uriInfo, httpHeaders,  idDominio,  idUnitaOperativa, is);
+    }
 
-	@GET
-	@Path("/{idDominio}/contiAccredito")
-	@Produces({ "application/json" })
-	public Response dominiIdDominioContiAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioContiAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
-	}
+    @PUT
+    @Path("/{idDominio}/entrate/{idEntrata}")
+    @Consumes({ "application/json" })
+    
+    public Response dominiIdDominioEntrateIdEntrataPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idEntrata") String idEntrata, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioEntrateIdEntrataPUT(this.getUser(), uriInfo, httpHeaders,  idDominio,  idEntrata, is);
+    }
 
-	@GET
-	@Path("/{idDominio}/contiAccredito/{ibanAccredito}")
-	@Produces({ "application/json" })
-	public Response dominiIdDominioContiAccreditoIbanAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioContiAccreditoIbanAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito);
-	}
+    @PUT
+    @Path("/{idDominio}")
+    @Consumes({ "application/json" })
+    
+    public Response dominiIdDominioPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioPUT(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
+    }
 
-	@PUT
-	@Path("/{idDominio}/contiAccredito/{ibanAccredito}")
-	@Consumes({ "application/json" })
-	public Response dominiIdDominioContiAccreditoIbanAccreditoPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito, java.io.InputStream is){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioContiAccreditoIbanAccreditoPUT(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito, is);
-	}
+    @PUT
+    @Path("/{idDominio}/tipiPendenza/{idTipoPendenza}")
+    @Consumes({ "application/json" })
+    
+    public Response dominiIdDominioTipiPendenzaIdTipoPendenzaPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioTipiPendenzaIdTipoPendenzaPUT(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is);
+    }
 
-	@GET
-	@Path("/{idDominio}/unitaOperative")
-	@Produces({ "application/json" })
-	public Response dominiIdDominioUnitaOperativeGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioUnitaOperativeGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
-	}
+    @PUT
+    @Path("/{idDominio}/contiAccredito/{ibanAccredito}")
+    @Consumes({ "application/json" })
+    
+    public Response dominiIdDominioContiAccreditoIbanAccreditoPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito, java.io.InputStream is){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioContiAccreditoIbanAccreditoPUT(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito, is);
+    }
 
-	@GET
-	@Path("/{idDominio}/unitaOperative/{idUnitaOperativa}")
-	@Produces({ "application/json" })
-	public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idUnitaOperativa") String idUnitaOperativa){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioUnitaOperativeIdUnitaOperativaGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idUnitaOperativa);
-	}
+    @GET
+    @Path("/{idDominio}/tipiPendenza/{idTipoPendenza}")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioTipiPendenzaIdTipoPendenzaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioTipiPendenzaIdTipoPendenzaGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza);
+    }
 
-	@PUT
-	@Path("/{idDominio}/unitaOperative/{idUnitaOperativa}")
-	@Consumes({ "application/json" })
-	public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idUnitaOperativa") String idUnitaOperativa, java.io.InputStream is){
-		this.controller.setRequestResponse(this.request, this.response);
-		return this.controller.dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(this.getUser(), uriInfo, httpHeaders,  idDominio,  idUnitaOperativa, is);
-	}
+    @GET
+    @Path("/{idDominio}/contiAccredito/{ibanAccredito}")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioContiAccreditoIbanAccreditoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("ibanAccredito") String ibanAccredito){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioContiAccreditoIbanAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  ibanAccredito);
+    }
 
+    @GET
+    @Path("/{idDominio}")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
+    }
 
+    @GET
+    @Path("/{idDominio}/entrate/{idEntrata}")
+    
+    @Produces({ "application/json" })
+    public Response dominiIdDominioEntrateIdEntrataGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idEntrata") String idEntrata){
+        this.controller.setRequestResponse(this.request, this.response);
+        return this.controller.dominiIdDominioEntrateIdEntrataGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idEntrata);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @GET
+    @Path("/{idDominio}/logo")
+    @Produces({ "application/json" })
+    public Response dominiIdDominioLogoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
+            this.controller.setRequestResponse(this.request, this.response);
+            return this.controller.dominiIdDominioLogoGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
+    }
 
 }
 

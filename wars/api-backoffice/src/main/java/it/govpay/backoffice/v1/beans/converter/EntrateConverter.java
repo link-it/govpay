@@ -18,8 +18,7 @@ public class EntrateConverter {
 		it.govpay.model.TipoTributo tipoTributo = new it.govpay.model.TipoTributo();
 
 		tipoTributo.setCodContabilitaDefault(entrataPost.getCodiceContabilita());
-		if(entrataPost.getCodificaIUV()!=null)
-			tipoTributo.setCodTributoIuvDefault(entrataPost.getCodificaIUV().toString());
+		
 		tipoTributo.setCodTributo(idEntrata);
 		tipoTributo.setDescrizione(entrataPost.getDescrizione());
 		if(entrataPost.getTipoContabilita() != null) {
@@ -51,9 +50,6 @@ public class EntrateConverter {
 		entrataDTO.setCodTributo(idEntrata);
 		entrataDTO.setTipoTributo(tipoTributo);
 		
-		tipoTributo.setOnlineDefault(entrataPost.Online());
-		tipoTributo.setPagaTerziDefault(entrataPost.PagaTerzi());
-		
 		return entrataDTO;		
 	}
 	
@@ -61,7 +57,6 @@ public class EntrateConverter {
 		TipoEntrata rsModel = new TipoEntrata();
 		
 		rsModel.codiceContabilita(tributo.getCodContabilitaDefault())
-		.codificaIUV(tributo.getCodTributoIuvDefault())
 		.descrizione(tributo.getDescrizione())
 		.idEntrata(tributo.getCodTributo());
 		
@@ -81,9 +76,6 @@ public class EntrateConverter {
 				break;
 			}
 		}
-		
-		rsModel.setOnline(tributo.getOnlineDefault());
-		rsModel.setPagaTerzi(tributo.getPagaTerziDefault());
 		
 		return rsModel;
 	}

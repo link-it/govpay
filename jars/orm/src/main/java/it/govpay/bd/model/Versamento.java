@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
@@ -48,6 +49,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient UnitaOperativa uo;
 	private transient Iuv iuv;
 	private transient TipoVersamento tipoVersamento;
+	private transient TipoVersamentoDominio tipoVersamentoDominio;
 	
 	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {
@@ -132,5 +134,13 @@ public class Versamento extends it.govpay.model.Versamento {
 			this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getIdTipoVersamento());
 		} 
 		return this.tipoVersamento;
+	}
+	
+	
+	public TipoVersamentoDominio getTipoVersamentoDominio(BasicBD bd) throws ServiceException {
+		if(this.tipoVersamentoDominio == null) {
+			this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, this.getIdTipoVersamentoDominio());
+		} 
+		return this.tipoVersamentoDominio;
 	}
 }

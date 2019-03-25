@@ -79,6 +79,8 @@ import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.IStazioneServiceSearch;
 import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITipoTributoServiceSearch;
+import it.govpay.orm.dao.ITipoVersamentoDominioService;
+import it.govpay.orm.dao.ITipoVersamentoDominioServiceSearch;
 import it.govpay.orm.dao.ITipoVersamentoService;
 import it.govpay.orm.dao.ITipoVersamentoServiceSearch;
 import it.govpay.orm.dao.ITracciatoService;
@@ -679,6 +681,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public ITipoVersamentoService getTipoVersamentoService() throws ServiceException,NotImplementedException{
 		return new JDBCTipoVersamentoService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:TipoVersamentoDominio type:TipoVersamentoDominio
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TipoVersamentoDominio}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TipoVersamentoDominio}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITipoVersamentoDominioServiceSearch getTipoVersamentoDominioServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCTipoVersamentoDominioServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoVersamentoDominio}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoVersamentoDominio}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITipoVersamentoDominioService getTipoVersamentoDominioService() throws ServiceException,NotImplementedException{
+		return new JDBCTipoVersamentoDominioService(this.unlimitedJdbcServiceManager);
 	}
 	
 	

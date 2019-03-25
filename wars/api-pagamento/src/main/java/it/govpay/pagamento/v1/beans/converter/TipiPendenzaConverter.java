@@ -8,6 +8,7 @@ public class TipiPendenzaConverter {
 		TipoPendenza rsModel = new TipoPendenza();
 		
 		rsModel.descrizione(tipoVersamento.getDescrizione())
+//		.codificaIUV(tipoVersamento.getCodificaIuvDefault())
 		.idTipoPendenza(tipoVersamento.getCodTipoVersamento());
 		
 		return rsModel;

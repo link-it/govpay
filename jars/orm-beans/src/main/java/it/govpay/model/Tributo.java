@@ -58,9 +58,6 @@ public class Tributo extends TipoTributo {
 	private boolean abilitato;
 	private TipoContabilita tipoContabilitaCustom;
 	private String codContabilitaCustom;
-	private String codTributoIuvCustom;
-	private Boolean onlineCustom;
-	private Boolean pagaTerziCustom;
 	
 	public Long getIdIbanAccredito() {
 		return this.idIbanAccredito;
@@ -99,30 +96,10 @@ public class Tributo extends TipoTributo {
 	public void setCodContabilitaCustom(String codContabilitaCustom) {
 		this.codContabilitaCustom = codContabilitaCustom;
 	}
-	public String getCodTributoIuvCustom() {
-		return this.codTributoIuvCustom;
-	}
-	public void setCodTributoIuvCustom(String codTributoIuv) {
-		this.codTributoIuvCustom = codTributoIuv;
-	}
 	public Long getIdIbanAppoggio() {
 		return this.idIbanAppoggio;
 	}
 	public void setIdIbanAppoggio(Long idIbanAppoggio) {
 		this.idIbanAppoggio = idIbanAppoggio;
 	}
-	public Boolean getOnlineCustom() {
-		return onlineCustom;
-	}
-	public void setOnlineCustom(Boolean onlineCustom) {
-		this.onlineCustom = onlineCustom;
-	}
-	public Boolean getPagaTerziCustom() {
-		return pagaTerziCustom;
-	}
-	public void setPagaTerziCustom(Boolean pagaTerziCustom) {
-		this.pagaTerziCustom = pagaTerziCustom;
-	}
-	 
-	
 }

@@ -63,6 +63,8 @@ public class ModelFactory {
 	
 	public static TipoVersamentoModel TIPO_VERSAMENTO = new TipoVersamentoModel();
 	
+	public static TipoVersamentoDominioModel TIPO_VERSAMENTO_DOMINIO = new TipoVersamentoDominioModel();
+	
 	public static VersamentoModel VERSAMENTO = new VersamentoModel();
 	
 	public static EventoModel EVENTO = new EventoModel();

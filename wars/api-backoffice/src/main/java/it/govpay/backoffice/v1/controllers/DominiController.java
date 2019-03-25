@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -28,7 +27,10 @@ import it.govpay.backoffice.v1.beans.EntrataPost;
 import it.govpay.backoffice.v1.beans.ListaContiAccredito;
 import it.govpay.backoffice.v1.beans.ListaDomini;
 import it.govpay.backoffice.v1.beans.ListaEntrate;
+import it.govpay.backoffice.v1.beans.ListaTipiPendenzaDominio;
 import it.govpay.backoffice.v1.beans.ListaUnitaOperative;
+import it.govpay.backoffice.v1.beans.TipoPendenzaDominio;
+import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.converter.DominiConverter;
@@ -38,6 +40,8 @@ import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindIbanDTO;
 import it.govpay.core.dao.anagrafica.dto.FindIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindTributiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindTributiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindUnitaOperativeDTO;
@@ -46,6 +50,8 @@ import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetIbanDTO;
 import it.govpay.core.dao.anagrafica.dto.GetIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
@@ -56,9 +62,12 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
@@ -72,92 +81,7 @@ public class DominiController extends BaseController {
      }
 
 
-
-    public Response dominiIdDominioContiAccreditoIbanAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
-    	String methodName = "dominiIdDominioIbanAccreditoIbanAccreditoGET";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			// Parametri - > DTO Input
-			
-			GetIbanDTO getIbanDTO = new GetIbanDTO(user, idDominio, ibanAccredito);
-			
-			// INIT DAO
-			
-			DominiDAO dominiDAO = new DominiDAO(false);
-			
-			// CHIAMATA AL DAO
-			
-			GetIbanDTOResponse getDominiIbanDTOResponse = dominiDAO.getIban(getIbanDTO);
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
-			ContiAccredito response = DominiConverter.toIbanRsModel(getDominiIbanDTOResponse.getIbanAccredito());
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
-			
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			log(ctx);
-		}
-    }
-
-
-
-    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
-    	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			// Parametri - > DTO Input
-			
-			GetUnitaOperativaDTO getDominioUoDTO = new GetUnitaOperativaDTO(user, idDominio, idUnitaOperativa);
-			
-			// INIT DAO
-			
-			DominiDAO dominiDAO = new DominiDAO(false);
-			
-			// CHIAMATA AL DAO
-			
-			GetUnitaOperativaDTOResponse listaDominiUoDTOResponse = dominiDAO.getUnitaOperativa(getDominioUoDTO);
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
-			UnitaOperativa response = DominiConverter.toUnitaOperativaRsModel(listaDominiUoDTOResponse.getUnitaOperativa());
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
-			
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			log(ctx);
-		}
-    }
-
-
-
-    public Response dominiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idStazione) {
+	public Response dominiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento, String idStazione) {
     	String methodName = "dominiGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -210,8 +134,10 @@ public class DominiController extends BaseController {
 
     }
 
-    public Response dominiIdDominioLogoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
-    	String methodName = "getLogo";  
+
+	
+	public Response dominiIdDominioContiAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    	String methodName = "dominiIdDominioIbanAccreditoGET";  
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -225,28 +151,34 @@ public class DominiController extends BaseController {
 			
 			// Parametri - > DTO Input
 			
-			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
-
+			FindIbanDTO listaDominiIbanDTO = new FindIbanDTO(user, idDominio);
+			
+			listaDominiIbanDTO.setPagina(pagina);
+			listaDominiIbanDTO.setLimit(risultatiPerPagina);
+			listaDominiIbanDTO.setOrderBy(ordinamento);
+			listaDominiIbanDTO.setAbilitato(abilitato);
+			
 			// INIT DAO
 			
 			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
-			byte[] logo = dominiDAO.getLogo(getDominioDTO);
+			FindIbanDTOResponse listaDominiIbanDTOResponse = dominiDAO.findIban(listaDominiIbanDTO);
 			
-			MimeUtil.registerMimeDetector(eu.medsea.mimeutil.detector.MagicMimeMimeDetector.class.getName());
+			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Collection<?> mimeTypes = MimeUtil.getMimeTypes(logo);
+			List<it.govpay.backoffice.v1.beans.ContiAccredito> results = new ArrayList<>();
+			for(it.govpay.bd.model.IbanAccredito ibanAccredito: listaDominiIbanDTOResponse.getResults()) {
+				results.add(DominiConverter.toIbanRsModel(ibanAccredito));
+			}
 			
-			String mimeType = MimeUtil.getFirstMimeType(mimeTypes.toString()).toString();
+			ListaContiAccredito response = new ListaContiAccredito(results, this.getServicePath(uriInfo),
+					listaDominiIbanDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, logo, 200);
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			ResponseBuilder entity = Response.status(Status.OK).entity(logo);
-			entity.header("CacheControl", "max-age: "+ GovpayConfig.getInstance().getCacheLogo().intValue());
-			entity.header("Content-Type", mimeType);
-			return this.handleResponseOk(entity,transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -255,8 +187,8 @@ public class DominiController extends BaseController {
 		}
     }
 
-    public Response dominiIdDominioGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
-    	String methodName = "dominiIdDominioGET";  
+    public Response dominiIdDominioContiAccreditoIbanAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
+    	String methodName = "dominiIdDominioIbanAccreditoIbanAccreditoGET";  
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -270,24 +202,66 @@ public class DominiController extends BaseController {
 			
 			// Parametri - > DTO Input
 			
-			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
-
+			GetIbanDTO getIbanDTO = new GetIbanDTO(user, idDominio, ibanAccredito);
+			
 			// INIT DAO
 			
 			DominiDAO dominiDAO = new DominiDAO(false);
 			
 			// CHIAMATA AL DAO
 			
-			GetDominioDTOResponse listaDominiDTOResponse = dominiDAO.getDominio(getDominioDTO);
+			GetIbanDTOResponse getDominiIbanDTOResponse = dominiDAO.getIban(getIbanDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			it.govpay.backoffice.v1.beans.Dominio response = DominiConverter.toRsModel(listaDominiDTOResponse.getDominio(), listaDominiDTOResponse.getUo(), listaDominiDTOResponse.getTributi(), listaDominiDTOResponse.getIban());
+			ContiAccredito response = DominiConverter.toIbanRsModel(getDominiIbanDTOResponse.getIbanAccredito());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			log(ctx);
+		}
+    }
+
+    public Response dominiIdDominioContiAccreditoIbanAccreditoPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
+    	String methodName = "dominiIdDominioContiAccreditoIbanAccreditoPUT";  
+		IContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			IOUtils.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			String jsonRequest = baos.toString();
+			ContiAccreditoPost ibanAccreditoRequest= JSONSerializable.parse(jsonRequest, ContiAccreditoPost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
+			vf.getValidator("ibanAccredito", ibanAccredito).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
+			
+			ibanAccreditoRequest.validate();
+			
+			PutIbanAccreditoDTO putibanAccreditoDTO = DominiConverter.getPutIbanAccreditoDTO(ibanAccreditoRequest, idDominio, ibanAccredito, user);
+			
+			DominiDAO dominiDAO = new DominiDAO(false);
+			
+			PutIbanAccreditoDTOResponse putIbanAccreditoDTOResponse = dominiDAO.createOrUpdateIbanAccredito(putibanAccreditoDTO);
+			
+			Status responseStatus = putIbanAccreditoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -346,7 +320,311 @@ public class DominiController extends BaseController {
 		}
     }
 
+    public Response dominiIdDominioEntrateIdEntrataGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
+    	String methodName = "dominiIdDominioEntrateIdEntrataGET";  
+		IContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			// Parametri - > DTO Input
+			
+			GetTributoDTO getDominioEntrataDTO = new GetTributoDTO(user, idDominio, idEntrata);
+			
+			// INIT DAO
+			
+			DominiDAO dominiDAO = new DominiDAO(false);
+			
+			// CHIAMATA AL DAO
+			
+			GetTributoDTOResponse listaDominiEntrateDTOResponse = dominiDAO.getTributo(getDominioEntrataDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			Entrata response = DominiConverter.toEntrataRsModel(listaDominiEntrateDTOResponse);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			log(ctx);
+		}
+    }
 
+    public Response dominiIdDominioEntrateIdEntrataPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
+    	String methodName = "dominiIdDominioEntrateIdEntrataPUT";  
+		IContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			IOUtils.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			String jsonRequest = baos.toString();
+			EntrataPost entrataRequest= JSONSerializable.parse(jsonRequest, EntrataPost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
+			vf.getValidator("idEntrata", idEntrata).notNull().minLength(1).maxLength(255);
+			
+			entrataRequest.validate();
+			
+			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
+			
+			DominiDAO dominiDAO = new DominiDAO(false);
+			PutEntrataDominioDTOResponse putEntrataDTOResponse = null;
+			try {
+				putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
+			} catch(TipoTributoNonTrovatoException e) {
+				throw new UnprocessableEntityException("Il tipo entrata indicato non e' disponibile per il dominio.");
+			}
+			
+			Status responseStatus = putEntrataDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			log(ctx);
+		}
+    }
+    
+    public Response dominiIdDominioGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
+    	String methodName = "dominiIdDominioGET";  
+		IContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			// Parametri - > DTO Input
+			
+			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
+
+			// INIT DAO
+			
+			DominiDAO dominiDAO = new DominiDAO(false);
+			
+			// CHIAMATA AL DAO
+			
+			GetDominioDTOResponse listaDominiDTOResponse = dominiDAO.getDominio(getDominioDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			it.govpay.backoffice.v1.beans.Dominio response = DominiConverter.toRsModel(listaDominiDTOResponse.getDominio(), listaDominiDTOResponse.getUo(), listaDominiDTOResponse.getTributi(), listaDominiDTOResponse.getIban());
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			log(ctx);
+		}
+    }
+    
+    public Response dominiIdDominioPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+    	String methodName = "dominiIdDominioPUT";  
+		IContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			IOUtils.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			String jsonRequest = baos.toString();
+			DominioPost dominioRequest= JSONSerializable.parse(jsonRequest, DominioPost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
+			
+			dominioRequest.validate();
+			
+			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 
+			
+			new DominioValidator(putDominioDTO.getDominio()).validate();
+			
+			DominiDAO dominiDAO = new DominiDAO();
+			
+			PutDominioDTOResponse putDominioDTOResponse = dominiDAO.createOrUpdate(putDominioDTO);
+			
+			Status responseStatus = putDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			log(ctx);
+		}
+    }
+
+    public Response dominiIdDominioTipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    	String methodName = "dominiIdDominioTipiPendenzaGET";  
+		IContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			// Parametri - > DTO Input
+			
+			FindTipiPendenzaDominioDTO findTipiPendenzaDominioDTO = new FindTipiPendenzaDominioDTO(user);
+			
+			findTipiPendenzaDominioDTO.setPagina(pagina);
+			findTipiPendenzaDominioDTO.setLimit(risultatiPerPagina);
+			findTipiPendenzaDominioDTO.setOrderBy(ordinamento);
+			findTipiPendenzaDominioDTO.setCodDominio(idDominio);
+			
+			// INIT DAO
+			
+			DominiDAO dominiDAO = new DominiDAO(false);
+			
+			// CHIAMATA AL DAO
+			
+			FindTipiPendenzaDominioDTOResponse findTipiPendenzaDominioDTOResponse = dominiDAO.findTipiPendenza(findTipiPendenzaDominioDTO);
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			List<it.govpay.backoffice.v1.beans.TipoPendenzaDominio> results = new ArrayList<>();
+			for(GetTipoPendenzaDominioDTOResponse tipoVersamentoDominio: findTipiPendenzaDominioDTOResponse.getResults()) {
+				results.add(DominiConverter.toTipoPendenzaRsModel(tipoVersamentoDominio));
+			}
+			
+			ListaTipiPendenzaDominio response = new ListaTipiPendenzaDominio(results, this.getServicePath(uriInfo),
+					findTipiPendenzaDominioDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
+			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
+			
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			log(ctx);
+		}
+    }
+
+    public Response dominiIdDominioTipiPendenzaIdTipoPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza) {
+    	String methodName = "dominiIdDominioTipiPendenzaIdTipoPendenzaGET";  
+		IContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			// Parametri - > DTO Input
+			
+			GetTipoPendenzaDominioDTO getTipoPendenzaDominioDTO = new GetTipoPendenzaDominioDTO(user, idDominio, idTipoPendenza);
+			
+			// INIT DAO
+			
+			DominiDAO dominiDAO = new DominiDAO(false);
+			
+			// CHIAMATA AL DAO
+			
+			GetTipoPendenzaDominioDTOResponse getTipoPendenzaDominioDTOResponse = dominiDAO.getTipoPendenza(getTipoPendenzaDominioDTO); 
+			
+			// CONVERT TO JSON DELLA RISPOSTA
+			
+			TipoPendenzaDominio response = DominiConverter.toTipoPendenzaRsModel(getTipoPendenzaDominioDTOResponse);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
+			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+			
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			log(ctx);
+		}
+    }
+
+    public Response dominiIdDominioTipiPendenzaIdTipoPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is) {
+    	String methodName = "dominiIdDominioTipiPendenzaIdTipoPendenzaPUT";  
+		IContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			IOUtils.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+			
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+			
+			String jsonRequest = baos.toString();
+			TipoPendenzaDominioPost tipoPendenzaRequest= JSONSerializable.parse(jsonRequest, TipoPendenzaDominioPost.class);
+			
+			ValidatorFactory vf = ValidatorFactory.newInstance();
+			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
+			vf.getValidator("idTipoPendenza", idTipoPendenza).notNull().minLength(1).maxLength(35);
+			
+			tipoPendenzaRequest.validate();
+			
+			PutTipoPendenzaDominioDTO putTipoPendenzaDominioDTO = DominiConverter.getPutTipoPendenzaDominioDTO(tipoPendenzaRequest, idDominio, idTipoPendenza, user); 
+			
+			DominiDAO dominiDAO = new DominiDAO(false);
+			PutTipoPendenzaDominioDTOResponse putTipoPendenzaDominioDTOResponse = null;
+			try {
+				putTipoPendenzaDominioDTOResponse = dominiDAO.createOrUpdateTipoPendenzaDominio(putTipoPendenzaDominioDTO);
+			} catch(TipoVersamentoNonTrovatoException e) {
+				throw new UnprocessableEntityException("Il tipo pendenza indicato non e' disponibile per il dominio.");
+			}
+			
+			Status responseStatus = putTipoPendenzaDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK; 
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
+			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			log(ctx);
+		}
+    }
 
     public Response dominiIdDominioUnitaOperativeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {    	
     	String methodName = "dominiIdDominioUnitaOperativeGET";  
@@ -399,10 +677,8 @@ public class DominiController extends BaseController {
 		}
     }
 
-
-
-    public Response dominiIdDominioEntrateIdEntrataGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
-    	String methodName = "dominiIdDominioEntrateIdEntrataGET";  
+    public Response dominiIdDominioUnitaOperativeIdUnitaOperativaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
+    	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaGET";  
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -416,7 +692,7 @@ public class DominiController extends BaseController {
 			
 			// Parametri - > DTO Input
 			
-			GetTributoDTO getDominioEntrataDTO = new GetTributoDTO(user, idDominio, idEntrata);
+			GetUnitaOperativaDTO getDominioUoDTO = new GetUnitaOperativaDTO(user, idDominio, idUnitaOperativa);
 			
 			// INIT DAO
 			
@@ -424,11 +700,11 @@ public class DominiController extends BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			GetTributoDTOResponse listaDominiEntrateDTOResponse = dominiDAO.getTributo(getDominioEntrataDTO);
+			GetUnitaOperativaDTOResponse listaDominiUoDTOResponse = dominiDAO.getUnitaOperativa(getDominioUoDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Entrata response = DominiConverter.toEntrataRsModel(listaDominiEntrateDTOResponse);
+			UnitaOperativa response = DominiConverter.toUnitaOperativaRsModel(listaDominiUoDTOResponse.getUnitaOperativa());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
@@ -440,52 +716,6 @@ public class DominiController extends BaseController {
 			log(ctx);
 		}
     }
-
-
-
-    public Response dominiIdDominioContiAccreditoIbanAccreditoPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
-    	String methodName = "dominiIdDominioContiAccreditoIbanAccreditoPUT";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			IOUtils.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			String jsonRequest = baos.toString();
-			ContiAccreditoPost ibanAccreditoRequest= JSONSerializable.parse(jsonRequest, ContiAccreditoPost.class);
-			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
-			vf.getValidator("ibanAccredito", ibanAccredito).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
-			
-			ibanAccreditoRequest.validate();
-			
-			PutIbanAccreditoDTO putibanAccreditoDTO = DominiConverter.getPutIbanAccreditoDTO(ibanAccreditoRequest, idDominio, ibanAccredito, user);
-			
-			DominiDAO dominiDAO = new DominiDAO(false);
-			
-			PutIbanAccreditoDTOResponse putIbanAccreditoDTOResponse = dominiDAO.createOrUpdateIbanAccredito(putibanAccreditoDTO);
-			
-			Status responseStatus = putIbanAccreditoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			log(ctx);
-		}
-    }
-
-
 
     public Response dominiIdDominioUnitaOperativeIdUnitaOperativaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
     	String methodName = "dominiIdDominioUnitaOperativeIdUnitaOperativaPUT";  
@@ -528,154 +758,8 @@ public class DominiController extends BaseController {
 			log(ctx);
 		}
     }
-
-
-
-    public Response dominiIdDominioEntrateIdEntrataPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
-    	String methodName = "dominiIdDominioEntrateIdEntrataPUT";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			IOUtils.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			String jsonRequest = baos.toString();
-			EntrataPost entrataRequest= JSONSerializable.parse(jsonRequest, EntrataPost.class);
-			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
-			vf.getValidator("idEntrata", idEntrata).notNull().minLength(1).maxLength(255);
-			
-			entrataRequest.validate();
-			
-			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
-			
-			DominiDAO dominiDAO = new DominiDAO(false);
-			PutEntrataDominioDTOResponse putEntrataDTOResponse = null;
-			try {
-				putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
-			} catch(TipoTributoNonTrovatoException e) {
-				throw new UnprocessableEntityException("Il tipo entrata indicato non e' disponibile per il dominio.");
-			}
-			
-			Status responseStatus = putEntrataDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			log(ctx);
-		}
-    }
-
-
-
-    public Response dominiIdDominioPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
-    	String methodName = "dominiIdDominioPUT";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			// salvo il json ricevuto
-			IOUtils.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			String jsonRequest = baos.toString();
-			DominioPost dominioRequest= JSONSerializable.parse(jsonRequest, DominioPost.class);
-			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
-			
-			dominioRequest.validate();
-			
-			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 
-			
-			new DominioValidator(putDominioDTO.getDominio()).validate();
-			
-			DominiDAO dominiDAO = new DominiDAO();
-			
-			PutDominioDTOResponse putDominioDTOResponse = dominiDAO.createOrUpdate(putDominioDTO);
-			
-			Status responseStatus = putDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			log(ctx);
-		}
-    }
-
-
-
-    public Response dominiIdDominioContiAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
-    	String methodName = "dominiIdDominioIbanAccreditoGET";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
-			// Parametri - > DTO Input
-			
-			FindIbanDTO listaDominiIbanDTO = new FindIbanDTO(user, idDominio);
-			
-			listaDominiIbanDTO.setPagina(pagina);
-			listaDominiIbanDTO.setLimit(risultatiPerPagina);
-			listaDominiIbanDTO.setOrderBy(ordinamento);
-			listaDominiIbanDTO.setAbilitato(abilitato);
-			
-			// INIT DAO
-			
-			DominiDAO dominiDAO = new DominiDAO(false);
-			
-			// CHIAMATA AL DAO
-			
-			FindIbanDTOResponse listaDominiIbanDTOResponse = dominiDAO.findIban(listaDominiIbanDTO);
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
-			List<it.govpay.backoffice.v1.beans.ContiAccredito> results = new ArrayList<>();
-			for(it.govpay.bd.model.IbanAccredito ibanAccredito: listaDominiIbanDTOResponse.getResults()) {
-				results.add(DominiConverter.toIbanRsModel(ibanAccredito));
-			}
-			
-			ListaContiAccredito response = new ListaContiAccredito(results, this.getServicePath(uriInfo),
-					listaDominiIbanDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
-			
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			log(ctx);
-		}
-    }
-
-    public Response getLogo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
+    
+    public Response dominiIdDominioLogoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
     	String methodName = "getLogo";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -705,7 +789,7 @@ public class DominiController extends BaseController {
 			Collection<?> mimeTypes = MimeUtil.getMimeTypes(logo);
 			
 			String mimeType = MimeUtil.getFirstMimeType(mimeTypes.toString()).toString();
-
+			
 			this.logResponse(uriInfo, httpHeaders, methodName, logo, 200);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			ResponseBuilder entity = Response.status(Status.OK).entity(logo);
@@ -716,7 +800,7 @@ public class DominiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			log(ctx);
 		}
     }
 }

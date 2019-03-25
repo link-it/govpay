@@ -80,8 +80,7 @@ import java.io.Serializable;
   	"codiceContabilita",
   	"descrizione",
   	"datiAllegati",
-  	"indiceDati",
-  	"idRendicontazione"
+  	"indiceDati"
   }
 )
 

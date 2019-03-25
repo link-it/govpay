@@ -1,7 +1,6 @@
 package it.govpay.core.dao.pagamenti;
 
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -24,7 +23,6 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.EventoNota;
@@ -69,6 +67,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
+import it.govpay.model.TipoVersamento.Tipo;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.orm.IdVersamento;
 
@@ -120,40 +119,28 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					
 					// se l'utenza che ha caricato la pendenza inline e' un cittadino sono necessari dei controlli supplementari.
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-						for (SingoloVersamento sv : versamentoModel.getSingoliVersamenti(bd)) {
-							// il tributo deve essere passato all'interno della pendenza
-							if(sv.getTributo(bd) == null) {
-								throw new GovPayException(EsitoOperazione.CIT_001, userDetails.getIdentificativo(),versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-							}
-									
-							// se il tributo non e' online non puo' essere pagato spontaneamente
-							if(!sv.getTributo(bd).isOnline()) {
-								throw new GovPayException(EsitoOperazione.CIT_002, userDetails.getIdentificativo(),versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),sv.getTributo(bd).getCodTributo());
-							}
-							
-							// se il tributo non puo' essere pagato da terzi allora debitore e versante (se presente) devono coincidere con chi sta effettuando il pagamento.
-							if(!sv.getTributo(bd).isPagaTerzi()) {
-								if(!versamento.getDebitore().getCodUnivoco().equals(userDetails.getIdentificativo()))
-									throw new GovPayException(EsitoOperazione.CIT_003, userDetails.getIdentificativo(),versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),versamento.getDebitore().getCodUnivoco());
-								
-								if(versanteModel != null && !versanteModel.getCodUnivoco().equals(userDetails.getIdentificativo()))
-									throw new GovPayException(EsitoOperazione.CIT_004, userDetails.getIdentificativo(),versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),versanteModel.getCodUnivoco());
-							}
+						// controllo che il tipo pendenza sia pagabile spontaneamente
+						if(!versamentoModel.getTipoVersamentoDominio(bd).getTipo().equals(Tipo.SPONTANEO)) {
+							throw new GovPayException(EsitoOperazione.CIT_002, userDetails.getIdentificativo(),versamentoModel.getApplicazione(bd).getCodApplicazione(), 
+									versamentoModel.getCodVersamentoEnte(),versamentoModel.getTipoVersamentoDominio(bd).getCodTipoVersamento());
 						}
+							
+						// se il tributo non puo' essere pagato da terzi allora debitore e versante (se presente) devono coincidere con chi sta effettuando il pagamento.
+						if(!versamentoModel.getTipoVersamentoDominio(bd).isPagaTerzi()) {
+							if(!versamento.getDebitore().getCodUnivoco().equals(userDetails.getIdentificativo()))
+								throw new GovPayException(EsitoOperazione.CIT_003, userDetails.getIdentificativo(),versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),versamento.getDebitore().getCodUnivoco());
+							
+							if(versanteModel != null && !versanteModel.getCodUnivoco().equals(userDetails.getIdentificativo()))
+								throw new GovPayException(EsitoOperazione.CIT_004, userDetails.getIdentificativo(),versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),versanteModel.getCodUnivoco());
+						}
+						
 					}
 					
 					// se l'utenza che ha caricato la pendenza inline e' anonima sono necessari dei controlli supplementari.
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-						for (SingoloVersamento sv : versamentoModel.getSingoliVersamenti(bd)) {
-							// il tributo deve essere passato all'interno della pendenza
-							if(sv.getTributo(bd) == null) {
-								throw new GovPayException(EsitoOperazione.UAN_001, versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-							}
-									
-							// se il tributo non e' online non puo' essere pagato spontaneamente
-							if(!sv.getTributo(bd).isOnline()) {
-								throw new GovPayException(EsitoOperazione.UAN_002, versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),sv.getTributo(bd).getCodTributo());
-							}
+						// controllo che il tipo pendenza sia pagabile spontaneamente
+						if(!versamentoModel.getTipoVersamentoDominio(bd).getTipo().equals(Tipo.SPONTANEO)) {
+							throw new GovPayException(EsitoOperazione.UAN_002, versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),versamentoModel.getTipoVersamentoDominio(bd).getCodTipoVersamento());
 						}
 					}
 				}  else if(v instanceof RefVersamentoAvviso) {

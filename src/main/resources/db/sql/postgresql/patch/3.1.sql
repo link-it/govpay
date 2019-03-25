@@ -170,5 +170,156 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
 DROP TABLE utenze_tributi;
 DROP SEQUENCE seq_utenze_tributi;
 
+-- 22/03/2019 Tabella TipiVersamentoDomini
+CREATE SEQUENCE seq_tipi_vers_domini start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
+CREATE TABLE tipi_vers_domini
+(
+	codifica_iuv VARCHAR(4),
+	tipo VARCHAR(35),
+	paga_terzi BOOLEAN,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_tipi_vers_domini') NOT NULL,
+	id_tipo_versamento BIGINT NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_tipi_vers_domini_1 UNIQUE (id_dominio,id_tipo_versamento),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tvd_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT fk_tvd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_tipi_vers_domini PRIMARY KEY (id)
+);
+
+ALTER TABLE tipi_versamento ADD COLUMN codifica_iuv VARCHAR(4);
+UPDATE tipi_versamento SET codifica_iuv = (SELECT cod_tributo_iuv FROM tipi_tributo WHERE cod_tipo_versamento = cod_tributo);
+
+ALTER TABLE tipi_versamento ADD COLUMN tipo VARCHAR(35);
+update tipi_versamento set tipo = 'DOVUTO' where (select tt.on_line from tipi_tributo tt where tt.cod_tributo = tipi_versamento.cod_tipo_versamento) = false;
+update tipi_versamento set tipo = 'SPONTANEO' where (select tt.on_line from tipi_tributo tt where tt.cod_tributo = tipi_versamento.cod_tipo_versamento) = true;
+
+ALTER TABLE tipi_versamento ADD COLUMN paga_terzi BOOLEAN DEFAULT false;
+UPDATE tipi_versamento SET paga_terzi = (SELECT paga_terzi FROM tipi_tributo WHERE cod_tipo_versamento = cod_tributo);
+
+UPDATE tipi_versamento SET tipo = 'DOVUTO', codifica_iuv = '', paga_terzi = false WHERE cod_tipo_versamento = 'LIBERO';
+ALTER TABLE tipi_versamento ALTER COLUMN tipo SET NOT NULL;
+ALTER TABLE tipi_versamento ALTER COLUMN paga_terzi SET NOT NULL;
+
+-- copia dei dati della tabella tributi
+insert into tipi_vers_domini (id_tipo_versamento,codifica_iuv,tipo,paga_terzi,id_dominio) select tv.id as id_tipo_versamento, t.cod_tributo_iuv as codifica_iuv, 'DOVUTO' as tipo, t.paga_terzi as paga_terzi , t.id_dominio as id_dominio from tributi t, tipi_tributo tt, tipi_versamento tv where t.id_tipo_tributo = tt.id and tt.cod_tributo = tv.cod_tipo_versamento and t.on_line = false;
+insert into tipi_vers_domini (id_tipo_versamento,codifica_iuv,tipo,paga_terzi,id_dominio) select tv.id as id_tipo_versamento, t.cod_tributo_iuv as codifica_iuv, 'SPONTANEO' as tipo, t.paga_terzi as paga_terzi , t.id_dominio as id_dominio from tributi t, tipi_tributo tt, tipi_versamento tv where t.id_tipo_tributo = tt.id and tt.cod_tributo = tv.cod_tipo_versamento and t.on_line = true;
+insert into tipi_vers_domini (id_tipo_versamento,codifica_iuv,tipo,paga_terzi,id_dominio) select tv.id as id_tipo_versamento, t.cod_tributo_iuv as codifica_iuv, null as tipo, t.paga_terzi as paga_terzi , t.id_dominio as id_dominio from tributi t, tipi_tributo tt, tipi_versamento tv where t.id_tipo_tributo = tt.id and tt.cod_tributo = tv.cod_tipo_versamento and t.on_line is null;
+
+-- genero le entries per il tipo pendenza libero
+insert into tipi_vers_domini (id_dominio, id_tipo_versamento) select id , (select id from tipi_versamento where cod_tipo_versamento = 'LIBERO') from domini;
+
+
+-- eliminazione colonne non piu' significative
+alter table tributi drop column paga_terzi;
+alter table tributi drop column on_line;
+alter table tributi drop column cod_tributo_iuv;
+
+alter table tipi_tributo drop column paga_terzi;
+alter table tipi_tributo drop column on_line;
+alter table tipi_tributo drop column cod_tributo_iuv;
+
+-- aggiunta id_tipo_versamento_dominio alla tabella versamenti
+DROP VIEW versamenti_incassi;
+
+ALTER TABLE versamenti ADD COLUMN id_tipo_versamento_dominio BIGINT;
+update versamenti set id_tipo_versamento_dominio = (select tipi_vers_domini.id from tipi_vers_domini where versamenti.id_dominio = tipi_vers_domini.id_dominio and versamenti.id_tipo_versamento = tipi_vers_domini.id_tipo_versamento );
+
+ALTER TABLE versamenti ALTER COLUMN id_tipo_versamento_dominio SET NOT NULL;
+ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id);
+
+CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
+    max(versamenti.cod_versamento_ente::text) AS cod_versamento_ente,
+    max(versamenti.nome::text) AS nome,
+    max(versamenti.importo_totale) AS importo_totale,
+    versamenti.stato_versamento::text AS stato_versamento,
+    max(versamenti.descrizione_stato::text) AS descrizione_stato,
+    max(
+        CASE
+            WHEN versamenti.aggiornabile = true THEN 'TRUE'::text
+            ELSE 'FALSE'::text
+        END) AS aggiornabile,
+    max(versamenti.data_creazione) AS data_creazione,
+    max(versamenti.data_validita) AS data_validita,
+    max(versamenti.data_scadenza) AS data_scadenza,
+    max(versamenti.data_ora_ultimo_aggiornamento) AS data_ora_ultimo_aggiornamento,
+    max(versamenti.causale_versamento::text) AS causale_versamento,
+    max(versamenti.debitore_tipo::text) AS debitore_tipo,
+    versamenti.debitore_identificativo,
+    max(versamenti.debitore_anagrafica::text) AS debitore_anagrafica,
+    max(versamenti.debitore_indirizzo::text) AS debitore_indirizzo,
+    max(versamenti.debitore_civico::text) AS debitore_civico,
+    max(versamenti.debitore_cap::text) AS debitore_cap,
+    max(versamenti.debitore_localita::text) AS debitore_localita,
+    max(versamenti.debitore_provincia::text) AS debitore_provincia,
+    max(versamenti.debitore_nazione::text) AS debitore_nazione,
+    max(versamenti.debitore_email::text) AS debitore_email,
+    max(versamenti.debitore_telefono::text) AS debitore_telefono,
+    max(versamenti.debitore_cellulare::text) AS debitore_cellulare,
+    max(versamenti.debitore_fax::text) AS debitore_fax,
+    max(versamenti.tassonomia_avviso::text) AS tassonomia_avviso,
+    max(versamenti.tassonomia::text) AS tassonomia,
+    max(versamenti.cod_lotto::text) AS cod_lotto,
+    max(versamenti.cod_versamento_lotto::text) AS cod_versamento_lotto,
+    max(versamenti.cod_anno_tributario::text) AS cod_anno_tributario,
+    max(versamenti.cod_bundlekey::text) AS cod_bundlekey,
+    max(versamenti.dati_allegati) AS dati_allegati,
+    max(versamenti.incasso::text) AS incasso,
+    max(versamenti.anomalie) AS anomalie,
+    max(versamenti.iuv_versamento::text) AS iuv_versamento,
+    max(versamenti.numero_avviso::text) AS numero_avviso,
+    max(versamenti.id_dominio) AS id_dominio,
+    max(versamenti.id_tipo_versamento) AS id_tipo_versamento,
+    max(versamenti.id_tipo_versamento_dominio) AS id_tipo_versamento_dominio,
+    max(versamenti.id_uo) AS id_uo,
+    max(versamenti.id_applicazione) AS id_applicazione,
+    MAX(CASE WHEN versamenti.avvisatura_abilitata = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_abilitata,
+    MAX(CASE WHEN versamenti.avvisatura_da_inviare = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_da_inviare,
+    MAX(versamenti.avvisatura_operazione) as avvisatura_operazione,               
+    MAX(versamenti.avvisatura_modalita) as avvisatura_modalita,
+    MAX(versamenti.avvisatura_tipo_pagamento) as avvisatura_tipo_pagamento,                   
+    MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,      
+    MAX(versamenti.id_tracciato) as id_tracciato,
+    max(
+        CASE
+            WHEN versamenti.ack = true THEN 'TRUE'::text
+            ELSE 'FALSE'::text
+        END) AS ack,
+    max(
+        CASE
+            WHEN versamenti.anomalo = true THEN 'TRUE'::text
+            ELSE 'FALSE'::text
+        END) AS anomalo,
+    max(pagamenti.data_pagamento) AS data_pagamento,
+    sum(
+        CASE
+            WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato
+            ELSE 0::double precision
+        END) AS importo_pagato,
+    sum(
+        CASE
+            WHEN pagamenti.stato::text = 'INCASSATO'::text THEN pagamenti.importo_pagato
+            ELSE 0::double precision
+        END) AS importo_incassato,
+    max(
+        CASE
+            WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO'::text
+            WHEN pagamenti.stato::text = 'INCASSATO'::text THEN 'INCASSATO'::text
+            ELSE 'PAGATO'::text
+        END) AS stato_pagamento,
+    max(pagamenti.iuv::text) AS iuv_pagamento,
+    max(
+        CASE
+            WHEN versamenti.stato_versamento::text = 'NON_ESEGUITO'::text AND versamenti.data_validita > now() THEN 0
+            ELSE 1
+        END) AS smart_order_rank,
+    min(@ (date_part('epoch'::text, now()) * 1000::bigint - date_part('epoch'::text, COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000::bigint))::bigint AS smart_order_date
+   FROM versamenti
+     LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento
+     LEFT JOIN pagamenti ON singoli_versamenti.id = pagamenti.id_singolo_versamento
+  WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0::double precision
+  GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 

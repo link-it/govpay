@@ -17,13 +17,18 @@ import it.govpay.backoffice.v1.beans.DominioPost;
 import it.govpay.backoffice.v1.beans.Entrata;
 import it.govpay.backoffice.v1.beans.EntrataPost;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
+import it.govpay.backoffice.v1.beans.TipoPendenzaDominio;
+import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
+import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost.TipoEnum;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.bd.model.Tributo;
+import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
+import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Anagrafica;
@@ -38,9 +43,6 @@ public class DominiConverter {
 	    tributo.setAbilitato(entrataRequest.isAbilitato());
 		tributo.setCodContabilitaCustom(entrataRequest.getCodiceContabilita());
 		tributo.setCodTributo(idEntrata);
-		if(entrataRequest.getCodificaIUV()!=null)
-			tributo.setCodTributoIuvCustom(entrataRequest.getCodificaIUV()+"");
-		
 		if(entrataRequest.getTipoContabilita() != null) {
 			
 			// valore tipo contabilita non valido
@@ -65,14 +67,6 @@ public class DominiConverter {
 				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.SPECIALE);
 				break;
 			}
-		}
-		
-		if(entrataRequest.Online() != null) {
-			tributo.setOnlineCustom(entrataRequest.Online());
-		}
-		
-		if(entrataRequest.PagaTerzi() != null) {
-			tributo.setPagaTerziCustom(entrataRequest.PagaTerzi());
 		}
 		
 		entrataDTO.setIbanAccredito(entrataRequest.getIbanAccredito());
@@ -347,12 +341,6 @@ public class DominiConverter {
 			}
 		}
 		
-		if(tributo.getCodTributoIuvCustom()!=null)
-			rsModel.codificaIUV(tributo.getCodTributoIuvCustom());
-		
-		rsModel.setOnline(tributo.getOnlineCustom());
-		rsModel.setPagaTerzi(tributo.getPagaTerziCustom());
-		
 		if(ibanAccredito != null)
 			rsModel.setIbanAccredito(ibanAccredito.getCodIban());
 		
@@ -360,5 +348,69 @@ public class DominiConverter {
 			rsModel.setIbanAppoggio(ibanAppoggio.getCodIban());
 		
 		return rsModel;
+	}
+	
+	public static TipoPendenzaDominio toTipoPendenzaRsModel(GetTipoPendenzaDominioDTOResponse response) throws ServiceException {
+		return toTipoPendenzaRsModel(response.getTipoVersamento());
+	}
+	
+	public static TipoPendenzaDominio toTipoPendenzaRsModel(it.govpay.model.TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException {
+		TipoPendenzaDominio rsModel = new TipoPendenzaDominio();
+		
+		rsModel.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento()).codificaIUV(tipoVersamentoDominio.getCodificaIuvCustom());
+		
+		if(tipoVersamentoDominio.getTipoCustom() != null) {
+			switch (tipoVersamentoDominio.getTipoCustom()) {
+			case DOVUTO:
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaDominio.TipoEnum.DOVUTA);
+				break;
+			case SPONTANEO:
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaDominio.TipoEnum.SPONTANEA);
+				break;
+			}
+		}
+		
+		rsModel.setPagaTerzi(tipoVersamentoDominio.getPagaTerziCustom());
+		rsModel.setTipoPendenza(TipiPendenzaConverter.toTipoPendenzaRsModel(tipoVersamentoDominio));
+		
+		return rsModel;
+	}
+	
+	public static PutTipoPendenzaDominioDTO getPutTipoPendenzaDominioDTO(TipoPendenzaDominioPost tipoPendenzaRequest, String idDominio, String idTipoPendenza, Authentication user) throws ValidationException {
+		PutTipoPendenzaDominioDTO tipoPendenzaDTO = new PutTipoPendenzaDominioDTO(user);
+		
+		it.govpay.bd.model.TipoVersamentoDominio tipoVersamentoDominio = new it.govpay.bd.model.TipoVersamentoDominio();
+		
+		tipoVersamentoDominio.setCodTipoVersamento(idTipoPendenza);
+		tipoVersamentoDominio.setCodificaIuvCustom(tipoPendenzaRequest.getCodificaIUV());
+		
+		if(tipoPendenzaRequest.getTipo() != null) {
+			
+			// valore tipo contabilita non valido
+			if(TipoEnum.fromValue(tipoPendenzaRequest.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipoPendenzaRequest.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+			}
+			
+			tipoPendenzaRequest.setTipoEnum(TipoEnum.fromValue(tipoPendenzaRequest.getTipo()));
+			
+			switch (tipoPendenzaRequest.getTipoEnum()) {
+			case DOVUTA:
+				tipoVersamentoDominio.setTipoCustom(it.govpay.model.TipoVersamento.Tipo.DOVUTO);
+				break;
+			case SPONTANEA:
+				tipoVersamentoDominio.setTipoCustom(it.govpay.model.TipoVersamento.Tipo.SPONTANEO);
+				break;
+			}
+		}
+		
+		if(tipoPendenzaRequest.PagaTerzi() != null) {
+			tipoVersamentoDominio.setPagaTerziCustom(tipoPendenzaRequest.PagaTerzi());
+		}
+		
+		tipoPendenzaDTO.setTipoVersamentoDominio(tipoVersamentoDominio);
+		tipoPendenzaDTO.setIdDominio(idDominio);
+		tipoPendenzaDTO.setCodTipoVersamento(idTipoPendenza);
+				
+		return tipoPendenzaDTO;		
 	}
 }

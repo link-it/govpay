@@ -39,6 +39,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
@@ -398,6 +399,17 @@ public class VersamentoUtils {
 			}
 		}
 		model.setIdTipoVersamento(tipoVersamento.getId()); 
+		
+		
+		// tipo pendenza dominio
+		TipoVersamentoDominio tipoVersamentoDominio= null;
+		
+		try {
+			tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), tipoVersamento.getCodTipoVersamento());
+		} catch (NotFoundException e) {
+			throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
+		}
+		model.setIdTipoVersamentoDominio(tipoVersamentoDominio.getId());
 		
 		return model;
 	}

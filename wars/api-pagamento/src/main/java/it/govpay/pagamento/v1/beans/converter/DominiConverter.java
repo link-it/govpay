@@ -167,9 +167,6 @@ public class DominiConverter {
 		if(tributo.getIbanAccredito()!=null)
 			rsModel.contoAppoggio(tributo.getIbanAccredito().getCodIban());
 
-		if(tributo.getCodTributoIuv()!=null)
-			rsModel.codificaIUV(tributo.getCodTributoIuv());
-		
 		return rsModel;
 	}
 }

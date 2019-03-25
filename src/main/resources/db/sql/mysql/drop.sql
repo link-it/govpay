@@ -17,6 +17,7 @@ DROP TABLE pag_port_versamenti;
 DROP TABLE pagamenti_portale;
 DROP TABLE singoli_versamenti;
 DROP TABLE versamenti;
+DROP TABLE tipi_vers_domini;
 DROP TABLE tipi_versamento;
 DROP TABLE tracciati;
 DROP TABLE acl;

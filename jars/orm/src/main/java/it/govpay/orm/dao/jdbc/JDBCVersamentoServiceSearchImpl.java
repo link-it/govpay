@@ -212,6 +212,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(new CustomField("id_uo", Long.class, "id_uo", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_tracciato", Long.class, "id_tracciato", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 			fields.add(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", this.getVersamentoFieldConverter().toTable(Versamento.model())));
+			fields.add(new CustomField("id_tipo_versamento_dominio", Long.class, "id_tipo_versamento_dominio", this.getVersamentoFieldConverter().toTable(Versamento.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -221,6 +222,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 				Object idUoObject = map.remove("id_uo");
 				Object idTracciatoObject = map.remove("id_tracciato");
 				Object idTipoVersamentoObject = map.remove("id_tipo_versamento");
+				Object idTipoVersamentoDominioObject = map.remove("id_tipo_versamento_dominio");
 
 				Versamento versamento = (Versamento)this.getVersamentoFetch().fetch(jdbcProperties.getDatabase(), Versamento.model(), map);
 
@@ -276,6 +278,18 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 					}
 					id_versamento_tipoVersamento.setId(idTipoVersamento);
 					versamento.setIdTipoVersamento(id_versamento_tipoVersamento);
+				}
+				
+				if(idTipoVersamentoDominioObject instanceof Long) {
+					Long idTipoVersamentoDominio = (Long) idTipoVersamentoDominioObject;
+					it.govpay.orm.IdTipoVersamentoDominio id_versamento_tipoVersamentoDominio = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_versamento_tipoVersamentoDominio = ((JDBCTipoVersamentoDominioServiceSearch)(this.getServiceManager().getTipoVersamentoDominioServiceSearch())).findId(idTipoVersamentoDominio, false);
+					}else{
+						id_versamento_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
+					}
+					id_versamento_tipoVersamentoDominio.setId(idTipoVersamentoDominio);
+					versamento.setIdTipoVersamentoDominio(id_versamento_tipoVersamentoDominio);
 				}
 
 				list.add(versamento);
@@ -561,6 +575,22 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			return;
 		}
 		obj.setId(imgSaved.getId());
+		if(obj.getIdTipoVersamentoDominio()!=null && 
+				imgSaved.getIdTipoVersamentoDominio()!=null){
+			obj.getIdTipoVersamentoDominio().setId(imgSaved.getIdTipoVersamentoDominio().getId());
+			if(obj.getIdTipoVersamentoDominio().getIdDominio()!=null && 
+					imgSaved.getIdTipoVersamentoDominio().getIdDominio()!=null){
+				obj.getIdTipoVersamentoDominio().getIdDominio().setId(imgSaved.getIdTipoVersamentoDominio().getIdDominio().getId());
+			}
+			if(obj.getIdTipoVersamentoDominio().getIdTipoVersamento()!=null && 
+					imgSaved.getIdTipoVersamentoDominio().getIdTipoVersamento()!=null){
+				obj.getIdTipoVersamentoDominio().getIdTipoVersamento().setId(imgSaved.getIdTipoVersamentoDominio().getIdTipoVersamento().getId());
+			}
+		}
+		if(obj.getIdTipoVersamento()!=null && 
+				imgSaved.getIdTipoVersamento()!=null){
+			obj.getIdTipoVersamento().setId(imgSaved.getIdTipoVersamento().getId());
+		}
 		if(obj.getIdDominio()!=null && 
 				imgSaved.getIdDominio()!=null){
 			obj.getIdDominio().setId(imgSaved.getIdDominio().getId());
@@ -701,6 +731,38 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			String tableName2 = this.getFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
 		}
+
+		if(expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
+			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
+			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento_dominio="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO,false)){
+			if(!expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO,false)){
+				String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
+				String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento_dominio="+tableName2+".id");
+			}
+
+			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO);
+			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO,false)){
+			if(!expression.inUseModel(Versamento.model().ID_TIPO_VERSAMENTO,false)){
+				String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
+				String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento_dominio="+tableName2+".id");
+			}
+
+			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO);
+			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
+		}
 	}
 
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -725,6 +787,30 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		mapTableToPKColumn.put(converter.toTable(Versamento.model()),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()))
+			));
+
+		// Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO))
+			));
+
+		// Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO))
+			));
+
+		// Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO))
+			));
+
+		// Versamento.model().ID_TIPO_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO))
 			));
 
 		// Versamento.model().ID_DOMINIO
@@ -767,12 +853,6 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_TRACCIATO_AVVISATURA),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_TRACCIATO_AVVISATURA))
-			));
-
-		// Versamento.model().ID_TIPO_VERSAMENTO
-		mapTableToPKColumn.put(converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Versamento.model().ID_TIPO_VERSAMENTO))
 			));
 
 		return mapTableToPKColumn;		

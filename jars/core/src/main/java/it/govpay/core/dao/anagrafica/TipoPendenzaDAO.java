@@ -58,7 +58,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 			this.autorizzaRichiesta(putTipoPendenzaDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd); 
 			TipiVersamentoBD intermediariBD = new TipiVersamentoBD(bd);
 			TipoVersamentoFilter filter = intermediariBD.newFilter(false);
-			filter.setCodTributo(putTipoPendenzaDTO.getCodTipoVersamento());
+			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
 
 			// flag creazione o update
 			boolean isCreate = intermediariBD.count(filter) == 0;
@@ -91,7 +91,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 				filter.setSimpleSearchString(findTipiPendenzaDTO.getSimpleSearch());
 			} else {
 				filter = stazioneBD.newFilter(false);
-				filter.setSearchAbilitato(findTipiPendenzaDTO.getAbilitato());
+				filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
 			}
 
 			filter.setOffset(findTipiPendenzaDTO.getOffset());

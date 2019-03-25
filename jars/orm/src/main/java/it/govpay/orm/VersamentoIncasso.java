@@ -37,6 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idTipoVersamentoDominio" type="{http://www.govpay.it/orm}id-tipo-versamento-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idTipoVersamento" type="{http://www.govpay.it/orm}id-tipo-versamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idUo" type="{http://www.govpay.it/orm}id-uo" minOccurs="0" maxOccurs="1"/>
@@ -108,6 +109,7 @@ import java.io.Serializable;
   propOrder = {
   	"codVersamentoEnte",
   	"nome",
+  	"idTipoVersamentoDominio",
   	"idTipoVersamento",
   	"idDominio",
   	"idUo",
@@ -200,6 +202,14 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
 
   public void setNome(java.lang.String nome) {
     this.nome = nome;
+  }
+
+  public IdTipoVersamentoDominio getIdTipoVersamentoDominio() {
+    return this.idTipoVersamentoDominio;
+  }
+
+  public void setIdTipoVersamentoDominio(IdTipoVersamentoDominio idTipoVersamentoDominio) {
+    this.idTipoVersamentoDominio = idTipoVersamentoDominio;
   }
 
   public IdTipoVersamento getIdTipoVersamento() {
@@ -668,6 +678,9 @@ public class VersamentoIncasso extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nome",required=false,nillable=false)
   protected java.lang.String nome;
+
+  @XmlElement(name="idTipoVersamentoDominio",required=true,nillable=false)
+  protected IdTipoVersamentoDominio idTipoVersamentoDominio;
 
   @XmlElement(name="idTipoVersamento",required=true,nillable=false)
   protected IdTipoVersamento idTipoVersamento;

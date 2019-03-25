@@ -95,27 +95,6 @@ public class TipoTributoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_contabilita";
 			}
 		}
-		if(field.equals(TipoTributo.model().COD_TRIBUTO_IUV)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_tributo_iuv";
-			}else{
-				return "cod_tributo_iuv";
-			}
-		}
-		if(field.equals(TipoTributo.model().ON_LINE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".on_line";
-			}else{
-				return "on_line";
-			}
-		}
-		if(field.equals(TipoTributo.model().PAGA_TERZI)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".paga_terzi";
-			}else{
-				return "paga_terzi";
-			}
-		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -139,15 +118,6 @@ public class TipoTributoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoTributo.model(), returnAlias);
 		}
 		if(field.equals(TipoTributo.model().COD_CONTABILITA)){
-			return this.toTable(TipoTributo.model(), returnAlias);
-		}
-		if(field.equals(TipoTributo.model().COD_TRIBUTO_IUV)){
-			return this.toTable(TipoTributo.model(), returnAlias);
-		}
-		if(field.equals(TipoTributo.model().ON_LINE)){
-			return this.toTable(TipoTributo.model(), returnAlias);
-		}
-		if(field.equals(TipoTributo.model().PAGA_TERZI)){
 			return this.toTable(TipoTributo.model(), returnAlias);
 		}
 

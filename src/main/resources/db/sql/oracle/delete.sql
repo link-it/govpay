@@ -17,6 +17,7 @@ DELETE FROM pag_port_versamenti;
 DELETE FROM pagamenti_portale;
 DELETE FROM singoli_versamenti;
 DELETE FROM versamenti;
+DELETE FROM tipi_vers_domini;
 DELETE FROM tipi_versamento;
 DELETE FROM tracciati;
 DELETE FROM acl;

@@ -154,9 +154,6 @@ CREATE TABLE tipi_tributo
 	descrizione VARCHAR(255),
 	tipo_contabilita VARCHAR(1),
 	cod_contabilita VARCHAR(255),
-	cod_tributo_iuv VARCHAR(4),
-	on_line BOOLEAN NOT NULL DEFAULT false,
-	paga_terzi BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_tributo') NOT NULL,
 	-- unique constraints
@@ -175,9 +172,6 @@ CREATE TABLE tributi
 	abilitato BOOLEAN NOT NULL,
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
-	cod_tributo_iuv VARCHAR(4),
-	on_line BOOLEAN,
-	paga_terzi BOOLEAN,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tributi') NOT NULL,
 	id_dominio BIGINT NOT NULL,
@@ -350,12 +344,37 @@ CREATE TABLE tipi_versamento
 (
 	cod_tipo_versamento VARCHAR(35) NOT NULL,
 	descrizione VARCHAR(255) NOT NULL,
+	codifica_iuv VARCHAR(4),
+	tipo VARCHAR(35) NOT NULL,
+	paga_terzi BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_versamento') NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_tipi_versamento_1 UNIQUE (cod_tipo_versamento),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_tipi_versamento PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_tipi_vers_domini start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE tipi_vers_domini
+(
+	codifica_iuv VARCHAR(4),
+	tipo VARCHAR(35),
+	paga_terzi BOOLEAN,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_tipi_vers_domini') NOT NULL,
+	id_tipo_versamento BIGINT NOT NULL,
+	id_dominio BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_tipi_vers_domini_1 UNIQUE (id_dominio,id_tipo_versamento),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tvd_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT fk_tvd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_tipi_vers_domini PRIMARY KEY (id)
 );
 
 
@@ -411,6 +430,7 @@ CREATE TABLE versamenti
 	anomalo BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
+	id_tipo_versamento_dominio BIGINT NOT NULL,
 	id_tipo_versamento BIGINT NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	id_uo BIGINT,
@@ -419,6 +439,7 @@ CREATE TABLE versamenti
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
 	CONSTRAINT fk_vrs_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
@@ -1009,6 +1030,7 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
     max(versamenti.numero_avviso::text) AS numero_avviso,
     max(versamenti.id_dominio) AS id_dominio,
     max(versamenti.id_tipo_versamento) AS id_tipo_versamento,
+    max(versamenti.id_tipo_versamento_dominio) AS id_tipo_versamento_dominio,
     max(versamenti.id_uo) AS id_uo,
     max(versamenti.id_applicazione) AS id_applicazione,
     MAX(CASE WHEN versamenti.avvisatura_abilitata = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_abilitata,

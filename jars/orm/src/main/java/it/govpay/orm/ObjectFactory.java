@@ -109,6 +109,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link TipoVersamentoDominio }
+     */
+    public TipoVersamentoDominio createTipoVersamentoDominio() {
+        return new TipoVersamentoDominio();
+    }
+
+    /**
      * Create an instance of {@link IdMessaggio }
      */
     public IdMessaggio createIdMessaggio() {
@@ -463,6 +470,13 @@ public class ObjectFactory {
      */
     public RR createRR() {
         return new RR();
+    }
+
+    /**
+     * Create an instance of {@link IdTipoVersamentoDominio }
+     */
+    public IdTipoVersamentoDominio createIdTipoVersamentoDominio() {
+        return new IdTipoVersamentoDominio();
     }
 
     /**

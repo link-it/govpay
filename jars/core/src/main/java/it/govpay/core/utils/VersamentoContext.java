@@ -11,8 +11,8 @@ public class VersamentoContext {
 	private TipoContabilita tipoContabilita;
 	private String codContabilita;
 	
-	//Valorizzato solo se il versamento ha un solo singolo pagamento associato ad un tributo censito
-	private String codTributoIuv;
+	//Valorizzato con la codifica IUV prevista per la tipologia di versamento
+	private String codificaIuv;
 
 	public String getCodUoBeneficiaria() {
 		return this.codUoBeneficiaria;
@@ -38,12 +38,12 @@ public class VersamentoContext {
 		this.codContabilita = codContabilita;
 	}
 
-	public String getCodTributoIuv() {
-		return this.codTributoIuv;
+	public String getCodificaIuv() {
+		return this.codificaIuv;
 	}
 
-	public void setCodTributoIuv(String codTributoIuv) {
-		this.codTributoIuv = codTributoIuv;
+	public void setCodificaIuv(String codificaIuv) {
+		this.codificaIuv = codificaIuv;
 	}
 
 	public String getCodUnivocoDebitore() {

@@ -29,18 +29,23 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
+import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
+import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindIbanDTO;
 import it.govpay.core.dao.anagrafica.dto.FindIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindTributiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindTributiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindUnitaOperativeDTO;
@@ -49,6 +54,8 @@ import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetIbanDTO;
 import it.govpay.core.dao.anagrafica.dto.GetIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
@@ -59,12 +66,15 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.IbanAccreditoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.StazioneNonTrovataException;
 import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.TributoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -75,6 +85,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoTributo;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Tributo;
 
 public class DominiDAO extends BaseDAO{
@@ -557,6 +568,118 @@ public class DominiDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 		return putIbanAccreditoDTOResponse;
+	}
+	
+	
+	public FindTipiPendenzaDominioDTOResponse findTipiPendenza(FindTipiPendenzaDominioDTO findTipiPendenzaDTO) throws NotAuthorizedException, DominioNonTrovatoException, ServiceException, NotAuthenticatedException {
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			this.autorizzaRichiesta(findTipiPendenzaDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd);
+
+			TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+			TipoVersamentoDominioFilter filter = null;
+			if(findTipiPendenzaDTO.isSimpleSearch()) {
+				filter = tipiVersamentoDominiBD.newFilter(true);
+				filter.setSimpleSearchString(findTipiPendenzaDTO.getSimpleSearch());
+			} else {
+				filter = tipiVersamentoDominiBD.newFilter(false);
+				filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
+				filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
+				filter.setCodDominio(findTipiPendenzaDTO.getCodDominio());
+			}
+			try {
+				filter.setIdDominio(AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getCodDominio()).getId());
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new DominioNonTrovatoException("Dominio " + findTipiPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
+			}
+			filter.setOffset(findTipiPendenzaDTO.getOffset());
+			filter.setLimit(findTipiPendenzaDTO.getLimit());
+			filter.getFilterSortList().addAll(findTipiPendenzaDTO.getFieldSortList());
+
+			List<it.govpay.bd.model.TipoVersamentoDominio> findAll = tipiVersamentoDominiBD.findAll(filter);
+
+			List<GetTipoPendenzaDominioDTOResponse> lst = new ArrayList<>();
+			for(it.govpay.bd.model.TipoVersamentoDominio t: findAll) {
+				lst.add(new GetTipoPendenzaDominioDTOResponse(t));
+			}
+
+			return new FindTipiPendenzaDominioDTOResponse(tipiVersamentoDominiBD.count(filter), lst);
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
+
+	public GetTipoPendenzaDominioDTOResponse getTipoPendenza(GetTipoPendenzaDominioDTO getTipoPendenzaDTO) throws NotAuthorizedException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, ServiceException, NotAuthenticatedException {
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			this.autorizzaRichiesta(getTipoPendenzaDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd);
+
+			Dominio dominio = null;
+			try {
+				dominio = AnagraficaManager.getDominio(bd, getTipoPendenzaDTO.getCodDominio());
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new DominioNonTrovatoException("Dominio " + getTipoPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
+			}
+			TipoVersamentoDominio tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), getTipoPendenzaDTO.getCodTipoVersamento());
+			GetTipoPendenzaDominioDTOResponse response = new GetTipoPendenzaDominioDTOResponse(tipoVersamentoDominio);
+			return response;
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new TipoVersamentoNonTrovatoException("Tipo Pendenza " + getTipoPendenzaDTO.getCodTipoVersamento() + " non censito in Anagrafica per il dominio " + getTipoPendenzaDTO.getCodDominio());
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
+
+	public PutTipoPendenzaDominioDTOResponse createOrUpdateTipoPendenzaDominio(PutTipoPendenzaDominioDTO putTipoPendenzaDominioDTO) throws ServiceException, 
+	DominioNonTrovatoException, TipoVersamentoNonTrovatoException, TributoNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, RequestValidationException{ 
+		PutTipoPendenzaDominioDTOResponse putTipoPendenzaDominioDTOResponse = new PutTipoPendenzaDominioDTOResponse();
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			this.autorizzaRichiesta(putTipoPendenzaDominioDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.SCRITTURA,bd);
+			try {
+				// inserisco l'iddominio
+				putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdDominio(AnagraficaManager.getDominio(bd, putTipoPendenzaDominioDTO.getIdDominio()).getId());
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new DominioNonTrovatoException(e.getMessage());
+			}
+
+			TipoVersamento tipoVersamento = null;
+			try {
+				tipoVersamento = AnagraficaManager.getTipoVersamento(bd, putTipoPendenzaDominioDTO.getCodTipoVersamento());
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				throw new TipoVersamentoNonTrovatoException(e.getMessage());
+			}
+
+			putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdTipoVersamento(tipoVersamento.getId());
+
+			TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+			TipoVersamentoDominioFilter filter = tipiVersamentoDominiBD.newFilter(); 
+			filter.setCodDominio(putTipoPendenzaDominioDTO.getIdDominio());
+			filter.setCodTipoVersamento(putTipoPendenzaDominioDTO.getCodTipoVersamento());
+
+			// flag creazione o update
+			boolean isCreate = tipiVersamentoDominiBD.count(filter) == 0;
+			putTipoPendenzaDominioDTOResponse.setCreated(isCreate);
+			if(isCreate) {
+				tipiVersamentoDominiBD.insertTipoVersamentoDominio(putTipoPendenzaDominioDTO.getTipoVersamentoDominio());
+			} else {
+				tipiVersamentoDominiBD.updateTipoVersamentoDominio(putTipoPendenzaDominioDTO.getTipoVersamentoDominio());
+			}
+		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+			throw new TributoNonTrovatoException(e.getMessage());
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+		return putTipoPendenzaDominioDTOResponse;
 	}
 
 }

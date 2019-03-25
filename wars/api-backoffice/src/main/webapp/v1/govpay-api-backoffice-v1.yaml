@@ -1283,7 +1283,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/tipoPendenza'
+                          $ref: '#/components/schemas/tipoPendenzaDominio'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -1314,7 +1314,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/tipoPendenza'
+                $ref: '#/components/schemas/tipoPendenzaDominio'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -1342,7 +1342,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/tipoPendenzaPost'
+              $ref: '#/components/schemas/tipoPendenzaDominioPost'
       responses:
         '200':
           description: TipoPendenza aggiornata con successo
@@ -4114,7 +4114,43 @@ components:
             idTipoPendenza:
               type: string
               example: IMU
-        - $ref: '#/components/schemas/tipoPendenzaPost'        
+        - $ref: '#/components/schemas/tipoPendenzaPost'
+    tipoPendenzaDominioPost:
+      type: object
+      properties:
+        tipo:
+          type: string
+          enum:
+            - spontanea
+            - dovuta
+          example: Imposta municipale urbana
+        codificaIUV:
+          type: string
+          description: Cifra identificativa negli IUV
+          example: 01
+          pattern: "[0-9]{1,3}"
+        pagaTerzi:
+          type: boolean
+          description: Indica se la pendenza e' pagabile da soggetti terzi
+          example: true
+          default: false          
+    tipoPendenzaDominio:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idTipoPendenza
+          properties:
+            idTipoPendenza:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/tipoPendenzaDominioPost'
+        - type: object
+          required:
+           - tipoPendenza
+          properties:
+            tipoPendenza:
+              $ref: '#/components/schemas/tipoPendenza'
     pagamentoIndex:
       type: object
       required:

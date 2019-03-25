@@ -62,6 +62,7 @@ import it.govpay.orm.dao.IDBRendicontazioneService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
+import it.govpay.orm.dao.IDBTipoVersamentoDominioService;
 import it.govpay.orm.dao.IDBTipoVersamentoService;
 import it.govpay.orm.dao.IDBTracciatoService;
 import it.govpay.orm.dao.IDBTributoService;
@@ -91,6 +92,7 @@ import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
+import it.govpay.orm.dao.ITipoVersamentoDominioService;
 import it.govpay.orm.dao.ITipoVersamentoService;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITributoService;
@@ -124,6 +126,7 @@ public class BasicBD {
 	private IACLService aclService;
 	private IVersamentoService versamentoService;
 	private ITipoVersamentoService tipoVersamentoService;
+	private ITipoVersamentoDominioService tipoVersamentoDominioService;
 	private ISingoloVersamentoService singoloVersamentoService;
 	private IPagamentoPortaleService pagamentoPortaleService;
 	private IPagamentoPortaleVersamentoService pagamentoPortaleVersamentoService;
@@ -211,6 +214,7 @@ public class BasicBD {
 				this.connettoreService = this.serviceManager.getConnettoreService();
 				this.aclService = this.serviceManager.getACLService();
 				this.tipoVersamentoService = this.serviceManager.getTipoVersamentoService();
+				this.tipoVersamentoDominioService = this.serviceManager.getTipoVersamentoDominioService();
 				this.versamentoService = this.serviceManager.getVersamentoService();
 				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
 				this.pagamentoPortaleService = this.serviceManager.getPagamentoPortaleService();
@@ -263,6 +267,7 @@ public class BasicBD {
 			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
 			((IDBACLService)this.aclService).enableSelectForUpdate();
 			((IDBTipoVersamentoService)this.tipoVersamentoService).enableSelectForUpdate();
+			((IDBTipoVersamentoDominioService)this.tipoVersamentoDominioService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
 			((IDBPagamentoPortaleService)this.pagamentoPortaleService).enableSelectForUpdate();
@@ -309,6 +314,7 @@ public class BasicBD {
 			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
 			((IDBACLService)this.aclService).disableSelectForUpdate();
 			((IDBTipoVersamentoService)this.tipoVersamentoService).disableSelectForUpdate();
+			((IDBTipoVersamentoDominioService)this.tipoVersamentoDominioService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
 			((IDBPagamentoPortaleService)this.pagamentoPortaleService).disableSelectForUpdate();
@@ -446,6 +452,13 @@ public class BasicBD {
 			return this.father.getTipoVersamentoService();
 		}
 		return this.tipoVersamentoService;
+	}
+	
+	public ITipoVersamentoDominioService getTipoVersamentoDominioService() {
+		if(this.father != null) {
+			return this.father.getTipoVersamentoDominioService();
+		}
+		return this.tipoVersamentoDominioService;
 	}
 	
 	public IVersamentoService getVersamentoService() {

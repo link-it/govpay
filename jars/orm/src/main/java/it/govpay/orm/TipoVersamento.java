@@ -37,6 +37,9 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codificaIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -52,7 +55,10 @@ import java.io.Serializable;
 @XmlType(name = "TipoVersamento", 
   propOrder = {
   	"codTipoVersamento",
-  	"descrizione"
+  	"descrizione",
+  	"codificaIuv",
+  	"tipo",
+  	"pagaTerzi"
   }
 )
 
@@ -92,6 +98,34 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
     this.descrizione = descrizione;
   }
 
+  public java.lang.String getCodificaIuv() {
+    return this.codificaIuv;
+  }
+
+  public void setCodificaIuv(java.lang.String codificaIuv) {
+    this.codificaIuv = codificaIuv;
+  }
+
+  public java.lang.String getTipo() {
+    return this.tipo;
+  }
+
+  public void setTipo(java.lang.String tipo) {
+    this.tipo = tipo;
+  }
+
+  public boolean isPagaTerzi() {
+    return this.pagaTerzi;
+  }
+
+  public boolean getPagaTerzi() {
+    return this.pagaTerzi;
+  }
+
+  public void setPagaTerzi(boolean pagaTerzi) {
+    this.pagaTerzi = pagaTerzi;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -118,5 +152,17 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="descrizione",required=true,nillable=false)
   protected java.lang.String descrizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codificaIuv",required=false,nillable=false)
+  protected java.lang.String codificaIuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipo",required=true,nillable=false)
+  protected java.lang.String tipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="pagaTerzi",required=true,nillable=false,defaultValue="false")
+  protected boolean pagaTerzi = false;
 
 }

@@ -9,7 +9,6 @@ public class EntrateConverter {
 		TipoEntrata rsModel = new TipoEntrata();
 		
 		rsModel.codiceContabilita(tributo.getCodContabilitaDefault())
-		.codificaIUV(tributo.getCodTributoIuvDefault())
 		.descrizione(tributo.getDescrizione())
 		.idEntrata(tributo.getCodTributo());
 		

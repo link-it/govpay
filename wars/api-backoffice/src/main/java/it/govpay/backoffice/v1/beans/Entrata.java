@@ -10,9 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "ibanAppoggio",
 "tipoContabilita",
 "codiceContabilita",
-"codificaIUV",
-"online",
-"pagaTerzi",
 "abilitato",
 "idEntrata",
 "tipoEntrata",
@@ -30,15 +27,6 @@ public class Entrata extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
-  @JsonProperty("codificaIUV")
-  private String codificaIUV = null;
-  
-  @JsonProperty("online")
-  private Boolean online = false;
-  
-  @JsonProperty("pagaTerzi")
-  private Boolean pagaTerzi = false;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
@@ -111,54 +99,6 @@ public class Entrata extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * Cifra identificativa negli IUV
-   **/
-  public Entrata codificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-    return this;
-  }
-
-  @JsonProperty("codificaIUV")
-  public String getCodificaIUV() {
-    return this.codificaIUV;
-  }
-  public void setCodificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-  }
-
-  /**
-   * Indica se l'entrata spontanea e' pagabile online
-   **/
-  public Entrata online(Boolean online) {
-    this.online = online;
-    return this;
-  }
-
-  @JsonProperty("online")
-  public Boolean Online() {
-    return online;
-  }
-  public void setOnline(Boolean online) {
-    this.online = online;
-  }
-
-  /**
-   * Indica se l'entrata e' pagabile da soggetti terzi
-   **/
-  public Entrata pagaTerzi(Boolean pagaTerzi) {
-    this.pagaTerzi = pagaTerzi;
-    return this;
-  }
-
-  @JsonProperty("pagaTerzi")
-  public Boolean PagaTerzi() {
-    return pagaTerzi;
-  }
-  public void setPagaTerzi(Boolean pagaTerzi) {
-    this.pagaTerzi = pagaTerzi;
-  }
-
-  /**
    * Indicazione l'entrata e' abilitata
    **/
   public Entrata abilitato(Boolean abilitato) {
@@ -217,9 +157,6 @@ public class Entrata extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.ibanAppoggio, entrata.ibanAppoggio) &&
         Objects.equals(this.tipoContabilita, entrata.tipoContabilita) &&
         Objects.equals(this.codiceContabilita, entrata.codiceContabilita) &&
-        Objects.equals(this.codificaIUV, entrata.codificaIUV) &&
-        Objects.equals(online, entrata.online) &&
-	Objects.equals(pagaTerzi, entrata.pagaTerzi) &&
         Objects.equals(this.abilitato, entrata.abilitato) &&
         Objects.equals(this.idEntrata, entrata.idEntrata) &&
         Objects.equals(this.tipoEntrata, entrata.tipoEntrata);
@@ -227,7 +164,7 @@ public class Entrata extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.ibanAccredito, this.ibanAppoggio, this.tipoContabilita, this.codiceContabilita, this.codificaIUV,  online, pagaTerzi, this.abilitato, this.idEntrata, this.tipoEntrata);
+    return Objects.hash(this.ibanAccredito, this.ibanAppoggio, this.tipoContabilita, this.codiceContabilita, this.abilitato, this.idEntrata, this.tipoEntrata);
   }
 
   public static Entrata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -248,9 +185,6 @@ public class Entrata extends it.govpay.core.beans.JSONSerializable {
     sb.append("    ibanAppoggio: ").append(this.toIndentedString(this.ibanAppoggio)).append("\n");
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
-    sb.append("    codificaIUV: ").append(this.toIndentedString(this.codificaIUV)).append("\n");
-    sb.append("    online: ").append(toIndentedString(online)).append("\n");
-    sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("    idEntrata: ").append(this.toIndentedString(this.idEntrata)).append("\n");
     sb.append("    tipoEntrata: ").append(this.toIndentedString(this.tipoEntrata)).append("\n");

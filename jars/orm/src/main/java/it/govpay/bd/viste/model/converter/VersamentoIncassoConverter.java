@@ -58,6 +58,8 @@ public class VersamentoIncassoConverter {
 				dto.setIdDominio(vo.getIdDominio().getId());
 			if(vo.getIdTipoVersamento() != null)
 				dto.setIdTipoVersamento(vo.getIdTipoVersamento().getId());
+			if(vo.getIdTipoVersamentoDominio() != null)
+				dto.setIdTipoVersamentoDominio(vo.getIdTipoVersamentoDominio().getId());
 			dto.setNome(vo.getNome());
 			dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 			dto.setStatoVersamento(StatoVersamento.valueOf(vo.getStatoVersamento()));

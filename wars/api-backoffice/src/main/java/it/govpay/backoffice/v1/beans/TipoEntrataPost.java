@@ -13,9 +13,6 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "descrizione",
 "tipoContabilita",
 "codiceContabilita",
-"codificaIUV",
-"online",
-"pagaTerzi",
 })
 public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable implements IValidable {
   
@@ -30,15 +27,6 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
   
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
-  @JsonProperty("codificaIUV")
-  private String codificaIUV = null;
-  
-  @JsonProperty("online")
-  private Boolean online = false;
-  
-  @JsonProperty("pagaTerzi")
-  private Boolean pagaTerzi = false;
   
   /**
    **/
@@ -103,54 +91,6 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
     this.codiceContabilita = codiceContabilita;
   }
 
-  /**
-   * Cifra identificativa negli IUV
-   **/
-  public TipoEntrataPost codificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-    return this;
-  }
-
-  @JsonProperty("codificaIUV")
-  public String getCodificaIUV() {
-    return this.codificaIUV;
-  }
-  public void setCodificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-  }
-
-  /**
-   * Indica se l'entrata spontanea e' pagabile online
-   **/
-  public TipoEntrataPost online(Boolean online) {
-    this.online = online;
-    return this;
-  }
-
-  @JsonProperty("online")
-  public Boolean Online() {
-    return online;
-  }
-  public void setOnline(Boolean online) {
-    this.online = online;
-  }
-
-  /**
-   * Indica se l'entrata e' pagabile da soggetti terzi
-   **/
-  public TipoEntrataPost pagaTerzi(Boolean pagaTerzi) {
-    this.pagaTerzi = pagaTerzi;
-    return this;
-  }
-
-  @JsonProperty("pagaTerzi")
-  public Boolean PagaTerzi() {
-    return pagaTerzi;
-  }
-  public void setPagaTerzi(Boolean pagaTerzi) {
-    this.pagaTerzi = pagaTerzi;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -162,15 +102,12 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
     TipoEntrataPost tipoEntrataPost = (TipoEntrataPost) o;
     return Objects.equals(this.descrizione, tipoEntrataPost.descrizione) &&
         Objects.equals(this.tipoContabilita, tipoEntrataPost.tipoContabilita) &&
-        Objects.equals(this.codiceContabilita, tipoEntrataPost.codiceContabilita) &&
-        Objects.equals(this.codificaIUV, tipoEntrataPost.codificaIUV) &&
-        Objects.equals(this.online, tipoEntrataPost.online) &&
-        Objects.equals(this.pagaTerzi, tipoEntrataPost.pagaTerzi);
+        Objects.equals(this.codiceContabilita, tipoEntrataPost.codiceContabilita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.descrizione, this.tipoContabilita, this.codiceContabilita, this.codificaIUV, this.online, this.pagaTerzi);
+    return Objects.hash(this.descrizione, this.tipoContabilita, this.codiceContabilita);
   }
 
   public static TipoEntrataPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -190,9 +127,6 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
-    sb.append("    codificaIUV: ").append(this.toIndentedString(this.codificaIUV)).append("\n");
-    sb.append("    online: ").append(toIndentedString(this.online)).append("\n");
-    sb.append("    pagaTerzi: ").append(toIndentedString(this.pagaTerzi)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -214,9 +148,6 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
 	vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
 	vf.getValidator("tipoContabilita", this.tipoContabilita).notNull();
 	vf.getValidator("codiceContabilita", this.codiceContabilita).notNull().minLength(1).maxLength(255);
-	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
-	vf.getValidator("online", this.online).notNull();
-	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();
   }
 }
 

@@ -151,14 +151,6 @@ public class TipoVersamentoFilter extends AbstractFilter {
 		this.listaIdTipiVersamentoDaEscludere = listaIdTipiVersamentoDaEscludere;
 	}
 
-	public String getCodTributo() {
-		return this.codTipoVersamento;
-	}
-
-	public void setCodTributo(String codTributo) {
-		this.codTipoVersamento = codTributo;
-	}
-
 //	public String getCodContabilita() {
 //		return this.codContabilita;
 //	}
@@ -174,6 +166,14 @@ public class TipoVersamentoFilter extends AbstractFilter {
 //	public void setCodificaTipoContabilita(String codificaTipoContabilita) {
 //		this.codificaTipoContabilita = codificaTipoContabilita;
 //	}
+
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
 
 	public String getDescrizione() {
 		return this.descrizione;

@@ -58,6 +58,12 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_tipo_versamento", TipoVersamento.model().COD_TIPO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setDescrizione", TipoVersamento.model().DESCRIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "descrizione", TipoVersamento.model().DESCRIZIONE.getFieldType()));
+				setParameter(object, "setCodificaIuv", TipoVersamento.model().CODIFICA_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "codifica_iuv", TipoVersamento.model().CODIFICA_IUV.getFieldType()));
+				setParameter(object, "setTipo", TipoVersamento.model().TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo", TipoVersamento.model().TIPO.getFieldType()));
+				setParameter(object, "setPagaTerzi", TipoVersamento.model().PAGA_TERZI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamento.model().PAGA_TERZI.getFieldType()));
 				return object;
 			}
 			
@@ -84,6 +90,12 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codTipoVersamento"));
 				setParameter(object, "setDescrizione", TipoVersamento.model().DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"descrizione"));
+				setParameter(object, "setCodificaIuv", TipoVersamento.model().CODIFICA_IUV.getFieldType(),
+					this.getObjectFromMap(map,"codificaIuv"));
+				setParameter(object, "setTipo", TipoVersamento.model().TIPO.getFieldType(),
+					this.getObjectFromMap(map,"tipo"));
+				setParameter(object, "setPagaTerzi", TipoVersamento.model().PAGA_TERZI.getFieldType(),
+					this.getObjectFromMap(map,"pagaTerzi"));
 				return object;
 			}
 			

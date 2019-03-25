@@ -42,9 +42,6 @@ import java.io.Serializable;
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoTributo" type="{http://www.govpay.it/orm}TipoTributo" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codTributoIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="onLine" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -65,10 +62,7 @@ import java.io.Serializable;
   	"idIbanAppoggio",
   	"tipoContabilita",
   	"codiceContabilita",
-  	"tipoTributo",
-  	"codTributoIuv",
-  	"onLine",
-  	"pagaTerzi"
+  	"tipoTributo"
   }
 )
 
@@ -152,30 +146,6 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.tipoTributo = tipoTributo;
   }
 
-  public java.lang.String getCodTributoIuv() {
-    return this.codTributoIuv;
-  }
-
-  public void setCodTributoIuv(java.lang.String codTributoIuv) {
-    this.codTributoIuv = codTributoIuv;
-  }
-
-  public Boolean getOnLine() {
-    return this.onLine;
-  }
-
-  public void setOnLine(Boolean onLine) {
-    this.onLine = onLine;
-  }
-
-  public Boolean getPagaTerzi() {
-    return this.pagaTerzi;
-  }
-
-  public void setPagaTerzi(Boolean pagaTerzi) {
-    this.pagaTerzi = pagaTerzi;
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -218,17 +188,5 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   @XmlElement(name="tipoTributo",required=true,nillable=false)
   protected TipoTributo tipoTributo;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codTributoIuv",required=false,nillable=false)
-  protected java.lang.String codTributoIuv;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="onLine",required=false,nillable=false)
-  protected Boolean onLine;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="pagaTerzi",required=false,nillable=false)
-  protected Boolean pagaTerzi;
 
 }

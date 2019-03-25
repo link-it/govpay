@@ -81,6 +81,27 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione";
 			}
 		}
+		if(field.equals(TipoVersamento.model().CODIFICA_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".codifica_iuv";
+			}else{
+				return "codifica_iuv";
+			}
+		}
+		if(field.equals(TipoVersamento.model().TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PAGA_TERZI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".paga_terzi";
+			}else{
+				return "paga_terzi";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -98,6 +119,15 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().DESCRIZIONE)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().CODIFICA_IUV)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().TIPO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PAGA_TERZI)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 

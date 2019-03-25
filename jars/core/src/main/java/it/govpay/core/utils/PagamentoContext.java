@@ -14,7 +14,7 @@ import it.govpay.bd.model.Applicazione;
 public class PagamentoContext {
 	
 	public static final String codUoBeneficiariaKey="uo";
-	public static final String codTributoIuvKey="t";
+	public static final String codificaIuvKey="t";
 	public static final String codApplicazioneIuvKey="a";
 	public static final String anno4="Y";
 	public static final String anno2="y";
@@ -99,8 +99,8 @@ public class PagamentoContext {
 		}
 		
 		if(this.versamentoCtx != null) {
-			if(this.versamentoCtx.getCodTributoIuv() != null)
-				props.put(codTributoIuvKey, this.versamentoCtx.getCodTributoIuv());
+			if(this.versamentoCtx.getCodificaIuv() != null)
+				props.put(codificaIuvKey, this.versamentoCtx.getCodificaIuv());
 		}
 		
 		Calendar now = Calendar.getInstance(); 
@@ -146,6 +146,7 @@ public class PagamentoContext {
 		
 		this.versamentoCtx.setCodUoBeneficiaria(versamento.getUo(bd).getCodUo());
 		this.versamentoCtx.setCodUnivocoDebitore(versamento.getAnagraficaDebitore().getCodUnivoco());
+		this.versamentoCtx.setCodificaIuv(versamento.getTipoVersamentoDominio(bd).getCodificaIuv());
 		
 		if(versamento.getSingoliVersamenti(bd).size() == 1){
 			SingoloVersamento sv = versamento.getSingoliVersamenti(bd).get(0);
@@ -154,7 +155,6 @@ public class PagamentoContext {
 			if(t != null) {
 				this.versamentoCtx.setCodContabilita(t.getCodContabilita());
 				this.versamentoCtx.setTipoContabilita(t.getTipoContabilita());
-				this.versamentoCtx.setCodTributoIuv(t.getCodTributoIuv());
 			} else {
 				this.versamentoCtx.setCodContabilita(sv.getCodContabilita());
 				this.versamentoCtx.setTipoContabilita(sv.getTipoContabilita());

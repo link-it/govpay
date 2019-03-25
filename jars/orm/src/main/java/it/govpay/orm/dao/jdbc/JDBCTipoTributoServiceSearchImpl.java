@@ -19,17 +19,11 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.IdTipoTributo;
-import it.govpay.orm.TipoTributo;
-import it.govpay.orm.dao.jdbc.converter.TipoTributoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.TipoTributoFetch;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -51,6 +45,12 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
+
+import it.govpay.orm.IdTipoTributo;
+import it.govpay.orm.TipoTributo;
+import it.govpay.orm.dao.jdbc.converter.TipoTributoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.TipoTributoFetch;
 
 /**     
  * JDBCTipoTributoServiceSearchImpl
@@ -163,9 +163,6 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 			fields.add(TipoTributo.model().DESCRIZIONE);
 			fields.add(TipoTributo.model().TIPO_CONTABILITA);
 			fields.add(TipoTributo.model().COD_CONTABILITA);
-			fields.add(TipoTributo.model().COD_TRIBUTO_IUV);
-			fields.add(TipoTributo.model().ON_LINE);
-			fields.add(TipoTributo.model().PAGA_TERZI);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -463,41 +460,21 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 	
 	private TipoTributo _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
-		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-				
-		TipoTributo tipoTributo = new TipoTributo();
-		
+		IField idField = new CustomField("id", Long.class, "id", this.getTipoTributoFieldConverter().toTable(TipoTributo.model()));
 
-		// Object tipoTributo
-		ISQLQueryObject sqlQueryObjectGet_tipoTributo = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_tipoTributo.setANDLogicOperator(true);
-		sqlQueryObjectGet_tipoTributo.addFromTable(this.getTipoTributoFieldConverter().toTable(TipoTributo.model()));
-		sqlQueryObjectGet_tipoTributo.addSelectField("id");
-		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO,true));
-		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().DESCRIZIONE,true));
-		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().TIPO_CONTABILITA,true));
-		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_CONTABILITA,true));
-		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO_IUV,true));
-		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().ON_LINE,true));
-		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().PAGA_TERZI,true));
-		sqlQueryObjectGet_tipoTributo.addWhereCondition("id=?");
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 
-		// Get tipoTributo
-		tipoTributo = (TipoTributo) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_tipoTributo.createSQLQuery(), jdbcProperties.isShowSql(), TipoTributo.model(), this.getTipoTributoFetch(),
-			new JDBCObject(tableId,Long.class));
+		expression.equals(idField, tableId);
+		List<TipoTributo> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
+
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 
 
-
-		
-        return tipoTributo;  
+		return lst.get(0);
 	
 	} 
 	

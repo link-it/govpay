@@ -10,9 +10,6 @@ public class TipoTributo extends BasicModel {
 	private String descrizione;
 	private TipoContabilita tipoContabilitaDefault;
 	private String codContabilitaDefault;
-	private String codTributoIuvDefault;
-	private boolean onlineDefault;
-	private boolean pagaTerziDefault;
 	
 	@Override
 	public Long getId() {
@@ -44,23 +41,5 @@ public class TipoTributo extends BasicModel {
 	}
 	public void setCodContabilitaDefault(String codContabilitaDefault) {
 		this.codContabilitaDefault = codContabilitaDefault;
-	}
-	public String getCodTributoIuvDefault() {
-		return this.codTributoIuvDefault;
-	}
-	public void setCodTributoIuvDefault(String codTributoIuvDefault) {
-		this.codTributoIuvDefault = codTributoIuvDefault;
-	}
-	public boolean getOnlineDefault() {
-		return onlineDefault;
-	}
-	public void setOnlineDefault(boolean onlineDefault) {
-		this.onlineDefault = onlineDefault;
-	}
-	public boolean getPagaTerziDefault() {
-		return pagaTerziDefault;
-	}
-	public void setPagaTerziDefault(boolean pagaTerziDefault) {
-		this.pagaTerziDefault = pagaTerziDefault;
 	}
 }

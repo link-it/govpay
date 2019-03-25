@@ -70,6 +70,40 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
+		// Object _tipoVersamentoDominio
+		Long id_tipoVersamentoDominio = null;
+		it.govpay.orm.IdTipoVersamentoDominio idLogic_tipoVersamentoDominio = null;
+		idLogic_tipoVersamentoDominio = versamento.getIdTipoVersamentoDominio();
+		if(idLogic_tipoVersamentoDominio!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_tipoVersamentoDominio = ((JDBCTipoVersamentoDominioServiceSearch)(this.getServiceManager().getTipoVersamentoDominioServiceSearch())).findTableId(idLogic_tipoVersamentoDominio, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_tipoVersamentoDominio = idLogic_tipoVersamentoDominio.getId();
+				if(id_tipoVersamentoDominio==null || id_tipoVersamentoDominio<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+		// Object _tipo_versamento
+		Long id_tipo_versamento = null;
+		it.govpay.orm.IdTipoVersamento idLogic_tipoVersamento = null;
+		idLogic_tipoVersamento = versamento.getIdTipoVersamento();
+		if(idLogic_tipoVersamento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_tipo_versamento = ((JDBCTipoVersamentoServiceSearch)(this.getServiceManager().getTipoVersamentoService())).findTableId(idLogic_tipoVersamento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_tipo_versamento = idLogic_tipoVersamento.getId();
+				if(id_tipo_versamento==null || id_tipo_versamento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 		// Object _dominio
 		Long id_dominio = null;
 		it.govpay.orm.IdDominio idLogic_dominio = null;
@@ -138,24 +172,6 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			}
 		}
 		
-		// Object _tipo_versamento
-		Long id_tipo_versamento = null;
-		it.govpay.orm.IdTipoVersamento idLogic_tipoVersamento = null;
-		idLogic_tipoVersamento = versamento.getIdTipoVersamento();
-		if(idLogic_tipoVersamento!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_tipo_versamento = ((JDBCTipoVersamentoServiceSearch)(this.getServiceManager().getTipoVersamentoService())).findTableId(idLogic_tipoVersamento, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_tipo_versamento = idLogic_tipoVersamento.getId();
-				if(id_tipo_versamento==null || id_tipo_versamento<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-
 		// Object versamento
 		sqlQueryObjectInsert.addInsertTable(this.getVersamentoFieldConverter().toTable(Versamento.model()));
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().COD_VERSAMENTO_ENTE,false),"?");
@@ -201,11 +217,12 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().AVVISATURA_COD_AVVISATURA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().ACK,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().ANOMALO,false),"?");
+		sqlQueryObjectInsert.addInsertField("id_tipo_versamento_dominio","?");
+		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_uo","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_tracciato","?");
-		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 
 		// Insert versamento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getVersamentoFetch().getKeyGeneratorObject(Versamento.model());
@@ -253,11 +270,12 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getAvvisaturaCodAvvisatura(),Versamento.model().AVVISATURA_COD_AVVISATURA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getAck(),Versamento.model().ACK.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getAnomalo(),Versamento.model().ANOMALO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamentoDominio,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipo_versamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_uo,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciato,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipo_versamento,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciato,Long.class)
 		);
 		versamento.setId(id);
 
@@ -303,6 +321,40 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
+
+		// Object _versamento_tipoVersamentoDominio
+		Long id_versamento_tipoVersamentoDominio = null;
+		it.govpay.orm.IdTipoVersamentoDominio idLogic_versamento_tipoVersamentoDominio = null;
+		idLogic_versamento_tipoVersamentoDominio = versamento.getIdTipoVersamentoDominio();
+		if(idLogic_versamento_tipoVersamentoDominio!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_versamento_tipoVersamentoDominio = ((JDBCTipoVersamentoDominioServiceSearch)(this.getServiceManager().getTipoVersamentoDominioServiceSearch())).findTableId(idLogic_versamento_tipoVersamentoDominio, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_versamento_tipoVersamentoDominio = idLogic_versamento_tipoVersamentoDominio.getId();
+				if(id_versamento_tipoVersamentoDominio==null || id_versamento_tipoVersamentoDominio<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+		// Object _versamento_tipoVersamento
+		Long id_versamento_tipo_versamento = null;
+		it.govpay.orm.IdTipoVersamento idLogic_tipoVersamento = null;
+		idLogic_tipoVersamento = versamento.getIdTipoVersamento();
+		if(idLogic_tipoVersamento!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_versamento_tipo_versamento = ((JDBCTipoVersamentoServiceSearch)(this.getServiceManager().getTipoVersamentoService())).findTableId(idLogic_tipoVersamento, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_versamento_tipo_versamento = idLogic_tipoVersamento.getId();
+				if(id_versamento_tipo_versamento==null || id_versamento_tipo_versamento<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 
 		// Object _versamento_dominio
 		Long id_versamento_dominio = null;
@@ -372,23 +424,6 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			}
 		}
 		
-		// Object _tipo_versamento
-		Long id_versamento_tipo_versamento = null;
-		it.govpay.orm.IdTipoVersamento idLogic_tipoVersamento = null;
-		idLogic_tipoVersamento = versamento.getIdTipoVersamento();
-		if(idLogic_tipoVersamento!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_versamento_tipo_versamento = ((JDBCTipoVersamentoServiceSearch)(this.getServiceManager().getTipoVersamentoService())).findTableId(idLogic_tipoVersamento, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_versamento_tipo_versamento = idLogic_tipoVersamento.getId();
-				if(id_versamento_tipo_versamento==null || id_versamento_tipo_versamento<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object versamento
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -482,6 +517,12 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().ANOMALO,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getAnomalo(), Versamento.model().ANOMALO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento_dominio","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
 		}
 		if(setIdMappingResolutionBehaviour){
@@ -494,7 +535,10 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_tracciato","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento","?");
+			lstObjects_versamento.add(new JDBCObject(id_versamento_tipoVersamentoDominio, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_versamento.add(new JDBCObject(id_versamento_tipo_versamento, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_versamento.add(new JDBCObject(id_versamento_dominio, Long.class));
@@ -507,9 +551,6 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_versamento.add(new JDBCObject(id_versamento_tracciato, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_versamento.add(new JDBCObject(id_versamento_tipo_versamento, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_versamento.add(new JDBCObject(tableId, Long.class));

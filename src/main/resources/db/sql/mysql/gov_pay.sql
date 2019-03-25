@@ -153,9 +153,6 @@ CREATE TABLE tipi_tributo
 	descrizione VARCHAR(255) COMMENT 'Descrizione dell\'entrata',
 	tipo_contabilita VARCHAR(1) COMMENT 'Tipo di codifica della contabilita',
 	cod_contabilita VARCHAR(255) COMMENT 'Codifica della contabilita',
-	cod_tributo_iuv VARCHAR(4) COMMENT 'Codifica dell\'entrata nello iuv',
-	on_line BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se l\'entrata e\' pagabile spontaneamente',
-	paga_terzi BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se l\'entrata e\' pagabile da soggetti terzi',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -174,9 +171,6 @@ CREATE TABLE tributi
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
 	tipo_contabilita VARCHAR(1) COMMENT 'Tipo di codifica della contabilita',
 	cod_contabilita VARCHAR(255) COMMENT 'Codifica della contabilita',
-	cod_tributo_iuv VARCHAR(4) COMMENT 'Codifica dell\'entrata nello iuv',
-	on_line BOOLEAN COMMENT 'Indica se l\'entrata e\' pagabile spontaneamente',
-	paga_terzi BOOLEAN COMMENT 'Indica se l\'entrata e\' pagabile da soggetti terzi',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio',
@@ -341,10 +335,13 @@ CREATE TABLE tracciati
 
 CREATE TABLE tipi_versamento
 (
-	cod_tipo_versamento VARCHAR(35) NOT NULL,
-	descrizione VARCHAR(255) NOT NULL,
+	cod_tipo_versamento VARCHAR(35) NOT NULL COMMENT 'Identificativo della tipologia pendenza',
+	descrizione VARCHAR(255) NOT NULL COMMENT 'descrizione della tipologia pendenza',
+	codifica_iuv VARCHAR(4) COMMENT 'Codifica del tipo pendenza nello iuv',
+	tipo VARCHAR(35) NOT NULL COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente',
+	paga_terzi BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi',
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
 	CONSTRAINT unique_tipi_versamento_1 UNIQUE (cod_tipo_versamento),
 	-- fk/pk keys constraints
@@ -353,6 +350,28 @@ CREATE TABLE tipi_versamento
 
 -- index
 CREATE UNIQUE INDEX index_tipi_versamento_1 ON tipi_versamento (cod_tipo_versamento);
+
+
+
+CREATE TABLE tipi_vers_domini
+(
+	codifica_iuv VARCHAR(4) COMMENT 'Codifica del tipo pendenza nello iuv specifica per dominio',
+	tipo VARCHAR(35) COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente per il dominio',
+	paga_terzi BOOLEAN  COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi per il dominio',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',
+	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio afferente',
+	-- unique constraints
+	CONSTRAINT unique_tipi_vers_domini_1 UNIQUE (id_dominio,id_tipo_versamento),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tvd_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT fk_tvd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_tipi_vers_domini PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE UNIQUE INDEX index_tipi_vers_domini_1 ON tipi_vers_domini (id_dominio,id_tipo_versamento);
 
 
 
@@ -408,6 +427,7 @@ CREATE TABLE versamenti
 	anomalo BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato della pendenza',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',,
 	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio afferente',
 	id_uo BIGINT COMMENT 'Riferimento all\'unita operativa afferente',
@@ -416,6 +436,7 @@ CREATE TABLE versamenti
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
 	CONSTRAINT fk_vrs_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
@@ -1021,6 +1042,7 @@ MAX(versamenti.anomalie) as anomalie,
 MAX(versamenti.iuv_versamento) as iuv_versamento,               
 MAX(versamenti.numero_avviso) as numero_avviso,  
 MAX(versamenti.id_tipo_versamento) as id_tipo_versamento,
+MAX(versamenti.id_tipo_versamento_dominio) AS id_tipo_versamento_dominio,
 MAX(versamenti.id_dominio) as id_dominio,                   
 MAX(versamenti.id_uo) as id_uo,                        
 MAX(versamenti.id_applicazione) as id_applicazione,             

@@ -46,35 +46,10 @@ public class Tributo extends it.govpay.model.Tributo {
 			return this.getCodContabilitaDefault();
 	}
 
-	public String getCodTributoIuv() {
-		if(this.getCodTributoIuvCustom() != null)
-			return this.getCodTributoIuvCustom();
-		else 
-			return this.getCodTributoIuvDefault();
-	}
-	
-	public Boolean getOnline() {
-		if(this.getOnlineCustom() != null)
-			return this.getOnlineCustom();
-		else 
-			return this.getOnlineDefault();
-	} 
-	
-	public Boolean getPagaTerzi() {
-		if(this.getPagaTerziCustom() != null)
-			return this.getPagaTerziCustom();
-		else 
-			return this.getPagaTerziDefault();
-	} 
 
 
 	public boolean isTipoContabilitaCustom(){return this.getTipoContabilitaCustom() != null;}
 	public boolean isCodContabilitaCustom(){return this.getCodContabilitaCustom() != null;}
-	public boolean isCodTributoIuvCustom(){return this.getCodTributoIuvCustom() != null;}
-	public boolean isOnlineCustom(){return this.getOnlineCustom() != null;}
-	public boolean isPagaTerziCustom(){return this.getPagaTerziCustom() != null;}
-	public boolean isOnline(){return this.getOnline();}
-	public boolean isPagaTerzi(){return this.getPagaTerzi();}
 
 	private transient IbanAccredito ibanAccredito;
 	public IbanAccredito getIbanAccredito() throws ServiceException {

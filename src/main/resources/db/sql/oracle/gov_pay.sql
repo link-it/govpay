@@ -235,9 +235,6 @@ CREATE TABLE tipi_tributo
 	descrizione VARCHAR2(255 CHAR),
 	tipo_contabilita VARCHAR2(1 CHAR),
 	cod_contabilita VARCHAR2(255 CHAR),
-	cod_tributo_iuv VARCHAR2(4 CHAR),
-	on_line NUMBER NOT NULL,
-	paga_terzi NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -245,10 +242,6 @@ CREATE TABLE tipi_tributo
 	-- fk/pk keys constraints
 	CONSTRAINT pk_tipi_tributo PRIMARY KEY (id)
 );
-
-
-ALTER TABLE tipi_tributo MODIFY on_line DEFAULT 0;
-ALTER TABLE tipi_tributo MODIFY paga_terzi DEFAULT 0;
 
 CREATE TRIGGER trg_tipi_tributo
 BEFORE
@@ -271,9 +264,6 @@ CREATE TABLE tributi
 	abilitato NUMBER NOT NULL,
 	tipo_contabilita VARCHAR2(1 CHAR),
 	codice_contabilita VARCHAR2(255 CHAR),
-	cod_tributo_iuv VARCHAR2(4 CHAR),
-        on_line NUMBER,
-	paga_terzi NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
@@ -534,6 +524,9 @@ CREATE TABLE tipi_versamento
 (
 	cod_tipo_versamento VARCHAR2(35 CHAR) NOT NULL,
 	descrizione VARCHAR2(255 CHAR) NOT NULL,
+	codifica_iuv VARCHAR2(4 CHAR),
+	tipo VARCHAR(35) NOT NULL,
+	paga_terzi NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -542,6 +535,9 @@ CREATE TABLE tipi_versamento
 	CONSTRAINT pk_tipi_versamento PRIMARY KEY (id)
 );
 
+
+ALTER TABLE tipi_versamento MODIFY paga_terzi DEFAULT 0;
+
 CREATE TRIGGER trg_tipi_versamento
 BEFORE
 insert on tipi_versamento
@@ -549,6 +545,39 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_tipi_versamento.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_tipi_vers_domini MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE tipi_vers_domini
+(
+	codifica_iuv VARCHAR2(4 CHAR),
+	tipo VARCHAR2(35 CHAR),
+	paga_terzi NUMBER,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_tipo_versamento NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_tipi_vers_domini_1 UNIQUE (id_dominio,id_tipo_versamento),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tvd_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT fk_tvd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_tipi_vers_domini PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_tipi_vers_domini
+BEFORE
+insert on tipi_vers_domini
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_tipi_vers_domini.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -606,6 +635,7 @@ CREATE TABLE versamenti
 	anomalo NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_tipo_versamento_dominio NUMBER NOT NULL,
 	id_tipo_versamento NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
 	id_uo NUMBER,
@@ -614,6 +644,7 @@ CREATE TABLE versamenti
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_vrs_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
 	CONSTRAINT fk_vrs_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
 	CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_vrs_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
@@ -1412,6 +1443,7 @@ MAX(versamenti.iuv_versamento) as iuv_versamento,
 MAX(versamenti.numero_avviso) as numero_avviso,
 MAX(versamenti.id_dominio) as id_dominio,
 MAX(versamenti.id_tipo_versamento) AS id_tipo_versamento,
+MAX(versamenti.id_tipo_versamento_dominio) AS id_tipo_versamento_dominio,
 MAX(versamenti.id_uo) as id_uo,
 MAX(versamenti.id_applicazione) as id_applicazione,
 MAX(CASE WHEN versamenti.avvisatura_abilitata = 1 THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_abilitata,

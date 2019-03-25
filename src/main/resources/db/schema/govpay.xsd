@@ -37,6 +37,7 @@
 								<linkit:sql-table object-name="ACL" object-type="ACL"/>
 								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
 								<linkit:sql-table object-name="TipoVersamento" object-type="TipoVersamento"/>
+								<linkit:sql-table object-name="TipoVersamentoDominio" object-type="TipoVersamentoDominio"/>
 								<linkit:sql-table object-name="Versamento" object-type="Versamento"/>
 								<linkit:sql-table object-name="SingoloVersamento"
 									object-type="SingoloVersamento"/>
@@ -364,6 +365,13 @@
 	<xsd:complexType name="id-tipo-versamento">
 		<xsd:sequence>
 			<xsd:element name="codTipoVersamento" type="String35"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="id-tipo-versamento-dominio">
+		<xsd:sequence>
+			<xsd:element name="idDominio" type="id-dominio"/>
+			<xsd:element name="idTipoVersamento" type="id-tipo-versamento"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -839,21 +847,6 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="codTributoIuv" type="String4" minOccurs="0"/>
-			<xsd:element name="onLine" minOccurs="0">
-			     <xsd:simpleType>
-			          <xsd:restriction base="xsd:string">
-			               <xsd:pattern value="true|false"/>
-			          </xsd:restriction>
-			     </xsd:simpleType>
-			</xsd:element>
-			<xsd:element name="pagaTerzi" minOccurs="0">
-				<xsd:simpleType>
-					<xsd:restriction base="xsd:string">
-						<xsd:pattern value="true|false"/>
-					</xsd:restriction>
-				</xsd:simpleType>
-			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -878,9 +871,6 @@
 			<xsd:element name="descrizione" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="tipoContabilita" type="String1" minOccurs="0"/>
 			<xsd:element name="codContabilita" type="String255" minOccurs="0"/>
-			<xsd:element name="codTributoIuv" type="String4" minOccurs="0"/>
-			<xsd:element name="onLine" type="xsd:boolean" default="false" />
-			<xsd:element name="pagaTerzi" type="xsd:boolean" default="false" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1162,6 +1152,61 @@
 		<xsd:sequence>
 			<xsd:element name="codTipoVersamento" type="String35" />
 			<xsd:element name="descrizione" type="String255" />
+			<xsd:element name="codificaIuv" type="String4" minOccurs="0"/>
+			<xsd:element name="tipo" type="String35" />
+			<xsd:element name="pagaTerzi" type="xsd:boolean" default="false" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="TipoVersamentoDominio" type="TipoVersamentoDominio"/>
+	<xsd:complexType name="TipoVersamentoDominio">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-tipo-versamento-dominio"/>
+					<linkit:sql-table-mapping generate-sql="true" name="tipi_vers_domini"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_tvd"/>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-column name="id_dominio"/>
+							<linkit:sql-table-unique-column name="id_tipo_versamento"/>
+						</linkit:sql-table-unique>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="TipoVersamento" type="TipoVersamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TipoVersamento" object-type="TipoVersamento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="idDominio" type="id-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+
+			<xsd:element name="codificaIuv" type="String4" minOccurs="0"/>
+			<xsd:element name="tipo" type="String35" minOccurs="0" />
+			<xsd:element name="pagaTerzi" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -1185,6 +1230,17 @@
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="String35"/>
 			<xsd:element name="nome" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="idTipoVersamentoDominio" type="id-tipo-versamento-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TipoVersamentoDominio" object-type="TipoVersamentoDominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			
 			<xsd:element name="idTipoVersamento" type="id-tipo-versamento">
 				<xsd:annotation>
@@ -2470,6 +2526,17 @@
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="String35"/>
 			<xsd:element name="nome" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="idTipoVersamentoDominio" type="id-tipo-versamento-dominio">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="TipoVersamentoDominio" object-type="TipoVersamentoDominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			
 			<xsd:element name="idTipoVersamento" type="id-tipo-versamento">
 				<xsd:annotation>

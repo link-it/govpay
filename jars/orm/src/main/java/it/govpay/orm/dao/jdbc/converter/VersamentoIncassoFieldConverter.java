@@ -81,6 +81,20 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "nome";
 			}
 		}
+		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tipo_versamento";
+			}else{
+				return "cod_tipo_versamento";
+			}
+		}
 		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_tipo_versamento";
@@ -492,6 +506,12 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VersamentoIncasso.model().NOME)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
+		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
+			return this.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(VersamentoIncasso.model().ID_TIPO_VERSAMENTO, returnAlias);
 		}
@@ -675,6 +695,15 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(VersamentoIncasso.model())){
 			return "versamenti_incassi";
+		}
+		if(model.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO)){
+			return "tipi_vers_domini";
+		}
+		if(model.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_DOMINIO)){
+			return "domini";
+		}
+		if(model.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO)){
+			return "tipi_versamento";
 		}
 		if(model.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO)){
 			return "tipi_versamento";
