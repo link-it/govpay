@@ -320,6 +320,8 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
    FROM versamenti
      LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento
      LEFT JOIN pagamenti ON singoli_versamenti.id = pagamenti.id_singolo_versamento
-  WHERE versamenti.numero_avviso IS NOT NULL OR pagamenti.importo_pagato > 0::double precision
+     JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento 
+     JOIN tipi_vers_domini ON tipi_vers_domini.id = versamenti.id_tipo_versamento_dominio 
+  WHERE COALESCE(tipi_vers_domini.tipo,tipi_versamento.tipo) = 'DOVUTO' OR pagamenti.importo_pagato > 0::double precision
   GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 
