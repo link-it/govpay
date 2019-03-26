@@ -81,6 +81,7 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.RequestValidationException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -99,7 +100,7 @@ public class DominiDAO extends BaseDAO{
 	}
 
 	public PutDominioDTOResponse createOrUpdate(PutDominioDTO putDominioDTO) throws ServiceException,
-	DominioNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	DominioNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException, TipoVersamentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutDominioDTOResponse dominioDTOResponse = new PutDominioDTOResponse();
 		BasicBD bd = null;
 
@@ -113,6 +114,7 @@ public class DominiDAO extends BaseDAO{
 				throw new StazioneNonTrovataException(e.getMessage());
 			} 
 
+			TipiVersamentoDominiBD tvdBD = new TipiVersamentoDominiBD(bd);
 			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter(false);
@@ -136,9 +138,47 @@ public class DominiDAO extends BaseDAO{
 				tributo.setCodTributo(it.govpay.model.Tributo.BOLLOT);
 				tributo.setAbilitato(false);
 				tributo.setDescrizione(bolloT.getDescrizione());
-
-				//TODO controllare il salvataggio
 				tributo.setIdTipoTributo(bolloT.getId());
+				
+				TipoVersamento libero = null;
+				
+				try {
+					libero = AnagraficaManager.getTipoVersamento(bd, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+				} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
+					throw new TipoVersamentoNonTrovatoException(e.getMessage());
+				}  
+				TipoVersamentoDominio tvd = new TipoVersamentoDominio();
+				tvd.setCodTipoVersamento(libero.getCodTipoVersamento());
+				tvd.setIdTipoVersamento(libero.getId());
+				tvd.setDescrizione(libero.getDescrizione());
+				
+				TipoVersamentoDominio tvdNonCensite = null;
+				if(!GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere().equals(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite())) {
+					TipoVersamento nonCensite = null;
+					
+					try {
+						nonCensite = AnagraficaManager.getTipoVersamento(bd, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
+					} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
+						throw new TipoVersamentoNonTrovatoException(e.getMessage());
+					}  
+					tvdNonCensite = new TipoVersamentoDominio();
+					tvdNonCensite.setCodTipoVersamento(nonCensite.getCodTipoVersamento());
+					tvdNonCensite.setIdTipoVersamento(nonCensite.getId());
+					tvdNonCensite.setDescrizione(nonCensite.getDescrizione());
+				}
+				
+				TipoVersamento tipoVersamentoBolloT = null;
+				
+				try {
+					tipoVersamentoBolloT = AnagraficaManager.getTipoVersamento(bd, it.govpay.model.Tributo.BOLLOT);
+				} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
+					throw new TipoVersamentoNonTrovatoException(e.getMessage());
+				}  
+				TipoVersamentoDominio tvdBollo = new TipoVersamentoDominio();
+				tvdBollo.setCodTipoVersamento(tipoVersamentoBolloT.getCodTipoVersamento());
+				tvdBollo.setIdTipoVersamento(tipoVersamentoBolloT.getId());
+				tvdBollo.setDescrizione(tipoVersamentoBolloT.getDescrizione());
+				
 
 				UnitaOperativa uo = new UnitaOperativa();
 				uo.setAbilitato(true);
@@ -147,10 +187,29 @@ public class DominiDAO extends BaseDAO{
 				putDominioDTO.getDominio().getAnagrafica().setCodUnivoco(uo.getCodUo());
 				bd.setAutoCommit(false);
 				dominiBD.insertDominio(putDominioDTO.getDominio());
+				
+				// UO EC
 				uo.setIdDominio(putDominioDTO.getDominio().getId());
 				uoBd.insertUnitaOperativa(uo);
+				
+				// MBT
 				tributo.setIdDominio(putDominioDTO.getDominio().getId());
 				tributiBD.insertTributo(tributo);
+				
+				// LIBERO
+				tvd.setIdDominio(putDominioDTO.getDominio().getId());
+				tvdBD.insertTipoVersamentoDominio(tvd);
+				
+				// NON CENSITE
+				if(tvdNonCensite != null) {
+					tvdNonCensite.setIdDominio(putDominioDTO.getDominio().getId());
+					tvdBD.insertTipoVersamentoDominio(tvdNonCensite);
+				}
+				
+				// TV MBT
+				tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
+				tvdBD.insertTipoVersamentoDominio(tvdBollo);
+				
 				bd.commit();
 
 				// ripristino l'autocommit.
