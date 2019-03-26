@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
-import it.govpay.core.utils.GovpayConfig;
-
 /***
  * Estrae  dalla request tutti gli headers indicati nella lista.
  * 
@@ -23,18 +21,16 @@ public class GovpayWebAuthenticationDetails extends WebAuthenticationDetails {
 	
 	private Map<String, List<String>> headerValues = new HashMap<>();
 
-	public GovpayWebAuthenticationDetails(HttpServletRequest request) {
+	public GovpayWebAuthenticationDetails(HttpServletRequest request,List<String> headersNames) {
 		super(request);
 		
-		this.headerValues = extractHeaders(request);
+		this.headerValues = extractHeaders(request,headersNames);
 	}
 
 	private static final long serialVersionUID = 1L;
 
 	
-	private Map<String, List<String>> extractHeaders(HttpServletRequest request) {
-		List<String> headersNames = GovpayConfig.getInstance().getElencoHeadersRequest();
-		
+	private Map<String, List<String>> extractHeaders(HttpServletRequest request, List<String> headersNames) {
 		Map<String, List<String>> headerValues = new HashMap<>();
 		for (String headerName : headersNames) {
 			Enumeration<String> headers = request.getHeaders(headerName);

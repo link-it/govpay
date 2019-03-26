@@ -185,6 +185,33 @@
 			<ref bean="contextV2" />
 		</jaxrs:features>
 	</jaxrs:server>
+	
+	<!-- Servizi Header V2 -->
+
+	<jaxrs:server id="apiPagamentoV2Header" address="/header/v2/">
+		<jaxrs:serviceBeans>
+			<ref bean="avvisiV2" />
+			<ref bean="dominiV2" />
+			<ref bean="pagamentiV2" />
+			<ref bean="pendenzeV2" />
+			<ref bean="profiloV2" />
+			<ref bean="rppV2" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="parameterConverterV2" />
+			<ref bean="objectMessageBodyReaderV2" /> 
+			<ref bean="jacksonJsonProviderV2" />
+			<ref bean="jacksonXmlProviderV2" />
+			<ref bean="webApplicationExceptionMapperV2" />
+			<ref bean="validationExceptionMapperV2" />
+			<ref bean="avvisoMessageBodyWriterV2" />
+			<ref bean="rtMessageBodyWriterV2" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeatureV2" />
+			<ref bean="contextV2" />
+		</jaxrs:features>
+	</jaxrs:server>
 
 </b:beans>
         

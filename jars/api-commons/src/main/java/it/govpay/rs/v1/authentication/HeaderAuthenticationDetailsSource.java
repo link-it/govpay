@@ -1,13 +1,14 @@
 package it.govpay.rs.v1.authentication;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import it.govpay.core.autorizzazione.beans.GovpayWebAuthenticationDetails;
-
-import javax.servlet.http.HttpServletRequest;
+import it.govpay.core.utils.GovpayConfig;
  
-public class GovPayAuthenticationDetailsSource implements
+public class HeaderAuthenticationDetailsSource implements
 		AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> {
 
 	// ~ Methods
@@ -19,6 +20,6 @@ public class GovPayAuthenticationDetailsSource implements
 	 * current request
 	 */
 	public WebAuthenticationDetails buildDetails(HttpServletRequest context) {
-		return new GovpayWebAuthenticationDetails(context);
+		return new GovpayWebAuthenticationDetails(context, GovpayConfig.getInstance().getAutenticazioneHeaderElencoHeadersRequest());
 	}
 }

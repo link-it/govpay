@@ -81,5 +81,24 @@
 <!--         </jaxrs:features> -->
     </jaxrs:server>
     
+    <jaxrs:server id="apiPendenzeHeaderV1" address="/header/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="domini" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="rpp" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+<!--                 <jaxrs:features> -->
+<!--             <ref bean="openApiFeature" /> -->
+<!--         </jaxrs:features> -->
+    </jaxrs:server>
+    
 </b:beans>
         

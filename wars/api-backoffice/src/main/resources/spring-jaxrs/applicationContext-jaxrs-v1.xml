@@ -141,7 +141,7 @@
     <!-- SSL END -->
     
     <!-- FORM INIT -->
-    <jaxrs:server id="apiBackofficeSSLV1" address="/form/v1/">
+    <jaxrs:server id="apiBackofficeFormV1" address="/form/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="applicazioni" />
 			   	<ref bean="avvisi" />
@@ -178,6 +178,44 @@
 <!--         </jaxrs:features> -->
     </jaxrs:server>
     <!-- FORM END -->
+    
+     <!-- HEADER INIT -->
+    <jaxrs:server id="apiBackofficeHeaderV1" address="/header/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciati" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+<!--                 <jaxrs:features> -->
+<!--             <ref bean="openApiFeature" /> -->
+<!--         </jaxrs:features> -->
+    </jaxrs:server>
+    <!-- HEADER END -->
     
 </b:beans>
         

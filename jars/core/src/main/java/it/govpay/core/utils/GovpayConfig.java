@@ -102,9 +102,11 @@ public class GovpayConfig {
 	private String appName;
 	private String ambienteDeploy;
 	
-	private String headerAuth;
-	private List<String> elencoHeadersRequest;
+	private String autenticazioneSPIDNomeHeaderPrincipal;
+	private List<String> autenticazioneSPIDElencoHeadersRequest;
 	private boolean checkCfDebitore;
+	private String autenticazioneHeaderNomeHeaderPrincipal;
+	private List<String> autenticazioneHeaderElencoHeadersRequest;
 	
 	private int numeroMassimoEntriesProspettoRiscossione;
 	
@@ -153,9 +155,12 @@ public class GovpayConfig {
 		this.appName = null;
 		this.ambienteDeploy = null;
 
-		this.headerAuth = null;
-		this.elencoHeadersRequest = new ArrayList<>();
 		this.checkCfDebitore = false;
+		
+		this.autenticazioneSPIDNomeHeaderPrincipal = null;
+		this.autenticazioneSPIDElencoHeadersRequest = new ArrayList<>();
+		this.autenticazioneHeaderNomeHeaderPrincipal = null;
+		this.autenticazioneHeaderElencoHeadersRequest = new ArrayList<>();
 		this.numeroMassimoEntriesProspettoRiscossione = 5000;
 		
 		this.avvisaturaDigitaleEnabled= false;
@@ -414,13 +419,23 @@ public class GovpayConfig {
 			
 			this.appName = getProperty("it.govpay.backoffice.gui.appName", this.props, false, log);
 			this.ambienteDeploy = getProperty("it.govpay.backoffice.gui.ambienteDeploy", this.props, false, log);
-			this.headerAuth = getProperty("it.govpay.autenticazione.nomeHeader", this.props, false, log);
+			this.autenticazioneSPIDNomeHeaderPrincipal = getProperty("it.govpay.autenticazioneSPID.nomeHeaderPrincipal", this.props, false, log);
 			
-			String headersListS = getProperty("it.govpay.autenticazione.nomiHeadersInfoCittadino", props, false, log);
+			String headersListSPIDS = getProperty("it.govpay.autenticazioneSPID.nomiHeadersInfo", props, false, log);
+			if(StringUtils.isNotEmpty(headersListSPIDS)) {
+				String[] split = headersListSPIDS.split(",");
+				if(split != null && split.length > 0) {
+					this.autenticazioneSPIDElencoHeadersRequest = Arrays.asList(split);
+				}
+			}
+			
+			this.autenticazioneHeaderNomeHeaderPrincipal = getProperty("it.govpay.autenticazioneHeader.nomeHeaderPrincipal", this.props, false, log);
+			
+			String headersListS = getProperty("it.govpay.autenticazioneHeader.nomiHeadersInfo", props, false, log);
 			if(StringUtils.isNotEmpty(headersListS)) {
 				String[] split = headersListS.split(",");
 				if(split != null && split.length > 0) {
-					this.elencoHeadersRequest = Arrays.asList(split);
+					this.autenticazioneHeaderElencoHeadersRequest = Arrays.asList(split);
 				}
 			}
 			
@@ -681,12 +696,20 @@ public class GovpayConfig {
 		return ambienteDeploy;
 	}
 
-	public String getHeaderAuth() {
-		return headerAuth;
+	public String getAutenticazioneSPIDNomeHeaderPrincipal() {
+		return autenticazioneSPIDNomeHeaderPrincipal;
 	}
 
-	public List<String> getElencoHeadersRequest() {
-		return elencoHeadersRequest;
+	public List<String> getAutenticazioneSPIDElencoHeadersRequest() {
+		return autenticazioneSPIDElencoHeadersRequest;
+	}
+
+	public String getAutenticazioneHeaderNomeHeaderPrincipal() {
+		return autenticazioneHeaderNomeHeaderPrincipal;
+	}
+
+	public List<String> getAutenticazioneHeaderElencoHeadersRequest() {
+		return autenticazioneHeaderElencoHeadersRequest;
 	}
 
 	public boolean isCheckCfDebitore() {

@@ -87,5 +87,27 @@
 <!--         </jaxrs:features> -->
     </jaxrs:server>
     
+    <!-- Header Authentication per i servizi V1 -->
+
+    <jaxrs:server id="apiRagioneriaHeaderV1" address="/header/v1/">
+        <jaxrs:serviceBeans>
+               	<ref bean="domini" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="profilo" />
+			   	<ref bean="riscossioni" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+<!--                 <jaxrs:features> -->
+<!--             <ref bean="openApiFeature" /> -->
+<!--         </jaxrs:features> -->
+    </jaxrs:server>
+    
 </b:beans>
         

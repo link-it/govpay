@@ -122,6 +122,48 @@
         
        <!-- SSL END -->
        
+       <!-- HEADER INIT -->
+      	
+      	<b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+      	<b:bean id="userDetailServiceUtenzeHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        </b:bean>
+        <b:bean id="preauthAuthProviderHead" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        	<b:property name="preAuthenticatedUserDetailsService">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.service.authentication.provider.UserDetailsByNameServiceWrapper">
+                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeHead"/>
+              	</b:bean>
+            </b:property>
+        </b:bean>
+      	<authentication-manager id="authenticationManagerHead">
+                <authentication-provider ref="preauthAuthProviderHead">
+                </authentication-provider>
+        </authentication-manager>
+      	<b:bean id="preAuthFilterHead" class="it.govpay.rs.v1.authentication.preauth.filter.HeaderPreAuthFilter">
+            <b:property name="authenticationManager" ref="authenticationManagerHead" />
+            <b:property name="exceptionIfHeaderMissing" value="false" />
+           	<b:property name="authenticationDetailsSource">
+        		<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.HeaderAuthenticationDetailsSource"/>
+        	</b:property>
+        </b:bean>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/header/**">
+
+                <csrf disabled="true"/>
+                
+                <intercept-url pattern="/rs/header/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterHead" />
+                
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+       	<!-- HEADER END -->
+       
         <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
         
