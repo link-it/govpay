@@ -203,6 +203,7 @@
 			   	<ref bean="rpp" />
 			   	<ref bean="ruoli" />
 			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />

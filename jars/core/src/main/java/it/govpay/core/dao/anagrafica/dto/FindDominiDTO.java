@@ -20,6 +20,7 @@
 package it.govpay.core.dao.anagrafica.dto;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 public class FindDominiDTO extends BasicFindRequestDTO {
@@ -33,6 +34,7 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 		super(user);
 		this.addSortField("codDominio", it.govpay.orm.Dominio.model().COD_DOMINIO);
 		this.addSortField("ragioneSociale", it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
+		this.addDefaultSort(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE, SortOrder.ASC);
 	}
 
 	public String getCodStazione() {

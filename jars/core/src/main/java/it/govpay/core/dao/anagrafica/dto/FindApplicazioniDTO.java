@@ -20,6 +20,7 @@
 package it.govpay.core.dao.anagrafica.dto;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 public class FindApplicazioniDTO extends BasicFindRequestDTO {
@@ -29,6 +30,7 @@ public class FindApplicazioniDTO extends BasicFindRequestDTO {
 	public FindApplicazioniDTO(Authentication user) throws ServiceException {
 		super(user);
 		this.addSortField("idA2A", it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+		this.addDefaultSort(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL_ORIGINALE, SortOrder.ASC);
 	}
 
 	public Boolean getAbilitato() {

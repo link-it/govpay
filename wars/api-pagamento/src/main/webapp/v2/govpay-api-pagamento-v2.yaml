@@ -2085,24 +2085,6 @@ components:
         - SIOPE
         - ALTRO
       example: SIOPE
-    TipoEntrata:
-      type: object
-      required:
-       - idEntrata
-       - tipoContabilita
-       - codiceContabilita
-      properties:
-        idEntrata:
-          type: string
-          example: IMU
-        tipoContabilita:
-          $ref: '#/components/schemas/TipoContabilita'
-        codiceContabilita:
-          description: Codifica del capitolo di bilancio
-          type: string
-          example: 3321
-          minLength: 1
-          maxLength: 135
     TipoPendenza:
       type: object
       allOf:

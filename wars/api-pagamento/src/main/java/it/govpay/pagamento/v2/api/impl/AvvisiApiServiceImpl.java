@@ -15,12 +15,12 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v2.acl.Acl;
-import it.govpay.pagamento.v2.acl.AuthorizationRules;
-import it.govpay.pagamento.v2.acl.impl.TipoUtenzaOnlyAcl;
 import it.govpay.pagamento.v2.api.AvvisiApi;
 import it.govpay.pagamento.v2.beans.Avviso;
 import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
+import it.govpay.rs.v2.acl.impl.TipoUtenzaOnlyAcl;
+import it.govpay.rs.v2.acl.Acl;
+import it.govpay.rs.v2.acl.AuthorizationRules;
 /**
  * GovPay - API Pagamento
  */

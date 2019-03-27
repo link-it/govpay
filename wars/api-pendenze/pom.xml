@@ -104,7 +104,7 @@
 						<webResource>
 							<directory>src/main/resources/spring-sec</directory>
 							<filtering>true</filtering>
-							<include>applicationContext-security-*.xml</include>
+							<include>applicationContext-security.xml</include>
 							<targetPath>WEB-INF</targetPath>							
 						</webResource>
 					</webResources>
@@ -121,6 +121,33 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.swagger.codegen.v3</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>${swagger-codegen-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/webapp/v2/govpay-api-pendenze-v2.yaml</inputSpec>
+							<language>jaxrs-cxf</language>
+							<configOptions>
+								<dateLibrary>joda</dateLibrary>
+								<sourceFolder>target/generated-sources/java/</sourceFolder>
+								<apiPackage>it.govpay.pendenze.v2.api</apiPackage>
+								<modelPackage>it.govpay.pendenze.v2.beans</modelPackage>
+							</configOptions>
+							<output>${project.basedir}</output>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
