@@ -22,6 +22,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost.TipoEnum;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
@@ -208,15 +209,17 @@ public class DominiConverter {
 		rsModel.setContiAccredito(UriBuilderUtils.getContiAccreditoByDominio(dominio.getCodDominio()));
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
 		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
+		rsModel.setTipiPendenza(UriBuilderUtils.getTipiPendenzaByDominio(dominio.getCodDominio()));
 		rsModel.setAbilitato(dominio.isAbilitato());
 		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
 		
 		return rsModel;
 	}
 	
-	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio, List<it.govpay.bd.model.UnitaOperativa> uoLst, List<it.govpay.bd.model.Tributo> tributoLst, List<it.govpay.bd.model.IbanAccredito> ibanAccreditoLst) throws ServiceException {
+	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio, List<it.govpay.bd.model.UnitaOperativa> uoLst, List<it.govpay.bd.model.Tributo> tributoLst, List<it.govpay.bd.model.IbanAccredito> ibanAccreditoLst,
+			List<TipoVersamentoDominio> tipoVersamentoDominioLst) throws ServiceException {
 		Dominio rsModel = new Dominio();
-		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
+		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb()); 
 		rsModel.setIdDominio(dominio.getCodDominio()); 
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
 		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
@@ -268,6 +271,16 @@ public class DominiConverter {
 			}
 			rsModel.setEntrate(entrate);
 		}
+		
+		if(tipoVersamentoDominioLst != null) {
+			List<TipoPendenzaDominio> tipiPendenzaDominio = new ArrayList<>();
+			
+			for(TipoVersamentoDominio tvd: tipoVersamentoDominioLst) {
+				tipiPendenzaDominio.add(toTipoPendenzaRsModel(tvd));
+			}
+			rsModel.setTipiPendenza(tipiPendenzaDominio);
+		}
+		
 		rsModel.setAbilitato(dominio.isAbilitato());
 		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
 		

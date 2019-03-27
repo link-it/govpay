@@ -19,6 +19,7 @@
  */
 package it.govpay.core.dao.anagrafica.dto;
 
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 public class FindIbanDTO extends BasicFindRequestDTO {
@@ -31,6 +32,7 @@ public class FindIbanDTO extends BasicFindRequestDTO {
 		super(user);
 		this.codDominio = codDominio;
 		this.addSortField("ibanAccredito", it.govpay.orm.IbanAccredito.model().COD_IBAN);
+		this.addDefaultSort(it.govpay.orm.IbanAccredito.model().COD_IBAN, SortOrder.ASC);
 	}
 	
 	public String getCodDominio(){

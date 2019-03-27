@@ -19,6 +19,7 @@
  */
 package it.govpay.core.dao.anagrafica.dto;
 
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 public class FindTributiDTO extends BasicFindRequestDTO {
@@ -31,6 +32,8 @@ public class FindTributiDTO extends BasicFindRequestDTO {
 	public FindTributiDTO(Authentication user, String codDominio) {
 		super(user);
 		this.codDominio = codDominio;
+		this.addDefaultSort(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, SortOrder.ASC);
+		this.addDefaultSort(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.DESCRIZIONE, SortOrder.ASC);
 	}
 	
 	public String getCodDominio(){

@@ -41,7 +41,7 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 	
 		super();
 	
-		this.TIPO_VERSAMENTO = new it.govpay.orm.model.TipoVersamentoModel(new Field("TipoVersamento",it.govpay.orm.TipoVersamento.class,"TipoVersamentoDominio",TipoVersamentoDominio.class));
+		this.TIPO_VERSAMENTO = new it.govpay.orm.model.TipoVersamentoModel(new Field("tipoVersamento",it.govpay.orm.TipoVersamento.class,"TipoVersamentoDominio",TipoVersamentoDominio.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"TipoVersamentoDominio",TipoVersamentoDominio.class));
 		this.CODIFICA_IUV = new Field("codificaIuv",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.TIPO = new Field("tipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
@@ -53,7 +53,7 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 	
 		super(father);
 	
-		this.TIPO_VERSAMENTO = new it.govpay.orm.model.TipoVersamentoModel(new ComplexField(father,"TipoVersamento",it.govpay.orm.TipoVersamento.class,"TipoVersamentoDominio",TipoVersamentoDominio.class));
+		this.TIPO_VERSAMENTO = new it.govpay.orm.model.TipoVersamentoModel(new ComplexField(father,"tipoVersamento",it.govpay.orm.TipoVersamento.class,"TipoVersamentoDominio",TipoVersamentoDominio.class));
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"TipoVersamentoDominio",TipoVersamentoDominio.class));
 		this.CODIFICA_IUV = new ComplexField(father,"codificaIuv",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);

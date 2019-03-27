@@ -20,6 +20,7 @@
 package it.govpay.core.dao.anagrafica.dto;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 public class FindStazioniDTO extends BasicFindRequestDTO {
@@ -30,6 +31,7 @@ public class FindStazioniDTO extends BasicFindRequestDTO {
 	public FindStazioniDTO(Authentication user) throws ServiceException {
 		super(user);
 		this.addSortField("idStazione", it.govpay.orm.Stazione.model().COD_STAZIONE);
+		this.addDefaultSort(it.govpay.orm.Stazione.model().COD_STAZIONE, SortOrder.ASC);
 	}
 
 	public String getCodIntermediario() {

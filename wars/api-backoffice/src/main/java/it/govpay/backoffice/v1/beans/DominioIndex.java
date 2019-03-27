@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "unitaOperative",
 "contiAccredito",
 "entrate",
+"tipiPendenza",
 })
 public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
    
@@ -112,6 +113,9 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("entrate")
   private String entrate = null;
+  
+  @JsonProperty("tipiPendenza")
+  private String tipiPendenza = null;
   
   /**
    * Ragione sociale del beneficiario
@@ -529,6 +533,22 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
     this.entrate = entrate;
   }
 
+  /**
+   * Tipologie di pendenza censite per il dominio beneficiario
+   **/
+  public DominioIndex tipiPendenza(String tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
+    return this;
+  }
+
+  @JsonProperty("tipiPendenza")
+  public String getTipiPendenza() {
+    return tipiPendenza;
+  }
+  public void setTipiPendenza(String tipiPendenza) {
+    this.tipiPendenza = tipiPendenza;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -563,12 +583,13 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.idDominio, dominioIndex.idDominio) &&
         Objects.equals(this.unitaOperative, dominioIndex.unitaOperative) &&
         Objects.equals(this.contiAccredito, dominioIndex.contiAccredito) &&
-        Objects.equals(this.entrate, dominioIndex.entrate);
+        Objects.equals(this.entrate, dominioIndex.entrate) &&
+        Objects.equals(tipiPendenza, dominioIndex.tipiPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato, this.autStampaPosteItaliane, this.area, this.idDominio, this.unitaOperative, this.contiAccredito, this.entrate);
+    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato, this.autStampaPosteItaliane, this.area, this.idDominio, this.unitaOperative, this.contiAccredito, this.entrate, tipiPendenza);
   }
 
   public static DominioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -611,6 +632,7 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
     sb.append("    unitaOperative: ").append(this.toIndentedString(this.unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(this.toIndentedString(this.contiAccredito)).append("\n");
     sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -1176,7 +1176,7 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="TipoVersamento" type="TipoVersamento">
+			<xsd:element name="tipoVersamento" type="TipoVersamento">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">

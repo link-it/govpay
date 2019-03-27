@@ -20,6 +20,7 @@
 package it.govpay.core.dao.anagrafica.dto;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 public class FindTipiPendenzaDominioDTO extends BasicFindRequestDTO {
@@ -31,7 +32,9 @@ public class FindTipiPendenzaDominioDTO extends BasicFindRequestDTO {
 	
 	public FindTipiPendenzaDominioDTO(Authentication user) throws ServiceException {
 		super(user);
-		this.addSortField("idTipoPendenza", it.govpay.orm.TipoVersamento.model().COD_TIPO_VERSAMENTO);
+		this.addSortField("idTipoPendenza", it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
+		this.addDefaultSort(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, SortOrder.ASC);
+		this.addDefaultSort(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE, SortOrder.ASC);
 	}
 
 	public String getCodDominio() {
