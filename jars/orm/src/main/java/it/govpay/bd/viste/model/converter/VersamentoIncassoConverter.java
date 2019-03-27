@@ -134,12 +134,14 @@ public class VersamentoIncassoConverter {
 		}
 	}
 	
-	public static VersamentoIncasso frorVersamento(it.govpay.bd.model.Versamento versamentoDTO) throws ServiceException {
+	public static VersamentoIncasso fromVersamento(it.govpay.bd.model.Versamento versamentoDTO) throws ServiceException {
 		VersamentoIncasso dto = new VersamentoIncasso();
 		dto.setId(versamentoDTO.getId());
 		dto.setIdApplicazione(versamentoDTO.getIdApplicazione());
 		dto.setIdUo(versamentoDTO.getIdUo());
 		dto.setIdDominio(versamentoDTO.getIdDominio());
+		dto.setIdTipoVersamento(versamentoDTO.getIdTipoVersamento());
+		dto.setIdTipoVersamentoDominio(versamentoDTO.getIdTipoVersamentoDominio());
 		dto.setNome(versamentoDTO.getNome());
 		dto.setCodVersamentoEnte(versamentoDTO.getCodVersamentoEnte());
 		dto.setStatoVersamento(versamentoDTO.getStatoVersamento());

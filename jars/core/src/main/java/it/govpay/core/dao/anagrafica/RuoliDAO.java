@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTO;
@@ -24,6 +26,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.orm.ACL;
 import it.govpay.model.PatchOp;
 
 public class RuoliDAO extends BaseDAO{
@@ -47,6 +50,10 @@ public class RuoliDAO extends BaseDAO{
 			AclBD aclBD = new AclBD(bd);
 			AclFilter filter = aclBD.newFilter();
 			filter.setRuolo(leggiRuoliDTO.getRuolo());
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(ACL.model().RUOLO);
+			fsw.setSortOrder(SortOrder.ASC);
+			filter.addFilterSort(fsw);
 			long count= aclBD.count(filter); 
 
 			List<Acl> lst = aclBD.findAll(filter); 

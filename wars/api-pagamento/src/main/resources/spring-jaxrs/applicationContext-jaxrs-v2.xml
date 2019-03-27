@@ -50,7 +50,7 @@
 	</b:bean>
 	
 	<!-- Context -->
-	<b:bean id="contextConfigV2" class="it.govpay.pagamento.v2.service.context.ContextConfig">
+	<b:bean id="contextConfigV2" class="it.govpay.rs.v2.service.context.ContextConfig">
 	</b:bean>
 	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory"/>
 	<b:bean id="contextV2" class="org.openspcoop2.utils.service.context.ContextFeature">
@@ -76,14 +76,11 @@
 
 	<!-- Servizi V2 -->
 	
-	<b:bean id="pagamentiTestV2" class="it.govpay.pagamento.test.PagamentiImpl" />
-
 	<jaxrs:server id="apiPagamentoV2Basic" address="/basic/v2/">
 		<jaxrs:serviceBeans>
 			<ref bean="avvisiV2" />
 			<ref bean="dominiV2" />
 			<ref bean="pagamentiV2" />
-			<ref bean="pagamentiTestV2" />
 			<ref bean="pendenzeV2" />
 			<ref bean="profiloV2" />
 			<ref bean="rppV2" />

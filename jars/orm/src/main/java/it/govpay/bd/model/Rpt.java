@@ -54,7 +54,7 @@ public class Rpt extends it.govpay.model.Rpt{
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				Versamento versamento = versamentiBD.getVersamento(this.getIdVersamento());
 				if(versamento != null)
-					this.versamento = VersamentoIncassoConverter.frorVersamento(versamento);
+					this.versamento = VersamentoIncassoConverter.fromVersamento(versamento);
 			} // puo' essere null perche' nella vista non e' presente
 		}
 		return this.versamento;

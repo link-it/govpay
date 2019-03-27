@@ -41,8 +41,6 @@ import it.govpay.orm.dao.jdbc.converter.TipoVersamentoFieldConverter;
 public class TipoVersamentoFilter extends AbstractFilter {
 	
 	private String codTipoVersamento = null;
-//	private String codContabilita = null;
-//	private String codificaTipoContabilita = null;
 	private String descrizione = null;
 	private List<Long> listaIdTipiVersamento = null;
 	private List<Long> listaIdTipiVersamentoDaEscludere = null;
@@ -61,7 +59,6 @@ public class TipoVersamentoFilter extends AbstractFilter {
 			TipoVersamentoFieldConverter converter = new TipoVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.TipoVersamento.model()));
 			this.listaFieldSimpleSearch.add(TipoVersamento.model().COD_TIPO_VERSAMENTO);
-//			this.listaFieldSimpleSearch.add(TipoVersamento.model().COD_CONTABILITA);
 			this.listaFieldSimpleSearch.add(TipoVersamento.model().DESCRIZIONE);
 		} catch(Exception e){
 			
@@ -79,20 +76,6 @@ public class TipoVersamentoFilter extends AbstractFilter {
 				newExpression.ilike(it.govpay.orm.TipoVersamento.model().COD_TIPO_VERSAMENTO, this.codTipoVersamento,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
-			
-//			if(this.codContabilita != null && StringUtils.isNotEmpty(this.codContabilita)){
-//				if(addAnd)
-//					newExpression.and();
-//				newExpression.ilike(it.govpay.orm.TipoVersamento.model().COD_CONTABILITA, this.codContabilita,LikeMode.ANYWHERE);
-//				addAnd = true;
-//			}
-//			
-//			if(this.codificaTipoContabilita != null && StringUtils.isNotEmpty(this.codificaTipoContabilita)){
-//				if(addAnd)
-//					newExpression.and();
-//				newExpression.equals(it.govpay.orm.TipoVersamento.model().TIPO_CONTABILITA, this.codificaTipoContabilita);
-//				addAnd = true;
-//			}
 			
 			if(this.descrizione != null && StringUtils.isNotEmpty(this.descrizione)){
 				if(addAnd)
@@ -151,22 +134,6 @@ public class TipoVersamentoFilter extends AbstractFilter {
 		this.listaIdTipiVersamentoDaEscludere = listaIdTipiVersamentoDaEscludere;
 	}
 
-//	public String getCodContabilita() {
-//		return this.codContabilita;
-//	}
-//
-//	public void setCodContabilita(String codContabilita) {
-//		this.codContabilita = codContabilita;
-//	}
-//
-//	public String getCodificaTipoContabilita() {
-//		return this.codificaTipoContabilita;
-//	}
-//
-//	public void setCodificaTipoContabilita(String codificaTipoContabilita) {
-//		this.codificaTipoContabilita = codificaTipoContabilita;
-//	}
-
 	public String getCodTipoVersamento() {
 		return codTipoVersamento;
 	}
@@ -182,6 +149,5 @@ public class TipoVersamentoFilter extends AbstractFilter {
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
 	}
-
 	
 }

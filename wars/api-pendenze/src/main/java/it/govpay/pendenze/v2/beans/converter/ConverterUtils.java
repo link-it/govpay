@@ -1,4 +1,4 @@
-package it.govpay.pagamento.v2.beans.converter;
+package it.govpay.pendenze.v2.beans.converter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.utils.JaxbUtils;
-import it.govpay.pagamento.v2.beans.Lista;
+import it.govpay.pendenze.v2.beans.Lista;
 
 
 public class ConverterUtils {

@@ -1,4 +1,4 @@
-package it.govpay.pagamento.v2.api.impl;
+package it.govpay.pendenze.v2.api.impl;
 
 import java.util.List;
 
@@ -21,12 +21,16 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.rs.v2.acl.impl.TipoUtenzaOnlyAcl;
 import it.govpay.rs.v2.acl.Acl;
 import it.govpay.rs.v2.acl.AuthorizationRules;
-import it.govpay.pagamento.v2.api.PendenzeApi;
-import it.govpay.pagamento.v2.beans.Pendenza;
-import it.govpay.pagamento.v2.beans.Pendenze;
-import it.govpay.pagamento.v2.beans.StatoPendenza;
-import it.govpay.pagamento.v2.beans.TipiPendenza;
-import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
+import it.govpay.pendenze.v2.api.PendenzeApi;
+import it.govpay.pendenze.v2.beans.ModalitaAvvisaturaDigitale;
+import it.govpay.pendenze.v2.beans.NuovaPendenza;
+import it.govpay.pendenze.v2.beans.PatchOp;
+import it.govpay.pendenze.v2.beans.Pendenza;
+import it.govpay.pendenze.v2.beans.PendenzaCreata;
+import it.govpay.pendenze.v2.beans.Pendenze;
+import it.govpay.pendenze.v2.beans.StatoPendenza;
+//import it.govpay.pendenze.v2.beans.TipiPendenza;
+import it.govpay.pendenze.v2.beans.converter.PendenzeConverter;
 /**
  * GovPay - API Pagamento
  */
@@ -55,6 +59,13 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 		}
 
 		return ac;
+	}
+	
+	@Override
+	public PendenzaCreata addPendenza(String idA2A, String idPendenza, NuovaPendenza body, Boolean stampaAvviso,
+			Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
@@ -157,11 +168,16 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 //			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
-
+	
 	@Override
-	public TipiPendenza findTipiPendenza(Integer offset, Integer limit, String fields, String sort, String idDominio) {
-		throw FaultCode.ERRORE_INTERNO.toException("TODO");
+	public void pendenzeIdA2AIdPendenzaPatch(String idA2A, String idPendenza, List<PatchOp> body) {
+		// TODO Auto-generated method stub
 	}
+
+//	@Override
+//	public TipiPendenza findTipiPendenza(Integer offset, Integer limit, String fields, String sort, String idDominio) {
+//		throw FaultCode.ERRORE_INTERNO.toException("TODO");
+//	}
 
 }
 

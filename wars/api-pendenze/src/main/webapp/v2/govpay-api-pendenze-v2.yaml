@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: "1.0.0"
-  title: GovPay - API Pagamento
+  title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
     url: 'https://github.com/link-it/GovPay/'
@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: http://localhost/govpay/backend/api/pendenze/rs/v1/
+  - url: http://localhost/govpay/backend/api/pendenze/rs/v2/
 tags:
   - name: Transazioni
     description: Consultazione delle transazioni di pagamento a pagoPA    
@@ -333,6 +333,11 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: visualizzaSoggettoDebitore
+          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
+          schema:
+            type: boolean
       responses:
         '200':
           description: Ricevuta di pagamento
@@ -1269,7 +1274,7 @@ components:
       required: 
         - nome
         - domini
-        - entrate
+        - tipiPendenza
         - acl
       properties:
         nome:
@@ -1280,11 +1285,11 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/Dominio'
-        entrate:
+        tipiPendenza:
           type: array
-          description: entrate su cui e' abilitato ad operare
-          items: 
-            $ref: '#/components/schemas/TipoEntrata'
+          description: tipologie di pendenza su cui e' abilitato ad operare
+          items:
+            $ref: '#/components/schemas/TipoPendenza'
         acl:
           type: array
           items:
@@ -1633,24 +1638,22 @@ components:
         - SIOPE
         - ALTRO
       example: SIOPE                            
-    TipoEntrata:
+    TipoPendenza:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/TipoPendenzaIndex'
+    TipoPendenzaIndex:
       type: object
       required:
-       - idEntrata
-       - tipoContabilita
-       - codiceContabilita
+        - idTipoPendenza
+        - descrizione
       properties:
-        idEntrata:
+        idTipoPendenza:
           type: string
-          example: IMU
-        tipoContabilita:
-          $ref: '#/components/schemas/TipoContabilita'
-        codiceContabilita:
-          description: Codifica del capitolo di bilancio
+          example: REFNIDO
+        descrizione:
           type: string
-          example: 3321
-          minLength: 1
-          maxLength: 135          
+          example: Refezione scolastica Asilo Nido
     TipoRiferimentoVocePendenza:
       type: object              
       oneOf:

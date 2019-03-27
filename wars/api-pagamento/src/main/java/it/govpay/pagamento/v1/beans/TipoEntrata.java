@@ -11,7 +11,6 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizione",
 "tipoContabilita",
 "codiceContabilita",
-"codificaIUV",
 "idEntrata",
 })
 public class TipoEntrata extends JSONSerializable {
@@ -24,9 +23,6 @@ public class TipoEntrata extends JSONSerializable {
   
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
-  @JsonProperty("codificaIUV")
-  private String codificaIUV = null;
   
   @JsonProperty("idEntrata")
   private String idEntrata = null;
@@ -78,22 +74,6 @@ public class TipoEntrata extends JSONSerializable {
   }
 
   /**
-   * Cifra identificativa negli IUV
-   **/
-  public TipoEntrata codificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-    return this;
-  }
-
-  @JsonProperty("codificaIUV")
-  public String getCodificaIUV() {
-    return this.codificaIUV;
-  }
-  public void setCodificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-  }
-
-  /**
    **/
   public TipoEntrata idEntrata(String idEntrata) {
     this.idEntrata = idEntrata;
@@ -120,13 +100,12 @@ public class TipoEntrata extends JSONSerializable {
     return Objects.equals(this.descrizione, tipoEntrata.descrizione) &&
         Objects.equals(this.tipoContabilita, tipoEntrata.tipoContabilita) &&
         Objects.equals(this.codiceContabilita, tipoEntrata.codiceContabilita) &&
-        Objects.equals(this.codificaIUV, tipoEntrata.codificaIUV) &&
         Objects.equals(this.idEntrata, tipoEntrata.idEntrata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.descrizione, this.tipoContabilita, this.codiceContabilita, this.codificaIUV, this.idEntrata);
+    return Objects.hash(this.descrizione, this.tipoContabilita, this.codiceContabilita, this.idEntrata);
   }
 
   public static TipoEntrata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -146,7 +125,6 @@ public class TipoEntrata extends JSONSerializable {
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
-    sb.append("    codificaIUV: ").append(this.toIndentedString(this.codificaIUV)).append("\n");
     sb.append("    idEntrata: ").append(this.toIndentedString(this.idEntrata)).append("\n");
     sb.append("}");
     return sb.toString();

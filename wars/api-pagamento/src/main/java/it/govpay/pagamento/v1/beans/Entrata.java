@@ -12,7 +12,6 @@ import it.govpay.core.beans.JSONSerializable;
 "contoAppoggio",
 "tipoContabilita",
 "codiceContabilita",
-"codificaIUV",
 "abilitato",
 "idEntrata",
 "tipoEntrata",
@@ -30,9 +29,6 @@ public class Entrata extends JSONSerializable {
   
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
-  @JsonProperty("codificaIUV")
-  private String codificaIUV = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
@@ -105,22 +101,6 @@ public class Entrata extends JSONSerializable {
   }
 
   /**
-   * Cifra identificativa negli IUV
-   **/
-  public Entrata codificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-    return this;
-  }
-
-  @JsonProperty("codificaIUV")
-  public String getCodificaIUV() {
-    return this.codificaIUV;
-  }
-  public void setCodificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-  }
-
-  /**
    * Indicazione l'entrata e' abilitata
    **/
   public Entrata abilitato(Boolean abilitato) {
@@ -179,7 +159,6 @@ public class Entrata extends JSONSerializable {
         Objects.equals(this.contoAppoggio, entrata.contoAppoggio) &&
         Objects.equals(this.tipoContabilita, entrata.tipoContabilita) &&
         Objects.equals(this.codiceContabilita, entrata.codiceContabilita) &&
-        Objects.equals(this.codificaIUV, entrata.codificaIUV) &&
         Objects.equals(this.abilitato, entrata.abilitato) &&
         Objects.equals(this.idEntrata, entrata.idEntrata) &&
         Objects.equals(this.tipoEntrata, entrata.tipoEntrata);
@@ -187,7 +166,7 @@ public class Entrata extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.contoAccredito, this.contoAppoggio, this.tipoContabilita, this.codiceContabilita, this.codificaIUV, this.abilitato, this.idEntrata, this.tipoEntrata);
+    return Objects.hash(this.contoAccredito, this.contoAppoggio, this.tipoContabilita, this.codiceContabilita, this.abilitato, this.idEntrata, this.tipoEntrata);
   }
 
   public static Entrata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -208,7 +187,6 @@ public class Entrata extends JSONSerializable {
     sb.append("    contoAppoggio: ").append(this.toIndentedString(this.contoAppoggio)).append("\n");
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
-    sb.append("    codificaIUV: ").append(this.toIndentedString(this.codificaIUV)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("    idEntrata: ").append(this.toIndentedString(this.idEntrata)).append("\n");
     sb.append("    tipoEntrata: ").append(this.toIndentedString(this.tipoEntrata)).append("\n");

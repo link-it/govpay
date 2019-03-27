@@ -36,7 +36,7 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.TipoVersamentoDominio;
-import it.govpay.orm.dao.jdbc.converter.TipoVersamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.TipoVersamentoDominioFieldConverter;
 
 public class TipoVersamentoDominioFilter extends AbstractFilter {
 	
@@ -59,7 +59,7 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		
 		try{
-			TipoVersamentoFieldConverter converter = new TipoVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model()));
 			this.listaFieldSimpleSearch.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			this.listaFieldSimpleSearch.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
@@ -75,7 +75,7 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.idDominio != null){
-				TipoVersamentoFieldConverter converter = new TipoVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model())), this.idDominio);
 				addAnd = true;
 			}

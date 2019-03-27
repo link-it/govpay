@@ -1633,11 +1633,6 @@ components:
           type: string
           example: 3321
           pattern: "\\S{3,138}"
-        codificaIUV:
-          type: string
-          description: Cifra identificativa negli IUV
-          example: 01
-          pattern: "[0-9]{1,10}"
     tipoEntrata:
       type: object
       allOf:
@@ -1666,10 +1661,6 @@ components:
           description: Codifica del capitolo di bilancio
           type: string
           example: 3321
-        codificaIUV:
-          type: string
-          description: Cifra identificativa negli IUV
-          example: 01
         abilitato:
           type: boolean
           description: Indicazione l'entrata e' abilitata

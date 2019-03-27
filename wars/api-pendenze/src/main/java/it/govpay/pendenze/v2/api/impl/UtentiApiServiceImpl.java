@@ -1,4 +1,4 @@
-package it.govpay.pagamento.v2.api.impl;
+package it.govpay.pendenze.v2.api.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +14,9 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.rs.v2.acl.impl.TipoUtenzaOnlyAcl;
 import it.govpay.rs.v2.acl.Acl;
 import it.govpay.rs.v2.acl.AuthorizationRules;
-import it.govpay.pagamento.v2.api.UtentiApi;
-import it.govpay.pagamento.v2.beans.Profilo;
-import it.govpay.pagamento.v2.beans.converter.ProfiloConverter;
+import it.govpay.pendenze.v2.api.UtentiApi;
+import it.govpay.pendenze.v2.beans.Profilo;
+import it.govpay.pendenze.v2.beans.converter.ProfiloConverter;
 /**
  * GovPay - API Pagamento
  *
