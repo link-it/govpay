@@ -28,7 +28,7 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 public class EntrateController extends BaseController {
 
@@ -56,8 +56,8 @@ public class EntrateController extends BaseController {
 			String jsonRequest = baos.toString();
 			TipoEntrataPost entrataRequest= JSONSerializable.parse(jsonRequest, TipoEntrataPost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idEntrata", idEntrata).notNull().minLength(1).maxLength(255);
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdEntrata("idEntrata", idEntrata);
 			
 			entrataRequest.validate();
 			
@@ -93,6 +93,9 @@ public class EntrateController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdEntrata("idEntrata", idEntrata);
 			
 			// Parametri - > DTO Input
 			

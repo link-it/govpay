@@ -29,7 +29,7 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 
 
@@ -98,6 +98,9 @@ public class TipiPendenzaController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+			
 			// Parametri - > DTO Input
 			
 			GetTipoPendenzaDTO getTipoPendenzaDTO = new GetTipoPendenzaDTO(user, idTipoPendenza);
@@ -145,8 +148,8 @@ public class TipiPendenzaController extends BaseController {
 			String jsonRequest = baos.toString();
 			TipoPendenzaPost tipoPendenzaRequest= JSONSerializable.parse(jsonRequest, TipoPendenzaPost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idTipoPendenza", idTipoPendenza).notNull().minLength(1).maxLength(35);
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
 			
 			tipoPendenzaRequest.validate();
 			

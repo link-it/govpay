@@ -31,7 +31,7 @@ import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 public class ApplicazioniController extends BaseController {
 	
@@ -61,6 +61,9 @@ public class ApplicazioniController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdApplicazione("idA2A", idA2A);
 			
 			// Parametri - > DTO Input
 			
@@ -105,6 +108,9 @@ public class ApplicazioniController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdApplicazione("idA2A", idA2A);
 			
 			String jsonRequest = baos.toString();
 
@@ -163,11 +169,11 @@ public class ApplicazioniController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdApplicazione("idA2A", idA2A);
+			
 			String jsonRequest = baos.toString();
 			ApplicazionePost applicazioneRequest= JSONSerializable.parse(jsonRequest, ApplicazionePost.class);
-			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idA2A", idA2A).notNull().minLength(1).maxLength(35);
 			
 			applicazioneRequest.validate();
 			

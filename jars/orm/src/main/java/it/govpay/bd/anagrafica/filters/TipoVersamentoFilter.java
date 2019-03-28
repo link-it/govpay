@@ -102,6 +102,8 @@ public class TipoVersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
+			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

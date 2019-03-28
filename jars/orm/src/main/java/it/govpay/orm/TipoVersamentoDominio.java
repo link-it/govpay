@@ -40,6 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="codificaIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -58,7 +59,8 @@ import java.io.Serializable;
   	"idDominio",
   	"codificaIuv",
   	"tipo",
-  	"pagaTerzi"
+  	"pagaTerzi",
+  	"abilitato"
   }
 )
 
@@ -122,6 +124,18 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
     this.pagaTerzi = pagaTerzi;
   }
 
+  public boolean isAbilitato() {
+    return this.abilitato;
+  }
+
+  public boolean getAbilitato() {
+    return this.abilitato;
+  }
+
+  public void setAbilitato(boolean abilitato) {
+    this.abilitato = abilitato;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -158,5 +172,9 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pagaTerzi",required=false,nillable=false)
   protected Boolean pagaTerzi;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="abilitato",required=true,nillable=false)
+  protected boolean abilitato;
 
 }

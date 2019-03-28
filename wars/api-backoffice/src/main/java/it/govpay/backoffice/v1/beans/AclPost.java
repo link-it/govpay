@@ -19,6 +19,66 @@ import java.util.List;
 })
 public class AclPost extends it.govpay.core.beans.JSONSerializable  implements IValidable{
   
+    
+  /**
+   * Servizio oggetto dell'autorizzazione.
+   */
+  public enum ServizioEnum {
+    
+    
+        
+            
+    ANAGRAFICA_PAGOPA("Anagrafica PagoPA"),
+    
+            
+    ANAGRAFICA_CREDITORE("Anagrafica Creditore"),
+    
+            
+    ANAGRAFICA_APPLICAZIONI("Anagrafica Applicazioni"),
+    
+            
+    ANAGRAFICA_RUOLI("Anagrafica Ruoli"),
+    
+            
+    PAGAMENTI_E_PENDENZE("Pagamenti e Pendenze"),
+    
+            
+    RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
+    
+            
+    GIORNALE_DEGLI_EVENTI("Giornale degli Eventi"),
+    
+            
+    CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione");
+            
+        
+    
+
+    private String value;
+
+    ServizioEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static ServizioEnum fromValue(String text) {
+      for (ServizioEnum b : ServizioEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+    
+  private ServizioEnum servizioEnum = null;
+    
   @JsonProperty("servizio")
   private String servizio = null;
     /**
@@ -67,7 +127,7 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable  implements I
   private List<String> autorizzazioni = new ArrayList<>();
   
   /**
-   * Servizio oggetto dell'autorizzazione. Elenco disponibile in /enumerazioni/serviziACL.
+   * Servizio oggetto dell'autorizzazione.
    **/
   public AclPost servizio(String servizio) {
     this.servizio = servizio;
@@ -80,6 +140,18 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable  implements I
   }
   public void setServizio(String servizio) {
     this.servizio = servizio;
+  }
+
+  public AclPost servizioEnum(ServizioEnum servizioEnum) {
+    this.servizioEnum = servizioEnum;
+    return this;
+  }
+
+  public ServizioEnum getServizioEnum() {
+    return servizioEnum;
+  }
+  public void setServizioEnum(ServizioEnum servizioEnum) {
+    this.servizioEnum = servizioEnum;
   }
 
   /**

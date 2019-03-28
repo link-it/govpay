@@ -37,6 +37,7 @@ import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.bd.model.Acl;
 
 public class RuoliController extends BaseController {
@@ -99,6 +100,9 @@ public class RuoliController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdRuolo("idRuolo", idRuolo);
 
 			// Parametri - > DTO Input
 
@@ -207,6 +211,9 @@ public class RuoliController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdRuolo("idRuolo", idRuolo);
 			
 			String jsonRequest = baos.toString();
 

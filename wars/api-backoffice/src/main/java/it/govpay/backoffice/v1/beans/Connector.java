@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
@@ -21,6 +22,62 @@ public class Connector extends JSONSerializable implements IValidable {
   @JsonProperty("url")
   private String url = null;
   
+    
+  /**
+   * Versione delle API di integrazione utilizzate.
+   */
+  public enum VersioneApiEnum {
+    
+    
+        
+            
+    V1("REST v1");
+//SOAP_3("SOAP v3");
+            
+        
+    
+
+    private String value;
+
+    VersioneApiEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static VersioneApiEnum fromValue(String text) {
+      for (VersioneApiEnum b : VersioneApiEnum.values()) {
+        if (String.valueOf(b.value).equals(text)) {
+          return b;
+        }
+      }
+      return null;
+    }
+    
+	public static VersioneApiEnum fromName(String text) {
+		for (VersioneApiEnum b : VersioneApiEnum.values()) {
+			if (String.valueOf(b.toNameString()).equals(text)) {
+				return b;
+			}
+		}
+		return null;
+	}
+	
+	public String toNameString() {
+		switch(this) {
+		case V1: return "REST_1";
+		//case SOAP_3: return "SOAP_3";
+		default:  return "";
+		}
+	}
+  }
+
+    private VersioneApiEnum versioneApiEnum = null;
+    
   @JsonProperty("versioneApi")
   private String versioneApi = null;
   
@@ -44,7 +101,7 @@ public class Connector extends JSONSerializable implements IValidable {
   }
 
   /**
-   * Versione delle API di integrazione utilizzate. Elenco disponibile in /enumerazioni/versioneConnettore
+   * Versione delle API di integrazione utilizzate.
    **/
   public Connector versioneApi(String versioneApi) {
     this.versioneApi = versioneApi;
@@ -57,6 +114,18 @@ public class Connector extends JSONSerializable implements IValidable {
   }
   public void setVersioneApi(String versioneApi) {
     this.versioneApi = versioneApi;
+  }
+
+public Connector versioneApiEnum(VersioneApiEnum versioneApiEnum) {
+    this.versioneApiEnum = versioneApiEnum;
+    return this;
+  }
+
+  public VersioneApiEnum getVersioneApiEnum() {
+    return versioneApiEnum;
+  }
+  public void setVersioneApiEnum(VersioneApiEnum versioneApiEnum) {
+    this.versioneApiEnum = versioneApiEnum;
   }
 
   /**

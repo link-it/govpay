@@ -19,6 +19,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "tipo",
 "codificaIUV",
 "pagaTerzi",
+"abilitato",
 })
 public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
@@ -74,6 +75,9 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
   @JsonProperty("pagaTerzi")
   private Boolean pagaTerzi = false;
+  
+  @JsonProperty("abilitato")
+  private Boolean abilitato = true;
   
   /**
    **/
@@ -152,6 +156,22 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     this.pagaTerzi = pagaTerzi;
   }
 
+  /**
+   * Indicazione la tipologia pendenza e' abilitata
+   **/
+  public TipoPendenzaPost abilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+    return this;
+  }
+
+  @JsonProperty("abilitato")
+  public Boolean Abilitato() {
+    return abilitato;
+  }
+  public void setAbilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -164,12 +184,13 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     return Objects.equals(descrizione, tipoPendenzaPost.descrizione) &&
         Objects.equals(tipo, tipoPendenzaPost.tipo) &&
         Objects.equals(codificaIUV, tipoPendenzaPost.codificaIUV) &&
-        Objects.equals(pagaTerzi, tipoPendenzaPost.pagaTerzi);
+        Objects.equals(pagaTerzi, tipoPendenzaPost.pagaTerzi) &&
+        Objects.equals(abilitato, tipoPendenzaPost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato);
   }
 
   public static TipoPendenzaPost parse(String json) throws ServiceException, ValidationException  {
@@ -190,6 +211,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -212,6 +234,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
 	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
 	vf.getValidator("tipo", this.tipo).notNull();
 	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();
+	vf.getValidator("abilitato", this.abilitato).notNull();
   }
 }
 

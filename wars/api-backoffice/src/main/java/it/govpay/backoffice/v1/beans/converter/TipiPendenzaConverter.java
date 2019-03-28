@@ -44,6 +44,7 @@ public class TipiPendenzaConverter {
 		entrataDTO.setTipoVersamento(tipoVersamento);
 		
 		tipoVersamento.setPagaTerziDefault(entrataPost.PagaTerzi());
+		tipoVersamento.setAbilitatoDefault(entrataPost.Abilitato());
 		
 		return entrataDTO;		
 	}
@@ -52,7 +53,7 @@ public class TipiPendenzaConverter {
 		TipoPendenza rsModel = new TipoPendenza();
 		
 		rsModel.descrizione(tipoVersamento.getDescrizione())
-		.idTipoPendenza(tipoVersamento.getCodTipoVersamento()).codificaIUV(tipoVersamento.getCodificaIuvDefault());
+		.idTipoPendenza(tipoVersamento.getCodTipoVersamento()).codificaIUV(tipoVersamento.getCodificaIuvDefault()).abilitato(tipoVersamento.isAbilitatoDefault());
 		
 		if(tipoVersamento.getTipoDefault() != null) {
 			switch (tipoVersamento.getTipoDefault()) {

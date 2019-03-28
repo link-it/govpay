@@ -36,6 +36,7 @@ public class TipoVersamento extends BasicModel {
 	private String codificaIuvDefault;
 	private Tipo tipoDefault;
 	private boolean pagaTerziDefault;
+	private boolean abilitatoDefault;
 	
 	public String getCodificaIuvDefault() {
 		return codificaIuvDefault;
@@ -73,5 +74,11 @@ public class TipoVersamento extends BasicModel {
 	}
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
+	}
+	public boolean isAbilitatoDefault() {
+		return abilitatoDefault;
+	}
+	public void setAbilitatoDefault(boolean abilitatoDefault) {
+		this.abilitatoDefault = abilitatoDefault;
 	}
 }

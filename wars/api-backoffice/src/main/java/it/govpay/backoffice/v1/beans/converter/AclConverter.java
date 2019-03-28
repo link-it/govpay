@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.AclPost.AutorizzazioniEnum;
-import it.govpay.backoffice.v1.beans.ServizioEnum;
+import it.govpay.backoffice.v1.beans.AclPost.ServizioEnum;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.PostAclDTO;

@@ -4097,7 +4097,7 @@ components:
           enum:
             - spontanea
             - dovuta
-          example: Imposta municipale urbana
+          example: spontanea
         codificaIUV:
           type: string
           description: Cifra identificativa negli IUV
@@ -4107,7 +4107,12 @@ components:
           type: boolean
           description: Indica se la pendenza e' pagabile da soggetti terzi
           example: true
-          default: false          
+          default: false   
+        abilitato:
+          type: boolean
+          description: Indicazione la tipologia pendenza e' abilitata
+          example: true
+          default: true
     tipoPendenza:
       type: object
       allOf:
@@ -4122,12 +4127,6 @@ components:
     tipoPendenzaDominioPost:
       type: object
       properties:
-        tipo:
-          type: string
-          enum:
-            - spontanea
-            - dovuta
-          example: Imposta municipale urbana
         codificaIUV:
           type: string
           description: Cifra identificativa negli IUV
@@ -4137,7 +4136,12 @@ components:
           type: boolean
           description: Indica se la pendenza e' pagabile da soggetti terzi
           example: true
-          default: false          
+          default: false
+        abilitato:
+          type: boolean
+          description: Indicazione la tipologia pendenza e' abilitata
+          example: true
+          default: true
     tipoPendenzaDominio:
       type: object
       allOf:
@@ -4148,13 +4152,13 @@ components:
             idTipoPendenza:
               type: string
               example: IMU
-        - $ref: '#/components/schemas/tipoPendenzaDominioPost'
+        - $ref: '#/components/schemas/tipoPendenza'
         - type: object
           required:
-           - tipoPendenza
+           - valori
           properties:
-            tipoPendenza:
-              $ref: '#/components/schemas/tipoPendenza'
+            valori:
+              $ref: '#/components/schemas/tipoPendenzaDominioPost'
     pagamentoIndex:
       type: object
       required:
@@ -5161,8 +5165,9 @@ components:
           description: Dati di integrazione ad un servizio web
         versioneApi:
           type: string
-          description: Versione delle API di integrazione utilizzate. Elenco disponibile in /enumerazioni/versioneConnettore
-          example: 'REST v1'
+          enum:
+            - 'REST v1'
+          description: Versione delle API di integrazione utilizzate.
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
     connettorePagopa:
@@ -5331,10 +5336,17 @@ components:
       properties:
         servizio:
           type: string
+          enum:
+            - "Anagrafica PagoPA"
+            - "Anagrafica Creditore"
+            - "Anagrafica Applicazioni"
+            - "Anagrafica Ruoli"
+            - "Pagamenti e Pendenze"
+            - "Rendicontazioni e Incassi"
+            - "Giornale degli Eventi"
+            - "Configurazione e manutenzione"
           description: 
-            Servizio oggetto dell'autorizzazione. Elenco disponibile in /enumerazioni/serviziACL.
-          example:
-            Pendenze e Pagamenti
+            Servizio oggetto dell'autorizzazione.
         autorizzazioni:
           type: array
           items:

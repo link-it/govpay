@@ -124,7 +124,7 @@
        
        <!-- HEADER INIT -->
       	
-      	<b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+      	<b:bean id="http403ForbiddenEntryPointHead" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
       	<b:bean id="userDetailServiceUtenzeHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         </b:bean>
@@ -147,7 +147,7 @@
         	</b:property>
         </b:bean>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/header/**">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointHead" pattern="/rs/header/**">
 
                 <csrf disabled="true"/>
                 
@@ -163,6 +163,60 @@
         </http>
         
        	<!-- HEADER END -->
+       	
+       	<!-- SPID START -->
+        <b:bean id="http403ForbiddenEntryPointSPID" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        <b:bean id="userDetailServiceUtenzeSPID" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        </b:bean>
+        <b:bean id="preauthAuthProviderSPID" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        	<b:property name="preAuthenticatedUserDetailsService">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.service.authentication.provider.UserDetailsByNameServiceWrapper">
+                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeSPID"/>
+              	</b:bean>
+            </b:property>
+        </b:bean>
+        <authentication-manager id="authenticationManagerSPID">
+                <authentication-provider ref="preauthAuthProviderSPID">
+                </authentication-provider>
+        </authentication-manager>
+        <b:bean id="preAuthFilterSPID" class="it.govpay.rs.v1.authentication.preauth.filter.SPIDPreAuthFilter">
+                <b:property name="authenticationManager" ref="authenticationManagerSPID" />
+                <b:property name="exceptionIfHeaderMissing" value="false" />
+                <b:property name="authenticationDetailsSource">
+        		<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource"/>
+        	</b:property>
+        </b:bean>
+        <b:bean id="logoutSuccessHandlerSPID" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
+        
+        <b:bean id="invalidSessionStrategySPID" class="it.govpay.rs.v1.authentication.session.NotAuthorizedInvalidSessionStrategy">
+        	<b:property name="createNewSession" value="false" />
+        </b:bean>
+        
+        <b:bean id="expiredSessionStrategySPID" class="it.govpay.rs.v1.authentication.session.NotAuthorizedSessionInformationExpiredStrategy">
+        </b:bean>
+        <http auto-config="false" use-expressions="true" create-session="ifRequired" entry-point-ref="http403ForbiddenEntryPointSPID" pattern="/rs/spid/v1/**">
+
+                <csrf disabled="true"/>
+                
+                <intercept-url pattern="/rs/spid/v1/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterSPID" />
+                
+                <logout logout-url="/rs/spid/v1/logout" success-handler-ref="logoutSuccessHandlerSPID" delete-cookies="JSESSIONID" invalidate-session="true" />
+                
+                <session-management session-fixation-protection="changeSessionId" invalid-session-strategy-ref="invalidSessionStrategySPID">
+                	<concurrency-control max-sessions="2" expired-session-strategy-ref="expiredSessionStrategySPID" />
+	       		</session-management>
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+		<!-- SPID END -->
        
         <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>

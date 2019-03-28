@@ -35,6 +35,7 @@ import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 public class OperatoriController extends BaseController {
 
@@ -62,8 +63,8 @@ public class OperatoriController extends BaseController {
 			String jsonRequest = baos.toString();
 			OperatorePost operatoreRequest= JSONSerializable.parse(jsonRequest, OperatorePost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("principal", principal).notNull().minLength(1).maxLength(4000);
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdOperatore("principal", principal);
 			
 			operatoreRequest.validate();
 			
@@ -100,6 +101,9 @@ public class OperatoriController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdOperatore("principal", principal);
+			
 			// Parametri - > DTO Input
 
 			DeleteOperatoreDTO deleteOperatoreDTO = new DeleteOperatoreDTO(user);
@@ -139,6 +143,9 @@ public class OperatoriController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdOperatore("principal", principal);
 			
 			// Parametri - > DTO Input
 			
@@ -182,13 +189,16 @@ public class OperatoriController extends BaseController {
 			IOUtils.copy(is, baos);
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdOperatore("principal", principal);
+			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
 			String jsonRequest = baos.toString();
 
-			OperatorePatchDTO verificaPagamentoDTO = new OperatorePatchDTO(user);
-			verificaPagamentoDTO.setIdOperatore(principal);
+			OperatorePatchDTO operatorePatchDTO = new OperatorePatchDTO(user);
+			operatorePatchDTO.setIdOperatore(principal);
 			
 			List<PatchOp> lstOp = new ArrayList<>();
 			
@@ -206,11 +216,11 @@ public class OperatoriController extends BaseController {
 				lstOp = JSONSerializable.parse(jsonRequest, List.class);
 			}
 			
-			verificaPagamentoDTO.setOp(PatchOpConverter.toModel(lstOp));
+			operatorePatchDTO.setOp(PatchOpConverter.toModel(lstOp));
 
 			UtentiDAO utentiDAO = new UtentiDAO(false);
 			
-			LeggiOperatoreDTOResponse pagamentoPortaleDTOResponse = utentiDAO.patch(verificaPagamentoDTO);
+			LeggiOperatoreDTOResponse pagamentoPortaleDTOResponse = utentiDAO.patch(operatorePatchDTO);
 			
 			Operatore response = OperatoriConverter.toRsModel(pagamentoPortaleDTOResponse.getOperatore());
 			

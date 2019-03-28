@@ -18,8 +18,8 @@ import org.springframework.security.core.Authentication;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import it.govpay.backoffice.v1.beans.ServizioEnum;
-import it.govpay.backoffice.v1.beans.VersioneApiEnum;
+import it.govpay.backoffice.v1.beans.AclPost.ServizioEnum;
+import it.govpay.backoffice.v1.beans.Connector.VersioneApiEnum;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 

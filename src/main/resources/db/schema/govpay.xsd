@@ -1155,6 +1155,7 @@
 			<xsd:element name="codificaIuv" type="String4" minOccurs="0"/>
 			<xsd:element name="tipo" type="String35" />
 			<xsd:element name="pagaTerzi" type="xsd:boolean" default="false" />
+			<xsd:element name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1207,6 +1208,7 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
+			<xsd:element name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

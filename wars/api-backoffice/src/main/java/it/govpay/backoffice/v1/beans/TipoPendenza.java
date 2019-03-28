@@ -16,6 +16,7 @@ import it.govpay.core.beans.JSONSerializable;
 "tipo",
 "codificaIUV",
 "pagaTerzi",
+"abilitato",
 "idTipoPendenza",
 })
 public class TipoPendenza extends JSONSerializable {
@@ -72,6 +73,9 @@ public class TipoPendenza extends JSONSerializable {
   
   @JsonProperty("pagaTerzi")
   private Boolean pagaTerzi = false;
+  
+  @JsonProperty("abilitato")
+  private Boolean abilitato = true;
   
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
@@ -139,6 +143,22 @@ public class TipoPendenza extends JSONSerializable {
   }
 
   /**
+   * Indicazione la tipologia pendenza e' abilitata
+   **/
+  public TipoPendenza abilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+    return this;
+  }
+
+  @JsonProperty("abilitato")
+  public Boolean Abilitato() {
+    return abilitato;
+  }
+  public void setAbilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+  }
+
+  /**
    **/
   public TipoPendenza idTipoPendenza(String idTipoPendenza) {
     this.idTipoPendenza = idTipoPendenza;
@@ -166,12 +186,13 @@ public class TipoPendenza extends JSONSerializable {
         Objects.equals(tipo, tipoPendenza.tipo) &&
         Objects.equals(codificaIUV, tipoPendenza.codificaIUV) &&
         Objects.equals(pagaTerzi, tipoPendenza.pagaTerzi) &&
+        Objects.equals(abilitato, tipoPendenza.abilitato) &&
         Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, idTipoPendenza);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, idTipoPendenza);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -192,6 +213,7 @@ public class TipoPendenza extends JSONSerializable {
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("}");
     return sb.toString();

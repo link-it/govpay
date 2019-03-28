@@ -102,6 +102,13 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "paga_terzi";
 			}
 		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".abilitato";
+			}else{
+				return "abilitato";
+			}
+		}
 		if(field.equals(TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -128,6 +135,13 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return this.toAliasTable(field)+".paga_terzi";
 			}else{
 				return "paga_terzi";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().ABILITATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".abilitato";
+			}else{
+				return "abilitato";
 			}
 		}
 
@@ -158,6 +172,9 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(TipoVersamentoDominio.model().ID_DOMINIO, returnAlias);
 		}
@@ -168,6 +185,9 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamentoDominio.model().PAGA_TERZI)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().ABILITATO)){
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 

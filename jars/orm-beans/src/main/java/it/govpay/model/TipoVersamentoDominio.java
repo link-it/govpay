@@ -8,6 +8,7 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	private String codificaIuvCustom;
 	private Tipo tipoCustom;
 	private Boolean pagaTerziCustom;
+	private boolean abilitato;
 	
 	public long getIdTipoVersamento() {
 		return idTipoVersamento;
@@ -38,5 +39,11 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	}
 	public void setPagaTerziCustom(Boolean pagaTerziCustom) {
 		this.pagaTerziCustom = pagaTerziCustom;
+	}
+	public boolean isAbilitato() {
+		return this.abilitato;
+	}
+	public void setAbilitato(boolean abilitato) {
+		this.abilitato = abilitato;
 	}
 }

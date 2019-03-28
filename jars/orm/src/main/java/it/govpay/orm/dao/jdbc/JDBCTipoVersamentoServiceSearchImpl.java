@@ -163,6 +163,7 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(TipoVersamento.model().CODIFICA_IUV);
 			fields.add(TipoVersamento.model().TIPO);
 			fields.add(TipoVersamento.model().PAGA_TERZI);
+			fields.add(TipoVersamento.model().ABILITATO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         

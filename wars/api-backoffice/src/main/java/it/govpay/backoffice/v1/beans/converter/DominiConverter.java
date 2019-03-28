@@ -19,7 +19,6 @@ import it.govpay.backoffice.v1.beans.EntrataPost;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominio;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
-import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost.TipoEnum;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -370,10 +369,14 @@ public class DominiConverter {
 	public static TipoPendenzaDominio toTipoPendenzaRsModel(it.govpay.model.TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException {
 		TipoPendenzaDominio rsModel = new TipoPendenzaDominio();
 		
-		rsModel.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento()).codificaIUV(tipoVersamentoDominio.getCodificaIuvCustom());
+		rsModel.descrizione(tipoVersamentoDominio.getDescrizione())
+		.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento())
+		.codificaIUV(tipoVersamentoDominio.getCodificaIuvDefault())
+		.abilitato(tipoVersamentoDominio.isAbilitatoDefault())
+		.pagaTerzi(tipoVersamentoDominio.getPagaTerziDefault());
 		
-		if(tipoVersamentoDominio.getTipoCustom() != null) {
-			switch (tipoVersamentoDominio.getTipoCustom()) {
+		if(tipoVersamentoDominio.getTipoDefault() != null) {
+			switch (tipoVersamentoDominio.getTipoDefault()) {
 			case DOVUTO:
 				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaDominio.TipoEnum.DOVUTA);
 				break;
@@ -383,8 +386,13 @@ public class DominiConverter {
 			}
 		}
 		
-		rsModel.setPagaTerzi(tipoVersamentoDominio.getPagaTerziCustom());
-		rsModel.setTipoPendenza(TipiPendenzaConverter.toTipoPendenzaRsModel(tipoVersamentoDominio));
+		TipoPendenzaDominioPost valori = new TipoPendenzaDominioPost();
+		
+		valori.codificaIUV(tipoVersamentoDominio.getCodificaIuvCustom())
+		.pagaTerzi(tipoVersamentoDominio.getPagaTerziCustom())
+		.abilitato(tipoVersamentoDominio.isAbilitato());
+		
+		rsModel.setValori(valori);
 		
 		return rsModel;
 	}
@@ -396,25 +404,7 @@ public class DominiConverter {
 		
 		tipoVersamentoDominio.setCodTipoVersamento(idTipoPendenza);
 		tipoVersamentoDominio.setCodificaIuvCustom(tipoPendenzaRequest.getCodificaIUV());
-		
-		if(tipoPendenzaRequest.getTipo() != null) {
-			
-			// valore tipo contabilita non valido
-			if(TipoEnum.fromValue(tipoPendenzaRequest.getTipo()) == null) {
-				throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipoPendenzaRequest.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
-			}
-			
-			tipoPendenzaRequest.setTipoEnum(TipoEnum.fromValue(tipoPendenzaRequest.getTipo()));
-			
-			switch (tipoPendenzaRequest.getTipoEnum()) {
-			case DOVUTA:
-				tipoVersamentoDominio.setTipoCustom(it.govpay.model.TipoVersamento.Tipo.DOVUTO);
-				break;
-			case SPONTANEA:
-				tipoVersamentoDominio.setTipoCustom(it.govpay.model.TipoVersamento.Tipo.SPONTANEO);
-				break;
-			}
-		}
+		tipoVersamentoDominio.setAbilitato(tipoPendenzaRequest.Abilitato());
 		
 		if(tipoPendenzaRequest.PagaTerzi() != null) {
 			tipoVersamentoDominio.setPagaTerziCustom(tipoPendenzaRequest.PagaTerzi());
