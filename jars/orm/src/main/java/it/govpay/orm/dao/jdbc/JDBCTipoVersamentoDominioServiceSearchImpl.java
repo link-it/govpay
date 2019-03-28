@@ -54,7 +54,6 @@ import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.TipoVersamento;
 import it.govpay.orm.TipoVersamentoDominio;
-import it.govpay.orm.Tributo;
 import it.govpay.orm.dao.jdbc.converter.TipoVersamentoDominioFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.TipoVersamentoDominioFetch;
 
@@ -173,6 +172,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			List<IField> fields = new ArrayList<>();
 			AliasField tributoId = new AliasField(new CustomField("id", Long.class, "id", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())), "id");
 			fields.add(tributoId);
+			fields.add(TipoVersamentoDominio.model().ABILITATO);
 			fields.add(TipoVersamentoDominio.model().CODIFICA_IUV);
 			fields.add(TipoVersamentoDominio.model().TIPO);
 			fields.add(TipoVersamentoDominio.model().PAGA_TERZI);
@@ -185,6 +185,8 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(onlineAlias);
 			AliasField pagaTerziAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI);
 			fields.add(pagaTerziAlias);
+			AliasField abilitatoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO);
+			fields.add(abilitatoAlias);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
 			
@@ -709,8 +711,8 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 		sqlQueryObjectGet.addSelectField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition(this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())+".id=?");
-		sqlQueryObjectGet.addWhereCondition(this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().ID_DOMINIO)+".id="+this.getTipoVersamentoDominioFieldConverter().toTable(Tributo.model())+".id_dominio");
-		sqlQueryObjectGet.addWhereCondition(this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)+".id="+this.getTipoVersamentoDominioFieldConverter().toTable(Tributo.model())+".id_tipo_versamento");
+		sqlQueryObjectGet.addWhereCondition(this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().ID_DOMINIO)+".id="+this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())+".id_dominio");
+		sqlQueryObjectGet.addWhereCondition(this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)+".id="+this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())+".id_tipo_versamento");
 
 		// Recupero _tipoVersamentoDominio
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tipoVersamentoDominio = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 

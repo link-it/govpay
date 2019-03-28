@@ -48,6 +48,7 @@ public class TipoVersamentoConverter {
 		if(vo.getTipo() != null)
 			dto.setTipoDefault(Tipo.toEnum(vo.getTipo()));
 		dto.setPagaTerziDefault(vo.isPagaTerzi());
+		dto.setAbilitatoDefault(vo.getAbilitato());
 		
 		return dto;
 	}
@@ -61,6 +62,7 @@ public class TipoVersamentoConverter {
 		if(dto.getTipoDefault() != null)
 			vo.setTipo(dto.getTipoDefault().getCodifica());
 		vo.setPagaTerzi(dto.getPagaTerziDefault());
+		vo.setAbilitato(dto.isAbilitatoDefault());
 		return vo;
 	}
 

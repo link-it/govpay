@@ -24,6 +24,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 
 
@@ -99,6 +100,9 @@ public class IncassiController extends BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(user);
 			leggiIncassoDTO.setIdDominio(idDominio);

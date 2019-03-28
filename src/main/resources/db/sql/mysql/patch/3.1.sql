@@ -270,3 +270,16 @@ JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento JOIN 
 WHERE COALESCE(tipi_vers_domini.tipo,tipi_versamento.tipo) = 'DOVUTO' OR pagamenti.importo_pagato > 0
 GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 
+
+-- 27/03/2019 Tipo Pendenza Abilitato
+
+ALTER TABLE tipi_versamento ADD COLUMN abilitato BOOLEAN;
+UPDATE tipi_versamento SET abilitato = true;
+ALTER TABLE tipi_versamento MODIFY COLUMN abilitato BOOLEAN NOT NULL;
+
+ALTER TABLE tipi_vers_domini ADD COLUMN abilitato BOOLEAN;
+UPDATE tipi_vers_domini SET abilitato = tributi.abilitato FROM tributi, tipi_tributo, tipi_versamento WHERE tributi.id_tipo_tributo = tipi_tributo.id AND tipi_tributo.cod_tributo = tipi_versamento.cod_tipo_versamento AND tipi_versamento.id = tipi_vers_domini.id_tipo_versamento;
+UPDATE tipi_vers_domini SET abilitato = true FROM tipi_versamento WHERE tipi_versamento.id = tipi_vers_domini.id_tipo_versamento AND tipi_versamento.cod_tipo_versamento = 'LIBERO';
+ALTER TABLE tipi_vers_domini MODIFY COLUMN abilitato BOOLEAN NOT NULL;
+
+

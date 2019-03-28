@@ -46,6 +46,7 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.CODIFICA_IUV = new Field("codificaIuv",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TIPO = new Field("tipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PAGA_TERZI = new Field("pagaTerzi",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.ABILITATO = new Field("abilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
 	
 	}
 	
@@ -58,6 +59,7 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.CODIFICA_IUV = new ComplexField(father,"codificaIuv",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PAGA_TERZI = new ComplexField(father,"pagaTerzi",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
 	
 	}
 	
@@ -72,6 +74,8 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 	public IField TIPO = null;
 	 
 	public IField PAGA_TERZI = null;
+	 
+	public IField ABILITATO = null;
 	 
 
 	@Override

@@ -102,6 +102,13 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "paga_terzi";
 			}
 		}
+		if(field.equals(TipoVersamento.model().ABILITATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".abilitato";
+			}else{
+				return "abilitato";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -128,6 +135,9 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().PAGA_TERZI)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().ABILITATO)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 

@@ -25,6 +25,7 @@ import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 
 
@@ -48,6 +49,11 @@ public class EventiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdApplicazione("idA2A", idA2A);
 			
 			// Parametri - > DTO Input
 			

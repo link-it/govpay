@@ -61,6 +61,8 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo", TipoVersamentoDominio.model().TIPO.getFieldType()));
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().PAGA_TERZI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamentoDominio.model().PAGA_TERZI.getFieldType()));
+				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "abilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType()));
 				return object;
 			} else if(model.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO)) {
 				TipoVersamento object = new TipoVersamento();
@@ -76,6 +78,8 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo", TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO.getFieldType()));
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType()));
+				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType(),
+						jdbcParameterUtilities.readParameter(rs, "abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType()));
 				return object;
 			}
 			
@@ -104,6 +108,8 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipo"));
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().PAGA_TERZI.getFieldType(),
 					this.getObjectFromMap(map,"pagaTerzi"));
+				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType(),
+					this.getObjectFromMap(map,"abilitato"));
 				return object;
 			} else if(model.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO)) {
 				TipoVersamento object = new TipoVersamento();
@@ -119,6 +125,8 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoVersamento.tipo"));
 				setParameter(object, "setPagaTerzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType(),
 					this.getObjectFromMap(map,"tipoVersamento.pagaTerzi"));
+				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType(),
+						this.getObjectFromMap(map,"tipoVersamento.abilitato"));
 				return object;
 			}
 			

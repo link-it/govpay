@@ -347,6 +347,7 @@ CREATE TABLE tipi_versamento
 	codifica_iuv VARCHAR(4),
 	tipo VARCHAR(35) NOT NULL,
 	paga_terzi BOOLEAN NOT NULL DEFAULT false,
+	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_versamento') NOT NULL,
 	-- unique constraints
@@ -365,6 +366,7 @@ CREATE TABLE tipi_vers_domini
 	codifica_iuv VARCHAR(4),
 	tipo VARCHAR(35),
 	paga_terzi BOOLEAN,
+	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_vers_domini') NOT NULL,
 	id_tipo_versamento BIGINT NOT NULL,

@@ -25,6 +25,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 
 
@@ -103,6 +104,9 @@ public class FlussiRendicontazioneController extends BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			// Parametri - > DTO Input
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);

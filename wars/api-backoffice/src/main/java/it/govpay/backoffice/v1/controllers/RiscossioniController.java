@@ -27,6 +27,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Pagamento.Stato;
 
 
@@ -51,6 +52,9 @@ public class RiscossioniController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			// Parametri - > DTO Input
 			

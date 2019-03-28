@@ -218,5 +218,44 @@
     </jaxrs:server>
     <!-- HEADER END -->
     
+         <!-- SPID INIT -->
+    <jaxrs:server id="apiBackofficeSpidV1" address="/spid/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+<!--                 <jaxrs:features> -->
+<!--             <ref bean="openApiFeature" /> -->
+<!--         </jaxrs:features> -->
+    </jaxrs:server>
+    <!-- SPID END -->
+    
 </b:beans>
         

@@ -4,7 +4,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.backoffice.v1.beans.Connector;
 import it.govpay.backoffice.v1.beans.TipoAutenticazione.TipoEnum;
-import it.govpay.backoffice.v1.beans.VersioneApiEnum;
+import it.govpay.backoffice.v1.beans.Connector.VersioneApiEnum;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;

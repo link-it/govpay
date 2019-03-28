@@ -111,6 +111,7 @@ public class JDBCTipoVersamentoDominioServiceImpl extends JDBCTipoVersamentoDomi
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().CODIFICA_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().PAGA_TERZI,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
@@ -120,6 +121,7 @@ public class JDBCTipoVersamentoDominioServiceImpl extends JDBCTipoVersamentoDomi
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getCodificaIuv(),TipoVersamentoDominio.model().CODIFICA_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getTipo(),TipoVersamentoDominio.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getPagaTerzi(),TipoVersamentoDominio.model().PAGA_TERZI.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getAbilitato(),TipoVersamentoDominio.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
@@ -215,6 +217,8 @@ public class JDBCTipoVersamentoDominioServiceImpl extends JDBCTipoVersamentoDomi
 		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getTipo(), TipoVersamentoDominio.model().TIPO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().PAGA_TERZI,false), "?");
 		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getPagaTerzi(), TipoVersamentoDominio.model().PAGA_TERZI.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().ABILITATO,false), "?");
+		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getAbilitato(), TipoVersamentoDominio.model().ABILITATO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento","?");
 		}

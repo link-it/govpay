@@ -527,6 +527,7 @@ CREATE TABLE tipi_versamento
 	codifica_iuv VARCHAR2(4 CHAR),
 	tipo VARCHAR(35) NOT NULL,
 	paga_terzi NUMBER NOT NULL,
+	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -559,6 +560,7 @@ CREATE TABLE tipi_vers_domini
 	codifica_iuv VARCHAR2(4 CHAR),
 	tipo VARCHAR2(35 CHAR),
 	paga_terzi NUMBER,
+	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento NUMBER NOT NULL,

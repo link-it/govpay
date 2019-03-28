@@ -46,6 +46,7 @@ public class TipoVersamentoDominioConverter {
 		dto.setId(vo.getId());
 		dto.setIdDominio(vo.getIdDominio().getId());
 		
+		dto.setAbilitato(vo.getAbilitato());
 		dto.setCodificaIuvCustom(vo.getCodificaIuv());
 		if(vo.getTipo() != null)
 			dto.setTipoCustom(Tipo.toEnum(vo.getTipo()));
@@ -57,6 +58,7 @@ public class TipoVersamentoDominioConverter {
 		if(vo.getTipoVersamento().getTipo() != null)
 			dto.setTipoDefault(Tipo.toEnum(vo.getTipoVersamento().getTipo()));
 		dto.setPagaTerziDefault(vo.getTipoVersamento().isPagaTerzi());
+		dto.setAbilitatoDefault(vo.getTipoVersamento().isAbilitato());
 		
 		return dto;
 	}
@@ -65,20 +67,22 @@ public class TipoVersamentoDominioConverter {
 		it.govpay.orm.TipoVersamentoDominio vo = new it.govpay.orm.TipoVersamentoDominio();
 		vo.setId(dto.getId());
 		
-		TipoVersamento tipoTributo = new TipoVersamento();
-		tipoTributo.setId(dto.getIdTipoVersamento());
-		tipoTributo.setCodTipoVersamento(dto.getCodTipoVersamento());
-		tipoTributo.setDescrizione(dto.getDescrizione());
-		tipoTributo.setCodificaIuv(dto.getCodificaIuvDefault());
+		TipoVersamento tipoVersamento = new TipoVersamento();
+		tipoVersamento.setId(dto.getIdTipoVersamento());
+		tipoVersamento.setCodTipoVersamento(dto.getCodTipoVersamento());
+		tipoVersamento.setDescrizione(dto.getDescrizione());
+		tipoVersamento.setCodificaIuv(dto.getCodificaIuvDefault());
 		if(dto.getTipoDefault() != null)
-			tipoTributo.setTipo(dto.getTipoDefault().getCodifica());
-		tipoTributo.setPagaTerzi(dto.getPagaTerziDefault());
+			tipoVersamento.setTipo(dto.getTipoDefault().getCodifica());
+		tipoVersamento.setPagaTerzi(dto.getPagaTerziDefault());
+		tipoVersamento.setAbilitato(dto.isAbilitatoDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
 		if(dto.getTipoCustom() != null)
 			vo.setTipo(dto.getTipoCustom().getCodifica());
 		vo.setPagaTerzi(dto.getPagaTerziCustom());
-		vo.setTipoVersamento(tipoTributo);
+		vo.setTipoVersamento(tipoVersamento);
+		vo.setAbilitato(dto.isAbilitato());
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

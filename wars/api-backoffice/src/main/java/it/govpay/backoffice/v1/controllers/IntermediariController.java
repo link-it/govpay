@@ -41,7 +41,7 @@ import it.govpay.core.dao.anagrafica.dto.PutStazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutStazioneDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 public class IntermediariController extends BaseController {
 
@@ -63,6 +63,9 @@ public class IntermediariController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
 			
 			// Parametri - > DTO Input
 			
@@ -125,9 +128,10 @@ public class IntermediariController extends BaseController {
 			String jsonRequest = baos.toString();
 			StazionePost stazioneRequest= JSONSerializable.parse(jsonRequest, StazionePost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idIntermediario", idIntermediario).notNull().minLength(1).maxLength(35);
-			vf.getValidator("idStazione", idStazione).notNull().minLength(1).maxLength(35);
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
+			validatoreId.validaIdStazione("idStazione", idStazione);
 			
 			stazioneRequest.validate();
 			
@@ -222,8 +226,8 @@ public class IntermediariController extends BaseController {
 			String jsonRequest = baos.toString();
 			IntermediarioPost intermediarioRequest= JSONSerializable.parse(jsonRequest, IntermediarioPost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idIntermediario", idIntermediario).notNull().minLength(1).maxLength(35);
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
 						
 			intermediarioRequest.validate();
 			
@@ -259,6 +263,9 @@ public class IntermediariController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
 			
 			// Parametri - > DTO Input
 			
@@ -313,6 +320,10 @@ public class IntermediariController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
+			validatoreId.validaIdStazione("idStazione", idStazione);
 			
 			// Parametri - > DTO Input
 			

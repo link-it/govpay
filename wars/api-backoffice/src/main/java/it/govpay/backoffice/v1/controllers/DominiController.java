@@ -71,8 +71,7 @@ import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.validator.CostantiValidazione;
-import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 public class DominiController extends BaseController {
 
@@ -245,9 +244,9 @@ public class DominiController extends BaseController {
 			String jsonRequest = baos.toString();
 			ContiAccreditoPost ibanAccreditoRequest= JSONSerializable.parse(jsonRequest, ContiAccreditoPost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
-			vf.getValidator("ibanAccredito", ibanAccredito).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdIbanAccredito("ibanAccredito", ibanAccredito);
 			
 			ibanAccreditoRequest.validate();
 			
@@ -378,9 +377,9 @@ public class DominiController extends BaseController {
 			String jsonRequest = baos.toString();
 			EntrataPost entrataRequest= JSONSerializable.parse(jsonRequest, EntrataPost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
-			vf.getValidator("idEntrata", idEntrata).notNull().minLength(1).maxLength(255);
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdEntrata("idEntrata", idEntrata);
 			
 			entrataRequest.validate();
 			
@@ -464,8 +463,8 @@ public class DominiController extends BaseController {
 			String jsonRequest = baos.toString();
 			DominioPost dominioRequest= JSONSerializable.parse(jsonRequest, DominioPost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			dominioRequest.validate();
 			
@@ -598,9 +597,9 @@ public class DominiController extends BaseController {
 			String jsonRequest = baos.toString();
 			TipoPendenzaDominioPost tipoPendenzaRequest= JSONSerializable.parse(jsonRequest, TipoPendenzaDominioPost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
-			vf.getValidator("idTipoPendenza", idTipoPendenza).notNull().minLength(1).maxLength(35);
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
 			
 			tipoPendenzaRequest.validate();
 			
@@ -735,9 +734,9 @@ public class DominiController extends BaseController {
 			String jsonRequest = baos.toString();
 			UnitaOperativaPost unitaOperativaRequest= JSONSerializable.parse(jsonRequest, UnitaOperativaPost.class);
 			
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idDominio", idDominio).notNull().length(11).pattern("(^([0-9]){11}$)");
-			vf.getValidator("idUnitaOperativa", idUnitaOperativa).notNull().minLength(1).maxLength(35);
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa);
 			
 			unitaOperativaRequest.validate();
 			
