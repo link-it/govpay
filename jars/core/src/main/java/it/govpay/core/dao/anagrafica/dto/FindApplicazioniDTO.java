@@ -31,6 +31,7 @@ public class FindApplicazioniDTO extends BasicFindRequestDTO {
 		super(user);
 		this.addSortField("idA2A", it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
 		this.addDefaultSort(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL_ORIGINALE, SortOrder.ASC);
+		this.addDefaultSort(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE, SortOrder.ASC);
 	}
 
 	public Boolean getAbilitato() {

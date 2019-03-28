@@ -92,6 +92,10 @@ public class UriBuilderUtils {
 	public static String getEntrateByDominio(String idDominio) {
 		return getFromDomini().path("entrate").buildFromEncoded(idDominio).toString();
 	}
+	
+	public static String getTipiPendenzaByDominio(String idDominio) {
+		return getFromDomini().path("tipiPendenza").buildFromEncoded(idDominio).toString();
+	}
 
 	public static String getContiAccreditoByDominio(String idDominio) {
 		return getFromDomini().path("contiAccredito").buildFromEncoded(idDominio).toString();

@@ -35,7 +35,7 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="TipoVersamentoDominio">
  * 		&lt;sequence>
- * 			&lt;element name="TipoVersamento" type="{http://www.govpay.it/orm}TipoVersamento" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}TipoVersamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codificaIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -141,7 +141,7 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   }
 
 
-  @XmlElement(name="TipoVersamento",required=true,nillable=false)
+  @XmlElement(name="tipoVersamento",required=true,nillable=false)
   protected TipoVersamento tipoVersamento;
 
   @XmlElement(name="idDominio",required=true,nillable=false)

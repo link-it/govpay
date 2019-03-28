@@ -28,9 +28,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
+import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
+import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.model.Anagrafica;
@@ -63,6 +65,7 @@ public class Dominio extends it.govpay.model.Dominio {
 	private transient List<UnitaOperativa> unitaOperative;
 	private transient List<IbanAccredito> ibanAccredito;
 	private transient List<Tributo> tributi;
+	private transient List<TipoVersamentoDominio> tipiVersamento;
 
 	public Stazione getStazione() throws ServiceException {
 		return this.stazione;
@@ -148,5 +151,25 @@ public class Dominio extends it.govpay.model.Dominio {
 	public Tributo getTributo(BasicBD bd, String codTributo, boolean useCacheData) throws ServiceException, NotFoundException {
 		return AnagraficaManager.getTributo(bd, this.getId(), codTributo);
 	}
+	
+	public List<TipoVersamentoDominio> getTipiVersamento(BasicBD bd) throws ServiceException {
+		if(this.tipiVersamento == null) { 
+			TipiVersamentoDominiBD tvdBD = new TipiVersamentoDominiBD(bd);
+			TipoVersamentoDominioFilter filter = tvdBD.newFilter();
+			filter.setIdDominio(this.getId());
+			this.tipiVersamento = tvdBD.findAll(filter);
+		}
+		return this.tipiVersamento;
+	}
+
+	public TipoVersamentoDominio getTipoVersamentoDominio(BasicBD bd, String codTipoVersamento) throws ServiceException, NotFoundException {
+		return this.getTipoVersamentoDominio(bd, codTipoVersamento, true);
+	}
+
+	public TipoVersamentoDominio getTipoVersamentoDominio(BasicBD bd, String codTipoVersamento, boolean useCacheData) throws ServiceException, NotFoundException {
+		return AnagraficaManager.getTipoVersamentoDominio(bd, this.getId(), codTipoVersamento);
+	}
+	
+	
 }
 

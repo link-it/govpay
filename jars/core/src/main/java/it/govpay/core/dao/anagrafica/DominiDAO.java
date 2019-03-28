@@ -298,6 +298,7 @@ public class DominiDAO extends BaseDAO{
 			response.setUo(dominio.getUnitaOperative(bd));
 			response.setIban(dominio.getIbanAccredito(bd));
 			response.setTributi(dominio.getTributi(bd));
+			response.setTipiVersamentoDominio(dominio.getTipiVersamento(bd));
 
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

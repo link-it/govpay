@@ -3698,7 +3698,11 @@ components:
             entrate:
               type: array
               items:
-                $ref: '#/components/schemas/entrata'     
+                $ref: '#/components/schemas/entrata'
+            tipiPendenza:
+              type: array
+              items:
+                $ref: '#/components/schemas/tipoPendenzaDominio'
     codificaAvvisi:
       type: object
       description: informazioni sulla codifica e decodifica degli iuv

@@ -35,6 +35,7 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 		this.addSortField("codDominio", it.govpay.orm.Dominio.model().COD_DOMINIO);
 		this.addSortField("ragioneSociale", it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
 		this.addDefaultSort(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE, SortOrder.ASC);
+		this.addDefaultSort(it.govpay.orm.Dominio.model().COD_DOMINIO, SortOrder.ASC);
 	}
 
 	public String getCodStazione() {

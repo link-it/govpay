@@ -4,6 +4,7 @@ import java.util.List;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
 
@@ -13,6 +14,7 @@ public class GetDominioDTOResponse {
 	private List<UnitaOperativa> uo;
 	private List<IbanAccredito> iban;
 	private List<Tributo> tributi;
+	private List<TipoVersamentoDominio> tipiVersamentoDominio;
 	
 	public GetDominioDTOResponse(Dominio dominio) {
 		this.dominio = dominio;
@@ -48,6 +50,14 @@ public class GetDominioDTOResponse {
 
 	public void setUo(List<UnitaOperativa> uo) {
 		this.uo = uo;
+	}
+
+	public List<TipoVersamentoDominio> getTipiVersamentoDominio() {
+		return tipiVersamentoDominio;
+	}
+
+	public void setTipiVersamentoDominio(List<TipoVersamentoDominio> tipiVersamentoDominio) {
+		this.tipiVersamentoDominio = tipiVersamentoDominio;
 	}
 
 }
