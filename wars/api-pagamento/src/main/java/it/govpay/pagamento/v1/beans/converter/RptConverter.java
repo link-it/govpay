@@ -16,6 +16,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v1.beans.Rpp;
 import it.govpay.pagamento.v1.beans.RppIndex;
 import it.govpay.rs.v1.ConverterUtils;
+import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class RptConverter {
 
@@ -43,11 +44,12 @@ public class RptConverter {
 					UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
 					soggettoVersante.getIdentificativoUnivocoVersante().setCodiceIdentificativoUnivoco(cittadino.getCodIdentificativo());
 					soggettoVersante.getIdentificativoUnivocoVersante().setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F);
-					String nomeCognome = cittadino.getProprieta("X-SPID-NAME") + " " + cittadino.getProprieta("X-SPID-FAMILYNAME");
+					String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
+							+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
 					soggettoVersante.setAnagraficaVersante(nomeCognome);
 					soggettoVersante.setCapVersante(null);
 					soggettoVersante.setCivicoVersante(null);
-//					soggettoVersante.setEMailVersante(cittadino.getProprieta("X-SPID-EMAIL")); eMail deve tornare indietro
+//					soggettoVersante.setEMailVersante(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL)); eMail deve tornare indietro
 					soggettoVersante.setIndirizzoVersante(null);
 					soggettoVersante.setLocalitaVersante(null);
 					soggettoVersante.setNazioneVersante(null);
@@ -117,11 +119,12 @@ public class RptConverter {
 					UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
 					soggettoVersante.getIdentificativoUnivocoVersante().setCodiceIdentificativoUnivoco(cittadino.getCodIdentificativo());
 					soggettoVersante.getIdentificativoUnivocoVersante().setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F);
-					String nomeCognome = cittadino.getProprieta("X-SPID-NAME") + " " + cittadino.getProprieta("X-SPID-FAMILYNAME");
+					String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
+							+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
 					soggettoVersante.setAnagraficaVersante(nomeCognome);
 					soggettoVersante.setCapVersante(null);
 					soggettoVersante.setCivicoVersante(null);
-//					soggettoVersante.setEMailVersante(cittadino.getProprieta("X-SPID-EMAIL")); eMail deve tornare indietro
+//					soggettoVersante.setEMailVersante(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL)); eMail deve tornare indietro
 					soggettoVersante.setIndirizzoVersante(null);
 					soggettoVersante.setLocalitaVersante(null);
 					soggettoVersante.setNazioneVersante(null);

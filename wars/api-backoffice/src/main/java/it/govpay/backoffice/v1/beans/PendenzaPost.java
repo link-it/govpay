@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "idUnitaOperativa",
@@ -472,8 +473,12 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 
+		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+
+		
 		vf.getValidator("idDominio", this.idDominio).isNull();
-		vf.getValidator("idUnitaOperativa", this.idUnitaOperativa).minLength(1).maxLength(35);
+		if(this.idUnitaOperativa != null)
+			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa);
 		vf.getValidator("nome", this.nome).minLength(1).maxLength(35);
 		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
 		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
@@ -484,7 +489,8 @@ public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		if(this.annoRiferimento != null)
 			vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
 		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
-		vf.getValidator("idA2A", this.idA2A).notNull().minLength(1).maxLength(35);
+		
+		validatoreId.validaIdApplicazione("idA2A", this.idA2A);
 		vf.getValidator("idPendenza", this.idPendenza).notNull().minLength(1).maxLength(35);
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 	}

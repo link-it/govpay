@@ -96,7 +96,7 @@ public class ApplicazioniConverter {
 		if(applicazionePost.getAcl()!=null) {
 			List<Acl> aclPrincipal = new ArrayList<Acl>();
 			for(AclPost aclPost: applicazionePost.getAcl()) {
-				Acl acl = AclConverter.getAcl(aclPost, user);
+				Acl acl = AclConverter.getAclUtenza(aclPost, user);
 				acl.setUtenza(applicazione.getUtenza());
 				aclPrincipal.add(acl);
 			}

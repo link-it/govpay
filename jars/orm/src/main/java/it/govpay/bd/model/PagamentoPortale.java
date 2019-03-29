@@ -10,6 +10,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.bd.viste.model.VersamentoIncasso;
+import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.model.BasicModel;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.orm.IdVersamento;
@@ -229,9 +231,9 @@ public class PagamentoPortale extends BasicModel {
 
 
 	// business
-	private transient List<Versamento> versamenti;
+	private transient List<VersamentoIncasso> versamenti;
 
-	public List<Versamento> getVersamenti(BasicBD bd) throws ServiceException {
+	public List<VersamentoIncasso> getVersamenti(BasicBD bd) throws ServiceException {
 		if(this.versamenti != null)
 			return this.versamenti;
 
@@ -243,7 +245,28 @@ public class PagamentoPortale extends BasicModel {
 				ids.add(idVs.getId());
 			}
 			filter.setIdVersamento(ids);
-			this.versamenti = versamentiBD.findAll(filter );
+			List<Versamento> findAll = versamentiBD.findAll(filter );
+			
+			if(findAll != null) {
+				this.versamenti = new ArrayList<>();
+				
+				for (Versamento versamento : findAll) {
+					VersamentoIncasso versamentoIncasso = VersamentoIncassoConverter.fromVersamento(versamento);
+					
+					versamentoIncasso.getApplicazione(versamentiBD);
+					versamentoIncasso.getDominio(versamentiBD);
+					versamentoIncasso.getUo(versamentiBD);
+					List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
+					for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+						singoloVersamento.getCodContabilita(bd);
+						singoloVersamento.getIbanAccredito(bd);
+						singoloVersamento.getTipoContabilita(bd);
+						singoloVersamento.getTributo(bd);
+					}
+					
+					this.versamenti.add(versamentoIncasso);
+				}
+			}
 		}
 		return this.versamenti;
 	}

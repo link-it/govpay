@@ -1,16 +1,20 @@
 package it.govpay.bd.model;
 
+import java.util.List;
+import java.util.Map;
+
 public class UtenzaOperatore extends Utenza {
 
 	private static final long serialVersionUID = 1L;
 	
 	private transient String nome;
+	private transient Map<String, List<String>> headers;
 	
 	public UtenzaOperatore() {
 		super();
 	}
 	
-	public UtenzaOperatore(Utenza utenzaBase, String nome) {
+	public UtenzaOperatore(Utenza utenzaBase, String nome, Map<String, List<String>> headers) {
 		// dati bd.utenza
 		this.aclPrincipal = utenzaBase.aclPrincipal;
 		this.aclRuoli = utenzaBase.aclRuoli;
@@ -28,6 +32,7 @@ public class UtenzaOperatore extends Utenza {
 		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();
 		this.autorizzazioneTipiVersamentoStar = utenzaBase.isAutorizzazioneTipiVersamentoStar();
 		
+		this.headers = headers;
 		this.nome = nome;
 	}
 
@@ -42,5 +47,13 @@ public class UtenzaOperatore extends Utenza {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	
+	public Map<String, List<String>> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(Map<String, List<String>> headers) {
+		this.headers = headers;
 	}
 }

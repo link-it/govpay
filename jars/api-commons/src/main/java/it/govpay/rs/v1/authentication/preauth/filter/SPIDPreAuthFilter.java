@@ -6,10 +6,11 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class SPIDPreAuthFilter extends org.openspcoop2.utils.service.authentication.preauth.filter.HeaderPreAuthFilter {
 	
-	private static final String TINIT_PREFIX = "TINIT-";
+	private static final String TINIT_PREFIX = SPIDAuthenticationDetailsSource.TINIT_PREFIX;
 	private static Logger log = LoggerWrapperFactory.getLogger(SPIDPreAuthFilter.class);
 
 	public SPIDPreAuthFilter() {

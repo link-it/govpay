@@ -7,8 +7,10 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ragioneSociale",
 "domini",
@@ -173,8 +175,22 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(35);
 		vf.getValidator("acl", this.acl).validateObjects();
-//		vf.getValidator("domini", this.domini).validateObjects();
-//		vf.getValidator("tipiPendenza", this.tipiPendenza).validateObjects();
+		
+		if(this.domini != null && !this.domini.isEmpty()) {
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			for (String idDominio : this.domini) {
+				if(!idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
+					validatoreId.validaIdDominio("domini", idDominio);
+			}
+		}
+		
+		if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			for (String idTipoPendenza : this.tipiPendenza) {
+				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))
+					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
+			}
+		}
 		vf.getValidator("abilitato", this.abilitato).notNull();
 	}
 }

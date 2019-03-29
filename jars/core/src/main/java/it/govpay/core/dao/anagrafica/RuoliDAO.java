@@ -99,7 +99,7 @@ public class RuoliDAO extends BaseDAO{
 	}
 
 	public PutRuoloDTOResponse createOrUpdate(PutRuoloDTO listaRuoliDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		
+		PutRuoloDTOResponse response = new PutRuoloDTOResponse();
 		BasicBD bd = null;
 
 		try {
@@ -107,7 +107,24 @@ public class RuoliDAO extends BaseDAO{
 			this.autorizzaRichiesta(listaRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA, bd);
 	
 			AclBD aclBD = new AclBD(bd);
-	
+			AclFilter filter = aclBD.newFilter();
+			
+			filter.setForceRuolo(true);
+			filter.setRuolo(listaRuoliDTO.getIdRuolo());
+			long count = aclBD.countRuoli(filter);
+			
+			if(count > 0) {
+				// cancello le acl collegate al ruolo e le inserisco
+				response.setCreated(false);
+				
+				// cancello le vecchie acl
+				List<Acl> lst = aclBD.findAll(filter); 
+				for(Acl acl: lst) {
+					aclBD.deleteAcl(acl);
+				}
+			}
+			
+			// inserimento nuove acl
 			for(Acl acl: listaRuoliDTO.getAcls()) {
 				acl.setRuolo(listaRuoliDTO.getIdRuolo());
 				
@@ -118,9 +135,7 @@ public class RuoliDAO extends BaseDAO{
 				}
 			}
 			
-			return new PutRuoloDTOResponse();
-
-			
+			return response;
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {

@@ -15,7 +15,6 @@ import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.dao.commons.Anagrafica;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
@@ -37,6 +36,7 @@ import it.govpay.pagamento.v1.beans.Soggetto.TipoEnum;
 import it.govpay.pagamento.v1.beans.StatoPagamento;
 import it.govpay.pagamento.v1.beans.TassonomiaAvviso;
 import it.govpay.pagamento.v1.beans.VocePendenza;
+import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class PagamentiPortaleConverter {
 
@@ -93,7 +93,7 @@ public class PagamentiPortaleConverter {
 
 
 		if(pagamentiPortaleRequest.getSoggettoVersante() != null);
-		pagamentiPortaleDTO.setVersante(toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
+			pagamentiPortaleDTO.setVersante(toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
 
 		if(pagamentiPortaleRequest.getPendenze() != null && pagamentiPortaleRequest.getPendenze().size() > 0 ) {
 			List<Object> listRefs = new ArrayList<>();
@@ -296,7 +296,7 @@ public class PagamentiPortaleConverter {
 		return anagraficaCommons;
 	}
 
-	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale) throws ServiceException {
+	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale, Authentication user) throws ServiceException {
 		Pagamento rsModel = new Pagamento();
 
 		PagamentoPost pagamentiPortaleRequest = null;
@@ -312,7 +312,7 @@ public class PagamentiPortaleConverter {
 				}
 				rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
-				rsModel.setSoggettoVersante(pagamentiPortaleRequest.getSoggettoVersante());
+				rsModel.setSoggettoVersante(controlloUtenzaVersante(pagamentiPortaleRequest.getSoggettoVersante(),user));
 				rsModel.setAutenticazioneSoggetto(it.govpay.pagamento.v1.beans.Pagamento.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 			} catch (ServiceException | ValidationException e) {
 				
@@ -329,10 +329,10 @@ public class PagamentiPortaleConverter {
 
 		if(pagamentoPortale.getImporto() != null) 
 			rsModel.setImporto(BigDecimal.valueOf(pagamentoPortale.getImporto())); 
-
+		
 		return rsModel;
 	}
-	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException {
+	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto, Authentication user) throws ServiceException {
 		it.govpay.bd.model.PagamentoPortale pagamentoPortale = dto.getPagamento();
 		PagamentoIndex rsModel = new PagamentoIndex();
 		
@@ -350,7 +350,7 @@ public class PagamentiPortaleConverter {
 				}
 				rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
-				rsModel.setSoggettoVersante(pagamentiPortaleRequest.getSoggettoVersante());
+				rsModel.setSoggettoVersante(controlloUtenzaVersante(pagamentiPortaleRequest.getSoggettoVersante(),user));
 				rsModel.setAutenticazioneSoggetto(it.govpay.pagamento.v1.beans.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 			} catch (ServiceException | ValidationException e) {
 				
@@ -387,9 +387,10 @@ public class PagamentiPortaleConverter {
 			
 			UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
 			versante.setCodUnivoco(cittadino.getCodIdentificativo());
-			String nomeCognome = cittadino.getProprieta("X-SPID-NAME") + " " + cittadino.getProprieta("X-SPID-FAMILYNAME");
+			String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
+					+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
 			versante.setRagioneSociale(nomeCognome);
-			versante.setEmail(cittadino.getProprieta("X-SPID-EMAIL"));
+			versante.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
 			versante.setTipo(TipoEnum.F.toString());
 //			versante.setArea(null);
 			versante.setCap(null);
@@ -427,5 +428,62 @@ public class PagamentiPortaleConverter {
 			versante.setTelefono(null);
 //			versante.setUrlSitoWeb(null);
 		}
+	}
+	
+	
+	public static Soggetto controlloUtenzaVersante(Soggetto soggetto, Authentication user) {
+		
+		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+		
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			if(soggetto == null) {
+				soggetto = new Soggetto();
+			}
+			
+			UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
+			soggetto.setIdentificativo(cittadino.getCodIdentificativo());
+			String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
+					+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
+			soggetto.setAnagrafica(nomeCognome);
+			soggetto.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
+			soggetto.setTipo(TipoEnum.F);
+//			soggetto.setArea(null);
+			soggetto.setCap(null);
+			soggetto.setCellulare(null);
+			soggetto.setCivico(null);
+//			soggetto.setFax(null);
+			soggetto.setIndirizzo(null);
+			soggetto.setLocalita(null);
+			soggetto.setNazione(null);
+//			soggetto.setPec(null);
+			soggetto.setProvincia(null);
+//			soggetto.setTelefono(null);
+//			soggetto.setUrlSitoWeb(null);
+		}
+		
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			if(soggetto == null) {
+				soggetto = new Soggetto();
+			}
+				soggetto.setIdentificativo(TIPO_UTENZA.ANONIMO.toString());
+				soggetto.setAnagrafica(TIPO_UTENZA.ANONIMO.toString());
+				soggetto.setTipo(TipoEnum.F);
+//				soggetto.setArea(null);
+				soggetto.setCap(null);
+				soggetto.setCellulare(null);
+				soggetto.setCivico(null);
+//				soggetto.setFax(null);
+				soggetto.setIndirizzo(null);
+				soggetto.setLocalita(null);
+				soggetto.setNazione(null);
+//				soggetto.setPec(null);
+				soggetto.setProvincia(null);
+//				soggetto.setTelefono(null);
+//				soggetto.setUrlSitoWeb(null);
+						
+		}
+		
+		
+		return soggetto;
 	}
 }

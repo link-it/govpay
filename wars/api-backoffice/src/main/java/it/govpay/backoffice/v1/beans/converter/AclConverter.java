@@ -12,25 +12,15 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.AclPost.AutorizzazioniEnum;
 import it.govpay.backoffice.v1.beans.AclPost.ServizioEnum;
+import it.govpay.bd.model.Acl;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.dao.anagrafica.dto.PostAclDTO;
-import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 
 public class AclConverter {
 
-	public static PostAclDTO getPostAclDTO(AclPost aclPost, Authentication user) throws ServiceException {
-		
-		PostAclDTO aclDTO = new PostAclDTO(user);
-		Acl acl = getAcl(aclPost, user);
-		aclDTO.setAcl(acl);
-
-		return aclDTO;		
-	}
-	
-	public static Acl getAcl(AclPost aclPost, Authentication user) throws ServiceException {
+	public static Acl getAclUtenza(AclPost aclPost, Authentication user) throws ServiceException {
 		
 		Acl acl = new Acl();
 		
@@ -53,6 +43,31 @@ public class AclConverter {
 		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 		acl.setUtenza(authenticationDetails.getUtenza());
+		return acl;
+	}
+	
+	public static Acl getAclRuolo(AclPost aclPost, String ruolo) throws ServiceException {
+		
+		Acl acl = new Acl();
+		
+		Set<Diritti> lst = new HashSet<>();
+		for(String authS: aclPost.getAutorizzazioni()) {
+			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
+			switch(auth) {
+			case ESECUZIONE: lst.add(Acl.Diritti.ESECUZIONE);
+				break;
+			case LETTURA: lst.add(Acl.Diritti.LETTURA);
+				break;
+			case SCRITTURA: lst.add(Acl.Diritti.SCRITTURA);
+				break;
+			default:
+				break;
+			}
+		}
+
+		acl.setListaDiritti(lst);
+		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
+		acl.setRuolo(ruolo);
 		return acl;
 	}
 	

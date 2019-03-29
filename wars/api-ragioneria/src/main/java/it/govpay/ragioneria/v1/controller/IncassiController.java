@@ -25,6 +25,7 @@ import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.ragioneria.v1.beans.Incasso;
 import it.govpay.ragioneria.v1.beans.IncassoIndex;
 import it.govpay.ragioneria.v1.beans.IncassoPost;
@@ -104,6 +105,9 @@ public class IncassiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			
 			// Parametri - > DTO Input
 			
 			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(user);
@@ -147,6 +151,9 @@ public class IncassiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			IncassoPost incasso = JSONSerializable.parse(baos.toString(), IncassoPost.class);
 			incasso.validate();

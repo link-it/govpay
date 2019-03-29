@@ -53,6 +53,7 @@ import it.govpay.pagamento.v2.beans.Soggetto;
 import it.govpay.pagamento.v2.beans.StatoPagamento;
 import it.govpay.pagamento.v2.beans.TipoAutenticazioneSoggetto;
 import it.govpay.pagamento.v2.beans.TipoSoggetto;
+import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class PagamentiConverter {
 
@@ -366,9 +367,10 @@ public class PagamentiConverter {
 		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 			UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
 			versante.setCodUnivoco(cittadino.getCodIdentificativo());
-			String nomeCognome = cittadino.getProprieta("X-SPID-NAME") + " " + cittadino.getProprieta("X-SPID-FAMILYNAME");
+			String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
+					+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
 			versante.setRagioneSociale(nomeCognome);
-			versante.setEmail(cittadino.getProprieta("X-SPID-EMAIL"));
+			versante.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
 			versante.setTipo(TipoSoggetto.F.toString());
 //			versante.setArea(null);
 			versante.setCap(null);

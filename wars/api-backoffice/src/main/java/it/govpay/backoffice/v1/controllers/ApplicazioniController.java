@@ -39,7 +39,7 @@ public class ApplicazioniController extends BaseController {
 	public static final String AUTODETERMINAZIONE_TIPI_PENDENZA_LABEL= "Autodeterminazione delle Pendenze";
 	
 	public static final String AUTORIZZA_TIPI_PENDENZA_STAR = "*";
-	public static final String AUTORIZZA_TIPI_PENDENZA_STAR_LABEL= "Tutte";
+	public static final String AUTORIZZA_TIPI_PENDENZA_STAR_LABEL= "Tutti";
 	public static final String AUTORIZZA_DOMINI_STAR = "*";
 	public static final String AUTORIZZA_DOMINI_STAR_LABEL= "Tutti";
 

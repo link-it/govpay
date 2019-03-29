@@ -19,6 +19,7 @@ import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 public class DominiController extends BaseController {
 
@@ -38,6 +39,9 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			// Parametri - > DTO Input
 			

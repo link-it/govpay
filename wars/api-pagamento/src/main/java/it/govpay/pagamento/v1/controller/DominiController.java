@@ -36,6 +36,7 @@ import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.pagamento.v1.beans.ContiAccredito;
 import it.govpay.pagamento.v1.beans.Entrata;
 import it.govpay.pagamento.v1.beans.ListaDominiIndex;
@@ -67,6 +68,10 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdIbanAccredito("ibanAccredito", ibanAccredito);
 			
 			// Parametri - > DTO Input
 			
@@ -108,6 +113,9 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			// Parametri - > DTO Input
 			
@@ -154,6 +162,10 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa);
 			
 			// Parametri - > DTO Input
 			
@@ -252,6 +264,9 @@ public class DominiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			
 			// Parametri - > DTO Input
 			
 			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
@@ -291,6 +306,9 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			// Parametri - > DTO Input
 			
@@ -345,6 +363,9 @@ public class DominiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			
 			// Parametri - > DTO Input
 			
 			FindUnitaOperativeDTO listaDominiUoDTO = new FindUnitaOperativeDTO(user, idDominio);
@@ -398,6 +419,10 @@ public class DominiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdEntrata("idEntrata", idEntrata);
+			
 			// Parametri - > DTO Input
 			
 			GetTributoDTO getDominioEntrataDTO = new GetTributoDTO(user, idDominio, idEntrata);
@@ -437,6 +462,9 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			// Parametri - > DTO Input
 			

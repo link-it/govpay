@@ -148,6 +148,9 @@ public class DominiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			
 			// Parametri - > DTO Input
 			
 			FindIbanDTO listaDominiIbanDTO = new FindIbanDTO(user, idDominio);
@@ -198,6 +201,10 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdIbanAccredito("ibanAccredito", ibanAccredito);
 			
 			// Parametri - > DTO Input
 			
@@ -281,6 +288,9 @@ public class DominiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			
 			// Parametri - > DTO Input
 			
 			FindTributiDTO listaDominiEntrateDTO = new FindTributiDTO(user, idDominio);
@@ -331,6 +341,10 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdEntrata("idEntrata", idEntrata);
 			
 			// Parametri - > DTO Input
 			
@@ -418,6 +432,9 @@ public class DominiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			
 			// Parametri - > DTO Input
 			
 			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
@@ -501,6 +518,9 @@ public class DominiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			
 			// Parametri - > DTO Input
 			
 			FindTipiPendenzaDominioDTO findTipiPendenzaDominioDTO = new FindTipiPendenzaDominioDTO(user);
@@ -551,6 +571,10 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
 			
 			// Parametri - > DTO Input
 			
@@ -638,6 +662,9 @@ public class DominiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			
 			// Parametri - > DTO Input
 			
 			FindUnitaOperativeDTO listaDominiUoDTO = new FindUnitaOperativeDTO(user, idDominio);
@@ -688,6 +715,10 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa);
 			
 			// Parametri - > DTO Input
 			
@@ -770,6 +801,9 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			// Parametri - > DTO Input
 			

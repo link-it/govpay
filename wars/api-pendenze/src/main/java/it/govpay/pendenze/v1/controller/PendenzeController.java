@@ -33,6 +33,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pendenze.v1.beans.FaultBean;
 import it.govpay.pendenze.v1.beans.FaultBean.CategoriaEnum;
@@ -68,6 +69,9 @@ public class PendenzeController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdApplicazione("idA2A", idA2A);
 			
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
 			
@@ -166,6 +170,9 @@ public class PendenzeController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdApplicazione("idA2A", idA2A);
+			
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 			
 			PatchPendenzaDTO patchPendenzaDTO = new PatchPendenzaDTO(user);
@@ -245,6 +252,9 @@ public class PendenzeController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdApplicazione("idA2A", idA2A);
 			
 			String jsonRequest = baos.toString();
 			PendenzaPut pendenzaPost= JSONSerializable.parse(jsonRequest, PendenzaPut.class);
