@@ -122,8 +122,8 @@ public class AnagraficaManager {
 		tributiBDNoCacheWrapper = new TributiBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TributiBDCacheWrapper.class));
 		tipiTributoBDNoCacheWrapper = new TipiTributoBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TipiTributoBDCacheWrapper.class));
 		utenzeBDNoCacheWrapper = new UtenzeBDCacheWrapper(false, LoggerWrapperFactory.getLogger(UtenzeBDCacheWrapper.class));
-		tipiVersamentoBDNoCacheWrapper = new TipiVersamentoBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TipiVersamentoBDCacheWrapper.class));
-		tipiVersamentoDominiBDNoCacheWrapper = new TipiVersamentoDominiBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TipiVersamentoDominiBDCacheWrapper.class));
+		tipiVersamentoBDNoCacheWrapper = new TipiVersamentoBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TipiVersamentoBDCacheWrapper.class));
+		tipiVersamentoDominiBDNoCacheWrapper = new TipiVersamentoDominiBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TipiVersamentoDominiBDCacheWrapper.class));
 
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), domain, "domini");
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new ApplicazioniBDCacheJmx(), domain, "applicazioni");
@@ -858,6 +858,7 @@ public class AnagraficaManager {
 		tributiBDCacheWrapper.resetCache();
 		tipiTributoBDCacheWrapper.resetCache();
 		tipiVersamentoBDCacheWrapper.resetCache();
+		tipiVersamentoDominiBDCacheWrapper.resetCache();
 	}
 
 }
