@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTracciato",
 "idDominio",
@@ -192,9 +193,11 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   @Override
 public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
+		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+		
+		validatoreId.validaIdDominio("idDominio", this.idDominio);
 		
 		vf.getValidator("idTracciato", this.idTracciato).notNull();
-		vf.getValidator("idDominio", this.idDominio).notNull().minLength(1).maxLength(35);
 		vf.getValidator("inserimenti", this.inserimenti).notNull().validateObjects();
 		vf.getValidator("annullamenti", this.annullamenti).notNull().validateObjects();
   }

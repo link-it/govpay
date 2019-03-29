@@ -23,6 +23,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.ragioneria.v1.beans.ListaRiscossioni;
 import it.govpay.ragioneria.v1.beans.Riscossione;
@@ -53,6 +54,9 @@ public class RiscossioniController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			// Parametri - > DTO Input
 			
@@ -98,6 +102,10 @@ public class RiscossioniController extends BaseController {
 			
 			// Parametri - > DTO Input
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			if(idDominio != null)
+				validatoreId.validaIdDominio("idDominio", idDominio);
+			
 			ListaRiscossioniDTO findRiscossioniDTO = new ListaRiscossioniDTO(user);
 			findRiscossioniDTO.setIdDominio(idDominio);
 			findRiscossioniDTO.setPagina(pagina);
@@ -122,8 +130,6 @@ public class RiscossioniController extends BaseController {
 
 			if(tipo !=null)
 				findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(TipoRiscossione.fromValue(tipo).toString()));
-			
-			
 			
 			// INIT DAO
 			

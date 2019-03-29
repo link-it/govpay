@@ -59,7 +59,7 @@ public class AutorizzazioneUtils {
 	}
 
 	public static UserDetails getUserDetailFromUtenzaRegistrata(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, BasicBD bd) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, List<String>> headerValues, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
 		Utenza utenza = null;
 		Applicazione applicazione = null;
@@ -93,7 +93,7 @@ public class AutorizzazioneUtils {
 				tipoUtenza = TIPO_UTENZA.OPERATORE;
 				Utenza utenzaTmp  = operatore.getUtenza();
 				utenzaTmp.setAclRuoli(aclsRuolo);
-				utenza = new UtenzaOperatore(utenzaTmp, operatore.getNome());
+				utenza = new UtenzaOperatore(utenzaTmp, operatore.getNome(), headerValues);
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
 				throw new UsernameNotFoundException("Utenza non trovata.",ex);				
 			} 

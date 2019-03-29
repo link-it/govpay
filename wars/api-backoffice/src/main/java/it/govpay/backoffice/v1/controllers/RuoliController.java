@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -218,8 +219,10 @@ public class RuoliController extends BaseController {
 			String jsonRequest = baos.toString();
 
 			RuoloPost ruoloPost = RuoloPost.parse(jsonRequest);
+			ruoloPost.validate();
+			
 			List<AclPost> listaAcl = ruoloPost.getAcl();
-
+			
 			PutRuoloDTO putRuoloDTO = RuoliConverter.getPutRuoloDTO(listaAcl, idRuolo, user); 
 			
 			RuoliDAO applicazioniDAO = new RuoliDAO(false);

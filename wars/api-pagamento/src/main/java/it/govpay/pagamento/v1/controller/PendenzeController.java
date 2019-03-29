@@ -22,6 +22,7 @@ import it.govpay.core.utils.GovpayConfig;
 
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.pagamento.v1.beans.ListaPendenzeIndex;
 import it.govpay.pagamento.v1.beans.Pendenza;
 import it.govpay.pagamento.v1.beans.PendenzaIndex;
@@ -49,6 +50,9 @@ public class PendenzeController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdApplicazione("idA2A", idA2A);
+			
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
 			
 			leggiPendenzaDTO.setCodA2A(idA2A);
@@ -72,7 +76,7 @@ public class PendenzeController extends BaseController {
     	IContext ctx = null;
     	String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		String methodName = "pendenzeGET";
+		String methodName = "pendenzeGET"; 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			baos = new ByteArrayOutputStream();

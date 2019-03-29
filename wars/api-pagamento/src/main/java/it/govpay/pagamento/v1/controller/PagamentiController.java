@@ -135,7 +135,7 @@ public class PagamentiController extends BaseController {
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
+			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
 			
 			List<RppIndex> rpp = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
@@ -181,7 +181,7 @@ public class PagamentiController extends BaseController {
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel);
+			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
 			
 			List<RppIndex> rpp = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
@@ -245,7 +245,7 @@ public class PagamentiController extends BaseController {
 			List<it.govpay.pagamento.v1.beans.PagamentoIndex> results = new ArrayList<>();
 			for(LeggiPagamentoPortaleDTOResponse pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
 				this.log.info("get Pagamenti portale: " + pagamentoPortale.getPagamento().getIdSessione());
-				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale));
+				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale,user));
 			}
 			
 			ListaPagamentiIndex response = new ListaPagamentiIndex(results, this.getServicePath(uriInfo),

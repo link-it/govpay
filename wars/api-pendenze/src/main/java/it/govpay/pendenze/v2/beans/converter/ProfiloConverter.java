@@ -14,6 +14,7 @@ import it.govpay.pendenze.v2.beans.Acl;
 import it.govpay.pendenze.v2.beans.Profilo;
 import it.govpay.pendenze.v2.beans.Soggetto;
 import it.govpay.pendenze.v2.beans.TipoPendenza;
+import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class ProfiloConverter {
 
@@ -72,10 +73,12 @@ public class ProfiloConverter {
 		Soggetto anagrafica = new Soggetto();
 		
 		anagrafica.setIdentificativo(cittadino.getCodIdentificativo());
-		String nomeCognome = cittadino.getProprieta("X-SPID-NAME") + " " + cittadino.getProprieta("X-SPID-FAMILYNAME");
+		String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
+				+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
 		anagrafica.setAnagrafica(nomeCognome);
-		anagrafica.setEmail(cittadino.getProprieta("X-SPID-EMAIL"));
-		// TODO completare informazioni utente
+		anagrafica.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
+		anagrafica.setCellulare(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_MOBILE_PHONE));
+		anagrafica.setIndirizzo(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_ADDRESS));
 		
 		return anagrafica;
 	}

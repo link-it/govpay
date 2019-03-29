@@ -21,6 +21,7 @@ import it.govpay.core.utils.GovpayConfig;
 
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.pagamento.v1.beans.Avviso;
 import it.govpay.pagamento.v1.beans.Avviso.StatoEnum;
 import it.govpay.pagamento.v1.beans.converter.PendenzeConverter;
@@ -46,6 +47,9 @@ public class AvvisiController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
 
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(user, idDominio, numeroAvviso);
 			getAvvisoDTO.setAccessoAnonimo(true);

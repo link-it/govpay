@@ -26,6 +26,12 @@ public class GovpayWebAuthenticationDetails extends WebAuthenticationDetails {
 		
 		this.headerValues = extractHeaders(request,headersNames);
 	}
+	
+	public GovpayWebAuthenticationDetails(HttpServletRequest request,Map<String,String> headersMap) {
+		super(request);
+		
+		this.headerValues = extractHeaders(request,headersMap);
+	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,6 +40,16 @@ public class GovpayWebAuthenticationDetails extends WebAuthenticationDetails {
 		Map<String, List<String>> headerValues = new HashMap<>();
 		for (String headerName : headersNames) {
 			Enumeration<String> headers = request.getHeaders(headerName);
+			headerValues.put(headerName, Collections.list(headers)); 
+		}
+		return headerValues;
+	}
+	
+	private Map<String, List<String>> extractHeaders(HttpServletRequest request, Map<String,String> headersMap) {
+		Map<String, List<String>> headerValues = new HashMap<>();
+		// per ogni header previsto cerco l'header SPID corrispondente
+		for (String headerName : headersMap.keySet()) {
+			Enumeration<String> headers = request.getHeaders(headersMap.get(headerName));
 			headerValues.put(headerName, Collections.list(headers)); 
 		}
 		return headerValues;

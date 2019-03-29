@@ -40,7 +40,7 @@ public class RuoliConverter {
 		PutRuoloDTO putRuoloDTO = new PutRuoloDTO(user);
 		List<Acl> acls = new ArrayList<>();
 		for(AclPost acl: listaAcl) {
-			acls.add(AclConverter.getPostAclDTO(acl, user).getAcl());
+			acls.add(AclConverter.getAclRuolo(acl, idRuolo));
 		}
 		putRuoloDTO.setAcls(acls);
 		putRuoloDTO.setIdRuolo(idRuolo);

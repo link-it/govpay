@@ -62,7 +62,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaOperazioniTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaOperazioniTracciatoDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeConInformazioniIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTOResponse;
@@ -93,10 +93,6 @@ public class PendenzeController extends BaseController {
 		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 	}
 
-	public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza) {
-		return pendenzeIdA2AIdPendenzaGET(user, uriInfo, httpHeaders, idA2A, idPendenza, false);
-	}
-
 	public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean addInfoIncasso) {
 		String methodName = "getByIda2aIdPendenza";  
 		IContext ctx = null;
@@ -117,9 +113,9 @@ public class PendenzeController extends BaseController {
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
-			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
+			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenzaConInformazioniIncasso(leggiPendenzaDTO);
 
-			Pendenza pendenza =	addInfoIncasso ? PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse)	: PendenzeConverter.toRsModel(ricevutaDTOResponse);
+			Pendenza pendenza =	PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
@@ -127,10 +123,6 @@ public class PendenzeController extends BaseController {
 		} finally {
 			this.log(ctx);
 		}
-	}
-
-	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza) {
-		return pendenzeGET(user, uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, idA2A, idDebitore, stato, idPagamento, idPendenza, false);
 	}
 
 	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, boolean addInfoIncasso) {
@@ -148,7 +140,7 @@ public class PendenzeController extends BaseController {
 
 			// Parametri - > DTO Input
 
-			ListaPendenzeDTO listaPendenzeDTO = new ListaPendenzeDTO(user);
+			ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
 
 			listaPendenzeDTO.setPagina(pagina);
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
@@ -175,14 +167,13 @@ public class PendenzeController extends BaseController {
 
 			// CHIAMATA AL DAO
 
-			ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.listaPendenze(listaPendenzeDTO);
+			ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.listaPendenzeConInformazioniIncasso(listaPendenzeDTO);
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
 			List<PendenzaIndex> results = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
-				PendenzaIndex rsModel = addInfoIncasso ? PendenzeConverter.toRsModelIndexConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso()) : PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamentoIncasso()); 
-				results.add(rsModel);
+				results.add(PendenzeConverter.toRsModelIndexConInfoIncasso(ricevutaDTOResponse.getVersamentoIncasso()));
 			}
 
 			ListaPendenze response = new ListaPendenze(results, this.getServicePath(uriInfo),
@@ -197,10 +188,6 @@ public class PendenzeController extends BaseController {
 		} finally {
 			this.log(ctx);
 		}
-	}
-
-	public Response pendenzeIdA2AIdPendenzaPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is) {
-		return pendenzeIdA2AIdPendenzaPATCH(user, uriInfo, httpHeaders, idA2A, idPendenza, is, false);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -262,9 +249,9 @@ public class PendenzeController extends BaseController {
 			leggiPendenzaDTO.setCodPendenza(idPendenza);
 			leggiPendenzaDTO.setInfoIncasso(addInfoIncasso);
 
-			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
+			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenzaConInformazioniIncasso(leggiPendenzaDTO);
 
-			Pendenza pendenza =	addInfoIncasso ? PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse)	: PendenzeConverter.toRsModel(ricevutaDTOResponse);
+			Pendenza pendenza =	PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		} catch(GovPayException e) {

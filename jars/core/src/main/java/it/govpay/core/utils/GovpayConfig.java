@@ -26,7 +26,9 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -103,7 +105,7 @@ public class GovpayConfig {
 	private String ambienteDeploy;
 	
 	private String autenticazioneSPIDNomeHeaderPrincipal;
-	private List<String> autenticazioneSPIDElencoHeadersRequest;
+	private Map<String,String> autenticazioneSPIDElencoHeadersRequest;
 	private boolean checkCfDebitore;
 	private String autenticazioneHeaderNomeHeaderPrincipal;
 	private List<String> autenticazioneHeaderElencoHeadersRequest;
@@ -158,7 +160,7 @@ public class GovpayConfig {
 		this.checkCfDebitore = false;
 		
 		this.autenticazioneSPIDNomeHeaderPrincipal = null;
-		this.autenticazioneSPIDElencoHeadersRequest = new ArrayList<>();
+		this.autenticazioneSPIDElencoHeadersRequest = new HashMap<>();
 		this.autenticazioneHeaderNomeHeaderPrincipal = null;
 		this.autenticazioneHeaderElencoHeadersRequest = new ArrayList<>();
 		this.numeroMassimoEntriesProspettoRiscossione = 5000;
@@ -420,14 +422,7 @@ public class GovpayConfig {
 			this.appName = getProperty("it.govpay.backoffice.gui.appName", this.props, false, log);
 			this.ambienteDeploy = getProperty("it.govpay.backoffice.gui.ambienteDeploy", this.props, false, log);
 			this.autenticazioneSPIDNomeHeaderPrincipal = getProperty("it.govpay.autenticazioneSPID.nomeHeaderPrincipal", this.props, false, log);
-			
-			String headersListSPIDS = getProperty("it.govpay.autenticazioneSPID.nomiHeadersInfo", props, false, log);
-			if(StringUtils.isNotEmpty(headersListSPIDS)) {
-				String[] split = headersListSPIDS.split(",");
-				if(split != null && split.length > 0) {
-					this.autenticazioneSPIDElencoHeadersRequest = Arrays.asList(split);
-				}
-			}
+			this.autenticazioneSPIDElencoHeadersRequest = getProperties("it.govpay.autenticazioneSPID.headers.",this.props, false, log);
 			
 			this.autenticazioneHeaderNomeHeaderPrincipal = getProperty("it.govpay.autenticazioneHeader.nomeHeaderPrincipal", this.props, false, log);
 			
@@ -506,6 +501,27 @@ public class GovpayConfig {
 
 	public URL getUrlPddVerifica() {
 		return this.urlPddVerifica;
+	}
+	
+	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws Exception {
+		Map<String, String> valori = new HashMap<>();
+		String value = null;
+		for(int i=0; i<props.length; i++) {
+			for (Object nameObj : props[i].keySet()) {
+				String name = (String) nameObj;
+				if(name.startsWith(baseName)) {
+					String key = name.substring(baseName.length());
+					try { value = getProperty(name, props[i], required, i==1, log); } catch (Exception e) { }
+					if(value != null && !value.trim().isEmpty()) {
+						if(!valori.containsKey(key)) {
+							valori.put(key, value);
+						}
+					}
+				}
+			}
+		}
+		
+		return valori;
 	}
 
 	private static String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig, Logger log) throws Exception {
@@ -700,7 +716,7 @@ public class GovpayConfig {
 		return autenticazioneSPIDNomeHeaderPrincipal;
 	}
 
-	public List<String> getAutenticazioneSPIDElencoHeadersRequest() {
+	public Map<String,String> getAutenticazioneSPIDElencoHeadersRequest() {
 		return autenticazioneSPIDElencoHeadersRequest;
 	}
 

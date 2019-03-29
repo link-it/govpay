@@ -9,10 +9,12 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "acl",
 })
-public class RuoloPost extends JSONSerializable {
+public class RuoloPost extends JSONSerializable  implements IValidable {
   
   @JsonProperty("acl")
   private List<AclPost> acl = new ArrayList<>();
@@ -78,6 +80,12 @@ public class RuoloPost extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		vf.getValidator("acl", this.acl).notEmpty().minItems(1).validateObjects();
+	}
 }
 
 
