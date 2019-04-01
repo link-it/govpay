@@ -583,6 +583,13 @@ paths:
           schema:
             type: string
             example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+        - in: query
+          name: idSessione
+          description: Filtro sull'identificativo di sessione assegnato dal psp
+          required: false
+          schema:
+            type: string
+            example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
       responses:
         '200':
           description: Elenco dei pagamenti da portale

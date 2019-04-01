@@ -3,6 +3,7 @@ package it.govpay.pagamento.v1.controller;
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -11,6 +12,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -29,6 +31,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.pagamento.utils.validazione.semantica.NuovoPagamentoValidator;
 import it.govpay.pagamento.v1.beans.FaultBean;
@@ -205,7 +208,7 @@ public class PagamentiController extends BaseController {
 		}
     }
 
-    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String stato, String versante, String idSessionePortale, String idSessionePsp) {
+    public Response pagamentiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String stato, String versante, String idSessionePortale, String idSessionePsp) {
     	String methodName = "getListaPagamenti";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -231,6 +234,17 @@ public class PagamentiController extends BaseController {
 
 			if(ordinamento != null)
 				listaPagamentiPortaleDTO.setOrderBy(ordinamento);
+			
+			if(dataDa!=null) {
+				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaPagamentiPortaleDTO.setDataDa(dataDaDate);
+			}
+				
+			
+			if(dataA!=null) {
+				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaPagamentiPortaleDTO.setDataA(dataADate);
+			}
 			
 			// INIT DAO
 			
