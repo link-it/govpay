@@ -526,6 +526,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(!details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO) && !details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				EventiDAO eventiDAO = new EventiDAO();
 				ListaEventiDTO listaEventiDTO = new ListaEventiDTO(leggiPagamentoPortaleDTO.getUser());
+				listaEventiDTO.setEreditaAutorizzazione(true);
 				listaEventiDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				ListaEventiDTOResponse listaEventi = eventiDAO.listaEventi(listaEventiDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setEventi(listaEventi.getResults());
