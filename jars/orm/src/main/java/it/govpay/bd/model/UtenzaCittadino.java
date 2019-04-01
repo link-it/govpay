@@ -21,6 +21,7 @@ public class UtenzaCittadino extends Utenza {
 		this.autorizzazioneDominiStar = true ;
 		this.autorizzazioneTipiVersamentoStar = false;
 		this.headers = headers;
+		this.abilitato = true;
 	}
 	
 	private static final long serialVersionUID = 1L;

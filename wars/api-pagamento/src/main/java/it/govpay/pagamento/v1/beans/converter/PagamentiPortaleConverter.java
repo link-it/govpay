@@ -1,6 +1,5 @@
 package it.govpay.pagamento.v1.beans.converter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -326,9 +325,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
-
-		if(pagamentoPortale.getImporto() != null) 
-			rsModel.setImporto(BigDecimal.valueOf(pagamentoPortale.getImporto())); 
+		rsModel.setImporto(pagamentoPortale.getImporto()); 
 		
 		return rsModel;
 	}
@@ -366,8 +363,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setPendenze(UriBuilderUtils.getPendenzeByPagamento(pagamentoPortale.getIdSessione()));
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 
-		if(pagamentoPortale.getImporto() != null) 
-			rsModel.setImporto(BigDecimal.valueOf(pagamentoPortale.getImporto())); 
+		rsModel.setImporto(pagamentoPortale.getImporto()); 
 
 		return rsModel;
 

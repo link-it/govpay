@@ -1,6 +1,5 @@
 package it.govpay.pagamento.v2.beans.converter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -125,8 +124,7 @@ public class PagamentiConverter {
 		if(pagamentoPortale.getDataRichiesta() != null)
 			rsModel.setDataEsecuzionePagamento(new LocalDate(pagamentoPortale.getDataRichiesta()));
 
-		if(pagamentoPortale.getImporto() != null) 
-			rsModel.setImporto(BigDecimal.valueOf(pagamentoPortale.getImporto())); 
+		rsModel.setImporto(pagamentoPortale.getImporto()); 
 		
 		return rsModel;
 	}

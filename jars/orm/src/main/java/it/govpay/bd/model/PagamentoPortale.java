@@ -1,5 +1,6 @@
 package it.govpay.bd.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -93,7 +94,7 @@ public class PagamentoPortale extends BasicModel {
 	private String tipoVersamento = null;
 	private String codCanale = null;
 	
-	private Double importo = null; 
+	private BigDecimal importo = null; 
 	private String multiBeneficiario = null;
 	private String principal = null;
 	private TIPO_UTENZA tipoUtenza = null;
@@ -282,10 +283,10 @@ public class PagamentoPortale extends BasicModel {
 	public void setDescrizioneStato(String descrizioneStato) {
 		this.descrizioneStato = descrizioneStato;
 	}
-	public Double getImporto() {
+	public BigDecimal getImporto() {
 		return this.importo;
 	}
-	public void setImporto(Double importo) {
+	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
 	public String getMultiBeneficiario() {

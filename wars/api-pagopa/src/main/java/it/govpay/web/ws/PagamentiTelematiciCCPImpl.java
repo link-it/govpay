@@ -372,7 +372,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				idVersamentoList.add(idVersamento);
 				pagamentoPortale.setIdVersamento(idVersamentoList);
 				
-				pagamentoPortale.setImporto(rpt.getVersamento(bd).getImportoTotale().doubleValue());
+				pagamentoPortale.setImporto(rpt.getVersamento(bd).getImportoTotale());
 				pagamentoPortale.setMultiBeneficiario(rpt.getCodDominio());
 				
 				if(rpt.getVersamento(bd).getNome()!=null) {

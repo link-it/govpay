@@ -1,6 +1,7 @@
 package it.govpay.core.dao.pagamenti;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -203,9 +204,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			}
 
 			// 5. somma degli importi delle pendenze
-			double sommaImporti = 0;
+			BigDecimal sommaImporti = BigDecimal.ZERO;
 			for (Versamento vTmp : versamenti) {
-				sommaImporti += vTmp.getImportoTotale().doubleValue();
+				sommaImporti = sommaImporti.add(vTmp.getImportoTotale());
 			}
 
 			nome = sbNomeVersamenti.length() > 255 ? (sbNomeVersamenti.substring(0, 252) + "...") : sbNomeVersamenti.toString();

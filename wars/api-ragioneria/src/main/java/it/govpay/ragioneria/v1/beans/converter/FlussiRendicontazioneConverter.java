@@ -23,7 +23,7 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setIdDominio(fr.getCodDominio());
-		rsModel.setNumeroPagamenti(new BigDecimal(fr.getNumeroPagamenti()));
+		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
 		rsModel.setIdPsp(fr.getCodPsp());
 		rsModel.setIdDominio(fr.getCodDominio());
@@ -53,7 +53,7 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
 		rsModel.setIdDominio(fr.getCodDominio());
-		rsModel.setNumeroPagamenti(new BigDecimal(fr.getNumeroPagamenti()));
+		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
 		rsModel.setIdPsp(fr.getCodPsp());
 		if(fr.getAnomalie() != null) {

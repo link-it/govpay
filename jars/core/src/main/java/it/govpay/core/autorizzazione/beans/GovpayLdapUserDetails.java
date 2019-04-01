@@ -94,4 +94,7 @@ public class GovpayLdapUserDetails implements LdapUserDetails {
 	public void setLdapUserDetailsImpl(LdapUserDetails ldapUserDetailsImpl) {
 		this.ldapUserDetailsImpl = ldapUserDetailsImpl;
 	}
+	public boolean isAbilitato() {
+		return this.utenza != null ? this.utenza.isAbilitato() : false;
+	}
 }
