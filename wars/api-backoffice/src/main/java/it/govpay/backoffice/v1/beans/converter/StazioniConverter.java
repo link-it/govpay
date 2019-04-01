@@ -25,20 +25,20 @@ public class StazioniConverter {
 		int indexOfIdStazione = idStazione.indexOf("_");
 		
 		if(indexOfIdStazione == -1) {
-			throw new UnprocessableEntityException("Il formato dell'IdStazione non e' valido, previsto IdIntermediario_ApplicationCode.");
+			throw new UnprocessableEntityException("Il formato dell'idStazione non e' valido, previsto idIntermediario_applicationCode.");
 		}
 		
 		String baseIdStazione = idStazione.substring(0, indexOfIdStazione);
 		
 		if(!baseIdStazione.equals(idIntermediario)) {
-			throw new UnprocessableEntityException("Il formato dell'IdStazione non e' valido, IdIntermediario non presente all'interno dell'IdStazione.");
+			throw new UnprocessableEntityException("Il formato dell'idStazione non e' valido, idIntermediario non presente all'interno dell'idStazione.");
 		}
 		
 		String applicationCodeS = idStazione.substring(indexOfIdStazione+1);
 		int applicationCode = Integer.parseInt(applicationCodeS);
 		
 		if(applicationCode < 1 || applicationCode > 99)
-			throw new UnprocessableEntityException("Identificativo Stazione deve avere un ApplicationCode compreso tra 01 e 99.");
+			throw new UnprocessableEntityException("idStazione deve avere un applicationCode compreso tra 01 e 99.");
 		
 		stazione.setApplicationCode(applicationCode); 
 		stazione.setCodStazione(idStazione);
