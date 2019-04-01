@@ -527,7 +527,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				EventiDAO eventiDAO = new EventiDAO();
 				ListaEventiDTO listaEventiDTO = new ListaEventiDTO(leggiPagamentoPortaleDTO.getUser());
 				listaEventiDTO.setEreditaAutorizzazione(true);
-				listaEventiDTO.setEreditaAutorizzazione(true);
 				listaEventiDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				ListaEventiDTOResponse listaEventi = eventiDAO.listaEventi(listaEventiDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setEventi(listaEventi.getResults());
