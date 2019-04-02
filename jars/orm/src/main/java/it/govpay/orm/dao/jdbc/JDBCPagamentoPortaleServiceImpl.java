@@ -70,6 +70,23 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
+		// Object _applicazione
+		Long id_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_applicazione = null;
+		idLogic_applicazione = pagamentoPortale.getIdApplicazione();
+		if(idLogic_applicazione!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_applicazione, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_applicazione = idLogic_applicazione.getId();
+				if(id_applicazione==null || id_applicazione<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object pagamentoPortale
 		sqlQueryObjectInsert.addInsertTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));
@@ -99,6 +116,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PRINCIPAL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO_UTENZA,false),"?");
+		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 
 		// Insert pagamentoPortale
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getPagamentoPortaleFetch().getKeyGeneratorObject(PagamentoPortale.model());
@@ -128,7 +146,8 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getAck(),PagamentoPortale.model().ACK.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getTipo(),PagamentoPortale.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getPrincipal(),PagamentoPortale.model().PRINCIPAL.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getTipoUtenza(),PagamentoPortale.model().TIPO_UTENZA.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamentoPortale.getTipoUtenza(),PagamentoPortale.model().TIPO_UTENZA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
 		pagamentoPortale.setId(id);
 
@@ -170,9 +189,28 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-		org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour);
-		org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+		boolean setIdMappingResolutionBehaviour = 
+			(idMappingResolutionBehaviour==null) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
+
+		// Object _pagamentoPortale_applicazione
+		Long id_pagamentoPortale_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_pagamentoPortale_applicazione = null;
+		idLogic_pagamentoPortale_applicazione = pagamentoPortale.getIdApplicazione();
+		if(idLogic_pagamentoPortale_applicazione!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_pagamentoPortale_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_pagamentoPortale_applicazione, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_pagamentoPortale_applicazione = idLogic_pagamentoPortale_applicazione.getId();
+				if(id_pagamentoPortale_applicazione==null || id_pagamentoPortale_applicazione<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 
 
 		// Object pagamentoPortale
@@ -232,6 +270,12 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getPrincipal(), PagamentoPortale.model().PRINCIPAL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().TIPO_UTENZA,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getTipoUtenza(), PagamentoPortale.model().TIPO_UTENZA.getFieldType()));
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_pagamentoPortale.add(new JDBCObject(id_pagamentoPortale_applicazione, Long.class));
+		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(tableId, Long.class));
 

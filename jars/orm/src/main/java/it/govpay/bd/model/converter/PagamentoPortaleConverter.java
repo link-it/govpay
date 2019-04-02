@@ -29,6 +29,7 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.orm.IdApplicazione;
 
 
 public class PagamentoPortaleConverter {
@@ -71,6 +72,9 @@ public class PagamentoPortaleConverter {
 		dto.setMultiBeneficiario(vo.getMultiBeneficiario()); 
 		dto.setAck(vo.getAck());
 		dto.setTipo(vo.getTipo());
+		
+		if(vo.getIdApplicazione() != null)
+			dto.setIdApplicazione(vo.getIdApplicazione().getId());
 
 		return dto;
 	}
@@ -106,6 +110,12 @@ public class PagamentoPortaleConverter {
 		vo.setMultiBeneficiario(dto.getMultiBeneficiario()); 
 		vo.setAck(dto.isAck());
 		vo.setTipo(dto.getTipo());
+		
+		if(dto.getIdApplicazione() != null) {
+			IdApplicazione idApplicazione = new IdApplicazione();
+			idApplicazione.setId(dto.getIdApplicazione());
+			vo.setIdApplicazione(idApplicazione);
+		}
 
 		return vo;
 	}

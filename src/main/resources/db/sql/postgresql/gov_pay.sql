@@ -523,9 +523,11 @@ CREATE TABLE pagamenti_portale
 	tipo_utenza VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_pagamenti_portale') NOT NULL,
+	id_applicazione BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
 );
 

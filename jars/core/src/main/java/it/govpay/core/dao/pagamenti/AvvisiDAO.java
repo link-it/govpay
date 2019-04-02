@@ -23,8 +23,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.viste.VersamentiIncassiBD;
-import it.govpay.bd.viste.model.VersamentoIncasso;
+import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
@@ -114,14 +115,14 @@ public class AvvisiDAO extends BaseDAO{
 
 	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
 		BasicBD bd = null;
-		VersamentoIncasso versamento = null;
+		Versamento versamento = null;
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			// controllo che l'utenza sia autorizzata per il dominio scelto
 			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.getCodDominio(), null, getAvvisoDTO.isAccessoAnonimo(), bd);
 			
-			VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			
 			if(getAvvisoDTO.getNumeroAvviso() != null)
 				versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getNumeroAvviso());
@@ -129,6 +130,9 @@ public class AvvisiDAO extends BaseDAO{
 				versamento = versamentiBD.getVersamento(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getIuv());
 			else 
 				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
+			
+			
+			
 			
 			
 			Dominio dominio = versamento.getDominio(versamentiBD);
@@ -158,7 +162,7 @@ public class AvvisiDAO extends BaseDAO{
 			default:
 				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(bd), dominio);
 				
-				response.setVersamento(versamento);
+				response.setVersamento(VersamentoIncassoConverter.fromVersamento(versamento));
 				response.setDominio(dominio);
 				response.setBarCode(new String(iuvGenerato.getBarCode()));
 				response.setQrCode(new String(iuvGenerato.getQrCode())); 

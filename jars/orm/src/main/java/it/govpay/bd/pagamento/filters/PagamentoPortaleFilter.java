@@ -50,6 +50,8 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private Boolean ack;
 	private String cfCittadino;
 	private List<Long> idPagamentiPortale;
+	private String tipoUtenza;
+	private String codApplicazione;
 	
 	public enum SortFields {
 		DATA
@@ -61,7 +63,6 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 	public PagamentoPortaleFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
-		//TODO simplesearch
 	}
 
 	@Override
@@ -147,6 +148,22 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 					newExpression.and();
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.PagamentoPortale.model()));
 				newExpression.in(cf, this.idPagamentiPortale);
+				addAnd = true;
+			}
+			
+			if(this.tipoUtenza!=null) {
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(it.govpay.orm.PagamentoPortale.model().TIPO_UTENZA, this.tipoUtenza);
+				
+				addAnd = true;
+			}
+			
+			if(this.codApplicazione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(it.govpay.orm.PagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
 				addAnd = true;
 			}
 			
@@ -262,6 +279,22 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 
 	public void setIdPagamentiPortale(List<Long> idPagamentiPortale) {
 		this.idPagamentiPortale = idPagamentiPortale;
+	}
+
+	public String getTipoUtenza() {
+		return tipoUtenza;
+	}
+
+	public void setTipoUtenza(String tipoUtenza) {
+		this.tipoUtenza = tipoUtenza;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
 	}
 
 }

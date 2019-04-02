@@ -249,6 +249,13 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "tipo_utenza";
 			}
 		}
+		if(field.equals(PagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -340,6 +347,9 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(PagamentoPortale.model().TIPO_UTENZA)){
 			return this.toTable(PagamentoPortale.model(), returnAlias);
 		}
+		if(field.equals(PagamentoPortale.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(PagamentoPortale.model().ID_APPLICAZIONE, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -355,6 +365,9 @@ public class PagamentoPortaleFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(PagamentoPortale.model())){
 			return "pagamenti_portale";
+		}
+		if(model.equals(PagamentoPortale.model().ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 
 

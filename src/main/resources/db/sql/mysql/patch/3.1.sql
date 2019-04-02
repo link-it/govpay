@@ -283,3 +283,8 @@ UPDATE tipi_vers_domini SET abilitato = true FROM tipi_versamento WHERE tipi_ver
 ALTER TABLE tipi_vers_domini MODIFY COLUMN abilitato BOOLEAN NOT NULL;
 
 
+-- 02/04/2019 Aggiunto riferimento all'applicazione nella tabella pagamenti portale
+
+ALTER TABLE pagamenti_portale ADD COLUMN id_applicazione BIGINT;
+ALTER TABLE pagamenti_portale ADD CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
+

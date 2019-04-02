@@ -521,9 +521,11 @@ CREATE TABLE pagamenti_portale
 	tipo_utenza VARCHAR(35) NOT NULL COMMENT 'Tipologia dell\'utenza richiedente',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_applicazione BIGINT COMMENT 'Riferimento all'applicazione',
 	-- unique constraints
 	CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Richieste di pagamento';
 

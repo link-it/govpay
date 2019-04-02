@@ -61,6 +61,7 @@ import java.io.Serializable;
  * 			&lt;element name="tipo" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tipo_utenza" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -100,7 +101,8 @@ import java.io.Serializable;
   	"ack",
   	"tipo",
   	"principal",
-  	"tipoUtenza"
+  	"tipoUtenza",
+  	"idApplicazione"
   }
 )
 
@@ -336,6 +338,14 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
     this.tipoUtenza = tipoUtenza;
   }
 
+  public IdApplicazione getIdApplicazione() {
+    return this.idApplicazione;
+  }
+
+  public void setIdApplicazione(IdApplicazione idApplicazione) {
+    this.idApplicazione = idApplicazione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -459,5 +469,8 @@ public class PagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo_utenza",required=true,nillable=false)
   protected java.lang.String tipoUtenza;
+
+  @XmlElement(name="idApplicazione",required=false,nillable=false)
+  protected IdApplicazione idApplicazione;
 
 }
