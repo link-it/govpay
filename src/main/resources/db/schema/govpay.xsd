@@ -1935,6 +1935,17 @@
 			<xsd:element name="tipo" type="xsd:int" />
 			<xsd:element name="principal" type="String4000" />
 			<xsd:element name="tipo_utenza" type="String35" />
+			
+			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Applicazione"
+								object-type="Applicazione" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	

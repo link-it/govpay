@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.viste.model.VersamentoIncasso;
@@ -98,6 +100,7 @@ public class PagamentoPortale extends BasicModel {
 	private String multiBeneficiario = null;
 	private String principal = null;
 	private TIPO_UTENZA tipoUtenza = null;
+	private Long idApplicazione = null;
 
 	private int tipo;
 	private boolean ack;
@@ -271,6 +274,22 @@ public class PagamentoPortale extends BasicModel {
 		}
 		return this.versamenti;
 	}
+	
+	private transient Applicazione applicazione;
+	
+	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
+		if(this.applicazione == null) {
+			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+		} 
+		return this.applicazione;
+	}
+	
+	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
+		this.applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+		this.setIdApplicazione(this.applicazione.getId());
+	}
+	
+	
 	public CODICE_STATO getCodiceStato() {
 		return this.codiceStato;
 	}
@@ -318,6 +337,12 @@ public class PagamentoPortale extends BasicModel {
 	}
 	public void setTipoUtenza(TIPO_UTENZA tipoUtenza) {
 		this.tipoUtenza = tipoUtenza;
+	}
+	public Long getIdApplicazione() {
+		return idApplicazione;
+	}
+	public void setIdApplicazione(Long idApplicazione) {
+		this.idApplicazione = idApplicazione;
 	}
 
 }

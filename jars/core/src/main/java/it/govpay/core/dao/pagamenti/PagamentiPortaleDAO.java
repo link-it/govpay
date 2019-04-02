@@ -234,6 +234,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setImporto(sommaImporti); 
 			if(versanteModel != null)
 				pagamentoPortale.setVersanteIdentificativo(versanteModel.getCodUnivoco());
+			
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
+				pagamentoPortale.setIdApplicazione(userDetails.getApplicazione().getId());
+			}
 
 			// gestione multibeneficiari
 			// se ho solo un dominio all'interno della lista allora vuol dire che i tutti pagamenti riferiscono lo stesso dominio
@@ -576,6 +580,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				filter.setCfCittadino(userDetails.getIdentificativo()); 
+			}
+			
+			// se sei una applicazione allora vedi i pagamenti che hai caricato
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
+				filter.setCodApplicazione(userDetails.getApplicazione().getCodApplicazione()); 
 			}
 
 			if(codDomini != null && codDomini.size() > 0)

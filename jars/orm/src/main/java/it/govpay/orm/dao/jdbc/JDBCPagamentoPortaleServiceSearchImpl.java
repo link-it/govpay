@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -46,6 +45,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
 import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.PagamentoPortale;
@@ -186,12 +186,30 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 			fields.add(PagamentoPortale.model().ACK);
 			fields.add(PagamentoPortale.model().PRINCIPAL);
 			fields.add(PagamentoPortale.model().TIPO_UTENZA);
-		
+			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model())));
+			
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				list.add((PagamentoPortale)this.getFetch().fetch(jdbcProperties.getDatabase(), PagamentoPortale.model(), map));
+				Object idApplicazioneObject = map.remove("id_applicazione");
+				
+				PagamentoPortale pagamentoPortale = (PagamentoPortale)this.getFetch().fetch(jdbcProperties.getDatabase(), PagamentoPortale.model(), map); 
+				
+				if(idApplicazioneObject instanceof Long) {
+					Long idApplicazione = (Long) idApplicazioneObject;
+					
+					it.govpay.orm.IdApplicazione id_pagamentoPortale_applicazione = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_pagamentoPortale_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idApplicazione, false);
+					}else{
+						id_pagamentoPortale_applicazione = new it.govpay.orm.IdApplicazione();
+					}
+					id_pagamentoPortale_applicazione.setId(idApplicazione);
+					pagamentoPortale.setIdApplicazione(id_pagamentoPortale_applicazione);
+				}
+				
+				list.add(pagamentoPortale);
 			}
 		} catch(NotFoundException e) {}
 
@@ -533,6 +551,11 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 
+		if(expression.inUseModel(PagamentoPortale.model().ID_APPLICAZIONE,false)){
+			String tableName1 = this.getPagamentoPortaleFieldConverter().toAliasTable(PagamentoPortale.model());
+			String tableName2 = this.getPagamentoPortaleFieldConverter().toAliasTable(PagamentoPortale.model().ID_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
+		}
 	}
 
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
