@@ -31,9 +31,9 @@ public class EntrataPrevistaConverter {
 		dto.setDataRegolamento(vo.getDataRegolamento());
 		dto.setFrIur(vo.getFrIur());
 		if(vo.getImportoPagato()!= null)
-			dto.setImportoPagato(new BigDecimal(vo.getImportoPagato().doubleValue()));
-		if(vo.getImportoTotalePagamenti()!= null)			
-			dto.setImportoTotalePagamenti(new BigDecimal(vo.getImportoTotalePagamenti().doubleValue()));
+			dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
+		if(vo.getImportoTotalePagamenti()!= null)	
+			dto.setImportoTotalePagamenti(BigDecimal.valueOf(vo.getImportoTotalePagamenti()));
 		dto.setIndiceDati(vo.getIndiceDati());
 		dto.setIur(vo.getIur());
 		dto.setIuv(vo.getIuv());

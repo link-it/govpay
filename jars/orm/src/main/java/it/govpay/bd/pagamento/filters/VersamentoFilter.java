@@ -301,20 +301,20 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.equals(Versamento.model().AVVISATURA_ABILITATA, this.avvisaturaAbilitata);
 			}
 			
-			if(this.getIdTipiVersamento() != null){
-				this.getIdTipiVersamento().removeAll(Collections.singleton(null));
+			if(this.idTipiVersamento != null){
+				this.idTipiVersamento.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				CustomField cf = new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(Versamento.model()));
-				newExpression.in(cf, this.getIdTipiVersamento());
+				newExpression.in(cf, this.idTipiVersamento);
 				addAnd = true;
 			}
 			
-			if(this.getCodTipoVersamento() != null){
+			if(this.codTipoVersamento != null){
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.getCodTipoVersamento(), LikeMode.ANYWHERE);
+				newExpression.ilike(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 

@@ -21,6 +21,7 @@ public class UtenzaAnonima extends Utenza {
 		this.headers = new HashMap<>();
 		this.autorizzazioneDominiStar = true;
 		this.autorizzazioneTipiVersamentoStar = false;
+		this.abilitato = true;
 	}
 	
 	private static final long serialVersionUID = 1L;

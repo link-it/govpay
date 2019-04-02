@@ -69,9 +69,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
-		
-		if(pagamentoPortale.getImporto() != null) 
-			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
+		rsModel.setImporto(pagamentoPortale.getImporto()); 
 		
 		if(listaRpp !=null) {
 			List<Rpp> rpp = new ArrayList<>();
@@ -143,8 +141,7 @@ public class PagamentiPortaleConverter {
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 
-		if(pagamentoPortale.getImporto() != null) 
-			rsModel.setImporto(new BigDecimal(pagamentoPortale.getImporto())); 
+		rsModel.setImporto(pagamentoPortale.getImporto()); 
 		
 		if(dto.getEventi() !=null && !dto.getEventi() .isEmpty()) {
 			List<Nota> note = new ArrayList<>();

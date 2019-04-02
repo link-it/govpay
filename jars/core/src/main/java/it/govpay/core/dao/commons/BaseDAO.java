@@ -122,41 +122,41 @@ public class BaseDAO {
 
 
 
-	public void autorizzaRichiesta(Authentication authentication,Servizio servizio, Diritti diritti, String codDominio, String codTributo, boolean accessoAnonimo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public void autorizzaRichiesta(Authentication authentication,Servizio servizio, Diritti diritti, String codDominio, String codTipoVersamento, boolean accessoAnonimo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
-		this.autorizzaRichiesta(authentication, servizio, listaDiritti, codDominio, codTributo, accessoAnonimo);
+		this.autorizzaRichiesta(authentication, servizio, listaDiritti, codDominio, codTipoVersamento, accessoAnonimo);
 	}
 
-	public void autorizzaRichiesta(Authentication authentication, Servizio servizio, Diritti diritti, String codDominio, String codTributo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
-		autorizzaRichiesta(authentication, servizio, diritti, codDominio, codTributo, false, bd);
+	public void autorizzaRichiesta(Authentication authentication, Servizio servizio, Diritti diritti, String codDominio, String codTipoVersamento, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+		autorizzaRichiesta(authentication, servizio, diritti, codDominio, codTipoVersamento, false, bd);
 	}
 
-	public void autorizzaRichiesta(Authentication authentication, Servizio servizio, Diritti diritti, String codDominio, String codTributo, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+	public void autorizzaRichiesta(Authentication authentication, Servizio servizio, Diritti diritti, String codDominio, String codTipoVersamento, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
-		this.autorizzaRichiesta(authentication, servizio, listaDiritti, codDominio, codTributo, accessoAnonimo, bd); 
+		this.autorizzaRichiesta(authentication, servizio, listaDiritti, codDominio, codTipoVersamento, accessoAnonimo, bd); 
 	}
 
 
-	public void autorizzaRichiesta(Authentication authentication,Servizio servizio, List<Diritti> diritti, String codDominio, String codTributo, boolean accessoAnonimo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+	public void autorizzaRichiesta(Authentication authentication,Servizio servizio, List<Diritti> diritti, String codDominio, String codTipoVersamento, boolean accessoAnonimo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(authentication, servizio, diritti, codDominio, codTributo, accessoAnonimo, bd); 
+			this.autorizzaRichiesta(authentication, servizio, diritti, codDominio, codTipoVersamento, accessoAnonimo, bd); 
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
 		}
 	}
 
-	public void autorizzaRichiesta(Authentication authentication, Servizio servizio, List<Diritti> diritti, String codDominio, String codTributo, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+	public void autorizzaRichiesta(Authentication authentication, Servizio servizio, List<Diritti> diritti, String codDominio, String codTipoVersamento, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
 		// 1. invocazione AuthorizationManager
-		boolean authorized = AuthorizationManager.isAuthorized(authentication, servizio, codDominio, codTributo, diritti, accessoAnonimo);
+		boolean authorized = AuthorizationManager.isAuthorized(authentication, servizio, codDominio, codTipoVersamento, diritti, accessoAnonimo);
 
 		if(!authorized)
-			throw AuthorizationManager.toNotAuthorizedException(authentication, servizio, diritti, accessoAnonimo, codDominio, codTributo);
+			throw AuthorizationManager.toNotAuthorizedException(authentication, servizio, diritti, accessoAnonimo, codDominio, codTipoVersamento);
 	}
 	
 	public void autorizzaAccessoAnonimoVersamento(Authentication authentication, Servizio servizio, Diritti diritti, boolean accessoAnonimo, String cfToCheck, String idDebitore) throws NotAuthorizedException{

@@ -131,6 +131,12 @@ public class AuthorizationManager {
 			return new NotAuthorizedException(sb.toString());
 		}
 		
+		if(!details.isAbilitato()) {
+			sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] disabilitata");
+			return new NotAuthorizedException(sb.toString());
+		}
+			
+		
 		StringBuilder sbDiritti = new StringBuilder();
 		
 		for (Diritti diritti : listaDiritti) {
@@ -161,6 +167,11 @@ public class AuthorizationManager {
 				sb.append(", TipoPendenza ["+codTipoVersamento+"]");
 			}
 			
+			return new NotAuthorizedException(sb.toString());
+		}
+		
+		if(!details.isAbilitato()) {
+			sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] disabilitata");
 			return new NotAuthorizedException(sb.toString());
 		}
 		
@@ -207,6 +218,27 @@ public class AuthorizationManager {
 		return new NotAuthorizedException(sb.toString());
 	}
 	
+	public static NotAuthorizedException toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(Authentication authentication,Servizio servizio, Diritti diritti) {
+		return toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(authentication, servizio, Arrays.asList(diritti));
+	}
+	
+	public static NotAuthorizedException toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(Authentication authentication,Servizio servizio,List<Diritti> listaDiritti) {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		StringBuilder sb = new StringBuilder();
+		
+		StringBuilder sbDiritti = new StringBuilder();
+		
+		for (Diritti diritti : listaDiritti) {
+			if(sbDiritti.length() >0) 
+				sbDiritti.append(", ");
+			
+			sbDiritti.append(diritti);
+		}
+		
+		sb.append("L'utenza autenticata [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non possiede i Diritti di [").append(sbDiritti.toString()).append("] per il Servizio [").append(servizio).append("] per nessun Tipo Pendenza.");
+		return new NotAuthorizedException(sb.toString());
+	}
+	
 	public static boolean isAuthorizedLettura(Authentication authentication, Servizio servizio, boolean accessoAnonimo) throws NotAuthorizedException {
 		return isAuthorized(authentication, servizio, Diritti.LETTURA, accessoAnonimo);
 	}
@@ -236,6 +268,10 @@ public class AuthorizationManager {
 		if(tipoUtenza.equals(TIPO_UTENZA.ANONIMO) && !accessoAnonimo) {
 			return false;
 		}
+		
+		// controllo abilitazione
+		if(!utenza.isAbilitato())
+			return false;
 		
 		for(Acl acl : utenza.getAcls()) {
 			

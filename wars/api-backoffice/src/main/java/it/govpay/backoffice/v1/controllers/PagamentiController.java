@@ -98,12 +98,14 @@ public class PagamentiController extends BaseController {
 			
 			if(dataDa!=null) {
 				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				log.info("AAAAAAAAAAA DataDA ["+dataDa+"] >>> Date ["+dataDaDate+"]");
 				listaPagamentiPortaleDTO.setDataDa(dataDaDate);
 			}
 				
 			
 			if(dataA!=null) {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				log.info("AAAAAAAAAAA DataA ["+dataA+"] >>> Date ["+dataADate+"]");
 				listaPagamentiPortaleDTO.setDataA(dataADate);
 			}
 			

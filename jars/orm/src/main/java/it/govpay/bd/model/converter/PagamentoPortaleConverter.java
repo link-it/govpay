@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.model.converter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class PagamentoPortaleConverter {
 		dto.setCodPsp(vo.getCodPsp());
 		dto.setTipoVersamento(vo.getTipoVersamento());
 		dto.setNome(vo.getNome());
-		dto.setImporto(vo.getImporto());
+		dto.setImporto(BigDecimal.valueOf(vo.getImporto()));
 		dto.setMultiBeneficiario(vo.getMultiBeneficiario()); 
 		dto.setAck(vo.getAck());
 		dto.setTipo(vo.getTipo());
@@ -101,7 +102,7 @@ public class PagamentoPortaleConverter {
 		vo.setCodPsp(dto.getCodPsp());
 		vo.setTipoVersamento(dto.getTipoVersamento());
 		vo.setNome(dto.getNome());
-		vo.setImporto(dto.getImporto());
+		vo.setImporto(dto.getImporto().doubleValue());
 		vo.setMultiBeneficiario(dto.getMultiBeneficiario()); 
 		vo.setAck(dto.isAck());
 		vo.setTipo(dto.getTipo());
