@@ -38,6 +38,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
 
@@ -120,7 +121,7 @@ public class AvvisiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			// controllo che l'utenza sia autorizzata per il dominio scelto
-			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.getCodDominio(), null, getAvvisoDTO.isAccessoAnonimo(), bd);
+			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, getAvvisoDTO.getCodDominio(), null, getAvvisoDTO.isAccessoAnonimo(), bd);
 			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			
@@ -131,16 +132,13 @@ public class AvvisiDAO extends BaseDAO{
 			else 
 				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
 			
-			
-			
-			
-			
 			Dominio dominio = versamento.getDominio(versamentiBD);
+			TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), null, getAvvisoDTO.isAccessoAnonimo(), bd);
+			this.autorizzaRichiesta(getAvvisoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento(), getAvvisoDTO.isAccessoAnonimo(), bd);
 			
 			// controllo eventuali accessi anonimi al servizio di lettura avviso
-			this.autorizzaAccessoAnonimoVersamento(getAvvisoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, getAvvisoDTO.isAccessoAnonimo(), getAvvisoDTO.getCfDebitore(), versamento.getAnagraficaDebitore().getCodUnivoco());
+			this.autorizzaAccessoAnonimoVersamento(getAvvisoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, getAvvisoDTO.isAccessoAnonimo(), getAvvisoDTO.getCfDebitore(), versamento.getAnagraficaDebitore().getCodUnivoco());
 			
 			GetAvvisoDTOResponse response = new GetAvvisoDTOResponse();
 			String pdfFileName = versamento.getDominio(bd).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
@@ -169,9 +167,6 @@ public class AvvisiDAO extends BaseDAO{
 				break;
 			
 			}
-			
-//			AvvisiPagamentoBD avvisiPagamentoBD = new AvvisiPagamentoBD(bd);
-//			AvvisoPagamento avviso = avvisiPagamentoBD.getAvviso(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getIuv());
 			
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

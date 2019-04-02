@@ -79,12 +79,12 @@ public class TracciatiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			List<String> listaDominiFiltro = null;
-			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA);
 			if(listaDominiFiltro == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+leggiTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+				throw new NotAuthorizedException("L'utenza autenticata ["+leggiTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PENDENZE + " per alcun dominio");
 			}
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
@@ -107,12 +107,12 @@ public class TracciatiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			List<String> listaDominiFiltro = null;
-			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA);
 			if(listaDominiFiltro == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+leggiTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+				throw new NotAuthorizedException("L'utenza autenticata ["+leggiTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PENDENZE + " per alcun dominio");
 			}
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
@@ -139,12 +139,12 @@ public class TracciatiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			List<String> listaDominiFiltro = null;
-			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			this.autorizzaRichiesta(leggiTracciatoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA);
 			if(listaDominiFiltro == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+leggiTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+				throw new NotAuthorizedException("L'utenza autenticata ["+leggiTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PENDENZE + " per alcun dominio");
 			}
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
@@ -181,12 +181,12 @@ public class TracciatiDAO extends BaseDAO{
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 
 		List<String> listaDominiFiltro = null;
-		this.autorizzaRichiesta(listaTracciatiDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, listaTracciatiDTO.getIdDominio(), null, bd);
+		this.autorizzaRichiesta(listaTracciatiDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, listaTracciatiDTO.getIdDominio(), null, bd);
 
 		// Autorizzazione sui domini
-		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaTracciatiDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaTracciatiDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA);
 		if(listaDominiFiltro == null) {
-			throw new NotAuthorizedException("L'utenza autenticata ["+listaTracciatiDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+			throw new NotAuthorizedException("L'utenza autenticata ["+listaTracciatiDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PENDENZE + " per alcun dominio");
 		}
 
 		TracciatiBD tracciatoBD = new TracciatiBD(bd);
@@ -237,7 +237,7 @@ public class TracciatiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(postTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, postTracciatoDTO.getIdDominio(), null, bd);
+			this.autorizzaRichiesta(postTracciatoDTO.getUser(), Servizio.PENDENZE, Diritti.SCRITTURA, postTracciatoDTO.getIdDominio(), null, bd);
 			
 			SerializationConfig config = new SerializationConfig();
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -302,12 +302,12 @@ public class TracciatiDAO extends BaseDAO{
 	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 
 		List<String> listaDominiFiltro = null;
-		this.autorizzaRichiesta(listaOperazioniTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+		this.autorizzaRichiesta(listaOperazioniTracciatoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, bd);
 
 		// Autorizzazione sui domini
-		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaOperazioniTracciatoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaOperazioniTracciatoDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA);
 		if(listaDominiFiltro == null) {
-			throw new NotAuthorizedException("L'utenza autenticata ["+listaOperazioniTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+			throw new NotAuthorizedException("L'utenza autenticata ["+listaOperazioniTracciatoDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PENDENZE + " per alcun dominio");
 		}
 
 		OperazioniBD operazioniBD = new OperazioniBD(bd);

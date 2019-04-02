@@ -22,7 +22,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
-import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
@@ -91,37 +90,26 @@ public class Rpt extends BasicBD{
 			for(Versamento versamentoModel : versamenti) {
 
 				ctx.getApplicationLogger().log("rpt.validazioneSemantica", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-
-				for(SingoloVersamento sv : versamentoModel.getSingoliVersamenti(this)) {
-
-					String codTributo = sv.getTributo(this) != null ? sv.getTributo(this).getCodTributo() : null;
-
-					log.debug("Verifica autorizzazione utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza() 
-						+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione() 
-						+ "] per il dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "], tributo [" + codTributo + "]...");
-
-					List<Diritti> diritti = new ArrayList<>(); 
-					diritti.add(Diritti.ESECUZIONE);
-
-					if(!AuthorizationManager.isAuthorized(authentication, Servizio.PAGAMENTI_E_PENDENZE, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo,diritti,true)) {
-						if(codTributo == null) 
-							log.warn("Non autorizzato utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza() 
-									+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione()
-									+ "] per il dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "]");
-						else 
-							log.warn("Non autorizzato utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza()
-									+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione() 
-									+ "] per il dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "], tributo [" + codTributo + "]");
-						
-						throw new GovPayException(EsitoOperazione.APP_003, utenza.getIdentificativo(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-					}
-
-					log.debug("Autorizzato utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza()   
-							+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione() 
-							+ "] per il dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "], tributo [" + codTributo + "]");
-
+				
+				log.debug("Verifica autorizzazione utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza() 
+				+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione() 
+				+ "] per il dominio [" + versamentoModel.getDominio(this).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(this).getCodTipoVersamento() + "]...");
+				
+				List<Diritti> diritti = new ArrayList<>(); 
+				diritti.add(Diritti.ESECUZIONE);
+				
+				if(!AuthorizationManager.isAuthorized(authentication, Servizio.PAGAMENTI, versamentoModel.getUo(this).getDominio(this).getCodDominio(), versamentoModel.getTipoVersamento(this).getCodTipoVersamento(),diritti,true)) {
+						log.warn("Non autorizzato utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza()
+								+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione() 
+								+ "] per il dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(this).getCodTipoVersamento() + "]");
+					
+					throw new GovPayException(EsitoOperazione.APP_003, utenza.getIdentificativo(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 				}
 
+				log.debug("Autorizzato utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza()   
+						+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione() 
+						+ "] per il dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(this).getCodTipoVersamento() + "]");
+				
 				log.debug("Verifica autorizzazione pagamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
 				if(!versamentoModel.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
 					log.debug("Non autorizzato pagamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]: pagamento in stato diverso da " + StatoVersamento.NON_ESEGUITO);

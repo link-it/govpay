@@ -133,8 +133,7 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 				
 				IExpression cfExpr = this.newExpression();
 				
-				cfExpr.equals(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.cfCittadino).or()
-					.equals(it.govpay.orm.PagamentoPortale.model().PRINCIPAL, this.cfCittadino);
+				cfExpr.equals(it.govpay.orm.PagamentoPortale.model().VERSANTE_IDENTIFICATIVO, this.cfCittadino);
 				
 				newExpression.and(cfExpr);
 				

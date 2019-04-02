@@ -326,5 +326,10 @@ ALTER TABLE tipi_vers_domini MODIFY (abilitato NOT NULL);
 ALTER TABLE pagamenti_portale ADD COLUMN id_applicazione NUMBER;
 ALTER TABLE pagamenti_portale ADD CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
 
+-- 02/04/2019 Divisione dei diritti sul servizio 'Pagamenti e Pendenze' in 'Pagamenti' e 'Pendenze'
+insert into acl (ruolo,servizio,diritti,id_utenza) select acl.ruolo as ruolo, 'Pagamenti' as servizio, acl.diritti as diritti, acl.id_utenza as id_utenza from acl where acl.servizio = 'Pagamenti e Pendenze';
+insert into acl (ruolo,servizio,diritti,id_utenza) select acl.ruolo as ruolo, 'Pendenze' as servizio, acl.diritti as diritti, acl.id_utenza as id_utenza from acl where acl.servizio = 'Pagamenti e Pendenze';
+delete from acl where servizio = 'Pagamenti e Pendenze';
+delete from acl where servizio = 'Statistiche';
 
 

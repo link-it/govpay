@@ -120,7 +120,15 @@ public class BaseDAO {
 			throw AuthorizationManager.toNotAuthorizedException(authentication, servizi, diritti, accessoAnonimo);
 	}
 
-
+	public void autorizzaRichiesta(Authentication authentication, List<Servizio> servizi, Diritti diritti, String codDominio, String codTipoVersamento, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+		autorizzaRichiesta(authentication, servizi, diritti, codDominio, codTipoVersamento, false, bd);
+	}
+	
+	public void autorizzaRichiesta(Authentication authentication, List<Servizio> servizi, Diritti diritti, String codDominio, String codTipoVersamento, boolean accessoAnonimo, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException{
+		List<Diritti> listaDiritti = new ArrayList<>();
+		listaDiritti.add(diritti);
+		this.autorizzaRichiesta(authentication, servizi, listaDiritti, codDominio, codTipoVersamento, accessoAnonimo, bd); 
+	}
 
 	public void autorizzaRichiesta(Authentication authentication,Servizio servizio, Diritti diritti, String codDominio, String codTipoVersamento, boolean accessoAnonimo) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		List<Diritti> listaDiritti = new ArrayList<>();
@@ -136,6 +144,19 @@ public class BaseDAO {
 		List<Diritti> listaDiritti = new ArrayList<>();
 		listaDiritti.add(diritti);
 		this.autorizzaRichiesta(authentication, servizio, listaDiritti, codDominio, codTipoVersamento, accessoAnonimo, bd); 
+	}
+	
+	public void autorizzaRichiesta(Authentication authentication,List<Servizio> servizi, List<Diritti> diritti, String codDominio, String codTipoVersamento, boolean accessoAnonimo,BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+		// 1. invocazione AuthorizationManager
+		boolean authorized = false;
+		for(Servizio servizio : servizi) {
+			authorized = AuthorizationManager.isAuthorized(authentication, servizio, codDominio, codTipoVersamento, diritti, accessoAnonimo);
+			if(authorized)
+				break;
+		}
+
+		if(!authorized)
+			throw AuthorizationManager.toNotAuthorizedException(authentication, servizi, diritti, accessoAnonimo);
 	}
 
 

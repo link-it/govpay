@@ -2,6 +2,7 @@ package it.govpay.core.dao.pagamenti;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class RptDAO extends BaseDAO{
 			String idDominio = leggiRptDTO.getIdDominio();
 			String iuv = leggiRptDTO.getIuv();
 			String ccp = leggiRptDTO.getCcp();
-			this.autorizzaRichiesta(leggiRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, idDominio, null, bd);
+			this.autorizzaRichiesta(leggiRptDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.LETTURA, idDominio, null, bd);
 
 			RptBD rptBD = new RptBD(bd);
 
@@ -98,7 +99,7 @@ public class RptDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiRicevutaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, leggiRicevutaDTO.getIdDominio(), null, bd);
+			this.autorizzaRichiesta(leggiRicevutaDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.LETTURA, leggiRicevutaDTO.getIdDominio(), null, bd);
 
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
@@ -136,12 +137,12 @@ public class RptDAO extends BaseDAO{
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		List<String> listaDominiFiltro;
-		this.autorizzaRichiesta(listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true, bd);
+		this.autorizzaRichiesta(listaRptDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.LETTURA, true, bd);
 
 		// Autorizzazione sui domini
-		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true);
+		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRptDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA, true);
 		if(listaDominiFiltro == null) {
-			throw new NotAuthorizedException("L'utenza autenticata ["+listaRptDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+			throw new NotAuthorizedException("L'utenza autenticata ["+listaRptDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE) + " per alcun dominio");
 		}
 
 		RptBD rptBD = new RptBD(bd);
@@ -198,7 +199,7 @@ public class RptDAO extends BaseDAO{
 			// patch
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(patchRptDTO.getUser());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(patchRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
+			this.autorizzaRichiesta(patchRptDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.SCRITTURA, bd);
 
 			String idDominio = patchRptDTO.getIdDominio();
 			String iuv = patchRptDTO.getIuv();
@@ -209,7 +210,7 @@ public class RptDAO extends BaseDAO{
 			EventoNota eventoNota = null;
 			
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(patchRptDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, idDominio, null, bd);
+			this.autorizzaRichiesta(patchRptDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.SCRITTURA, idDominio, null, bd);
 			
 			for(PatchOp op: patchRptDTO.getOp()) {
 				if(PATH_BLOCCANTE.equals(op.getPath())) {

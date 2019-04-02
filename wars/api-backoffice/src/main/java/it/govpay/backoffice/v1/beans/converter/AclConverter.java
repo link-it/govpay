@@ -95,13 +95,14 @@ public class AclConverter {
 			case GIORNALE_DEGLI_EVENTI:
 				serv = ServizioEnum.GIORNALE_DEGLI_EVENTI;
 				break;
-			case PAGAMENTI_E_PENDENZE:
-				serv = ServizioEnum.PAGAMENTI_E_PENDENZE;
+			case PAGAMENTI:
+				serv = ServizioEnum.PAGAMENTI;
+				break;
+			case PENDENZE:
+				serv = ServizioEnum.PENDENZE;
 				break;
 			case RENDICONTAZIONI_E_INCASSI:
 				serv = ServizioEnum.RENDICONTAZIONI_E_INCASSI;
-				break;
-			case STATISTICHE:
 				break;
 			}
 

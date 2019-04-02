@@ -99,7 +99,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			appContext.getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
 
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
-			this.autorizzaRichiesta(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA,true); 
+			this.autorizzaRichiesta(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.SCRITTURA,true); 
 			ctx.getApplicationLogger().log("ws.autorizzazione");
 
 			String codDominio = null;
@@ -156,7 +156,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v,dominio);
 
 						// controllo che l'utenza anonima possa effettuare il pagamento dell'avviso	
-						this.autorizzaAccessoAnonimoVersamento(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, true, cfToCheck, versamentoModel.getAnagraficaDebitore().getCodUnivoco());
+						this.autorizzaAccessoAnonimoVersamento(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.SCRITTURA, true, cfToCheck, versamentoModel.getAnagraficaDebitore().getCodUnivoco());
 
 					}catch(NotFoundException e) {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio non disponibile [Dominio:"+idDominio+"].", EsitoOperazione.DOM_000, idDominio);
@@ -466,7 +466,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(leggiPagamentoPortaleDTO.getUser());
-			this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,true,bd);
+			this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA,true,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = null;
@@ -509,7 +509,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			}
 			if(pagamentoPortale.getMultiBeneficiario() != null) {
 				// controllo che il dominio sia autorizzato
-				this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, true, bd);
+				this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, true, bd);
 			}
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 
@@ -552,11 +552,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		try {
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPagamentiPortaleDTO.getUser());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
+			this.autorizzaRichiesta(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA,bd);
 			// Autorizzazione sui domini
-			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA);
 			if(codDomini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Arrays.asList(Diritti.LETTURA)); 
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Arrays.asList(Diritti.LETTURA)); 
 			}
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
@@ -619,7 +619,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	//
 	//		try {
 	//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-	//			this.autorizzaRichiesta(verificaPagamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA,bd);
+	//			this.autorizzaRichiesta(verificaPagamentoDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA,bd);
 	//
 	//			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 	//			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(verificaPagamentoDTO.getIdSessione());
@@ -630,7 +630,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	//			}
 	//			if(pagamentoPortale.getMultiBeneficiario() != null) {
 	//				// controllo che il dominio sia autorizzato
-	//				this.autorizzaRichiesta(verificaPagamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
+	//				this.autorizzaRichiesta(verificaPagamentoDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
 	//			}
 	//			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 	//
@@ -666,7 +666,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA,bd);
+			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI, Diritti.SCRITTURA,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(patchDTO.getIdSessione());
@@ -677,7 +677,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			}
 			if(pagamentoPortale.getMultiBeneficiario() != null) {
 				// controllo che il dominio sia autorizzato
-				this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
+				this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI, Diritti.SCRITTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
 			}
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 
