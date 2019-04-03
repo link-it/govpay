@@ -158,7 +158,7 @@ public class UtentiDAO extends BaseDAO{
 					try {
 						idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-						throw new DominioNonTrovatoException(e.getMessage(), e);
+						throw new DominioNonTrovatoException("Il dominio ["+codDominio+"] non e' censito nel sistema", e);
 					}
 				}
 
@@ -171,7 +171,7 @@ public class UtentiDAO extends BaseDAO{
 					try {
 						idTipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, codTipoVersamento).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-						throw new TipoVersamentoNonTrovatoException(e.getMessage(), e);
+						throw new TipoVersamentoNonTrovatoException("Il tipo pendenza ["+codTipoVersamento+"] non e' censito nel sistema", e);
 					}
 				}
 

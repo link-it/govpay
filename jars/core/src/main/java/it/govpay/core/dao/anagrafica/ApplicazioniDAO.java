@@ -39,6 +39,8 @@ import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTOResponse;
 import it.govpay.core.dao.anagrafica.exception.ApplicazioneNonTrovataException;
+import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
@@ -101,7 +103,7 @@ public class ApplicazioniDAO extends BaseDAO {
 
 
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
-	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException { 
+	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException {  
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
 		BasicBD bd = null;
 
@@ -116,7 +118,11 @@ public class ApplicazioniDAO extends BaseDAO {
 			if(putApplicazioneDTO.getIdDomini() != null) {
 				List<Long> idDomini = new ArrayList<>();
 				for (String codDominio : putApplicazioneDTO.getIdDomini()) {
-					idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
+					try {
+						idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
+					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+						throw new DominioNonTrovatoException("Il dominio ["+codDominio+"] non e' censito nel sistema", e);
+					}
 				}
 
 				putApplicazioneDTO.getApplicazione().getUtenza().setIdDomini(idDomini );
@@ -125,7 +131,11 @@ public class ApplicazioniDAO extends BaseDAO {
 			if(putApplicazioneDTO.getIdTipiVersamento() != null) {
 				List<Long> idTipiVersamento = new ArrayList<>();
 				for (String codTipoVersamento : putApplicazioneDTO.getIdTipiVersamento()) {
-					idTipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, codTipoVersamento).getId());
+					try {
+						idTipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, codTipoVersamento).getId());
+					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+						throw new TipoVersamentoNonTrovatoException("Il tipo pendenza ["+codTipoVersamento+"] non e' censito nel sistema", e);
+					}
 				}
 
 				putApplicazioneDTO.getApplicazione().getUtenza().setIdTipiVersamento(idTipiVersamento);

@@ -33,7 +33,11 @@ import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTO;
 import it.govpay.core.dao.anagrafica.dto.PutOperatoreDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -79,7 +83,14 @@ public class OperatoriController extends BaseController {
 			
 			UtentiDAO operatoriDAO = new UtentiDAO(false);
 			
-			PutOperatoreDTOResponse putOperatoreDTOResponse = operatoriDAO.createOrUpdate(putOperatoreDTO);
+			PutOperatoreDTOResponse putOperatoreDTOResponse = null;
+			try {
+				putOperatoreDTOResponse = operatoriDAO.createOrUpdate(putOperatoreDTO);
+			} catch(DominioNonTrovatoException e) {
+				throw new UnprocessableEntityException(e.getDetails());
+			}  catch(TipoVersamentoNonTrovatoException e) {
+				throw new UnprocessableEntityException(e.getDetails());
+			}
 			
 			Status responseStatus = putOperatoreDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			
