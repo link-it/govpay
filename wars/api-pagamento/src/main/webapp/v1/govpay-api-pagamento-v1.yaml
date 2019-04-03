@@ -543,7 +543,7 @@ paths:
           description: >-
             csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
              * dataRichiestaPagamento
-             * stato
+             * smart
           required: false
           schema:
             type: string
