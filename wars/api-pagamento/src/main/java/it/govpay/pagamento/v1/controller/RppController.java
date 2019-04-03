@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
@@ -30,7 +32,10 @@ import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v1.beans.ListaRppIndex;
 import it.govpay.pagamento.v1.beans.Rpp;
 import it.govpay.pagamento.v1.beans.RppIndex;
@@ -56,6 +61,9 @@ public class RppController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PAGAMENTI), Arrays.asList(Diritti.LETTURA));
 
 			// Parametri - > DTO Input
 
@@ -129,6 +137,9 @@ public class RppController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PAGAMENTI), Arrays.asList(Diritti.LETTURA));
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 
@@ -206,6 +217,9 @@ public class RppController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PAGAMENTI), Arrays.asList(Diritti.LETTURA));
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 
@@ -248,6 +262,9 @@ public class RppController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PAGAMENTI), Arrays.asList(Diritti.LETTURA));
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 

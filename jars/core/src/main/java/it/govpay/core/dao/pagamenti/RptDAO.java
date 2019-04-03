@@ -2,7 +2,6 @@ package it.govpay.core.dao.pagamenti;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,8 +37,6 @@ import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 
@@ -62,7 +59,11 @@ public class RptDAO extends BaseDAO{
 			String idDominio = leggiRptDTO.getIdDominio();
 			String iuv = leggiRptDTO.getIuv();
 			String ccp = leggiRptDTO.getCcp();
-			this.autorizzaRichiesta(leggiRptDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.LETTURA, idDominio, null, bd);
+			
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(leggiRptDTO.getUser(), idDominio)) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiRptDTO.getUser(),idDominio, null);
+			}
 
 			RptBD rptBD = new RptBD(bd);
 
@@ -98,11 +99,19 @@ public class RptDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiRicevutaDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.LETTURA, leggiRicevutaDTO.getIdDominio(), null, bd);
-
+			if(!AuthorizationManager.isDominioAuthorized(leggiRicevutaDTO.getUser(), leggiRicevutaDTO.getIdDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiRicevutaDTO.getUser(),leggiRicevutaDTO.getIdDominio(), null);
+			}
+						
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
+			
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(leggiRicevutaDTO.getUser(), rpt.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiRicevutaDTO.getUser(), rpt.getCodDominio(), null);
+			}
 
 			if(rpt.getXmlRt() == null)
 				throw new RicevutaNonTrovataException(null);
@@ -137,12 +146,11 @@ public class RptDAO extends BaseDAO{
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		List<String> listaDominiFiltro;
-		this.autorizzaRichiesta(listaRptDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.LETTURA, true, bd);
 
 		// Autorizzazione sui domini
-		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRptDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA, true);
+		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRptDTO.getUser());
 		if(listaDominiFiltro == null) {
-			throw new NotAuthorizedException("L'utenza autenticata ["+listaRptDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE) + " per alcun dominio");
+			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaRptDTO.getUser());
 		}
 
 		RptBD rptBD = new RptBD(bd);
@@ -199,7 +207,6 @@ public class RptDAO extends BaseDAO{
 			// patch
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(patchRptDTO.getUser());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(patchRptDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.SCRITTURA, bd);
 
 			String idDominio = patchRptDTO.getIdDominio();
 			String iuv = patchRptDTO.getIuv();
@@ -210,7 +217,9 @@ public class RptDAO extends BaseDAO{
 			EventoNota eventoNota = null;
 			
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(patchRptDTO.getUser(), Arrays.asList(Servizio.PAGAMENTI, Servizio.PENDENZE), Diritti.SCRITTURA, idDominio, null, bd);
+			if(!AuthorizationManager.isDominioAuthorized(patchRptDTO.getUser(), patchRptDTO.getIdDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(patchRptDTO.getUser(),patchRptDTO.getIdDominio(), null);
+			}
 			
 			for(PatchOp op: patchRptDTO.getOp()) {
 				if(PATH_BLOCCANTE.equals(op.getPath())) {

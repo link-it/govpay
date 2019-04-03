@@ -3,6 +3,7 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -19,6 +20,7 @@ import it.govpay.backoffice.v1.beans.ListaTipiPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
 import it.govpay.backoffice.v1.beans.converter.TipiPendenzaConverter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.TipoPendenzaDAO;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTO;
@@ -30,6 +32,9 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
 
@@ -53,6 +58,9 @@ public class TipiPendenzaController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
 			
 			// Parametri - > DTO Input
 			
@@ -97,6 +105,9 @@ public class TipiPendenzaController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
@@ -144,6 +155,9 @@ public class TipiPendenzaController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.SCRITTURA));
 			
 			String jsonRequest = baos.toString();
 			TipoPendenzaPost tipoPendenzaRequest= JSONSerializable.parse(jsonRequest, TipoPendenzaPost.class);

@@ -20,7 +20,6 @@ import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 
 public class EventiDAO extends BaseDAO {
@@ -42,9 +41,8 @@ public class EventiDAO extends BaseDAO {
 		List<String> codDomini = null;
 		// Lista eventi puo' essere visualizzata quando viene invocata dal servizio pagamenti
 		if(!listaEventiDTO.isEreditaAutorizzazione()) {
-			this.autorizzaRichiesta(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA, bd);
 			// Autorizzazione sui domini
-			codDomini = AuthorizationManager.getDominiAutorizzati(listaEventiDTO.getUser(), Servizio.GIORNALE_DEGLI_EVENTI, Diritti.LETTURA);
+			codDomini = AuthorizationManager.getDominiAutorizzati(listaEventiDTO.getUser());
 			if(codDomini == null) {
 				throw new NotAuthorizedException("L'utenza autenticata ["+listaEventiDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.GIORNALE_DEGLI_EVENTI + " per alcun dominio");
 			}

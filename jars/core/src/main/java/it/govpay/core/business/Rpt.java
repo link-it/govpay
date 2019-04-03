@@ -27,9 +27,6 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
-import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
@@ -51,8 +48,6 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
@@ -68,15 +63,10 @@ public class Rpt extends BasicBD{
 		super(basicBD);
 	}
 
-	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Authentication authentication, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException, UtilsException {
-		return this.avviaTransazione(versamenti, authentication, canale, ibanAddebito, versante, autenticazione, redirect, aggiornaSeEsiste, null);
-	}
-	
 	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Authentication authentication, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException, UtilsException {
 		IContext ctx = GpThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		try {
-			GovpayLdapUserDetails utenza = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 			appContext.getPagamentoCtx().setCarrello(true);
 			String codCarrello = RptUtils.buildUUID35();
 			if(pagamentoPortale != null) codCarrello = pagamentoPortale.getIdSessione();
@@ -90,25 +80,6 @@ public class Rpt extends BasicBD{
 			for(Versamento versamentoModel : versamenti) {
 
 				ctx.getApplicationLogger().log("rpt.validazioneSemantica", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-				
-				log.debug("Verifica autorizzazione utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza() 
-				+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione() 
-				+ "] per il dominio [" + versamentoModel.getDominio(this).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(this).getCodTipoVersamento() + "]...");
-				
-				List<Diritti> diritti = new ArrayList<>(); 
-				diritti.add(Diritti.ESECUZIONE);
-				
-				if(!AuthorizationManager.isAuthorized(authentication, Servizio.PAGAMENTI, versamentoModel.getUo(this).getDominio(this).getCodDominio(), versamentoModel.getTipoVersamento(this).getCodTipoVersamento(),diritti,true)) {
-						log.warn("Non autorizzato utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza()
-								+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione() 
-								+ "] per il dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(this).getCodTipoVersamento() + "]");
-					
-					throw new GovPayException(EsitoOperazione.APP_003, utenza.getIdentificativo(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-				}
-
-				log.debug("Autorizzato utenza [" + utenza.getIdentificativo() + ", tipo: " + utenza.getTipoUtenza()   
-						+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(this).getCodApplicazione() 
-						+ "] per il dominio [" + versamentoModel.getUo(this).getDominio(this).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(this).getCodTipoVersamento() + "]");
 				
 				log.debug("Verifica autorizzazione pagamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "]...");
 				if(!versamentoModel.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {

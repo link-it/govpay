@@ -2,6 +2,7 @@ package it.govpay.pendenze.v1.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Collection;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -15,11 +16,15 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import eu.medsea.mimeutil.MimeUtil;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class DominiController extends BaseController {
 
@@ -39,6 +44,9 @@ public class DominiController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);

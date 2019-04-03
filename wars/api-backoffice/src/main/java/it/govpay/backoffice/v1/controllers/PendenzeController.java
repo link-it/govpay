@@ -53,6 +53,7 @@ import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.backoffice.v1.beans.converter.TracciatiConverter;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
@@ -76,8 +77,11 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
 
 
@@ -104,6 +108,9 @@ public class PendenzeController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
 
@@ -137,6 +144,9 @@ public class PendenzeController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			// Parametri - > DTO Input
 
@@ -205,6 +215,9 @@ public class PendenzeController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
@@ -330,6 +343,9 @@ public class PendenzeController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			String jsonRequest = baos.toString();
 			TracciatoPendenzePost tracciatoPendenzeRequest = JSONSerializable.parse(jsonRequest, TracciatoPendenzePost.class);
@@ -378,6 +394,9 @@ public class PendenzeController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			// Parametri - > DTO Input
 
@@ -438,6 +457,9 @@ public class PendenzeController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
+
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
 
@@ -474,6 +496,9 @@ public class PendenzeController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
+
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
 
@@ -505,6 +530,9 @@ public class PendenzeController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			// Parametri - > DTO Input
 
@@ -559,6 +587,9 @@ public class PendenzeController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);

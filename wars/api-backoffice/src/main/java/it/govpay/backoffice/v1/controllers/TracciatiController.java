@@ -3,6 +3,7 @@ package it.govpay.backoffice.v1.controllers;
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -17,13 +18,17 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.ListaTracciati;
 import it.govpay.backoffice.v1.beans.converter.TracciatiConverter;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.TracciatiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
 
@@ -47,6 +52,9 @@ public class TracciatiController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			// Parametri - > DTO Input
 
@@ -99,6 +107,9 @@ public class TracciatiController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId(id);
@@ -132,6 +143,9 @@ public class TracciatiController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId(id);
@@ -163,6 +177,9 @@ public class TracciatiController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId(id);

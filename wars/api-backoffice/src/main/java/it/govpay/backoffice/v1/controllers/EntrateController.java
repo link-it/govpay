@@ -2,6 +2,7 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -18,6 +19,7 @@ import it.govpay.backoffice.v1.beans.ListaTipiEntrata;
 import it.govpay.backoffice.v1.beans.TipoEntrata;
 import it.govpay.backoffice.v1.beans.TipoEntrataPost;
 import it.govpay.backoffice.v1.beans.converter.EntrateConverter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.EntrateDAO;
 import it.govpay.core.dao.anagrafica.dto.FindEntrateDTO;
@@ -29,6 +31,9 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class EntrateController extends BaseController {
 
@@ -52,6 +57,9 @@ public class EntrateController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.SCRITTURA));
 			
 			String jsonRequest = baos.toString();
 			TipoEntrataPost entrataRequest= JSONSerializable.parse(jsonRequest, TipoEntrataPost.class);
@@ -93,6 +101,9 @@ public class EntrateController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdEntrata("idEntrata", idEntrata);
@@ -138,6 +149,9 @@ public class EntrateController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
 			
 			// Parametri - > DTO Input
 			

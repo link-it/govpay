@@ -4,6 +4,7 @@ package it.govpay.backoffice.v1.controllers;
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import it.govpay.backoffice.v1.beans.EntrataPrevistaIndex;
 import it.govpay.backoffice.v1.beans.ListaEntratePreviste;
 import it.govpay.backoffice.v1.beans.converter.EntrataPrevistaConverter;
 import it.govpay.bd.viste.model.EntrataPrevista;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.reportistica.EntratePrevisteDAO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO;
@@ -31,6 +33,9 @@ import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class ReportisticheController extends BaseController {
 
@@ -56,6 +61,9 @@ public class ReportisticheController extends BaseController {
 
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
 
 			// Parametri - > DTO Input
 

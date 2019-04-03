@@ -3,6 +3,7 @@ package it.govpay.ragioneria.v1.controller;
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
@@ -24,7 +26,10 @@ import it.govpay.core.utils.GovpayConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v1.beans.ListaRiscossioni;
 import it.govpay.ragioneria.v1.beans.Riscossione;
 import it.govpay.ragioneria.v1.beans.RiscossioneIndex;
@@ -55,6 +60,9 @@ public class RiscossioniController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			
@@ -100,6 +108,9 @@ public class RiscossioniController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
+
 			// Parametri - > DTO Input
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();

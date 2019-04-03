@@ -3,7 +3,6 @@ package it.govpay.core.dao.pagamenti;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -65,7 +64,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
 import it.govpay.model.TipoVersamento.Tipo;
@@ -99,7 +97,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			appContext.getRequest().addGenericProperty(new Property("codSessionePortale", pagamentiPortaleDTO.getIdSessionePortale() != null ? pagamentiPortaleDTO.getIdSessionePortale() : "--Non fornito--"));
 
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
-			this.autorizzaRichiesta(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.SCRITTURA,true); 
 			ctx.getApplicationLogger().log("ws.autorizzazione");
 
 			String codDominio = null;
@@ -156,7 +153,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoAvviso)v,dominio);
 
 						// controllo che l'utenza anonima possa effettuare il pagamento dell'avviso	
-						this.autorizzaAccessoAnonimoVersamento(pagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.SCRITTURA, true, cfToCheck, versamentoModel.getAnagraficaDebitore().getCodUnivoco());
+						if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+							this.checkCFDebitoreVersamento(pagamentiPortaleDTO.getUser(), cfToCheck, versamentoModel.getAnagraficaDebitore().getCodUnivoco());
+						}
 
 					}catch(NotFoundException e) {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio non disponibile [Dominio:"+idDominio+"].", EsitoOperazione.DOM_000, idDominio);
@@ -166,6 +165,27 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				}
 
 				if(versamentoModel != null) {
+					
+					log.debug("Verifica autorizzazione utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza() 
+					+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
+					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]...");
+					
+					List<Diritti> diritti = new ArrayList<>(); 
+					diritti.add(Diritti.ESECUZIONE);
+					
+					if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(userDetails.getUtenza(), versamentoModel.getDominio(bd).getCodDominio(), versamentoModel.getTipoVersamento(bd).getCodTipoVersamento())) {
+							log.warn("Non autorizzato utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza()
+									+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
+									+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
+						
+						throw new GovPayException(EsitoOperazione.APP_003, userDetails.getIdentificativo(), versamentoModel.getApplicazione(bd).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+					}
+
+					log.debug("Autorizzato utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza()   
+							+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
+							+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]");
+					
+					
 					UnitaOperativa uo = versamentoModel.getUo(bd);
 					if(!uo.isAbilitato()) {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+uo.getCodUo()+"].", EsitoOperazione.UOP_001, uo.getCodUo());
@@ -466,7 +486,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(leggiPagamentoPortaleDTO.getUser());
-			this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA,true,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = null;
@@ -500,16 +519,19 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
 				}
 			}
+			
+			// se sei una applicazione allora vedi i pagamenti che hai caricato
+			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
+				if(pagamentoPortale.getApplicazione(bd)  == null || !pagamentoPortale.getApplicazione(bd).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
+				}
+			}
 
 			if(pagamentoPortale.getVersamenti(bd) != null && pagamentoPortale.getVersamenti(bd).size() > 0) {
 				for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
 					versamento.getDominio(bd);
 					versamento.getSingoliVersamenti(bd);
 				}
-			}
-			if(pagamentoPortale.getMultiBeneficiario() != null) {
-				// controllo che il dominio sia autorizzato
-				this.autorizzaRichiesta(leggiPagamentoPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, true, bd);
 			}
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 
@@ -552,12 +574,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		try {
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPagamentiPortaleDTO.getUser());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA,bd);
-			// Autorizzazione sui domini
-			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA);
-			if(codDomini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPagamentiPortaleDTO.getUser(), Servizio.PAGAMENTI, Arrays.asList(Diritti.LETTURA)); 
-			}
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
@@ -586,9 +602,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 				filter.setCodApplicazione(userDetails.getApplicazione().getCodApplicazione()); 
 			}
-
-			if(codDomini != null && codDomini.size() > 0)
-				filter.setCodDomini(codDomini);
 
 			long count = pagamentiPortaleBD.count(filter);
 
@@ -666,7 +679,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI, Diritti.SCRITTURA,bd);
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(patchDTO.getIdSessione());
@@ -674,10 +686,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
 				versamento.getDominio(bd);
 				versamento.getSingoliVersamenti(bd);
-			}
-			if(pagamentoPortale.getMultiBeneficiario() != null) {
-				// controllo che il dominio sia autorizzato
-				this.autorizzaRichiesta(patchDTO.getUser(), Servizio.PAGAMENTI, Diritti.SCRITTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
 			}
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 

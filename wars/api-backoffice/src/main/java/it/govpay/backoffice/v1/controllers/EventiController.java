@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.Evento;
 import it.govpay.backoffice.v1.beans.ListaEventi;
 import it.govpay.backoffice.v1.beans.converter.EventiConverter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
@@ -26,6 +27,9 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
 
@@ -50,10 +54,14 @@ public class EventiController extends BaseController {
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
 			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.GIORNALE_DEGLI_EVENTI), Arrays.asList(Diritti.LETTURA));
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
-			validatoreId.validaIdApplicazione("idA2A", idA2A);
+			if(idDominio != null)
+				validatoreId.validaIdDominio("idDominio", idDominio);
+			if(idA2A != null)
+				validatoreId.validaIdApplicazione("idA2A", idA2A);
 			
 			// Parametri - > DTO Input
 			

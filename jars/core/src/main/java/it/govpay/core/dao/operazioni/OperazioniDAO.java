@@ -17,8 +17,6 @@ import it.govpay.core.dao.operazioni.exception.OperazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 
 public class OperazioniDAO extends BaseDAO{
 	
@@ -37,7 +35,6 @@ public class OperazioniDAO extends BaseDAO{
 		try {
 			IContext ctx = GpThreadLocal.get();
 			bd = BasicBD.newInstance(ctx.getTransactionId());
-			this.autorizzaRichiesta(leggiOperazioneDTO.getUser(), Servizio.CONFIGURAZIONE_E_MANUTENZIONE, Diritti.ESECUZIONE, bd);
 			
 			String esitoOperazione = "";
 			if(leggiOperazioneDTO.getIdOperazione().equals(ACQUISIZIONE_RENDICONTAZIONI)){
@@ -78,7 +75,6 @@ public class OperazioniDAO extends BaseDAO{
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaOperazioniDTO.getUser(), Servizio.CONFIGURAZIONE_E_MANUTENZIONE, Diritti.LETTURA, bd);
 			List<LeggiOperazioneDTOResponse> results = new ArrayList<>();
 			
 			results.add(new LeggiOperazioneDTOResponse(ACQUISIZIONE_RENDICONTAZIONI));

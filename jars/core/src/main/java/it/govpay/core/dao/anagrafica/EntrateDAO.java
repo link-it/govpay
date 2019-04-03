@@ -36,8 +36,6 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 
 public class EntrateDAO extends BaseDAO{
 	
@@ -55,7 +53,6 @@ public class EntrateDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(putTipoTributoDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd); 
 			TipiTributoBD intermediariBD = new TipiTributoBD(bd);
 			TipoTributoFilter filter = intermediariBD.newFilter(false);
 			filter.setCodTributo(putTipoTributoDTO.getCodTributo());
@@ -82,7 +79,6 @@ public class EntrateDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(findEntrateDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 
 			TipiTributoBD stazioneBD = new TipiTributoBD(bd);
 			TipoTributoFilter filter = null;
@@ -111,7 +107,6 @@ public class EntrateDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(getEntrataDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 			response = new GetEntrataDTOResponse(AnagraficaManager.getTipoTributo(bd, getEntrataDTO.getCodTipoTributo()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoTributoNonTrovatoException("Entrata " + getEntrataDTO.getCodTipoTributo() + " non censita in Anagrafica");

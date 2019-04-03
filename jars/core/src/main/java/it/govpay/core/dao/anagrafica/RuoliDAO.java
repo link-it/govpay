@@ -10,24 +10,22 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
+import it.govpay.bd.model.Acl;
 import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTO;
 import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTO;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.bd.model.Acl;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.orm.ACL;
 import it.govpay.model.PatchOp;
+import it.govpay.orm.ACL;
 
 public class RuoliDAO extends BaseDAO{
 
@@ -45,8 +43,6 @@ public class RuoliDAO extends BaseDAO{
 		LeggiRuoloDTOResponse response = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(leggiRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA, bd);
-
 			AclBD aclBD = new AclBD(bd);
 			AclFilter filter = aclBD.newFilter();
 			filter.setRuolo(leggiRuoliDTO.getRuolo());
@@ -72,7 +68,6 @@ public class RuoliDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(listaRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.LETTURA, bd);
 	
 			AclBD rptBD = new AclBD(bd);
 			AclFilter filter = rptBD.newFilter();
@@ -86,7 +81,6 @@ public class RuoliDAO extends BaseDAO{
 			List<String> resList = null;
 			if(count > 0) {
 				resList = rptBD.findAllRuoli(filter);
-	
 			} 
 	
 			return new ListaRuoliDTOResponse(count, resList);
@@ -104,7 +98,6 @@ public class RuoliDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(listaRuoliDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA, bd);
 	
 			AclBD aclBD = new AclBD(bd);
 			AclFilter filter = aclBD.newFilter();
@@ -152,7 +145,6 @@ public class RuoliDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(patchDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA, bd);
 			
 			AclBD aclBD = new AclBD(bd);
 			AclFilter filter = aclBD.newFilter();

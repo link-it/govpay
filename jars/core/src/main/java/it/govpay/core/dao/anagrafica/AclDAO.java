@@ -16,8 +16,6 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 
 public class AclDAO extends BaseDAO{
 	
@@ -96,7 +94,6 @@ public class AclDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(postAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd); 
 
 			AclBD aclBD = new AclBD(bd);
 			PostAclDTOResponse leggiAclDTOResponse = new PostAclDTOResponse();
@@ -129,8 +126,6 @@ public class AclDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(deleteAclDTO.getUser(), Servizio.ANAGRAFICA_RUOLI, Diritti.SCRITTURA,bd); 
-
 			new AclBD(bd).deleteAcl(deleteAclDTO.getIdAcl());
 		} catch (NotFoundException e) {
 			throw new AclNonTrovatoException(e.getMessage());

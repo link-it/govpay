@@ -36,8 +36,6 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 
 public class TipoPendenzaDAO extends BaseDAO{
 	
@@ -55,7 +53,6 @@ public class TipoPendenzaDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(putTipoPendenzaDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd); 
 			TipiVersamentoBD intermediariBD = new TipiVersamentoBD(bd);
 			TipoVersamentoFilter filter = intermediariBD.newFilter(false);
 			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
@@ -82,7 +79,6 @@ public class TipoPendenzaDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(findTipiPendenzaDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 
 			TipiVersamentoBD stazioneBD = new TipiVersamentoBD(bd);
 			TipoVersamentoFilter filter = null;
@@ -111,7 +107,6 @@ public class TipoPendenzaDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(getTipoPendenzaDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 			response = new GetTipoPendenzaDTOResponse(AnagraficaManager.getTipoVersamento(bd, getTipoPendenzaDTO.getCodTipoVersamento()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoVersamentoNonTrovatoException("TipoPendenza " + getTipoPendenzaDTO.getCodTipoVersamento() + " non censita in Anagrafica");

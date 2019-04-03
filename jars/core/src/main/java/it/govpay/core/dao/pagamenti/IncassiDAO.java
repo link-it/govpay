@@ -25,12 +25,12 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.IncassoNonTrovatoException;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 
 public class IncassiDAO extends BaseDAO{
 
@@ -39,12 +39,10 @@ public class IncassiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
 
-			List<String> domini = null;
-			domini = AuthorizationManager.getDominiAutorizzati(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA); 
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(listaIncassoDTO.getUser()); 
 			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaIncassoDTO.getUser());
 			}
 
 			IncassiBD incassiBD = new IncassiBD(bd);
@@ -73,7 +71,7 @@ public class IncassiDAO extends BaseDAO{
 
 					if(pagamenti != null) {
 						for(Pagamento pagamento: pagamenti) {
-							try { pagamento.getDominio(bd); } catch (NotFoundException e) {	}
+							pagamento.getDominio(bd);
 							pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
 							pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
 							pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
@@ -103,15 +101,13 @@ public class IncassiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
 
 			IncassiBD incassiBD = new IncassiBD(bd);
 			List<Diritti> diritti = new ArrayList<>();
 			diritti.add(Diritti.LETTURA);
 
-			boolean isAuthorized = AuthorizationManager.isAuthorized(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, leggiIncassoDTO.getIdDominio(), null, diritti);
-			if(!isAuthorized) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, diritti, false, leggiIncassoDTO.getIdDominio(), null);
+			if(!AuthorizationManager.isDominioAuthorized(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
 			}
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
 
@@ -142,18 +138,23 @@ public class IncassiDAO extends BaseDAO{
 		return response;
 	}
 
-	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, ServiceException, IncassiException{
+	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, ServiceException, IncassiException, GovPayException{
 		RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = new RichiestaIncassoDTOResponse();
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(richiestaIncassoDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.SCRITTURA);
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
+			
+			if(!AuthorizationManager.isDominioAuthorized(richiestaIncassoDTO.getUser(), richiestaIncassoDTO.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(richiestaIncassoDTO.getUser(), richiestaIncassoDTO.getCodDominio(), null);
+			}
+			
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncassoDTO.getUser());
 			Applicazione applicazione = authenticationDetails.getApplicazione();
 			if(applicazione == null)
-				throw new NotFoundException("Applicazione non riconosciuta");
+				throw new NotAuthorizedException("L'utenza autenticata non corrisponde a nessuna applicazione.");
+			
 			richiestaIncassoDTO.setApplicazione(applicazione);
 
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
@@ -173,17 +174,6 @@ public class IncassiDAO extends BaseDAO{
 
 			richiestaIncassoDTOResponse.getIncasso().getApplicazione(bd);
 			richiestaIncassoDTOResponse.getIncasso().getDominio(bd);
-		} catch (NotAuthorizedException e) {
-			// TODO
-			throw e;
-		} catch (IncassiException e) {
-			throw e;
-			// TODO
-			//						throw new ServiceException(e);
-			//			Errore errore = new Errore(e.getCode(),e.getMessage(),e.getDetails());
-		} catch (Exception e) {
-			// TODO
-			throw new ServiceException(e);
 		}finally {
 			if(bd != null)
 				bd.closeConnection();

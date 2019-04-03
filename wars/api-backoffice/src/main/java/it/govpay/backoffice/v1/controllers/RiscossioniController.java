@@ -2,6 +2,7 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ import it.govpay.backoffice.v1.beans.StatoRiscossione;
 import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.RiscossioniConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
@@ -28,7 +30,10 @@ import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
 
@@ -52,6 +57,9 @@ public class RiscossioniController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
@@ -97,6 +105,9 @@ public class RiscossioniController extends BaseController {
 			
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
+			
+			// autorizzazione sulla API
+			AuthorizationManager.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
 			
 			// Parametri - > DTO Input
 			

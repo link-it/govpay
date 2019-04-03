@@ -52,7 +52,6 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -404,7 +403,7 @@ public class VersamentoUtils {
 		List<Diritti> diritti = new ArrayList<>();
 		diritti.add(Diritti.SCRITTURA);
 		
-		if(!applicazione.isTrusted() && !AuthorizationManager.isAuthorized(applicazione.getUtenza(), applicazione.getUtenza().getTipoUtenza(), Servizio.PENDENZE, dominio.getCodDominio(),tipoVersamento.getCodTipoVersamento(),diritti)) {
+		if(!applicazione.isTrusted() && !AuthorizationManager.isTipoVersamentoDominioAuthorized(applicazione.getUtenza(), dominio.getCodDominio(),tipoVersamento.getCodTipoVersamento())) {
 			throw new GovPayException(EsitoOperazione.VER_022, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
 		}
 		

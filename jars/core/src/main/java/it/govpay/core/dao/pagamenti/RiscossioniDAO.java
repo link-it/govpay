@@ -36,12 +36,11 @@ public class RiscossioniDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaRiscossioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRiscossioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRiscossioniDTO.getUser());
 			if(listaDominiFiltro == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+listaRiscossioniDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaRiscossioniDTO.getUser());
 			}
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
@@ -93,13 +92,19 @@ public class RiscossioniDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(leggiRiscossioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
+			
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(leggiRiscossioniDTO.getUser(), leggiRiscossioniDTO.getIdDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiRiscossioniDTO.getUser(), leggiRiscossioniDTO.getIdDominio(), null);
+			}
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			Pagamento flussoPagamento = pagamentiBD.getPagamento(leggiRiscossioniDTO.getIdDominio(), leggiRiscossioniDTO.getIuv(), leggiRiscossioniDTO.getIur(), leggiRiscossioniDTO.getIndice());
 
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiRiscossioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, flussoPagamento.getDominio(bd).getCodDominio(), null, bd);
+			if(!AuthorizationManager.isDominioAuthorized(leggiRiscossioniDTO.getUser(), flussoPagamento.getDominio(bd).getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiRiscossioniDTO.getUser(),flussoPagamento.getDominio(bd).getCodDominio(), null);
+			}
 
 			this.populatePagamento(flussoPagamento, bd);
 			response.setPagamento(flussoPagamento);

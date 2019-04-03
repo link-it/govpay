@@ -47,7 +47,6 @@ import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
@@ -60,8 +59,6 @@ import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IncassoUtils;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
@@ -129,13 +126,8 @@ public class Incassi extends BasicBD {
 			
 			Long idApplicazione = null;
 			Long idOperatore = null;
-			List<Diritti> diritti = new ArrayList<>(); // TODO controllare quale diritto serve in questa fase
-			diritti.add(Diritti.SCRITTURA);
-			
 			
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncasso.getUser());
-			if(!AuthorizationManager.isAuthorized(richiestaIncasso.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, richiestaIncasso.getCodDominio(), null,diritti))
-				throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
 	
 			// Verifica autorizzazione all'incasso e acquisizione applicazione chiamante
 			if(authenticationDetails.getApplicazione() != null) {

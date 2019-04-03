@@ -19,7 +19,7 @@ public class UtenzaCittadino extends Utenza {
 		this.setDomini(new ArrayList<>());
 		this.setTipiVersamento(new ArrayList<>());
 		this.autorizzazioneDominiStar = true ;
-		this.autorizzazioneTipiVersamentoStar = false;
+		this.autorizzazioneTipiVersamentoStar = true;
 		this.headers = headers;
 		this.abilitato = true;
 	}

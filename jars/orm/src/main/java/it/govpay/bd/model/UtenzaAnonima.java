@@ -20,7 +20,7 @@ public class UtenzaAnonima extends Utenza {
 		this.setTipiVersamento(new ArrayList<>());
 		this.headers = new HashMap<>();
 		this.autorizzazioneDominiStar = true;
-		this.autorizzazioneTipiVersamentoStar = false;
+		this.autorizzazioneTipiVersamentoStar = true;
 		this.abilitato = true;
 	}
 	

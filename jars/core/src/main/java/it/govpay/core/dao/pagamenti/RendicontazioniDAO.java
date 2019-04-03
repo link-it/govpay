@@ -36,12 +36,11 @@ public class RendicontazioniDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRendicontazioniDTO.getUser());
 			if(listaDominiFiltro == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+listaRendicontazioniDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaRendicontazioniDTO.getUser());
 			}
 
 			FrBD rendicontazioniBD = new FrBD(bd);
@@ -86,13 +85,14 @@ public class RendicontazioniDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(leggiRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
 
 			FrBD rendicontazioniBD = new FrBD(bd);	
 			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
 
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiRendicontazioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, flussoRendicontazione.getDominio(bd).getCodDominio(), null, bd);
+			if(!AuthorizationManager.isDominioAuthorized(leggiRendicontazioniDTO.getUser(), flussoRendicontazione.getDominio(bd).getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiRendicontazioniDTO.getUser(),flussoRendicontazione.getDominio(bd).getCodDominio(), null);
+			}
 			this.populateRendicontazione(flussoRendicontazione, bd);
 			response.setFr(flussoRendicontazione);
 

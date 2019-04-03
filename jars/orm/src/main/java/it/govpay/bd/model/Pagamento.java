@@ -134,9 +134,11 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		return false;
 	}
 	
-	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
+	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(this.dominio == null){
-			this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+			try {
+				this.dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+			}catch(NotFoundException e) {}
 		}
 		return this.dominio;
 	}

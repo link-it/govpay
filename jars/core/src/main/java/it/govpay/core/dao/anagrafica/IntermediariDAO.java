@@ -50,8 +50,6 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 
 public class IntermediariDAO extends BaseDAO{
 
@@ -69,7 +67,6 @@ public class IntermediariDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(putIntermediarioDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.SCRITTURA,bd); 
 
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = intermediariBD.newFilter(false);
@@ -98,7 +95,6 @@ public class IntermediariDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(putStazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.SCRITTURA,bd); 
 			try {
 				// inserisco l'iddominio
 				putStazioneDTO.getStazione().setIdIntermediario(AnagraficaManager.getIntermediario(bd, putStazioneDTO.getIdIntermediario()).getId());
@@ -133,7 +129,6 @@ public class IntermediariDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(listaIntermediariDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = null;
 			if(listaIntermediariDTO.isSimpleSearch()) {
@@ -158,7 +153,6 @@ public class IntermediariDAO extends BaseDAO{
 	public GetIntermediarioDTOResponse getIntermediario(GetIntermediarioDTO getIntermediarioDTO) throws NotAuthorizedException, IntermediarioNonTrovatoException, ServiceException, NotAuthenticatedException {
 		BasicBD bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 		try {
-			this.autorizzaRichiesta(getIntermediarioDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			GetIntermediarioDTOResponse response = new GetIntermediarioDTOResponse(AnagraficaManager.getIntermediario(bd, getIntermediarioDTO.getCodIntermediario()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
@@ -175,7 +169,6 @@ public class IntermediariDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(findStazioniDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			StazioniBD stazioneBD = new StazioniBD(bd);
 			StazioneFilter filter = null;
 			if(findStazioniDTO.isSimpleSearch()) {
@@ -203,7 +196,6 @@ public class IntermediariDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(getStazioneDTO.getUser(), Servizio.ANAGRAFICA_PAGOPA, Diritti.LETTURA,bd);
 			try {
 				AnagraficaManager.getIntermediario(bd, getStazioneDTO.getCodIntermediario());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
