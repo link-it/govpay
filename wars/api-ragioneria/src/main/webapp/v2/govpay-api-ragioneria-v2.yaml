@@ -1438,7 +1438,8 @@ components:
         - Anagrafica Creditore
         - Anagrafica Applicazioni
         - Anagrafica Ruoli
-        - Pagamenti e Pendenze
+        - Pagamenti
+        - Pendenze
         - Rendicontazioni e Incassi
         - Giornale degli Eventi
         - Configurazione e manutenzione

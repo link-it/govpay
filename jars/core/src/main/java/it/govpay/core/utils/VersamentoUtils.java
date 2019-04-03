@@ -51,14 +51,14 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
-import it.govpay.model.TipoVersamento;
-import it.govpay.model.Tributo;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.model.TipoVersamento;
+import it.govpay.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.CausaleSemplice;
@@ -400,6 +400,14 @@ public class VersamentoUtils {
 		}
 		model.setIdTipoVersamento(tipoVersamento.getId()); 
 		
+		Applicazione applicazione = model.getApplicazione(bd);
+		List<Diritti> diritti = new ArrayList<>();
+		diritti.add(Diritti.SCRITTURA);
+		
+		if(!applicazione.isTrusted() && !AuthorizationManager.isAuthorized(applicazione.getUtenza(), applicazione.getUtenza().getTipoUtenza(), Servizio.PENDENZE, dominio.getCodDominio(),tipoVersamento.getCodTipoVersamento(),diritti)) {
+			throw new GovPayException(EsitoOperazione.VER_022, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
+		}
+		
 		
 		// tipo pendenza dominio
 		TipoVersamentoDominio tipoVersamentoDominio= null;
@@ -448,10 +456,6 @@ public class VersamentoUtils {
 			}
 		} 
 		
-		List<Diritti> diritti = new ArrayList<>(); // TODO controllare quale diritto serve in questa fase
-		diritti.add(Diritti.SCRITTURA);
-		diritti.add(Diritti.ESECUZIONE);
-		Applicazione applicazione = versamento.getApplicazione(bd);
 		if(singoloVersamento.getCodTributo() != null) {
 			try {
 				model.setTributo(singoloVersamento.getCodTributo(), bd);
@@ -463,19 +467,17 @@ public class VersamentoUtils {
 				if(!model.getTributo(bd).isAbilitato())
 					throw new GovPayException(EsitoOperazione.TRB_001, dominio.getCodDominio(), singoloVersamento.getCodTributo());
 			}
-			
-			if(!applicazione.isTrusted() && !AuthorizationManager.isAuthorized(applicazione.getUtenza(), applicazione.getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, dominio.getCodDominio(), singoloVersamento.getCodTributo(),diritti)) {
-				throw new GovPayException(EsitoOperazione.VER_022, dominio.getCodDominio(), singoloVersamento.getCodTributo());
-			}
+
 		}
 		
 		if(singoloVersamento.getTributo() != null) {
 
-			if(!applicazione.isTrusted())
-				throw new GovPayException(EsitoOperazione.VER_019);
-			
-			if(!AuthorizationManager.isAuthorized(applicazione.getUtenza(), applicazione.getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, dominio.getCodDominio(), null, diritti))
-				throw new GovPayException(EsitoOperazione.VER_021);
+//			if(!applicazione.isTrusted())
+//				throw new GovPayException(EsitoOperazione.VER_019);
+//			
+//			if(!AuthorizationManager.isAuthorized(applicazione.getUtenza(), applicazione.getUtenza().getTipoUtenza(), Servizio.PAGAMENTI_E_PENDENZE, dominio.getCodDominio(), null, diritti))
+//				throw new GovPayException(EsitoOperazione.VER_021);
+			// TODO test sull'autodeterminazione
 			
 			try {
 				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(bd, dominio.getId(), singoloVersamento.getTributo().getIbanAccredito()));

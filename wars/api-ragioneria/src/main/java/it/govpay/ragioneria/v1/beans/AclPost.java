@@ -25,7 +25,7 @@ public class AclPost extends JSONSerializable {
   
     
   /**
-   * Servizio oggetto dell'autorizzazione  * Anagrafica PagoPA  * Anagrafica Creditore  * Anagrafica Applicazioni  * Anagrafica Ruoli  * Pendenze e Pagamenti  * Pendenze e Pagamenti propri   * Rendicontazioni e Incassi  * Giornale degli Eventi  * Statistiche  * Configurazione e Manutenzione
+   * Servizio oggetto dell'autorizzazione  * Anagrafica PagoPA  * Anagrafica Creditore  * Anagrafica Applicazioni  * Anagrafica Ruoli  * Pagamenti  * Pendenze   * Rendicontazioni e Incassi  * Giornale degli Eventi  * Statistiche  * Configurazione e Manutenzione
    */
   public enum ServizioEnum {
     
@@ -44,7 +44,10 @@ public class AclPost extends JSONSerializable {
     ANAGRAFICA_RUOLI("Anagrafica Ruoli"),
     
             
-    PAGAMENTI_E_PENDENZE("Pagamenti e Pendenze"),
+    PAGAMENTI("Pagamenti"),
+    
+            
+    PENDENZE("Pendenze"),
     
             
     RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
@@ -162,7 +165,7 @@ public class AclPost extends JSONSerializable {
   }
 
   /**
-   * Servizio oggetto dell'autorizzazione  * Anagrafica PagoPA  * Anagrafica Creditore  * Anagrafica Applicazioni  * Anagrafica Ruoli  * Pendenze e Pagamenti  * Pendenze e Pagamenti propri   * Rendicontazioni e Incassi  * Giornale degli Eventi  * Statistiche  * Configurazione e Manutenzione
+   * Servizio oggetto dell'autorizzazione  * Anagrafica PagoPA  * Anagrafica Creditore  * Anagrafica Applicazioni  * Anagrafica Ruoli  * Pagamenti  * Pendenze   * Rendicontazioni e Incassi  * Giornale degli Eventi  * Statistiche  * Configurazione e Manutenzione
    **/
   public AclPost servizio(ServizioEnum servizio) {
     this.servizio = servizio;

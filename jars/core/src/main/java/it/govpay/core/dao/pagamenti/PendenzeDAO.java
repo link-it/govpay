@@ -121,16 +121,16 @@ public class PendenzeDAO extends BaseDAO{
 	}
 	
 	public ListaPendenzeDTOResponse listaPendenzeConInformazioniIncasso(ListaPendenzeConInformazioniIncassoDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true, bd);
+		this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, true, bd);
 		// Autorizzazione sui domini
-		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true);
+		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, true);
 		if(idDomini == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA);
 		}
 		
-		List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true);
+		List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, true);
 		if(idTipiVersamento == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA);
 		}
 		
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
@@ -232,16 +232,16 @@ public class PendenzeDAO extends BaseDAO{
 	}
 	
 	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true, bd);
+		this.autorizzaRichiesta(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, true, bd);
 		// Autorizzazione sui domini
-		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true);
+		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, true);
 		if(idDomini == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA);
 		}
 		
-		List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, true);
+		List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, true);
 		if(idTipiVersamento == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(listaPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(listaPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA);
 		}
 		
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
@@ -340,7 +340,7 @@ public class PendenzeDAO extends BaseDAO{
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, bd);
 
 			VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
 			versamentoIncasso = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
@@ -348,7 +348,7 @@ public class PendenzeDAO extends BaseDAO{
 			Dominio dominio = versamentoIncasso.getDominio(versamentiBD);
 			TipoVersamento tipoVersamento = versamentoIncasso.getTipoVersamento(versamentiBD);
 			// controllo che il dominio e tipo versamento siano autorizzati
-			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento(), bd);
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento(), bd);
 			
 			response.setVersamentoIncasso(versamentoIncasso);
 			response.setApplicazione(versamentoIncasso.getApplicazione(versamentiBD));
@@ -412,7 +412,7 @@ public class PendenzeDAO extends BaseDAO{
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, bd);
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			Versamento versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
@@ -421,7 +421,7 @@ public class PendenzeDAO extends BaseDAO{
 			Dominio dominio = versamentoIncasso.getDominio(versamentiBD);
 			TipoVersamento tipoVersamento = versamentoIncasso.getTipoVersamento(versamentiBD);
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento(), bd);
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento(), bd);
 			
 			response.setVersamentoIncasso(versamentoIncasso);
 			response.setApplicazione(versamentoIncasso.getApplicazione(versamentiBD));
@@ -534,7 +534,7 @@ public class PendenzeDAO extends BaseDAO{
 		try {
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(patchPendenzaDTO.getUser());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
+			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.SCRITTURA, bd);
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
@@ -542,7 +542,7 @@ public class PendenzeDAO extends BaseDAO{
 			it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, patchPendenzaDTO.getIdA2a()).getId(), patchPendenzaDTO.getIdPendenza());
 			
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, versamentoLetto.getDominio(bd).getCodDominio(), versamentoLetto.getTipoVersamento(bd).getCodTipoVersamento(), bd);
+			this.autorizzaRichiesta(patchPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.SCRITTURA, versamentoLetto.getDominio(bd).getCodDominio(), versamentoLetto.getTipoVersamento(bd).getCodTipoVersamento(), bd);
 			
 			for(PatchOp op: patchPendenzaDTO.getOp()) {
 				
@@ -743,13 +743,13 @@ public class PendenzeDAO extends BaseDAO{
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(putVersamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, bd);
+			this.autorizzaRichiesta(putVersamentoDTO.getUser(), Servizio.PENDENZE, Diritti.SCRITTURA, bd);
 			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
 			
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(putVersamentoDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.SCRITTURA, chiediVersamento.getDominio(bd).getCodDominio(), chiediVersamento.getTipoVersamento(bd).getCodTipoVersamento(), bd);
+			this.autorizzaRichiesta(putVersamentoDTO.getUser(), Servizio.PENDENZE, Diritti.SCRITTURA, chiediVersamento.getDominio(bd).getCodDominio(), chiediVersamento.getTipoVersamento(bd).getCodTipoVersamento(), bd);
 			
 			Applicazione applicazioniBD = new Applicazione(bd);
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(putVersamentoDTO.getUser());
@@ -807,7 +807,7 @@ public class PendenzeDAO extends BaseDAO{
 		
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, bd);
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(leggiPendenzaDTO.getIdDominio(), leggiPendenzaDTO.getNumeroAvviso()); 
@@ -815,7 +815,7 @@ public class PendenzeDAO extends BaseDAO{
 			Dominio dominio = versamento.getDominio(versamentiBD);
 			TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento(), bd);
+			this.autorizzaRichiesta(leggiPendenzaDTO.getUser(), Servizio.PENDENZE, Diritti.LETTURA, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento(), bd);
 			
 			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
 			AvvisoPagamento avvisoPagamento = new AvvisoPagamento();

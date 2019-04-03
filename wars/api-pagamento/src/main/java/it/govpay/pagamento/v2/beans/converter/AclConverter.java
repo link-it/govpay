@@ -34,13 +34,14 @@ public class AclConverter {
 			case GIORNALE_DEGLI_EVENTI:
 				rsModel.setServizi(TipoServizio.GIORNALE_DEGLI_EVENTI);
 				break;
-			case PAGAMENTI_E_PENDENZE:
-				rsModel.setServizi(TipoServizio.PAGAMENTI_E_PENDENZE);
+			case PAGAMENTI:
+				rsModel.setServizi(TipoServizio.PAGAMENTI);
+				break;
+			case PENDENZE:
+				rsModel.setServizi(TipoServizio.PENDENZE);
 				break;
 			case RENDICONTAZIONI_E_INCASSI:
 				rsModel.setServizi(TipoServizio.RENDICONTAZIONI_E_INCASSI);
-				break;
-			default:
 				break;
 			}
 		}

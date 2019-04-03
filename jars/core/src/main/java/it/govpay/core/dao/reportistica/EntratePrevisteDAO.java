@@ -34,11 +34,11 @@ public class EntratePrevisteDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaEntratePrevisteDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			this.autorizzaRichiesta(listaEntratePrevisteDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
 			// Autorizzazione sui domini
-			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEntratePrevisteDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEntratePrevisteDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
 			if(codDomini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaEntratePrevisteDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaEntratePrevisteDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
 			}
 
 			EntratePrevisteBD entrateBD = new EntratePrevisteBD(bd);

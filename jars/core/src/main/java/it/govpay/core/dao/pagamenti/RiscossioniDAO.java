@@ -36,12 +36,12 @@ public class RiscossioniDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(listaRiscossioniDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			this.autorizzaRichiesta(listaRiscossioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
 
 			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRiscossioniDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA);
+			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRiscossioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA);
 			if(listaDominiFiltro == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+listaRiscossioniDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.PAGAMENTI_E_PENDENZE + " per alcun dominio");
+				throw new NotAuthorizedException("L'utenza autenticata ["+listaRiscossioniDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.RENDICONTAZIONI_E_INCASSI + " per alcun dominio");
 			}
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
@@ -93,13 +93,13 @@ public class RiscossioniDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			this.autorizzaRichiesta(leggiRiscossioniDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, bd);
+			this.autorizzaRichiesta(leggiRiscossioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, bd);
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			Pagamento flussoPagamento = pagamentiBD.getPagamento(leggiRiscossioniDTO.getIdDominio(), leggiRiscossioniDTO.getIuv(), leggiRiscossioniDTO.getIur(), leggiRiscossioniDTO.getIndice());
 
 			// controllo che il dominio sia autorizzato
-			this.autorizzaRichiesta(leggiRiscossioniDTO.getUser(), Servizio.PAGAMENTI_E_PENDENZE, Diritti.LETTURA, flussoPagamento.getDominio(bd).getCodDominio(), null, bd);
+			this.autorizzaRichiesta(leggiRiscossioniDTO.getUser(), Servizio.RENDICONTAZIONI_E_INCASSI, Diritti.LETTURA, flussoPagamento.getDominio(bd).getCodDominio(), null, bd);
 
 			this.populatePagamento(flussoPagamento, bd);
 			response.setPagamento(flussoPagamento);

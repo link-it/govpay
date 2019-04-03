@@ -20,7 +20,6 @@
 package it.govpay.core.dao.anagrafica;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -106,7 +105,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(putDominioDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.SCRITTURA,bd); 
+			this.autorizzaRichiesta(putDominioDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd); 
 			// stazione
 			try {
 				putDominioDTO.getDominio().setIdStazione(AnagraficaManager.getStazione(bd, putDominioDTO.getCodStazione()).getId());
@@ -239,7 +238,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(listaDominiDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd); 
+			this.autorizzaRichiesta(listaDominiDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd); 
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = null;
@@ -291,7 +290,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(getDominioDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd); 
+			this.autorizzaRichiesta(getDominioDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd); 
 
 			Dominio dominio = AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio());
 			GetDominioDTOResponse response = new GetDominioDTOResponse(dominio);
@@ -314,7 +313,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(findUnitaOperativeDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd); 
+			this.autorizzaRichiesta(findUnitaOperativeDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd); 
 
 			UnitaOperativeBD unitaOperativeBD = new UnitaOperativeBD(bd);
 			UnitaOperativaFilter filter = null;
@@ -349,7 +348,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(getUnitaOperativaDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd); 
+			this.autorizzaRichiesta(getUnitaOperativaDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd); 
 
 			Dominio dominio = null;
 			try {
@@ -373,7 +372,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(putUnitaOperativaDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.SCRITTURA,bd);
+			this.autorizzaRichiesta(putUnitaOperativaDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd);
 
 			try {
 				// inserisco l'iddominio
@@ -409,7 +408,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(findIbanDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd); 
+			this.autorizzaRichiesta(findIbanDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd); 
 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
 			IbanAccreditoFilter filter = null;
@@ -442,7 +441,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(getIbanDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd); 
+			this.autorizzaRichiesta(getIbanDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd); 
 
 			Dominio dominio = null;
 			try {
@@ -467,7 +466,7 @@ public class DominiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
 
-			this.autorizzaRichiesta(putIbanAccreditoDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.SCRITTURA,bd);
+			this.autorizzaRichiesta(putIbanAccreditoDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd);
 			try {
 				// inserisco l'iddominio
 				putIbanAccreditoDTO.getIban().setIdDominio(AnagraficaManager.getDominio(bd, putIbanAccreditoDTO.getIdDominio()).getId());
@@ -502,7 +501,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(findTributiDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd);
+			this.autorizzaRichiesta(findTributiDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 
 			TributiBD ibanAccreditoBD = new TributiBD(bd);
 			TributoFilter filter = null;
@@ -543,7 +542,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(getTributoDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd);
+			this.autorizzaRichiesta(getTributoDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 
 			Dominio dominio = null;
 			try {
@@ -569,7 +568,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(putEntrataDominioDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.SCRITTURA,bd);
+			this.autorizzaRichiesta(putEntrataDominioDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd);
 			try {
 				// inserisco l'iddominio
 				putEntrataDominioDTO.getTributo().setIdDominio(AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId());
@@ -636,7 +635,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(findTipiPendenzaDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd);
+			this.autorizzaRichiesta(findTipiPendenzaDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 
 			TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
 			TipoVersamentoDominioFilter filter = null;
@@ -677,7 +676,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(getTipoPendenzaDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.LETTURA,bd);
+			this.autorizzaRichiesta(getTipoPendenzaDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.LETTURA,bd);
 
 			Dominio dominio = null;
 			try {
@@ -703,7 +702,7 @@ public class DominiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
-			this.autorizzaRichiesta(putTipoPendenzaDominioDTO.getUser(), Arrays.asList(Servizio.ANAGRAFICA_RUOLI, Servizio.PAGAMENTI_E_PENDENZE), Diritti.SCRITTURA,bd);
+			this.autorizzaRichiesta(putTipoPendenzaDominioDTO.getUser(), Servizio.ANAGRAFICA_CREDITORE, Diritti.SCRITTURA,bd);
 			try {
 				// inserisco l'iddominio
 				putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdDominio(AnagraficaManager.getDominio(bd, putTipoPendenzaDominioDTO.getIdDominio()).getId());

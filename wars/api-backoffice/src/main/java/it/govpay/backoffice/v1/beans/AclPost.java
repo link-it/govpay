@@ -40,7 +40,10 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable  implements I
     ANAGRAFICA_RUOLI("Anagrafica Ruoli"),
     
             
-    PAGAMENTI_E_PENDENZE("Pagamenti e Pendenze"),
+    PAGAMENTI("Pagamenti"),
+    
+            
+    PENDENZE("Pendenze"),
     
             
     RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
