@@ -1009,7 +1009,7 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
     max(versamenti.data_ora_ultimo_aggiornamento) AS data_ora_ultimo_aggiornamento,
     max(versamenti.causale_versamento::text) AS causale_versamento,
     max(versamenti.debitore_tipo::text) AS debitore_tipo,
-    versamenti.debitore_identificativo,
+    versamenti.debitore_identificativo AS debitore_identificativo,
     max(versamenti.debitore_anagrafica::text) AS debitore_anagrafica,
     max(versamenti.debitore_indirizzo::text) AS debitore_indirizzo,
     max(versamenti.debitore_civico::text) AS debitore_civico,
@@ -1039,10 +1039,10 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
     max(versamenti.id_applicazione) AS id_applicazione,
     MAX(CASE WHEN versamenti.avvisatura_abilitata = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_abilitata,
     MAX(CASE WHEN versamenti.avvisatura_da_inviare = TRUE THEN 'TRUE' ELSE 'FALSE' END) AS avvisatura_da_inviare,
-    MAX(versamenti.avvisatura_operazione) as avvisatura_operazione,               
+    MAX(versamenti.avvisatura_operazione) as avvisatura_operazione,
     MAX(versamenti.avvisatura_modalita) as avvisatura_modalita,
-    MAX(versamenti.avvisatura_tipo_pagamento) as avvisatura_tipo_pagamento,                   
-    MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,      
+    MAX(versamenti.avvisatura_tipo_pagamento) as avvisatura_tipo_pagamento,
+    MAX(versamenti.avvisatura_cod_avvisatura) as avvisatura_cod_avvisatura,
     MAX(versamenti.id_tracciato) as id_tracciato,
     max(
         CASE
@@ -1081,9 +1081,7 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
    FROM versamenti
      LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento
      LEFT JOIN pagamenti ON singoli_versamenti.id = pagamenti.id_singolo_versamento
-     JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento 
-     JOIN tipi_vers_domini ON tipi_vers_domini.id = versamenti.id_tipo_versamento_dominio 
-  WHERE COALESCE(tipi_vers_domini.tipo,tipi_versamento.tipo) = 'DOVUTO' OR pagamenti.importo_pagato > 0::double precision
+     JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
   GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 
 -- VISTE REPORTISTICA

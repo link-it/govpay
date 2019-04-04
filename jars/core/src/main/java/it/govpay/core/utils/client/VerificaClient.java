@@ -42,6 +42,7 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.v1.VerificaConverter;
 import it.govpay.core.utils.rawutils.ConverterUtils;
@@ -135,6 +136,18 @@ public class VerificaClient extends BasicClient {
 			case NON_ESEGUITA: // CASO OK su
 				ctx.getApplicationLogger().log("verifica.avvio", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				new PendenzaVerificataValidator(pendenzaVerificata).validate();
+
+				// Verificare che parametri idA2A e idPendenza, oppure idDominio, iuv corrispondano nella Risposta.
+				if(iuv == null) {
+					if(!(this.codApplicazione.equals(pendenzaVerificata.getIdA2A()) && codVersamentoEnte.equals(pendenzaVerificata.getIdPendenza())))
+						throw new ServiceException("I campi IdA2A e IdPendenza della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
+				} else {
+					String iuvRicevuto = IuvUtils.toIuv(pendenzaVerificata.getNumeroAvviso());
+					
+					if(!(codDominio.equals(pendenzaVerificata.getIdDominio()) && iuv.equals(iuvRicevuto)))
+						throw new ServiceException("I campi IdDominio e NumeroAvviso della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
+				}
+				
 				try {
 					return VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
 				} catch (GovPayException e) {

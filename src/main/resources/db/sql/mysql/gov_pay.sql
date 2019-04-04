@@ -1067,8 +1067,7 @@ MAX(pagamenti.iuv) AS iuv_pagamento,
 MAX(CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
 MIN(ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(pagamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
 FROM versamenti LEFT JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento LEFT join pagamenti on singoli_versamenti.id = pagamenti.id_singolo_versamento 
-JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento JOIN tipi_vers_domini ON tipi_vers_domini.id = versamenti.id_tipo_versamento_dominio 
-WHERE COALESCE(tipi_vers_domini.tipo,tipi_versamento.tipo) = 'DOVUTO' OR pagamenti.importo_pagato > 0
+JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento 
 GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 
 -- VISTE REPORTISTICA

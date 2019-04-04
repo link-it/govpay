@@ -27,6 +27,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
@@ -90,6 +91,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 			DominiBD dominiBD = new DominiBD(bd);
 			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			List<Versamento> versamenti = new ArrayList<>();
 
 			// Aggiungo il codSessionePortale al PaymentContext
@@ -352,8 +354,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						for(Versamento versamentoModel: versamenti) {
 							if(rifTransazione.getCodApplicazione().equals(versamentoModel.getApplicazione(bd).getCodApplicazione()) 
 									&& rifTransazione.getCodVersamentoEnte().equals(versamentoModel.getCodVersamentoEnte()))  {
-								eventoNota.setIdVersamento(versamentoModel.getId());
-								break;
+								try {
+									eventoNota.setIdVersamento(versamentiBD.getVersamento(versamentoModel.getApplicazione(bd).getId(), versamentoModel.getCodVersamentoEnte()).getId());
+									break;
+								}catch(NotFoundException e2) {	}
 							}
 						}
 						listaEventoNota.add(eventoNota);

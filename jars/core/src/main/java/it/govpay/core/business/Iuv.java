@@ -20,14 +20,14 @@
 package it.govpay.core.business;
 
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.IContext;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.GovpayConfig;
@@ -43,6 +43,8 @@ import it.govpay.model.Iuv.TipoIUV;
 
 public class Iuv extends BasicBD {
 	
+	private static Logger log = LoggerWrapperFactory.getLogger(Iuv.class);
+	
 	public Iuv(BasicBD basicBD) {
 		super(basicBD);
 	}
@@ -55,6 +57,10 @@ public class Iuv extends BasicBD {
 		String prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, appContext.getPagamentoCtx().getAllIuvProps(applicazione));
 		IuvBD iuvBD = new IuvBD(this);
 		it.govpay.model.Iuv iuv = null;
+		
+		log.debug("Generazione dello IUV di tipo ["+type+"] per il versamento [Id: "+codVersamentoEnte+", IdA2A: "+applicazione.getCodApplicazione()+", IdDominio: "+dominio.getCodDominio()+"] in corso...");
+		
+		log.debug("Prefisso IUV ["+prefix+"]");
 		
 		if(type.equals(TipoIUV.NUMERICO)) {
 			// il prefisso deve essere numerico
@@ -77,15 +83,9 @@ public class Iuv extends BasicBD {
 			}
 		}
 		
-		// Verifico che lo iuv generato rispetti la regular expr definita nell'applicazione
-		
-		String regexp = (applicazione.getRegExp() != null && !applicazione.getRegExp().isEmpty()) ? applicazione.getRegExp() : ".*";
-		Pattern patternIuv = Pattern.compile(regexp);
-		Matcher matcher = patternIuv.matcher(iuv.getIuv()); 
-		if(!matcher.matches())
-			throw new GovPayException(EsitoOperazione.VER_030, prefix ,applicazione.getCodApplicazione()); 
-		
 		ctx.getApplicationLogger().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
+		
+		log.debug("Generazione dello IUV di tipo ["+type+"] per il versamento [Id: "+codVersamentoEnte+", IdA2A: "+applicazione.getCodApplicazione()+", IdDominio: "+dominio.getCodDominio()+"] completata IUV: ["+iuv.getIuv()+"].");
 		
 		return iuv;
 	}	

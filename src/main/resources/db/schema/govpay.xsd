@@ -365,6 +365,7 @@
 	<xsd:complexType name="id-tipo-versamento">
 		<xsd:sequence>
 			<xsd:element name="codTipoVersamento" type="String35"/>
+			<xsd:element name="tipo" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
