@@ -24,7 +24,6 @@ import it.govpay.backoffice.v1.beans.EntrataPrevistaIndex;
 import it.govpay.backoffice.v1.beans.ListaEntratePreviste;
 import it.govpay.backoffice.v1.beans.converter.EntrataPrevistaConverter;
 import it.govpay.bd.viste.model.EntrataPrevista;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.reportistica.EntratePrevisteDAO;
 import it.govpay.core.dao.reportistica.dto.ListaEntratePrevisteDTO;

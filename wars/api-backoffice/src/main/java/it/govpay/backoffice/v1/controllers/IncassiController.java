@@ -18,7 +18,6 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.Incasso;
 import it.govpay.backoffice.v1.beans.ListaIncassiIndex;
 import it.govpay.backoffice.v1.beans.converter.IncassiConverter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.IncassiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;

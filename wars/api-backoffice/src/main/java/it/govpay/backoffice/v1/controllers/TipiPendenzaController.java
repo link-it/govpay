@@ -20,7 +20,6 @@ import it.govpay.backoffice.v1.beans.ListaTipiPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
 import it.govpay.backoffice.v1.beans.converter.TipiPendenzaConverter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.TipoPendenzaDAO;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTO;

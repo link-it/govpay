@@ -8,13 +8,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.Profilo;
-import it.govpay.backoffice.v1.beans.TipoEntrata;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.bd.model.Acl;
-import it.govpay.model.TipoTributo;
 import it.govpay.model.TipoVersamento;
 
 /**

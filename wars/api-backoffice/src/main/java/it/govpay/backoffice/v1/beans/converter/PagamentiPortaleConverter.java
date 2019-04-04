@@ -1,6 +1,5 @@
 package it.govpay.backoffice.v1.beans.converter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

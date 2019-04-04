@@ -19,7 +19,6 @@ import it.govpay.backoffice.v1.beans.ListaTipiEntrata;
 import it.govpay.backoffice.v1.beans.TipoEntrata;
 import it.govpay.backoffice.v1.beans.TipoEntrataPost;
 import it.govpay.backoffice.v1.beans.converter.EntrateConverter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.EntrateDAO;
 import it.govpay.core.dao.anagrafica.dto.FindEntrateDTO;

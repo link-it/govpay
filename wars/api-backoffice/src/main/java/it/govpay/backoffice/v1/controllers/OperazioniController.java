@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.ListaOperazioni;
 import it.govpay.backoffice.v1.beans.converter.OperazioniConverter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.operazioni.OperazioniDAO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTO;
 import it.govpay.core.dao.operazioni.dto.LeggiOperazioneDTOResponse;

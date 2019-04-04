@@ -30,21 +30,12 @@ public class Applicazione extends BasicBD{
 		
 		// restituisco la prima applicazione che gestisce il dominio passato
 		for (it.govpay.bd.model.Applicazione applicazione : listaApplicazioni) {
-			if(applicazione.getUtenza().getIdDomini().contains(dominio.getId())) {
+			if(applicazione.getUtenza().isAutorizzazioneDominiStar() || applicazione.getUtenza().getIdDomini().contains(dominio.getId())) {
 				if(applicazione.getRegExp() != null) {
 					Pattern pIuv = Pattern.compile(applicazione.getRegExp());
 					if(pIuv.matcher(iuv).matches())
 						return applicazione;
 				}
-			}
-		}
-		
-		// restituisco la prima applicazione che gestisce il pattern dello iuv passato
-		for (it.govpay.bd.model.Applicazione applicazione : listaApplicazioni) {
-			Pattern pIuv = Pattern.compile(applicazione.getRegExp());
-			if(applicazione.getRegExp() != null) {
-				if(pIuv.matcher(iuv).matches())
-					return applicazione;
 			}
 		}
 		

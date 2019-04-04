@@ -21,7 +21,6 @@ import it.govpay.backoffice.v1.beans.StatoRiscossione;
 import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.RiscossioniConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;

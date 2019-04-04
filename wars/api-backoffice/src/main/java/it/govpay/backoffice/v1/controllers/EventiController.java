@@ -19,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.Evento;
 import it.govpay.backoffice.v1.beans.ListaEventi;
 import it.govpay.backoffice.v1.beans.converter.EventiConverter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;

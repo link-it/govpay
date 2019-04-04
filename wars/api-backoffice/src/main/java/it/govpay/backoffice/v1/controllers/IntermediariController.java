@@ -26,7 +26,6 @@ import it.govpay.backoffice.v1.beans.StazioneIndex;
 import it.govpay.backoffice.v1.beans.StazionePost;
 import it.govpay.backoffice.v1.beans.converter.IntermediariConverter;
 import it.govpay.backoffice.v1.beans.converter.StazioniConverter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.IntermediariDAO;
 import it.govpay.core.dao.anagrafica.dto.FindIntermediariDTO;

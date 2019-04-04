@@ -28,7 +28,6 @@ import it.govpay.backoffice.v1.beans.converter.AclConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.RuoliConverter;
 import it.govpay.bd.model.Acl;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.RuoliDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiRuoloDTO;

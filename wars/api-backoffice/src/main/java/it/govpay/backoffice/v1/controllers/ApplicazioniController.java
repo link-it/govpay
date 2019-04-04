@@ -21,7 +21,6 @@ import it.govpay.backoffice.v1.beans.Applicazione;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.ListaApplicazioni;
 import it.govpay.backoffice.v1.beans.converter.ApplicazioniConverter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.ApplicazioniDAO;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;

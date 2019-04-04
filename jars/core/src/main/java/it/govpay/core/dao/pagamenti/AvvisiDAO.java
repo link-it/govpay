@@ -32,6 +32,7 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
+import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
@@ -77,6 +78,10 @@ public class AvvisiDAO extends BaseDAO{
 			// controllo eventuali accessi anonimi al servizio di lettura avviso
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(getAvvisoDTO.getUser());
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+				// utenza anonima non puo' scaricare i PDF.
+				if(getAvvisoDTO.getFormato().equals(FormatoAvviso.PDF))
+					throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser());
+				
 				this.checkCFDebitoreVersamento(getAvvisoDTO.getUser(), getAvvisoDTO.getCfDebitore(), versamento.getAnagraficaDebitore().getCodUnivoco());
 			}
 

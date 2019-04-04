@@ -18,7 +18,6 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.ListaTracciati;
 import it.govpay.backoffice.v1.beans.converter.TracciatiConverter;
 import it.govpay.bd.model.Tracciato;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.TracciatiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTO;
