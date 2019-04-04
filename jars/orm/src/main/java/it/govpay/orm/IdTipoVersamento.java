@@ -36,6 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-tipo-versamento">
  * 		&lt;sequence>
  * 			&lt;element name="codTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -50,7 +51,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-tipo-versamento", 
   propOrder = {
-  	"codTipoVersamento"
+  	"codTipoVersamento",
+  	"tipo"
   }
 )
 
@@ -82,6 +84,14 @@ public class IdTipoVersamento extends org.openspcoop2.utils.beans.BaseBean imple
     this.codTipoVersamento = codTipoVersamento;
   }
 
+  public java.lang.String getTipo() {
+    return this.tipo;
+  }
+
+  public void setTipo(java.lang.String tipo) {
+    this.tipo = tipo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -92,5 +102,9 @@ public class IdTipoVersamento extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codTipoVersamento",required=true,nillable=false)
   protected java.lang.String codTipoVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipo",required=false,nillable=false)
+  protected java.lang.String tipo;
 
 }

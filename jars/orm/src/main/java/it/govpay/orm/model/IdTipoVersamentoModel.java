@@ -42,6 +42,7 @@ public class IdTipoVersamentoModel extends AbstractModel<IdTipoVersamento> {
 		super();
 	
 		this.COD_TIPO_VERSAMENTO = new Field("codTipoVersamento",java.lang.String.class,"id-tipo-versamento",IdTipoVersamento.class);
+		this.TIPO = new Field("tipo",java.lang.String.class,"id-tipo-versamento",IdTipoVersamento.class);
 	
 	}
 	
@@ -50,12 +51,15 @@ public class IdTipoVersamentoModel extends AbstractModel<IdTipoVersamento> {
 		super(father);
 	
 		this.COD_TIPO_VERSAMENTO = new ComplexField(father,"codTipoVersamento",java.lang.String.class,"id-tipo-versamento",IdTipoVersamento.class);
+		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"id-tipo-versamento",IdTipoVersamento.class);
 	
 	}
 	
 	
 
 	public IField COD_TIPO_VERSAMENTO = null;
+	 
+	public IField TIPO = null;
 	 
 
 	@Override

@@ -95,11 +95,25 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tipo_versamento";
 			}
 		}
+		if(field.equals(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
+			}
+		}
 		if(field.equals(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_tipo_versamento";
 			}else{
 				return "cod_tipo_versamento";
+			}
+		}
+		if(field.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
 			}
 		}
 		if(field.equals(Versamento.model().ID_DOMINIO.COD_DOMINIO)){
@@ -463,7 +477,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
 			return this.toTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO.TIPO)){
+			return this.toTable(Versamento.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(Versamento.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
+			return this.toTable(Versamento.model().ID_TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Versamento.model().ID_TIPO_VERSAMENTO.TIPO)){
 			return this.toTable(Versamento.model().ID_TIPO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Versamento.model().ID_DOMINIO.COD_DOMINIO)){

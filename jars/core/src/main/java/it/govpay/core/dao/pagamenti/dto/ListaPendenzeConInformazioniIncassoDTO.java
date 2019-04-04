@@ -25,6 +25,7 @@ public class ListaPendenzeConInformazioniIncassoDTO extends BasicFindRequestDTO{
 		this.addSortField("stato", VersamentoIncasso.model().STATO_VERSAMENTO);
 		this.addDefaultSort(VersamentoIncasso.model().DATA_CREAZIONE,SortOrder.DESC);
 	}
+	
 	private Date dataA;
 	private Date dataDa;
 	private String stato;
@@ -34,6 +35,7 @@ public class ListaPendenzeConInformazioniIncassoDTO extends BasicFindRequestDTO{
 	private String idA2A;
 	private String idPendenza;
 	private String iuv;
+	private boolean abilitaFiltroCittadino;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -89,7 +91,13 @@ public class ListaPendenzeConInformazioniIncassoDTO extends BasicFindRequestDTO{
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
-
+	public boolean isAbilitaFiltroCittadino() {
+		return abilitaFiltroCittadino;
+	}
+	public void setAbilitaFiltroCittadino(boolean abilitaFiltroCittadino) {
+		this.abilitaFiltroCittadino = abilitaFiltroCittadino;
+	}
+	
 	@Override
 	public void setOrderBy(String orderBy) throws RequestParamException {
 		this.resetSort();

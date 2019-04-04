@@ -177,14 +177,17 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
 		filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
 		filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
-		
+		filter.setAbilitaFiltroCittadino(listaPendenzaDTO.isAbilitaFiltroCittadino());
 		filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
 		if(!listaPendenzaDTO.isOrderEnabled()) {
 			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
 		}
 		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 			filter.setCfCittadino(userDetails.getIdentificativo()); 
+			filter.setAbilitaFiltroCittadino(true);
 		}
+		
+		
 
 		long count = versamentiBD.count(filter);
 

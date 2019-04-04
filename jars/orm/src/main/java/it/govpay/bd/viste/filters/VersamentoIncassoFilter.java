@@ -39,6 +39,7 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.viste.model.VersamentoIncasso.StatoPagamento;
 import it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento;
+import it.govpay.model.TipoVersamento;
 import it.govpay.orm.VersamentoIncasso;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoIncassoFieldConverter;
@@ -64,6 +65,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private String cfCittadino;
 	private List<Long> idTipiVersamento = null;
 	private String codTipoVersamento = null;
+	private boolean abilitaFiltroCittadino = false;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -292,6 +294,18 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				newExpression.ilike(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
+			
+			if(this.abilitaFiltroCittadino) {
+				if(addAnd)
+					newExpression.and();
+				
+				IExpression orExpr = this.newExpression();
+				orExpr.equals(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.TIPO, TipoVersamento.Tipo.DOVUTO.toString())
+					.or().greaterThan(VersamentoIncasso.model().IMPORTO_PAGATO, 0);
+				
+				newExpression.and(orExpr);
+				addAnd = true;
+			}
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -508,4 +522,13 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	public void setCodTipoVersamento(String codTipoVersamento) {
 		this.codTipoVersamento = codTipoVersamento;
 	}
+
+	public boolean isAbilitaFiltroCittadino() {
+		return abilitaFiltroCittadino;
+	}
+
+	public void setAbilitaFiltroCittadino(boolean abilitaFiltroCittadino) {
+		this.abilitaFiltroCittadino = abilitaFiltroCittadino;
+	}
+	
 }
