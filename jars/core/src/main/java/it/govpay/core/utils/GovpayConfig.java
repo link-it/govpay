@@ -125,6 +125,8 @@ public class GovpayConfig {
 	
 	private String codTipoVersamentoPendenzeLibere;
 	private String codTipoVersamentoPendenzeNonCensite;
+	
+	private Properties corsProperties;
 
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -178,6 +180,7 @@ public class GovpayConfig {
 		this.codTipoVersamentoPendenzeNonCensite = Versamento.TIPO_VERSAMENTO_LIBERO;
 		
 		this.contextDumpEnabled = true;
+		this.corsProperties = new Properties();
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -493,6 +496,9 @@ public class GovpayConfig {
 			this.codTipoVersamentoPendenzeLibere = getProperty("it.govpay.versamenti.codTipoVersamentoPerPagamentiLiberi", this.props, true, log);
 			this.codTipoVersamentoPendenzeNonCensite = getProperty("it.govpay.versamenti.codTipoVersamentoPerTipiPendenzeNonCensiti", this.props, true, log);
 			
+			Map<String, String> properties = getProperties("it.govpay.configurazioneFiltroCors.",this.props, false, log);
+			this.corsProperties.putAll(properties);
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -778,5 +784,9 @@ public class GovpayConfig {
 
 	public String getCodTipoVersamentoPendenzeNonCensite() {
 		return codTipoVersamentoPendenzeNonCensite;
+	}
+
+	public Properties getCORSProperties() {
+		return corsProperties;
 	}
 }

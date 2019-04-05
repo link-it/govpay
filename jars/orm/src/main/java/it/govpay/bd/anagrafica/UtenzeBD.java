@@ -35,8 +35,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
-import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.certificate.CertificateUtils;
+import org.openspcoop2.utils.certificate.PrincipalType;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
@@ -218,17 +219,19 @@ public class UtenzeBD extends BasicBD {
 		try {
 			IExpression expr = this.getUtenzaService().newExpression();
 
-			Hashtable<String, String> hashSubject = null;
+			Hashtable<String,List<String>> hashSubject = null;
 			try {
-			  hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			  hashSubject = CertificateUtils.getPrincipalIntoHashtable(principal,PrincipalType.subject);
 			}catch(UtilsException e) {
 				throw new NotFoundException("Utenza" + principal + "non autorizzata");
 			}
 			Enumeration<String> keys = hashSubject.keys();
 			while(keys.hasMoreElements()){
 				String key = keys.nextElement();
-				String value = hashSubject.get(key);
-				expr.like(it.govpay.orm.Utenza.model().PRINCIPAL, "/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/", LikeMode.ANYWHERE);
+				List<String> listValues = hashSubject.get(key);
+                for (String value : listValues) {
+                	expr.like(it.govpay.orm.Utenza.model().PRINCIPAL, "/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/", LikeMode.ANYWHERE);
+                }
 			}
 			
 			it.govpay.orm.Utenza utenzaVO = this.getUtenzaService().find(expr);
@@ -271,17 +274,19 @@ public class UtenzeBD extends BasicBD {
 	public boolean existsBySubject(String principal) throws ServiceException {
 		try {
 			IExpression expr = this.getUtenzaService().newExpression();
-			Hashtable<String, String> hashSubject = null;
+			Hashtable<String,List<String>> hashSubject = null;
 			try {
-			  hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			  hashSubject = CertificateUtils.getPrincipalIntoHashtable(principal,PrincipalType.subject);
 			}catch(UtilsException e) {
 				throw new ServiceException("Servizio check Utenza non disponibile.");
 			}
 			Enumeration<String> keys = hashSubject.keys();
 			while(keys.hasMoreElements()){
 				String key = keys.nextElement();
-				String value = hashSubject.get(key);
-				expr.like(it.govpay.orm.Utenza.model().PRINCIPAL, "/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/", LikeMode.ANYWHERE);
+				List<String> listValues = hashSubject.get(key);
+                for (String value : listValues) {
+                	expr.like(it.govpay.orm.Utenza.model().PRINCIPAL, "/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/", LikeMode.ANYWHERE);
+                }
 			}
 			
 			return this.count(expr) > 0 ;
@@ -321,13 +326,13 @@ public class UtenzeBD extends BasicBD {
 			// se il nuovo valore normalizzato coincide con quello vecchio non cambio la chiave
 			String pr, prOld;
 			try {
-				pr = Utilities.formatSubject(utenza.getPrincipal());
+				pr = CertificateUtils.formatPrincipal(utenza.getPrincipal(), PrincipalType.subject);
 			}catch(Exception e) {
 				pr= utenza.getPrincipal();
 			}
 			
 			try {
-				prOld = Utilities.formatSubject(utenza2.getPrincipal());
+				prOld = CertificateUtils.formatPrincipal(utenza2.getPrincipal(), PrincipalType.subject);
 			}catch(Exception e) {
 				prOld= utenza2.getPrincipal();
 			}

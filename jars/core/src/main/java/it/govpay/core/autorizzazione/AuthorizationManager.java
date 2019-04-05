@@ -7,8 +7,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.certificate.CertificateUtils;
+import org.openspcoop2.utils.certificate.PrincipalType;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Acl;
@@ -46,23 +47,25 @@ public class AuthorizationManager {
 	public static boolean checkSubject(String principalToCheck, String principalFromRequest) throws Exception{
 		boolean ok = true;
 
-		Hashtable<String, String> hashSubject = null;
+		Hashtable<String,List<String>> hashSubject = null;
 		try {
-			principalToCheck = Utilities.formatSubject(principalToCheck);
+			principalToCheck = CertificateUtils.formatPrincipal(principalToCheck,PrincipalType.subject);
 		}catch(UtilsException e) {
 			throw new NotFoundException("L'utenza registrata non e' un subject valido");
 		}
 		try {
-			principalFromRequest = Utilities.formatSubject(principalFromRequest);
-			hashSubject = Utilities.getSubjectIntoHashtable(principalFromRequest);
+			principalFromRequest = CertificateUtils.formatPrincipal(principalFromRequest,PrincipalType.subject);
+			hashSubject = CertificateUtils.getPrincipalIntoHashtable(principalFromRequest,PrincipalType.subject);
 		}catch(UtilsException e) {
 			throw new NotFoundException("Utenza" + principalFromRequest + "non autorizzata");
 		}
 		Enumeration<String> keys = hashSubject.keys();
 		while(keys.hasMoreElements()){
 			String key = keys.nextElement();
-			String value = hashSubject.get(key);
-			ok = ok && principalToCheck.contains("/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/");
+			List<String> listValues = hashSubject.get(key);
+            for (String value : listValues) {
+            	ok = ok && principalToCheck.contains("/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/");
+            }
 		}
 
 		return ok;

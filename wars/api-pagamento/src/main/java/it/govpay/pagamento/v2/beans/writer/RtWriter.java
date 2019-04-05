@@ -39,7 +39,7 @@ public class RtWriter implements javax.ws.rs.ext.MessageBodyWriter<byte[]>{
 			throws IOException, WebApplicationException {
 		
 		if(mediaType.equals(MediaType.APPLICATION_JSON_TYPE)) {
-			ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper();
+			ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true);
 			
 			try {
 				CtRicevutaTelematica rt = JaxbUtils.toRT(t, false);

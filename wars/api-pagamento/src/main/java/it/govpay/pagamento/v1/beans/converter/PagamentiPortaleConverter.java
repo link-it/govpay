@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
@@ -369,7 +370,7 @@ public class PagamentiPortaleConverter {
 
 	}
 	
-	public static void controlloUtenzaVersante(PagamentiPortaleDTO pagamentiPortaleDTO, Authentication user) {
+	public static void controlloUtenzaVersante(PagamentiPortaleDTO pagamentiPortaleDTO, Authentication user) throws ValidationException {
 		it.govpay.core.dao.commons.Anagrafica versante = pagamentiPortaleDTO.getVersante();
 		
 		 GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
@@ -423,6 +424,9 @@ public class PagamentiPortaleConverter {
 			versante.setProvincia(null);
 			versante.setTelefono(null);
 //			versante.setUrlSitoWeb(null);
+			
+			if(StringUtils.isEmpty(versante.getEmail()))
+				throw new ValidationException("Il campo email del soggetto versante e' obbligatorio.");
 		}
 	}
 	

@@ -24,7 +24,7 @@ public class CustomPendenzeDeserializer extends JsonDeserializer<Object> {
 	@Override
 	public List<Object> deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 		
-		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper();
+		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true);
 		ObjectCodec oc = jsonParser.getCodec();
 		JsonNode node = oc.readTree(jsonParser);
         Iterator<JsonNode> elements = node.elements();

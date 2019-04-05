@@ -32,8 +32,9 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
-import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.certificate.CertificateUtils;
+import org.openspcoop2.utils.certificate.PrincipalType;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
@@ -109,17 +110,19 @@ public class OperatoriBD extends BasicBD {
 		try {
 			IExpression expr = this.getOperatoreService().newExpression();
 
-			Hashtable<String, String> hashSubject = null;
+			Hashtable<String,List<String>> hashSubject = null;
 			try {
-			  hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			  hashSubject = CertificateUtils.getPrincipalIntoHashtable(principal,PrincipalType.subject);
 			}catch(UtilsException e) {
 				throw new NotFoundException("Utenza" + principal + "non autorizzata");
 			}
-			Enumeration<String> keys = hashSubject.keys();
+			Enumeration<String> keys = hashSubject.keys(); 
 			while(keys.hasMoreElements()){
 				String key = keys.nextElement();
-				String value = hashSubject.get(key);
-				expr.like(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, "/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/", LikeMode.ANYWHERE);
+				List<String> listValues = hashSubject.get(key);
+                for (String value : listValues) {
+                	expr.like(it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL, "/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/", LikeMode.ANYWHERE);
+                }
 			}
 			
 			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().find(expr);

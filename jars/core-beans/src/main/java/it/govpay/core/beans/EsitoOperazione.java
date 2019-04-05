@@ -488,13 +488,13 @@ public enum EsitoOperazione {
     VER_020,
 
     /**
-     * Applicazione non autorizzata all'autodeterminazione dei tributi per il dominio indicato
+     * Applicazione non autorizzata all'autodeterminazione dei tipi versamento per il dominio indicato
      * 
      */
     VER_021,
 
     /**
-     * Applicazione non autorizzata alla gestione del tributo indicato
+     * Applicazione non autorizzata alla gestione del tipo versamento indicato
      * 
      */
     VER_022,
@@ -600,7 +600,7 @@ public enum EsitoOperazione {
      */
     CIT_001,
     /**
-     * Utenza di tipo cittadino non autorizzata a effettuare il pagamento di un tributo non spontaneo.
+     * Utenza di tipo cittadino non autorizzata a effettuare il pagamento di un tipo versamento non spontaneo.
      * 
      */
     CIT_002,
@@ -631,7 +631,7 @@ public enum EsitoOperazione {
      */
     UAN_001,
     /**
-     * Utenza anonima non autorizzata a effettuare il pagamento di un tributo non spontaneo.
+     * Utenza anonima non autorizzata a effettuare il pagamento di un tipo versamento non spontaneo.
      * 
      */
     UAN_002,

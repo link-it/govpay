@@ -34,18 +34,19 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
-import org.openspcoop2.utils.Utilities;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.certificate.CertificateUtils;
+import org.openspcoop2.utils.certificate.PrincipalType;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
-import it.govpay.bd.model.Acl;
 import it.govpay.model.Connettore;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.dao.jdbc.JDBCApplicazioneServiceSearch;
@@ -140,9 +141,9 @@ public class ApplicazioniBD extends BasicBD {
 	public Applicazione getApplicazioneBySubject(String principal) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
 			IExpression expr = this.getApplicazioneService().newExpression();
-			Hashtable<String, String> hashSubject = null;
+			Hashtable<String,List<String>> hashSubject = null;
 			try {
-			  hashSubject = Utilities.getSubjectIntoHashtable(principal);
+			  hashSubject = CertificateUtils.getPrincipalIntoHashtable(principal,PrincipalType.subject);
 			}catch(UtilsException e) {
 				throw new NotFoundException("Utenza" + principal + "non autorizzata");
 			}
@@ -150,8 +151,10 @@ public class ApplicazioniBD extends BasicBD {
 			Enumeration<String> keys = hashSubject.keys();
 			while(keys.hasMoreElements()){
 				String key = keys.nextElement();
-				String value = hashSubject.get(key);
-				expr.like(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, "/"+Utilities.formatKeySubject(key)+"="+Utilities.formatValueSubject(value)+"/", LikeMode.ANYWHERE);
+				List<String> listValues = hashSubject.get(key);
+                for (String value : listValues) {
+                	expr.like(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, "/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/", LikeMode.ANYWHERE);
+                }
 			}
 			
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(expr);

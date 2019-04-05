@@ -25,7 +25,7 @@ public class TipoRiferimentoVocePendenzaDeserializer extends JsonDeserializer<Ob
 	@Override
 	public Object deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 		
-		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper();
+		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true);
 		
 		ObjectCodec oc = jsonParser.getCodec();
 		

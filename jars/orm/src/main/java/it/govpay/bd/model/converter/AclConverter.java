@@ -20,7 +20,8 @@
 package it.govpay.bd.model.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.Utilities;
+import org.openspcoop2.utils.certificate.CertificateUtils;
+import org.openspcoop2.utils.certificate.PrincipalType;
 
 import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Servizio;
@@ -50,12 +51,12 @@ public class AclConverter {
 			IdUtenza idUtenza = new IdUtenza();
 			idUtenza.setId(dto.getIdUtenza());
 			try {
-				idUtenza.setPrincipal(Utilities.formatSubject(dto.getUtenzaPrincipal()));
+				idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipal(), PrincipalType.subject));
 			} catch (Exception e) {
 				idUtenza.setPrincipal(dto.getUtenzaPrincipal());
 			}
 			try {
-				idUtenza.setPrincipalOriginale(Utilities.formatSubject(dto.getUtenzaPrincipalOriginale()));
+				idUtenza.setPrincipalOriginale(CertificateUtils.formatPrincipal(dto.getUtenzaPrincipalOriginale(), PrincipalType.subject));
 			} catch (Exception e) {
 				idUtenza.setPrincipalOriginale(dto.getUtenzaPrincipalOriginale());
 			}

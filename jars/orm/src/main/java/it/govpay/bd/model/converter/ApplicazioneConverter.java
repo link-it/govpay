@@ -20,7 +20,8 @@
 package it.govpay.bd.model.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.Utilities;
+import org.openspcoop2.utils.certificate.CertificateUtils;
+import org.openspcoop2.utils.certificate.PrincipalType;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore;
@@ -64,7 +65,7 @@ public class ApplicazioneConverter {
 		IdUtenza idUtenza = new IdUtenza();
 		idUtenza.setId(dto.getIdUtenza());
 		try {
-			idUtenza.setPrincipal(Utilities.formatSubject(dto.getUtenza().getPrincipal()));
+			idUtenza.setPrincipal(CertificateUtils.formatPrincipal(dto.getUtenza().getPrincipal(),PrincipalType.subject));
 		} catch (Exception e) {
 			idUtenza.setPrincipal(dto.getUtenza().getPrincipal());
 		}

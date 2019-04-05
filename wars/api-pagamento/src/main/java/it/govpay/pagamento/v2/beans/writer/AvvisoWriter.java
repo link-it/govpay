@@ -46,7 +46,7 @@ public class AvvisoWriter implements javax.ws.rs.ext.MessageBodyWriter<Avviso> {
 	public void writeTo(Avviso t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 					throws IOException, WebApplicationException {
-		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper();
+		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true);
 		if(mediaType.equals(APPLICATION_PDF_TYPE)) {
 			try {
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), t.getDominio().getIdDominio());

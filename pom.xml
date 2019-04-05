@@ -479,6 +479,12 @@
 				<artifactId>openspcoop2_utils-service</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-certificate</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
@@ -840,22 +846,30 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>openspcoop2-releases</id>
-			<url>http://maven.openspcoop.org/content/repositories/public/</url>
-		</repository>
-		<repository>
-			<id>openspcoop2-snapshots</id>
-			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
-		</repository>
+            <id>linkit-releases</id>
+            <url>https://maven.link.it/content/repositories/public/</url>
+        </repository>
+        <repository>
+            <id>linkit-snapshot</id>
+            <url>https://maven.link.it/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>linkit-thirdparty</id>
+            <url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
+        </repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
-			<id>openspcoop2-releases</id>
-			<url>http://maven.openspcoop.org/content/repositories/public/</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>openspcoop2-snapshots</id>
-			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
-		</pluginRepository>
+            <id>linkit-releases</id>
+            <url>https://maven.link.it/content/repositories/public/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>linkit-snapshot</id>
+            <url>https://maven.link.it/content/repositories/snapshots/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>linkit-thirdparty</id>
+            <url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
+        </pluginRepository>
 	</pluginRepositories>
 </project>
