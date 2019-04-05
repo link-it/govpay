@@ -153,7 +153,7 @@ public class VersamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.dataInizio,this.dataFine);
+				newExpression.between(Versamento.model().DATA_CREAZIONE, this.dataInizio,this.dataFine);
 				addAnd = true;
 			} else {
 				if(this.dataInizio != null) {

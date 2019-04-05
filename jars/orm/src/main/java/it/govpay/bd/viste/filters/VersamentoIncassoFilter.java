@@ -164,7 +164,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(VersamentoIncasso.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.dataInizio,this.dataFine);
+				newExpression.between(VersamentoIncasso.model().DATA_CREAZIONE, this.dataInizio,this.dataFine);
 				addAnd = true;
 			}
 

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.mime.MimeMultipart;
@@ -131,7 +133,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, boolean addInfoIncasso) {
+	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA) {
 		IContext ctx = null;
 		String transactionId = null;
 
@@ -170,6 +172,17 @@ public class PendenzeController extends BaseController {
 
 			if(ordinamento != null)
 				listaPendenzeDTO.setOrderBy(ordinamento);
+			
+			if(dataDa!=null) {
+				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaPendenzeDTO.setDataDa(dataDaDate);
+			}
+				
+			
+			if(dataA!=null) {
+				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaPendenzeDTO.setDataA(dataADate);
+			}
 			// INIT DAO
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 

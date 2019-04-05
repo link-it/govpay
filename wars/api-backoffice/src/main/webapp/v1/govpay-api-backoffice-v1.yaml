@@ -2236,6 +2236,20 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di creazione della pendenza
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di creazione della pendenza
+          required: false
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
