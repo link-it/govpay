@@ -2181,11 +2181,8 @@ paths:
         - name: ordinamento
           in: query
           description: >-
-            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
-             * dataCaricamento
-             * dataScadenza
-             * dataValidita
-             * stato
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default discendente)
+             * data
              * smart (solo se attivo il filtro 'idDebitore')
           required: false
           schema:
@@ -2236,6 +2233,20 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di caricamento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di caricamento
+          required: false
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
