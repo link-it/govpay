@@ -8,13 +8,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
-import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.pagamento.v2.beans.Profilo;
 import it.govpay.pagamento.v2.beans.converter.ProfiloConverter;

@@ -13,11 +13,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import eu.medsea.mimeutil.MimeUtil;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
@@ -36,7 +36,6 @@ import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
-import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;

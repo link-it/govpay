@@ -14,11 +14,11 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.PagamentoPortale;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
@@ -31,7 +31,6 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
-import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
@@ -236,7 +235,7 @@ public class PagamentiController extends BaseController {
 			transactionId = ctx.getTransactionId();
 		
 			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PAGAMENTI), Arrays.asList(Diritti.LETTURA));
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PAGAMENTI), Arrays.asList(Diritti.LETTURA));
 
 			// Parametri - > DTO Input
 			

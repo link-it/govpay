@@ -13,12 +13,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO.FormatoRicevuta;
@@ -28,7 +28,6 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
-import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;

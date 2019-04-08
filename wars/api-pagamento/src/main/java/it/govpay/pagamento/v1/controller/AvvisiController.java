@@ -9,10 +9,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
@@ -20,8 +20,6 @@ import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
-
-import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
