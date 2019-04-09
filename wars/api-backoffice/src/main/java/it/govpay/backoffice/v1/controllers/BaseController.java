@@ -360,5 +360,4 @@ public abstract class BaseController {
 			throw AuthorizationManager.toNotAuthorizedException(authentication);
 		}
 	}
-		
 }

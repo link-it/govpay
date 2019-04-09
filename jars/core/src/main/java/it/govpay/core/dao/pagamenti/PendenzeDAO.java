@@ -119,27 +119,13 @@ public class PendenzeDAO extends BaseDAO{
 	}
 	
 	public ListaPendenzeDTOResponse listaPendenzeConInformazioniIncasso(ListaPendenzeConInformazioniIncassoDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		// Autorizzazione sui domini
-		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser());
-		if(idDomini == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPendenzaDTO.getUser());
-		}
-		// autorizzazione sui tipi pendenza
-		List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(listaPendenzaDTO.getUser());
-		if(idTipiVersamento == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(listaPendenzaDTO.getUser());
-		}
-		
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
 		
 		VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
 		VersamentoIncassoFilter filter = versamentiBD.newFilter();
 		
-		if(idDomini != null && idDomini.size() > 0)
-			filter.setIdDomini(idDomini);
-		
-		if(idTipiVersamento != null && idTipiVersamento.size() > 0)
-			filter.setIdTipiVersamento(idTipiVersamento);
+		filter.setIdDomini(listaPendenzaDTO.getIdDomini());
+		filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());
 
 		filter.setOffset(listaPendenzaDTO.getOffset());
 		filter.setLimit(listaPendenzaDTO.getLimit());
@@ -232,27 +218,13 @@ public class PendenzeDAO extends BaseDAO{
 	}
 	
 	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		// Autorizzazione sui domini
-		List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(listaPendenzaDTO.getUser());
-		if(idDomini == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaPendenzaDTO.getUser());
-		}
-		// autorizzazione sui tipi pendenza
-		List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(listaPendenzaDTO.getUser());
-		if(idTipiVersamento == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(listaPendenzaDTO.getUser());
-		}
-		
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
 		
 		VersamentiBD versamentiBD = new VersamentiBD(bd);
 		VersamentoFilter filter = versamentiBD.newFilter();
 		
-		if(idDomini != null && idDomini.size() > 0)
-			filter.setIdDomini(idDomini);
-		
-		if(idTipiVersamento != null && idTipiVersamento.size() > 0)
-			filter.setIdTipiVersamento(idTipiVersamento);
+		filter.setIdDomini(listaPendenzaDTO.getIdDomini());
+		filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());
 
 		filter.setOffset(listaPendenzaDTO.getOffset());
 		filter.setLimit(listaPendenzaDTO.getLimit());
@@ -345,15 +317,12 @@ public class PendenzeDAO extends BaseDAO{
 			
 			Dominio dominio = versamentoIncasso.getDominio(versamentiBD);
 			TipoVersamento tipoVersamento = versamentoIncasso.getTipoVersamento(versamentiBD);
-			// controllo che il dominio e tipo versamento siano autorizzati
-			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
-			}
 			
 			response.setVersamentoIncasso(versamentoIncasso);
 			response.setApplicazione(versamentoIncasso.getApplicazione(versamentiBD));
 		
 			response.setDominio(dominio);
+			response.setTipoVersamento(tipoVersamento);
 			response.setUnitaOperativa(versamentoIncasso.getUo(versamentiBD));
 			List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);
 			response.setLstSingoliVersamenti(singoliVersamenti);
@@ -419,14 +388,10 @@ public class PendenzeDAO extends BaseDAO{
 			
 			Dominio dominio = versamentoIncasso.getDominio(versamentiBD);
 			TipoVersamento tipoVersamento = versamentoIncasso.getTipoVersamento(versamentiBD);
-			// controllo che il dominio e tipo versamento siano autorizzati
-			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
-			}
 			
 			response.setVersamentoIncasso(versamentoIncasso);
 			response.setApplicazione(versamentoIncasso.getApplicazione(versamentiBD));
-		
+			response.setTipoVersamento(tipoVersamento);
 			response.setDominio(dominio);
 			response.setUnitaOperativa(versamentoIncasso.getUo(versamentiBD));
 			List<SingoloVersamento> singoliVersamenti = versamentoIncasso.getSingoliVersamenti(versamentiBD);

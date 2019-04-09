@@ -282,8 +282,8 @@ public class OperatoriController extends BaseController {
 			
 			FindOperatoriDTO listaDominiDTO = new FindOperatoriDTO(user);
 			
-			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setLimit(risultatiPerPagina);
+			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setOrderBy(ordinamento);
 			listaDominiDTO.setAbilitato(abilitato);
 			listaDominiDTO.setOrderBy(ordinamento); 

@@ -107,8 +107,8 @@ public class PagamentiController extends BaseController {
 			// Parametri - > DTO Input
 			
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
-			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
+			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setStato(stato);
 			
 			if(dataDa!=null) {

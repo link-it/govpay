@@ -52,9 +52,9 @@ public class ApplicazioniConverter {
 			}
 			
 			if(appAuthTipiPendenzaAll || appTrusted)
-				applicazioneDTO.setIdTipiVersamento(new ArrayList<>());				
+				applicazioneDTO.setCodTipiVersamento(new ArrayList<>());				
 			else
-				applicazioneDTO.setIdTipiVersamento(idTipiVersamento);
+				applicazioneDTO.setCodTipiVersamento(idTipiVersamento);
 		}
 		
 		applicazione.setTrusted(appTrusted);
@@ -72,7 +72,7 @@ public class ApplicazioniConverter {
 				idDomini.add(id);
 			}
 			
-			applicazioneDTO.setIdDomini(idDomini);
+			applicazioneDTO.setCodDomini(idDomini);
 		}
 		applicazione.getUtenza().setAutorizzazioneDominiStar(appAuthDominiAll);
 		

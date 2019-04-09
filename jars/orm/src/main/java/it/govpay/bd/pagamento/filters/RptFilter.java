@@ -46,6 +46,7 @@ public class RptFilter extends AbstractFilter {
 	private List<Long> idVersamento;
 	private String iuv;
 	private String ccp;
+	private String codDominio;
 	private List<String> idDomini;
 	private Boolean conservato;
 	private List<String> stato;
@@ -94,6 +95,13 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.ilike(RPT.model().CCP, this.ccp, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(RPT.model().COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
 
@@ -338,6 +346,14 @@ public class RptFilter extends AbstractFilter {
 
 	public void setIdPendenza(String idPendenza) {
 		this.idPendenza = idPendenza;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
 	}
 
 }

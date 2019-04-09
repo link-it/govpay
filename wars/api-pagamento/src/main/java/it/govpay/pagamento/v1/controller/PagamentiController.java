@@ -14,6 +14,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -54,9 +55,14 @@ import it.govpay.pagamento.v1.beans.converter.RptConverter;
 
 
 public class PagamentiController extends BaseController {
+	
+	private SerializationConfig serializationConfig;
 
      public PagamentiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME);
+		
+		this.serializationConfig = new SerializationConfig();
+		this.serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
      }
 
 
@@ -86,8 +92,6 @@ public class PagamentiController extends BaseController {
 			
 			String idSession = transactionId.replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale, avvisaturaDigitale,modalitaAvvisaturaDigitale);
-			
-			PagamentiPortaleConverter.controlloUtenzaVersante(pagamentiPortaleDTO, user);
 			
 			new NuovoPagamentoValidator().valida(pagamentiPortaleDTO);
 			
@@ -124,7 +128,7 @@ public class PagamentiController extends BaseController {
     }
     
     public Response pagamentiIdSessionGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idSessione) {
-    	String methodName = "getPagamentoPortaleById";  
+    	String methodName = "pagamentiIdSessionGET";  
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -151,15 +155,19 @@ public class PagamentiController extends BaseController {
 			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
 			
 			List<RppIndex> rpp = new ArrayList<>();
+			List<PendenzaIndex> pendenze = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
 				rpp.add(RptConverter.toRsModelIndex(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione(),user));
+
+				// ordinamento delle pendenze secondo l'ordine delle RPP
+				for(LeggiPendenzaDTOResponse leggiPendenzaDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
+					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getCodVersamentoEnte()) &&
+							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getApplicazione(null).getCodApplicazione())) {
+						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamentoIncasso()));
+					}
+				}
 			}
 			response.setRpp(rpp);
-
-			List<PendenzaIndex> pendenze = new ArrayList<>();
-			for(LeggiPendenzaDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
-				pendenze.add(PendenzeConverter.toRsModelIndex(leggiRptDtoResponse.getVersamentoIncasso()));
-			}
 			response.setPendenze(pendenze);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
@@ -173,7 +181,7 @@ public class PagamentiController extends BaseController {
     }
     
     public Response pagamentiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String id) {
-    	String methodName = "getPagamentoPortaleById";  
+    	String methodName = "pagamentiIdGET";  
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -200,15 +208,19 @@ public class PagamentiController extends BaseController {
 			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
 			
 			List<RppIndex> rpp = new ArrayList<>();
+			List<PendenzaIndex> pendenze = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaRpp()) {
 				rpp.add(RptConverter.toRsModelIndex(leggiRptDtoResponse.getRpt(),leggiRptDtoResponse.getVersamento(),leggiRptDtoResponse.getApplicazione(),user));
+
+				// ordinamento delle pendenze secondo l'ordine delle RPP
+				for(LeggiPendenzaDTOResponse leggiPendenzaDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
+					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getCodVersamentoEnte()) &&
+							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getApplicazione(null).getCodApplicazione())) {
+						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamentoIncasso()));
+					}
+				}
 			}
 			response.setRpp(rpp);
-
-			List<PendenzaIndex> pendenze = new ArrayList<>();
-			for(LeggiPendenzaDTOResponse leggiRptDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
-				pendenze.add(PendenzeConverter.toRsModelIndex(leggiRptDtoResponse.getVersamentoIncasso()));
-			}
 			response.setPendenze(pendenze);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
@@ -240,8 +252,8 @@ public class PagamentiController extends BaseController {
 			// Parametri - > DTO Input
 			
 			ListaPagamentiPortaleDTO listaPagamentiPortaleDTO = new ListaPagamentiPortaleDTO(user);
-			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setLimit(risultatiPerPagina);
+			listaPagamentiPortaleDTO.setPagina(pagina);
 			listaPagamentiPortaleDTO.setStato(stato);
 			listaPagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 			listaPagamentiPortaleDTO.setIdSessionePsp(idSessionePsp);

@@ -53,8 +53,8 @@ public class OperazioniController extends BaseController {
 			// Parametri - > DTO Input
 			
 			ListaOperazioniDTO listaOperazioniDTO = new ListaOperazioniDTO(user);
-			listaOperazioniDTO.setPagina(pagina);
 			listaOperazioniDTO.setLimit(risultatiPerPagina);
+			listaOperazioniDTO.setPagina(pagina);
 			
 			if(ordinamento != null)
 				listaOperazioniDTO.setOrderBy(ordinamento);

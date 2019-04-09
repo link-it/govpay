@@ -526,7 +526,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				if(pagamentoPortale.getApplicazione(bd)  == null || !pagamentoPortale.getApplicazione(bd).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+				if(pagamentoPortale.getApplicazione(bd) == null || 
+						!pagamentoPortale.getApplicazione(bd).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
 					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
 				}
 			}
@@ -557,7 +558,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(!details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO) && !details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				EventiDAO eventiDAO = new EventiDAO();
 				ListaEventiDTO listaEventiDTO = new ListaEventiDTO(leggiPagamentoPortaleDTO.getUser());
-				listaEventiDTO.setEreditaAutorizzazione(true);
 				listaEventiDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				ListaEventiDTOResponse listaEventi = eventiDAO.listaEventi(listaEventiDTO, bd);
 				leggiPagamentoPortaleDTOResponse.setEventi(listaEventi.getResults());

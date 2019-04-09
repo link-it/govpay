@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.Evento;
 import it.govpay.backoffice.v1.beans.ListaEventi;
 import it.govpay.backoffice.v1.beans.converter.EventiConverter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
@@ -34,14 +35,14 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class EventiController extends BaseController {
 
-     public EventiController(String nomeServizio,Logger log) {
+	public EventiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
-     }
+	}
 
 
 
-    public Response eventiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String idA2A, String idPendenza) {
-    	String methodName = "eventiGET";  
+	public Response eventiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String idA2A, String idPendenza) {
+		String methodName = "eventiGET";  
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -49,62 +50,69 @@ public class EventiController extends BaseController {
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
+
 			ctx =  GpThreadLocal.get();
 			transactionId = ctx.getTransactionId();
-			
+
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.GIORNALE_DEGLI_EVENTI), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			if(idDominio != null)
 				validatoreId.validaIdDominio("idDominio", idDominio);
 			if(idA2A != null)
 				validatoreId.validaIdApplicazione("idA2A", idA2A);
-			
+
 			// Parametri - > DTO Input
-			
+
 			ListaEventiDTO listaEventiDTO = new ListaEventiDTO(user);
-			
-			listaEventiDTO.setPagina(pagina);
+
 			listaEventiDTO.setLimit(risultatiPerPagina);
+			listaEventiDTO.setPagina(pagina);
 			listaEventiDTO.setIdDominio(idDominio);
 			listaEventiDTO.setIuv(iuv);
 			listaEventiDTO.setIdA2A(idA2A);
 			listaEventiDTO.setIdPendenza(idPendenza);
-			
-			// INIT DAO
-			
+
+
+			List<String> domini = null;
+			// Autorizzazione sui domini
+			domini = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			listaEventiDTO.setCodDomini(domini);
+
 			EventiDAO pspDAO = new EventiDAO();
-			
+
 			// CHIAMATA AL DAO
-			
+
 			ListaEventiDTOResponse listaEventiDTOResponse = pspDAO.listaEventi(listaEventiDTO);
-			
+
 			// CONVERT TO JSON DELLA RISPOSTA
-			
+
 			List<Evento> results = new ArrayList<>();
 			for(it.govpay.bd.model.Evento evento: listaEventiDTOResponse.getResults()) {
 				results.add(EventiConverter.toRsModel(evento));
 			}
-			
+
 			ListaEventi response = new ListaEventi(results, this.getServicePath(uriInfo),
 					listaEventiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
+
 			SerializationConfig serializationConfig = new SerializationConfig();
 			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
 			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
-			
+
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null,serializationConfig), 200);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,serializationConfig)),transactionId).build();
-			
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			this.log(ctx);
 		}
-    }
+	}
 
 
 }

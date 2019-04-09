@@ -241,8 +241,8 @@ public class ApplicazioniController extends BaseController {
 
 			FindApplicazioniDTO listaDominiDTO = new FindApplicazioniDTO(user);
 
-			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setLimit(risultatiPerPagina);
+			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setOrderBy(ordinamento);
 			listaDominiDTO.setAbilitato(abilitato);
 

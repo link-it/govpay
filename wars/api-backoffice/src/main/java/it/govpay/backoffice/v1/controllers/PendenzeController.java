@@ -53,8 +53,13 @@ import it.govpay.backoffice.v1.beans.TracciatoPendenzePost;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.PendenzeConverter;
 import it.govpay.backoffice.v1.beans.converter.TracciatiConverter;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
@@ -78,6 +83,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
@@ -122,6 +128,13 @@ public class PendenzeController extends BaseController {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenzaConInformazioniIncasso(leggiPendenzaDTO);
+			
+ 			Dominio dominio = ricevutaDTOResponse.getDominio();
+			TipoVersamento tipoVersamento = ricevutaDTOResponse.getTipoVersamento();
+			// controllo che il dominio e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
+			}
 
 			Pendenza pendenza =	PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse);
 			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
@@ -152,9 +165,9 @@ public class PendenzeController extends BaseController {
 			// Parametri - > DTO Input
 
 			ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
-
-			listaPendenzeDTO.setPagina(pagina);
+			
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
+			listaPendenzeDTO.setPagina(pagina);
 			listaPendenzeDTO.setStato(stato);
 
 			if(idDominio != null)
@@ -183,6 +196,20 @@ public class PendenzeController extends BaseController {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				listaPendenzeDTO.setDataA(dataADate);
 			}
+			
+			// Autorizzazione sui domini
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			if(idDomini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			listaPendenzeDTO.setIdDomini(idDomini);
+			// autorizzazione sui tipi pendenza
+			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+			if(idTipiVersamento == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+			}
+			listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
+			
 			// INIT DAO
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
@@ -357,7 +384,7 @@ public class PendenzeController extends BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			String jsonRequest = baos.toString();
 			TracciatoPendenzePost tracciatoPendenzeRequest = JSONSerializable.parse(jsonRequest, TracciatoPendenzePost.class);
@@ -375,7 +402,11 @@ public class PendenzeController extends BaseController {
 				ModoAvvisatura modoAvvisatura = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale().equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
 				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura );
 			}
-			postTracciatoDTO.setContenuto(baos.toByteArray()); 
+			postTracciatoDTO.setContenuto(baos.toByteArray());
+			
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+			Operatore operatore = userDetails.getOperatore();
+			postTracciatoDTO.setOperatore(operatore);
 
 			PostTracciatoDTOResponse postTracciatoDTOResponse = tracciatiDAO.create(postTracciatoDTO);
 			
@@ -414,14 +445,21 @@ public class PendenzeController extends BaseController {
 
 			ListaTracciatiDTO listaTracciatiDTO = new ListaTracciatiDTO(user);
 
-			listaTracciatiDTO.setPagina(pagina);
 			listaTracciatiDTO.setLimit(risultatiPerPagina);
+			listaTracciatiDTO.setPagina(pagina);
 			if(stato != null)
 				listaTracciatiDTO.setStatoTracciatoPendenza(it.govpay.model.StatoTracciatoPendenza.fromValue(stato.name()));
 			List<TIPO_TRACCIATO> tipoTracciato = new ArrayList<>();
 			tipoTracciato.add(TIPO_TRACCIATO.PENDENZA);
 			listaTracciatiDTO.setTipoTracciato(tipoTracciato);
 			listaTracciatiDTO.setIdDominio(idDominio);
+			
+			// Autorizzazione sui domini
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			listaTracciatiDTO.setCodDomini(domini);
 
 			// INIT DAO
 
@@ -474,9 +512,20 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			
+			// Autorizzazione sui domini
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			if(idDomini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
+			
+			// check dominio
+			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
+			}
 
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
 				throw new NonTrovataException("Tracciato di Esito non presente: elaborazione ancora in corso");
@@ -513,9 +562,19 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			if(idDomini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
+			
+			// check dominio
+			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
+			}
 
 			TracciatoPendenze rsModel = TracciatiConverter.toTracciatoPendenzeRsModel(tracciato);
 			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), 200);
@@ -553,6 +612,11 @@ public class PendenzeController extends BaseController {
 			listaOperazioniTracciatoDTO.setPagina(pagina);
 			listaOperazioniTracciatoDTO.setLimit(risultatiPerPagina);
 			listaOperazioniTracciatoDTO.setIdTracciato((long) id);
+			
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			if(idDomini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
 
 			// INIT DAO
 
@@ -605,12 +669,22 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
+			
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			if(idDomini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
-
+			
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: elaborazione ancora in corso");
+			
+			// check dominio
+			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
+			}
 
 			TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
 			DettaglioTracciatoPendenzeEsito esito = rsModel.getEsito();

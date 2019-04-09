@@ -78,6 +78,11 @@ public class RiscossioniController extends BaseController {
 			
 			LeggiRiscossioneDTOResponse getRiscossioneDTOResponse = riscossioniDAO.leggiRiscossione(getRiscossioneDTO);
 			
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(user, getRiscossioneDTOResponse.getDominio().getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(user,getRiscossioneDTOResponse.getDominio().getCodDominio(), null);
+			}
+			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			Riscossione response = RiscossioniConverter.toRsModel(getRiscossioneDTOResponse.getPagamento());
@@ -119,8 +124,8 @@ public class RiscossioniController extends BaseController {
 			
 			ListaRiscossioniDTO findRiscossioniDTO = new ListaRiscossioniDTO(user);
 			findRiscossioniDTO.setIdDominio(idDominio);
-			findRiscossioniDTO.setPagina(pagina);
 			findRiscossioniDTO.setLimit(risultatiPerPagina);
+			findRiscossioniDTO.setPagina(pagina);
 			findRiscossioniDTO.setDataRiscossioneA(dataRiscossioneA);
 			findRiscossioniDTO.setDataRiscossioneDa(dataRiscossioneDa);
 			findRiscossioniDTO.setIdA2A(idA2A);
@@ -142,7 +147,12 @@ public class RiscossioniController extends BaseController {
 			if(tipo !=null)
 				findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(TipoRiscossione.fromValue(tipo).toString()));
 			
-			// INIT DAO
+			// Autorizzazione sui domini
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			findRiscossioniDTO.setCodDomini(domini);
 			
 			RiscossioniDAO riscossioniDAO = new RiscossioniDAO();
 			

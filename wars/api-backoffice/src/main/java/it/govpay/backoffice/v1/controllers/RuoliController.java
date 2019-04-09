@@ -67,8 +67,8 @@ public class RuoliController extends BaseController {
 			// Parametri - > DTO Input
 
 			ListaRuoliDTO listaRptDTO = new ListaRuoliDTO(user);
-			listaRptDTO.setPagina(pagina);
 			listaRptDTO.setLimit(risultatiPerPagina);
+			listaRptDTO.setPagina(pagina);
 
 			// INIT DAO
 

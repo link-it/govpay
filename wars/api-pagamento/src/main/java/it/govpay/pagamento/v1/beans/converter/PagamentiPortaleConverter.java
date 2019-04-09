@@ -72,7 +72,6 @@ public class PagamentiPortaleConverter {
 
 		pagamentiPortaleDTO.setIdSessione(idSessione);
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
-		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
 		if(pagamentiPortaleRequest.getAutenticazioneSoggetto() != null)
 			pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto().toString());
 		else 
@@ -92,8 +91,8 @@ public class PagamentiPortaleConverter {
 		pagamentiPortaleDTO.setUrlRitorno(pagamentiPortaleRequest.getUrlRitorno());
 
 
-		if(pagamentiPortaleRequest.getSoggettoVersante() != null);
-			pagamentiPortaleDTO.setVersante(toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
+		PagamentiPortaleConverter.controlloUtenzaVersante(pagamentiPortaleRequest, user);
+		pagamentiPortaleDTO.setVersante(toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
 
 		if(pagamentiPortaleRequest.getPendenze() != null && pagamentiPortaleRequest.getPendenze().size() > 0 ) {
 			List<Object> listRefs = new ArrayList<>();
@@ -131,6 +130,10 @@ public class PagamentiPortaleConverter {
 
 			pagamentiPortaleDTO.setPendenzeOrPendenzeRef(listRefs);
 		}
+		
+		// Salvataggio del messaggio di richiesta sul db
+//		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
+		pagamentiPortaleDTO.setJsonRichiesta(pagamentiPortaleRequest.toJSON(null));
 
 		return pagamentiPortaleDTO;
 	}
@@ -370,60 +373,50 @@ public class PagamentiPortaleConverter {
 
 	}
 	
-	public static void controlloUtenzaVersante(PagamentiPortaleDTO pagamentiPortaleDTO, Authentication user) throws ValidationException {
-		it.govpay.core.dao.commons.Anagrafica versante = pagamentiPortaleDTO.getVersante();
+	public static void controlloUtenzaVersante(PagamentoPost pagamentoPost, Authentication user) throws ValidationException {
+		Soggetto versante = pagamentoPost.getSoggettoVersante();
 		
 		 GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 		
 		
 		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 			if(versante == null) {
-				versante = new it.govpay.core.dao.commons.Anagrafica();
-				pagamentiPortaleDTO.setVersante(versante);
+				versante = new Soggetto();
+				pagamentoPost.setSoggettoVersante(versante);
 			}
 			
 			UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
-			versante.setCodUnivoco(cittadino.getCodIdentificativo());
+			versante.setIdentificativo(cittadino.getCodIdentificativo());
 			String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
 					+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
-			versante.setRagioneSociale(nomeCognome);
+			versante.setAnagrafica(nomeCognome);
 			versante.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
-			versante.setTipo(TipoEnum.F.toString());
-//			versante.setArea(null);
+			versante.setTipo(TipoEnum.F);
 			versante.setCap(null);
 			versante.setCellulare(null);
 			versante.setCivico(null);
-			versante.setFax(null);
 			versante.setIndirizzo(null);
 			versante.setLocalita(null);
 			versante.setNazione(null);
-//			versante.setPec(null);
 			versante.setProvincia(null);
-			versante.setTelefono(null);
-//			versante.setUrlSitoWeb(null);
 		}
 		
 		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 			if(versante == null) {
-				versante = new it.govpay.core.dao.commons.Anagrafica();
-				pagamentiPortaleDTO.setVersante(versante);
+				versante = new Soggetto();
+				pagamentoPost.setSoggettoVersante(versante);
 			}
 			
-			versante.setCodUnivoco(TIPO_UTENZA.ANONIMO.toString());
-			versante.setRagioneSociale(TIPO_UTENZA.ANONIMO.toString());
-			versante.setTipo(TipoEnum.F.toString());
-//			versante.setArea(null);
+			versante.setIdentificativo(TIPO_UTENZA.ANONIMO.toString());
+			versante.setAnagrafica(TIPO_UTENZA.ANONIMO.toString());
+			versante.setTipo(TipoEnum.F);
 			versante.setCap(null);
 			versante.setCellulare(null);
 			versante.setCivico(null);
-			versante.setFax(null);
 			versante.setIndirizzo(null);
 			versante.setLocalita(null);
 			versante.setNazione(null);
-//			versante.setPec(null);
 			versante.setProvincia(null);
-			versante.setTelefono(null);
-//			versante.setUrlSitoWeb(null);
 			
 			if(StringUtils.isEmpty(versante.getEmail()))
 				throw new ValidationException("Il campo email del soggetto versante e' obbligatorio.");
@@ -447,18 +440,13 @@ public class PagamentiPortaleConverter {
 			soggetto.setAnagrafica(nomeCognome);
 			soggetto.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
 			soggetto.setTipo(TipoEnum.F);
-//			soggetto.setArea(null);
 			soggetto.setCap(null);
 			soggetto.setCellulare(null);
 			soggetto.setCivico(null);
-//			soggetto.setFax(null);
 			soggetto.setIndirizzo(null);
 			soggetto.setLocalita(null);
 			soggetto.setNazione(null);
-//			soggetto.setPec(null);
 			soggetto.setProvincia(null);
-//			soggetto.setTelefono(null);
-//			soggetto.setUrlSitoWeb(null);
 		}
 		
 		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
@@ -468,19 +456,13 @@ public class PagamentiPortaleConverter {
 				soggetto.setIdentificativo(TIPO_UTENZA.ANONIMO.toString());
 				soggetto.setAnagrafica(TIPO_UTENZA.ANONIMO.toString());
 				soggetto.setTipo(TipoEnum.F);
-//				soggetto.setArea(null);
 				soggetto.setCap(null);
 				soggetto.setCellulare(null);
 				soggetto.setCivico(null);
-//				soggetto.setFax(null);
 				soggetto.setIndirizzo(null);
 				soggetto.setLocalita(null);
 				soggetto.setNazione(null);
-//				soggetto.setPec(null);
 				soggetto.setProvincia(null);
-//				soggetto.setTelefono(null);
-//				soggetto.setUrlSitoWeb(null);
-						
 		}
 		
 		

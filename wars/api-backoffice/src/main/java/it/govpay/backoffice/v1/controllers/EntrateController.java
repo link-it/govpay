@@ -155,8 +155,9 @@ public class EntrateController extends BaseController {
 			// Parametri - > DTO Input
 			
 			FindEntrateDTO findEntrateDTO = new FindEntrateDTO(user);
+			findEntrateDTO.setLimit(risultatiPerPagina);
+			findEntrateDTO.setPagina(pagina);
 			findEntrateDTO.setOrderBy(ordinamento);
-			
 			
 			// INIT DAO
 			

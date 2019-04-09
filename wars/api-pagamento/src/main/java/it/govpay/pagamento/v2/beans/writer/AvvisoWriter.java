@@ -49,15 +49,15 @@ public class AvvisoWriter implements javax.ws.rs.ext.MessageBodyWriter<Avviso> {
 		ObjectMapper objectMapper = JacksonJsonProvider.getObjectMapper(true);
 		if(mediaType.equals(APPLICATION_PDF_TYPE)) {
 			try {
-			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), t.getDominio().getIdDominio());
-			getAvvisoDTO.setAccessoAnonimo(true);
-			//getAvvisoDTO.setCfDebitore(idPagatore);
-			getAvvisoDTO.setNumeroAvviso(t.getNumeroAvviso());
-			getAvvisoDTO.setFormato(FormatoAvviso.PDF);
-			
-			AvvisiDAO avvisiDAO = new AvvisiDAO();
-			GetAvvisoDTOResponse getAvvisoDTOResponse;
-			
+				GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), t.getDominio().getIdDominio());
+				getAvvisoDTO.setAccessoAnonimo(true);
+				//getAvvisoDTO.setCfDebitore(idPagatore);
+				getAvvisoDTO.setNumeroAvviso(t.getNumeroAvviso());
+				getAvvisoDTO.setFormato(FormatoAvviso.PDF);
+
+				AvvisiDAO avvisiDAO = new AvvisiDAO();
+				GetAvvisoDTOResponse getAvvisoDTOResponse;
+
 				getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
 				objectMapper.writeValue(entityStream, getAvvisoDTOResponse.getAvvisoPdf());
 			} catch (PendenzaNonTrovataException | NotAuthorizedException | NotAuthenticatedException | ServiceException | ValidationException e) {

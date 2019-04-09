@@ -9,6 +9,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Pagamento;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.ragioneria.v1.beans.Incasso;
 import it.govpay.ragioneria.v1.beans.IncassoPost;
@@ -25,6 +27,9 @@ public class IncassiConverter {
 		dto.setDataContabile(incassoPost.getDataContabile());
 		dto.setImporto(BigDecimal.valueOf(incassoPost.getImporto().doubleValue()));
 		dto.setCodDominio(idDominio);
+		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+		dto.setApplicazione(authenticationDetails.getApplicazione());
+		dto.setOperatore(authenticationDetails.getOperatore());
 		return dto;
 	}
 	

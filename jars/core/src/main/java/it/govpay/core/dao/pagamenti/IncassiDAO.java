@@ -40,15 +40,10 @@ public class IncassiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			List<String> domini = AuthorizationManager.getDominiAutorizzati(listaIncassoDTO.getUser()); 
-			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaIncassoDTO.getUser());
-			}
-
 			IncassiBD incassiBD = new IncassiBD(bd);
 			IncassoFilter newFilter = incassiBD.newFilter();
-			if(domini != null)
-				newFilter.setCodDomini(new ArrayList<>(domini));
+
+			newFilter.setCodDomini(listaIncassoDTO.getCodDomini()); 
 			newFilter.setDataInizio(listaIncassoDTO.getInizio());
 			newFilter.setDataFine(listaIncassoDTO.getFine());
 			newFilter.setOffset(listaIncassoDTO.getOffset());
@@ -106,9 +101,6 @@ public class IncassiDAO extends BaseDAO{
 			List<Diritti> diritti = new ArrayList<>();
 			diritti.add(Diritti.LETTURA);
 
-			if(!AuthorizationManager.isDominioAuthorized(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
-			}
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
 
 			response.setIncasso(incasso);

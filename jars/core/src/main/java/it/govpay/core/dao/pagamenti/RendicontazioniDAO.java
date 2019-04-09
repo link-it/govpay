@@ -12,7 +12,6 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
@@ -22,8 +21,6 @@ import it.govpay.core.dao.pagamenti.exception.RendicontazioneNonTrovataException
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 
 public class RendicontazioniDAO extends BaseDAO{
 
@@ -31,17 +28,10 @@ public class RendicontazioniDAO extends BaseDAO{
 	}
 
 	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
-		List<String> listaDominiFiltro = null;
 		BasicBD bd = null;
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
-			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRendicontazioniDTO.getUser());
-			if(listaDominiFiltro == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaRendicontazioniDTO.getUser());
-			}
 
 			FrBD rendicontazioniBD = new FrBD(bd);
 			FrFilter filter = rendicontazioniBD.newFilter();
@@ -51,9 +41,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			if(listaRendicontazioniDTO.getIdDominio() != null) {
 				filter.setCodDominioFiltro(listaRendicontazioniDTO.getIdDominio());
 			}
-			if(listaDominiFiltro != null && listaDominiFiltro.size() > 0) {
-				filter.setCodDominio(listaDominiFiltro);
-			}
+			filter.setCodDominio(listaRendicontazioniDTO.getCodDomini());
 			filter.setFilterSortList(listaRendicontazioniDTO.getFieldSortList());
 			filter.setDatainizio(listaRendicontazioniDTO.getDataDa());
 			filter.setDataFine(listaRendicontazioniDTO.getDataA()); 
@@ -89,12 +77,9 @@ public class RendicontazioniDAO extends BaseDAO{
 			FrBD rendicontazioniBD = new FrBD(bd);	
 			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
 
-			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(leggiRendicontazioniDTO.getUser(), flussoRendicontazione.getDominio(bd).getCodDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiRendicontazioniDTO.getUser(),flussoRendicontazione.getDominio(bd).getCodDominio(), null);
-			}
 			this.populateRendicontazione(flussoRendicontazione, bd);
 			response.setFr(flussoRendicontazione);
+			response.setDominio(flussoRendicontazione.getDominio(bd));
 
 		} catch (NotFoundException e) {
 			throw new RendicontazioneNonTrovataException(e.getMessage(), e);

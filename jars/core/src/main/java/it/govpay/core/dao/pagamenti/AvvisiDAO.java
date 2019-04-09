@@ -40,7 +40,6 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
-import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
@@ -54,10 +53,6 @@ public class AvvisiDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			if(!AuthorizationManager.isDominioAuthorized(getAvvisoDTO.getUser(), getAvvisoDTO.getCodDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser(), getAvvisoDTO.getCodDominio(),null);
-			}
-			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 
 			if(getAvvisoDTO.getNumeroAvviso() != null)
@@ -68,12 +63,11 @@ public class AvvisiDAO extends BaseDAO{
 				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
 
 			Dominio dominio = versamento.getDominio(versamentiBD);
-			TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
-
+//			TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
 			
-			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(getAvvisoDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
-				throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
-			}
+//			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(getAvvisoDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
+//				throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
+//			}
 
 			// controllo eventuali accessi anonimi al servizio di lettura avviso
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(getAvvisoDTO.getUser());

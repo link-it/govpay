@@ -55,7 +55,7 @@ public class OperatoriConverter {
 				idTipiVersamento.add(id.toString());
 			}
 			
-			putOperatoreDTO.setIdTipiVersamento(idTipiVersamento);
+			putOperatoreDTO.setCodTipiVersamento(idTipiVersamento);
 		}
 		
 		operatore.getUtenza().setAutorizzazioneTipiVersamentoStar(appAuthTipiPendenzaAll);
@@ -72,7 +72,7 @@ public class OperatoriConverter {
 				idDomini.add(id);
 			}
 			
-			putOperatoreDTO.setIdDomini(idDomini);
+			putOperatoreDTO.setCodDomini(idDomini);
 		}
 		operatore.getUtenza().setAutorizzazioneDominiStar(appAuthDominiAll);
 		

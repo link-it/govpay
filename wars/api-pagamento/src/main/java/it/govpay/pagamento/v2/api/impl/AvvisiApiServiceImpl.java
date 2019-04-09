@@ -10,6 +10,7 @@ import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
@@ -80,6 +81,10 @@ public class AvvisiApiServiceImpl extends BaseImpl implements AvvisiApi {
 			getAvvisoDTO.setAccessoAnonimo(true);
 			getAvvisoDTO.setCfDebitore(idPagatore);
 			getAvvisoDTO.setNumeroAvviso(numeroAvviso);
+			
+			if(!AuthorizationManager.isDominioAuthorized(getAvvisoDTO.getUser(), getAvvisoDTO.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser(), getAvvisoDTO.getCodDominio(),null);
+			}
 			
 			AvvisiDAO avvisiDAO = new AvvisiDAO();
 			

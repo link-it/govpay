@@ -152,9 +152,9 @@ public class UtentiDAO extends BaseDAO{
 			boolean isCreate = operatoriBD.count(filter) == 0;
 			operatoreDTOResponse.setCreated(isCreate);
 
-			if(putOperatoreDTO.getIdDomini() != null) {
+			if(putOperatoreDTO.getCodDomini() != null) {
 				List<Long> idDomini = new ArrayList<>();
-				for (String codDominio : putOperatoreDTO.getIdDomini()) {
+				for (String codDominio : putOperatoreDTO.getCodDomini()) {
 					try {
 						idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
@@ -165,9 +165,9 @@ public class UtentiDAO extends BaseDAO{
 				putOperatoreDTO.getOperatore().getUtenza().setIdDomini(idDomini );
 			}
 
-			if(putOperatoreDTO.getIdTipiVersamento() != null) {
+			if(putOperatoreDTO.getCodTipiVersamento() != null) {
 				List<Long> idTipiVersamento = new ArrayList<>();
-				for (String codTipoVersamento : putOperatoreDTO.getIdTipiVersamento()) {
+				for (String codTipoVersamento : putOperatoreDTO.getCodTipiVersamento()) {
 					try {
 						idTipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, codTipoVersamento).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

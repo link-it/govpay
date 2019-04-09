@@ -3,6 +3,7 @@ package it.govpay.backoffice.v1.controllers;
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -18,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.ListaFlussiRendicontazione;
 import it.govpay.backoffice.v1.beans.converter.FlussiRendicontazioneConverter;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRendicontazioneDTOResponse;
@@ -74,6 +76,10 @@ public class FlussiRendicontazioneController extends BaseController {
 			
 			LeggiRendicontazioneDTOResponse leggiRendicontazioneDTOResponse = rendicontazioniDAO.leggiRendicontazione(leggiRendicontazioneDTO);
 					
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(user, leggiRendicontazioneDTOResponse.getDominio().getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(user,leggiRendicontazioneDTOResponse.getDominio().getCodDominio(), null);
+			}
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
@@ -120,15 +126,20 @@ public class FlussiRendicontazioneController extends BaseController {
 			
 			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);
-			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
+			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
 			if(dataDa != null)
 				findRendicontazioniDTO.setDataDa(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataDa)); 
 			if(dataA != null)
 				findRendicontazioniDTO.setDataA(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataA));
 			
-			// INIT DAO
+			// Autorizzazione sui domini
+			List<String> domini  = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			findRendicontazioniDTO.setCodDomini(domini);
 			
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 			
