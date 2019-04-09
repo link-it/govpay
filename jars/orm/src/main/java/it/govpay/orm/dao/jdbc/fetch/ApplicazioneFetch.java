@@ -60,11 +60,9 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "auto_iuv", Applicazione.model().AUTO_IUV.getFieldType()));
 				this.setParameter(object, "setFirmaRicevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "firma_ricevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType()));
-				this.setParameter(object, "setCodConnettoreEsito", Applicazione.model().COD_CONNETTORE_ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_connettore_esito", Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()));
-				this.setParameter(object, "setCodConnettoreVerifica", Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_connettore_verifica", Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()));
-				this.setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
+				setParameter(object, "setCodConnettoreIntegrazione", Applicazione.model().COD_CONNETTORE_INTEGRAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_integrazione", Applicazione.model().COD_CONNETTORE_INTEGRAZIONE.getFieldType()));
+				setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trusted", Applicazione.model().TRUSTED.getFieldType()));
 				this.setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_applicazione_iuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType()));
@@ -98,11 +96,9 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"autoIUV"));
 				this.setParameter(object, "setFirmaRicevuta", Applicazione.model().FIRMA_RICEVUTA.getFieldType(),
 					this.getObjectFromMap(map,"firmaRicevuta"));
-				this.setParameter(object, "setCodConnettoreEsito", Applicazione.model().COD_CONNETTORE_ESITO.getFieldType(),
-					this.getObjectFromMap(map,"codConnettoreEsito"));
-				this.setParameter(object, "setCodConnettoreVerifica", Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType(),
-					this.getObjectFromMap(map,"codConnettoreVerifica"));
-				this.setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
+				setParameter(object, "setCodConnettoreIntegrazione", Applicazione.model().COD_CONNETTORE_INTEGRAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreIntegrazione"));
+				setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
 					this.getObjectFromMap(map,"trusted"));
 				this.setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
 					this.getObjectFromMap(map,"codApplicazioneIuv"));

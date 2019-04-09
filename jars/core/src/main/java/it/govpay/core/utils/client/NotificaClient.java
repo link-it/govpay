@@ -54,7 +54,7 @@ public class NotificaClient extends BasicClient {
 
 	public NotificaClient(Applicazione applicazione, String operationID) throws ClientException {
 		super(applicazione, TipoConnettore.NOTIFICA);
-		this.versione = applicazione.getConnettoreNotifica().getVersione();
+		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.operationID = operationID;
 	}
 

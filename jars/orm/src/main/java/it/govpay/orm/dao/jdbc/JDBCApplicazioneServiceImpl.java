@@ -88,8 +88,7 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().AUTO_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().FIRMA_RICEVUTA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_ESITO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_VERIFICA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_INTEGRAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().TRUSTED,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().REG_EXP,false),"?");
@@ -101,8 +100,7 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodApplicazione(),Applicazione.model().COD_APPLICAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getAutoIUV(),Applicazione.model().AUTO_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getFirmaRicevuta(),Applicazione.model().FIRMA_RICEVUTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreEsito(),Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreVerifica(),Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreIntegrazione(),Applicazione.model().COD_CONNETTORE_INTEGRAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getTrusted(),Applicazione.model().TRUSTED.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodApplicazioneIuv(),Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getRegExp(),Applicazione.model().REG_EXP.getFieldType()),
@@ -183,10 +181,8 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getAutoIUV(), Applicazione.model().AUTO_IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().FIRMA_RICEVUTA,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getFirmaRicevuta(), Applicazione.model().FIRMA_RICEVUTA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_ESITO,false), "?");
-		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodConnettoreEsito(), Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_VERIFICA,false), "?");
-		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodConnettoreVerifica(), Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_INTEGRAZIONE,false), "?");
+		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodConnettoreIntegrazione(), Applicazione.model().COD_CONNETTORE_INTEGRAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().TRUSTED,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getTrusted(), Applicazione.model().TRUSTED.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE_IUV,false), "?");

@@ -39,8 +39,7 @@ import java.io.Serializable;
  * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="autoIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="firmaRicevuta" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codConnettoreEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codConnettoreVerifica" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreIntegrazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="trusted" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codApplicazioneIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="regExp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -62,8 +61,7 @@ import java.io.Serializable;
   	"codApplicazione",
   	"autoIUV",
   	"firmaRicevuta",
-  	"codConnettoreEsito",
-  	"codConnettoreVerifica",
+  	"codConnettoreIntegrazione",
   	"trusted",
   	"codApplicazioneIuv",
   	"regExp"
@@ -126,20 +124,12 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.firmaRicevuta = firmaRicevuta;
   }
 
-  public java.lang.String getCodConnettoreEsito() {
-    return this.codConnettoreEsito;
+  public java.lang.String getCodConnettoreIntegrazione() {
+    return this.codConnettoreIntegrazione;
   }
 
-  public void setCodConnettoreEsito(java.lang.String codConnettoreEsito) {
-    this.codConnettoreEsito = codConnettoreEsito;
-  }
-
-  public java.lang.String getCodConnettoreVerifica() {
-    return this.codConnettoreVerifica;
-  }
-
-  public void setCodConnettoreVerifica(java.lang.String codConnettoreVerifica) {
-    this.codConnettoreVerifica = codConnettoreVerifica;
+  public void setCodConnettoreIntegrazione(java.lang.String codConnettoreIntegrazione) {
+    this.codConnettoreIntegrazione = codConnettoreIntegrazione;
   }
 
   public boolean isTrusted() {
@@ -205,12 +195,8 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   protected java.lang.String firmaRicevuta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codConnettoreEsito",required=false,nillable=false)
-  protected java.lang.String codConnettoreEsito;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codConnettoreVerifica",required=false,nillable=false)
-  protected java.lang.String codConnettoreVerifica;
+  @XmlElement(name="codConnettoreIntegrazione",required=false,nillable=false)
+  protected java.lang.String codConnettoreIntegrazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="trusted",required=true,nillable=false)

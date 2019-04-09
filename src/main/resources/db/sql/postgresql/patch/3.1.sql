@@ -442,8 +442,20 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
      JOIN tipi_versamento ON tipi_versamento.id = versamenti.id_tipo_versamento
   GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_versamento;
 
+-- 09/04/2019 Unificazione del connettore di verifica e notifica
 
+UPDATE applicazioni SET cod_connettore_esito = SUBSTRING(cod_connettore_esito, 1, POSITION ('_' in cod_connettore_esito)) || 'INTEGRAZIONE';
+ALTER TABLE applicazioni RENAME cod_connettore_esito TO cod_connettore_integrazione;
 
+UPDATE connettori SET cod_connettore = SUBSTRING(cod_connettore, 1, POSITION ('_' in cod_connettore)) || 'INTEGRAZIONE' FROM connettori WHERE cod_connettore LIKE '%_ESITO';
+DELETE FROM connettori WHERE cod_connettore LIKE '%_VERIFICA';
+
+ALTER TABLE applicazioni DROP COLUMN cod_connettore_verifica;
+
+-- 09/04/2019 ACL sulle API
+insert into acl (servizio,diritti,id_utenza) select 'API Pagamenti' as Servizio , 'RW' as diritti, acl.id_utenza from acl join applicazioni on acl.id_utenza = applicazioni.id_utenza where (acl.ruolo is null and acl.id_utenza is not null and acl.servizio  = 'Pagamenti');
+insert into acl (servizio,diritti,id_utenza) select 'API Pendenze' as Servizio , 'RW' as diritti, acl.id_utenza from acl join applicazioni on acl.id_utenza = applicazioni.id_utenza where (acl.ruolo is null and acl.id_utenza is not null and acl.servizio  = 'Pendenze');
+insert into acl (servizio,diritti,id_utenza) select 'API Ragioneria' as Servizio , 'RW' as diritti, acl.id_utenza from acl join applicazioni on acl.id_utenza = applicazioni.id_utenza where (acl.ruolo is null and acl.id_utenza is not null and acl.servizio  = 'Rendicontazioni e Incassi');
 
 
 

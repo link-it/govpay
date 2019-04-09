@@ -45,8 +45,7 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.AUTO_IUV = new Field("autoIUV",boolean.class,"Applicazione",Applicazione.class);
 		this.FIRMA_RICEVUTA = new Field("firmaRicevuta",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.COD_CONNETTORE_ESITO = new Field("codConnettoreEsito",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.COD_CONNETTORE_VERIFICA = new Field("codConnettoreVerifica",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.COD_CONNETTORE_INTEGRAZIONE = new Field("codConnettoreIntegrazione",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.TRUSTED = new Field("trusted",boolean.class,"Applicazione",Applicazione.class);
 		this.COD_APPLICAZIONE_IUV = new Field("codApplicazioneIuv",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.REG_EXP = new Field("regExp",java.lang.String.class,"Applicazione",Applicazione.class);
@@ -61,8 +60,7 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.AUTO_IUV = new ComplexField(father,"autoIUV",boolean.class,"Applicazione",Applicazione.class);
 		this.FIRMA_RICEVUTA = new ComplexField(father,"firmaRicevuta",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.COD_CONNETTORE_ESITO = new ComplexField(father,"codConnettoreEsito",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.COD_CONNETTORE_VERIFICA = new ComplexField(father,"codConnettoreVerifica",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.COD_CONNETTORE_INTEGRAZIONE = new ComplexField(father,"codConnettoreIntegrazione",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.TRUSTED = new ComplexField(father,"trusted",boolean.class,"Applicazione",Applicazione.class);
 		this.COD_APPLICAZIONE_IUV = new ComplexField(father,"codApplicazioneIuv",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.REG_EXP = new ComplexField(father,"regExp",java.lang.String.class,"Applicazione",Applicazione.class);
@@ -79,9 +77,7 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 	 
 	public IField FIRMA_RICEVUTA = null;
 	 
-	public IField COD_CONNETTORE_ESITO = null;
-	 
-	public IField COD_CONNETTORE_VERIFICA = null;
+	public IField COD_CONNETTORE_INTEGRAZIONE = null;
 	 
 	public IField TRUSTED = null;
 	 

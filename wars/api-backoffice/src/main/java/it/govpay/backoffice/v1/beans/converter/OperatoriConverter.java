@@ -130,7 +130,9 @@ public class OperatoriConverter {
 			List<AclPost> aclList = new ArrayList<>();
 			
 			for(Acl acl: operatore.getUtenza().getAcls()) {
-				aclList.add(AclConverter.toRsModel(acl));
+				AclPost aclRsModel = AclConverter.toRsModel(acl);
+				if(aclRsModel != null)
+					aclList.add(aclRsModel);
 			}
 			
 			rsModel.setAcl(aclList);

@@ -30,12 +30,11 @@ import it.govpay.orm.IdUtenza;
 
 public class ApplicazioneConverter {
 
-	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreNotifica, Connettore connettoreVerifica) throws ServiceException {
+	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreIntegrazione) throws ServiceException {
 		Applicazione dto = new Applicazione();
 		dto.setAutoIuv(vo.getAutoIUV());
 		dto.setCodApplicazione(vo.getCodApplicazione());
-		dto.setConnettoreNotifica(connettoreNotifica);
-		dto.setConnettoreVerifica(connettoreVerifica);
+		dto.setConnettoreIntegrazione(connettoreIntegrazione);
 
 		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
@@ -51,14 +50,9 @@ public class ApplicazioneConverter {
 		vo.setAutoIUV(dto.isAutoIuv());
 		vo.setCodApplicazione(dto.getCodApplicazione());
 
-		if(dto.getConnettoreNotifica()!= null) {
-			dto.getConnettoreNotifica().setIdConnettore(dto.getCodApplicazione() + "_ESITO");
-			vo.setCodConnettoreEsito(dto.getConnettoreNotifica().getIdConnettore());
-		}
-
-		if(dto.getConnettoreVerifica()!= null) {
-			dto.getConnettoreVerifica().setIdConnettore(dto.getCodApplicazione() + "_VERIFICA");
-			vo.setCodConnettoreVerifica(dto.getConnettoreVerifica().getIdConnettore());
+		if(dto.getConnettoreIntegrazione()!= null) {
+			dto.getConnettoreIntegrazione().setIdConnettore(dto.getCodApplicazione() + "_INTEGRAZIONE");
+			vo.setCodConnettoreIntegrazione(dto.getConnettoreIntegrazione().getIdConnettore());
 		}
 		
 		vo.setFirmaRicevuta(dto.getFirmaRichiesta().getCodifica());
@@ -69,9 +63,7 @@ public class ApplicazioneConverter {
 		} catch (Exception e) {
 			idUtenza.setPrincipal(dto.getUtenza().getPrincipal());
 		}
-		
- 
-		
+
 		vo.setIdUtenza(idUtenza);
 		vo.setTrusted(dto.isTrusted());
 		vo.setCodApplicazioneIuv(dto.getCodApplicazioneIuv());

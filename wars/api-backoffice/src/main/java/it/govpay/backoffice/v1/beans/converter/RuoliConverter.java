@@ -53,7 +53,9 @@ public class RuoliConverter {
 		ruolo.setId(ruoloName);
 		List<AclPost> aclsPost = new ArrayList<>();
 		for (Acl acl : listaAcl) {
-			aclsPost.add(AclConverter.toRsModel(acl));
+			AclPost aclRsModel = AclConverter.toRsModel(acl);
+			if(aclRsModel != null)
+				aclsPost.add(aclRsModel);
 		}
 		
 		ruolo.setAcl(aclsPost );

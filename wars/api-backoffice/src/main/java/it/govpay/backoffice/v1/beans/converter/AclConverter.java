@@ -46,6 +46,20 @@ public class AclConverter {
 		return acl;
 	}
 	
+	public static Acl getAclAPI(Servizio apiServizio, Authentication user) throws ServiceException {
+		
+		Acl acl = new Acl();
+		
+		Set<Diritti> lst = new HashSet<>();
+		lst.add(Acl.Diritti.LETTURA);
+		lst.add(Acl.Diritti.SCRITTURA);
+		acl.setListaDiritti(lst);
+		acl.setServizio(apiServizio);
+		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+		acl.setUtenza(authenticationDetails.getUtenza());
+		return acl;
+	}
+	
 	public static Acl getAclRuolo(AclPost aclPost, String ruolo) throws ServiceException {
 		
 		Acl acl = new Acl();
@@ -74,8 +88,8 @@ public class AclConverter {
 	public static AclPost toRsModel(it.govpay.bd.model.Acl acl) {
 		AclPost rsModel = new AclPost();
 		
+		ServizioEnum serv = null;
 		if(acl.getServizio() != null) {
-			ServizioEnum serv = null;
 			switch(acl.getServizio()) {
 			case ANAGRAFICA_APPLICAZIONI:
 				serv = ServizioEnum.ANAGRAFICA_APPLICAZIONI;
@@ -104,11 +118,18 @@ public class AclConverter {
 			case RENDICONTAZIONI_E_INCASSI:
 				serv = ServizioEnum.RENDICONTAZIONI_E_INCASSI;
 				break;
+			case API_PAGAMENTI:
+			case API_PENDENZE:
+			case API_RAGIONERIA:
+				break;
 			}
-
-			if(serv!=null)
-				rsModel.setServizio(serv.toString());
 		}
+		
+		// se l'acl non deve uscire allora ritorno null
+		if(serv ==null)
+			return null;
+			
+		rsModel.setServizio(serv.toString());
 		
 		if(acl.getListaDiritti() != null) {
 			List<String> autorizzazioni = acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList());

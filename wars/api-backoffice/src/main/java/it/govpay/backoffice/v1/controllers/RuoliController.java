@@ -130,7 +130,9 @@ public class RuoliController extends BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			List<AclPost> results = new ArrayList<>();
 			for(Acl leggiRuoloDtoResponse: listaRptDTOResponse.getResults()) {
-				results.add(AclConverter.toRsModel(leggiRuoloDtoResponse));
+				AclPost aclRsModel = AclConverter.toRsModel(leggiRuoloDtoResponse);
+				if(aclRsModel != null)
+					results.add(aclRsModel);
 			}
 			ListaAcl response = new ListaAcl();
 			response.setAcl(results);

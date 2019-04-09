@@ -167,7 +167,7 @@ public abstract class BasicClient {
 	}
 	
 	protected BasicClient(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
-		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione(), tipoConnettore == TipoConnettore.NOTIFICA ? applicazione.getConnettoreNotifica() : applicazione.getConnettoreVerifica());
+		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione(), applicazione.getConnettoreIntegrazione());
 		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();

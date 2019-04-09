@@ -19,6 +19,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.TipoVersamento;
 
@@ -85,23 +86,42 @@ public class ApplicazioniConverter {
 		applicazione.setCodApplicazione(idA2A);
 		applicazione.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 		
-		if(applicazionePost.getServizioNotifica() != null)
-			applicazione.setConnettoreNotifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioNotifica()));
-		if(applicazionePost.getServizioVerifica() != null)
-			applicazione.setConnettoreVerifica(ConnettoriConverter.getConnettore(applicazionePost.getServizioVerifica()));
+		if(applicazionePost.getServizioIntegrazione() != null)
+			applicazione.setConnettoreIntegrazione(ConnettoriConverter.getConnettore(applicazionePost.getServizioIntegrazione()));
 		
 		applicazioneDTO.setApplicazione(applicazione);
 		applicazioneDTO.setIdApplicazione(idA2A);
-		
+
+		// ACL Backoffice
+		List<Acl> aclPrincipal = new ArrayList<Acl>();
 		if(applicazionePost.getAcl()!=null) {
-			List<Acl> aclPrincipal = new ArrayList<Acl>();
 			for(AclPost aclPost: applicazionePost.getAcl()) {
 				Acl acl = AclConverter.getAclUtenza(aclPost, user);
 				acl.setUtenza(applicazione.getUtenza());
 				aclPrincipal.add(acl);
 			}
-			applicazione.getUtenza().setAclPrincipal(aclPrincipal);
 		}
+		
+		if(applicazionePost.ApiPagamenti()) {
+			Acl acl = AclConverter.getAclAPI(Servizio.API_PAGAMENTI, user);
+			acl.setUtenza(applicazione.getUtenza());
+			aclPrincipal.add(acl);
+		}
+		
+		if(applicazionePost.ApiPendenze()) {
+			Acl acl = AclConverter.getAclAPI(Servizio.API_PENDENZE, user);
+			acl.setUtenza(applicazione.getUtenza());
+			aclPrincipal.add(acl);
+		}
+		
+		if(applicazionePost.ApiRagioneria()) {
+			Acl acl = AclConverter.getAclAPI(Servizio.API_PENDENZE, user);
+			acl.setUtenza(applicazione.getUtenza());
+			aclPrincipal.add(acl);
+		}
+		
+		
+		applicazione.getUtenza().setAclPrincipal(aclPrincipal);
 		
 		return applicazioneDTO;		
 	}
@@ -127,11 +147,8 @@ public class ApplicazioniConverter {
 		rsModel.setIdA2A(applicazione.getCodApplicazione());
 		rsModel.setPrincipal(applicazione.getUtenza().getPrincipalOriginale());
 		
-		if(applicazione.getConnettoreNotifica()!=null)
-			rsModel.setServizioNotifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreNotifica()));
-		
-		if(applicazione.getConnettoreVerifica()!=null)
-			rsModel.setServizioVerifica(ConnettoriConverter.toRsModel(applicazione.getConnettoreVerifica()));
+		if(applicazione.getConnettoreIntegrazione()!=null)
+			rsModel.setServizioIntegrazione(ConnettoriConverter.toRsModel(applicazione.getConnettoreIntegrazione()));
 		
 		
 		List<DominioIndex> idDomini = new ArrayList<>();
@@ -178,17 +195,43 @@ public class ApplicazioniConverter {
 		
 		rsModel.setTipiPendenza(idTipiPendenza);
 		
+		rsModel.apiPagamenti(false);
+		rsModel.apiPendenze(false);
+		rsModel.apiRagioneria(false);
+		
 		if(applicazione.getUtenza().getAcls()!=null) {
 			List<AclPost> aclList = new ArrayList<>();
 			
 			for(Acl acl: applicazione.getUtenza().getAcls()) {
-				aclList.add(AclConverter.toRsModel(acl));
+				AclPost aclRsModel = AclConverter.toRsModel(acl);
+				if(aclRsModel != null)
+					aclList.add(aclRsModel);
 			}
 			
 			rsModel.setAcl(aclList);
+
+			// ACL sulle API
+			for(Acl acl: applicazione.getUtenza().getAcls()) {
+				if(acl.getServizio() != null && acl.getServizio().equals(Servizio.API_PAGAMENTI)) {
+					rsModel.apiPagamenti(true);
+					break;
+				}
+			}
+			
+			for(Acl acl: applicazione.getUtenza().getAcls()) {
+				if(acl.getServizio() != null && acl.getServizio().equals(Servizio.API_PENDENZE)) {
+					rsModel.apiPendenze(true);
+					break;
+				}
+			}
+			
+			for(Acl acl: applicazione.getUtenza().getAcls()) {
+				if(acl.getServizio() != null && acl.getServizio().equals(Servizio.API_RAGIONERIA)) {
+					rsModel.apiRagioneria(true);
+					break;
+				}
+			}
 		}
-		
-		
 		
 		return rsModel;
 	}

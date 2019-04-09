@@ -176,7 +176,7 @@ public class VersamentoUtils {
 				String iuvD = iuv != null ? iuv : "-";
 				ctx.getApplicationLogger().log("verifica.validita", versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
 				
-				if(versamento.getApplicazione(bd).getConnettoreVerifica() != null) {
+				if(versamento.getApplicazione(bd).getConnettoreIntegrazione() != null) {
 					versamento = acquisisciVersamento(versamento.getApplicazione(bd), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, bd);
 				} else // connettore verifica non definito, versamento non aggiornabile
 					throw new VersamentoScadutoException(versamento.getDataScadenza());
@@ -198,7 +198,7 @@ public class VersamentoUtils {
 		
 		IContext ctx = GpThreadLocal.get();
 		ctx.getApplicationLogger().log("verifica.avvio", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
-		if(applicazione.getConnettoreVerifica() == null) {
+		if(applicazione.getConnettoreIntegrazione() == null) {
 			ctx.getApplicationLogger().log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}

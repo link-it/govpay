@@ -3767,15 +3767,28 @@ components:
             example:
               - IMU
               - TARI
-              - TASI  
+              - TASI
+        apiPagamenti:
+          type: boolean
+          description: "Indicazione l'applicazione e' abitata all'utilizzo delle API-Pagamento"
+          example: true
+          default: false
+        apiPendenze:
+          type: boolean
+          description: "Indicazione l'applicazione e' abitata all'utilizzo delle API-Pendenze"
+          example: true
+          default: false
+        apiRagioneria:
+          type: boolean
+          description: "Indicazione l'applicazione e' abitata all'utilizzo delle API-Ragioneria"
+          example: true
+          default: false
         acl:
           type: array
           description: lista delle acl attive sull'applicazione
           items:
             $ref: '#/components/schemas/aclPost'
-        servizioVerifica:
-          $ref: '#/components/schemas/connector'   
-        servizioNotifica:
+        servizioIntegrazione:
           $ref: '#/components/schemas/connector'   
         abilitato:
           type: boolean
@@ -3829,14 +3842,27 @@ components:
           description: tipologie di pendenza su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/tipoPendenza'
+        apiPagamenti:
+          type: boolean
+          description: "Indicazione l'applicazione e' abitata all'utilizzo delle API-Pagamento"
+          example: true
+          default: false
+        apiPendenze:
+          type: boolean
+          description: "Indicazione l'applicazione e' abitata all'utilizzo delle API-Pendenze"
+          example: true
+          default: false
+        apiRagioneria:
+          type: boolean
+          description: "Indicazione l'applicazione e' abitata all'utilizzo delle API-Ragioneria"
+          example: true
+          default: false
         acl:
           type: array
           description: lista delle acl attive sull'applicazione
           items:
             $ref: '#/components/schemas/aclPost'            
-        servizioVerifica:
-          $ref: '#/components/schemas/connector'   
-        servizioNotifica:
+        servizioIntegrazione:
           $ref: '#/components/schemas/connector'   
         abilitato:
           type: boolean
