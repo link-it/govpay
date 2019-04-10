@@ -350,39 +350,67 @@ public class UtenzeBD extends BasicBD {
 			AclBD aclBD = new AclBD(this);
 			AclFilter filter = aclBD.newFilter();
 			filter.setPrincipal(utenza.getPrincipalOriginale());
-			List<Acl> alcEsistenti = aclBD.findAll(filter);
+			filter.setForcePrincipal(true);
 			
-			// Copio la lista delle ACL nuove
+			long count = aclBD.count(filter);
 			
-			List<Acl> aclNuove = new ArrayList<Acl>();
-			if(utenza.getAclPrincipal() != null)
-				for(Acl aclNuova : utenza.getAclPrincipal()) {
-					aclNuova.setIdUtenza(vo.getId());
-					aclNuove.add(aclNuova);
-				}
-			
-			
-			for(Acl aclEsistente : alcEsistenti) {
-				boolean found = false;
-				if(utenza.getAclPrincipal() != null)
-					for(Acl aclNuova : utenza.getAclPrincipal()) {
-						if(aclNuova.getServizio().equals(aclEsistente.getServizio())) {
-							found = true;
-							aclNuova.setId(aclEsistente.getId());
-							aclNuova.setIdUtenza(vo.getId());
-							aclBD.updateAcl(aclNuova);
-							aclNuove.remove(aclNuova);
-							break;
-						}
-					}
-				
-				if(!found) {
-					aclBD.deleteAcl(aclEsistente);
+			if(count > 0) {
+				// cancello le vecchie acl
+				List<Acl> lst = aclBD.findAll(filter); 
+				for(Acl acl: lst) {
+					aclBD.deleteAcl(acl);
 				}
 			}
 			
-			for(Acl aclNuova : aclNuove)
-				aclBD.insertAcl(aclNuova);
+			// inserimento nuove acl
+			for(Acl acl: utenza.getAclPrincipal()) {
+				acl.setIdUtenza(vo.getId());
+				
+				AclFilter filter2 = aclBD.newFilter();
+				filter2.setPrincipal(utenza.getPrincipalOriginale());
+				filter2.setServizio(acl.getServizio().getCodifica());
+				
+				if(aclBD.count(filter2) > 0) {
+					aclBD.updateAcl(acl);
+				} else {
+					aclBD.insertAcl(acl);
+				}
+			}
+			
+//			
+//			List<Acl> alcEsistenti = aclBD.findAll(filter);
+//			
+//			// Copio la lista delle ACL nuove
+//			
+//			List<Acl> aclNuove = new ArrayList<Acl>();
+//			if(utenza.getAclPrincipal() != null)
+//				for(Acl aclNuova : utenza.getAclPrincipal()) {
+//					aclNuova.setIdUtenza(vo.getId());
+//					aclNuove.add(aclNuova);
+//				}
+//			
+//			
+//			for(Acl aclEsistente : alcEsistenti) {
+//				boolean found = false;
+//				if(utenza.getAclPrincipal() != null)
+//					for(Acl aclNuova : utenza.getAclPrincipal()) {
+//						if(aclNuova.getServizio().equals(aclEsistente.getServizio())) {
+//							found = true;
+//							aclNuova.setId(aclEsistente.getId());
+//							aclNuova.setIdUtenza(vo.getId());
+//							aclBD.updateAcl(aclNuova);
+//							aclNuove.remove(aclNuova);
+//							break;
+//						}
+//					}
+//				
+//				if(!found) {
+//					aclBD.deleteAcl(aclEsistente);
+//				}
+//			}
+//			
+//			for(Acl aclNuova : aclNuove)
+//				aclBD.insertAcl(aclNuova);
 			
 			
 			utenza.setId(vo.getId());
