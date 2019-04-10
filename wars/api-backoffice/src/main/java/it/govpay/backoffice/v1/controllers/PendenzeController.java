@@ -384,7 +384,7 @@ public class PendenzeController extends BaseController {
 			transactionId = ctx.getTransactionId();
 			
 			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			String jsonRequest = baos.toString();
 			TracciatoPendenzePost tracciatoPendenzeRequest = JSONSerializable.parse(jsonRequest, TracciatoPendenzePost.class);

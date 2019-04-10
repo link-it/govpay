@@ -447,7 +447,7 @@ CREATE VIEW versamenti_incassi AS SELECT versamenti.id,
 UPDATE applicazioni SET cod_connettore_esito = SUBSTRING(cod_connettore_esito, 1, POSITION ('_' in cod_connettore_esito)) || 'INTEGRAZIONE';
 ALTER TABLE applicazioni RENAME cod_connettore_esito TO cod_connettore_integrazione;
 
-UPDATE connettori SET cod_connettore = SUBSTRING(cod_connettore, 1, POSITION ('_' in cod_connettore)) || 'INTEGRAZIONE' FROM connettori WHERE cod_connettore LIKE '%_ESITO';
+UPDATE connettori SET cod_connettore = SUBSTRING(cod_connettore, 1, POSITION ('_' in cod_connettore)) || 'INTEGRAZIONE' WHERE cod_connettore LIKE '%_ESITO';
 DELETE FROM connettori WHERE cod_connettore LIKE '%_VERIFICA';
 
 ALTER TABLE applicazioni DROP COLUMN cod_connettore_verifica;

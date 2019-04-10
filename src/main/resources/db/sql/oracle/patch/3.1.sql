@@ -405,7 +405,7 @@ GROUP BY versamenti.id, versamenti.debitore_identificativo, versamenti.stato_ver
 UPDATE applicazioni SET cod_connettore_esito = CONCAT(SUBSTRING_INDEX(cod_connettore_esito, '_', 1),'_INTEGRAZIONE');
 ALTER TABLE applicazioni RENAME COLUMN cod_connettore_esito TO cod_connettore_integrazione;
 
-UPDATE connettori SET cod_connettore = CONCAT(SUBSTRING_INDEX(cod_connettore, '_', 1),'_INTEGRAZIONE') FROM connettori WHERE cod_connettore LIKE '%_ESITO';
+UPDATE connettori SET cod_connettore = CONCAT(SUBSTRING_INDEX(cod_connettore, '_', 1),'_INTEGRAZIONE') WHERE cod_connettore LIKE '%_ESITO';
 DELETE FROM connettori WHERE cod_connettore LIKE '%_VERIFICA';
 
 ALTER TABLE applicazioni DROP COLUMN cod_connettore_verifica;
