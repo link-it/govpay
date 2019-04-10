@@ -278,7 +278,7 @@ public class PagamentoPortale extends BasicModel {
 	private transient Applicazione applicazione;
 	
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(this.applicazione == null) {
+		if(this.applicazione == null && this.getIdApplicazione() != null) {
 			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
 		} 
 		return this.applicazione;

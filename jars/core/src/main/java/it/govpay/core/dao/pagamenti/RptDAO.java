@@ -60,13 +60,7 @@ public class RptDAO extends BaseDAO{
 			String iuv = leggiRptDTO.getIuv();
 			String ccp = leggiRptDTO.getCcp();
 			
-			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(leggiRptDTO.getUser(), idDominio)) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiRptDTO.getUser(),idDominio, null);
-			}
-
 			RptBD rptBD = new RptBD(bd);
-
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp);
 
 			response.setRpt(rpt);
@@ -100,19 +94,9 @@ public class RptDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(leggiRicevutaDTO.getUser(), leggiRicevutaDTO.getIdDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiRicevutaDTO.getUser(),leggiRicevutaDTO.getIdDominio(), null);
-			}
-						
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
 			
-			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(leggiRicevutaDTO.getUser(), rpt.getCodDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiRicevutaDTO.getUser(), rpt.getCodDominio(), null);
-			}
-
 			if(rpt.getXmlRt() == null)
 				throw new RicevutaNonTrovataException(null);
 
@@ -122,6 +106,7 @@ public class RptDAO extends BaseDAO{
 			}
 
 			response.setRpt(rpt);
+			response.setDominio(rpt.getDominio(bd));
 		} catch (NotFoundException e) {
 			throw new RicevutaNonTrovataException(e.getMessage(), e);
 		} finally {
@@ -163,13 +148,8 @@ public class RptDAO extends BaseDAO{
 		filter.setStato(listaRptDTO.getStato());
 		filter.setCcp(listaRptDTO.getCcp());
 		filter.setIuv(listaRptDTO.getIuv());
-		if(listaRptDTO.getIdDominio() != null) {
-			listaDominiFiltro.add(listaRptDTO.getIdDominio());
-		}
-
-		if(listaDominiFiltro != null && listaDominiFiltro.size() > 0) {
-			filter.setIdDomini(listaDominiFiltro);
-		}
+		filter.setCodDominio(listaRptDTO.getIdDominio());
+		filter.setIdDomini(listaRptDTO.getCodDomini());
 
 		filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
 		filter.setIdPendenza(listaRptDTO.getIdPendenza());
@@ -193,6 +173,10 @@ public class RptDAO extends BaseDAO{
 				resList.add(elem);
 			}
 		} 
+		
+		if(count == 0) {
+			int i = 0;
+		}
 
 		return new ListaRptDTOResponse(count, resList);
 	}

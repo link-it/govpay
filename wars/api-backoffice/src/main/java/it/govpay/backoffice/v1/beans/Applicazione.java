@@ -12,9 +12,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "codificaAvvisi",
 "domini",
 "tipiPendenza",
+"apiPagamenti",
+"apiPendenze",
+"apiRagioneria",
 "acl",
-"servizioVerifica",
-"servizioNotifica",
+"servizioIntegrazione",
 "abilitato",
 })
 public class Applicazione extends it.govpay.core.beans.JSONSerializable {
@@ -34,14 +36,20 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("tipiPendenza")
   private List<TipoPendenza> tipiPendenza = null;
   
+  @JsonProperty("apiPagamenti")
+  private Boolean apiPagamenti = false;
+  
+  @JsonProperty("apiPendenze")
+  private Boolean apiPendenze = false;
+  
+  @JsonProperty("apiRagioneria")
+  private Boolean apiRagioneria = false;
+  
   @JsonProperty("acl")
   private List<AclPost> acl = null;
   
-  @JsonProperty("servizioVerifica")
-  private Connector servizioVerifica = null;
-  
-  @JsonProperty("servizioNotifica")
-  private Connector servizioNotifica = null;
+  @JsonProperty("servizioIntegrazione")
+  private Connector servizioIntegrazione = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
@@ -126,6 +134,54 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * Indicazione l'applicazione e' abitata all'utilizzo delle API-Pagamento
+   **/
+  public Applicazione apiPagamenti(Boolean apiPagamenti) {
+    this.apiPagamenti = apiPagamenti;
+    return this;
+  }
+
+  @JsonProperty("apiPagamenti")
+  public Boolean ApiPagamenti() {
+    return apiPagamenti;
+  }
+  public void setApiPagamenti(Boolean apiPagamenti) {
+    this.apiPagamenti = apiPagamenti;
+  }
+
+  /**
+   * Indicazione l'applicazione e' abitata all'utilizzo delle API-Pendenze
+   **/
+  public Applicazione apiPendenze(Boolean apiPendenze) {
+    this.apiPendenze = apiPendenze;
+    return this;
+  }
+
+  @JsonProperty("apiPendenze")
+  public Boolean ApiPendenze() {
+    return apiPendenze;
+  }
+  public void setApiPendenze(Boolean apiPendenze) {
+    this.apiPendenze = apiPendenze;
+  }
+
+  /**
+   * Indicazione l'applicazione e' abitata all'utilizzo delle API-Ragioneria
+   **/
+  public Applicazione apiRagioneria(Boolean apiRagioneria) {
+    this.apiRagioneria = apiRagioneria;
+    return this;
+  }
+
+  @JsonProperty("apiRagioneria")
+  public Boolean ApiRagioneria() {
+    return apiRagioneria;
+  }
+  public void setApiRagioneria(Boolean apiRagioneria) {
+    this.apiRagioneria = apiRagioneria;
+  }
+
+  /**
    * lista delle acl attive sull'applicazione
    **/
   public Applicazione acl(List<AclPost> acl) {
@@ -135,7 +191,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return this.acl;
+    return acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -143,32 +199,17 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
 
   /**
    **/
-  public Applicazione servizioVerifica(Connector servizioVerifica) {
-    this.servizioVerifica = servizioVerifica;
+  public Applicazione servizioIntegrazione(Connector servizioIntegrazione) {
+    this.servizioIntegrazione = servizioIntegrazione;
     return this;
   }
 
-  @JsonProperty("servizioVerifica")
-  public Connector getServizioVerifica() {
-    return this.servizioVerifica;
+  @JsonProperty("servizioIntegrazione")
+  public Connector getServizioIntegrazione() {
+    return servizioIntegrazione;
   }
-  public void setServizioVerifica(Connector servizioVerifica) {
-    this.servizioVerifica = servizioVerifica;
-  }
-
-  /**
-   **/
-  public Applicazione servizioNotifica(Connector servizioNotifica) {
-    this.servizioNotifica = servizioNotifica;
-    return this;
-  }
-
-  @JsonProperty("servizioNotifica")
-  public Connector getServizioNotifica() {
-    return this.servizioNotifica;
-  }
-  public void setServizioNotifica(Connector servizioNotifica) {
-    this.servizioNotifica = servizioNotifica;
+  public void setServizioIntegrazione(Connector servizioIntegrazione) {
+    this.servizioIntegrazione = servizioIntegrazione;
   }
 
   /**
@@ -196,20 +237,22 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
       return false;
     }
     Applicazione applicazione = (Applicazione) o;
-    return Objects.equals(this.idA2A, applicazione.idA2A) &&
-        Objects.equals(this.principal, applicazione.principal) &&
-        Objects.equals(this.codificaAvvisi, applicazione.codificaAvvisi) &&
-        Objects.equals(this.domini, applicazione.domini) &&
-        Objects.equals(this.tipiPendenza, applicazione.tipiPendenza) &&
-        Objects.equals(this.acl, applicazione.acl) &&
-        Objects.equals(this.servizioVerifica, applicazione.servizioVerifica) &&
-        Objects.equals(this.servizioNotifica, applicazione.servizioNotifica) &&
-        Objects.equals(this.abilitato, applicazione.abilitato);
+    return Objects.equals(idA2A, applicazione.idA2A) &&
+        Objects.equals(principal, applicazione.principal) &&
+        Objects.equals(codificaAvvisi, applicazione.codificaAvvisi) &&
+        Objects.equals(domini, applicazione.domini) &&
+        Objects.equals(tipiPendenza, applicazione.tipiPendenza) &&
+        Objects.equals(apiPagamenti, applicazione.apiPagamenti) &&
+        Objects.equals(apiPendenze, applicazione.apiPendenze) &&
+        Objects.equals(apiRagioneria, applicazione.apiRagioneria) &&
+        Objects.equals(acl, applicazione.acl) &&
+        Objects.equals(servizioIntegrazione, applicazione.servizioIntegrazione) &&
+        Objects.equals(abilitato, applicazione.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idA2A, this.principal, this.codificaAvvisi, this.domini, this.tipiPendenza, this.acl, this.servizioVerifica, this.servizioNotifica, this.abilitato);
+    return Objects.hash(idA2A, principal, codificaAvvisi, domini, tipiPendenza, apiPagamenti, apiPendenze, apiRagioneria, acl, servizioIntegrazione, abilitato);
   }
 
   public static Applicazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -226,15 +269,17 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Applicazione {\n");
     
-    sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
-    sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
-    sb.append("    codificaAvvisi: ").append(this.toIndentedString(this.codificaAvvisi)).append("\n");
-    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-    sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
-    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
-    sb.append("    servizioVerifica: ").append(this.toIndentedString(this.servizioVerifica)).append("\n");
-    sb.append("    servizioNotifica: ").append(this.toIndentedString(this.servizioNotifica)).append("\n");
-    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
+    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
+    sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
+    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
+    sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
+    sb.append("    apiPagamenti: ").append(toIndentedString(apiPagamenti)).append("\n");
+    sb.append("    apiPendenze: ").append(toIndentedString(apiPendenze)).append("\n");
+    sb.append("    apiRagioneria: ").append(toIndentedString(apiRagioneria)).append("\n");
+    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    servizioIntegrazione: ").append(toIndentedString(servizioIntegrazione)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

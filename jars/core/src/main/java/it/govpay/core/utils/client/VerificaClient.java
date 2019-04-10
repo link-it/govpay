@@ -63,7 +63,7 @@ public class VerificaClient extends BasicClient {
 
 	public VerificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.VERIFICA);
-		this.versione = applicazione.getConnettoreVerifica().getVersione();
+		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.codApplicazione = applicazione.getCodApplicazione();
 	}
 

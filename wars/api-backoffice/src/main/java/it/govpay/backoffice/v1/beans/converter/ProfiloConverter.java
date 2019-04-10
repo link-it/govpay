@@ -35,7 +35,9 @@ public class ProfiloConverter {
 		if(user.getAcls()!=null) {
 			List<AclPost> aclLst = new ArrayList<>();
 			for(Acl acl: user.getAcls()) {
-				aclLst.add(AclConverter.toRsModel(acl));
+				AclPost aclRsModel = AclConverter.toRsModel(acl);
+				if(aclRsModel != null)
+					aclLst.add(aclRsModel);
 
 			}
 			profilo.setAcl(aclLst);

@@ -229,8 +229,8 @@ public class DominiController extends BaseController {
 			
 			FindDominiDTO listaDominiDTO = new FindDominiDTO(user);
 			
-			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setLimit(risultatiPerPagina);
+			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setOrderBy(ordinamento);
 			listaDominiDTO.setAbilitato(abilitato);
 			listaDominiDTO.setCodStazione(idStazione);

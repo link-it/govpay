@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.ListaTracciati;
 import it.govpay.backoffice.v1.beans.converter.TracciatiConverter;
 import it.govpay.bd.model.Tracciato;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.TracciatiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaTracciatiDTO;
@@ -58,14 +59,19 @@ public class TracciatiController extends BaseController {
 			// Parametri - > DTO Input
 
 			ListaTracciatiDTO listaTracciatiDTO = new ListaTracciatiDTO(user);
-			listaTracciatiDTO.setPagina(pagina);
 			listaTracciatiDTO.setLimit(risultatiPerPagina);
+			listaTracciatiDTO.setPagina(pagina);
 			List<TIPO_TRACCIATO> tipo = new ArrayList<>();
 			tipo.add(TIPO_TRACCIATO.AV);
 			tipo.add(TIPO_TRACCIATO.AV_ESITO);
 			listaTracciatiDTO.setTipoTracciato(tipo); 
 
-			// INIT DAO
+			// Autorizzazione sui domini
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			listaTracciatiDTO.setCodDomini(domini);
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 

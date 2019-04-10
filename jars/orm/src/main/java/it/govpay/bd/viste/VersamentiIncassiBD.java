@@ -188,7 +188,7 @@ public class VersamentiIncassiBD  extends BasicBD {
 		try {
 			List<VersamentoIncasso> versamentoLst = new ArrayList<>();
 
-			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
+//			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
 
 			IPaginatedExpression paginatedExpression = filter.toPaginatedExpression();
 //			FilterSortWrapper fsw = filter.getDefaultFilterSortWrapperDesc();

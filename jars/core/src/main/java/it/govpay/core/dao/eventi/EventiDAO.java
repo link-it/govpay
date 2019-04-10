@@ -13,14 +13,12 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Servizio;
 
 public class EventiDAO extends BaseDAO {
 
@@ -38,21 +36,10 @@ public class EventiDAO extends BaseDAO {
 	}
 
 	public ListaEventiDTOResponse listaEventi(ListaEventiDTO listaEventiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		List<String> codDomini = null;
-		// Lista eventi puo' essere visualizzata quando viene invocata dal servizio pagamenti
-		if(!listaEventiDTO.isEreditaAutorizzazione()) {
-			// Autorizzazione sui domini
-			codDomini = AuthorizationManager.getDominiAutorizzati(listaEventiDTO.getUser());
-			if(codDomini == null) {
-				throw new NotAuthorizedException("L'utenza autenticata ["+listaEventiDTO.getUser().getPrincipal()+"] non e' autorizzata ai servizi " + Servizio.GIORNALE_DEGLI_EVENTI + " per alcun dominio");
-			}
-		}
 		EventiBD eventiBD = new EventiBD(bd);
 		EventiFilter filter = eventiBD.newFilter();
 		
-		if(codDomini != null && codDomini.size() > 0)
-			filter.setCodDomini(codDomini);
-
+		filter.setCodDomini(listaEventiDTO.getCodDomini());
 		filter.setOffset(listaEventiDTO.getOffset());
 		filter.setLimit(listaEventiDTO.getLimit());
 		

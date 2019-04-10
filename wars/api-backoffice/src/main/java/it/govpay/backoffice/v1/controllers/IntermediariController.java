@@ -185,8 +185,8 @@ public class IntermediariController extends BaseController {
 			
 			FindIntermediariDTO listaIntermediariDTO = new FindIntermediariDTO(user);
 			
-			listaIntermediariDTO.setPagina(pagina);
 			listaIntermediariDTO.setLimit(risultatiPerPagina);
+			listaIntermediariDTO.setPagina(pagina);
 			listaIntermediariDTO.setOrderBy(ordinamento);
 			listaIntermediariDTO.setAbilitato(abilitato);
 			
@@ -289,9 +289,9 @@ public class IntermediariController extends BaseController {
 			// Parametri - > DTO Input
 			
 			FindStazioniDTO listaStazioniDTO = new FindStazioniDTO(user);
-			
-			listaStazioniDTO.setPagina(pagina);
+
 			listaStazioniDTO.setLimit(risultatiPerPagina);
+			listaStazioniDTO.setPagina(pagina);
 			listaStazioniDTO.setOrderBy(ordinamento);
 			listaStazioniDTO.setAbilitato(abilitato);
 			listaStazioniDTO.setCodIntermediario(idIntermediario);

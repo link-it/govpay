@@ -41,6 +41,7 @@ public class TracciatoFilter extends AbstractFilter {
 	private it.govpay.model.Tracciato.STATO_ELABORAZIONE stato;
 	private String dettaglioStato;
 	private List<String> domini;
+	private String codDominio;
 	private String operatore;
 
 	public String getFilenameRichiestaLike() {
@@ -102,6 +103,14 @@ public class TracciatoFilter extends AbstractFilter {
 				exp.in(Tracciato.model().COD_DOMINIO, this.domini); 
 				addAnd = true;
 			}
+			
+			if(this.codDominio != null){
+				if(addAnd)
+					exp.and();
+				
+				exp.equals(Tracciato.model().COD_DOMINIO, this.codDominio); 
+				addAnd = true;
+			}
 
 			return exp;
 		} catch (NotImplementedException e) {
@@ -159,6 +168,14 @@ public class TracciatoFilter extends AbstractFilter {
 
 	public void setDettaglioStato(String dettaglioStato) {
 		this.dettaglioStato = dettaglioStato;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
 	}
 
 

@@ -8,8 +8,10 @@ import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
@@ -17,6 +19,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.exception.WebApplicationExceptionMapper;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.rs.v2.acl.impl.TipoUtenzaOnlyAcl;
 import it.govpay.rs.v2.acl.Acl;
@@ -102,7 +105,19 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			listaPendenzeDTO.setIdPagamento(idSessionePortale);
 			listaPendenzeDTO.setIdPendenza(idPendenza);
 			listaPendenzeDTO.setOrderBy(sort);
-			// INIT DAO
+			
+			// Autorizzazione sui domini
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(context.getAuthentication());
+			if(idDomini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(context.getAuthentication());
+			}
+			listaPendenzeDTO.setIdDomini(idDomini);
+			// autorizzazione sui tipi pendenza
+			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(context.getAuthentication());
+			if(idTipiVersamento == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(context.getAuthentication());
+			}
+			listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
@@ -149,6 +164,13 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
+			
+ 			Dominio dominio = ricevutaDTOResponse.getDominio();
+			TipoVersamento tipoVersamento = ricevutaDTOResponse.getTipoVersamento();
+			// controllo che il dominio e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
+			}
 
 			List<PagamentoPortale> pagamenti = ricevutaDTOResponse.getPagamenti();
 			List<Rpt> transazioni = ricevutaDTOResponse.getRpts();

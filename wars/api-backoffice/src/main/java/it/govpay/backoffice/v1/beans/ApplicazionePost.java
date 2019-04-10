@@ -16,9 +16,11 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 	"codificaAvvisi",
 	"domini",
 	"tipiPendenza",
+	"apiPagamenti",
+	"apiPendenze",
+	"apiRagioneria",
 	"acl",
-	"servizioVerifica",
-	"servizioNotifica",
+	"servizioIntegrazione",
 	"abilitato",
 })
 public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  implements IValidable {
@@ -35,14 +37,20 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 	@JsonProperty("tipiPendenza")
   	private List<String> tipiPendenza = null;
 
+	@JsonProperty("apiPagamenti")
+	private Boolean apiPagamenti = false;
+
+	@JsonProperty("apiPendenze")
+	private Boolean apiPendenze = false;
+
+	@JsonProperty("apiRagioneria")
+	private Boolean apiRagioneria = false;
+
 	@JsonProperty("acl")
 	private List<AclPost> acl = null;
 
-	@JsonProperty("servizioVerifica")
-	private Connector servizioVerifica = null;
-
-	@JsonProperty("servizioNotifica")
-	private Connector servizioNotifica = null;
+	@JsonProperty("servizioIntegrazione")
+        private Connector servizioIntegrazione = null;
 
 	@JsonProperty("abilitato")
 	private Boolean abilitato = true;
@@ -110,6 +118,54 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 	    this.tipiPendenza = tipiPendenza;
 	  }
 
+  /**
+   * Indicazione l'applicazione e' abitata all'utilizzo delle API-Pagamento
+   **/
+  public ApplicazionePost apiPagamenti(Boolean apiPagamenti) {
+    this.apiPagamenti = apiPagamenti;
+    return this;
+  }
+
+  @JsonProperty("apiPagamenti")
+  public Boolean ApiPagamenti() {
+    return apiPagamenti;
+  }
+  public void setApiPagamenti(Boolean apiPagamenti) {
+    this.apiPagamenti = apiPagamenti;
+  }
+
+  /**
+   * Indicazione l'applicazione e' abitata all'utilizzo delle API-Pendenze
+   **/
+  public ApplicazionePost apiPendenze(Boolean apiPendenze) {
+    this.apiPendenze = apiPendenze;
+    return this;
+  }
+
+  @JsonProperty("apiPendenze")
+  public Boolean ApiPendenze() {
+    return apiPendenze;
+  }
+  public void setApiPendenze(Boolean apiPendenze) {
+    this.apiPendenze = apiPendenze;
+  }
+
+  /**
+   * Indicazione l'applicazione e' abitata all'utilizzo delle API-Ragioneria
+   **/
+  public ApplicazionePost apiRagioneria(Boolean apiRagioneria) {
+    this.apiRagioneria = apiRagioneria;
+    return this;
+  }
+
+  @JsonProperty("apiRagioneria")
+  public Boolean ApiRagioneria() {
+    return apiRagioneria;
+  }
+  public void setApiRagioneria(Boolean apiRagioneria) {
+    this.apiRagioneria = apiRagioneria;
+  }
+
 	/**
 	 * lista delle acl attive sull'operatore
 	 **/
@@ -127,34 +183,19 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 	}
 
 	/**
-	 **/
-	public ApplicazionePost servizioVerifica(Connector servizioVerifica) {
-		this.servizioVerifica = servizioVerifica;
-		return this;
-	}
+   **/
+  public ApplicazionePost servizioIntegrazione(Connector servizioIntegrazione) {
+    this.servizioIntegrazione = servizioIntegrazione;
+    return this;
+  }
 
-	@JsonProperty("servizioVerifica")
-	public Connector getServizioVerifica() {
-		return this.servizioVerifica;
-	}
-	public void setServizioVerifica(Connector servizioVerifica) {
-		this.servizioVerifica = servizioVerifica;
-	}
-
-	/**
-	 **/
-	public ApplicazionePost servizioNotifica(Connector servizioNotifica) {
-		this.servizioNotifica = servizioNotifica;
-		return this;
-	}
-
-	@JsonProperty("servizioNotifica")
-	public Connector getServizioNotifica() {
-		return this.servizioNotifica;
-	}
-	public void setServizioNotifica(Connector servizioNotifica) {
-		this.servizioNotifica = servizioNotifica;
-	}
+  @JsonProperty("servizioIntegrazione")
+  public Connector getServizioIntegrazione() {
+    return servizioIntegrazione;
+  }
+  public void setServizioIntegrazione(Connector servizioIntegrazione) {
+    this.servizioIntegrazione = servizioIntegrazione;
+  }
 
 	/**
 	 * Indicazione se il creditore è abilitato ad operare sulla piattaforma
@@ -182,19 +223,21 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		}
 		ApplicazionePost applicazionePost = (ApplicazionePost) o;
 		return Objects.equals(this.principal, applicazionePost.principal) &&
-				Objects.equals(this.codificaAvvisi, applicazionePost.codificaAvvisi) &&
-				Objects.equals(this.domini, applicazionePost.domini) &&
-				Objects.equals(this.tipiPendenza, applicazionePost.tipiPendenza) &&
-				Objects.equals(this.acl, applicazionePost.acl) &&
-				Objects.equals(this.servizioVerifica, applicazionePost.servizioVerifica) &&
-				Objects.equals(this.servizioNotifica, applicazionePost.servizioNotifica) &&
-				Objects.equals(this.abilitato, applicazionePost.abilitato);
+				Objects.equals(codificaAvvisi, applicazionePost.codificaAvvisi) &&
+        Objects.equals(domini, applicazionePost.domini) &&
+        Objects.equals(tipiPendenza, applicazionePost.tipiPendenza) &&
+        Objects.equals(apiPagamenti, applicazionePost.apiPagamenti) &&
+        Objects.equals(apiPendenze, applicazionePost.apiPendenze) &&
+        Objects.equals(apiRagioneria, applicazionePost.apiRagioneria) &&
+        Objects.equals(acl, applicazionePost.acl) &&
+        Objects.equals(servizioIntegrazione, applicazionePost.servizioIntegrazione) &&
+        Objects.equals(abilitato, applicazionePost.abilitato);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.principal, this.codificaAvvisi, this.domini, this.tipiPendenza, this.acl, this.servizioVerifica, this.servizioNotifica, this.abilitato);
-	}
+	  return Objects.hash(principal, codificaAvvisi, domini, tipiPendenza, apiPagamenti, apiPendenze, apiRagioneria, acl, servizioIntegrazione, abilitato);
+ }
 
 	public static ApplicazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
 		return parse(json, ApplicazionePost.class);
@@ -210,15 +253,17 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		StringBuilder sb = new StringBuilder();
 		sb.append("class ApplicazionePost {\n");
 
-		sb.append("    principal: ").append(this.toIndentedString(this.principal)).append("\n");
-		sb.append("    codificaAvvisi: ").append(this.toIndentedString(this.codificaAvvisi)).append("\n");
-		sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-		sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
-		sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
-		sb.append("    servizioVerifica: ").append(this.toIndentedString(this.servizioVerifica)).append("\n");
-		sb.append("    servizioNotifica: ").append(this.toIndentedString(this.servizioNotifica)).append("\n");
-		sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
-		sb.append("}");
+		    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
+    sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
+    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
+    sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
+    sb.append("    apiPagamenti: ").append(toIndentedString(apiPagamenti)).append("\n");
+    sb.append("    apiPendenze: ").append(toIndentedString(apiPendenze)).append("\n");
+    sb.append("    apiRagioneria: ").append(toIndentedString(apiRagioneria)).append("\n");
+    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    servizioIntegrazione: ").append(toIndentedString(servizioIntegrazione)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+sb.append("}");
 		return sb.toString();
 	}
 
@@ -238,8 +283,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("principal", this.principal).notNull().minLength(1).maxLength(4000);
 		vf.getValidator("codificaAvvisi", this.codificaAvvisi).validateFields();
-		vf.getValidator("servizioVerifica", this.servizioVerifica).validateFields();
-		vf.getValidator("servizioNotifica", this.servizioNotifica).validateFields();
+		vf.getValidator("servizioIntegrazione", this.servizioIntegrazione).validateFields();
 		vf.getValidator("acl", this.acl).validateObjects();
 		
 		if(this.domini != null && !this.domini.isEmpty()) {

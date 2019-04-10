@@ -73,8 +73,10 @@ public class Acl extends BasicModel {
 	    PENDENZE("Pendenze"),
 	    RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
 	    GIORNALE_DEGLI_EVENTI("Giornale degli Eventi"),
-//	    STATISTICHE("Statistiche"),
-	    CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione");
+	    CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione"),
+	    API_PAGAMENTI("API Pagamenti"),
+	    API_PENDENZE("API Pendenze"),
+	    API_RAGIONERIA("API Ragioneria");
 
 		private String codifica;
 

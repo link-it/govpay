@@ -326,7 +326,7 @@ public class VersamentiBD extends BasicBD {
 		try {
 			List<Versamento> versamentoLst = new ArrayList<>();
 
-			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
+//			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
 
 			List<it.govpay.orm.Versamento> versamentoVOLst = this.getVersamentoService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Versamento versamentoVO: versamentoVOLst) {

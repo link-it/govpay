@@ -28,8 +28,7 @@ public class Applicazione extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String codApplicazione;
-    private Connettore connettoreNotifica;
-    private Connettore connettoreVerifica;
+	private Connettore connettoreIntegrazione;
     private FirmaRichiesta firmaRichiesta;
     private boolean trusted;
     private String codApplicazioneIuv;
@@ -50,18 +49,6 @@ public class Applicazione extends BasicModel {
 	}
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
-	}
-	public Connettore getConnettoreNotifica() {
-		return this.connettoreNotifica;
-	}
-	public void setConnettoreNotifica(Connettore connettoreNotifica) {
-		this.connettoreNotifica = connettoreNotifica;
-	}
-	public Connettore getConnettoreVerifica() {
-		return this.connettoreVerifica;
-	}
-	public void setConnettoreVerifica(Connettore connettoreVerifica) {
-		this.connettoreVerifica = connettoreVerifica;
 	}
 	public FirmaRichiesta getFirmaRichiesta() {
 		return this.firmaRichiesta;
@@ -101,5 +88,11 @@ public class Applicazione extends BasicModel {
 	}
 	public void setIdUtenza(long idUtenza) {
 		this.idUtenza = idUtenza;
+	}
+	public Connettore getConnettoreIntegrazione() {
+		return connettoreIntegrazione;
+	}
+	public void setConnettoreIntegrazione(Connettore connettoreIntegrazione) {
+		this.connettoreIntegrazione = connettoreIntegrazione;
 	}
 }

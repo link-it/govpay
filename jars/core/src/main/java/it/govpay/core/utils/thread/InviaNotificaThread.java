@@ -73,7 +73,7 @@ public class InviaNotificaThread implements Runnable {
 		this.dominio = this.versamento.getDominio(bd);
 		this.rpt = this.notifica.getRpt(bd);
 		this.applicazione = this.notifica.getApplicazione(bd);
-		this.connettoreNotifica = this.applicazione.getConnettoreNotifica();
+		this.connettoreNotifica = this.applicazione.getConnettoreIntegrazione();
 		List<Pagamento> pagamenti = this.rpt.getPagamenti(bd);
 		if(pagamenti != null) {
 			for(Pagamento pagamento : pagamenti)

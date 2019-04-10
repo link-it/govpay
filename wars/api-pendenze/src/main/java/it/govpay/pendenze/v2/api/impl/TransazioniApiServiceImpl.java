@@ -1,6 +1,7 @@
 package it.govpay.pendenze.v2.api.impl;
 
 import java.net.URLDecoder;
+import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -11,6 +12,7 @@ import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
@@ -97,7 +99,13 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			listaRptDTO.setIdPagamento(idSessionePortale);
 
 			listaRptDTO.setOrderBy(sort);
-			// INIT DAO
+
+			// Autorizzazione sui domini
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(context.getAuthentication());
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(context.getAuthentication());
+			}
+			listaRptDTO.setCodDomini(domini); 
 
 			RptDAO rptDAO = new RptDAO();
 
@@ -116,7 +124,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw WebApplicationExceptionMapper.handleException(e);
-//			throw FaultCode.ERRORE_INTERNO.toException(e);
+			//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -138,9 +146,19 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiRptDTO.setCcp(ccp);
 
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(leggiRptDTO.getUser(), idDominio)) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiRptDTO.getUser(),idDominio, null);
+			}
+
 			RptDAO ricevuteDAO = new RptDAO(); 
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
+
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(context.getAuthentication(), leggiRptDTOResponse.getDominio().getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(context.getAuthentication(), leggiRptDTOResponse.getDominio().getCodDominio(), null);
+			}
 
 			Rpp rpp = RppConverter.toRsModel(leggiRptDTOResponse.getRpt(), leggiRptDTOResponse.getVersamento(), leggiRptDTOResponse.getApplicazione());
 
@@ -155,7 +173,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw WebApplicationExceptionMapper.handleException(e);
-//			throw FaultCode.ERRORE_INTERNO.toException(e);
+			//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -177,9 +195,19 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiRptDTO.setCcp(ccp);
 
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(leggiRptDTO.getUser(), idDominio)) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiRptDTO.getUser(),idDominio, null);
+			}
+
 			RptDAO ricevuteDAO = new RptDAO(); 
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
+			
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(context.getAuthentication(), leggiRptDTOResponse.getDominio().getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(context.getAuthentication(), leggiRptDTOResponse.getDominio().getCodDominio(), null);
+			}
 
 			CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
 			context.getLogger().info("Invocazione completata con successo");
@@ -192,7 +220,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw WebApplicationExceptionMapper.handleException(e);
-//			throw FaultCode.ERRORE_INTERNO.toException(e);
+			//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 
@@ -207,7 +235,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			context.getLogger().info("Invocazione in corso ...");     
 			getAuthorizationRules().authorize(context);
 			context.getLogger().debug("Autorizzazione completata con successo");     
-			
+
 			String accept = "";
 			if(StringUtils.isNotEmpty(this.getContext().getServletRequest().getHeader("Accept"))) {
 				accept = this.getContext().getServletRequest().getHeader("Accept");
@@ -218,33 +246,56 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 			leggiPagamentoPortaleDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
-			
+
 			if(visualizzaSoggettoDebitore != null)
 				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
 
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(leggiPagamentoPortaleDTO.getUser(), idDominio)) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(),idDominio, null);
+			}
+
 			RptDAO ricevuteDAO = new RptDAO(); 
- 
+
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = null; 
 
 			byte[] byteRes = null;
 			if(accept.toLowerCase().contains("application/pdf")) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.PDF);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+				
+				// controllo che il dominio sia autorizzato
+				if(!AuthorizationManager.isDominioAuthorized(context.getAuthentication(), ricevutaDTOResponse.getDominio().getCodDominio())) {
+					throw AuthorizationManager.toNotAuthorizedException(context.getAuthentication(), ricevutaDTOResponse.getDominio().getCodDominio(), null);
+				}
+				
 				String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
 				context.getServletResponse().setHeader("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\"");
 				byteRes = ricevutaDTOResponse.getPdf(); 
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+				
+				// controllo che il dominio sia autorizzato
+				if(!AuthorizationManager.isDominioAuthorized(context.getAuthentication(), ricevutaDTOResponse.getDominio().getCodDominio())) {
+					throw AuthorizationManager.toNotAuthorizedException(context.getAuthentication(), ricevutaDTOResponse.getDominio().getCodDominio(), null);
+				}
+				
 				byteRes = ricevutaDTOResponse.getRpt().getXmlRt();
 			} else if(accept.toLowerCase().contains("application/xml")){
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
+				
+				// controllo che il dominio sia autorizzato
+				if(!AuthorizationManager.isDominioAuthorized(context.getAuthentication(), ricevutaDTOResponse.getDominio().getCodDominio())) {
+					throw AuthorizationManager.toNotAuthorizedException(context.getAuthentication(), ricevutaDTOResponse.getDominio().getCodDominio(), null);
+				}
+				
 				byteRes = ricevutaDTOResponse.getRpt().getXmlRt();
 			} else {
 				throw new NotAuthorizedException("Rt non disponibile nel formato richiesto");
 			}
-			
+
 			context.getLogger().info("Invocazione completata con successo");
 			return byteRes;
 		}
@@ -255,7 +306,7 @@ public class TransazioniApiServiceImpl extends BaseImpl implements TransazioniAp
 		catch(Throwable e) {
 			context.getLogger().error("Invocazione terminata con errore: %s",e, e.getMessage());
 			throw WebApplicationExceptionMapper.handleException(e);
-//			throw FaultCode.ERRORE_INTERNO.toException(e);
+			//			throw FaultCode.ERRORE_INTERNO.toException(e);
 		}
 	}
 

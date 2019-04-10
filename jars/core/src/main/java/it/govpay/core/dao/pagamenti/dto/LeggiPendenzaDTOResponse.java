@@ -12,6 +12,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.viste.model.VersamentoIncasso;
+import it.govpay.model.TipoVersamento;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -29,6 +30,7 @@ public class LeggiPendenzaDTOResponse {
 	private byte[] avvisoPdf;
 	private List<PagamentoPortale> pagamenti;
 	private List<Rpt> rpts;
+	private TipoVersamento tipoVersamento;
 
 	public Applicazione getApplicazione() {
 		return this.applicazione;
@@ -92,6 +94,14 @@ public class LeggiPendenzaDTOResponse {
 
 	public void setRpts(List<Rpt> rpts) {
 		this.rpts = rpts;
+	}
+
+	public TipoVersamento getTipoVersamento() {
+		return tipoVersamento;
+	}
+
+	public void setTipoVersamento(TipoVersamento tipoVersamento) {
+		this.tipoVersamento = tipoVersamento;
 	}
 	
 }

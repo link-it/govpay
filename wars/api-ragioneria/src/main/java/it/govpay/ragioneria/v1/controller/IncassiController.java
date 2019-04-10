@@ -62,20 +62,20 @@ public class IncassiController extends BaseController {
 			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
-
-			// Parametri - > DTO Input
 			
 			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(user);
 			
-			listaIncassoDTO.setPagina(pagina);
 			listaIncassoDTO.setLimit(risultatiPerPagina);
+			listaIncassoDTO.setPagina(pagina);
 			
-			// INIT DAO
+			// autorizzazione sui domini
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user); 
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			listaIncassoDTO.setCodDomini(domini);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
-			
-			// CHIAMATA AL DAO
-			
 			ListaIncassiDTOResponse listaIncassiDTOResponse = incassiDAO.listaIncassi(listaIncassoDTO);
 			
 			// CONVERT TO JSON DELLA RISPOSTA
@@ -125,7 +125,9 @@ public class IncassiController extends BaseController {
 			leggiIncassoDTO.setIdDominio(idDominio);
 			leggiIncassoDTO.setIdIncasso(idIncasso);
 
-			// INIT DAO
+			if(!AuthorizationManager.isDominioAuthorized(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
+			}
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
 			

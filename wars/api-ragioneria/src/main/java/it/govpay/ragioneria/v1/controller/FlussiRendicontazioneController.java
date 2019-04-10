@@ -75,6 +75,10 @@ public class FlussiRendicontazioneController extends BaseController {
 			
 			LeggiRendicontazioneDTOResponse leggiRendicontazioneDTOResponse = rendicontazioniDAO.leggiRendicontazione(leggiRendicontazioneDTO);
 					
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(user, leggiRendicontazioneDTOResponse.getDominio().getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(user,leggiRendicontazioneDTOResponse.getDominio().getCodDominio(), null);
+			}
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
@@ -118,15 +122,20 @@ public class FlussiRendicontazioneController extends BaseController {
 			
 			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);
-			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
+			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
 			if(dataDa != null)
 				findRendicontazioniDTO.setDataDa(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataDa)); 
 			if(dataA != null)
 				findRendicontazioniDTO.setDataA(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataA));
 			
-			// INIT DAO
+			// Autorizzazione sui domini
+			List<String> domini  = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			findRendicontazioniDTO.setCodDomini(domini);
 			
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 			

@@ -190,6 +190,7 @@ public class VersamentoFilter extends AbstractFilter {
 			}
 
 			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
+				this.idVersamento.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()));
@@ -208,7 +209,7 @@ public class VersamentoFilter extends AbstractFilter {
 //				addAnd = true;
 //			}
 			
-			if(this.idDomini != null){
+			if(this.idDomini != null && !this.idDomini.isEmpty()){
 				this.idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
@@ -301,7 +302,7 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.equals(Versamento.model().AVVISATURA_ABILITATA, this.avvisaturaAbilitata);
 			}
 			
-			if(this.idTipiVersamento != null){
+			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 				this.idTipiVersamento.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();

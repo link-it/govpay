@@ -115,9 +115,9 @@ public class ApplicazioniDAO extends BaseDAO {
 			ApplicazioneFilter filter = applicazioniBD.newFilter(false);
 			filter.setCodApplicazione(putApplicazioneDTO.getIdApplicazione());
 
-			if(putApplicazioneDTO.getIdDomini() != null) {
+			if(putApplicazioneDTO.getCodDomini() != null) {
 				List<Long> idDomini = new ArrayList<>();
-				for (String codDominio : putApplicazioneDTO.getIdDomini()) {
+				for (String codDominio : putApplicazioneDTO.getCodDomini()) {
 					try {
 						idDomini.add(AnagraficaManager.getDominio(bd, codDominio).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
@@ -128,9 +128,9 @@ public class ApplicazioniDAO extends BaseDAO {
 				putApplicazioneDTO.getApplicazione().getUtenza().setIdDomini(idDomini );
 			}
 
-			if(putApplicazioneDTO.getIdTipiVersamento() != null) {
+			if(putApplicazioneDTO.getCodTipiVersamento() != null) {
 				List<Long> idTipiVersamento = new ArrayList<>();
-				for (String codTipoVersamento : putApplicazioneDTO.getIdTipiVersamento()) {
+				for (String codTipoVersamento : putApplicazioneDTO.getCodTipiVersamento()) {
 					try {
 						idTipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, codTipoVersamento).getId());
 					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

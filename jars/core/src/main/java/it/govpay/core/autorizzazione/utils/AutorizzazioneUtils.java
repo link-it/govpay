@@ -156,12 +156,6 @@ public class AutorizzazioneUtils {
 		acl.setServizio(Servizio.PAGAMENTI); 
 		acl.getProprieta().put(AuthorizationManager.CODICE_FISCALE_CITTADINO, username);
 		aclPrincipal.add(acl);
-		Acl aclPendenza = new Acl();
-		aclPendenza.setUtenza(utenza);
-		aclPendenza.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.SCRITTURA.getCodifica());
-		aclPendenza.setServizio(Servizio.PENDENZE); 
-		aclPendenza.getProprieta().put(AuthorizationManager.CODICE_FISCALE_CITTADINO, username);
-		aclPrincipal.add(aclPendenza);
 		utenza.setAclPrincipal(aclPrincipal);
 		utenza.setAbilitato(true);
 		utenza.setPrincipalOriginale(username);
@@ -210,12 +204,6 @@ public class AutorizzazioneUtils {
 		acl.setServizio(Servizio.PAGAMENTI); 
 		acl.getProprieta().put(AuthorizationManager.UTENZA_ANONIMA, "true");
 		aclPrincipal.add(acl);
-		Acl aclPendenza = new Acl();
-		aclPendenza.setUtenza(utenza);
-		aclPendenza.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.SCRITTURA.getCodifica());
-		aclPendenza.setServizio(Servizio.PENDENZE); 
-		aclPendenza.getProprieta().put(AuthorizationManager.UTENZA_ANONIMA, "true");
-		aclPrincipal.add(aclPendenza);
 		utenza.setAclPrincipal(aclPrincipal);
 		utenza.setAbilitato(true);
 		utenza.setPrincipalOriginale(username);

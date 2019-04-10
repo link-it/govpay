@@ -35,7 +35,6 @@ import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TY
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.pagamento.OperazioniBD;
@@ -43,8 +42,6 @@ import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.filters.OperazioneFilter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
-import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.tracciati.TracciatoPendenza;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -76,22 +73,8 @@ public class TracciatiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			List<String> listaDominiFiltro = null;
-
-			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser());
-			if(listaDominiFiltro == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(leggiTracciatoDTO.getUser());
-			}
-
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
-			
-			// check dominio
-			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
-			}
-			
 			tracciato.getOperatore(bd);
 			return tracciato;
 
@@ -109,23 +92,9 @@ public class TracciatiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			List<String> listaDominiFiltro = null;
-
-			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser());
-			if(listaDominiFiltro == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(leggiTracciatoDTO.getUser());
-			}
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
-
-			// check dominio
-			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
-			}
-			
 			tracciato.getOperatore(bd);
 			byte[] rawRichiesta = tracciato.getRawRichiesta();
 			if(rawRichiesta == null)
@@ -146,22 +115,9 @@ public class TracciatiDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			List<String> listaDominiFiltro = null;
-
-			// Autorizzazione sui domini
-			listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(leggiTracciatoDTO.getUser());
-			if(listaDominiFiltro == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(leggiTracciatoDTO.getUser());
-			}
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
-
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
-			
-			// check dominio
-			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
-			}
 			
 			tracciato.getOperatore(bd);
 			byte[] rawEsito = tracciato.getRawEsito();
@@ -193,21 +149,11 @@ public class TracciatiDAO extends BaseDAO{
 
 	public ListaTracciatiDTOResponse listaTracciati(ListaTracciatiDTO listaTracciatiDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 
-		List<String> listaDominiFiltro = null;
-
-		// Autorizzazione sui domini
-		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaTracciatiDTO.getUser());
-		if(listaDominiFiltro == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaTracciatiDTO.getUser());
-		}
-
 		TracciatiBD tracciatoBD = new TracciatiBD(bd);
 		TracciatoFilter filter = tracciatoBD.newFilter();
 
-		if(listaTracciatiDTO.getIdDominio() != null)
-				listaDominiFiltro.add(listaTracciatiDTO.getIdDominio());
-		
-		filter.setDomini(listaDominiFiltro);
+		filter.setCodDominio(listaTracciatiDTO.getIdDominio());
+		filter.setDomini(listaTracciatiDTO.getCodDomini());
 		filter.setTipo(listaTracciatiDTO.getTipoTracciato());
 		filter.setOffset(listaTracciatiDTO.getOffset());
 		filter.setLimit(listaTracciatiDTO.getLimit());
@@ -221,8 +167,6 @@ public class TracciatiDAO extends BaseDAO{
 		fsw.setField(it.govpay.orm.Tracciato.model().DATA_CARICAMENTO);
 		filterSortList.add(fsw );
 		filter.setFilterSortList(filterSortList );
-		
-		
 
 		long count = tracciatoBD.count(filter);
 
@@ -261,11 +205,6 @@ public class TracciatiDAO extends BaseDAO{
 			
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			
-			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(postTracciatoDTO.getUser());
-			Operatore operatoreFromUser = userDetails.getOperatore();
-			if(operatoreFromUser == null)
-				throw AuthorizationManager.toNotAuthorizedException(postTracciatoDTO.getUser());
-			
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
 			
@@ -279,7 +218,7 @@ public class TracciatiDAO extends BaseDAO{
 			tracciato.setFileNameRichiesta(postTracciatoDTO.getNomeFile());
 			tracciato.setRawRichiesta(postTracciatoDTO.getContenuto());
 		
-			tracciato.setIdOperatore(operatoreFromUser.getId());
+			tracciato.setIdOperatore(postTracciatoDTO.getOperatore().getId());
 			tracciato.setTipo(TIPO_TRACCIATO.PENDENZA);
 			tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
 			
@@ -316,15 +255,6 @@ public class TracciatiDAO extends BaseDAO{
 	}
 	
 	public ListaOperazioniTracciatoDTOResponse listaOperazioniTracciatoPendenza(ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-
-		List<String> listaDominiFiltro = null;
-
-		// Autorizzazione sui domini
-		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaOperazioniTracciatoDTO.getUser());
-		if(listaDominiFiltro == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaOperazioniTracciatoDTO.getUser());
-		}
-
 		OperazioniBD operazioniBD = new OperazioniBD(bd);
 		OperazioneFilter filter = operazioniBD.newFilter();
 

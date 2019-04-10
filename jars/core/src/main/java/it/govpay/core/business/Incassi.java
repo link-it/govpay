@@ -47,8 +47,6 @@ import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
-import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
@@ -127,13 +125,11 @@ public class Incassi extends BasicBD {
 			Long idApplicazione = null;
 			Long idOperatore = null;
 			
-			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncasso.getUser());
-	
 			// Verifica autorizzazione all'incasso e acquisizione applicazione chiamante
-			if(authenticationDetails.getApplicazione() != null) {
-				idApplicazione = authenticationDetails.getApplicazione().getId();
-			} else if(authenticationDetails.getOperatore() != null) {
-				idOperatore = authenticationDetails.getOperatore().getId();
+			if(richiestaIncasso.getApplicazione() != null) {
+				idApplicazione = richiestaIncasso.getApplicazione().getId();
+			} else if(richiestaIncasso.getOperatore() != null) {
+				idOperatore = richiestaIncasso.getOperatore().getId();
 			} else {
 				throw new NotAuthorizedException("Utente non autorizzato al servizio di Incassi");
 			} 

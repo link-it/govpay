@@ -186,6 +186,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 
 			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
+				this.idVersamento.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(VersamentoIncasso.model()));
@@ -193,7 +194,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-			if(this.idDomini != null){
+			if(this.idDomini != null && !this.idDomini.isEmpty()){
 				this.idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
@@ -278,7 +279,7 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				newExpression.equals(VersamentoIncasso.model().AVVISATURA_DA_INVIARE, this.avvisatuaraDaInviare);
 			}
 			
-			if(this.idTipiVersamento != null){
+			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
 				this.idTipiVersamento.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();

@@ -29,7 +29,7 @@ public class Notifica  extends BasicBD{
 	public boolean inserisciNotifica(it.govpay.bd.model.Notifica notifica) throws ServiceException {
 		// prima di inserire le notifiche controllo che l'applicazione da utilizzare abbia il connettore per le notifiche abilitato, altrimenti non ha senso inserire.
 		Applicazione applicazione = notifica.getApplicazione(this);
-		if(applicazione.getConnettoreNotifica() != null) {
+		if(applicazione.getConnettoreIntegrazione() != null) {
 			NotificheBD notificheBD = new NotificheBD(this);
 			notificheBD.insertNotifica(notifica);
 			log.debug("Inserimento notifica RPT["+notifica.getRptKey(this) +"] effettuato, procedo allo scheduling per la spedizione verso l'applicazione ["+applicazione.getCodApplicazione()+"].");

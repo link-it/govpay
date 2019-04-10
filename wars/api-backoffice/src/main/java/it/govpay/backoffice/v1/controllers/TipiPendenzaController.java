@@ -64,6 +64,8 @@ public class TipiPendenzaController extends BaseController {
 			// Parametri - > DTO Input
 			
 			FindTipiPendenzaDTO findTipiPendenzaDTO = new FindTipiPendenzaDTO(user);
+			findTipiPendenzaDTO.setLimit(risultatiPerPagina);
+			findTipiPendenzaDTO.setPagina(pagina);
 			findTipiPendenzaDTO.setOrderBy(ordinamento);
 			
 			

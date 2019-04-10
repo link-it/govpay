@@ -99,13 +99,18 @@ public class ReportisticheController extends BaseController {
 			
 			if(accept.isEmpty() || accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				
-				if(pagina == null) {
-					listaEntratePrevisteDTO.setPagina(1);
-				}
-				
 				if(risultatiPerPagina == null) {
 					listaEntratePrevisteDTO.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
+				} else {
+					listaEntratePrevisteDTO.setLimit(risultatiPerPagina);
 				}
+				
+				if(pagina == null) {
+					listaEntratePrevisteDTO.setPagina(1);
+				} else {
+					listaEntratePrevisteDTO.setPagina(pagina);
+				}
+					
 				
 				listaEntratePrevisteDTO.setFormato(FormatoRichiesto.JSON);
 

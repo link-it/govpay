@@ -104,8 +104,8 @@ public class DominiController extends BaseController {
 			
 			FindDominiDTO listaDominiDTO = new FindDominiDTO(user);
 			
-			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setLimit(risultatiPerPagina);
+			listaDominiDTO.setPagina(pagina);
 			listaDominiDTO.setOrderBy(ordinamento);
 			listaDominiDTO.setAbilitato(abilitato);
 			listaDominiDTO.setCodStazione(idStazione);
@@ -165,8 +165,8 @@ public class DominiController extends BaseController {
 			
 			FindIbanDTO listaDominiIbanDTO = new FindIbanDTO(user, idDominio);
 			
-			listaDominiIbanDTO.setPagina(pagina);
 			listaDominiIbanDTO.setLimit(risultatiPerPagina);
+			listaDominiIbanDTO.setPagina(pagina);
 			listaDominiIbanDTO.setOrderBy(ordinamento);
 			listaDominiIbanDTO.setAbilitato(abilitato);
 			
@@ -314,8 +314,8 @@ public class DominiController extends BaseController {
 			
 			FindTributiDTO listaDominiEntrateDTO = new FindTributiDTO(user, idDominio);
 			
-			listaDominiEntrateDTO.setPagina(pagina);
 			listaDominiEntrateDTO.setLimit(risultatiPerPagina);
+			listaDominiEntrateDTO.setPagina(pagina);
 			listaDominiEntrateDTO.setOrderBy(ordinamento);
 			listaDominiEntrateDTO.setAbilitato(abilitato);
 			
@@ -559,8 +559,8 @@ public class DominiController extends BaseController {
 			
 			FindTipiPendenzaDominioDTO findTipiPendenzaDominioDTO = new FindTipiPendenzaDominioDTO(user);
 			
-			findTipiPendenzaDominioDTO.setPagina(pagina);
 			findTipiPendenzaDominioDTO.setLimit(risultatiPerPagina);
+			findTipiPendenzaDominioDTO.setPagina(pagina);
 			findTipiPendenzaDominioDTO.setOrderBy(ordinamento);
 			findTipiPendenzaDominioDTO.setCodDominio(idDominio);
 			
@@ -712,8 +712,8 @@ public class DominiController extends BaseController {
 			
 			FindUnitaOperativeDTO listaDominiUoDTO = new FindUnitaOperativeDTO(user, idDominio);
 			
-			listaDominiUoDTO.setPagina(pagina);
 			listaDominiUoDTO.setLimit(risultatiPerPagina);
+			listaDominiUoDTO.setPagina(pagina);
 			listaDominiUoDTO.setOrderBy(ordinamento);
 			listaDominiUoDTO.setAbilitato(abilitato);
 			

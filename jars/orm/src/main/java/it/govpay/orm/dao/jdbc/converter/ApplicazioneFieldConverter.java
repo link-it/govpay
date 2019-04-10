@@ -109,18 +109,11 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "firma_ricevuta";
 			}
 		}
-		if(field.equals(Applicazione.model().COD_CONNETTORE_ESITO)){
+		if(field.equals(Applicazione.model().COD_CONNETTORE_INTEGRAZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_connettore_esito";
+				return this.toAliasTable(field)+".cod_connettore_integrazione";
 			}else{
-				return "cod_connettore_esito";
-			}
-		}
-		if(field.equals(Applicazione.model().COD_CONNETTORE_VERIFICA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_connettore_verifica";
-			}else{
-				return "cod_connettore_verifica";
+				return "cod_connettore_integrazione";
 			}
 		}
 		if(field.equals(Applicazione.model().TRUSTED)){
@@ -175,10 +168,7 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Applicazione.model().FIRMA_RICEVUTA)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
-		if(field.equals(Applicazione.model().COD_CONNETTORE_ESITO)){
-			return this.toTable(Applicazione.model(), returnAlias);
-		}
-		if(field.equals(Applicazione.model().COD_CONNETTORE_VERIFICA)){
+		if(field.equals(Applicazione.model().COD_CONNETTORE_INTEGRAZIONE)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 		if(field.equals(Applicazione.model().TRUSTED)){

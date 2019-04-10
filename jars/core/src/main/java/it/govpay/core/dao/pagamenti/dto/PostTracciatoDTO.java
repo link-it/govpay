@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.Operatore;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.model.Versamento.ModoAvvisatura;
@@ -21,6 +22,7 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	private List<Versamento> annullamenti;
 	private Boolean avvisaturaDigitale;
 	private ModoAvvisatura avvisaturaModalita;
+	private Operatore operatore;
 	
 	public List<Versamento> getInserimenti() {
 		return this.inserimenti;
@@ -63,5 +65,11 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	}
 	public void setAvvisaturaModalita(ModoAvvisatura avvisaturaModalita) {
 		this.avvisaturaModalita = avvisaturaModalita;
+	}
+	public Operatore getOperatore() {
+		return operatore;
+	}
+	public void setOperatore(Operatore operatore) {
+		this.operatore = operatore;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -36,6 +37,7 @@ public class PagamentoIndex extends JSONSerializable {
   @JsonProperty("nome")
   private String nome = null;
   
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ")
   @JsonProperty("dataRichiestaPagamento")
   private Date dataRichiestaPagamento = null;
   

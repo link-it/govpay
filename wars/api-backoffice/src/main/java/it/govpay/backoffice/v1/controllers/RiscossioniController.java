@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -21,6 +22,7 @@ import it.govpay.backoffice.v1.beans.StatoRiscossione;
 import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.RiscossioniConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
@@ -75,6 +77,12 @@ public class RiscossioniController extends BaseController {
 			
 			LeggiRiscossioneDTOResponse getRiscossioneDTOResponse = applicazioniDAO.leggiRiscossione(getRiscossioneDTO);
 			
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(user, getRiscossioneDTOResponse.getDominio().getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(user,getRiscossioneDTOResponse.getDominio().getCodDominio(), null);
+			}
+
+			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			Riscossione response = RiscossioniConverter.toRsModel(getRiscossioneDTOResponse.getPagamento());
@@ -112,8 +120,8 @@ public class RiscossioniController extends BaseController {
 			
 			ListaRiscossioniDTO findRiscossioniDTO = new ListaRiscossioniDTO(user);
 			findRiscossioniDTO.setIdDominio(idDominio);
-			findRiscossioniDTO.setPagina(pagina);
 			findRiscossioniDTO.setLimit(risultatiPerPagina);
+			findRiscossioniDTO.setPagina(pagina);
 			findRiscossioniDTO.setDataRiscossioneA(dataRiscossioneA);
 			findRiscossioniDTO.setDataRiscossioneDa(dataRiscossioneDa);
 			findRiscossioniDTO.setIdA2A(idA2A);
@@ -135,7 +143,12 @@ public class RiscossioniController extends BaseController {
 			if(tipo!=null)
 				findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(TipoRiscossione.fromValue(tipo).toString()));
 			
-			
+			// Autorizzazione sui domini
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			findRiscossioniDTO.setCodDomini(domini);
 			
 			// INIT DAO
 			
