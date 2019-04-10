@@ -198,17 +198,6 @@ public class VersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-//			if(this.idDomini != null){
-//				idDomini.removeAll(Collections.singleton(null));
-//				if(addAnd)
-//					newExpression.and();
-//				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-//				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
-//				newExpression.in(cf, this.idDomini);
-//				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
-//				addAnd = true;
-//			}
-			
 			if(this.idDomini != null && !this.idDomini.isEmpty()){
 				this.idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
@@ -217,7 +206,6 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.in(cf, this.idDomini);
 				addAnd = true;
 			}
-
 
 			if(this.codVersamento != null){
 				if(addAnd)

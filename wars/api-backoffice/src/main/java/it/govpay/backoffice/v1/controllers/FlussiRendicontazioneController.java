@@ -122,7 +122,8 @@ public class FlussiRendicontazioneController extends BaseController {
 			// Parametri - > DTO Input
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
+			if(idDominio != null)
+				validatoreId.validaIdDominio("idDominio", idDominio);
 			
 			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);

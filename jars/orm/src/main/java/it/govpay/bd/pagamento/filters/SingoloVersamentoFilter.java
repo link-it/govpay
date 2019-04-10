@@ -38,7 +38,7 @@ public class SingoloVersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.codSingoliVersamentiEnte != null){
+			if(this.codSingoliVersamentiEnte != null  && !this.codSingoliVersamentiEnte.isEmpty()){
 				this.codSingoliVersamentiEnte.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
@@ -47,6 +47,7 @@ public class SingoloVersamentoFilter extends AbstractFilter {
 			}
 			
 			if(this.idSingoloVersamento != null && !this.idSingoloVersamento.isEmpty()){
+				this.idSingoloVersamento.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				SingoloVersamentoFieldConverter converter = new SingoloVersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 

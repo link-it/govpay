@@ -105,7 +105,7 @@ public class RptFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-			if(this.idDomini != null){
+			if(this.idDomini != null  && !this.idDomini.isEmpty()){
 				this.idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();

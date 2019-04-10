@@ -54,7 +54,7 @@ public class EntrataPrevistaFilter extends AbstractFilter{
 			}
 			
 			
-			if(this.codDomini != null){
+			if(this.codDomini != null  && !this.codDomini.isEmpty()){
 				this.codDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();

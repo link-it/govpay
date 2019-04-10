@@ -119,7 +119,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 				exp.equals(Rendicontazione.model().ID_FR.COD_DOMINIO, this.codDominio);
 			}
 			
-			if(this.idDomini != null){
+			if(this.idDomini != null  && !this.idDomini.isEmpty()){
 				this.idDomini.removeAll(Collections.singleton(null));
 				exp.in(Rendicontazione.model().ID_FR.COD_DOMINIO, this.idDomini);
 			}
