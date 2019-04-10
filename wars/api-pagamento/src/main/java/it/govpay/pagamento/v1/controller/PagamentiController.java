@@ -163,7 +163,7 @@ public class PagamentiController extends BaseController {
 				for(LeggiPendenzaDTOResponse leggiPendenzaDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
 					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getCodVersamentoEnte()) &&
 							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getApplicazione(null).getCodApplicazione())) {
-						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamentoIncasso()));
+						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamentoIncasso(),user));
 					}
 				}
 			}
@@ -216,7 +216,7 @@ public class PagamentiController extends BaseController {
 				for(LeggiPendenzaDTOResponse leggiPendenzaDtoResponse: pagamentoPortaleDTOResponse.getListaPendenze()) {
 					if(leggiRptDtoResponse.getVersamento().getCodVersamentoEnte().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getCodVersamentoEnte()) &&
 							leggiRptDtoResponse.getVersamento().getApplicazione(null).getCodApplicazione().equals(leggiPendenzaDtoResponse.getVersamentoIncasso().getApplicazione(null).getCodApplicazione())) {
-						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamentoIncasso()));
+						pendenze.add(PendenzeConverter.toRsModelIndex(leggiPendenzaDtoResponse.getVersamentoIncasso(),user)); 
 					}
 				}
 			}

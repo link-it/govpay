@@ -26,7 +26,7 @@ public class RptConverter {
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
-		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(versamento));
+		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(versamento,user));
 		
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 		try {
