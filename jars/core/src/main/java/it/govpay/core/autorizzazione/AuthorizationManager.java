@@ -72,12 +72,24 @@ public class AuthorizationManager {
 	}
 
 	public static NotAuthorizedException toNotAuthorizedException(Authentication authentication) {
+		return toNotAuthorizedException(authentication, null);
+	}
+	
+	public static NotAuthorizedException toNotAuthorizedException(Authentication authentication, String descrizione) {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
-		String utenza = AutorizzazioneUtils.getPrincipal(authentication);
-		if(utenza != null)
-			sb.append("Utenza [").append(utenza).append("] non autorizzata.");
-		else
-			sb.append("Credenziali non fornite.");
+		
+		if(!details.isAbilitato()) {
+			sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] disabilitata");
+		} else {
+			sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non autorizzata ad accedere alla risorsa richiesta");
+		}
+		
+		if(StringUtils.isNotEmpty(descrizione)) {
+			sb.append(": ").append(descrizione);
+		}
+		
+		sb.append(".");
 		return new NotAuthorizedException(sb.toString());
 	}
 

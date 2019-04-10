@@ -524,7 +524,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 				if(pagamentoPortale.getApplicazione(bd) == null || 
 						!pagamentoPortale.getApplicazione(bd).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
-					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
+					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(), "il pagamento non appartiene all'applicazione chiamante");
 				}
 			}
 
