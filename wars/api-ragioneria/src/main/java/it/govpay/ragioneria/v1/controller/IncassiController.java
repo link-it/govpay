@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.IncassiDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
@@ -67,6 +68,9 @@ public class IncassiController extends BaseController {
 			
 			listaIncassoDTO.setLimit(risultatiPerPagina);
 			listaIncassoDTO.setPagina(pagina);
+			
+			// filtro sull'applicazione			
+			listaIncassoDTO.setIdA2A(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione()); 
 			
 			// autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user); 
@@ -134,6 +138,11 @@ public class IncassiController extends BaseController {
 			// CHIAMATA AL DAO
 			
 			LeggiIncassoDTOResponse leggiIncassoDTOResponse = incassiDAO.leggiIncasso(leggiIncassoDTO);
+			
+			// filtro sull'applicazione			
+			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(leggiIncassoDTOResponse.getIncasso().getApplicazione(null).getCodApplicazione())) {
+				throw AuthorizationManager.toNotAuthorizedException(user);
+			}
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

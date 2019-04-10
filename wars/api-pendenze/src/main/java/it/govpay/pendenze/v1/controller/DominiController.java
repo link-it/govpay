@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import eu.medsea.mimeutil.MimeUtil;
-import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
 import it.govpay.core.utils.GovpayConfig;

@@ -33,7 +33,8 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 		super(user);
 		this.addDefaultSort(Incasso.model().DATA_ORA_INCASSO,SortOrder.DESC);
 	}
-
+	
+	private String idA2A;
 	private Date inizio;
 	private Date fine;
 
@@ -48,5 +49,11 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	}
 	public void setFine(Date fine) {
 		this.fine = fine;
+	}
+	public String getIdA2A() {
+		return idA2A;
+	}
+	public void setIdA2A(String idA2A) {
+		this.idA2A = idA2A;
 	}
 }

@@ -13,6 +13,7 @@ public class CostantiValidazione {
 	public static final String PATTERN_ID_TIPO_VERSAMENTO = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 	public static final String PATTERN_ID_RUOLO = "(^[a-zA-Z0-9\\-_]{1,255}$)";
 	public static final String PATTERN_PRINCIPAL = "(^.{1,4000}$)";
+	public static final String PATTERN_ID_PENDENZA = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 }
 
 

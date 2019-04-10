@@ -61,6 +61,7 @@ public class PendenzeController extends BaseController {
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdApplicazione("idA2A", idA2A);
+			validatoreId.validaIdPendenza("idPendenza", idPendenza);
 			
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
 			

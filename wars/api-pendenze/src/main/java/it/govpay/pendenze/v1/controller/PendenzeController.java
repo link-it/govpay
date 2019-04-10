@@ -14,11 +14,14 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
@@ -31,15 +34,11 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
-
-import org.openspcoop2.utils.json.ValidationException;
-import org.openspcoop2.utils.service.context.IContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
-import it.govpay.model.TipoVersamento;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pendenze.v1.beans.FaultBean;
@@ -82,6 +81,12 @@ public class PendenzeController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdApplicazione("idA2A", idA2A);
+			validatoreId.validaIdPendenza("idPendenza", idPendenza);
+			
+			// filtro sull'applicazione			
+			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
+				throw AuthorizationManager.toNotAuthorizedException(user);
+			}
 
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
 
@@ -132,10 +137,21 @@ public class PendenzeController extends BaseController {
 			listaPendenzeDTO.setPagina(pagina);
 			listaPendenzeDTO.setStato(stato);
 
-			if(idDominio != null)
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			
+			if(idDominio != null) {
+				validatoreId.validaIdDominio("idDominio", idDominio);
 				listaPendenzeDTO.setIdDominio(idDominio);
-			if(idA2A != null)
-				listaPendenzeDTO.setIdA2A(idA2A);
+			}
+			
+			// filtro sull'applicazione e' ignorato, un'applicazione vede solo le sue pendenze
+//			if(idA2A != null) {
+//				validatoreId.validaIdApplicazione("idA2A", idA2A);
+//				listaPendenzeDTO.setIdA2A(idA2A);
+//			}
+			// filtro sull'applicazione			
+			listaPendenzeDTO.setIdA2A(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione()); 
+			
 			if(idDebitore != null)
 				listaPendenzeDTO.setIdDebitore(idDebitore);
 
@@ -207,6 +223,12 @@ public class PendenzeController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdApplicazione("idA2A", idA2A);
+			validatoreId.validaIdPendenza("idPendenza", idPendenza);
+			
+			// filtro sull'applicazione			
+			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
+				throw AuthorizationManager.toNotAuthorizedException(user);
+			}
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
@@ -293,17 +315,18 @@ public class PendenzeController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdApplicazione("idA2A", idA2A);
+			validatoreId.validaIdPendenza("idPendenza", idPendenza);
+			
+			// filtro sull'applicazione			
+			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
+				throw AuthorizationManager.toNotAuthorizedException(user);
+			}
 
 			String jsonRequest = baos.toString();
 			PendenzaPut pendenzaPost= JSONSerializable.parse(jsonRequest, PendenzaPut.class);
 			pendenzaPost.validate();
 
-			ValidatorFactory vf = ValidatorFactory.newInstance();
-			vf.getValidator("idPendenza", idPendenza).notNull().minLength(1).maxLength(35);
-			vf.getValidator("idA2A", idA2A).minLength(1).maxLength(35);
-
 			Versamento versamento = PendenzeConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza);
-
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 

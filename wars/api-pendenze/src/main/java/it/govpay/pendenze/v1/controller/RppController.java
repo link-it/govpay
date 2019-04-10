@@ -70,20 +70,30 @@ public class RppController extends BaseController {
 			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
 			listaRptDTO.setLimit(risultatiPerPagina);
 			listaRptDTO.setPagina(pagina);
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
 			if(esito != null)
 				listaRptDTO.setStato(StatoRpt.valueOf(esito));
 
-			if(idDominio != null)
+			if(idDominio != null) {
+				validatoreId.validaIdDominio("idDominio", idDominio);
 				listaRptDTO.setIdDominio(idDominio);
+			}
 			if(iuv != null)
 				listaRptDTO.setIuv(iuv);
 			if(ccp != null)
 				listaRptDTO.setCcp(ccp);
-			if(idA2A != null)
+			
+			if(idA2A != null) {
+				validatoreId.validaIdApplicazione("idA2A", idA2A);
 				listaRptDTO.setIdA2A(idA2A);
-			if(idPendenza != null)
+			}
+			
+			if(idPendenza != null) {
+				validatoreId.validaIdPendenza("idPendenza", idPendenza);
 				listaRptDTO.setIdPendenza(idPendenza);
+			}
 
 			if(idPagamento != null)
 				listaRptDTO.setIdPagamento(idPagamento);

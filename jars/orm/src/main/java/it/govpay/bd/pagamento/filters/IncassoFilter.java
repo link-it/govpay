@@ -45,6 +45,7 @@ public class IncassoFilter extends AbstractFilter{
 	private String trn;
 	private String dispositivo;
 	private String causale;
+	private String codApplicazione;
 	private List<Long> idIncasso= null;
 
 	public IncassoFilter(IExpressionConstructor expressionConstructor) {
@@ -132,6 +133,14 @@ public class IncassoFilter extends AbstractFilter{
 				addAnd = true;
 			}
 			
+			if(this.codApplicazione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Incasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				addAnd = true;
+			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -196,4 +205,13 @@ public class IncassoFilter extends AbstractFilter{
 	public void setIdIncasso(List<Long> idIncasso) {
 		this.idIncasso = idIncasso;
 	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+	
 }

@@ -13,10 +13,12 @@ public class PendenzaVerificataValidator  implements IValidable{
 
 	private PendenzaVerificata pendenzaVerificata= null;
 	private ValidatorFactory vf = null; 
+	private ValidatoreIdentificativi validatoreId = null;
 
 	public PendenzaVerificataValidator(PendenzaVerificata pendenzaVerificata){
 		this.pendenzaVerificata = pendenzaVerificata;
 		this.vf = ValidatorFactory.newInstance();
+		this.validatoreId = ValidatoreIdentificativi.newInstance();
 	}
 
 	@Override
@@ -58,15 +60,15 @@ public class PendenzaVerificataValidator  implements IValidable{
 	}
 
 	public void validaIdA2A(String idA2A) throws ValidationException {
-		vf.getValidator("idA2A", idA2A).minLength(1).maxLength(35);
+		this.validatoreId.validaId("idA2A", idA2A, CostantiValidazione.PATTERN_ID_APPLICAZIONE, 1, 35, false);
 	}
 
 	public void validaIdDominio(String idDominio) throws ValidationException {
-		vf.getValidator("idDominio", idDominio).notNull().minLength(1).maxLength(35);
+		this.validatoreId.validaIdDominio("idDominio", idDominio);
 	}
 
 	public void validaIdUnitaOperativa(String idUnitaOperativa) throws ValidationException {
-		vf.getValidator("idUnitaOperativa", idUnitaOperativa).minLength(1).maxLength(35);
+		this.validatoreId.validaId("idUnitaOperativa", idUnitaOperativa, CostantiValidazione.PATTERN_ID_UO, 1, 35, false);
 	}
 
 	public void validaNomePendenza(String nome) throws ValidationException {
@@ -104,6 +106,6 @@ public class PendenzaVerificataValidator  implements IValidable{
 	}
 
 	public void validaIdPendenza(String idPendenza) throws ValidationException {
-		vf.getValidator("idPendenza", idPendenza).notNull().minLength(1).maxLength(35);
+		this.validatoreId.validaIdPendenza("idPendenza", idPendenza);
 	}
 }
