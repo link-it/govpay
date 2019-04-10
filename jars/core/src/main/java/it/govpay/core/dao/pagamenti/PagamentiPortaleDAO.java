@@ -64,7 +64,6 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
 import it.govpay.model.TipoVersamento.Tipo;
@@ -171,9 +170,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					log.debug("Verifica autorizzazione utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza() 
 					+ "] al pagamento del versamento [Id: " + versamentoModel.getCodVersamentoEnte() + ", IdA2A: " + versamentoModel.getApplicazione(bd).getCodApplicazione() 
 					+ "] per il dominio [" + versamentoModel.getDominio(bd).getCodDominio() + "], tipoPendenza [" + versamentoModel.getTipoVersamento(bd).getCodTipoVersamento() + "]...");
-					
-					List<Diritti> diritti = new ArrayList<>(); 
-					diritti.add(Diritti.ESECUZIONE);
 					
 					if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(userDetails.getUtenza(), versamentoModel.getDominio(bd).getCodDominio(), versamentoModel.getTipoVersamento(bd).getCodTipoVersamento())) {
 							log.warn("Non autorizzato utenza [" + userDetails.getIdentificativo() + ", tipo: " + userDetails.getTipoUtenza()

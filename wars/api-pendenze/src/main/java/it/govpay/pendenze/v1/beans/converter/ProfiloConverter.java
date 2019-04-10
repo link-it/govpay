@@ -37,7 +37,9 @@ public class ProfiloConverter {
 		if(user.getAcls()!=null) {
 			List<AclPost> aclLst = new ArrayList<>();
 			for(it.govpay.bd.model.Acl acl: user.getAcls()) {
-				aclLst.add(AclConverter.toRsModel(acl));
+				AclPost rsModel = AclConverter.toRsModel(acl);
+				if(rsModel != null)
+					aclLst.add(rsModel);
 
 			}
 			profilo.setAcl(aclLst);
