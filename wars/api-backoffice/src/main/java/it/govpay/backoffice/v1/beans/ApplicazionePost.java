@@ -304,6 +304,9 @@ sb.append("}");
 		}
 		
 		vf.getValidator("abilitato", this.abilitato).notNull();
+		vf.getValidator("apiPagamenti", this.apiPagamenti).notNull();
+		vf.getValidator("apiPendenze", this.apiPendenze).notNull();
+		vf.getValidator("apiRagioneria", this.apiRagioneria).notNull();
 	}
 }
 

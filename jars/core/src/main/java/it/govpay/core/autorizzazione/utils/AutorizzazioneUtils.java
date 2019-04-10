@@ -152,8 +152,8 @@ public class AutorizzazioneUtils {
 		List<Acl> aclPrincipal = new ArrayList<>();
 		Acl acl = new Acl();
 		acl.setUtenza(utenza);
-		acl.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.ESECUZIONE.getCodifica());
-		acl.setServizio(Servizio.PAGAMENTI); 
+		acl.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.SCRITTURA.getCodifica());
+		acl.setServizio(Servizio.API_PAGAMENTI); 
 		acl.getProprieta().put(AuthorizationManager.CODICE_FISCALE_CITTADINO, username);
 		aclPrincipal.add(acl);
 		utenza.setAclPrincipal(aclPrincipal);
@@ -200,8 +200,8 @@ public class AutorizzazioneUtils {
 		List<Acl> aclPrincipal = new ArrayList<>();
 		Acl acl = new Acl();
 		acl.setUtenza(utenza);
-		acl.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.ESECUZIONE.getCodifica());
-		acl.setServizio(Servizio.PAGAMENTI); 
+		acl.setListaDiritti(Diritti.LETTURA.getCodifica() + Diritti.SCRITTURA.getCodifica());
+		acl.setServizio(Servizio.API_PAGAMENTI); 
 		acl.getProprieta().put(AuthorizationManager.UTENZA_ANONIMA, "true");
 		aclPrincipal.add(acl);
 		utenza.setAclPrincipal(aclPrincipal);
