@@ -115,7 +115,7 @@ public class ApplicazioniConverter {
 		}
 		
 		if(applicazionePost.ApiRagioneria()) {
-			Acl acl = AclConverter.getAclAPI(Servizio.API_PENDENZE, user);
+			Acl acl = AclConverter.getAclAPI(Servizio.API_RAGIONERIA, user);
 			acl.setUtenza(applicazione.getUtenza());
 			aclPrincipal.add(acl);
 		}

@@ -38,6 +38,18 @@ public class UtenzaApplicazione extends Utenza {
 	public String getCodApplicazione() {
 		return codApplicazione;
 	}
+	
+	public String getMessaggioUtenzaDisabilitata() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Applicazione [").append(this.getCodApplicazione()).append("] disabilitata");
+		return sb.toString();
+	}
+	
+	public String getMessaggioUtenzaNonAutorizzata() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Applicazione [").append(this.getCodApplicazione()).append("] non autorizzata ad accedere alla risorsa richiesta");
+		return sb.toString();
+	}
 
 //	public void setCodApplicazione(String codApplicazione) {
 //		this.codApplicazione = codApplicazione;

@@ -97,4 +97,12 @@ public class GovpayLdapUserDetails implements LdapUserDetails {
 	public boolean isAbilitato() {
 		return this.utenza != null ? this.utenza.isAbilitato() : false;
 	}
+	
+	public String getMessaggioUtenzaDisabilitata() {
+		return this.utenza != null ? this.utenza.getMessaggioUtenzaDisabilitata() : "Utenza non abilitata";
+	}
+	
+	public String getMessaggioUtenzaNonAutorizzata() {
+		return this.utenza != null ? this.utenza.getMessaggioUtenzaNonAutorizzata() : "Utenza non autorizzata ad accedere alla risorsa richiesta";
+	}
 }

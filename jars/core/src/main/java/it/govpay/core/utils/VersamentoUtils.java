@@ -51,7 +51,6 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
-import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -319,6 +318,8 @@ public class VersamentoUtils {
 		if(!model.getApplicazione(bd).getUtenza().isAbilitato())
 			throw new GovPayException(EsitoOperazione.APP_001, versamento.getCodApplicazione());
 		
+		Applicazione applicazione = model.getApplicazione(bd);
+		
 		Dominio dominio = null;
 		try {
 			dominio = AnagraficaManager.getDominio(bd, versamento.getCodDominio());
@@ -399,22 +400,21 @@ public class VersamentoUtils {
 		}
 		model.setIdTipoVersamento(tipoVersamento.getId()); 
 		
-		Applicazione applicazione = model.getApplicazione(bd);
-		List<Diritti> diritti = new ArrayList<>();
-		diritti.add(Diritti.SCRITTURA);
-		
-		if(!applicazione.isTrusted() && !AuthorizationManager.isTipoVersamentoDominioAuthorized(applicazione.getUtenza(), dominio.getCodDominio(),tipoVersamento.getCodTipoVersamento())) {
-			throw new GovPayException(EsitoOperazione.VER_022, dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
+		if(!applicazione.isTrusted() && !AuthorizationManager.isTipoVersamentoAuthorized(applicazione.getUtenza(), tipoVersamento.getCodTipoVersamento())) {
+			throw new GovPayException(EsitoOperazione.VER_022, tipoVersamento.getCodTipoVersamento());
 		}
-		
-		
+
 		// tipo pendenza dominio
 		TipoVersamentoDominio tipoVersamentoDominio= null;
 		
 		try {
 			tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), tipoVersamento.getCodTipoVersamento());
 		} catch (NotFoundException e) {
-			throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
+			try {
+				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
+			} catch (NotFoundException e1) {
+				throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
+			}
 		}
 		model.setIdTipoVersamentoDominio(tipoVersamentoDominio.getId());
 		

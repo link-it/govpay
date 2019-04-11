@@ -54,6 +54,7 @@ import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.eventi.EventoCooperazione;
 import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.NdpException;
@@ -148,7 +149,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
 					
 					if(!authOk) {
-						String principal = AutorizzazioneUtils.getPrincipal(authentication);
+						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+						String principal = details.getIdentificativo(); 
 						ctx.getApplicationLogger().log("er.erroreAutorizzazione", principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + identificativoIntermediarioPA + ").");
 					}
@@ -300,7 +302,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
 					
 					if(!authOk) {
-						String principal = AutorizzazioneUtils.getPrincipal(authentication);
+						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+						String principal = details.getIdentificativo(); 
 						ctx.getApplicationLogger().log("rt.erroreAutorizzazione", principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + header.getIdentificativoIntermediarioPA() + ").");
 					}

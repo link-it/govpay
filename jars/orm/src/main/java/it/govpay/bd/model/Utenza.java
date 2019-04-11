@@ -100,4 +100,16 @@ public class Utenza extends it.govpay.model.Utenza {
 	public List<Acl> getAclRuoli() {
 		return aclRuoli;
 	}
+	
+	public String getMessaggioUtenzaDisabilitata() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Utenza [").append(this.getIdentificativo()).append("] disabilitata");
+		return sb.toString();
+	}
+	
+	public String getMessaggioUtenzaNonAutorizzata() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Utenza [").append(this.getIdentificativo()).append("] non autorizzata ad accedere alla risorsa richiesta");
+		return sb.toString();
+	}
 }

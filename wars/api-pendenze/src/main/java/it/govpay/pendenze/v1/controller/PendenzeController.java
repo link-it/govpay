@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.commons.Versamento;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
@@ -85,7 +86,7 @@ public class PendenzeController extends BaseController {
 			
 			// filtro sull'applicazione			
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
-				throw AuthorizationManager.toNotAuthorizedException(user);
+				throw new GovPayException(EsitoOperazione.APP_002, AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione(), idA2A);
 			}
 
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
@@ -97,12 +98,12 @@ public class PendenzeController extends BaseController {
 
 			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Dominio dominio = leggiPendenzaDTOResponse.getDominio();
-			TipoVersamento tipoVersamento = leggiPendenzaDTOResponse.getTipoVersamento();
-			// controllo che il dominio e tipo versamento siano autorizzati
-			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
-			}
+//			Dominio dominio = leggiPendenzaDTOResponse.getDominio();
+//			TipoVersamento tipoVersamento = leggiPendenzaDTOResponse.getTipoVersamento();
+//			// controllo che il dominio e tipo versamento siano autorizzati
+//			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
+//				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
+//			}
 
 			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamentoIncasso(), leggiPendenzaDTOResponse.getRpts());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
@@ -227,7 +228,7 @@ public class PendenzeController extends BaseController {
 			
 			// filtro sull'applicazione			
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
-				throw AuthorizationManager.toNotAuthorizedException(user);
+				throw new GovPayException(EsitoOperazione.APP_002, AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione(), idA2A);
 			}
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
@@ -319,7 +320,7 @@ public class PendenzeController extends BaseController {
 			
 			// filtro sull'applicazione			
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
-				throw AuthorizationManager.toNotAuthorizedException(user);
+				throw new GovPayException(EsitoOperazione.APP_002, AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione(), idA2A);
 			}
 
 			String jsonRequest = baos.toString();

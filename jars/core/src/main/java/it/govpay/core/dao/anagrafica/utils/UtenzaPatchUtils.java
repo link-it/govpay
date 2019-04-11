@@ -26,6 +26,7 @@ import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -115,6 +116,8 @@ public class UtenzaPatchUtils {
 				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX_DI_UTENZA, op.getValue(), utenza.getTipoUtenza().name()));
 			}
 		} else {
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdTipoVersamento("tipiPendenza", tipoVersamento);
 			try {
 				AnagraficaManager.getTipoVersamento(bd, tipoVersamento).getId();
 			} catch (NotFoundException e) {
@@ -151,6 +154,8 @@ public class UtenzaPatchUtils {
 			}
 			utenza.getIdDomini().clear();
 		} else {
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("domini", dominio);
 			try {
 				AnagraficaManager.getDominio(bd, dominio).getId();
 			} catch (NotFoundException e) {

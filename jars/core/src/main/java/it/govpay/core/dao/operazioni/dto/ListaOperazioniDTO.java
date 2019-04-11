@@ -23,7 +23,6 @@ import java.util.Date;
 
 import org.springframework.security.core.Authentication;
 
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 
 public class ListaOperazioniDTO extends BasicFindRequestDTO {
@@ -34,7 +33,6 @@ public class ListaOperazioniDTO extends BasicFindRequestDTO {
 
 	private Date inizio;
 	private Date fine;
-	private String principal;
 
 	public Date getInizio() {
 		return this.inizio;
@@ -48,11 +46,4 @@ public class ListaOperazioniDTO extends BasicFindRequestDTO {
 	public void setFine(Date fine) {
 		this.fine = fine;
 	}
-	public String getPrincipal() {
-		return AutorizzazioneUtils.getPrincipal(this.getUser()) != null ? AutorizzazioneUtils.getPrincipal(this.getUser()) : this.principal;
-	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
-	}
-	
 }

@@ -23,6 +23,8 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	private Boolean verificato;
 	private String idSessionePortale;
 	private String idSessionePsp;
+	private String cfCittadino;
+	private String codApplicazione;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -66,4 +68,17 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	public void setIdSessionePsp(String idSessionePsp) {
 		this.idSessionePsp = idSessionePsp;
 	}
+	public String getCfCittadino() {
+		return cfCittadino;
+	}
+	public void setCfCittadino(String cfCittadino) {
+		this.cfCittadino = cfCittadino;
+	}
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+	
 }

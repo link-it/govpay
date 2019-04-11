@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
 import it.gov.spcoop.puntoaccessopa.servizi.avvisidigitali.NodoInviaAvvisoDigitaleService;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.exceptions.NdpException.FaultPa;
@@ -100,7 +101,8 @@ public class GpContext extends ApplicationContext {
 		else 
 			client.setInterfaceName("<Unknown>");
 
-		String user = AutorizzazioneUtils.getPrincipal(SecurityContextHolder.getContext().getAuthentication()); 
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(SecurityContextHolder.getContext().getAuthentication());
+		String user = details.getIdentificativo(); 
 
 		if(user != null)
 			client.setPrincipal(user);
@@ -140,7 +142,8 @@ public class GpContext extends ApplicationContext {
 		client.setInvocationEndpoint(request.getRequestURI());
 		client.setInterfaceName(nomeServizio);
 
-		String user = AutorizzazioneUtils.getPrincipal(SecurityContextHolder.getContext().getAuthentication()); 
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(SecurityContextHolder.getContext().getAuthentication());
+		String user = details.getIdentificativo(); 
 
 		if(user != null)
 			client.setPrincipal(user);

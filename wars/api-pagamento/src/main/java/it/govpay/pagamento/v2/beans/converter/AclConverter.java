@@ -43,6 +43,10 @@ public class AclConverter {
 			case RENDICONTAZIONI_E_INCASSI:
 				rsModel.setServizi(TipoServizio.RENDICONTAZIONI_E_INCASSI);
 				break;
+			case API_PAGAMENTI:
+			case API_PENDENZE:
+			case API_RAGIONERIA:
+				return null;
 			}
 		}
 		

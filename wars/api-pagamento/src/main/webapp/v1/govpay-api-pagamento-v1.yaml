@@ -714,6 +714,20 @@ paths:
             type: string
             format: csv
             default: +dataRichiestaPagamento
+        - name: dataDa
+          in: query
+          description: Inizio della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time     
+        - name: dataA
+          in: query
+          description: Fine della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time
         - name: idDominio
           in: query
           description: filtro per dominio creditore

@@ -1,10 +1,11 @@
 package it.govpay.pendenze.v1.beans.converter;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import it.govpay.pendenze.v1.beans.AclPost;
 import it.govpay.pendenze.v1.beans.AclPost.ServizioEnum;
-import it.govpay.model.Acl.Diritti;
 
 public class AclConverter {
 	
@@ -54,19 +55,12 @@ public class AclConverter {
 		if(serv ==null)
 			return null;
 		
-		if(acl.getListaDiritti() != null)
-			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> toAutorizzazioneEnum(a).toString()).collect(Collectors.toList()));
+		if(acl.getListaDiritti() != null) {
+			List<String> autorizzazioni = acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList());
+			Collections.sort(autorizzazioni);
+			rsModel.autorizzazioni(autorizzazioni);
+		}
 		
 		return rsModel;
 	}
-	
-    public static AclPost.AutorizzazioniEnum toAutorizzazioneEnum(Diritti text) {
-    	switch(text) {
-		case ESECUZIONE: return AclPost.AutorizzazioniEnum.ESECUZIONE;
-		case LETTURA: return AclPost.AutorizzazioniEnum.LETTURA;
-		case SCRITTURA: return AclPost.AutorizzazioniEnum.SCRITTURA;
-		default:
-			break;}
-    	return null;
-    }
 }

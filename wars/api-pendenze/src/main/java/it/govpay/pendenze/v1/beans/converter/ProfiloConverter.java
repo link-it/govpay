@@ -9,10 +9,8 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.model.TipoVersamento;
-import it.govpay.pendenze.v1.beans.AclPost;
 import it.govpay.pendenze.v1.beans.DominioIndex;
 import it.govpay.pendenze.v1.beans.Profilo;
 import it.govpay.pendenze.v1.beans.TipoPendenza;
@@ -33,17 +31,17 @@ public class ProfiloConverter {
 	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) throws ServiceException {
 		Profilo profilo = new Profilo();
 		
-		Utenza user = leggiProfilo.getUtente();
-		if(user.getAcls()!=null) {
-			List<AclPost> aclLst = new ArrayList<>();
-			for(it.govpay.bd.model.Acl acl: user.getAcls()) {
-				AclPost rsModel = AclConverter.toRsModel(acl);
-				if(rsModel != null)
-					aclLst.add(rsModel);
-
-			}
-			profilo.setAcl(aclLst);
-		}
+//		Utenza user = leggiProfilo.getUtente();
+//		if(user.getAcls()!=null) {
+//			List<AclPost> aclLst = new ArrayList<>();
+//			for(it.govpay.bd.model.Acl acl: user.getAcls()) {
+//				AclPost rsModel = AclConverter.toRsModel(acl);
+//				if(rsModel != null)
+//					aclLst.add(rsModel);
+//
+//			}
+//			profilo.setAcl(aclLst);
+//		}
 		profilo.setNome(leggiProfilo.getNome());
 		if(leggiProfilo.getDomini()!=null) {
 			List<DominioIndex> dominiLst = new ArrayList<>();

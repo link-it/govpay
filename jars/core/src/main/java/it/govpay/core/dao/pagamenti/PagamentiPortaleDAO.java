@@ -3,7 +3,6 @@ package it.govpay.core.dao.pagamenti;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +58,6 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.UrlUtils;
@@ -495,39 +493,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessionePsp(leggiPagamentoPortaleDTO.getIdSessionePsp());
 			}
 			
-			if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo())) {
-					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
-				}
-			}
+			pagamentoPortale.getApplicazione(bd);
 			
-			if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
-					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
-				}
-				
-				// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
-				if(pagamentoPortale.getDataRichiesta() != null) {
-					long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTime(new Date());
-					calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
-					long riferimentoTime = calendar.getTimeInMillis();
-
-					// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
-					if(dataPagamentoTime < riferimentoTime)
-						throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
-				}
-			}
-			
-			// se sei una applicazione allora vedi i pagamenti che hai caricato
-			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				if(pagamentoPortale.getApplicazione(bd) == null || 
-						!pagamentoPortale.getApplicazione(bd).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
-					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(), "il pagamento non appartiene all'applicazione chiamante");
-				}
-			}
-
 			if(pagamentoPortale.getVersamenti(bd) != null && pagamentoPortale.getVersamenti(bd).size() > 0) {
 				for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
 					versamento.getDominio(bd);
@@ -572,7 +539,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
-			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPagamentiPortaleDTO.getUser());
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
@@ -594,14 +560,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			}
 			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
-			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-				filter.setCfCittadino(userDetails.getIdentificativo()); 
-			}
-			
-			// se sei una applicazione allora vedi i pagamenti che hai caricato
-			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				filter.setCodApplicazione(userDetails.getApplicazione().getCodApplicazione()); 
-			}
+			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
+			filter.setCodApplicazione(listaPagamentiPortaleDTO.getCodApplicazione()); 
 
 			long count = pagamentiPortaleBD.count(filter);
 

@@ -74,6 +74,7 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.business.Applicazione;
 import it.govpay.core.business.GiornaleEventi;
@@ -189,7 +190,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
 					
 					if(!authOk) {
-						String principal = AutorizzazioneUtils.getPrincipal(authentication);
+						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+						String principal = details.getIdentificativo(); 
 						ctx.getApplicationLogger().log("ccp.erroreAutorizzazione", principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 					}
@@ -593,7 +595,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
 					
 					if(!authOk) {
-						String principal = AutorizzazioneUtils.getPrincipal(authentication);
+						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+						String principal = details.getIdentificativo(); 
 						ctx.getApplicationLogger().log("ccp.erroreAutorizzazione", principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 					}

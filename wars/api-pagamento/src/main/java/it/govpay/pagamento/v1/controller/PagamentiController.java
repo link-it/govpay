@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,9 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTO;
@@ -150,6 +154,41 @@ public class PagamentiController extends BaseController {
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
+			PagamentoPortale pagamentoPortale = pagamentoPortaleDTOResponse.getPagamento();
+			
+			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(leggiPagamentoPortaleDTO.getUser());
+			if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
+				}
+			}
+			
+			if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
+				}
+				
+				// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
+				if(pagamentoPortale.getDataRichiesta() != null) {
+					long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(new Date());
+					calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
+					long riferimentoTime = calendar.getTimeInMillis();
+
+					// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
+					if(dataPagamentoTime < riferimentoTime)
+						throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
+				}
+			}
+			
+			// se sei una applicazione allora vedi i pagamenti che hai caricato
+			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
+				if(pagamentoPortale.getApplicazione(null) == null || 
+						!pagamentoPortale.getApplicazione(null).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(), "il pagamento non appartiene all'applicazione chiamante");
+				}
+			}
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
 			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
@@ -203,6 +242,41 @@ public class PagamentiController extends BaseController {
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
 			LeggiPagamentoPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.leggiPagamentoPortale(leggiPagamentoPortaleDTO);
+			PagamentoPortale pagamentoPortale = pagamentoPortaleDTOResponse.getPagamento();
+			
+			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(leggiPagamentoPortaleDTO.getUser());
+			if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
+				}
+			}
+			
+			if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
+				}
+				
+				// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
+				if(pagamentoPortale.getDataRichiesta() != null) {
+					long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(new Date());
+					calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
+					long riferimentoTime = calendar.getTimeInMillis();
+
+					// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
+					if(dataPagamentoTime < riferimentoTime)
+						throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser());
+				}
+			}
+			
+			// se sei una applicazione allora vedi i pagamenti che hai caricato
+			if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
+				if(pagamentoPortale.getApplicazione(null) == null || 
+						!pagamentoPortale.getApplicazione(null).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(), "il pagamento non appartiene all'applicazione chiamante");
+				}
+			}
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
 			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
@@ -278,6 +352,15 @@ public class PagamentiController extends BaseController {
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
 			
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPagamentiPortaleDTO.getUser());
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				listaPagamentiPortaleDTO.setCfCittadino(userDetails.getIdentificativo()); 
+			}
+			
+			// se sei una applicazione allora vedi i pagamenti che hai caricato
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
+				listaPagamentiPortaleDTO.setCodApplicazione(userDetails.getApplicazione().getCodApplicazione()); 
+			}
 			// CHIAMATA AL DAO
 			
 			ListaPagamentiPortaleDTOResponse pagamentoPortaleDTOResponse = pagamentiPortaleDAO.listaPagamentiPortale(listaPagamentiPortaleDTO);

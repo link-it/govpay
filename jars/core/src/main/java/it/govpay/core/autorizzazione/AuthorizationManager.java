@@ -80,9 +80,9 @@ public class AuthorizationManager {
 		StringBuilder sb = new StringBuilder();
 		
 		if(!details.isAbilitato()) {
-			sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] disabilitata");
+			sb.append(details.getMessaggioUtenzaDisabilitata());
 		} else {
-			sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non autorizzata ad accedere alla risorsa richiesta");
+			sb.append(details.getMessaggioUtenzaNonAutorizzata());
 		}
 		
 		if(StringUtils.isNotEmpty(descrizione)) {
@@ -95,9 +95,9 @@ public class AuthorizationManager {
 
 	public static NotAuthenticatedException toNotAuthenticatedException(Authentication authentication) {
 		StringBuilder sb = new StringBuilder();
-		String utenza =  AutorizzazioneUtils.getPrincipal(authentication);
-		if(utenza != null)
-			sb.append("Utenza [").append(utenza).append("] non autorizzata.");
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		if(details != null)
+			sb.append(details.getMessaggioUtenzaNonAutorizzata()).append(".");
 		else
 			sb.append("Credenziali non fornite.");
 		return new NotAuthenticatedException(sb.toString());
@@ -108,11 +108,11 @@ public class AuthorizationManager {
 		StringBuilder sb = new StringBuilder();
 
 		if(!details.isAbilitato()) {
-			sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] disabilitata");
+			sb.append(details.getMessaggioUtenzaDisabilitata()).append(".");
 			return new NotAuthorizedException(sb.toString());
 		}
 
-		sb.append("Utenza [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non e' autorizzata ad accedere alla risorsa richiesta");
+		sb.append(details.getMessaggioUtenzaNonAutorizzata());
 
 		boolean dominioMsg = false;
 		if(StringUtils.isNotEmpty(codDominio)) {
@@ -136,7 +136,7 @@ public class AuthorizationManager {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("L'utenza autenticata [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non e' autorizzata ad accedere alla risorsa richiesta per nessun Dominio.");
+		sb.append(details.getMessaggioUtenzaNonAutorizzata()).append(" per nessun Dominio.");
 		return new NotAuthorizedException(sb.toString());
 	}
 
@@ -144,7 +144,7 @@ public class AuthorizationManager {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("L'utenza autenticata [").append(details != null ? details.getIdentificativo() : "NON RICONOSCIUTA").append("] non e' autorizzata ad accedere alla risorsa richiesta per nessun Tipo Pendenza.");
+		sb.append(details.getMessaggioUtenzaNonAutorizzata()).append(" per nessun Tipo Pendenza.");
 		return new NotAuthorizedException(sb.toString());
 	}
 
