@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.jaxrs.RawObject;
 
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.ragioneria.v1.beans.PendenzaIndex;
@@ -39,7 +40,7 @@ public class PendenzeConverter {
 		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
-		rsModel.setDatiAllegati(versamento.getDatiAllegati());
+		rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
 
 		StatoPendenza statoPendenza = null;
 
@@ -93,7 +94,7 @@ public class PendenzeConverter {
 		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
-		rsModel.setDatiAllegati(versamento.getDatiAllegati());
+		rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
 
 		StatoPendenza statoPendenza = null;
 
@@ -126,7 +127,7 @@ public class PendenzeConverter {
 
 	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException {
 		VocePendenza rsModel = new VocePendenza();
-		rsModel.setDatiAllegati(singoloVersamento.getDatiAllegati());
+		rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());

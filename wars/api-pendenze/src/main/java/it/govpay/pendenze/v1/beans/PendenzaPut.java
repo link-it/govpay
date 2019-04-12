@@ -79,7 +79,7 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 	private String cartellaPagamento = null;
 
 	@JsonProperty("datiAllegati")
-	private String datiAllegati = null;
+	private Object datiAllegati = null;
 
 	@JsonProperty("tassonomia")
 	private String tassonomia = null;
@@ -261,16 +261,16 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 	/**
 	 * Dati applicativi allegati dal gestionale secondo un formato proprietario.
 	 **/
-	public PendenzaPut datiAllegati(String datiAllegati) {
+	public PendenzaPut datiAllegati(Object datiAllegati) {
 		this.datiAllegati = datiAllegati;
 		return this;
 	}
 
 	@JsonProperty("datiAllegati")
-	public String getDatiAllegati() {
+	public Object getDatiAllegati() {
 		return this.datiAllegati;
 	}
-	public void setDatiAllegati(String datiAllegati) {
+	public void setDatiAllegati(Object datiAllegati) {
 		this.datiAllegati = datiAllegati;
 	}
 

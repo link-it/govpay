@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "tassonomiaAvviso",
 "idA2A",
 "idPendenza",
+"tipoPendenza",
 "dominio",
 "unitaOperativa",
 "stato",
@@ -77,7 +78,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   private String cartellaPagamento = null;
   
   @JsonProperty("datiAllegati")
-  private String datiAllegati = null;
+  private Object datiAllegati = null;
   
   @JsonProperty("tassonomia")
   private String tassonomia = null;
@@ -90,6 +91,9 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("idPendenza")
   private String idPendenza = null;
+  
+  @JsonProperty("tipoPendenza")
+  private String tipoPendenza = null;
   
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
@@ -304,16 +308,16 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   /**
    * Dati applicativi allegati dal gestionale secondo un formato proprietario.
    **/
-  public Pendenza datiAllegati(String datiAllegati) {
+  public Pendenza datiAllegati(Object datiAllegati) {
     this.datiAllegati = datiAllegati;
     return this;
   }
 
   @JsonProperty("datiAllegati")
-  public String getDatiAllegati() {
-    return this.datiAllegati;
+  public Object getDatiAllegati() {
+    return datiAllegati;
   }
-  public void setDatiAllegati(String datiAllegati) {
+  public void setDatiAllegati(Object datiAllegati) {
     this.datiAllegati = datiAllegati;
   }
 
@@ -389,6 +393,22 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
   public void setIdPendenza(String idPendenza) {
     this.idPendenza = idPendenza;
+  }
+
+  /**
+   * Tipologia di pendenza
+   **/
+  public Pendenza tipoPendenza(String tipoPendenza) {
+    this.tipoPendenza = tipoPendenza;
+    return this;
+  }
+
+  @JsonProperty("tipoPendenza")
+  public String getTipoPendenza() {
+    return tipoPendenza;
+  }
+  public void setTipoPendenza(String tipoPendenza) {
+    this.tipoPendenza = tipoPendenza;
   }
 
   /**
@@ -679,6 +699,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.tassonomiaAvviso, pendenza.tassonomiaAvviso) &&
         Objects.equals(this.idA2A, pendenza.idA2A) &&
         Objects.equals(this.idPendenza, pendenza.idPendenza) &&
+        Objects.equals(tipoPendenza, pendenza.tipoPendenza) &&
         Objects.equals(this.dominio, pendenza.dominio) &&
         Objects.equals(this.unitaOperativa, pendenza.unitaOperativa) &&
         Objects.equals(this.stato, pendenza.stato) &&
@@ -700,7 +721,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, note, voci, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, note, voci, rpp, pagamenti);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -732,6 +753,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
     sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
     sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
     sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
+    sb.append("    tipoPendenza: ").append(toIndentedString(tipoPendenza)).append("\n");
     sb.append("    dominio: ").append(this.toIndentedString(this.dominio)).append("\n");
     sb.append("    unitaOperativa: ").append(this.toIndentedString(this.unitaOperativa)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");

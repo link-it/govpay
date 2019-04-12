@@ -63,6 +63,10 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamentoDominio.model().PAGA_TERZI.getFieldType()));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType()));
+				setParameter(object, "setJsonSchema", TipoVersamentoDominio.model().JSON_SCHEMA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "json_schema", TipoVersamentoDominio.model().JSON_SCHEMA.getFieldType()));
+				setParameter(object, "setDatiAllegati", TipoVersamentoDominio.model().DATI_ALLEGATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dati_allegati", TipoVersamentoDominio.model().DATI_ALLEGATI.getFieldType()));
 				return object;
 			} else if(model.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO)) {
 				TipoVersamento object = new TipoVersamento();
@@ -80,6 +84,10 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAGA_TERZI.getFieldType()));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType(),
 						jdbcParameterUtilities.readParameter(rs, "abilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType()));
+				setParameter(object, "setJsonSchema", TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "json_schema", TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA.getFieldType()));
+				setParameter(object, "setDatiAllegati", TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dati_allegati", TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI.getFieldType()));
 				return object;
 			}
 			
@@ -110,6 +118,10 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"pagaTerzi"));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
+				setParameter(object, "setJsonSchema", TipoVersamentoDominio.model().JSON_SCHEMA.getFieldType(),
+					this.getObjectFromMap(map,"jsonSchema"));
+				setParameter(object, "setDatiAllegati", TipoVersamentoDominio.model().DATI_ALLEGATI.getFieldType(),
+					this.getObjectFromMap(map,"datiAllegati"));
 				return object;
 			} else if(model.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO)) {
 				TipoVersamento object = new TipoVersamento();
@@ -127,6 +139,10 @@ public class TipoVersamentoDominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoVersamento.pagaTerzi"));
 				setParameter(object, "setAbilitato", TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO.getFieldType(),
 						this.getObjectFromMap(map,"tipoVersamento.abilitato"));
+				setParameter(object, "setJsonSchema", TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.jsonSchema"));
+				setParameter(object, "setDatiAllegati", TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI.getFieldType(),
+					this.getObjectFromMap(map,"tipoVersamento.datiAllegati"));
 				return object;
 			}
 			

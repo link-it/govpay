@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
@@ -31,6 +32,7 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Anagrafica;
 
 public class DominiConverter {
@@ -392,12 +394,17 @@ public class DominiConverter {
 		.pagaTerzi(tipoVersamentoDominio.getPagaTerziCustom())
 		.abilitato(tipoVersamentoDominio.isAbilitato());
 		
+		if(tipoVersamentoDominio.getJsonSchemaCustom() != null)
+			rsModel.setSchema(new RawObject(tipoVersamentoDominio.getJsonSchemaCustom()));
+		if(tipoVersamentoDominio.getDatiAllegatiCustom() != null)
+			rsModel.setDatiAllegati(new RawObject(tipoVersamentoDominio.getDatiAllegatiCustom()));
+		
 		rsModel.setValori(valori);
 		
 		return rsModel;
 	}
 	
-	public static PutTipoPendenzaDominioDTO getPutTipoPendenzaDominioDTO(TipoPendenzaDominioPost tipoPendenzaRequest, String idDominio, String idTipoPendenza, Authentication user) throws ValidationException {
+	public static PutTipoPendenzaDominioDTO getPutTipoPendenzaDominioDTO(TipoPendenzaDominioPost tipoPendenzaRequest, String idDominio, String idTipoPendenza, Authentication user) throws ValidationException, ServiceException {
 		PutTipoPendenzaDominioDTO tipoPendenzaDTO = new PutTipoPendenzaDominioDTO(user);
 		
 		it.govpay.bd.model.TipoVersamentoDominio tipoVersamentoDominio = new it.govpay.bd.model.TipoVersamentoDominio();
@@ -410,9 +417,16 @@ public class DominiConverter {
 			tipoVersamentoDominio.setPagaTerziCustom(tipoPendenzaRequest.PagaTerzi());
 		}
 		
+		if(tipoPendenzaRequest.getSchema() != null)
+			tipoVersamentoDominio.setJsonSchemaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getSchema(),null));
+		if(tipoPendenzaRequest.getDatiAllegati() != null)
+			tipoVersamentoDominio.setDatiAllegatiCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getDatiAllegati(),null));
+		
 		tipoPendenzaDTO.setTipoVersamentoDominio(tipoVersamentoDominio);
 		tipoPendenzaDTO.setIdDominio(idDominio);
 		tipoPendenzaDTO.setCodTipoVersamento(idTipoPendenza);
+		
+		
 				
 		return tipoPendenzaDTO;		
 	}

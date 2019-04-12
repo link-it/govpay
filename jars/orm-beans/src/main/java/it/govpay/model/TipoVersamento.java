@@ -37,6 +37,8 @@ public class TipoVersamento extends BasicModel {
 	private Tipo tipoDefault;
 	private boolean pagaTerziDefault;
 	private boolean abilitatoDefault;
+	private String jsonSchemaDefault;
+	private String datiAllegatiDefault;
 	
 	public String getCodificaIuvDefault() {
 		return codificaIuvDefault;
@@ -80,5 +82,17 @@ public class TipoVersamento extends BasicModel {
 	}
 	public void setAbilitatoDefault(boolean abilitatoDefault) {
 		this.abilitatoDefault = abilitatoDefault;
+	}
+	public String getJsonSchemaDefault() {
+		return jsonSchemaDefault;
+	}
+	public void setJsonSchemaDefault(String jsonSchemaDefault) {
+		this.jsonSchemaDefault = jsonSchemaDefault;
+	}
+	public String getDatiAllegatiDefault() {
+		return datiAllegatiDefault;
+	}
+	public void setDatiAllegatiDefault(String datiAllegatiDefault) {
+		this.datiAllegatiDefault = datiAllegatiDefault;
 	}
 }

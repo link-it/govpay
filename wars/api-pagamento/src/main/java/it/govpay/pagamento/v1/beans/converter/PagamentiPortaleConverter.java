@@ -21,6 +21,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.pagamento.v1.beans.ContoAddebito;
@@ -138,7 +139,7 @@ public class PagamentiPortaleConverter {
 		return pagamentiPortaleDTO;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) throws ValidationException {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -167,6 +168,8 @@ public class PagamentiPortaleConverter {
 		}
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
+		if(pendenza.getDatiAllegati() != null)
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
 		
 //		versamento.setAnomalie(marshall(pendenza.getSegnalazioni())); //TODO
 
@@ -188,7 +191,7 @@ public class PagamentiPortaleConverter {
 		return versamento;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ValidationException {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ValidationException, ServiceException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -221,6 +224,9 @@ public class PagamentiPortaleConverter {
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		versamento.setCartellaPagamento(pendenza.getCartellaPagamento());
 		
+		if(pendenza.getDatiAllegati() != null)
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+		
 //		versamento.setIncasso(pendenza.getIncasso()); //TODO
 //		versamento.setAnomalie(pendenza.getAnomalie()); 
 
@@ -243,7 +249,7 @@ public class PagamentiPortaleConverter {
 	}
 	
 	
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) {
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
 
 		if(voci != null && voci.size() > 0) {
 			for (VocePendenza vocePendenza : voci) {
@@ -252,7 +258,9 @@ public class PagamentiPortaleConverter {
 				//sv.setCodTributo(value); ??
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
-				sv.setDatiAllegati(vocePendenza.getDatiAllegati());
+				if(vocePendenza.getDatiAllegati() != null)
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
+				
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
 

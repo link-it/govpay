@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.bd.model.Rpt;
@@ -15,6 +16,7 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.pendenze.v1.beans.Avviso;
 import it.govpay.pendenze.v1.beans.Avviso.StatoEnum;
 import it.govpay.pendenze.v1.beans.Pendenza;
@@ -153,7 +155,7 @@ public class PendenzeConverter {
 		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
-		rsModel.setDatiAllegati(versamento.getDatiAllegati());
+		rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
 
 		StatoPendenza statoPendenza = null;
 
@@ -188,7 +190,7 @@ public class PendenzeConverter {
 
 	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, int indice) throws ServiceException {
 		VocePendenza rsModel = new VocePendenza();
-		rsModel.setDatiAllegati(singoloVersamento.getDatiAllegati());
+		rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
 
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
@@ -267,7 +269,7 @@ public class PendenzeConverter {
 	}
 
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -286,6 +288,8 @@ public class PendenzeConverter {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setTassonomia(pendenza.getTassonomia());
+		if(pendenza.getDatiAllegati() != null)
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
 
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
@@ -296,7 +300,7 @@ public class PendenzeConverter {
 			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
 		}
 
-		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
+		versamento.setNumeroAvviso(pendenza.getNumeroAvviso()); 
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
@@ -316,7 +320,7 @@ public class PendenzeConverter {
 		return versamento;
 	}
 
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) {
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
 
 		if(voci != null && voci.size() > 0) {
 			for (VocePendenza vocePendenza : voci) {
@@ -325,7 +329,8 @@ public class PendenzeConverter {
 				//sv.setCodTributo(value); ??
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
-				sv.setDatiAllegati(vocePendenza.getDatiAllegati());
+				if(vocePendenza.getDatiAllegati() != null)
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
 

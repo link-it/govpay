@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.jaxrs.RawObject;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.PagamentoPortale;
@@ -62,7 +63,7 @@ public class PendenzeConverter {
 		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(controlloUtenzaPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()),user));
-		rsModel.setDatiAllegati(versamento.getDatiAllegati());
+		rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
 		
 		StatoPendenza statoPendenza = null;
 
@@ -198,7 +199,7 @@ public class PendenzeConverter {
 	
 	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, int indice) throws ServiceException {
 		VocePendenza rsModel = new VocePendenza();
-		rsModel.setDatiAllegati(singoloVersamento.getDatiAllegati());
+		rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
 		
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());

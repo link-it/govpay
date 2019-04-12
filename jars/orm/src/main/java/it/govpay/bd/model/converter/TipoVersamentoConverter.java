@@ -49,6 +49,8 @@ public class TipoVersamentoConverter {
 			dto.setTipoDefault(Tipo.toEnum(vo.getTipo()));
 		dto.setPagaTerziDefault(vo.isPagaTerzi());
 		dto.setAbilitatoDefault(vo.getAbilitato());
+		dto.setJsonSchemaDefault(vo.getJsonSchema());
+		dto.setDatiAllegatiDefault(vo.getDatiAllegati());
 		
 		return dto;
 	}
@@ -63,6 +65,8 @@ public class TipoVersamentoConverter {
 			vo.setTipo(dto.getTipoDefault().getCodifica());
 		vo.setPagaTerzi(dto.getPagaTerziDefault());
 		vo.setAbilitato(dto.isAbilitatoDefault());
+		vo.setJsonSchema(dto.getJsonSchemaDefault());
+		vo.setDatiAllegati(dto.getDatiAllegatiDefault());
 		return vo;
 	}
 

@@ -41,6 +41,8 @@ import java.io.Serializable;
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="jsonSchema" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="datiAllegati" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -60,7 +62,9 @@ import java.io.Serializable;
   	"codificaIuv",
   	"tipo",
   	"pagaTerzi",
-  	"abilitato"
+  	"abilitato",
+  	"jsonSchema",
+  	"datiAllegati"
   }
 )
 
@@ -140,6 +144,22 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
     this.abilitato = abilitato;
   }
 
+  public java.lang.String getJsonSchema() {
+    return this.jsonSchema;
+  }
+
+  public void setJsonSchema(java.lang.String jsonSchema) {
+    this.jsonSchema = jsonSchema;
+  }
+
+  public java.lang.String getDatiAllegati() {
+    return this.datiAllegati;
+  }
+
+  public void setDatiAllegati(java.lang.String datiAllegati) {
+    this.datiAllegati = datiAllegati;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -182,5 +202,13 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)
   protected boolean abilitato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="jsonSchema",required=false,nillable=false)
+  protected java.lang.String jsonSchema;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="datiAllegati",required=false,nillable=false)
+  protected java.lang.String datiAllegati;
 
 }

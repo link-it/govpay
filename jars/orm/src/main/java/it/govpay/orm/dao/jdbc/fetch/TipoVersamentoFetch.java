@@ -66,6 +66,10 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "paga_terzi", TipoVersamento.model().PAGA_TERZI.getFieldType()));
 				setParameter(object, "setAbilitato", TipoVersamento.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", TipoVersamento.model().ABILITATO.getFieldType()));
+				setParameter(object, "setJsonSchema", TipoVersamento.model().JSON_SCHEMA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "json_schema", TipoVersamento.model().JSON_SCHEMA.getFieldType()));
+				setParameter(object, "setDatiAllegati", TipoVersamento.model().DATI_ALLEGATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dati_allegati", TipoVersamento.model().DATI_ALLEGATI.getFieldType()));
 				return object;
 			}
 			
@@ -100,6 +104,10 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"pagaTerzi"));
 				setParameter(object, "setAbilitato", TipoVersamento.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
+				setParameter(object, "setJsonSchema", TipoVersamento.model().JSON_SCHEMA.getFieldType(),
+					this.getObjectFromMap(map,"jsonSchema"));
+				setParameter(object, "setDatiAllegati", TipoVersamento.model().DATI_ALLEGATI.getFieldType(),
+					this.getObjectFromMap(map,"datiAllegati"));
 				return object;
 			}
 			

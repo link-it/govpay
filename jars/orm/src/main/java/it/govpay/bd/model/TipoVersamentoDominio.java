@@ -54,4 +54,18 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		} 
 		return this.dominio;
 	}
+	
+	public String getJsonSchema() {
+		if(this.getJsonSchemaCustom() != null)
+			return this.getJsonSchemaCustom();
+		else 
+			return this.getJsonSchemaDefault();
+	}
+	
+	public String getDatiAllegati() {
+		if(this.getDatiAllegatiCustom() != null)
+			return this.getDatiAllegatiCustom();
+		else 
+			return this.getDatiAllegatiDefault();
+	}
 }

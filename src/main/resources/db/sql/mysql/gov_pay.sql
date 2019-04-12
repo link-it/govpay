@@ -340,6 +340,8 @@ CREATE TABLE tipi_versamento
 	tipo VARCHAR(35) NOT NULL COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente',
 	paga_terzi BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
+	json_schema LONGTEXT COMMENT 'Definizione della struttura della tipologia pendenza',
+	dati_allegati LONGTEXT COMMENT 'Definizione della dati allegati utili per la gestione della tipologia pendenza',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -359,6 +361,8 @@ CREATE TABLE tipi_vers_domini
 	tipo VARCHAR(35) COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente per il dominio',
 	paga_terzi BOOLEAN  COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi per il dominio',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
+	json_schema LONGTEXT COMMENT 'Definizione della struttura della tipologia pendenza',
+	dati_allegati LONGTEXT COMMENT 'Definizione della dati allegati utili per la gestione della tipologia pendenza',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',

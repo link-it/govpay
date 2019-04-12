@@ -415,7 +415,13 @@ insert into acl (servizio,diritti,id_utenza) select 'API Pagamenti' as Servizio 
 insert into acl (servizio,diritti,id_utenza) select 'API Pendenze' as Servizio , 'RW' as diritti, acl.id_utenza from acl join applicazioni on acl.id_utenza = applicazioni.id_utenza where (acl.ruolo is null and acl.id_utenza is not null and acl.servizio  = 'Pendenze');
 insert into acl (servizio,diritti,id_utenza) select 'API Ragioneria' as Servizio , 'RW' as diritti, acl.id_utenza from acl join applicazioni on acl.id_utenza = applicazioni.id_utenza where (acl.ruolo is null and acl.id_utenza is not null and acl.servizio  = 'Rendicontazioni e Incassi');
 
+-- 12/04/2019 Informazioni su Json Schema e Dati Allegati per i Tipi Versamento
 
+ALTER TABLE tipi_versamento ADD COLUMN json_schema CLOB;
+ALTER TABLE tipi_versamento ADD COLUMN dati_allegati CLOB;
+
+ALTER TABLE tipi_vers_domini ADD COLUMN json_schema CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN dati_allegati CLOB;
 
 
 

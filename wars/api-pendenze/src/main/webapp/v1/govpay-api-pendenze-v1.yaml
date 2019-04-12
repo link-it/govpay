@@ -1036,7 +1036,7 @@ components:
           description: Identificativo della cartella di pagamento a cui afferisce la pendenza
           example: ABC00000001
         datiAllegati:
-          type: string
+          type: object
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
         tassonomia:
           type: string
@@ -1188,7 +1188,7 @@ components:
                 - Non eseguito
                 - Anomalo
             datiAllegati:
-              type: string
+              type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
         - oneOf:
             - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.

@@ -31,17 +31,6 @@ public class ProfiloConverter {
 	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) throws ServiceException {
 		Profilo profilo = new Profilo();
 		
-//		Utenza user = leggiProfilo.getUtente();
-//		if(user.getAcls()!=null) {
-//			List<AclPost> aclLst = new ArrayList<>();
-//			for(it.govpay.bd.model.Acl acl: user.getAcls()) {
-//				AclPost rsModel = AclConverter.toRsModel(acl);
-//				if(rsModel != null)
-//					aclLst.add(rsModel);
-//
-//			}
-//			profilo.setAcl(aclLst);
-//		}
 		profilo.setNome(leggiProfilo.getNome());
 		if(leggiProfilo.getDomini()!=null) {
 			List<DominioIndex> dominiLst = new ArrayList<>();

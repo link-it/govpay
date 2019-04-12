@@ -70,7 +70,7 @@ public class PendenzaIndex extends JSONSerializable {
   private String cartellaPagamento = null;
   
   @JsonProperty("datiAllegati")
-  private String datiAllegati = null;
+  private Object datiAllegati = null;
   
   @JsonProperty("tassonomia")
   private String tassonomia = null;
@@ -280,16 +280,16 @@ public class PendenzaIndex extends JSONSerializable {
   /**
    * Dati applicativi allegati dal gestionale secondo un formato proprietario.
    **/
-  public PendenzaIndex datiAllegati(String datiAllegati) {
+  public PendenzaIndex datiAllegati(Object datiAllegati) {
     this.datiAllegati = datiAllegati;
     return this;
   }
 
   @JsonProperty("datiAllegati")
-  public String getDatiAllegati() {
-    return this.datiAllegati;
+  public Object getDatiAllegati() {
+    return datiAllegati;
   }
-  public void setDatiAllegati(String datiAllegati) {
+  public void setDatiAllegati(Object datiAllegati) {
     this.datiAllegati = datiAllegati;
   }
 

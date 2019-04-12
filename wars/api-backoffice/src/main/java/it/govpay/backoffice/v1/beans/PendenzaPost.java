@@ -74,7 +74,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   private String cartellaPagamento = null;
   
   @JsonProperty("datiAllegati")
-  private String datiAllegati = null;
+  private Object datiAllegati = null;
   
   @JsonProperty("tassonomia")
   private String tassonomia = null;
@@ -187,7 +187,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   }
 
   /**
-   * Identificativo univoco versamento, assegnato se pagabile da psp
+   * Numero avviso, assegnato se pagabile da psp
    **/
   public PendenzaPost numeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
@@ -285,16 +285,16 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   /**
    * Dati applicativi allegati dal gestionale secondo un formato proprietario.
    **/
-  public PendenzaPost datiAllegati(String datiAllegati) {
+  public PendenzaPost datiAllegati(Object datiAllegati) {
     this.datiAllegati = datiAllegati;
     return this;
   }
 
   @JsonProperty("datiAllegati")
-  public String getDatiAllegati() {
-    return this.datiAllegati;
+  public Object getDatiAllegati() {
+    return datiAllegati;
   }
-  public void setDatiAllegati(String datiAllegati) {
+  public void setDatiAllegati(Object datiAllegati) {
     this.datiAllegati = datiAllegati;
   }
 

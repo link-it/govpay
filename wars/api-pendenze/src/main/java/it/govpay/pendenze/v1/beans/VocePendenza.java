@@ -100,7 +100,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 	private StatoEnum stato = null;
 
 	@JsonProperty("datiAllegati")
-	private String datiAllegati = null;
+	private Object datiAllegati = null;
 
 	@JsonProperty("hashDocumento")
 	private String hashDocumento= null;
@@ -209,16 +209,16 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 	/**
 	 * Dati applicativi allegati dal gestionale secondo un formato proprietario.
 	 **/
-	public VocePendenza datiAllegati(String datiAllegati) {
+	public VocePendenza datiAllegati(Object datiAllegati) {
 		this.datiAllegati = datiAllegati;
 		return this;
 	}
 
 	@JsonProperty("datiAllegati")
-	public String getDatiAllegati() {
+	public Object getDatiAllegati() {
 		return this.datiAllegati;
 	}
-	public void setDatiAllegati(String datiAllegati) {
+	public void setDatiAllegati(Object datiAllegati) {
 		this.datiAllegati = datiAllegati;
 	}
 

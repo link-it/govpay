@@ -2,6 +2,7 @@ package it.govpay.backoffice.v1.beans.converter;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
@@ -9,6 +10,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost.TipoEnum;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class TipiPendenzaConverter {
 
@@ -45,6 +47,10 @@ public class TipiPendenzaConverter {
 		
 		tipoVersamento.setPagaTerziDefault(entrataPost.PagaTerzi());
 		tipoVersamento.setAbilitatoDefault(entrataPost.Abilitato());
+		if(entrataPost.getSchema() != null)
+			tipoVersamento.setJsonSchemaDefault(ConverterUtils.toJSON(entrataPost.getSchema(),null));
+		if(entrataPost.getDatiAllegati() != null)
+			tipoVersamento.setDatiAllegatiDefault(ConverterUtils.toJSON(entrataPost.getDatiAllegati(),null));
 		
 		return entrataDTO;		
 	}
@@ -67,6 +73,11 @@ public class TipiPendenzaConverter {
 		}
 		
 		rsModel.setPagaTerzi(tipoVersamento.getPagaTerziDefault());
+		if(tipoVersamento.getJsonSchemaDefault() != null)
+			rsModel.setSchema(new RawObject(tipoVersamento.getJsonSchemaDefault()));
+		if(tipoVersamento.getDatiAllegatiDefault() != null)
+			rsModel.setDatiAllegati(new RawObject(tipoVersamento.getDatiAllegatiDefault()));
+		
 		
 		return rsModel;
 	}

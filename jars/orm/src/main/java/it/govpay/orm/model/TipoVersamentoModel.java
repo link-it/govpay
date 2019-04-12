@@ -47,6 +47,8 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.TIPO = new Field("tipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PAGA_TERZI = new Field("pagaTerzi",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.JSON_SCHEMA = new Field("jsonSchema",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 	
 	}
 	
@@ -60,6 +62,8 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PAGA_TERZI = new ComplexField(father,"pagaTerzi",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"TipoVersamento",TipoVersamento.class);
+		this.JSON_SCHEMA = new ComplexField(father,"jsonSchema",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 	
 	}
 	
@@ -76,6 +80,10 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 	public IField PAGA_TERZI = null;
 	 
 	public IField ABILITATO = null;
+	 
+	public IField JSON_SCHEMA = null;
+	 
+	public IField DATI_ALLEGATI = null;
 	 
 
 	@Override

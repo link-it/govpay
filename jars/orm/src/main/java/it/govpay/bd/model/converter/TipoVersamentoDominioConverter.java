@@ -51,6 +51,8 @@ public class TipoVersamentoDominioConverter {
 		if(vo.getTipo() != null)
 			dto.setTipoCustom(Tipo.toEnum(vo.getTipo()));
 		dto.setPagaTerziCustom(vo.getPagaTerzi());
+		dto.setJsonSchemaCustom(vo.getJsonSchema());
+		dto.setDatiAllegatiCustom(vo.getDatiAllegati());
 		
 		dto.setCodTipoVersamento(vo.getTipoVersamento().getCodTipoVersamento());
 		dto.setDescrizione(vo.getTipoVersamento().getDescrizione());
@@ -59,6 +61,8 @@ public class TipoVersamentoDominioConverter {
 			dto.setTipoDefault(Tipo.toEnum(vo.getTipoVersamento().getTipo()));
 		dto.setPagaTerziDefault(vo.getTipoVersamento().isPagaTerzi());
 		dto.setAbilitatoDefault(vo.getTipoVersamento().isAbilitato());
+		dto.setJsonSchemaDefault(vo.getTipoVersamento().getJsonSchema());
+		dto.setDatiAllegatiDefault(vo.getTipoVersamento().getDatiAllegati());
 		
 		return dto;
 	}
@@ -76,6 +80,8 @@ public class TipoVersamentoDominioConverter {
 			tipoVersamento.setTipo(dto.getTipoDefault().getCodifica());
 		tipoVersamento.setPagaTerzi(dto.getPagaTerziDefault());
 		tipoVersamento.setAbilitato(dto.isAbilitatoDefault());
+		tipoVersamento.setJsonSchema(dto.getJsonSchemaDefault());
+		tipoVersamento.setDatiAllegati(dto.getDatiAllegatiDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
 		if(dto.getTipoCustom() != null)
@@ -83,6 +89,8 @@ public class TipoVersamentoDominioConverter {
 		vo.setPagaTerzi(dto.getPagaTerziCustom());
 		vo.setTipoVersamento(tipoVersamento);
 		vo.setAbilitato(dto.isAbilitato());
+		vo.setJsonSchema(dto.getJsonSchemaCustom());
+		vo.setDatiAllegati(dto.getDatiAllegatiCustom());
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

@@ -10,7 +10,6 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.model.TipoVersamento;
-import it.govpay.pendenze.v2.beans.Acl;
 import it.govpay.pendenze.v2.beans.Profilo;
 import it.govpay.pendenze.v2.beans.Soggetto;
 import it.govpay.pendenze.v2.beans.TipoPendenza;
@@ -27,14 +26,6 @@ public class ProfiloConverter {
 		Profilo profilo = new Profilo();
 		
 		Utenza user = leggiProfilo.getUtente();
-		if(user.getAcls()!=null) {
-			List<Acl> aclLst = new ArrayList<>();
-			for(it.govpay.bd.model.Acl acl: user.getAcls()) {
-				aclLst.add(AclConverter.toRsModel(acl));
-
-			}
-			profilo.setAcl(aclLst);
-		}
 		profilo.setNome(leggiProfilo.getNome());
 		if(leggiProfilo.getDomini()!=null) {
 			List<it.govpay.pendenze.v2.beans.Dominio> dominiLst = new ArrayList<>();

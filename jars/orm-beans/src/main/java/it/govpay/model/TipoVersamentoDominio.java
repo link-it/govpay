@@ -9,7 +9,21 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	private Tipo tipoCustom;
 	private Boolean pagaTerziCustom;
 	private boolean abilitato;
+	private String jsonSchemaCustom;
+	private String datiAllegatiCustom;
 	
+	public String getJsonSchemaCustom() {
+		return jsonSchemaCustom;
+	}
+	public void setJsonSchemaCustom(String jsonSchemaCustom) {
+		this.jsonSchemaCustom = jsonSchemaCustom;
+	}
+	public String getDatiAllegatiCustom() {
+		return datiAllegatiCustom;
+	}
+	public void setDatiAllegatiCustom(String datiAllegatiCustom) {
+		this.datiAllegatiCustom = datiAllegatiCustom;
+	}
 	public long getIdTipoVersamento() {
 		return idTipoVersamento;
 	}

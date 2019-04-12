@@ -527,6 +527,8 @@ CREATE TABLE tipi_versamento
 	tipo VARCHAR(35) NOT NULL,
 	paga_terzi NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
+	json_schema CLOB,
+	dati_allegati CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -560,6 +562,8 @@ CREATE TABLE tipi_vers_domini
 	tipo VARCHAR2(35 CHAR),
 	paga_terzi NUMBER,
 	abilitato NUMBER NOT NULL,
+	json_schema CLOB,
+	dati_allegati CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento NUMBER NOT NULL,

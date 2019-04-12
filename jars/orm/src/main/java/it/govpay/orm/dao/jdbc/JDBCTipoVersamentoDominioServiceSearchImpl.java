@@ -176,6 +176,8 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(TipoVersamentoDominio.model().CODIFICA_IUV);
 			fields.add(TipoVersamentoDominio.model().TIPO);
 			fields.add(TipoVersamentoDominio.model().PAGA_TERZI);
+			fields.add(TipoVersamentoDominio.model().JSON_SCHEMA);
+			fields.add(TipoVersamentoDominio.model().DATI_ALLEGATI);
 			AliasField tipoTributoId = new AliasField(new CustomField("tipoVersamento.id", Long.class, "id", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)),
 					this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)+"_id");
 			fields.add(tipoTributoId);
@@ -187,10 +189,15 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(pagaTerziAlias);
 			AliasField abilitatoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO);
 			fields.add(abilitatoAlias);
+			AliasField jsonSchemaAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA);
+			fields.add(jsonSchemaAlias);
+			AliasField datiAllegatiAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI);
+			fields.add(datiAllegatiAlias);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
+			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA);
+			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI);
 			
-
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())));
 			
 			sqlQueryObject.setANDLogicOperator(true);

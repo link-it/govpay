@@ -109,6 +109,20 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "abilitato";
 			}
 		}
+		if(field.equals(TipoVersamento.model().JSON_SCHEMA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".json_schema";
+			}else{
+				return "json_schema";
+			}
+		}
+		if(field.equals(TipoVersamento.model().DATI_ALLEGATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_allegati";
+			}else{
+				return "dati_allegati";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -138,6 +152,12 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().ABILITATO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().JSON_SCHEMA)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().DATI_ALLEGATI)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 

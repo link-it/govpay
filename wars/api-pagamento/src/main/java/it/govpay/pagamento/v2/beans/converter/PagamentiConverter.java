@@ -264,7 +264,7 @@ public class PagamentiConverter {
 		
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		if(pendenza.getDatiAllegati() != null)
-		versamento.setDatiAllegati(pendenza.getDatiAllegati().toString());
+			versamento.setDatiAllegati(pendenza.getDatiAllegati().toString());
 		versamento.setCartellaPagamento(pendenza.getCartellaPagamento());
 
 		// voci pagamento

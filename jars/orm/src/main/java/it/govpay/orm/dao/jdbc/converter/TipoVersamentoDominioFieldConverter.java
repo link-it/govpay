@@ -109,6 +109,20 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "abilitato";
 			}
 		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".json_schema";
+			}else{
+				return "json_schema";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_allegati";
+			}else{
+				return "dati_allegati";
+			}
+		}
 		if(field.equals(TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -144,6 +158,20 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "abilitato";
 			}
 		}
+		if(field.equals(TipoVersamentoDominio.model().JSON_SCHEMA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".json_schema";
+			}else{
+				return "json_schema";
+			}
+		}
+		if(field.equals(TipoVersamentoDominio.model().DATI_ALLEGATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_allegati";
+			}else{
+				return "dati_allegati";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -175,6 +203,12 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(TipoVersamentoDominio.model().ID_DOMINIO, returnAlias);
 		}
@@ -188,6 +222,12 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamentoDominio.model().ABILITATO)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().JSON_SCHEMA)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().DATI_ALLEGATI)){
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 
