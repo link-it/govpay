@@ -45,7 +45,7 @@ public class TipiPendenzaController extends BaseController {
 
 
 
-    public Response tipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
+    public Response tipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo) {
     	String methodName = "tipiPendenzaGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -67,7 +67,8 @@ public class TipiPendenzaController extends BaseController {
 			findTipiPendenzaDTO.setLimit(risultatiPerPagina);
 			findTipiPendenzaDTO.setPagina(pagina);
 			findTipiPendenzaDTO.setOrderBy(ordinamento);
-			
+			findTipiPendenzaDTO.setAbilitato(abilitato);
+			findTipiPendenzaDTO.setTipo(tipo);
 			
 			// INIT DAO
 			

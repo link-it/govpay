@@ -360,7 +360,7 @@ CREATE TABLE tipi_vers_domini
 	codifica_iuv VARCHAR(4) COMMENT 'Codifica del tipo pendenza nello iuv specifica per dominio',
 	tipo VARCHAR(35) COMMENT 'Indica se il tipo pendenza e\' pagabile spontaneamente per il dominio',
 	paga_terzi BOOLEAN  COMMENT 'Indica se il tipo pendenza e\' pagabile da soggetti terzi per il dominio',
-	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
+	abilitato BOOLEAN COMMENT 'Indicazione se e\' abilitato ad operare',
 	json_schema LONGTEXT COMMENT 'Definizione della struttura della tipologia pendenza',
 	dati_allegati LONGTEXT COMMENT 'Definizione della dati allegati utili per la gestione della tipologia pendenza',
 	-- fk/pk columns

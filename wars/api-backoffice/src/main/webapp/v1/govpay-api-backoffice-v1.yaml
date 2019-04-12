@@ -1309,6 +1309,17 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: tipo
+          in: query
+          description: >-
+            filtro sul tipo di tipologia pendenza
+          required: false
+          schema:
+            type: string
+            enum:
+              - spontanea
+              - dovuta
+            example: spontanea
       responses:
         '200':
           description: Lista paginata delle tipologie di pendenza ricercate
@@ -1434,6 +1445,23 @@ paths:
           schema:
             type: string
             format: csv
+        - name: abilitato
+          in: query
+          description: Restrizione ai soli elementi abilitati o disabilitati
+          required: false
+          schema:
+            type: boolean
+        - name: tipo
+          in: query
+          description: >-
+            filtro sul tipo di tipologia pendenza
+          required: false
+          schema:
+            type: string
+            enum:
+              - spontanea
+              - dovuta
+            example: spontanea
       responses:
         '200':
           description: Lista paginata delle entrate ricercate

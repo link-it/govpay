@@ -388,16 +388,21 @@ public class DominiConverter {
 			}
 		}
 		
+		if(tipoVersamentoDominio.getJsonSchemaDefault() != null)
+			rsModel.setSchema(new RawObject(tipoVersamentoDominio.getJsonSchemaDefault()));
+		if(tipoVersamentoDominio.getDatiAllegatiDefault() != null)
+			rsModel.setDatiAllegati(new RawObject(tipoVersamentoDominio.getDatiAllegatiDefault()));
+		
 		TipoPendenzaDominioPost valori = new TipoPendenzaDominioPost();
 		
 		valori.codificaIUV(tipoVersamentoDominio.getCodificaIuvCustom())
 		.pagaTerzi(tipoVersamentoDominio.getPagaTerziCustom())
-		.abilitato(tipoVersamentoDominio.isAbilitato());
+		.abilitato(tipoVersamentoDominio.getAbilitatoCustom());
 		
 		if(tipoVersamentoDominio.getJsonSchemaCustom() != null)
-			rsModel.setSchema(new RawObject(tipoVersamentoDominio.getJsonSchemaCustom()));
+			valori.setSchema(new RawObject(tipoVersamentoDominio.getJsonSchemaCustom()));
 		if(tipoVersamentoDominio.getDatiAllegatiCustom() != null)
-			rsModel.setDatiAllegati(new RawObject(tipoVersamentoDominio.getDatiAllegatiCustom()));
+			valori.setDatiAllegati(new RawObject(tipoVersamentoDominio.getDatiAllegatiCustom()));
 		
 		rsModel.setValori(valori);
 		
@@ -411,11 +416,8 @@ public class DominiConverter {
 		
 		tipoVersamentoDominio.setCodTipoVersamento(idTipoPendenza);
 		tipoVersamentoDominio.setCodificaIuvCustom(tipoPendenzaRequest.getCodificaIUV());
-		tipoVersamentoDominio.setAbilitato(tipoPendenzaRequest.Abilitato());
-		
-		if(tipoPendenzaRequest.PagaTerzi() != null) {
-			tipoVersamentoDominio.setPagaTerziCustom(tipoPendenzaRequest.PagaTerzi());
-		}
+		tipoVersamentoDominio.setAbilitatoCustom(tipoPendenzaRequest.Abilitato());
+		tipoVersamentoDominio.setPagaTerziCustom(tipoPendenzaRequest.PagaTerzi());
 		
 		if(tipoPendenzaRequest.getSchema() != null)
 			tipoVersamentoDominio.setJsonSchemaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getSchema(),null));

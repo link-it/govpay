@@ -93,6 +93,8 @@ public class TipoPendenzaDAO extends BaseDAO{
 			filter.setOffset(findTipiPendenzaDTO.getOffset());
 			filter.setLimit(findTipiPendenzaDTO.getLimit());
 			filter.getFilterSortList().addAll(findTipiPendenzaDTO.getFieldSortList());
+			filter.setSearchAbilitato(findTipiPendenzaDTO.getAbilitato());
+			filter.setTipo(findTipiPendenzaDTO.getTipo()); 
 
 			return new FindTipiPendenzaDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
 		} finally {

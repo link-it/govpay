@@ -423,5 +423,5 @@ ALTER TABLE tipi_versamento ADD COLUMN dati_allegati CLOB;
 ALTER TABLE tipi_vers_domini ADD COLUMN json_schema CLOB;
 ALTER TABLE tipi_vers_domini ADD COLUMN dati_allegati CLOB;
 
-
+ALTER TABLE tipi_vers_domini MODIFY (abilitato NULL);
 

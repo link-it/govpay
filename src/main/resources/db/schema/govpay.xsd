@@ -1226,7 +1226,13 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
-			<xsd:element name="abilitato" type="xsd:boolean"/>
+			<xsd:element name="abilitato" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
 			<xsd:element name="jsonSchema" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>

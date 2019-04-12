@@ -46,7 +46,7 @@ public class TipoVersamentoDominioConverter {
 		dto.setId(vo.getId());
 		dto.setIdDominio(vo.getIdDominio().getId());
 		
-		dto.setAbilitato(vo.getAbilitato());
+		dto.setAbilitatoCustom(vo.getAbilitato());
 		dto.setCodificaIuvCustom(vo.getCodificaIuv());
 		if(vo.getTipo() != null)
 			dto.setTipoCustom(Tipo.toEnum(vo.getTipo()));
@@ -88,7 +88,7 @@ public class TipoVersamentoDominioConverter {
 			vo.setTipo(dto.getTipoCustom().getCodifica());
 		vo.setPagaTerzi(dto.getPagaTerziCustom());
 		vo.setTipoVersamento(tipoVersamento);
-		vo.setAbilitato(dto.isAbilitato());
+		vo.setAbilitato(dto.getAbilitatoCustom());
 		vo.setJsonSchema(dto.getJsonSchemaCustom());
 		vo.setDatiAllegati(dto.getDatiAllegatiCustom());
 		

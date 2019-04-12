@@ -48,6 +48,7 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	private String descrizione = null;
 	private List<Long> listaIdTipiVersamento = null;
 	private CustomField cf;
+	private String tipo;
 	
 	public enum SortFields { }
 	
@@ -63,6 +64,7 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model()));
 			this.listaFieldSimpleSearch.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			this.listaFieldSimpleSearch.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
+			this.fieldAbilitato = it.govpay.orm.TipoVersamentoDominio.model().ABILITATO;
 		} catch(Exception e){
 			
 		}
@@ -98,6 +100,13 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				newExpression.ilike(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.tipo != null && StringUtils.isNotEmpty(this.tipo)){
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TIPO, this.tipo);
 				addAnd = true;
 			}
 			
@@ -165,5 +174,13 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 }

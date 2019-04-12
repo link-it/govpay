@@ -465,4 +465,6 @@ ALTER TABLE tipi_versamento ADD COLUMN dati_allegati TEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN json_schema TEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN dati_allegati TEXT;
 
+ALTER TABLE tipi_vers_domini ALTER COLUMN abilitato DROP NOT NULL; 
+
 

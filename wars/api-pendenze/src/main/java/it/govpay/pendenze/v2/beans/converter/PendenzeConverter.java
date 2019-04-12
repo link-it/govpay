@@ -65,7 +65,8 @@ public class PendenzeConverter {
 			rsModel.setDataScadenza(new LocalDate(versamento.getDataScadenza()));
 		if(versamento.getDataValidita() != null)
 			rsModel.setDataValidita(new LocalDate(versamento.getDataValidita()));
-		rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
+		if(versamento.getDatiAllegati() != null)
+			rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
 		if(versamento.getCausaleVersamento() != null)
 			try {
 				rsModel.setDescrizione(versamento.getCausaleVersamento().getSimple());
@@ -168,7 +169,8 @@ public class PendenzeConverter {
 	public static VocePendenza toVocePendenza(it.govpay.bd.model.SingoloVersamento singoloVersamento, int indice) throws ServiceException {
 		VocePendenza rsModel = new VocePendenza();
 		
-		rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
+		if(singoloVersamento.getDatiAllegati() != null)
+			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
 		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());

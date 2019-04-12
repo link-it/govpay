@@ -175,8 +175,8 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
-	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();
-	vf.getValidator("abilitato", this.abilitato).notNull();
+//	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();
+//	vf.getValidator("abilitato", this.abilitato).notNull();
   }
 }
 

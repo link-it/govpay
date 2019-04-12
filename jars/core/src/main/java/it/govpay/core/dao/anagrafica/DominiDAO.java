@@ -641,6 +641,8 @@ public class DominiDAO extends BaseDAO{
 			filter.setOffset(findTipiPendenzaDTO.getOffset());
 			filter.setLimit(findTipiPendenzaDTO.getLimit());
 			filter.getFilterSortList().addAll(findTipiPendenzaDTO.getFieldSortList());
+			filter.setSearchAbilitato(findTipiPendenzaDTO.getAbilitato());
+			filter.setTipo(findTipiPendenzaDTO.getTipo());
 
 			List<it.govpay.bd.model.TipoVersamentoDominio> findAll = tipiVersamentoDominiBD.findAll(filter);
 

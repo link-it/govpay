@@ -59,7 +59,8 @@ public class TipiPendenzaConverter {
 		TipoPendenza rsModel = new TipoPendenza();
 		
 		rsModel.descrizione(tipoVersamento.getDescrizione())
-		.idTipoPendenza(tipoVersamento.getCodTipoVersamento()).codificaIUV(tipoVersamento.getCodificaIuvDefault()).abilitato(tipoVersamento.isAbilitatoDefault());
+		.idTipoPendenza(tipoVersamento.getCodTipoVersamento()).codificaIUV(tipoVersamento.getCodificaIuvDefault())
+		.abilitato(tipoVersamento.isAbilitatoDefault());
 		
 		if(tipoVersamento.getTipoDefault() != null) {
 			switch (tipoVersamento.getTipoDefault()) {

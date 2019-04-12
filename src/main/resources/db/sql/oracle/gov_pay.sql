@@ -561,7 +561,7 @@ CREATE TABLE tipi_vers_domini
 	codifica_iuv VARCHAR2(4 CHAR),
 	tipo VARCHAR2(35 CHAR),
 	paga_terzi NUMBER,
-	abilitato NUMBER NOT NULL,
+	abilitato NUMBER,
 	json_schema CLOB,
 	dati_allegati CLOB,
 	-- fk/pk columns

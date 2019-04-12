@@ -382,5 +382,5 @@ ALTER TABLE tipi_versamento ADD COLUMN dati_allegati LONGTEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN json_schema LONGTEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN dati_allegati LONGTEXT;
 
-
+ALTER TABLE tipi_vers_domini MODIFY COLUMN abilitato BOOLEAN NULL;
 

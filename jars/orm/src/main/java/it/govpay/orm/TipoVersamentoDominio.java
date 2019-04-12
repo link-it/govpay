@@ -40,7 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="codificaIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pagaTerzi" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="jsonSchema" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="datiAllegati" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -128,15 +128,11 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
     this.pagaTerzi = pagaTerzi;
   }
 
-  public boolean isAbilitato() {
+  public Boolean getAbilitato() {
     return this.abilitato;
   }
 
-  public boolean getAbilitato() {
-    return this.abilitato;
-  }
-
-  public void setAbilitato(boolean abilitato) {
+  public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
   }
 
@@ -193,9 +189,9 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   @XmlElement(name="pagaTerzi",required=false,nillable=false)
   protected Boolean pagaTerzi;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="abilitato",required=true,nillable=false)
-  protected boolean abilitato;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="abilitato",required=false,nillable=false)
+  protected Boolean abilitato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="jsonSchema",required=false,nillable=false)

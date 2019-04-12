@@ -367,7 +367,7 @@ CREATE TABLE tipi_vers_domini
 	codifica_iuv VARCHAR(4),
 	tipo VARCHAR(35),
 	paga_terzi BOOLEAN,
-	abilitato BOOLEAN NOT NULL,
+	abilitato BOOLEAN,
 	json_schema TEXT,
 	dati_allegati TEXT,
 	-- fk/pk columns

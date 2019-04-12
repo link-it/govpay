@@ -195,8 +195,6 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(datiAllegatiAlias);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
-			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.JSON_SCHEMA);
-			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DATI_ALLEGATI);
 			
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())));
 			

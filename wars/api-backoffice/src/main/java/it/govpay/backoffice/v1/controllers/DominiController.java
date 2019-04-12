@@ -536,7 +536,7 @@ public class DominiController extends BaseController {
 		}
     }
 
-    public Response dominiIdDominioTipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response dominiIdDominioTipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo) {
     	String methodName = "dominiIdDominioTipiPendenzaGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -563,7 +563,8 @@ public class DominiController extends BaseController {
 			findTipiPendenzaDominioDTO.setPagina(pagina);
 			findTipiPendenzaDominioDTO.setOrderBy(ordinamento);
 			findTipiPendenzaDominioDTO.setCodDominio(idDominio);
-			
+			findTipiPendenzaDominioDTO.setAbilitato(abilitato);
+			findTipiPendenzaDominioDTO.setTipo(tipo);
 			// INIT DAO
 			
 			DominiDAO dominiDAO = new DominiDAO(false);
