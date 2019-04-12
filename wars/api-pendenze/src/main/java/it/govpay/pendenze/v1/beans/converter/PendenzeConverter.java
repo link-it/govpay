@@ -56,7 +56,7 @@ public class PendenzeConverter {
 		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
-		rsModel.setDatiAllegati(versamento.getDatiAllegati());
+		rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
 
 		StatoPendenza statoPendenza = null;
 
