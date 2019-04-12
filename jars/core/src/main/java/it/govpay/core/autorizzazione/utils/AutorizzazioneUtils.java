@@ -31,30 +31,32 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AutorizzazioneUtils {
-	
+
 	public static final String DIRITTI = "diritti";
 	public static final String PASSWORD_DEFAULT_VALUE = "secret";
-	
+
 	public static GovpayLdapUserDetails getAuthenticationDetails(Authentication authentication) {
-		if(authentication != null) {
-			Object object = authentication.getPrincipal();
-			if(object instanceof GovpayLdapUserDetails)
-				return (GovpayLdapUserDetails) object;
-		}
+		if(authentication == null)
+			return null;
+
+		Object object = authentication.getPrincipal();
+		if(object instanceof GovpayLdapUserDetails)
+			return (GovpayLdapUserDetails) object;
+		
 		return null;
 	}
-	
+
 	public static String getPrincipal(Authentication authentication) {
 		if(authentication == null)
 			return null;
-		
+
 		Object principalObj = authentication.getPrincipal();
 		if(principalObj instanceof GovpayLdapUserDetails)
 			return ((GovpayLdapUserDetails) principalObj).getIdentificativo();
-		
+
 		if(principalObj instanceof UserDetails)
 			return ((UserDetails) principalObj).getUsername();
-		
+
 		return null;
 	}
 
@@ -65,7 +67,7 @@ public class AutorizzazioneUtils {
 		Applicazione applicazione = null;
 		Operatore operatore = null;
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
-		
+
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
@@ -76,11 +78,11 @@ public class AutorizzazioneUtils {
 				List<Acl> aclsRuolo2 = aclBD.findAll(aclFilter);
 				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
 					aclsRuolo.addAll(aclsRuolo2);
-				
+
 				authorities.add(grantedAuthority);
 			}
 		}
-		
+
 		try {
 			applicazione = checkSubject ? AnagraficaManager.getApplicazioneBySubject(bd, username) : AnagraficaManager.getApplicazioneByPrincipal(bd, username); 
 			tipoUtenza = TIPO_UTENZA.APPLICAZIONE;
@@ -98,9 +100,9 @@ public class AutorizzazioneUtils {
 				throw new UsernameNotFoundException("Utenza non trovata.",ex);				
 			} 
 		}
-		
+
 		utenza.setCheckSubject(checkSubject);
-		
+
 		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
 		userDetails.setApplicazione(applicazione);
 		userDetails.setOperatore(operatore);
@@ -112,7 +114,7 @@ public class AutorizzazioneUtils {
 
 	public static GovpayLdapUserDetails getUserDetail(String username, String password, String identificativo, List<GrantedAuthority> authorities) {
 		GovpayLdapUserDetails details = new GovpayLdapUserDetails();
-		
+
 		LdapUserDetailsImpl.Essence essence = new LdapUserDetailsImpl.Essence();
 		essence.setAccountNonExpired(true);
 		essence.setAccountNonLocked(true);
@@ -122,7 +124,7 @@ public class AutorizzazioneUtils {
 		essence.setPassword(password);
 		essence.setAuthorities(authorities);
 		essence.setDn(identificativo);
-		
+
 		details.setLdapUserDetailsImpl(essence.createUserDetails());
 
 		return details;
@@ -142,11 +144,11 @@ public class AutorizzazioneUtils {
 				List<Acl> aclsRuolo2 = aclBD.findAll(aclFilter);
 				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
 					aclsRuolo.addAll(aclsRuolo2);
-				
+
 				authorities.add(grantedAuthority);
 			}
 		}
-		
+
 		Utenza utenza = new UtenzaCittadino(username,headerValues);
 		utenza.setAclRuoli(aclsRuolo);
 		List<Acl> aclPrincipal = new ArrayList<>();
@@ -161,20 +163,20 @@ public class AutorizzazioneUtils {
 		utenza.setPrincipalOriginale(username);
 		utenza.setPrincipal(username);
 		utenza.setCheckSubject(checkSubject);
-		
+
 		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
 		userDetails.setUtenza(utenza);
 		userDetails.setTipoUtenza(tipoUtenza);
-		
+
 
 		return userDetails;
 	}
-	
+
 	public static UserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException , ServiceException {
 		return getUserDetailFromUtenzaAnonima(username, checkPassword, checkSubject, authFromPreauth, null);
 	}
-	
+
 	public static UserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
@@ -183,18 +185,18 @@ public class AutorizzazioneUtils {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		if(authFromPreauth != null && !authFromPreauth.isEmpty()) {
 			AclBD aclBD = new AclBD(bd);
-			
+
 			for (GrantedAuthority grantedAuthority : authFromPreauth) {
 				AclFilter aclFilter = aclBD.newFilter();
 				aclFilter.setRuolo(grantedAuthority.getAuthority());
 				List<Acl> aclsRuolo2 = aclBD.findAll(aclFilter);
 				if(aclsRuolo2 != null && !aclsRuolo2.isEmpty())
 					aclsRuolo.addAll(aclsRuolo2);
-				
+
 				authorities.add(grantedAuthority);
 			}
 		}
-		
+
 		Utenza utenza = new UtenzaAnonima();
 		utenza.setAclRuoli(aclsRuolo);
 		List<Acl> aclPrincipal = new ArrayList<>();
@@ -209,7 +211,7 @@ public class AutorizzazioneUtils {
 		utenza.setPrincipalOriginale(username);
 		utenza.setPrincipal(username);
 		utenza.setCheckSubject(checkSubject);
-		
+
 		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
 		userDetails.setUtenza(utenza);
 		userDetails.setTipoUtenza(tipoUtenza);

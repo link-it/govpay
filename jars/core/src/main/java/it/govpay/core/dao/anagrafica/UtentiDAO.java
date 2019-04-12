@@ -30,9 +30,13 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
+import it.govpay.bd.anagrafica.TipiVersamentoBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
+import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
+import it.govpay.bd.anagrafica.filters.TipoVersamentoFilter;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -77,8 +81,20 @@ public class UtentiDAO extends BaseDAO{
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 			response.setNome(userDetails.getIdentificativo());
 			response.setUtente(userDetails.getUtenza());
-			response.setDomini(userDetails.getUtenza().getDomini(bd));
-			response.setTipiVersamento(userDetails.getUtenza().getTipiVersamento(bd));
+			if(userDetails.getUtenza().isAutorizzazioneDominiStar()) {
+				DominiBD dominiBD = new DominiBD(bd);
+				DominioFilter newFilter = dominiBD.newFilter();
+				response.setDomini(dominiBD.findAll(newFilter));
+			} else {
+				response.setDomini(userDetails.getUtenza().getDomini(bd));
+			}
+			if(userDetails.getUtenza().isAutorizzazioneTipiVersamentoStar()) {
+				TipiVersamentoBD tipiVersamentoBD = new TipiVersamentoBD(bd);
+				TipoVersamentoFilter newFilter = tipiVersamentoBD.newFilter();
+				response.setTipiVersamento(tipiVersamentoBD.findAll(newFilter));
+			} else {
+				response.setTipiVersamento(userDetails.getUtenza().getTipiVersamento(bd));
+			}
 			
 		} finally {
 			if(bd != null)

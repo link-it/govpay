@@ -20,6 +20,8 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "codificaIUV",
 "pagaTerzi",
 "abilitato",
+"schema",
+"datiAllegati",
 })
 public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
@@ -78,6 +80,12 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
+  
+  @JsonProperty("schema")
+  private Object schema = null;
+  
+  @JsonProperty("datiAllegati")
+  private Object datiAllegati = null;
   
   /**
    **/
@@ -172,6 +180,38 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     this.abilitato = abilitato;
   }
 
+  /**
+   * JSON Schema che descrive la struttura della tipologia di pendenza
+   **/
+  public TipoPendenzaPost schema(Object schema) {
+    this.schema = schema;
+    return this;
+  }
+
+  @JsonProperty("schema")
+  public Object getSchema() {
+    return schema;
+  }
+  public void setSchema(Object schema) {
+    this.schema = schema;
+  }
+
+  /**
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario per la gestione della tipologia della pendenza.
+   **/
+  public TipoPendenzaPost datiAllegati(Object datiAllegati) {
+    this.datiAllegati = datiAllegati;
+    return this;
+  }
+
+  @JsonProperty("datiAllegati")
+  public Object getDatiAllegati() {
+    return datiAllegati;
+  }
+  public void setDatiAllegati(Object datiAllegati) {
+    this.datiAllegati = datiAllegati;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -185,12 +225,14 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
         Objects.equals(tipo, tipoPendenzaPost.tipo) &&
         Objects.equals(codificaIUV, tipoPendenzaPost.codificaIUV) &&
         Objects.equals(pagaTerzi, tipoPendenzaPost.pagaTerzi) &&
-        Objects.equals(abilitato, tipoPendenzaPost.abilitato);
+        Objects.equals(abilitato, tipoPendenzaPost.abilitato) &&
+        Objects.equals(schema, tipoPendenzaPost.schema) &&
+        Objects.equals(datiAllegati, tipoPendenzaPost.datiAllegati);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, schema, datiAllegati);
   }
 
   public static TipoPendenzaPost parse(String json) throws ServiceException, ValidationException  {
@@ -212,6 +254,8 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    schema: ").append(toIndentedString(schema)).append("\n");
+    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

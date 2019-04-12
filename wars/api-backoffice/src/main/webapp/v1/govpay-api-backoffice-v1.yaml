@@ -115,6 +115,41 @@ paths:
         '500':
           $ref: '#/components/responses/500' 
   '/pendenze/tracciati':
+    post:
+      tags:
+        - Pendenze
+      summary: Aggiunge un nuovo Tracciato di Pendenze
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tracciatoPendenzePost'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
+        description: Tracciato Pendenze in formato JSON
+        required: true
+      responses:
+        '201':
+          description: Tracciato aggiunto con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tracciatoPendenzeIndex'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403' 
+        '415':
+          $ref: '#/components/responses/415'
+        '500':
+          $ref: '#/components/responses/500'
     get:
       tags:
         - Pendenze
@@ -2122,41 +2157,6 @@ paths:
         '500':
           $ref: '#/components/responses/500'
   '/pendenze':
-    post:
-      tags:
-        - Pendenze
-      summary: Aggiunge un nuovo Tracciato di Pendenze
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/tracciatoPendenzePost'
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                fileName:
-                  type: string
-                  format: binary
-        description: Tracciato Pendenze in formato JSON
-        required: true
-      responses:
-        '201':
-          description: Tracciato aggiunto con successo
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tracciatoPendenzeIndex'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403' 
-        '415':
-          $ref: '#/components/responses/415'
-        '500':
-          $ref: '#/components/responses/500'
     get:
       summary: Elenco delle pendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
@@ -2270,6 +2270,110 @@ paths:
         '500':
           $ref: '#/components/responses/500'
   '/pendenze/{idA2A}/{idPendenza}':
+    put:
+      tags:
+        - Pendenze
+      description: >-
+        Per ciascuna pendenza viene richiesto un identificativo (_idPendenza_)
+        valido per il gestionale che ne effettua il caricamento (_idA2A_).
+        L'operazione è idempotente rispetto a questo identificativo e nel caso
+        venga eseguito il caricamento di una pendenza con un identificativo già
+        presente nell'archivio di GovPay, questa sarà gestita come un
+        aggiornamento. <br/> Ciascuna pendenza può
+        essere composta da più voci fino ad un massimo di cinque, ciascuna
+        avente un identificativo _idVocePendenza_ assegnato dal gestionale come
+        riferimento interno.
+      parameters:
+        - in: path
+          name: idA2A
+          description: Identificativo del gestionale
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idPendenza
+          description: Identificativo della pendenza
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: stampaAvviso
+          description: Indica se nella risposta deve essere inclusa la stampa dell'avviso in standard AgID
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: avvisaturaDigitale
+          description: Indica se la pendenza deve essere avvisata digitalmente
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: modalitaAvvisaturaDigitale
+          description: Modalita' di avvisatura scelta per le pendenza
+          required: false
+          schema:
+            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/pendenzaPut'
+      responses:
+        '200':
+          description: Pendenza aggiornata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - idDominio
+                properties:
+                  idDominio:
+                    type: string
+                    description: Identificativo del creditore dell'avviso
+                    example: 01234567890
+                  numeroAvviso:
+                    type: string
+                    description: Numero identificativo dell'avviso di pagamento
+                    example: 00100000000000012
+                  pdf:
+                    type: string
+                    format: base64
+                    description: Stampa pdf dell'avviso
+        '201':
+          description: Pendenza creata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - idDominio
+                properties:
+                  idDominio:
+                    type: string
+                    description: Identificativo del creditore dell'avviso
+                    example: 01234567890
+                  numeroAvviso:
+                    type: string
+                    description: Numero identificativo dell'avviso di pagamento
+                    example: 00100000000000012
+                  pdf:
+                    type: string
+                    format: base64
+                    description: Stampa pdf dell'avviso
+        '400':
+          $ref: '#/components/responses/400'
+        '422':
+          $ref: '#/components/responses/400'          
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
     get:
       summary: Dettaglio di una pendenza per identificativo
       description: >-
@@ -4156,6 +4260,12 @@ components:
           description: Indicazione la tipologia pendenza e' abilitata
           example: true
           default: true
+        schema:
+          type: object
+          description: JSON Schema che descrive la struttura della tipologia di pendenza
+        datiAllegati:
+          type: object
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario per la gestione della tipologia della pendenza.
     tipoPendenza:
       type: object
       allOf:
@@ -4185,6 +4295,12 @@ components:
           description: Indicazione la tipologia pendenza e' abilitata
           example: true
           default: true
+        schema:
+          type: object
+          description: JSON Schema che descrive la struttura della tipologia di pendenza
+        datiAllegati:
+          type: object
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario per la gestione della tipologia della pendenza.
     tipoPendenzaDominio:
       type: object
       allOf:

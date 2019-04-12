@@ -10,6 +10,9 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "causale",
@@ -28,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "idUnitaOperativa",
 "voci",
 })
-public class PendenzaPut extends it.govpay.core.beans.JSONSerializable {
+public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implements IValidable {
   
   @JsonProperty("nome")
   private String nome = null;
@@ -418,6 +421,25 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+
+		vf.getValidator("idDominio", this.idDominio).notNull().minLength(1).maxLength(35);
+		vf.getValidator("idUnitaOperativa", this.idUnitaOperativa).minLength(1).maxLength(35);
+		vf.getValidator("nome", this.nome).minLength(1).maxLength(35);
+		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
+		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
+		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		vf.getValidator("numeroAvviso", this.numeroAvviso).pattern("[0-9]{18}");
+		vf.getValidator("dataValidita", this.dataValidita);
+		vf.getValidator("dataScadenza", this.dataScadenza);
+		if(this.annoRiferimento != null)
+			vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
+		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
+		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
+	}
 }
 
 

@@ -714,15 +714,10 @@ public class PendenzeDAO extends BaseDAO{
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
 			
-			// controllo che il dominio e tipo versamento siano autorizzati
-			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(putVersamentoDTO.getUser(), chiediVersamento.getDominio(bd).getCodDominio(), chiediVersamento.getTipoVersamento(bd).getCodTipoVersamento())) {
-				throw AuthorizationManager.toNotAuthorizedException(putVersamentoDTO.getUser(), chiediVersamento.getDominio(bd).getCodDominio(), chiediVersamento.getTipoVersamento(bd).getCodTipoVersamento());
-			}
-			
 			Applicazione applicazioniBD = new Applicazione(bd);
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(putVersamentoDTO.getUser());
 			it.govpay.bd.model.Applicazione applicazioneAutenticata = details.getApplicazione();
-			if(applicazioneAutenticata != null) // le API pendenze possono essere utilizzate da utenze che non sono Applicazioni?
+			if(applicazioneAutenticata != null) 
 				applicazioniBD.autorizzaApplicazione(putVersamentoDTO.getVersamento().getCodApplicazione(), applicazioneAutenticata, bd);
 			
 			createOrUpdatePendenzaResponse.setCreated(false);

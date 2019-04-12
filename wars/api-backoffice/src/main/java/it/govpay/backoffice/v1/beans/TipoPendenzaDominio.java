@@ -19,6 +19,8 @@ import it.govpay.core.beans.JSONSerializable;
 "codificaIUV",
 "pagaTerzi",
 "abilitato",
+"schema",
+"datiAllegati",
 "valori",
 })
 public class TipoPendenzaDominio extends JSONSerializable {
@@ -81,6 +83,12 @@ public class TipoPendenzaDominio extends JSONSerializable {
   
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
+  
+  @JsonProperty("schema")
+  private Object schema = null;
+  
+  @JsonProperty("datiAllegati")
+  private Object datiAllegati = null;
   
   @JsonProperty("valori")
   private TipoPendenzaDominioPost valori = null;
@@ -179,6 +187,38 @@ public class TipoPendenzaDominio extends JSONSerializable {
   }
 
   /**
+   * JSON Schema che descrive la struttura della tipologia di pendenza
+   **/
+  public TipoPendenzaDominio schema(Object schema) {
+    this.schema = schema;
+    return this;
+  }
+
+  @JsonProperty("schema")
+  public Object getSchema() {
+    return schema;
+  }
+  public void setSchema(Object schema) {
+    this.schema = schema;
+  }
+
+  /**
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario per la gestione della tipologia della pendenza.
+   **/
+  public TipoPendenzaDominio datiAllegati(Object datiAllegati) {
+    this.datiAllegati = datiAllegati;
+    return this;
+  }
+
+  @JsonProperty("datiAllegati")
+  public Object getDatiAllegati() {
+    return datiAllegati;
+  }
+  public void setDatiAllegati(Object datiAllegati) {
+    this.datiAllegati = datiAllegati;
+  }
+
+  /**
    **/
   public TipoPendenzaDominio valori(TipoPendenzaDominioPost valori) {
     this.valori = valori;
@@ -208,12 +248,14 @@ public class TipoPendenzaDominio extends JSONSerializable {
         Objects.equals(codificaIUV, tipoPendenzaDominio.codificaIUV) &&
         Objects.equals(pagaTerzi, tipoPendenzaDominio.pagaTerzi) &&
         Objects.equals(abilitato, tipoPendenzaDominio.abilitato) &&
+        Objects.equals(schema, tipoPendenzaDominio.schema) &&
+        Objects.equals(datiAllegati, tipoPendenzaDominio.datiAllegati) &&
         Objects.equals(valori, tipoPendenzaDominio.valori);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, descrizione, tipo, codificaIUV, pagaTerzi, abilitato, valori);
+    return Objects.hash(idTipoPendenza, descrizione, tipo, codificaIUV, pagaTerzi, abilitato, schema, datiAllegati, valori);
   }
 
   public static TipoPendenzaDominio parse(String json) throws ServiceException, ValidationException{
@@ -236,6 +278,8 @@ public class TipoPendenzaDominio extends JSONSerializable {
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    schema: ").append(toIndentedString(schema)).append("\n");
+    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    valori: ").append(toIndentedString(valori)).append("\n");
     sb.append("}");
     return sb.toString();
