@@ -158,24 +158,6 @@ public class Incassi extends BasicBD {
 			IncassiBD incassiBD = new IncassiBD(this);
 			GiornaleEventi giornaleEventi = new GiornaleEventi(this);
 			
-			// Controllo se l'idf o lo iuv sono gia' stati incassati in precedenti incassi
-			IncassoFilter incassoFilter = incassiBD.newFilter();
-			List<String> codDomini = new ArrayList<>();
-			codDomini.add(richiestaIncasso.getCodDominio());
-			incassoFilter.setCodDomini(codDomini);
-			if(idf != null)
-				incassoFilter.setCausale(idf);
-			else
-				incassoFilter.setCausale(iuv);
-			List<Incasso> findAll = incassiBD.findAll(incassoFilter);
-			if(findAll.size() != 0) {
-				ctx.getApplicationLogger().log("incasso.causaleGiaIncassata", causale);
-				if(idf != null)
-					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Il flusso di rendicontazione [" + idf + "] indicato in causale risulta gia' incassato");
-				else
-					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Lo iuv [" + iuv + "] indicato in causale risulta gia' incassato");
-			}
-			
 			// OVERRIDE TRN NUOVA GESTIONE
 			richiestaIncasso.setTrn(iuv != null ? iuv : idf);
 			RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
@@ -204,6 +186,24 @@ public class Incassi extends BasicBD {
 			} catch(NotFoundException nfe) {
 				// Incasso non registrato.
 				richiestaIncassoResponse.setCreated(true);
+			}
+			
+			// Controllo se l'idf o lo iuv sono gia' stati incassati in precedenti incassi
+			IncassoFilter incassoFilter = incassiBD.newFilter();
+			List<String> codDomini = new ArrayList<>();
+			codDomini.add(richiestaIncasso.getCodDominio());
+			incassoFilter.setCodDomini(codDomini);
+			if(idf != null)
+				incassoFilter.setCausale(idf);
+			else
+				incassoFilter.setCausale(iuv);
+			List<Incasso> findAll = incassiBD.findAll(incassoFilter);
+			if(findAll.size() != 0) {
+				ctx.getApplicationLogger().log("incasso.causaleGiaIncassata", causale);
+				if(idf != null)
+					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Il flusso di rendicontazione [" + idf + "] indicato in causale risulta gia' incassato");
+				else
+					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Lo iuv [" + iuv + "] indicato in causale risulta gia' incassato");
 			}
 			
 			// Sto selezionando i pagamenti per impostarli come Incassati.
