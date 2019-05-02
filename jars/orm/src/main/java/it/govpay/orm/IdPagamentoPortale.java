@@ -36,6 +36,8 @@ import java.io.Serializable;
  * &lt;complexType name="id-pagamento-portale">
  * 		&lt;sequence>
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="versanteIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -50,7 +52,9 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-pagamento-portale", 
   propOrder = {
-  	"idSessione"
+  	"idSessione",
+  	"idApplicazione",
+  	"versanteIdentificativo"
   }
 )
 
@@ -82,6 +86,22 @@ public class IdPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imp
     this.idSessione = idSessione;
   }
 
+  public IdApplicazione getIdApplicazione() {
+    return this.idApplicazione;
+  }
+
+  public void setIdApplicazione(IdApplicazione idApplicazione) {
+    this.idApplicazione = idApplicazione;
+  }
+
+  public java.lang.String getVersanteIdentificativo() {
+    return this.versanteIdentificativo;
+  }
+
+  public void setVersanteIdentificativo(java.lang.String versanteIdentificativo) {
+    this.versanteIdentificativo = versanteIdentificativo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -92,5 +112,12 @@ public class IdPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imp
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="idSessione",required=true,nillable=false)
   protected java.lang.String idSessione;
+
+  @XmlElement(name="idApplicazione",required=false,nillable=false)
+  protected IdApplicazione idApplicazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="versanteIdentificativo",required=false,nillable=false)
+  protected java.lang.String versanteIdentificativo;
 
 }

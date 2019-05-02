@@ -50,7 +50,7 @@ public class TipiPendenzaController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -84,7 +84,7 @@ public class TipiPendenzaController extends BaseController {
 					this.getServicePath(uriInfo), findTipiPendenzaDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -100,7 +100,7 @@ public class TipiPendenzaController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -131,7 +131,7 @@ public class TipiPendenzaController extends BaseController {
 			TipoPendenza response = TipiPendenzaConverter.toTipoPendenzaRsModel(listaDominiTipiPendenzaDTOResponse.getTipoVersamento());
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
@@ -148,7 +148,7 @@ public class TipiPendenzaController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
@@ -178,7 +178,7 @@ public class TipiPendenzaController extends BaseController {
 			Status responseStatus = putIntermediarioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

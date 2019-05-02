@@ -137,7 +137,7 @@ public class RptBD extends BasicBD {
 	 * @throws NotPermittedException
 	 * @throws ServiceException
 	 */
-	public void updateRpt(long idRpt, Rpt.StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl) throws NotFoundException, ServiceException{
+	public void updateRpt(long idRpt, Rpt.StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl, Rpt.EsitoPagamento esito) throws NotFoundException, ServiceException{
 		try {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato!= null) 
@@ -148,6 +148,8 @@ public class RptBD extends BasicBD {
 				lstUpdateFields.add(new UpdateField(RPT.model().COD_SESSIONE, codSessione));
 			if(pspRedirectUrl != null)
 				lstUpdateFields.add(new UpdateField(RPT.model().PSP_REDIRECT_URL, pspRedirectUrl));
+			if(esito!= null) 
+				lstUpdateFields.add(new UpdateField(RPT.model().COD_ESITO_PAGAMENTO, esito.getCodifica()));
 
 			((JDBCRPTService)this.getRptService()).updateFields(idRpt, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {

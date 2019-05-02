@@ -64,6 +64,7 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp);
 
 			response.setRpt(rpt);
+			rpt.getPagamentoPortale(bd).getApplicazione(bd);
 			VersamentoIncasso versamento = rpt.getVersamento(bd);
 			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(bd)); 
@@ -96,6 +97,7 @@ public class RptDAO extends BaseDAO{
 			
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
+			rpt.getPagamentoPortale(bd).getApplicazione(bd);
 			
 			if(rpt.getXmlRt() == null)
 				throw new RicevutaNonTrovataException(null);
@@ -130,14 +132,6 @@ public class RptDAO extends BaseDAO{
 	}
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO, BasicBD bd) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		List<String> listaDominiFiltro;
-
-		// Autorizzazione sui domini
-		listaDominiFiltro = AuthorizationManager.getDominiAutorizzati(listaRptDTO.getUser());
-		if(listaDominiFiltro == null) {
-			throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(listaRptDTO.getUser());
-		}
-
 		RptBD rptBD = new RptBD(bd);
 		RptFilter filter = rptBD.newFilter();
 
@@ -155,6 +149,9 @@ public class RptDAO extends BaseDAO{
 		filter.setIdPendenza(listaRptDTO.getIdPendenza());
 		filter.setCodApplicazione(listaRptDTO.getIdA2A());
 		filter.setFilterSortList(listaRptDTO.getFieldSortList());
+		filter.setCfCittadinoPagamentoPortale(listaRptDTO.getCfCittadino());
+		filter.setCodApplicazionePagamentoPortale(listaRptDTO.getIdA2APagamentoPortale());
+		filter.setEsitoPagamento(listaRptDTO.getEsitoPagamento());
 
 		long count = rptBD.count(filter);
 
@@ -173,10 +170,6 @@ public class RptDAO extends BaseDAO{
 				resList.add(elem);
 			}
 		} 
-		
-		if(count == 0) {
-			int i = 0;
-		}
 
 		return new ListaRptDTOResponse(count, resList);
 	}
@@ -236,6 +229,7 @@ public class RptDAO extends BaseDAO{
 			// ricarico l'RPT
 			rpt = rptBD.getRpt(idDominio, iuv, ccp);
 
+			rpt.getPagamentoPortale(bd).getApplicazione(bd);
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento(bd));
 			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 

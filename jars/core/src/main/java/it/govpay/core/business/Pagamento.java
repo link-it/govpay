@@ -170,7 +170,7 @@ public class Pagamento extends BasicBD {
 						StatoRpt statoRpt = StatoRpt.toEnum(stato);
 						if(!rpt.getStato().equals(statoRpt)) {
 							response.add("[" + rpt.getCodDominio() + " " + rpt.getIuv() + " " + rpt.getCcp() + "]# Aggiornamento in stato " + stato.toString());
-							rptBD.updateRpt(rpt.getId(), statoRpt, null, null, null);
+							rptBD.updateRpt(rpt.getId(), statoRpt, null, null, null,null);
 						}
 					} else {
 						log.info("Rpt non pendente o sconosciuta sul nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]");

@@ -50,7 +50,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
 			baos = new ByteArrayOutputStream();
@@ -171,7 +171,7 @@ public class PendenzeController extends BaseController {
 					listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {

@@ -151,6 +151,20 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "id_sessione";
 			}
 		}
+		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".versante_identificativo";
+			}else{
+				return "versante_identificativo";
+			}
+		}
 		if(field.equals(Versamento.model().IUV.IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".iuv";
@@ -501,6 +515,12 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
 			return this.toTable(Versamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
+		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(Versamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+			return this.toTable(Versamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
+		}
 		if(field.equals(Versamento.model().IUV.IUV)){
 			return this.toTable(Versamento.model().IUV, returnAlias);
 		}
@@ -672,6 +692,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Versamento.model().ID_PAGAMENTO_PORTALE)){
 			return "pagamenti_portale";
+		}
+		if(model.equals(Versamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 		if(model.equals(Versamento.model().IUV)){
 			return "iuv";

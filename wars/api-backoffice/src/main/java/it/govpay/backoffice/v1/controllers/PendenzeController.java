@@ -113,7 +113,7 @@ public class PendenzeController extends BaseController {
 		String methodName = "getByIda2aIdPendenza";  
 		IContext ctx = null;
 		String transactionId = null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -142,7 +142,7 @@ public class PendenzeController extends BaseController {
 			}
 
 			Pendenza pendenza =	PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -157,7 +157,7 @@ public class PendenzeController extends BaseController {
 
 		String methodName = "pendenzeGET";
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
@@ -234,7 +234,7 @@ public class PendenzeController extends BaseController {
 					listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
@@ -250,7 +250,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
 			// salvo il json ricevuto
@@ -309,7 +309,7 @@ public class PendenzeController extends BaseController {
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenzaConInformazioniIncasso(leggiPendenzaDTO);
 
 			Pendenza pendenza =	PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		} catch(GovPayException e) {
 			this.log.error("Errore durante il processo di pagamento", e);
@@ -336,7 +336,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
@@ -385,7 +385,7 @@ public class PendenzeController extends BaseController {
 			pc.pdf(createOrUpdate.getPdf());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.logResponse(uriInfo, httpHeaders, methodName, pc.toJSON(null), responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -400,7 +400,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
@@ -409,7 +409,7 @@ public class PendenzeController extends BaseController {
 				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0);
 			}
 
-			this.log.info(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
+			this.log.debug(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
 
 
 			String fileName = null;
@@ -418,7 +418,7 @@ public class PendenzeController extends BaseController {
 				// controllo se sono in una richiesta multipart
 				if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
 					javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
-					this.log.info(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
+					this.log.debug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
 
 					MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
 
@@ -481,7 +481,7 @@ public class PendenzeController extends BaseController {
 
 			Status responseStatus = Status.CREATED;
 			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).entity(rsModel.toJSON(null,this.serializationConfig)).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -498,7 +498,7 @@ public class PendenzeController extends BaseController {
 
 		String methodName = "pendenzeTracciatiGET";
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
@@ -548,7 +548,7 @@ public class PendenzeController extends BaseController {
 					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null,this.serializationConfig), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();
 
 		}catch (Exception e) {
@@ -565,7 +565,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
@@ -599,7 +599,7 @@ public class PendenzeController extends BaseController {
 
 			TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
 			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null,this.serializationConfig)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -615,7 +615,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
@@ -645,7 +645,7 @@ public class PendenzeController extends BaseController {
 
 			TracciatoPendenze rsModel = TracciatiConverter.toTracciatoPendenzeRsModel(tracciato);
 			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null,this.serializationConfig)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -705,7 +705,7 @@ public class PendenzeController extends BaseController {
 					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null,this.serializationConfig), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();
 
 		}catch (Exception e) {
@@ -722,7 +722,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
@@ -767,7 +767,7 @@ public class PendenzeController extends BaseController {
 
 			String zipFileName = (tracciato.getFileNameRichiesta().contains(".") ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
 			byte[] b = baos1.toByteArray();
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(b).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

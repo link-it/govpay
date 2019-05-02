@@ -249,6 +249,8 @@
 	<xsd:complexType name="id-pagamento-portale">
 		<xsd:sequence>
 			<xsd:element name="idSessione" type="String255"/>
+			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0"/>
+			<xsd:element name="versanteIdentificativo" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -1647,18 +1649,6 @@
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 							<linkit:sql-id-mapping object-name="PagamentoPortale" object-type="PagamentoPortale"
 								relationship="reversed"/>
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-
-			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Applicazione" object-type="Applicazione"
-								relationship="reversed"/>
-							<linkit:sql-column-comment><![CDATA[L'applicazione che ha richiesto l'RPT (se null, e' stato attivato da PSP)]]></linkit:sql-column-comment>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>

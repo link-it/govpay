@@ -63,6 +63,20 @@ paths:
             type: string
             format: csv
             default: +dataCaricamento
+        - name: dataDa
+          in: query
+          description: Inizio della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time     
+        - name: dataA
+          in: query
+          description: Fine della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time
         - name: idDominio
           in: query
           description: filtro per dominio creditore
@@ -332,6 +346,20 @@ paths:
             type: string
             format: csv
             default: +dataRichiesta
+        - name: dataDa
+          in: query
+          description: Inizio della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time     
+        - name: dataA
+          in: query
+          description: Fine della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time
         - in: query
           name: idDominio
           description: Codice fiscale del dominio beneficiario

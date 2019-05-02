@@ -35,6 +35,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoConservazione;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.Pagamento;
@@ -57,6 +58,10 @@ public class RptFilter extends AbstractFilter {
 	private Date dataFine;
 	private String codApplicazione = null;
 	private String idPendenza = null;
+	private EsitoPagamento esitoPagamento = null;
+	
+	private String cfCittadinoPagamentoPortale = null;
+	private String codApplicazionePagamentoPortale = null;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -164,6 +169,22 @@ public class RptFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.codApplicazionePagamentoPortale != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazionePagamentoPortale);
+				addAnd = true;
+			}
+			
+			if(this.cfCittadinoPagamentoPortale != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO, this.cfCittadinoPagamentoPortale);
+				addAnd = true;
+			}
+			
 			if(this.codApplicazione != null) {
 				if(addAnd)
 					newExpression.and();
@@ -192,6 +213,14 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.lessEquals(RPT.model().DATA_MSG_RICHIESTA, this.dataFine);
+				addAnd = true;
+			}
+			
+			if(this.esitoPagamento != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(RPT.model().COD_ESITO_PAGAMENTO, this.esitoPagamento.getCodifica());
 				addAnd = true;
 			}
 
@@ -354,6 +383,30 @@ public class RptFilter extends AbstractFilter {
 
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
+	}
+
+	public String getCfCittadinoPagamentoPortale() {
+		return cfCittadinoPagamentoPortale;
+	}
+
+	public void setCfCittadinoPagamentoPortale(String cfCittadinoPagamentoPortale) {
+		this.cfCittadinoPagamentoPortale = cfCittadinoPagamentoPortale;
+	}
+
+	public String getCodApplicazionePagamentoPortale() {
+		return codApplicazionePagamentoPortale;
+	}
+
+	public void setCodApplicazionePagamentoPortale(String codApplicazionePagamentoPortale) {
+		this.codApplicazionePagamentoPortale = codApplicazionePagamentoPortale;
+	}
+
+	public EsitoPagamento getEsitoPagamento() {
+		return esitoPagamento;
+	}
+
+	public void setEsitoPagamento(EsitoPagamento esitoPagamento) {
+		this.esitoPagamento = esitoPagamento;
 	}
 
 }

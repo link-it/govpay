@@ -467,4 +467,9 @@ ALTER TABLE tipi_vers_domini ADD COLUMN dati_allegati TEXT;
 
 ALTER TABLE tipi_vers_domini ALTER COLUMN abilitato DROP NOT NULL; 
 
+-- 30/04/2019 eliminazione foreign key id_applicazione dalla tabella RPT
+
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_applicazione;
+ALTER TABLE rpt DROP COLUMN id_applicazione;
+
 

@@ -52,6 +52,7 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Versamento.StatoVersamento;
 
@@ -265,7 +266,8 @@ public class Rpt extends BasicBD{
 							}
 							rpt.setStato(StatoRpt.RPT_RIFIUTATA_NODO);
 							rpt.setDescrizioneStato(descrizione);
-							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
+							rpt.setEsitoPagamento(EsitoPagamento.RIFIUTATO);
+							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null,EsitoPagamento.RIFIUTATO);
 						}
 
 					} catch (Exception e) {
@@ -277,7 +279,7 @@ public class Rpt extends BasicBD{
 						if(!rpt.getStato().equals(StatoRpt.RPT_RIFIUTATA_NODO)) {
 							try {
 								String descrizione = "Richiesta di pagamento rifiutata per errori rilevati in altre RPT del carrello";
-								rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
+								rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null,EsitoPagamento.RIFIUTATO);
 							} catch (NotFoundException e) {
 								// Se uno o piu' aggiornamenti vanno male, non importa. 
 								// si risolvera' poi nella verifica pendenti
@@ -378,7 +380,7 @@ public class Rpt extends BasicBD{
 			rpt.setCodSessione(sessionId);
 			try {
 				RptBD rptBD = new RptBD(this);
-				rptBD.updateRpt(rpt.getId(), statoRpt, null, sessionId, url);
+				rptBD.updateRpt(rpt.getId(), statoRpt, null, sessionId, url,null);
 				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
 				if(schedulaThreadInvio)
 					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, this, ctx));

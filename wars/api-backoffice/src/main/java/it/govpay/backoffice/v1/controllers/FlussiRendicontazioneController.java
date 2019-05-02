@@ -48,7 +48,7 @@ public class FlussiRendicontazioneController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -85,12 +85,12 @@ public class FlussiRendicontazioneController extends BaseController {
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
 				byte[] response = leggiRendicontazioneDTOResponse.getFr().getXml();
 				this.logResponse(uriInfo, httpHeaders, methodName, response, 200);
-				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(new String(response)).type(MediaType.APPLICATION_XML),transactionId).build();
 			} else {
 				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr()); 
 				this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)).type(MediaType.APPLICATION_JSON),transactionId).build();
 			}
 			
@@ -108,7 +108,7 @@ public class FlussiRendicontazioneController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -154,7 +154,7 @@ public class FlussiRendicontazioneController extends BaseController {
 					this.getServicePath(uriInfo), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {

@@ -58,14 +58,14 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseDAO implements UserDet
 		}
 		
 		try {
-			this.log.info("Lettura delle informazioni per l'utenza ["+username+"] in corso...");
+			this.log.debug("Caricamento informazioni del cittadino ["+username+"] in corso...");
 			String transactionId = UUID.randomUUID().toString();
 			bd = BasicBD.newInstance(transactionId, this.useCacheData); 
-			return AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.checkPassword, this.checkSubject, authFromPreauth,headerValues, bd);
-//		}  catch(NotFoundException e){
-//			throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);
+			UserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.checkPassword, this.checkSubject, authFromPreauth,headerValues, bd);
+			this.log.debug("Caricamento informazioni del cittadino ["+username+"] completato.");
+			return userDetailFromUtenzaCittadino;
 		} catch(Exception e){
-			throw new RuntimeException("Errore interno, impossibile autenticare l'utenza", e);
+			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
 			if(bd != null)
 				bd.closeConnection();

@@ -9,7 +9,7 @@ import it.govpay.model.Versamento.ModoAvvisatura;
 public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	
 	private Versamento versamento;
-	private boolean stampaAvviso;
+	private Boolean stampaAvviso;
 	private Boolean avvisaturaDigitale;
 	private ModoAvvisatura avvisaturaModalita;
 	public PutPendenzaDTO(Authentication user) {
@@ -25,7 +25,7 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	}
 
 	public boolean isStampaAvviso() {
-		return this.stampaAvviso;
+		return this.stampaAvviso != null ? this.stampaAvviso : false;
 	}
 
 	public void setStampaAvviso(boolean stampaAvviso) {

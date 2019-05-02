@@ -101,7 +101,7 @@ public class InviaRptThread implements Runnable {
 				String descrizione = null; 
 				if(fb != null)
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
-				rptBD.updateRpt(this.rpt.getId(), null, descrizione, null, null);
+				rptBD.updateRpt(this.rpt.getId(), null, descrizione, null, null,null);
 				log.warn("RPT rifiutata dal nodo con fault " + descrizione);
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
 			} else {
@@ -112,7 +112,7 @@ public class InviaRptThread implements Runnable {
 				
 				
 				bd.setAutoCommit(false);
-				rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null);
+				rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null,null);
 				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica);
 				bd.commit();
 				

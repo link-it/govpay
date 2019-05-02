@@ -74,6 +74,20 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 				return "id_sessione";
 			}
 		}
+		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".versante_identificativo";
+			}else{
+				return "versante_identificativo";
+			}
+		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_versamento_ente";
@@ -153,6 +167,12 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
+		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+			return this.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
+		}
 		if(field.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
 			return this.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
@@ -199,11 +219,14 @@ public class PagamentoPortaleVersamentoFieldConverter extends AbstractSQLFieldCo
 		if(model.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE)){
 			return "pagamenti_portale";
 		}
+		if(model.equals(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
+			return "applicazioni";
+		}
 		if(model.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO)){
 			return "versamenti";
 		}
 		if(model.equals(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
-			return "id_applicazione";
+			return "applicazioni";
 		}
 
 

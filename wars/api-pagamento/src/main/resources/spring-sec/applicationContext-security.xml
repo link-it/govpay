@@ -189,6 +189,7 @@
                 <csrf disabled="true"/>
                 <intercept-url pattern="/rs/public/v1/avvisi/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v1/pagamenti/**" access="isAnonymous()" />
+                <intercept-url pattern="/rs/public/v1/rpp/**" access="isAnonymous()" />
                 <intercept-url pattern="/rs/public/v1/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterAnonymous" />
                 <headers>

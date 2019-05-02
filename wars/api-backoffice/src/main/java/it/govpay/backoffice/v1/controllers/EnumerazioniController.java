@@ -38,7 +38,7 @@ public class EnumerazioniController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -53,7 +53,7 @@ public class EnumerazioniController extends BaseController {
 			}
 
 			this.logResponse(uriInfo, httpHeaders, methodName, this.toJsonArray(results), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(this.toJsonArray(results)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -69,7 +69,7 @@ public class EnumerazioniController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -86,7 +86,7 @@ public class EnumerazioniController extends BaseController {
 			this.logResponse(uriInfo, httpHeaders, methodName, this.toJsonArray(results), 200);
 			
 			
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(this.toJsonArray(results)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

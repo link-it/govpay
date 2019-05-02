@@ -49,14 +49,14 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetai
 		BasicBD bd = null;
 
 		try {
-			this.log.info("Lettura delle informazioni per l'utenza ["+username+"] in corso...");
+			this.log.debug("Caricamento informazioni dell'utenza ["+username+"] in corso...");
 			String transactionId = UUID.randomUUID().toString();
 			bd = BasicBD.newInstance(transactionId, this.useCacheData);
-			return AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.checkPassword, this.checkSubject, authFromPreauth, bd);
-//		}  catch(NotFoundException e){
-//			throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);
+			UserDetails userDetailFromUtenzaAnonima = AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.checkPassword, this.checkSubject, authFromPreauth, bd);
+			this.log.debug("Caricamento informazioni dell'utenza ["+username+"] completato.");
+			return userDetailFromUtenzaAnonima;
 		} catch(Exception e){
-			throw new RuntimeException("Errore interno, impossibile autenticare l'utenza", e);
+			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza", e);
 		}	finally {
 			if(bd != null)
 				bd.closeConnection();

@@ -851,14 +851,12 @@ CREATE TABLE rpt
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
 	id_pagamento_portale NUMBER,
-	id_applicazione NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 

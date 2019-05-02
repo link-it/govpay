@@ -38,7 +38,7 @@ public class DominiController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -71,7 +71,7 @@ public class DominiController extends BaseController {
 			String mimeType = MimeUtil.getFirstMimeType(mimeTypes.toString()).toString();
 
 			this.logResponse(uriInfo, httpHeaders, methodName, logo, 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			ResponseBuilder entity = Response.status(Status.OK).entity(logo);
 			entity.header("CacheControl", "max-age: "+ GovpayConfig.getInstance().getCacheLogo().intValue());
 			entity.header("Content-Type", mimeType);

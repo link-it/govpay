@@ -384,3 +384,9 @@ ALTER TABLE tipi_vers_domini ADD COLUMN dati_allegati LONGTEXT;
 
 ALTER TABLE tipi_vers_domini MODIFY COLUMN abilitato BOOLEAN NULL;
 
+
+-- 30/04/2019 eliminazione foreign key id_applicazione dalla tabella RPT
+
+ALTER TABLE rpt DROP COLUMN id_applicazione;
+
+

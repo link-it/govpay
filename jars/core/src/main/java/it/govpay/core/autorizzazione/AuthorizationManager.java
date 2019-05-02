@@ -237,13 +237,13 @@ public class AuthorizationManager {
 		if(utenza.isAutorizzazioneTipiVersamentoStar() || codTipoVersamento == null)
 			return true;
 
-		List<String> tributiAutorizzati = utenza.getIdTipoVersamento();
+		List<String> tipiVersamentoAutorizzati = utenza.getIdTipoVersamento();
 
-		if(tributiAutorizzati == null) 
+		if(tipiVersamentoAutorizzati == null) 
 			return false;
 
-		if(!tributiAutorizzati.isEmpty())
-			return tributiAutorizzati.contains(codTipoVersamento);
+		if(!tipiVersamentoAutorizzati.isEmpty())
+			return tipiVersamentoAutorizzati.contains(codTipoVersamento);
 
 		return true;
 	}
@@ -257,6 +257,9 @@ public class AuthorizationManager {
 		if(utenza.isAutorizzazioneTipiVersamentoStar()) {
 			return new ArrayList<>();
 		} else {
+			if(utenza.getIdTipiVersamento() == null || utenza.getIdTipiVersamento().isEmpty())
+				return null;
+			
 			return utenza.getIdTipiVersamento();
 		}
 	} 
@@ -270,6 +273,9 @@ public class AuthorizationManager {
 		if(utenza.isAutorizzazioneTipiVersamentoStar()) {
 			return new ArrayList<>();
 		} else {
+			if(utenza.getIdTipoVersamento() == null || utenza.getIdTipoVersamento().isEmpty())
+				return null;
+			
 			return utenza.getIdTipoVersamento();
 		}
 	}
@@ -283,6 +289,9 @@ public class AuthorizationManager {
 		if(utenza.isAutorizzazioneDominiStar()) {
 			return new ArrayList<>();
 		} else {
+			if(utenza.getIdDominio() == null || utenza.getIdDominio().isEmpty())
+				return null;
+			
 			return utenza.getIdDominio();
 		}
 	}
@@ -296,6 +305,9 @@ public class AuthorizationManager {
 		if(utenza.isAutorizzazioneDominiStar()) {
 			return new ArrayList<>();
 		} else {
+			if(utenza.getIdDomini() == null || utenza.getIdDomini().isEmpty())
+				return null;
+			
 			return utenza.getIdDomini();
 		}
 	}

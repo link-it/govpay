@@ -100,24 +100,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		}
 
 
-		// Object _portale
-		Long id_applicazione = null;
-		it.govpay.orm.IdApplicazione idLogic_portale = null;
-		idLogic_portale = rpt.getIdApplicazione();
-		if(idLogic_portale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_portale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_applicazione = idLogic_portale.getId();
-				if(id_applicazione==null || id_applicazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-
 		// Object rpt
 		sqlQueryObjectInsert.addInsertTable(this.getRPTFieldConverter().toTable(RPT.model()));
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_CARRELLO,false),"?");
@@ -156,7 +138,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().BLOCCANTE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_pagamento_portale","?");
-		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 
 		// Insert rpt
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getRPTFetch().getKeyGeneratorObject(RPT.model());
@@ -196,8 +177,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataConservazione(),RPT.model().DATA_CONSERVAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getBloccante(),RPT.model().BLOCCANTE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamentoPortale,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamentoPortale,Long.class)
 		);
 		rpt.setId(id);
 
@@ -274,24 +254,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
 				id_rpt_pagamentoPortale = idLogic_rpt_pagamentoPortale.getId();
 				if(id_rpt_pagamentoPortale==null || id_rpt_pagamentoPortale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-
-		// Object _rpt_portale
-		Long id_rpt_applicazione = null;
-		it.govpay.orm.IdApplicazione idLogic_rpt_portale = null;
-		idLogic_rpt_portale = rpt.getIdApplicazione();
-		if(idLogic_rpt_portale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_rpt_portale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt_applicazione = idLogic_rpt_portale.getId();
-				if(id_rpt_applicazione==null || id_rpt_applicazione<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -378,16 +340,10 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_pagamento_portale","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
-		}
-		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_versamento, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_pagamentoPortale, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_rpt.add(new JDBCObject(id_rpt_applicazione, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_rpt.add(new JDBCObject(tableId, Long.class));

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -46,6 +45,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
 import it.govpay.orm.PagamentoPortaleVersamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoPortaleVersamentoFieldConverter;
@@ -468,10 +468,37 @@ public class JDBCPagamentoPortaleVersamentoServiceSearchImpl implements IJDBCSer
 			String tableName2 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_pagamento_portale="+tableName2+".id");
 		}
+		
+		if(expression.inUseModel(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE,false)){
+			if(!expression.inUseModel(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE,false)){
+				String tableName1 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model());
+				String tableName2 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_pagamento_portale="+tableName2+".id");
+			}
+			
+			String tableName1 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE);
+			String tableName2 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
+		}
+		
 		if(expression.inUseModel(PagamentoPortaleVersamento.model().ID_VERSAMENTO,false)){
 			String tableName1 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model());
 			String tableName2 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE,false)){
+			if(!expression.inUseModel(PagamentoPortaleVersamento.model().ID_VERSAMENTO,false)){
+				String tableName1 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model());
+				String tableName2 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+			}
+			
+			String tableName1 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO);
+			String tableName2 = this.getPagamentoPortaleVersamentoFieldConverter().toAliasTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
 
 	}
@@ -492,27 +519,33 @@ public class JDBCPagamentoPortaleVersamentoServiceSearchImpl implements IJDBCSer
 
 		// PagamentoPortaleVersamento.model()
 		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model()),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model()))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model()))
+			));
 
 		// PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE
 		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE))
+			));
+
+		// PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
+			));
 
 		// PagamentoPortaleVersamento.model().ID_VERSAMENTO
 		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO))
+			));
 
 		// PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE
 		mapTableToPKColumn.put(converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
-						));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(PagamentoPortaleVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
 
 		return mapTableToPKColumn;		
 	}

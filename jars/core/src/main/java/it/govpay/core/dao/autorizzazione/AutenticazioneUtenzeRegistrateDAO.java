@@ -57,7 +57,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDe
 		BasicBD bd = null;
 
 		try {
-			this.log.info("Lettura delle informazioni per l'utenza ["+username+"] in corso...");
+			this.log.debug("Lettura delle informazioni per l'utenza ["+username+"] in corso...");
 			String transactionId = UUID.randomUUID().toString();
 			bd = BasicBD.newInstance(transactionId, this.useCacheData);
 			UtenzeBD utenzeBD = new UtenzeBD(bd);
@@ -72,7 +72,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDe
 			if(!exists)
 				throw new NotFoundException("Utenza "+username+" non trovata.");
 			
-			this.log.info("Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
+			this.log.debug("Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
 			return AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.checkPassword, this.checkSubject, authFromPreauth, headerValues, bd);
 		}  catch(NotFoundException e){
 			throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);

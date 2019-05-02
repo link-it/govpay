@@ -603,14 +603,12 @@ CREATE TABLE rpt
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
 	id_pagamento_portale BIGINT COMMENT 'Identificativo della richiesta di pagamento assegnato dal portale chiamante',
-	id_applicazione BIGINT COMMENT 'Riferimento al verticale proprietario della pendenza oggetto del pagamento',
 	-- unique constraints
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rpt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Transazioni di pagmaento';
 

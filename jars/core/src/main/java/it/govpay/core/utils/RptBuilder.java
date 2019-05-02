@@ -45,6 +45,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.SingoloVersamento.TipoBollo;
@@ -162,6 +163,7 @@ public class RptBuilder {
 		rpt.setStato(StatoRpt.RPT_ATTIVATA);
 		rpt.setIdTransazioneRpt(GpThreadLocal.get().getTransactionId());
 		rpt.setBloccante(true);
+		rpt.setEsitoPagamento(EsitoPagamento.IN_CORSO);
 
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
 		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);

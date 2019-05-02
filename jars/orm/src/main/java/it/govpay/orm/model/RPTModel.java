@@ -43,7 +43,6 @@ public class RPTModel extends AbstractModel<RPT> {
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"RPT",RPT.class));
 		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new Field("idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"RPT",RPT.class));
-		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"RPT",RPT.class));
 		this.COD_CARRELLO = new Field("codCarrello",java.lang.String.class,"RPT",RPT.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"RPT",RPT.class);
 		this.CCP = new Field("ccp",java.lang.String.class,"RPT",RPT.class);
@@ -87,7 +86,6 @@ public class RPTModel extends AbstractModel<RPT> {
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"RPT",RPT.class));
 		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new ComplexField(father,"idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"RPT",RPT.class));
-		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"RPT",RPT.class));
 		this.COD_CARRELLO = new ComplexField(father,"codCarrello",java.lang.String.class,"RPT",RPT.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"RPT",RPT.class);
 		this.CCP = new ComplexField(father,"ccp",java.lang.String.class,"RPT",RPT.class);
@@ -130,8 +128,6 @@ public class RPTModel extends AbstractModel<RPT> {
 	public it.govpay.orm.model.IdVersamentoModel ID_VERSAMENTO = null;
 	 
 	public it.govpay.orm.model.IdPagamentoPortaleModel ID_PAGAMENTO_PORTALE = null;
-	 
-	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
 	public IField COD_CARRELLO = null;
 	 

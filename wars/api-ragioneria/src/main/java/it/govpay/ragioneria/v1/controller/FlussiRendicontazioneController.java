@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -47,7 +49,7 @@ public class FlussiRendicontazioneController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -84,12 +86,12 @@ public class FlussiRendicontazioneController extends BaseController {
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
 				byte[] response = leggiRendicontazioneDTOResponse.getFr().getXml();
 				this.logResponse(uriInfo, httpHeaders, methodName, response, 200);
-				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(new String(response)).type(MediaType.APPLICATION_XML),transactionId).build();
 			} else {
 				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr()); 
 				this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)).type(MediaType.APPLICATION_JSON),transactionId).build();
 			}
 			
@@ -107,7 +109,7 @@ public class FlussiRendicontazioneController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
@@ -125,10 +127,14 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
-			if(dataDa != null)
-				findRendicontazioniDTO.setDataDa(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataDa)); 
-			if(dataA != null)
-				findRendicontazioniDTO.setDataA(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataA));
+			if(dataDa != null) {
+				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				findRendicontazioniDTO.setDataDa(dataDaDate);
+			}
+			if(dataA != null) {
+				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				findRendicontazioniDTO.setDataA(dataADate);
+			}
 			
 			// Autorizzazione sui domini
 			List<String> domini  = AuthorizationManager.getDominiAutorizzati(user);
@@ -155,7 +161,7 @@ public class FlussiRendicontazioneController extends BaseController {
 					uriInfo.getRequestUri(), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {

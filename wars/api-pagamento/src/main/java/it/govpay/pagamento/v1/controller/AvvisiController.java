@@ -43,7 +43,7 @@ public class AvvisiController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
@@ -77,7 +77,7 @@ public class AvvisiController extends BaseController {
 				getAvvisoDTO.setFormato(FormatoAvviso.PDF);
 				GetAvvisoDTOResponse getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
 				this.logResponse(uriInfo, httpHeaders, methodName, getAvvisoDTOResponse.getAvvisoPdf(), 200);
-				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(getAvvisoDTOResponse.getAvvisoPdf()).header("content-disposition", "attachment; filename=\""+getAvvisoDTOResponse.getFilenameAvviso()+"\""),transactionId).build();
 			} else if(accept.toLowerCase().contains("application/json")) {
 				getAvvisoDTO.setFormato(FormatoAvviso.JSON);
@@ -92,7 +92,7 @@ public class AvvisiController extends BaseController {
 					avviso.setIdDominio(idDominio);
 				}
 				this.logResponse(uriInfo, httpHeaders, methodName, avviso.toJSON(null), Status.OK.getStatusCode());
-				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(avviso.toJSON(null)),transactionId).build();
 			} else {
 				// formato non accettato

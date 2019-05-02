@@ -70,6 +70,7 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 
 public class RptUtils {
@@ -304,7 +305,7 @@ public class RptUtils {
 						return false;
 					}
 					log.info("Aggiorno lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in " + nuovoStato + ".");
-					rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato aggiornato in fase di recupero pendenti.", null, null);
+					rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato aggiornato in fase di recupero pendenti.", null, null,null);
 					rpt.setStato(nuovoStato);
 					rpt.setDescrizioneStato("Stato aggiornato in fase di recupero pendenti.");
 					bd.disableSelectForUpdate();
@@ -348,13 +349,14 @@ public class RptUtils {
 							bd.disableSelectForUpdate();
 							return false;
 						}
-						rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Stato sul nodo: PPT_RPT_SCONOSCIUTA", null, null);
+						rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Stato sul nodo: PPT_RPT_SCONOSCIUTA", null, null,null);
 						bd.disableSelectForUpdate();
 						return true;
 					}
 					throw new GovPayException(risposta.getFault());
 				} else {
 					StatoRpt nuovoStato = Rpt.StatoRpt.toEnum(risposta.getEsito().getStato());
+					EsitoPagamento esitoPagamento = nuovoStato.equals(Rpt.StatoRpt.RPT_RIFIUTATA_NODO) ? EsitoPagamento.RIFIUTATO: null;
 					
 					log.info("Acquisito dal Nodo dei Pagamenti lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: " + nuovoStato);
 
@@ -445,7 +447,7 @@ public class RptUtils {
 							
 							msg = insertNotificaOk ? ", Schedulazione notifica di Fallimento del tentativo." : ".";
 							log.info("Aggiorno lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in " + nuovoStato + msg);
-							rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato acquisito da Nodo dei Pagamenti", null, null);
+							rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato acquisito da Nodo dei Pagamenti", null, null,esitoPagamento);
 							rpt.setStato(nuovoStato);
 							rpt.setDescrizioneStato("Stato acquisito da Nodo dei Pagamenti");
 							bd.disableSelectForUpdate();
@@ -481,7 +483,7 @@ public class RptUtils {
 							return false;
 						}
 						log.info("Aggiorno lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] in " + nuovoStato + ".");
-						rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato acquisito da Nodo dei Pagamenti", null, null);
+						rptBD.updateRpt(rpt.getId(), nuovoStato, "Stato acquisito da Nodo dei Pagamenti", null, null,esitoPagamento);
 						rpt.setStato(nuovoStato);
 						rpt.setDescrizioneStato("Stato acquisito da Nodo dei Pagamenti");
 						bd.disableSelectForUpdate();

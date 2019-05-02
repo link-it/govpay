@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.IContext;
@@ -36,6 +38,7 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -68,7 +71,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
 			baos = new ByteArrayOutputStream();
@@ -114,7 +117,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
+	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
@@ -161,6 +164,17 @@ public class PendenzeController extends BaseController {
 
 			if(ordinamento != null)
 				listaPendenzeDTO.setOrderBy(ordinamento);
+			
+			if(dataDa!=null) {
+				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaPendenzeDTO.setDataDa(dataDaDate);
+			}
+				
+			
+			if(dataA!=null) {
+				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaPendenzeDTO.setDataA(dataADate);
+			}
 
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
@@ -193,7 +207,7 @@ public class PendenzeController extends BaseController {
 					listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
 			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
@@ -209,7 +223,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
@@ -301,7 +315,7 @@ public class PendenzeController extends BaseController {
 		IContext ctx = null;
 		String transactionId = null;
 		ByteArrayOutputStream baos= null;
-		this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			baos = new ByteArrayOutputStream();
 			// salvo il json ricevuto
@@ -350,7 +364,7 @@ public class PendenzeController extends BaseController {
 			pc.pdf(createOrUpdate.getPdf());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.logResponse(uriInfo, httpHeaders, methodName, pc.toJSON(null), responseStatus.getStatusCode());
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

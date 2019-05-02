@@ -209,7 +209,7 @@ public class PagamentiPortaleBD extends BasicBD{
 	public PagamentoPortale getPagamentoFromCodSessione(String codSessione) throws ServiceException,NotFoundException {
 		try {
 			IdPagamentoPortale id = new IdPagamentoPortale();
-			id.setIdSessione(codSessione);;
+			id.setIdSessione(codSessione);
 			PagamentoPortale dto = PagamentoPortaleConverter.toDTO(this.getPagamentoPortaleService().get(id));
 
 			return this.getPagamentoArricchito(dto);

@@ -6,6 +6,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.RPT;
 
@@ -26,6 +27,9 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	private String idA2A;
 	private String idPendenza;
 	private String idPagamento;
+	private String cfCittadino;
+	private String idA2APagamentoPortale;
+	private EsitoPagamento esitoPagamento;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -80,5 +84,23 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	}
 	public void setIdPagamento(String idPagamento) {
 		this.idPagamento = idPagamento;
+	}
+	public String getIdA2APagamentoPortale() {
+		return idA2APagamentoPortale;
+	}
+	public void setIdA2APagamentoPortale(String idA2APagamentoPortale) {
+		this.idA2APagamentoPortale = idA2APagamentoPortale;
+	}
+	public String getCfCittadino() {
+		return cfCittadino;
+	}
+	public void setCfCittadino(String cfCittadino) {
+		this.cfCittadino = cfCittadino;
+	}
+	public EsitoPagamento getEsitoPagamento() {
+		return esitoPagamento;
+	}
+	public void setEsitoPagamento(EsitoPagamento esitoPagamento) {
+		this.esitoPagamento = esitoPagamento;
 	}
 }

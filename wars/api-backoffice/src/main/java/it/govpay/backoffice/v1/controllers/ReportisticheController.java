@@ -54,7 +54,7 @@ public class ReportisticheController extends BaseController {
 		}
 		
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
@@ -127,7 +127,7 @@ public class ReportisticheController extends BaseController {
 				ListaEntratePreviste response = new ListaEntratePreviste(results, this.getServicePath(uriInfo), listaEntratePrevisteDTOResponse.getTotalResults(), listaEntratePrevisteDTO.getPagina(), listaEntratePrevisteDTO.getLimit());
 	
 				this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
-				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 			} else if(accept.toLowerCase().contains("application/pdf")) {
@@ -156,7 +156,7 @@ public class ReportisticheController extends BaseController {
 				byte[] b = listaEntratePrevisteDTOResponse.getPdf(); 
 
 				this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
-				this.log.info(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+pdfEntryName+"\""),transactionId).build();
 			} else {
 				// formato non accettato

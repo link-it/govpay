@@ -207,6 +207,20 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "id_sessione";
 			}
 		}
+		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".versante_identificativo";
+			}else{
+				return "versante_identificativo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -280,6 +294,12 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
 			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
+		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
+			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -304,6 +324,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Evento.model().ID_PAGAMENTO_PORTALE)){
 			return "pagamenti_portale";
+		}
+		if(model.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 
 
