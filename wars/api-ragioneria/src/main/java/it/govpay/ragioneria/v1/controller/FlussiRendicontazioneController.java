@@ -138,16 +138,14 @@ public class FlussiRendicontazioneController extends BaseController {
 			
 			// Autorizzazione sui domini
 			List<String> domini  = AuthorizationManager.getDominiAutorizzati(user);
-			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			}
 			findRendicontazioniDTO.setCodDomini(domini);
 			
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 			
 			// CHIAMATA AL DAO
 			
-			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO);
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = domini != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO) 
+					: new ListaRendicontazioniDTOResponse(0, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
