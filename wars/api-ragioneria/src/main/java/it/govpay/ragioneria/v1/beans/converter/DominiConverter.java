@@ -26,7 +26,7 @@ public class DominiConverter {
 		rsModel.setGln(dominio.getGln());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
 		if(dominio.getSegregationCode() != null)
-			rsModel.setSegregationCode("" + dominio.getSegregationCode());
+			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}

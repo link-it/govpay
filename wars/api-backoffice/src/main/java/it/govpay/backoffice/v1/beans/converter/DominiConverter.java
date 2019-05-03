@@ -200,7 +200,7 @@ public class DominiConverter {
 		rsModel.setCbill(dominio.getCbill());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
 		if(dominio.getSegregationCode() != null)
-			rsModel.setSegregationCode("" + dominio.getSegregationCode());
+			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
 		
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
@@ -238,7 +238,7 @@ public class DominiConverter {
 		rsModel.setCbill(dominio.getCbill());
 		rsModel.setAuxDigit("" + dominio.getAuxDigit());
 		if(dominio.getSegregationCode() != null)
-			rsModel.setSegregationCode("" + dominio.getSegregationCode());
+			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
 		
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));

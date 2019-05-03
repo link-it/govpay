@@ -60,7 +60,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
 			
-			String accept = null;
+			String accept = "";
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
 			}

@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -100,7 +102,7 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, Date dataRiscossioneDa, Date dataRiscossioneA, String tipo) {
+    public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
     	String methodName = "riscossioniGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -126,8 +128,6 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setIdDominio(idDominio);
 			findRiscossioniDTO.setLimit(risultatiPerPagina);
 			findRiscossioniDTO.setPagina(pagina);
-			findRiscossioniDTO.setDataRiscossioneA(dataRiscossioneA);
-			findRiscossioniDTO.setDataRiscossioneDa(dataRiscossioneDa);
 			findRiscossioniDTO.setIdA2A(idA2A);
 			findRiscossioniDTO.setIdPendenza(idPendenza);
 			findRiscossioniDTO.setOrderBy(ordinamento);
@@ -143,22 +143,30 @@ public class RiscossioniController extends BaseController {
 				
 				}
 			}
+			
+			if(dataRiscossioneDa!=null) {
+				Date dataDaDate = DateUtils.parseDate(dataRiscossioneDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				findRiscossioniDTO.setDataRiscossioneDa(dataDaDate);
+			}
+				
+			
+			if(dataRiscossioneA!=null) {
+				Date dataADate = DateUtils.parseDate(dataRiscossioneA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				findRiscossioniDTO.setDataRiscossioneA(dataADate);
+			}
 
 			if(tipo !=null)
 				findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(TipoRiscossione.fromValue(tipo).toString()));
 			
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			}
 			findRiscossioniDTO.setCodDomini(domini);
 			
 			RiscossioniDAO riscossioniDAO = new RiscossioniDAO();
 			
 			// CHIAMATA AL DAO
 			
-			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = riscossioniDAO.listaRiscossioni(findRiscossioniDTO);
+			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = domini != null ? riscossioniDAO.listaRiscossioni(findRiscossioniDTO) : new ListaRiscossioniDTOResponse(0, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

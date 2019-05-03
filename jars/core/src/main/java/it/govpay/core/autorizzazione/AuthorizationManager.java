@@ -217,7 +217,7 @@ public class AuthorizationManager {
 		if(utenza.isAutorizzazioneDominiStar() || codDominio == null)
 			return true;
 
-		List<String> dominiAutorizzati = utenza.getIdDominio();
+		List<String> dominiAutorizzati = getDominiAutorizzati(utenza);
 
 		if(dominiAutorizzati == null) 
 			return false;
@@ -237,7 +237,7 @@ public class AuthorizationManager {
 		if(utenza.isAutorizzazioneTipiVersamentoStar() || codTipoVersamento == null)
 			return true;
 
-		List<String> tipiVersamentoAutorizzati = utenza.getIdTipoVersamento();
+		List<String> tipiVersamentoAutorizzati = getTipiVersamentoAutorizzati(utenza);
 
 		if(tipiVersamentoAutorizzati == null) 
 			return false;

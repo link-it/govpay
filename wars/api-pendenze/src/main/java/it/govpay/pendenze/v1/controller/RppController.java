@@ -220,9 +220,9 @@ public class RppController extends BaseController {
 				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
 			
 			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(leggiPagamentoPortaleDTO.getUser(), idDominio)) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(),idDominio, null);
-			}
+//			if(!AuthorizationManager.isDominioAuthorized(leggiPagamentoPortaleDTO.getUser(), idDominio)) {
+//				throw AuthorizationManager.toNotAuthorizedException(leggiPagamentoPortaleDTO.getUser(),idDominio, null);
+//			}
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
@@ -232,11 +232,13 @@ public class RppController extends BaseController {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.RAW);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 				
-				// controllo che il dominio sia autorizzato
-				if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
-					throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
-				}
+				checkAutorizzazioniUtenza(leggiPagamentoPortaleDTO.getUser(), ricevutaDTOResponse.getRpt());
 				
+//				// controllo che il dominio sia autorizzato
+//				if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
+//					throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
+//				}
+//				
 				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
@@ -247,10 +249,12 @@ public class RppController extends BaseController {
 					String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
 					byte[] b = ricevutaDTOResponse.getPdf(); 
 					
-					// controllo che il dominio sia autorizzato
-					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
-						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
-					}
+					checkAutorizzazioniUtenza(leggiPagamentoPortaleDTO.getUser(), ricevutaDTOResponse.getRpt());
+					
+//					// controllo che il dominio sia autorizzato
+//					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
+//						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
+//					}
 
 					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
@@ -259,10 +263,12 @@ public class RppController extends BaseController {
 					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 					
-					// controllo che il dominio sia autorizzato
-					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
-						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
-					}
+					checkAutorizzazioniUtenza(leggiPagamentoPortaleDTO.getUser(), ricevutaDTOResponse.getRpt());
+					
+//					// controllo che il dominio sia autorizzato
+//					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
+//						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
+//					}
 					
 					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
@@ -272,10 +278,12 @@ public class RppController extends BaseController {
 					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 					
-					// controllo che il dominio sia autorizzato
-					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
-						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
-					}
+					checkAutorizzazioniUtenza(leggiPagamentoPortaleDTO.getUser(), ricevutaDTOResponse.getRpt());
+					
+//					// controllo che il dominio sia autorizzato
+//					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
+//						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
+//					}
 					
 					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
@@ -324,18 +332,20 @@ public class RppController extends BaseController {
 			leggiRptDTO.setCcp(ccp);
 			
 			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(leggiRptDTO.getUser(), idDominio)) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiRptDTO.getUser(),idDominio, null);
-			}
+//			if(!AuthorizationManager.isDominioAuthorized(leggiRptDTO.getUser(), idDominio)) {
+//				throw AuthorizationManager.toNotAuthorizedException(leggiRptDTO.getUser(),idDominio, null);
+//			}
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 			
+			checkAutorizzazioniUtenza(leggiRptDTO.getUser(), leggiRptDTOResponse.getRpt());
+			
 			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(user, leggiRptDTOResponse.getDominio().getCodDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(user, leggiRptDTOResponse.getDominio().getCodDominio(), null);
-			}
+//			if(!AuthorizationManager.isDominioAuthorized(user, leggiRptDTOResponse.getDominio().getCodDominio())) {
+//				throw AuthorizationManager.toNotAuthorizedException(user, leggiRptDTOResponse.getDominio().getCodDominio(), null);
+//			}
 
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
