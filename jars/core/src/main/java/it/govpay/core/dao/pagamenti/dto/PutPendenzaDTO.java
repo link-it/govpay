@@ -28,7 +28,7 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 		return this.stampaAvviso != null ? this.stampaAvviso : false;
 	}
 
-	public void setStampaAvviso(boolean stampaAvviso) {
+	public void setStampaAvviso(Boolean stampaAvviso) {
 		this.stampaAvviso = stampaAvviso;
 	}
 
