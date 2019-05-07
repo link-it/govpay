@@ -1625,7 +1625,6 @@ components:
         enum:
          - Lettura
          - Scrittura
-         - Esecuzione
       example:
         - Lettura
         - Scrittura 

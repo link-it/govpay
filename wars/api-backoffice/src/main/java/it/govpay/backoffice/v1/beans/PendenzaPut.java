@@ -69,8 +69,11 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   @JsonProperty("tassonomia")
   private String tassonomia = null;
   
+  @JsonIgnore
+  private TassonomiaAvviso tassonomiaAvvisoEnum = null;
+
   @JsonProperty("tassonomiaAvviso")
-  private TassonomiaAvviso tassonomiaAvviso = null;
+  private String tassonomiaAvviso = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -272,31 +275,34 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
     this.tassonomia = tassonomia;
   }
 
-  /**
-   **/
-  public PendenzaPut tassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {
-    this.tassonomiaAvviso = tassonomiaAvviso;
-    return this;
-  }
+	/**
+	 **/
+	public PendenzaPut tassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
+		this.tassonomiaAvvisoEnum = tassonomiaAvviso;
+		return this;
+	}
 
-  @JsonProperty("tassonomiaAvviso")
-  public String getTassonomiaAvviso() {
-      if(this.tassonomiaAvviso != null)
-          return this.tassonomiaAvviso.toString();
-    return null;
-  }	
-  public void setTassonomiaAvviso(String tassonomiaAvviso) {
-	  if(tassonomiaAvviso != null)
-		 this.tassonomiaAvviso = TassonomiaAvviso.fromValue(tassonomiaAvviso);
-  }
+	public TassonomiaAvviso getTassonomiaAvvisoEnum() {
+		return this.tassonomiaAvvisoEnum;
+	}
+	public void setTassonomiaAvvisoEnum(TassonomiaAvviso tassonomiaAvviso) {
+		this.tassonomiaAvvisoEnum = tassonomiaAvviso;
+	}
 
-  @JsonIgnore
-  public TassonomiaAvviso getTassonomiaAvvisoEnum() {
-    return this.tassonomiaAvviso;
-  }
-  public void setTassonomiaAvviso(TassonomiaAvviso tassonomiaAvviso) {
-    this.tassonomiaAvviso = tassonomiaAvviso;
-  }
+	/**
+	 **/
+	public PendenzaPut tassonomiaAvviso(String tassonomiaAvviso) {
+		this.setTassonomiaAvviso(tassonomiaAvviso);
+		return this;
+	}
+
+	@JsonProperty("tassonomiaAvviso")
+	public String getTassonomiaAvviso() {
+		return this.tassonomiaAvviso;
+	}
+	public void setTassonomiaAvviso(String tassonomiaAvviso) {
+		this.tassonomiaAvviso = tassonomiaAvviso;
+	}
 
   /**
    * Identificativo del dominio creditore
@@ -431,7 +437,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 		vf.getValidator("nome", this.nome).minLength(1).maxLength(35);
 		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
 		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
-		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		vf.getValidator("importo", this.importo).minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
 		vf.getValidator("numeroAvviso", this.numeroAvviso).pattern("[0-9]{18}");
 		vf.getValidator("dataValidita", this.dataValidita);
 		vf.getValidator("dataScadenza", this.dataScadenza);

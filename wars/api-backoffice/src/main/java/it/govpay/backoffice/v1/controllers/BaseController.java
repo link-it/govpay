@@ -38,6 +38,7 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.RequestValidationException;
@@ -198,6 +199,10 @@ public abstract class BaseController {
 	
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
 		
+		if(e instanceof IncassiException) {
+			return this.handleIncassiException(uriInfo, httpHeaders, methodName, (IncassiException)e,transactionId);
+		}
+		
 		if(e instanceof UnprocessableEntityException) {
 			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, (UnprocessableEntityException)e,transactionId);
 		}
@@ -335,6 +340,25 @@ public abstract class BaseController {
 		String respJson = this.getRespJson(respKo);
 		
 		return handleResponseKo(Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+	}
+	
+	private Response handleIncassiException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IncassiException e, String transactionId) {
+		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ": " + e.getDetails());
+		
+		FaultBean respKo = new FaultBean();
+		respKo.setCategoria(CategoriaEnum.RICHIESTA);
+		respKo.setCodice(e.getCode());
+		respKo.setDescrizione(e.getMessage());
+		respKo.setDettaglio(e.getDetails());
+		
+		try {
+			this.logResponse(uriInfo, httpHeaders, methodName, respKo, e.getTransportErrorCode());
+		}catch(Exception e1) {
+			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
+		}
+
+		String respJson = this.getRespJson(respKo);
+		return handleResponseKo(Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {

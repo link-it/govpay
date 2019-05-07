@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,7 @@ import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -47,7 +50,7 @@ public class IncassiController extends BaseController {
 	}
 
 
-    public Response incassiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response incassiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio) {
     	String methodName = "incassiGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -68,19 +71,29 @@ public class IncassiController extends BaseController {
 			
 			listaIncassoDTO.setLimit(risultatiPerPagina);
 			listaIncassoDTO.setPagina(pagina);
+			listaIncassoDTO.setIdDominio(idDominio);
+		
+			if(dataDa != null) {
+				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaIncassoDTO.setDataDa(dataDaDate);
+			}
+			if(dataA != null) {
+				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				listaIncassoDTO.setDataA(dataADate);
+			}
 			
 			// filtro sull'applicazione			
 			listaIncassoDTO.setIdA2A(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione()); 
 			
 			// autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user); 
-			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			}
+//			if(domini == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+//			}
 			listaIncassoDTO.setCodDomini(domini);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
-			ListaIncassiDTOResponse listaIncassiDTOResponse = incassiDAO.listaIncassi(listaIncassoDTO);
+			ListaIncassiDTOResponse listaIncassiDTOResponse = domini != null ? incassiDAO.listaIncassi(listaIncassoDTO) : new ListaIncassiDTOResponse(0, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

@@ -3082,6 +3082,36 @@ paths:
             type: integer
             default: 25
             maximum: 200
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * data
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +data
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di riscossione
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di riscossione
+          required: false
+          schema:
+            type: string
+            format: date            
+        - name: idDominio
+          in: query
+          description: filtro per dominio creditore
+          required: false
+          schema:
+            type: string
       responses:
         '201':
           description: Dettaglio dell'incasso
@@ -3098,6 +3128,38 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/incassoIndex'   
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  '/incassi/{idDominio}':
+    post:
+      summary: Registrazione di un movimento di cassa
+      tags:
+        - Riconciliazioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del creditore
+          required: true
+          schema:
+            type: string           
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/incassoPost'
+      responses:
+        '201':
+          description: Incasso registrato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incasso'
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -5542,7 +5604,6 @@ components:
             enum:
              - R
              - W
-             - X
           example:
             - R
             - W

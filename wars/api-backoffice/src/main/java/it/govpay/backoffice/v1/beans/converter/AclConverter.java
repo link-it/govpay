@@ -28,8 +28,6 @@ public class AclConverter {
 		for(String authS: aclPost.getAutorizzazioni()) {
 			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
 			switch(auth) {
-			case ESECUZIONE: lst.add(Acl.Diritti.ESECUZIONE);
-				break;
 			case LETTURA: lst.add(Acl.Diritti.LETTURA);
 				break;
 			case SCRITTURA: lst.add(Acl.Diritti.SCRITTURA);
@@ -68,8 +66,6 @@ public class AclConverter {
 		for(String authS: aclPost.getAutorizzazioni()) {
 			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
 			switch(auth) {
-			case ESECUZIONE: lst.add(Acl.Diritti.ESECUZIONE);
-				break;
 			case LETTURA: lst.add(Acl.Diritti.LETTURA);
 				break;
 			case SCRITTURA: lst.add(Acl.Diritti.SCRITTURA);

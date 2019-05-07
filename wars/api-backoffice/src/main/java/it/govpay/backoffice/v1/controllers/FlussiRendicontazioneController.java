@@ -2,7 +2,9 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -130,23 +133,25 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
-			if(dataDa != null)
-				findRendicontazioniDTO.setDataDa(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataDa)); 
-			if(dataA != null)
-				findRendicontazioniDTO.setDataA(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataA));
+			if(dataDa != null) {
+				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				findRendicontazioniDTO.setDataDa(dataDaDate);
+			}
+			if(dataA != null) {
+				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				findRendicontazioniDTO.setDataA(dataADate);
+			}
 			
 			// Autorizzazione sui domini
 			List<String> domini  = AuthorizationManager.getDominiAutorizzati(user);
-			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			}
 			findRendicontazioniDTO.setCodDomini(domini);
 			
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 			
 			// CHIAMATA AL DAO
 			
-			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO);
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse =  domini != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
+					: new ListaRendicontazioniDTOResponse(0, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

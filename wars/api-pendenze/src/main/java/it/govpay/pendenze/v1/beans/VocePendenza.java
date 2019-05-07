@@ -424,7 +424,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 		else if(this.tipoBollo != null) {
 			vf.getValidator(FIELD_TIPO_BOLLO, this.tipoBollo).notNull();
 			vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).notNull().minLength(1).maxLength(70);
-			vf.getValidator(FIELD_PROVINCIA_RESIDENZA, this.provinciaResidenza).notNull().pattern("[A-Z]{2,2}");
+			vf.getValidator(FIELD_PROVINCIA_RESIDENZA, this.provinciaResidenza).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
 
 			try {
 				vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).isNull();
@@ -443,7 +443,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 			vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator(FIELD_TIPO_CONTABILITA, this.tipoContabilita).notNull();
-			vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).notNull().pattern("\\S{3,138}").maxLength(255);
+			vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).notNull().pattern(CostantiValidazione.PATTERN_COD_CONTABILITA).maxLength(255);
 
 			try {
 				vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).isNull();

@@ -11,6 +11,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Incasso;
+import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
@@ -43,9 +44,12 @@ public class IncassiDAO extends BaseDAO{
 			IncassiBD incassiBD = new IncassiBD(bd);
 			IncassoFilter newFilter = incassiBD.newFilter();
 
+			if(listaIncassoDTO.getIdDominio() != null) {
+				newFilter.setCodDominio(listaIncassoDTO.getIdDominio());
+			}
 			newFilter.setCodDomini(listaIncassoDTO.getCodDomini()); 
-			newFilter.setDataInizio(listaIncassoDTO.getInizio());
-			newFilter.setDataFine(listaIncassoDTO.getFine());
+			newFilter.setDataInizio(listaIncassoDTO.getDataDa());
+			newFilter.setDataFine(listaIncassoDTO.getDataA());
 			newFilter.setOffset(listaIncassoDTO.getOffset());
 			newFilter.setLimit(listaIncassoDTO.getLimit());
 			newFilter.setCodApplicazione(listaIncassoDTO.getIdA2A());
@@ -145,10 +149,22 @@ public class IncassiDAO extends BaseDAO{
 			
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncassoDTO.getUser());
 			Applicazione applicazione = authenticationDetails.getApplicazione();
-			if(applicazione == null)
-				throw new NotAuthorizedException("L'utenza autenticata non corrisponde a nessuna applicazione.");
+			Operatore operatore = authenticationDetails.getOperatore();
+			boolean isApp = true, isOp = true;
+			if(applicazione == null) {
+				isApp = false;
+			} 
+			
+			if(operatore == null) {
+				isOp = false;
+			} 
+			
+			if(!isApp && !isOp){
+				throw new NotAuthorizedException("L'utenza autenticata non e' registrata nel sistema.");
+			}
 			
 			richiestaIncassoDTO.setApplicazione(applicazione);
+			richiestaIncassoDTO.setOperatore(operatore);
 
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
 			List<Pagamento> pagamenti = richiestaIncassoDTOResponse.getIncasso().getPagamenti(bd);

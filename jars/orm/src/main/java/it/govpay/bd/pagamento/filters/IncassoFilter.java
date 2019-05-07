@@ -47,6 +47,7 @@ public class IncassoFilter extends AbstractFilter{
 	private String causale;
 	private String codApplicazione;
 	private List<Long> idIncasso= null;
+	private String codDominio =null;
 
 	public IncassoFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -106,6 +107,13 @@ public class IncassoFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 				newExpression.in(Incasso.model().COD_DOMINIO, this.codDomini);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(Incasso.model().COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
 
@@ -212,6 +220,14 @@ public class IncassoFilter extends AbstractFilter{
 
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
 	}
 	
 }

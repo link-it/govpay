@@ -2,6 +2,7 @@ package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -30,6 +32,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -100,7 +103,7 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, Date dataRiscossioneDa, Date dataRiscossioneA, String tipo) {
+    public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataDa, String dataA, String tipo) {
     	String methodName = "riscossioniGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -122,8 +125,16 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setIdDominio(idDominio);
 			findRiscossioniDTO.setLimit(risultatiPerPagina);
 			findRiscossioniDTO.setPagina(pagina);
-			findRiscossioniDTO.setDataRiscossioneA(dataRiscossioneA);
-			findRiscossioniDTO.setDataRiscossioneDa(dataRiscossioneDa);
+			
+			if(dataDa != null) {
+				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				findRiscossioniDTO.setDataRiscossioneDa(dataDaDate);
+			}
+			if(dataA != null) {
+				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
+				findRiscossioniDTO.setDataRiscossioneA(dataADate);
+			}
+			
 			findRiscossioniDTO.setIdA2A(idA2A);
 			findRiscossioniDTO.setIdPendenza(idPendenza);
 			findRiscossioniDTO.setOrderBy(ordinamento);
@@ -145,9 +156,9 @@ public class RiscossioniController extends BaseController {
 			
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			}
+//			if(domini == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+//			}
 			findRiscossioniDTO.setCodDomini(domini);
 			
 			// INIT DAO
@@ -156,7 +167,7 @@ public class RiscossioniController extends BaseController {
 			
 			// CHIAMATA AL DAO
 			
-			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = rendicontazioniDAO.listaRiscossioni(findRiscossioniDTO);
+			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = domini != null ? rendicontazioniDAO.listaRiscossioni(findRiscossioniDTO) : new ListaRiscossioniDTOResponse(0, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			

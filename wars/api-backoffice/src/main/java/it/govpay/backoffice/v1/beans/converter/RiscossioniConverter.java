@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 
 import it.gov.agenziaentrate._2014.marcadabollo.MarcaDaBollo;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rpt;
 import it.govpay.backoffice.v1.beans.Allegato;
 import it.govpay.backoffice.v1.beans.Allegato.TipoEnum;
 import it.govpay.backoffice.v1.beans.Riscossione;
@@ -34,7 +35,9 @@ public class RiscossioniConverter {
 			
 			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(null).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
 			rsModel.setIdVocePendenza(input.getSingoloVersamento(null).getCodSingoloVersamentoEnte());
-			rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(input.getRpt(null).getCodDominio(), input.getRpt(null).getIuv(), input.getRpt(null).getCcp()));
+			Rpt rpt = input.getRpt(null);
+			if(rpt!= null)
+				rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
 			rsModel.setImporto(input.getImportoPagato());
 			rsModel.setData(input.getDataPagamento());
 			Stato stato = input.getStato();

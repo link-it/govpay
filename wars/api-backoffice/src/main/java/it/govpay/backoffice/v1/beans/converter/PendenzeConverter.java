@@ -428,7 +428,7 @@ public class PendenzeConverter {
 		//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
-		versamento.setImportoTotale(pendenza.getImporto()); 
+		
 		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getDatiAllegati() != null)
 			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
@@ -445,7 +445,10 @@ public class PendenzeConverter {
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 
 		// voci pagamento
-		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		BigDecimal importoVociPendenza = fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		
+		// importo pendenza puo' essere null
+		versamento.setImportoTotale(pendenza.getImporto() != null ? pendenza.getImporto() : importoVociPendenza); 
 		
 		// tipo Pendenza
 		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
@@ -462,8 +465,10 @@ public class PendenzeConverter {
 		return versamento;
 	}
 
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
+	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
 
+		BigDecimal importoTotale = BigDecimal.ZERO;
+		
 		if(voci != null && voci.size() > 0) {
 			for (VocePendenza vocePendenza : voci) {
 				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
@@ -475,6 +480,8 @@ public class PendenzeConverter {
 					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
+				
+				importoTotale = importoTotale.add(vocePendenza.getImporto());
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
@@ -498,6 +505,8 @@ public class PendenzeConverter {
 				versamento.getSingoloVersamento().add(sv);
 			}
 		}
+		
+		return importoTotale;
 	}
 
 	public static it.govpay.core.dao.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {

@@ -98,10 +98,7 @@ public class AclPost extends JSONSerializable {
     LETTURA("Lettura"),
     
             
-    SCRITTURA("Scrittura"),
-    
-            
-    ESECUZIONE("Esecuzione");
+    SCRITTURA("Scrittura");
             
         
     

@@ -95,10 +95,7 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable  implements I
     LETTURA("R"),
     
             
-    SCRITTURA("W"),
-    
-            
-    ESECUZIONE("X");
+    SCRITTURA("W");
             
         
     

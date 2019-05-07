@@ -8,6 +8,7 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -443,7 +444,8 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
 		vf.getValidator(FIELD_ID_VOCE_PENDENZA, this.idVocePendenza).notNull().minLength(1).maxLength(35);
-		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
+		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
 
 
 		if(this.codEntrata != null) {
@@ -463,10 +465,10 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 			return;
 		}
 
-		if(this.tipoBollo != null) {
+		else if(this.tipoBollo != null) {
 			vf.getValidator(FIELD_TIPO_BOLLO, this.tipoBollo).notNull();
 			vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).notNull().minLength(1).maxLength(70);
-			vf.getValidator(FIELD_PROVINCIA_RESIDENZA, this.provinciaResidenza).notNull().pattern("[A-Z]{2,2}");
+			vf.getValidator(FIELD_PROVINCIA_RESIDENZA, this.provinciaResidenza).notNull().pattern(CostantiValidazione.PATTERN_PROVINCIA);
 
 			try {
 				vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).isNull();
@@ -481,11 +483,11 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 		}
 
 
-		if(this.ibanAccredito != null) {
-			vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
-			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");;
+		else if(this.ibanAccredito != null) {
+			vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).notNull().pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
+			vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).pattern(CostantiValidazione.PATTERN_IBAN_ACCREDITO);
 			vf.getValidator(FIELD_TIPO_CONTABILITA, this.tipoContabilita).notNull();
-			vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).notNull().pattern("\\S{3,138}");;
+			vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).notNull().pattern(CostantiValidazione.PATTERN_COD_CONTABILITA).maxLength(255);
 
 			try {
 				vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).isNull();
@@ -493,6 +495,10 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 			} catch (ValidationException ve) {
 				throw new ValidationException("Valorizzato ibanAccredito. " + ve.getMessage());
 			}
+		}
+		
+		else {
+			throw new ValidationException("Uno dei campi tra ibanAccredito, tipoBollo o codEntrata deve essere valorizzato");
 		}
 
 	}

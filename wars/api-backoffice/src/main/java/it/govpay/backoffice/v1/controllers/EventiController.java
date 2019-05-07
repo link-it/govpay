@@ -78,16 +78,16 @@ public class EventiController extends BaseController {
 			List<String> domini = null;
 			// Autorizzazione sui domini
 			domini = AuthorizationManager.getDominiAutorizzati(user);
-			if(domini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			}
+//			if(domini == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+//			}
 			listaEventiDTO.setCodDomini(domini);
 
 			EventiDAO pspDAO = new EventiDAO();
 
 			// CHIAMATA AL DAO
 
-			ListaEventiDTOResponse listaEventiDTOResponse = pspDAO.listaEventi(listaEventiDTO);
+			ListaEventiDTOResponse listaEventiDTOResponse = domini != null ?  pspDAO.listaEventi(listaEventiDTO) : new ListaEventiDTOResponse(0, new ArrayList<>());
 
 			// CONVERT TO JSON DELLA RISPOSTA
 

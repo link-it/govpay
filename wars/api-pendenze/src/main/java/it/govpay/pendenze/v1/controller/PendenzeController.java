@@ -89,7 +89,8 @@ public class PendenzeController extends BaseController {
 			
 			// filtro sull'applicazione			
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
-				throw new GovPayException(EsitoOperazione.APP_002, AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione(), idA2A);
+				throw AuthorizationManager.toNotAuthorizedException(user);
+//				throw new GovPayException(EsitoOperazione.APP_002, AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione(), idA2A);
 			}
 
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
@@ -342,9 +343,7 @@ public class PendenzeController extends BaseController {
 			pendenzaPost.validate();
 
 			Versamento versamento = PendenzeConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza);
-
-			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
-
+			
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setVersamento(versamento);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
@@ -355,6 +354,14 @@ public class PendenzeController extends BaseController {
 			}
 
 			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
+			
+			String codDominio = versamento.getCodDominio();
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(putVersamentoDTO.getUser(), codDominio)) {
+				throw AuthorizationManager.toNotAuthorizedException(putVersamentoDTO.getUser(), codDominio);
+			}
+
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
 

@@ -35,20 +35,28 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	}
 	
 	private String idA2A;
-	private Date inizio;
-	private Date fine;
+	private String idDominio;
+	private Date dataDa;
+	private Date dataA;
 
-	public Date getInizio() {
-		return this.inizio;
+	 
+	public String getIdDominio() {
+		return idDominio;
 	}
-	public void setInizio(Date inizio) {
-		this.inizio = inizio;
+	public void setIdDominio(String idDominio) {
+		this.idDominio = idDominio;
 	}
-	public Date getFine() {
-		return this.fine;
+	public Date getDataDa() {
+		return dataDa;
 	}
-	public void setFine(Date fine) {
-		this.fine = fine;
+	public void setDataDa(Date dataDa) {
+		this.dataDa = dataDa;
+	}
+	public Date getDataA() {
+		return dataA;
+	}
+	public void setDataA(Date dataA) {
+		this.dataA = dataA;
 	}
 	public String getIdA2A() {
 		return idA2A;

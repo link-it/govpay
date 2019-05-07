@@ -31,7 +31,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class Acl extends BasicModel {
 	
 	public enum Diritti {
-		LETTURA ("R"), SCRITTURA ("W") , ESECUZIONE ("X");
+		LETTURA ("R"), SCRITTURA ("W");
 		
 		
 		private String codifica;
@@ -54,7 +54,6 @@ public class Acl extends BasicModel {
 	}
 	
 	private String ruolo;
-//	private String principal;
 	private String diritti;
 	private Servizio servizio;
 	private Set<Diritti> listaDiritti= null;
@@ -102,12 +101,6 @@ public class Acl extends BasicModel {
 	public void setRuolo(String ruolo) {
 		this.ruolo = ruolo;
 	}
-//	public String getPrincipal() {
-//		return this.principal;
-//	}
-//	public void setPrincipal(String principal) {
-//		this.principal = principal;
-//	}
 	public String getDiritti() {
 		return this.diritti;
 	}

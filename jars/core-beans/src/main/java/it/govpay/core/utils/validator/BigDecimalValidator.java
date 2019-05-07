@@ -20,18 +20,17 @@ public class BigDecimalValidator {
 	}
 	
 	public BigDecimalValidator checkDecimalDigits() throws ValidationException {
-		
-		notNull(); // check not null di default
-		
-		String value = String.valueOf(this.fieldValue.doubleValue());
-		DecimalFormatSymbols symbols = this.df.getDecimalFormatSymbols();
-		
-		int i = value.lastIndexOf(symbols.getDecimalSeparator());
-		if(i != -1) {
-//			System.out.println("Il campo " + this.fieldName + " contiene un valore non valido: " + value + " has "+value.substring(i + 1).length()+" digits after dot");
-			if(value.substring(i + 1).length() > 2) {
-				throw new ValidationException("Il campo " + this.fieldName + " contiene un valore non valido.");
-			} 
+		if(this.fieldValue != null) {
+			String value = String.valueOf(this.fieldValue.doubleValue());
+			DecimalFormatSymbols symbols = this.df.getDecimalFormatSymbols();
+			
+			int i = value.lastIndexOf(symbols.getDecimalSeparator());
+			if(i != -1) {
+	//			System.out.println("Il campo " + this.fieldName + " contiene un valore non valido: " + value + " has "+value.substring(i + 1).length()+" digits after dot");
+				if(value.substring(i + 1).length() > 2) {
+					throw new ValidationException("Il campo " + this.fieldName + " contiene un valore non valido.");
+				} 
+			}
 		}
 		return this;
 	}
