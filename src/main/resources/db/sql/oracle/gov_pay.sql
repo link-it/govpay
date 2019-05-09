@@ -1021,9 +1021,11 @@ CREATE TABLE fr
 	xml BLOB NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_incasso NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 

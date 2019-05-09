@@ -26,10 +26,14 @@ import it.govpay.bd.model.converter.FrConverter;
 import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.model.Fr.StatoFr;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.FR;
 import it.govpay.orm.IdFr;
+import it.govpay.orm.IdIncasso;
+import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.jdbc.JDBCFRServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -37,6 +41,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.UpdateField;
+import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -270,4 +277,21 @@ public class FrBD extends BasicBD {
 		}
 	}
 	
+	public void updateIdIncasso(long idFr, long idIncasso) throws ServiceException {
+		try {
+			IdFr idVO = new IdFr();
+			idVO.setId(idFr);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			FRFieldConverter fieldConverter = new FRFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField cfIdIncasso = new CustomField("id_incasso", Long.class, "id_incasso", fieldConverter.toTable(FR.model()));
+			lstUpdateFields.add(new UpdateField(cfIdIncasso, idIncasso));
+
+			this.getFrService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
 }

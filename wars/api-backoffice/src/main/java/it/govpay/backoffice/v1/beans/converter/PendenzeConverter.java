@@ -16,6 +16,7 @@ import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
 import it.govpay.backoffice.v1.beans.Pendenza;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
+import it.govpay.backoffice.v1.beans.PendenzaPost;
 import it.govpay.backoffice.v1.beans.PendenzaPut;
 import it.govpay.backoffice.v1.beans.Riscossione;
 import it.govpay.backoffice.v1.beans.Rpp;
@@ -409,6 +410,60 @@ public class PendenzeConverter {
 		rsModel.setStato(statoPendenza);
 
 		return rsModel;
+	}
+	
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ValidationException, ServiceException {
+		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
+
+		if(pendenza.getAnnoRiferimento() != null)
+			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
+
+		versamento.setCausale(pendenza.getCausale());
+		versamento.setCodApplicazione(pendenza.getIdA2A());
+
+		versamento.setCodDominio(pendenza.getIdDominio());
+		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
+		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
+		versamento.setDataScadenza(pendenza.getDataScadenza());
+		versamento.setDataValidita(pendenza.getDataValidita());
+		//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
+		versamento.setDataCaricamento(new Date());
+		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
+		
+		versamento.setTassonomia(pendenza.getTassonomia());
+		if(pendenza.getDatiAllegati() != null)
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+
+		if(pendenza.getTassonomiaAvviso() != null) {
+			// valore tassonomia avviso non valido
+			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
+				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
+			}
+
+			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
+		}
+
+		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
+
+		// voci pagamento
+		BigDecimal importoVociPendenza = fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
+		
+		// importo pendenza puo' essere null
+		versamento.setImportoTotale(pendenza.getImporto() != null ? pendenza.getImporto() : importoVociPendenza); 
+		
+		// tipo Pendenza
+		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
+			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+			if(sv.getBolloTelematico() != null) {
+				versamento.setCodTipoVersamento(Tributo.BOLLOT);
+			} else if(sv.getCodTributo() != null) {
+				versamento.setCodTipoVersamento(sv.getCodTributo());
+			} else {
+				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+			}
+		}
+
+		return versamento;
 	}
 	
 	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPut pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException {

@@ -474,24 +474,22 @@ public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+		validatoreId.validaIdApplicazione("idA2A", this.idA2A);
+		validatoreId.validaIdPendenza("idPendenza", this.idPendenza);
 
-		
-		vf.getValidator("idDominio", this.idDominio).isNull();
+		validatoreId.validaIdDominio("idDominio", this.idDominio);
 		if(this.idUnitaOperativa != null)
 			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa);
 		vf.getValidator("nome", this.nome).minLength(1).maxLength(35);
 		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
 		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
-		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99));
+		vf.getValidator("importo", this.importo).minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
 		vf.getValidator("numeroAvviso", this.numeroAvviso).pattern("[0-9]{18}");
-		vf.getValidator("dataValidita", this.dataValidita).after(LocalDate.now());
-		vf.getValidator("dataScadenza", this.dataScadenza).after(LocalDate.now());
+		vf.getValidator("dataValidita", this.dataValidita);
+		vf.getValidator("dataScadenza", this.dataScadenza);
 		if(this.annoRiferimento != null)
 			vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
 		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
-		
-		validatoreId.validaIdApplicazione("idA2A", this.idA2A);
-		vf.getValidator("idPendenza", this.idPendenza).notNull().minLength(1).maxLength(35);
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 	}
 }

@@ -228,6 +228,7 @@ public class Incassi extends BasicBD {
 			}
 			
 			// Riversamento cumulativo
+			Fr fr = null;
 			if(idf != null) {
 				FrBD frBD = new FrBD(this);
 				try {
@@ -235,7 +236,7 @@ public class Incassi extends BasicBD {
 					FrFilter newFilter = frBD.newFilter();
 					newFilter.setCodFlusso(idf);
 					List<Fr> frs = frBD.findAll(newFilter);
-					Fr fr = null;
+					
 					for(Fr tmp : frs) {
 						if(tmp.getCodFlusso().equalsIgnoreCase(idf))
 							fr = tmp;
@@ -386,6 +387,13 @@ public class Incassi extends BasicBD {
 					pagamento.setIncasso(incasso);
 					pagamentiBD.updatePagamento(pagamento);
 				}
+				
+				// se e' un incasso cumulativo collego il flusso all'incasso
+				if(fr != null) {
+					FrBD frBD = new FrBD(this);
+					frBD.updateIdIncasso(fr.getId(), incasso.getId());
+				}
+				
 				this.commit();
 			} catch(Exception e) {
 				this.rollback();

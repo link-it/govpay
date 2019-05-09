@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "causale",
@@ -431,9 +432,12 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
+		
+		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
-		vf.getValidator("idDominio", this.idDominio).notNull().minLength(1).maxLength(35);
-		vf.getValidator("idUnitaOperativa", this.idUnitaOperativa).minLength(1).maxLength(35);
+		validatoreId.validaIdDominio("idDominio", this.idDominio);
+		if(this.idUnitaOperativa != null)
+			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa);
 		vf.getValidator("nome", this.nome).minLength(1).maxLength(35);
 		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
 		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();

@@ -65,6 +65,23 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
+		// Object _incasso
+		Long id_incasso = null;
+		it.govpay.orm.IdIncasso idLogic_incasso = null;
+		idLogic_incasso = fr.getIdIncasso();
+		if(idLogic_incasso!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findTableId(idLogic_incasso, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_incasso = idLogic_incasso.getId();
+				if(id_incasso==null || id_incasso<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object fr
 		sqlQueryObjectInsert.addInsertTable(this.getFRFieldConverter().toTable(FR.model()));
@@ -81,6 +98,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().IMPORTO_TOTALE_PAGAMENTI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().COD_BIC_RIVERSAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().XML,false),"?");
+		sqlQueryObjectInsert.addInsertField("id_incasso","?");
 
 		// Insert fr
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getFRFetch().getKeyGeneratorObject(FR.model());
@@ -97,7 +115,8 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getNumeroPagamenti(),FR.model().NUMERO_PAGAMENTI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getImportoTotalePagamenti(),FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getCodBicRiversamento(),FR.model().COD_BIC_RIVERSAMENTO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getXml(),FR.model().XML.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getXml(),FR.model().XML.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_incasso,Long.class)
 		);
 		fr.setId(id);
 
@@ -139,11 +158,28 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-//		boolean setIdMappingResolutionBehaviour = 
-//			(idMappingResolutionBehaviour==null) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+		boolean setIdMappingResolutionBehaviour = 
+			(idMappingResolutionBehaviour==null) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
+
+		// Object _fr_incasso
+		Long id_fr_incasso = null;
+		it.govpay.orm.IdIncasso idLogic_fr_incasso = null;
+		idLogic_fr_incasso = fr.getIdIncasso();
+		if(idLogic_fr_incasso!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_fr_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findTableId(idLogic_fr_incasso, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_fr_incasso = idLogic_fr_incasso.getId();
+				if(id_fr_incasso==null || id_fr_incasso<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 
 
 		// Object fr
@@ -177,6 +213,12 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		lstObjects_fr.add(new JDBCObject(fr.getCodBicRiversamento(), FR.model().COD_BIC_RIVERSAMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().XML,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getXml(), FR.model().XML.getFieldType()));
+		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_incasso","?");
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_fr.add(new JDBCObject(id_fr_incasso, Long.class));
+		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_fr.add(new JDBCObject(tableId, Long.class));
 

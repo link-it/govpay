@@ -730,9 +730,11 @@ CREATE TABLE fr
 	xml MEDIUMBLOB NOT NULL COMMENT 'XML del flusso codfificato in base64',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_incasso BIGINT COMMENT 'Riferimento all\'incasso',
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso),
 	-- fk/pk keys constraints
+	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Flussi di rendicontazione';
 

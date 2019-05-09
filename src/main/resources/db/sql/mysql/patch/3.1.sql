@@ -390,3 +390,8 @@ ALTER TABLE tipi_vers_domini MODIFY COLUMN abilitato BOOLEAN NULL;
 ALTER TABLE rpt DROP COLUMN id_applicazione;
 
 
+-- 08/05/2019 aggiunto idincasso ai flussi di rendicontazione
+ALTER TABLE fr ADD COLUMN id_incasso BIGINT;
+ALTER TABLE fr ADD CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
+
+

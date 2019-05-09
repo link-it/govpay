@@ -659,6 +659,13 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			sqlQueryObject.addWhereCondition(tableName1+".id_rr="+tableName2+".id");
 
 		}
+		
+		if(expression.inUseModel(Pagamento.model().ID_INCASSO,false)){
+			String tableName1 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model());
+			String tableName2 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_INCASSO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_incasso="+tableName2+".id");
+
+		}
 
 		String tableSingoliVersamenti = this.getPagamentoFieldConverter().toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
 		if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE,false)){

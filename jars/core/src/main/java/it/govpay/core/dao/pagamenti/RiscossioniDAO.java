@@ -49,7 +49,7 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setCodSingoloVersamentoEnte(listaRiscossioniDTO.getIdPendenza());
 			if(listaRiscossioniDTO.getStato() != null)
 				filter.setStati(Arrays.asList(listaRiscossioniDTO.getStato().toString()));
-
+			filter.setIuv(listaRiscossioniDTO.getIuv());
 			filter.setFilterSortList(listaRiscossioniDTO.getFieldSortList());
 
 			long count = pagamentiBD.count(filter);

@@ -21,6 +21,7 @@ package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Fr;
 import it.govpay.model.Fr.StatoFr;
+import it.govpay.orm.IdIncasso;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -56,6 +57,8 @@ public class FrConverter {
 		dto.setIur(vo.getIur());
 		dto.setNumeroPagamenti(vo.getNumeroPagamenti());
 		dto.setXml(vo.getXml());
+		if(vo.getIdIncasso() != null)
+			dto.setIdIncasso(vo.getIdIncasso().getId());
 		return dto;
 	}
 
@@ -76,6 +79,12 @@ public class FrConverter {
 		vo.setNumeroPagamenti(dto.getNumeroPagamenti());
 		
 		vo.setXml(dto.getXml());
+		
+		if(dto.getIdIncasso() != null) {
+			IdIncasso idIncasso = new IdIncasso();
+			idIncasso.setId(dto.getIdIncasso());
+			vo.setIdIncasso(idIncasso);
+		}
 		return vo;
 	}
 

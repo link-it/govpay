@@ -19,17 +19,11 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.FR;
-import it.govpay.orm.IdFr;
-import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.FRFetch;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -51,6 +45,12 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
+
+import it.govpay.orm.FR;
+import it.govpay.orm.IdFr;
+import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.FRFetch;
 
 /**     
  * JDBCFRServiceSearchImpl
@@ -171,10 +171,37 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			fields.add(FR.model().XML);
 			fields.add(FR.model().IUR);
 			fields.add(FR.model().COD_BIC_RIVERSAMENTO);
+			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getFRFieldConverter().toTable(FR.model())));
+			
  			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
  			for(Map<String, Object> map: returnMap) {
+ 				
+ 				Long idIncasso = null;
+ 				
+ 				Object idIncassoObj = map.remove("id_incasso");
+
+				if(idIncassoObj instanceof Long)
+					idIncasso = (Long) idIncassoObj;
+				
+ 				
  				FR fr = (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map);
+ 				
+ 				if(idIncasso != null) {
+					if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+							){
+						it.govpay.orm.IdIncasso id_pagamento_incasso = null;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_pagamento_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idIncasso, false);
+						}else{
+							id_pagamento_incasso = new it.govpay.orm.IdIncasso();
+						}
+						id_pagamento_incasso.setId(idIncasso);
+						fr.setIdIncasso(id_pagamento_incasso);
+					}
+				}
+ 				
 				list.add(fr);
          }
 
@@ -457,6 +484,24 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		if(imgSaved==null){
 			return;
 		}
+		obj.setId(imgSaved.getId());
+		if(obj.getIdPagamento()!=null && 
+				imgSaved.getIdPagamento()!=null){
+			obj.getIdPagamento().setId(imgSaved.getIdPagamento().getId());
+			if(obj.getIdPagamento().getIdVersamento()!=null && 
+					imgSaved.getIdPagamento().getIdVersamento()!=null){
+				obj.getIdPagamento().getIdVersamento().setId(imgSaved.getIdPagamento().getIdVersamento().getId());
+				if(obj.getIdPagamento().getIdVersamento().getIdApplicazione()!=null && 
+						imgSaved.getIdPagamento().getIdVersamento().getIdApplicazione()!=null){
+					obj.getIdPagamento().getIdVersamento().getIdApplicazione().setId(imgSaved.getIdPagamento().getIdVersamento().getIdApplicazione().getId());
+				}
+			}
+		}
+		if(obj.getIdIncasso()!=null && 
+				imgSaved.getIdIncasso()!=null){
+			obj.getIdIncasso().setId(imgSaved.getIdIncasso().getId());
+		}
+
 	}
 	
 	@Override
@@ -531,6 +576,13 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			
 			
 		}
+		
+		if(expression.inUseModel(FR.model().ID_INCASSO,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(FR.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(FR.model().ID_INCASSO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_incasso="+tableName2+".id");
+
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdFr id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -556,6 +608,31 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				new CustomField("id", Long.class, "id", converter.toTable(FR.model()))
 			));
 
+		// FR.model().ID_PAGAMENTO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO))
+			));
+
+		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO))
+			));
+
+		// FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// FR.model().ID_INCASSO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_INCASSO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_INCASSO))
+			));
+
+        
         return mapTableToPKColumn;		
 	}
 	
@@ -692,7 +769,9 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-
+		if((id!=null && id.getId()!=null && id.getId() >0))
+			return id.getId();
+		
 		// Object _fr
 		sqlQueryObjectGet.addFromTable(this.getFRFieldConverter().toTable(FR.model()));
 		sqlQueryObjectGet.addSelectField("id");

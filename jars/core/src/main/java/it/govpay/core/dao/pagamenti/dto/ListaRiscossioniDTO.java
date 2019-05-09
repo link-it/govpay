@@ -26,6 +26,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	private String idA2A;
 	private String idDominio;
 	private Stato stato;
+	private String iuv;
 
 	public Date getDataRiscossioneDa() {
 		return this.dataRiscossioneDa;
@@ -81,5 +82,13 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 
 	public void setStato(Stato stato) {
 		this.stato = stato;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
 	}
 }

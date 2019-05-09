@@ -2185,6 +2185,98 @@ paths:
         '500':
           $ref: '#/components/responses/500'
   '/pendenze':
+    post:
+      tags:
+        - Pendenze
+      description: >-
+        Per ciascuna pendenza viene richiesto un identificativo (_idPendenza_)
+        valido per il gestionale che ne effettua il caricamento (_idA2A_).
+        L'operazione è idempotente rispetto a questo identificativo e nel caso
+        venga eseguito il caricamento di una pendenza con un identificativo già
+        presente nell'archivio di GovPay, questa sarà gestita come un
+        aggiornamento. <br/> Ciascuna pendenza può
+        essere composta da più voci fino ad un massimo di cinque, ciascuna
+        avente un identificativo _idVocePendenza_ assegnato dal gestionale come
+        riferimento interno.
+      parameters:
+        - in: query
+          name: stampaAvviso
+          description: Indica se nella risposta deve essere inclusa la stampa dell'avviso in standard AgID
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: avvisaturaDigitale
+          description: Indica se la pendenza deve essere avvisata digitalmente
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: modalitaAvvisaturaDigitale
+          description: Modalita' di avvisatura scelta per le pendenza
+          required: false
+          schema:
+            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/pendenzaPost'
+      responses:
+        '200':
+          description: Pendenza aggiornata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - idDominio
+                properties:
+                  idDominio:
+                    type: string
+                    description: Identificativo del creditore dell'avviso
+                    example: 01234567890
+                  numeroAvviso:
+                    type: string
+                    description: Numero identificativo dell'avviso di pagamento
+                    example: 00100000000000012
+                  pdf:
+                    type: string
+                    format: base64
+                    description: Stampa pdf dell'avviso
+        '201':
+          description: Pendenza creata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - idDominio
+                properties:
+                  idDominio:
+                    type: string
+                    description: Identificativo del creditore dell'avviso
+                    example: 01234567890
+                  numeroAvviso:
+                    type: string
+                    description: Numero identificativo dell'avviso di pagamento
+                    example: 00100000000000012
+                  pdf:
+                    type: string
+                    format: base64
+                    description: Stampa pdf dell'avviso
+        '400':
+          $ref: '#/components/responses/400'
+        '422':
+          $ref: '#/components/responses/400'          
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
     get:
       summary: Elenco delle pendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
@@ -2860,7 +2952,7 @@ paths:
             type: string
         - in: query
           name: idPendenza
-          description: Identrificativo della pendenza nel gestionale proprietario
+          description: Identificativo della pendenza nel gestionale proprietario
           required: false
           schema:
             type: string
@@ -2890,6 +2982,12 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/tipoRiscossione'
+        - in: query
+          name: iuv
+          description: Identificativo unico versamento
+          required: false
+          schema:
+            type: string
       responses:
         '201':
           description: Dettaglio della riscossione
@@ -3007,6 +3105,18 @@ paths:
         - name: idDominio
           in: query
           description: filtro per dominio creditore
+          required: false
+          schema:
+            type: string
+        - name: incassato
+          in: query
+          description: filtro sullo stato di incasso del flusso
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: idFlusso
+          description: Identificativo flusso
           required: false
           schema:
             type: string

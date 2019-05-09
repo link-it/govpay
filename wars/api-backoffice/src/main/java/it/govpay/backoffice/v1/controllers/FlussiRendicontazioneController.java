@@ -106,7 +106,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String ordinamento, String dataDa, String dataA) {
+    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String ordinamento, String dataDa, String dataA, Boolean incassato, String idFlusso) {
     	String methodName = "flussiRendicontazioneGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -141,6 +141,10 @@ public class FlussiRendicontazioneController extends BaseController {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				findRendicontazioniDTO.setDataA(dataADate);
 			}
+			if(incassato != null) {
+				findRendicontazioniDTO.setIncassato(incassato);
+			}
+			findRendicontazioniDTO.setIdFlusso(idFlusso);
 			
 			// Autorizzazione sui domini
 			List<String> domini  = AuthorizationManager.getDominiAutorizzati(user);

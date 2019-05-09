@@ -28,6 +28,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
 
@@ -37,6 +38,7 @@ public class Fr extends it.govpay.model.Fr {
 	// Business
 	private transient Dominio dominio;
 	private transient List<Rendicontazione> rendicontazioni;
+	private transient Incasso incasso;
 
 	private transient long numOk;
 	private transient long numAnomale;
@@ -87,4 +89,18 @@ public class Fr extends it.govpay.model.Fr {
 		this.rendicontazioni.add(rendicontazione);
 	}
 
+	public Incasso getIncasso(BasicBD bd) throws ServiceException {
+		if(this.getIdIncasso() != null) {
+			if(this.incasso == null) {
+				IncassiBD incassiBD = new IncassiBD(bd);
+				this.incasso = incassiBD.getIncasso(this.getIdIncasso());
+			}
+		}
+		return this.incasso;
+	}
+
+	public void setIncasso(Incasso incasso) {
+		this.incasso = incasso;
+		this.setIdIncasso(incasso.getId());
+	}
 }

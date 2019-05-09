@@ -45,6 +45,7 @@ import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.backoffice.v1.beans.Pendenza;
 import it.govpay.backoffice.v1.beans.PendenzaCreata;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
+import it.govpay.backoffice.v1.beans.PendenzaPost;
 import it.govpay.backoffice.v1.beans.PendenzaPut;
 import it.govpay.backoffice.v1.beans.StatoOperazionePendenza;
 import it.govpay.backoffice.v1.beans.StatoTracciatoPendenza;
@@ -358,6 +359,65 @@ public class PendenzeController extends BaseController {
 			pendenzaPost.validate();
 
 			Versamento versamento = PendenzeConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza);
+			
+			// controllo che il dominio e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, versamento.getCodDominio(), versamento.getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, versamento.getCodDominio(), versamento.getCodTipoVersamento());
+			}
+
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+
+			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
+			putVersamentoDTO.setVersamento(versamento);
+			putVersamentoDTO.setStampaAvviso(stampaAvviso);
+			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
+			ModoAvvisatura avvisaturaModalita = null;
+			if(modalitaAvvisaturaDigitale != null) {
+				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
+			}
+
+			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
+
+			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
+
+			PendenzaCreata pc = new PendenzaCreata();
+			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
+			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
+			pc.pdf(createOrUpdate.getPdf());
+			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
+			this.logResponse(uriInfo, httpHeaders, methodName, pc.toJSON(null), responseStatus.getStatusCode());
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(ctx);
+		}
+    }
+
+	public Response pendenzePOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		String methodName = "pendenzePOST";  
+		IContext ctx = null;
+		String transactionId = null;
+		ByteArrayOutputStream baos= null;
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			baos = new ByteArrayOutputStream();
+			// salvo il json ricevuto
+			IOUtils.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
+
+			ctx =  GpThreadLocal.get();
+			transactionId = ctx.getTransactionId();
+
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
+
+			String jsonRequest = baos.toString();
+			PendenzaPost pendenzaPost= JSONSerializable.parse(jsonRequest, PendenzaPost.class);
+			pendenzaPost.validate();
+
+			Versamento versamento = PendenzeConverter.getVersamentoFromPendenza(pendenzaPost);
 			
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, versamento.getCodDominio(), versamento.getCodTipoVersamento())) {

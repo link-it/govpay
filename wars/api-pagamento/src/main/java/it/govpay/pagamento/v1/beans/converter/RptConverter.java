@@ -3,6 +3,7 @@ package it.govpay.pagamento.v1.beans.converter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaFG;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
@@ -41,6 +42,9 @@ public class RptConverter {
 						ctRpt.setSoggettoVersante(soggettoVersante);
 					}
 					
+					if(soggettoVersante.getIdentificativoUnivocoVersante() == null)
+						soggettoVersante.setIdentificativoUnivocoVersante(new CtIdentificativoUnivocoPersonaFG());
+					
 					UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
 					soggettoVersante.getIdentificativoUnivocoVersante().setCodiceIdentificativoUnivoco(cittadino.getCodIdentificativo());
 					soggettoVersante.getIdentificativoUnivocoVersante().setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F);
@@ -61,6 +65,9 @@ public class RptConverter {
 						soggettoVersante = new CtSoggettoVersante();
 						ctRpt.setSoggettoVersante(soggettoVersante);
 					}
+					
+					if(soggettoVersante.getIdentificativoUnivocoVersante() == null)
+						soggettoVersante.setIdentificativoUnivocoVersante(new CtIdentificativoUnivocoPersonaFG());
 					
 					soggettoVersante.getIdentificativoUnivocoVersante().setCodiceIdentificativoUnivoco(TIPO_UTENZA.ANONIMO.toString());
 					soggettoVersante.getIdentificativoUnivocoVersante().setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F);
@@ -117,6 +124,10 @@ public class RptConverter {
 					}
 					
 					UtenzaCittadino cittadino = (UtenzaCittadino) userDetails.getUtenza();
+					
+					if(soggettoVersante.getIdentificativoUnivocoVersante() == null)
+						soggettoVersante.setIdentificativoUnivocoVersante(new CtIdentificativoUnivocoPersonaFG());
+					
 					soggettoVersante.getIdentificativoUnivocoVersante().setCodiceIdentificativoUnivoco(cittadino.getCodIdentificativo());
 					soggettoVersante.getIdentificativoUnivocoVersante().setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F);
 					String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
@@ -136,6 +147,9 @@ public class RptConverter {
 						soggettoVersante = new CtSoggettoVersante();
 						ctRpt.setSoggettoVersante(soggettoVersante);
 					}
+					
+					if(soggettoVersante.getIdentificativoUnivocoVersante() == null)
+						soggettoVersante.setIdentificativoUnivocoVersante(new CtIdentificativoUnivocoPersonaFG());
 					
 					soggettoVersante.getIdentificativoUnivocoVersante().setCodiceIdentificativoUnivoco(TIPO_UTENZA.ANONIMO.toString());
 					soggettoVersante.getIdentificativoUnivocoVersante().setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F);

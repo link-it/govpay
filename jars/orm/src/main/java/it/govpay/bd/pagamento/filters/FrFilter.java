@@ -53,6 +53,7 @@ public class FrFilter extends AbstractFilter {
 	private String tnr;
 	private boolean nascondiSeSoloDiAltriIntermediari;
 	private String iuv;
+	private Boolean incassato;
 	
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
@@ -230,6 +231,23 @@ public class FrFilter extends AbstractFilter {
 				
 				placeholderWhereIn += iLikefield +" like ?";
 			}
+			
+			if(this.getIncassato() != null){
+				if(placeholderWhereIn.length() > 0) {
+					placeholderWhereIn += " AND ";
+				} else {
+					placeholderWhereIn += " WHERE ";
+				}
+				
+				String field = "fr.id_incasso";
+				if(this.getIncassato()) {
+					field += " is not null ";
+				} else {
+					field += " is null ";
+				}
+
+				placeholderWhereIn += field;
+			}
 
 			if(this.tnr!= null){
 				if(placeholderWhereIn.length() > 0) {
@@ -333,6 +351,20 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.getIncassato() != null){
+				if(addAnd)
+					newExpression.and();
+				
+				CustomField idIncassoField = new CustomField("id_incasso", Long.class, "id_incasso", this.getTable(FR.model()));
+				if(this.getIncassato()) {
+					newExpression.isNotNull(idIncassoField);
+				} else {
+					newExpression.isNull(idIncassoField);
+				}
+
+				addAnd = true;
+			}
+			
 			if(this.codDominio != null && this.codDominio.size() > 0){
 				if(addAnd)
 					newExpression.and();
@@ -377,7 +409,7 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.EXACT);
+				newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			if(this.idFr != null && !this.idFr.isEmpty()) {
@@ -493,6 +525,14 @@ public class FrFilter extends AbstractFilter {
 
 	public void setCodDominioFiltro(String codDominioFiltro) {
 		this.codDominioFiltro = codDominioFiltro;
+	}
+
+	public Boolean getIncassato() {
+		return incassato;
+	}
+
+	public void setIncassato(Boolean incassato) {
+		this.incassato = incassato;
 	}
 	
 }

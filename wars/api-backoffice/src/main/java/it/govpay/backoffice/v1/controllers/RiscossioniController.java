@@ -103,7 +103,7 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataDa, String dataA, String tipo) {
+    public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataDa, String dataA, String tipo, String iuv) {
     	String methodName = "riscossioniGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -140,19 +140,26 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setOrderBy(ordinamento);
 			if(stato != null) {
 				StatoRiscossione statoRisc = StatoRiscossione.fromValue(stato);
-				switch(statoRisc) {
-				case INCASSATA: findRiscossioniDTO.setStato(Stato.INCASSATO);
-					break;
-				case RISCOSSA: findRiscossioniDTO.setStato(Stato.PAGATO);
-					break;
-				default:
-					break;
-				
+				if(statoRisc != null) {
+					switch(statoRisc) {
+					case INCASSATA: findRiscossioniDTO.setStato(Stato.INCASSATO);
+						break;
+					case RISCOSSA: findRiscossioniDTO.setStato(Stato.PAGATO);
+						break;
+					default:
+						break;
+					}				
 				}
 			}
 
-			if(tipo!=null)
-				findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(TipoRiscossione.fromValue(tipo).toString()));
+			if(tipo!=null) {
+				TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipo);
+				if(tipoRiscossione != null) {
+					findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
+				}
+			}
+			
+			findRiscossioniDTO.setIuv(iuv);
 			
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);

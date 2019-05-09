@@ -45,6 +45,8 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setFilterSortList(listaRendicontazioniDTO.getFieldSortList());
 			filter.setDatainizio(listaRendicontazioniDTO.getDataDa());
 			filter.setDataFine(listaRendicontazioniDTO.getDataA()); 
+			filter.setIncassato(listaRendicontazioniDTO.getIncassato());
+			filter.setCodFlusso(listaRendicontazioniDTO.getIdFlusso());
 
 			long count = rendicontazioniBD.count(filter);
 
@@ -78,6 +80,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
 
 			this.populateRendicontazione(flussoRendicontazione, bd);
+			flussoRendicontazione.getIncasso(bd);
 			response.setFr(flussoRendicontazione);
 			response.setDominio(flussoRendicontazione.getDominio(bd));
 

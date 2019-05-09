@@ -18,6 +18,8 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	private String idDominio;
 	private Date dataDa;
 	private Date dataA;
+	private Boolean incassato = null;
+	private String idFlusso;
 
 	public String getIdDominio() {
 		return this.idDominio;
@@ -36,6 +38,18 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	}
 	public void setDataA(Date dataA) {
 		this.dataA = dataA;
+	}
+	public Boolean getIncassato() {
+		return incassato;
+	}
+	public void setIncassato(Boolean incassato) {
+		this.incassato = incassato;
+	}
+	public String getIdFlusso() {
+		return idFlusso;
+	}
+	public void setIdFlusso(String idFlusso) {
+		this.idFlusso = idFlusso;
 	}
 	
 }

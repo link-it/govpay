@@ -47,6 +47,7 @@ public class Fr extends BasicModel{
 	private BigDecimal importoTotalePagamenti;
 	private byte[] xml;
 	private List<Anomalia> anomalie;
+	private Long idIncasso;
 
 	@Override
 	public Long getId() {
@@ -216,5 +217,11 @@ public class Fr extends BasicModel{
 			}
 		}
 		return list;
+	}
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
 	}
 }
