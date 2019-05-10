@@ -149,7 +149,7 @@ public class TracciatiBD extends BasicBD {
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().BEAN_DATI, tracciato.getBeanDati()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().FILE_NAME_ESITO, tracciato.getFileNameEsito()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().RAW_ESITO, tracciato.getRawEsito()));
-			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().STATO, tracciato.getStato()));
+			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().STATO, tracciato.getStato().name()));
 			listaUpdateFields.add(new UpdateField(it.govpay.orm.Tracciato.model().DATA_COMPLETAMENTO, tracciato.getDataCompletamento()));
 			
 			this.getTracciatoService().updateFields(convertToId, listaUpdateFields.toArray(new UpdateField[listaUpdateFields.size()]));
