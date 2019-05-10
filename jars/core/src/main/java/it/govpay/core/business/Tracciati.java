@@ -225,17 +225,14 @@ public class Tracciati extends BasicBD {
 
 			// Elaborazione completata. Processamento tracciato di esito
 			DettaglioTracciatoPendenzeEsito esitoElaborazioneTracciato = this.getEsitoElaborazioneTracciato(tracciato, operazioniBD);
-
 			this.setStatoDettaglioTracciato(beanDati);
-
 			tracciato.setRawEsito(esitoElaborazioneTracciato.toJSON(null).getBytes());
 			tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
-
 			this.setStatoTracciato(tracciato, beanDati);
 			tracciato.setDataCompletamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
-			tracciatiBD.update(tracciato);
-
+//			tracciatiBD.update(tracciato);
+			tracciatiBD.updateFineElaborazione(tracciato);
 
 			if(!this.isAutoCommit()) this.commit();
 			log.info("Elaborazione tracciato ["+tracciato.getId()+"] terminata: " + tracciato.getStato());

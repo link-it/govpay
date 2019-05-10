@@ -37,7 +37,7 @@
    
    
    <!-- Servizi V1 -->
-
+	<!-- BASIC_START -->
     <jaxrs:server id="apiPagamentoV1Basic" address="/basic/v1/">
         <jaxrs:serviceBeans>
 			   	<ref bean="avvisiV1" />
@@ -54,14 +54,11 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
     </jaxrs:server>
-    
+    <!-- BASIC_END -->
     
     <!-- Servizi SSL V1 -->
-
+	<!-- SSL_START  -->
     <jaxrs:server id="apiPagamentoV1SSL" address="/ssl/v1/">
         <jaxrs:serviceBeans>
 			   	<ref bean="avvisiV1" />
@@ -78,13 +75,11 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
     </jaxrs:server>
+    <!-- SSL_END -->
     
     <!-- Servizi SPID V1 -->
-
+	<!-- SPID_START  -->
     <jaxrs:server id="apiPagamentoV1Spid" address="/spid/v1/">
         <jaxrs:serviceBeans>
 			   	<ref bean="avvisiV1" />
@@ -101,13 +96,11 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
     </jaxrs:server>
+    <!-- SPID_END -->
     
    <!-- Servizi Public V1 -->
-
+	<!-- PUBLIC_START  -->
     <jaxrs:server id="apiPagamentoV1Public" address="/public/v1/">
         <jaxrs:serviceBeans>
 			   	<ref bean="avvisiV1" />
@@ -124,13 +117,11 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
     </jaxrs:server>
+    <!-- PUBLIC_END -->
     
        <!-- Servizi Header V1 -->
-
+	<!-- HEADER_START  -->
     <jaxrs:server id="apiPagamentoV1Header" address="/header/v1/">
         <jaxrs:serviceBeans>
 			   	<ref bean="avvisiV1" />
@@ -147,10 +138,8 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
     </jaxrs:server>
+    <!-- HEADER_END -->
     
 </b:beans>
         

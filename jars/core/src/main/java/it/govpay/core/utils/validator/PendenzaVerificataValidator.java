@@ -7,6 +7,7 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
+import it.govpay.ec.v1.beans.Soggetto;
 import it.govpay.ec.v1.beans.VocePendenza;
 
 public class PendenzaVerificataValidator  implements IValidable{
@@ -32,11 +33,24 @@ public class PendenzaVerificataValidator  implements IValidable{
 			validaNomePendenza(this.pendenzaVerificata.getNome());
 			validaCausale( this.pendenzaVerificata.getCausale());
 			
-			if(this.pendenzaVerificata.getSoggettoPagatore() == null)
+			Soggetto soggetto = this.pendenzaVerificata.getSoggettoPagatore();
+			if(soggetto == null)
 				throw new ValidationException("Il campo soggettoPagatore non deve essere vuoto.");
-
-			new SoggettoPagatoreValidator(this.pendenzaVerificata.getSoggettoPagatore()).validate();
-
+			
+			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
+			
+			soggettoPagatoreValidator.validaTipo("tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
+			soggettoPagatoreValidator.validaIdentificativo("identificativo", soggetto.getIdentificativo());
+			soggettoPagatoreValidator.validaAnagrafica("anagrafica", soggetto.getAnagrafica());
+			soggettoPagatoreValidator.validaIndirizzo("indirizzo", soggetto.getIndirizzo());
+			soggettoPagatoreValidator.validaCivico("civico", soggetto.getCivico());
+			soggettoPagatoreValidator.validaCap("cap", soggetto.getCap());
+			soggettoPagatoreValidator.validaLocalita("localita", soggetto.getLocalita());
+			soggettoPagatoreValidator.validaProvincia("provincia", soggetto.getProvincia());
+			soggettoPagatoreValidator.validaNazione("nazione", soggetto.getNazione());
+			soggettoPagatoreValidator.validaEmail("email", soggetto.getEmail());
+			soggettoPagatoreValidator.validaCellulare("cellulare", soggetto.getCellulare());
+			
 			validaImporto(this.pendenzaVerificata.getImporto());
 			validaNumeroAvviso(this.pendenzaVerificata.getNumeroAvviso());
 			validaDataValidita(this.pendenzaVerificata.getDataValidita()); 

@@ -7,6 +7,7 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.SoggettoPagatoreValidator;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
 /**
@@ -337,18 +338,19 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 
 	 @Override
 	 public void validate() throws org.openspcoop2.utils.json.ValidationException {
-		 ValidatorFactory vf = ValidatorFactory.newInstance();
-		 vf.getValidator("tipo", this.tipo).notNull();
-		 vf.getValidator("identificativo", this.identificativo).notNull().minLength(1).maxLength(35);
-		 vf.getValidator("anagrafica", this.anagrafica).minLength(1).maxLength(70);
-		 vf.getValidator("indirizzo", this.indirizzo).minLength(1).maxLength(70);
-		 vf.getValidator("civico", this.civico).minLength(1).maxLength(16);
-		 vf.getValidator("cap", this.cap).minLength(1).maxLength(16);
-		 vf.getValidator("localita", this.localita).minLength(1).maxLength(35);
-		 vf.getValidator("provincia", this.provincia).minLength(1).maxLength(70);
-		 vf.getValidator("nazione", this.nazione).pattern("[A-Z]{2,2}");
-		 vf.getValidator("email", this.email).pattern("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)");
-		 vf.getValidator("cellulare", this.cellulare).pattern("\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}");
+		SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
+		
+		soggettoPagatoreValidator.validaTipo("tipo", this.getTipo() != null ? this.getTipo().toString() : null);
+		soggettoPagatoreValidator.validaIdentificativo("identificativo", this.getIdentificativo());
+		soggettoPagatoreValidator.validaAnagrafica("anagrafica", this.getAnagrafica());
+		soggettoPagatoreValidator.validaIndirizzo("indirizzo", this.getIndirizzo());
+		soggettoPagatoreValidator.validaCivico("civico", this.getCivico());
+		soggettoPagatoreValidator.validaCap("cap", this.getCap());
+		soggettoPagatoreValidator.validaLocalita("localita", this.getLocalita());
+		soggettoPagatoreValidator.validaProvincia("provincia", this.getProvincia());
+		soggettoPagatoreValidator.validaNazione("nazione", this.getNazione());
+		soggettoPagatoreValidator.validaEmail("email", this.getEmail());
+		soggettoPagatoreValidator.validaCellulare("cellulare", this.getCellulare());
 	 }
  }
 

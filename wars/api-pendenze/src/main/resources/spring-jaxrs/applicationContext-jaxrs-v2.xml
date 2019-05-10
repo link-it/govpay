@@ -73,7 +73,7 @@
    
    
    <!--Servizi V2 -->
-
+	<!-- BASIC_START -->
     <jaxrs:server id="apiPendenzeBasicV2" address="/basic/v2/">
         <jaxrs:serviceBeans>
 			   	<ref bean="pendenzeV2" />
@@ -93,7 +93,9 @@
 			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
     </jaxrs:server>
+    <!-- BASIC_END -->
     
+    <!-- SSL_START -->
     <jaxrs:server id="apiPendenzeSSLV2" address="/ssl/v2/">
         <jaxrs:serviceBeans>
                 <ref bean="pendenzeV2" />
@@ -113,7 +115,9 @@
 			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
     </jaxrs:server>
+    <!-- SSL_END -->
     
+    <!-- HEADER_START -->
     <jaxrs:server id="apiPendenzeHeaderV2" address="/header/v2/">
         <jaxrs:serviceBeans>
                 <ref bean="pendenzeV2" />
@@ -133,6 +137,7 @@
 			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
     </jaxrs:server>
+    <!-- HEADER_END -->
     
 </b:beans>
         

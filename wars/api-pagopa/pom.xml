@@ -73,7 +73,7 @@
 						<webResource>
 							<directory>src/main/resources/spring-sec</directory>
 							<filtering>true</filtering>
-							<include>applicationContext-security-${govpay-api-pagopa-auth}.xml</include>
+							<include>applicationContext-security.xml</include>
 							<targetPath>WEB-INF</targetPath>							
 						</webResource>
 						<webResource>

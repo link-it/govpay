@@ -198,7 +198,11 @@ public void validate() throws org.openspcoop2.utils.json.ValidationException {
 		validatoreId.validaIdDominio("idDominio", this.idDominio);
 		
 		vf.getValidator("idTracciato", this.idTracciato).notNull();
-		vf.getValidator("inserimenti", this.inserimenti).notNull().validateObjects();
+		vf.getValidator("inserimenti", this.inserimenti).notNull();
+		for (PendenzaPost inserimentoPendenza : inserimenti) {
+			inserimentoPendenza.validaPendenzaTracciato();
+		}
+		
 		vf.getValidator("annullamenti", this.annullamenti).notNull().validateObjects();
   }
 }

@@ -11,13 +11,6 @@
         <b:import resource="classpath:META-INF/cxf/cxf.xml"/>
         <b:import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
         
-	<!-- CXF Configuration -->
-<!--     <cxf:bus> -->
-<!--         <cxf:features> -->
-<!--             <cxf:logging/> -->
-<!--         </cxf:features> -->
-<!--     </cxf:bus> -->
-
 	<!-- Parameter Converter -->
     <b:bean id="parameterConverter" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider"/>
 
@@ -40,9 +33,9 @@
        
    	<!-- JAX-RS Configuration -->
    
-   
    <!--Servizi V1 -->
 
+	<!-- BASIC_START -->
     <jaxrs:server id="apiPendenzeBasicV1" address="/basic/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="domini" />
@@ -57,11 +50,10 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
     </jaxrs:server>
+    <!-- BASIC_END -->
     
+    <!-- SSL_START -->
     <jaxrs:server id="apiPendenzeSSLV1" address="/ssl/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="domini" />
@@ -76,11 +68,10 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
     </jaxrs:server>
+    <!-- SSL_END -->
     
+    <!-- HEADER_START -->    
     <jaxrs:server id="apiPendenzeHeaderV1" address="/header/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="domini" />
@@ -95,10 +86,8 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
-<!--                 <jaxrs:features> -->
-<!--             <ref bean="openApiFeature" /> -->
-<!--         </jaxrs:features> -->
     </jaxrs:server>
+    <!-- HEADER_END -->
     
 </b:beans>
         

@@ -19,7 +19,7 @@
         
         <http-firewall ref="allowUrlEncodedSlashFirewall"/>
         
-		<!-- CONTAINER START -->
+		<!-- BASIC_START -->
         
         <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
     		<b:property name="wwwAuthenticate" value="false"/>
@@ -67,6 +67,9 @@
                 </headers>
         </http>
         
+        <!-- BASIC_END -->
+        
+        <!-- FORM_START -->
         <http auto-config="false" pattern="/rs/form/v1/info" security="none"/>
         
         <http auto-config="false" use-expressions="true" create-session="ifRequired" authentication-manager-ref="authenticationManager" pattern="/rs/form/**">
@@ -93,9 +96,9 @@
                 </headers>
         </http>
         
-        <!-- CONTAINER END -->
+        <!-- FORM_END -->
         
-        <!-- SSL START -->
+        <!-- SSL_START -->
         
         <b:bean id="x509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
         
@@ -120,10 +123,9 @@
                 </headers>
         </http>
         
-       <!-- SSL END -->
+       <!-- SSL_END -->
        
-       <!-- HEADER INIT -->
-      	
+       <!-- HEADER_START
       	<b:bean id="http403ForbiddenEntryPointHead" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
       	<b:bean id="userDetailServiceUtenzeHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
@@ -161,10 +163,9 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        
-       	<!-- HEADER END -->
+        HEADER_END -->
        	
-       	<!-- SPID START -->
+       	<!-- SPID_START
         <b:bean id="http403ForbiddenEntryPointSPID" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
         <b:bean id="userDetailServiceUtenzeSPID" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
@@ -215,8 +216,7 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        
-		<!-- SPID END -->
+        SPID_END -->
        
         <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>

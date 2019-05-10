@@ -1,7 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -470,14 +469,25 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   }
   
   @Override
-public void validate() throws org.openspcoop2.utils.json.ValidationException {
+  public void validate() throws org.openspcoop2.utils.json.ValidationException {
+		validazione(true);
+	}
+  
+  public void validaPendenzaTracciato() throws org.openspcoop2.utils.json.ValidationException {
+		validazione(false);
+	}
+
+	private void validazione(boolean validaDominio) throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+		
 		validatoreId.validaIdApplicazione("idA2A", this.idA2A);
 		validatoreId.validaIdPendenza("idPendenza", this.idPendenza);
-
-		validatoreId.validaIdDominio("idDominio", this.idDominio);
+	
+		if(validaDominio)
+			validatoreId.validaIdDominio("idDominio", this.idDominio);
+		
 		if(this.idUnitaOperativa != null)
 			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa);
 		vf.getValidator("nome", this.nome).minLength(1).maxLength(35);

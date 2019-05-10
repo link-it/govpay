@@ -75,7 +75,7 @@
 	<!-- JAX-RS Configuration -->
 
 	<!-- Servizi V2 -->
-	
+	<!-- BASIC_START -->
 	<jaxrs:server id="apiPagamentoV2Basic" address="/basic/v2/">
 		<jaxrs:serviceBeans>
 			<ref bean="avvisiV2" />
@@ -100,9 +100,10 @@
 			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
 	</jaxrs:server>
+	<!-- BASIC_END -->
 
 	<!-- Servizi SSL V2 -->
-
+	<!-- SSL_START -->
 	<jaxrs:server id="apiPagamentoV2SSL" address="/ssl/v2/">
 		<jaxrs:serviceBeans>
 			<ref bean="avvisiV2" />
@@ -127,9 +128,10 @@
 			<ref bean="contextV2" />
 		</jaxrs:features>
 	</jaxrs:server>
-
-	<!-- Servizi SPid V2 -->
-
+ 	<!-- SSL_END -->
+    
+    <!-- Servizi SPID V2 -->
+	<!-- SPID_START  -->
 	<jaxrs:server id="apiPagamentoV2Spid" address="/spid/v2/">
 		<jaxrs:serviceBeans>
 			<ref bean="avvisiV2" />
@@ -154,10 +156,10 @@
 			<ref bean="contextV2" />
 		</jaxrs:features>
 	</jaxrs:server>
-
-
-	<!-- Servizi Public V2 -->
-
+	<!-- SPID_END -->
+    
+   <!-- Servizi Public V2 -->
+	<!-- PUBLIC_START  -->
 	<jaxrs:server id="apiPagamentoV2Public" address="/public/v2/">
 		<jaxrs:serviceBeans>
 			<ref bean="avvisiV2" />
@@ -182,9 +184,10 @@
 			<ref bean="contextV2" />
 		</jaxrs:features>
 	</jaxrs:server>
-	
-	<!-- Servizi Header V2 -->
-
+	<!-- PUBLIC_END -->
+    
+       <!-- Servizi Header V2 -->
+	<!-- HEADER_START  -->
 	<jaxrs:server id="apiPagamentoV2Header" address="/header/v2/">
 		<jaxrs:serviceBeans>
 			<ref bean="avvisiV2" />
@@ -209,6 +212,6 @@
 			<ref bean="contextV2" />
 		</jaxrs:features>
 	</jaxrs:server>
-
+ <!-- HEADER_END -->
 </b:beans>
         

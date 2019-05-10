@@ -18,7 +18,7 @@
         </b:bean>
         
         
-        <!-- CONTAINER START -->
+        <!-- BASIC_START -->
         
         <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
     		<b:property name="wwwAuthenticate" value="false"/>
@@ -53,9 +53,9 @@
                 </headers>
         </http>
         
-        <!-- CONTAINER END -->
+        <!-- CONTAINER_END -->
         
-        <!-- SSL START -->
+        <!-- SSL_START -->
         
         <b:bean id="x509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
        
@@ -80,10 +80,9 @@
                 </headers>
         </http>
         
-        <!-- SSL END -->
+        <!-- SSL_END -->
         
-        <!-- HEADER INIT -->
-      	
+        <!-- HEADER_START
       	<b:bean id="http403ForbiddenEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
       	<b:bean id="userDetailServiceUtenzeHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
@@ -121,8 +120,7 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        
-       	<!-- HEADER END -->
+        HEADER_END -->
         
         <b:bean id="http403ForbiddenEntryPointGenerale" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
