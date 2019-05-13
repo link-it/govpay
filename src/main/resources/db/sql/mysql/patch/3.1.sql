@@ -394,4 +394,26 @@ ALTER TABLE rpt DROP COLUMN id_applicazione;
 ALTER TABLE fr ADD COLUMN id_incasso BIGINT;
 ALTER TABLE fr ADD CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
 
+-- 13/05/2019 aggiunto sct alla tabella incassi
+
+ALTER TABLE incassi ADD COLUMN sct VARCHAR(35);
+
+-- 13/05/2019 nuova tabella gestione delle stampe
+
+DROP TABLE avvisi;
+
+CREATE TABLE stampe
+(
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione della stampa',
+	tipo VARCHAR(16) NOT NULL COMMENT 'Tipologia di stampa',
+	pdf MEDIUMBLOB COMMENT 'Byte della Stampa',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+        id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
+	-- fk/pk keys constraints
+	CONSTRAINT fk_stampe_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stampe relative alla pendenza';
+
 

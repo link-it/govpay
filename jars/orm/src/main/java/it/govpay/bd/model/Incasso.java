@@ -36,6 +36,7 @@ public class Incasso extends it.govpay.model.Incasso {
 	// Business
 	private transient List<Pagamento> pagamenti;
 	private transient Applicazione applicazione;
+	private transient Operatore operatore;
 	private transient Dominio dominio;
 
 
@@ -50,7 +51,7 @@ public class Incasso extends it.govpay.model.Incasso {
 	}
 
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(this.applicazione == null) {
+		if(this.getIdApplicazione() != null && this.applicazione == null) {
 			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
 		} 
 		return this.applicazione;
@@ -59,6 +60,18 @@ public class Incasso extends it.govpay.model.Incasso {
 	public void setApplicazione(long idApplicazione, BasicBD bd) throws ServiceException {
 		this.applicazione = AnagraficaManager.getApplicazione(bd, idApplicazione);
 		this.setIdApplicazione(this.applicazione.getId());
+	}
+	
+	public Operatore getOperatore(BasicBD bd) throws ServiceException {
+		if(this.getIdOperatore() != null && this.operatore == null) {
+			this.operatore = AnagraficaManager.getOperatore(bd, this.getIdOperatore());
+		} 
+		return this.operatore;
+	}
+
+	public void setOperatore(long idOperatore, BasicBD bd) throws ServiceException {
+		this.operatore = AnagraficaManager.getOperatore(bd, idOperatore);
+		this.setIdOperatore(this.operatore.getId());
 	}
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {

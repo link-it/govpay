@@ -755,6 +755,7 @@ CREATE TABLE incassi
 	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3) COMMENT 'Data della riconciliazione',
 	nome_dispositivo VARCHAR(512) COMMENT 'Riferimento al giornale di cassa',
 	iban_accredito VARCHAR(35) COMMENT 'Conto di accredito',
+        sct VARCHAR(35) COMMENT 'Identificativo SEPA credit transfert',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_applicazione BIGINT COMMENT 'Riferimento all\'applicativo che ha registrato l\'inccasso',
@@ -955,23 +956,20 @@ CREATE TABLE gp_audit
 
 
 
-CREATE TABLE avvisi
+CREATE TABLE stampe
 (
-	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del creditore',
-	iuv VARCHAR(35) NOT NULL COMMENT 'Identificativo unico di versamento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di stampa dell\'avviso',
-	stato VARCHAR(255) NOT NULL COMMENT 'Stato di stampa',
-	pdf MEDIUMBLOB COMMENT 'Stampa dell\'avviso',
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione della stampa',
+	tipo VARCHAR(16) NOT NULL COMMENT 'Tipologia di stampa',
+	pdf MEDIUMBLOB COMMENT 'Byte della Stampa',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+        id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
 	-- fk/pk keys constraints
-	CONSTRAINT pk_avvisi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stampe degli avvisi di pagameneto';
+	CONSTRAINT fk_stampe_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stampe relative alla pendenza';
 
--- index
-CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
-CREATE INDEX index_avvisi_2 ON avvisi (stato);
 
 
 

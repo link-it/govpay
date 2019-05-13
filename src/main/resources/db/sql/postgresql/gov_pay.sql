@@ -746,6 +746,7 @@ CREATE TABLE incassi
 	data_ora_incasso TIMESTAMP NOT NULL,
 	nome_dispositivo VARCHAR(512),
 	iban_accredito VARCHAR(35),
+	sct VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_incassi') NOT NULL,
 	id_applicazione BIGINT,
@@ -944,24 +945,21 @@ CREATE TABLE gp_audit
 
 
 
-CREATE SEQUENCE seq_avvisi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+CREATE SEQUENCE seq_stampe start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
-CREATE TABLE avvisi
+CREATE TABLE stampe
 (
-	cod_dominio VARCHAR(35) NOT NULL,
-	iuv VARCHAR(35) NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
-	stato VARCHAR(16) NOT NULL,
+	tipo VARCHAR(16) NOT NULL,
 	pdf BYTEA,
 	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_avvisi') NOT NULL,
+	id BIGINT DEFAULT nextval('seq_stampe') NOT NULL,
+	id_versamento BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT pk_avvisi PRIMARY KEY (id)
+	CONSTRAINT fk_stampe_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 
--- index
-CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
-CREATE INDEX index_avvisi_2 ON avvisi (stato);
 
 
 

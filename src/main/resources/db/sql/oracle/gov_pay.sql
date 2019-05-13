@@ -1056,6 +1056,7 @@ CREATE TABLE incassi
 	data_ora_incasso TIMESTAMP NOT NULL,
 	nome_dispositivo VARCHAR2(512 CHAR),
 	iban_accredito VARCHAR2(35 CHAR),
+        sct VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
@@ -1345,31 +1346,28 @@ end;
 
 
 
-CREATE SEQUENCE seq_avvisi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+CREATE SEQUENCE seq_stampe MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
-CREATE TABLE avvisi
+CREATE TABLE stampe
 (
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
-	iuv VARCHAR2(35 CHAR) NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
-	stato VARCHAR2(16 CHAR) NOT NULL,
+	tipo VARCHAR2(16 CHAR) NOT NULL,
 	pdf BLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT pk_avvisi PRIMARY KEY (id)
+	CONSTRAINT fk_stampe_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 
--- index
-CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
-CREATE INDEX index_avvisi_2 ON avvisi (stato);
-CREATE TRIGGER trg_avvisi
+CREATE TRIGGER trg_stampe
 BEFORE
-insert on avvisi
+insert on stampe
 for each row
 begin
    IF (:new.id IS NULL) THEN
-      SELECT seq_avvisi.nextval INTO :new.id
+      SELECT seq_stampe.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;

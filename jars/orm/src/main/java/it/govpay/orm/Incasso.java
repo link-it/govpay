@@ -46,6 +46,7 @@ import java.io.Serializable;
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ibanAccredito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="sct" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -70,7 +71,8 @@ import java.io.Serializable;
   	"nomeDispositivo",
   	"idApplicazione",
   	"idOperatore",
-  	"ibanAccredito"
+  	"ibanAccredito",
+  	"sct"
   }
 )
 
@@ -182,6 +184,14 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.ibanAccredito = ibanAccredito;
   }
 
+  public java.lang.String getSct() {
+    return this.sct;
+  }
+
+  public void setSct(java.lang.String sct) {
+    this.sct = sct;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -245,5 +255,9 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ibanAccredito",required=false,nillable=false)
   protected java.lang.String ibanAccredito;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="sct",required=false,nillable=false)
+  protected java.lang.String sct;
 
 }

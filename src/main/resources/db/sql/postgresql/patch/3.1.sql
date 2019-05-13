@@ -476,5 +476,29 @@ ALTER TABLE rpt DROP COLUMN id_applicazione;
 ALTER TABLE fr ADD COLUMN id_incasso BIGINT;
 ALTER TABLE fr ADD CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
 
+-- 13/05/2019 aggiunto sct alla tabella incassi
+
+ALTER TABLE incassi ADD COLUMN sct VARCHAR(35);
+
+-- 13/05/2019 nuova tabella gestione delle stampe
+
+DROP TABLE avvisi;
+DROP SEQUENCE seq_avvisi;
+
+CREATE SEQUENCE seq_stampe start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE stampe
+(
+	data_creazione TIMESTAMP NOT NULL,
+	tipo VARCHAR(16) NOT NULL,
+	pdf BYTEA,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_stampe') NOT NULL,
+	id_versamento BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_stampe_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
+);
+
 
 

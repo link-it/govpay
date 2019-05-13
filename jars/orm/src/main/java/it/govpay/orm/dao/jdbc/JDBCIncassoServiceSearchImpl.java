@@ -176,6 +176,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 			fields.add(Incasso.model().DATA_ORA_INCASSO);
 			fields.add(Incasso.model().NOME_DISPOSITIVO);
 			fields.add(Incasso.model().IBAN_ACCREDITO);
+			fields.add(Incasso.model().SCT);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -498,6 +499,14 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 			return;
 		}
 		obj.setId(imgSaved.getId());
+		if(obj.getIdApplicazione()!=null && 
+				imgSaved.getIdApplicazione()!=null){
+			obj.getIdApplicazione().setId(imgSaved.getIdApplicazione().getId());
+		}
+		if(obj.getIdOperatore()!=null && 
+				imgSaved.getIdOperatore()!=null){
+			obj.getIdOperatore().setId(imgSaved.getIdOperatore().getId());
+		}
 
 	}
 	
@@ -595,6 +604,12 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		mapTableToPKColumn.put(converter.toTable(Incasso.model().ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Incasso.model().ID_APPLICAZIONE))
+			));
+
+		// Incasso.model().ID_OPERATORE
+		mapTableToPKColumn.put(converter.toTable(Incasso.model().ID_OPERATORE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Incasso.model().ID_OPERATORE))
 			));
 
 

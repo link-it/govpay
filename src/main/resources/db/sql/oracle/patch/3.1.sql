@@ -435,5 +435,39 @@ ALTER TABLE rpt DROP COLUMN id_applicazione;
 ALTER TABLE fr ADD COLUMN id_incasso NUMBER;
 ALTER TABLE fr ADD CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
 
+-- 13/05/2019 aggiunto sct alla tabella incassi
 
+ALTER TABLE incassi ADD COLUMN sct VARCHAR2(35 CHAR);
+
+-- 13/05/2019 nuova tabella gestione delle stampe
+
+DROP TABLE avvisi;
+DROP SEQUENCE seq_avvisi;
+
+CREATE SEQUENCE seq_stampe MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE stampe
+(
+	data_creazione TIMESTAMP NOT NULL,
+	tipo VARCHAR2(16 CHAR) NOT NULL,
+	pdf BLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_stampe_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_stampe
+BEFORE
+insert on stampe
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_stampe.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
 

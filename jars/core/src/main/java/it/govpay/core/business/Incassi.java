@@ -83,13 +83,14 @@ public class Incassi extends BasicBD {
 			ctx.getApplicationLogger().log("incasso.richiesta");
 			
 			// Validazione dati obbligatori
+			boolean iuvIdFlussoSet = richiestaIncasso.getIuv() != null || richiestaIncasso.getIdFlusso() != null;
 			
-			if(richiestaIncasso.getCausale() == null) {
+			if(richiestaIncasso.getCausale() == null && !iuvIdFlussoSet) {
 				ctx.getApplicationLogger().log("incasso.sintassi", "causale mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
 			}
 			
-			if(richiestaIncasso.getCausale().length() > 512) {
+			if(richiestaIncasso.getCausale().length() > 512 && !iuvIdFlussoSet) {
 				ctx.getApplicationLogger().log("incasso.sintassi", "causale troppo lunga");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificata una causale che eccede il massimo numero di caratteri consentiti (512)");
 			}
@@ -140,19 +141,26 @@ public class Incassi extends BasicBD {
 			String iuv = null;
 			String idf = null;
 			
-			try {
-				if(causale != null) {
-					// Riversamento singolo
-					iuv = IncassoUtils.getRiferimentoIncassoSingolo(causale);
-					idf = IncassoUtils.getRiferimentoIncassoCumulativo(causale);
-				}
-			} catch (Throwable e) {
-				log.error("Riscontrato errore durante il parsing della causale",e);
-			} finally {
-				if(iuv == null && idf==null) {
-					ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
-					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
-				}
+			if(!iuvIdFlussoSet) {
+				try {
+					if(causale != null) {
+						// Riversamento singolo
+						iuv = IncassoUtils.getRiferimentoIncassoSingolo(causale);
+						idf = IncassoUtils.getRiferimentoIncassoCumulativo(causale);
+					} 
+				} catch (Throwable e) {
+					log.error("Riscontrato errore durante il parsing della causale",e);
+				} finally {
+					if(iuv == null && idf==null) {
+						ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
+						throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
+					}
+				} 
+			} else {
+				iuv = richiestaIncasso.getIuv();
+				idf = richiestaIncasso.getIdFlusso();
+				causale = iuv != null ? iuv : idf;
+				richiestaIncasso.setCausale(causale);
 			}
 			
 			IncassiBD incassiBD = new IncassiBD(this);
@@ -378,6 +386,7 @@ public class Incassi extends BasicBD {
 				incasso.setIbanAccredito(richiestaIncasso.getIbanAccredito());
 				incasso.setIdApplicazione(idApplicazione);
 				incasso.setIdOperatore(idOperatore); 
+				incasso.setSct(richiestaIncasso.getSct());
 				richiestaIncassoResponse.setIncasso(incasso);
 				incassiBD.insertIncasso(incasso);
 				
