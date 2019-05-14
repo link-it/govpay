@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -57,7 +58,10 @@ public class Utenza extends it.govpay.model.Utenza {
 			this.domini = new ArrayList<>();
 			if(this.getIdDomini() != null) {
 				for(Long id: this.getIdDomini()) {
-					this.domini.add(AnagraficaManager.getDominio(bd, id));
+					try {
+						this.domini.add(AnagraficaManager.getDominio(bd, id));
+					} catch (NotFoundException e) {
+					}
 				}
 			}
 		}
@@ -69,7 +73,10 @@ public class Utenza extends it.govpay.model.Utenza {
 			this.tipiVersamento = new ArrayList<>();
 			if(this.getIdTipiVersamento() != null) {
 				for(Long id: this.getIdTipiVersamento()) {
-					this.tipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, id));
+					try {
+						this.tipiVersamento.add(AnagraficaManager.getTipoVersamento(bd, id));
+					} catch (NotFoundException e) {
+					}
 				}
 			}
 		}

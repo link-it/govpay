@@ -1,5 +1,6 @@
 package it.govpay.bd.model;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -43,14 +44,20 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 	
 	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
 		if(this.tipoVersamento == null) {
-			this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getIdTipoVersamento());
+			try {
+				this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getIdTipoVersamento());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return this.tipoVersamento;
 	}
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(this.dominio == null) {
-			this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+			try {
+				this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return this.dominio;
 	}

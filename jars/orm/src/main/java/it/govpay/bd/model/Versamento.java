@@ -76,7 +76,10 @@ public class Versamento extends it.govpay.model.Versamento {
 
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
 		if(this.applicazione == null) {
-			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+			try {
+				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return this.applicazione;
 	}
@@ -88,14 +91,20 @@ public class Versamento extends it.govpay.model.Versamento {
 
 	public UnitaOperativa getUo(BasicBD bd) throws ServiceException {
 		if(this.getIdUo() != null && this.uo == null) {
-			this.uo = AnagraficaManager.getUnitaOperativa(bd, this.getIdUo());
+			try {
+				this.uo = AnagraficaManager.getUnitaOperativa(bd, this.getIdUo());
+			} catch (NotFoundException e) {
+			}
 		}
 		return this.uo;
 	}
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(this.dominio == null) {
-			this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+			try {
+				this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return this.dominio;
 	}
@@ -130,7 +139,10 @@ public class Versamento extends it.govpay.model.Versamento {
 	
 	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
 		if(this.tipoVersamento == null) {
-			this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getIdTipoVersamento());
+			try {
+				this.tipoVersamento = AnagraficaManager.getTipoVersamento(bd, this.getIdTipoVersamento());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return this.tipoVersamento;
 	}
@@ -138,7 +150,10 @@ public class Versamento extends it.govpay.model.Versamento {
 	
 	public TipoVersamentoDominio getTipoVersamentoDominio(BasicBD bd) throws ServiceException {
 		if(this.tipoVersamentoDominio == null) {
-			this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, this.getIdTipoVersamentoDominio());
+			try {
+				this.tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, this.getIdTipoVersamentoDominio());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return this.tipoVersamentoDominio;
 	}

@@ -279,7 +279,10 @@ public class PagamentoPortale extends BasicModel {
 	
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
 		if(this.applicazione == null && this.getIdApplicazione() != null) {
-			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+			try {
+				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return this.applicazione;
 	}

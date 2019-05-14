@@ -145,7 +145,12 @@ public class Rpt extends BasicBD{
 				ctx.getApplicationLogger().log("rpt.validazioneSemanticaOk", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 			}
 
-			Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
+			Intermediario intermediario = null;
+			try {
+				intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
+			} catch (NotFoundException e1) {
+				throw new GovPayException(e1);
+			}
 
 			Iuv iuvBusiness = new Iuv(this);
 			IuvBD iuvBD = new IuvBD(this);

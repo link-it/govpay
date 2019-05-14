@@ -75,6 +75,8 @@ import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.IRendicontazioneServiceSearch;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.ISingoloVersamentoServiceSearch;
+import it.govpay.orm.dao.IStampaService;
+import it.govpay.orm.dao.IStampaServiceSearch;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.IStazioneServiceSearch;
 import it.govpay.orm.dao.ITipoTributoService;
@@ -1249,7 +1251,35 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	}
 	
 	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Stampa type:Stampa
+	 =====================================================================================================================
+	*/
 	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Stampa}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Stampa}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IStampaServiceSearch getStampaServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCStampaServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Stampa}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Stampa}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IStampaService getStampaService() throws ServiceException,NotImplementedException{
+		return new JDBCStampaService(this.unlimitedJdbcServiceManager);
+	}
 	/*
 	 =====================================================================================================================
 	 Services relating to the object with name:Avviso type:Avviso

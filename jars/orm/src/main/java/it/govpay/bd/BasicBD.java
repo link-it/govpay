@@ -60,6 +60,7 @@ import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
+import it.govpay.orm.dao.IDBStampaService;
 import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
 import it.govpay.orm.dao.IDBTipoVersamentoDominioService;
@@ -90,6 +91,7 @@ import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
+import it.govpay.orm.dao.IStampaService;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITipoVersamentoDominioService;
@@ -147,6 +149,7 @@ public class BasicBD {
 	private IAvvisoService avvisoService;
 	private IVersamentoIncassoServiceSearch versamentoIncassoServiceSearch;
 	private IVistaRiscossioniServiceSearch vistaRiscossioniServiceSearch;
+	private IStampaService stampaService;
 	
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
 	
@@ -236,6 +239,7 @@ public class BasicBD {
 				this.avvisoService = this.serviceManager.getAvvisoService();
 				this.versamentoIncassoServiceSearch = this.serviceManager.getVersamentoIncassoServiceSearch();
 				this.vistaRiscossioniServiceSearch = this.serviceManager.getVistaRiscossioniServiceSearch();
+				this.stampaService = this.serviceManager.getStampaService();
 				
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
 			} catch(NotImplementedException e) {
@@ -287,6 +291,7 @@ public class BasicBD {
 			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
 			((IDBAuditService)this.auditService).enableSelectForUpdate();
 			((IDBAvvisoService)this.avvisoService).enableSelectForUpdate();
+			((IDBStampaService)this.stampaService).enableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
@@ -334,6 +339,7 @@ public class BasicBD {
 			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
 			((IDBAuditService)this.auditService).disableSelectForUpdate();
 			((IDBAvvisoService)this.avvisoService).disableSelectForUpdate();
+			((IDBStampaService)this.stampaService).disableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
@@ -592,6 +598,13 @@ public class BasicBD {
 			return this.father.getAvvisoService();
 		}
 		return this.avvisoService;
+	}
+	
+	public IStampaService getStampaService() {
+		if(this.father != null) {
+			return this.father.getStampaService();
+		}
+		return this.stampaService;
 	}
 	
 

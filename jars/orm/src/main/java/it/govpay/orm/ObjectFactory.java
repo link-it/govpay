@@ -200,6 +200,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Stampa }
+     */
+    public Stampa createStampa() {
+        return new Stampa();
+    }
+
+    /**
      * Create an instance of {@link IdIuv }
      */
     public IdIuv createIdIuv() {
