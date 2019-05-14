@@ -1,5 +1,6 @@
 package it.govpay.ragioneria.v1.beans;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ import it.govpay.core.beans.JSONSerializable;
 "dataValuta",
 "dataContabile",
 "ibanAccredito",
+"sct",
 "riscossioni",
 })
 public class Incasso extends JSONSerializable {
@@ -32,7 +34,7 @@ public class Incasso extends JSONSerializable {
   private String causale = null;
   
   @JsonProperty("importo")
-  private Double importo = null;
+  private BigDecimal importo = null;
   
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
@@ -42,6 +44,9 @@ public class Incasso extends JSONSerializable {
   
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
+  
+  @JsonProperty("sct")
+  private String sct = null;
   
   @JsonProperty("riscossioni")
   private List<Riscossione> riscossioni = new ArrayList<>();
@@ -96,16 +101,16 @@ public class Incasso extends JSONSerializable {
 
   /**
    **/
-  public Incasso importo(Double importo) {
+  public Incasso importo(BigDecimal importo) {
     this.importo = importo;
     return this;
   }
 
   @JsonProperty("importo")
-  public Double getImporto() {
+  public BigDecimal getImporto() {
     return this.importo;
   }
-  public void setImporto(Double importo) {
+  public void setImporto(BigDecimal importo) {
     this.importo = importo;
   }
 
@@ -158,6 +163,22 @@ public class Incasso extends JSONSerializable {
   }
 
   /**
+   * Identificativo Sepa Credit Transfer
+   **/
+  public Incasso sct(String sct) {
+    this.sct = sct;
+    return this;
+  }
+
+  @JsonProperty("sct")
+  public String getSct() {
+    return sct;
+  }
+  public void setSct(String sct) {
+    this.sct = sct;
+  }
+
+  /**
    **/
   public Incasso riscossioni(List<Riscossione> riscossioni) {
     this.riscossioni = riscossioni;
@@ -188,12 +209,13 @@ public class Incasso extends JSONSerializable {
         Objects.equals(this.dataValuta, incasso.dataValuta) &&
         Objects.equals(this.dataContabile, incasso.dataContabile) &&
         Objects.equals(this.ibanAccredito, incasso.ibanAccredito) &&
+        Objects.equals(sct, incasso.sct) &&
         Objects.equals(this.riscossioni, incasso.riscossioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idDominio, this.idIncasso, this.causale, this.importo, this.dataValuta, this.dataContabile, this.ibanAccredito, this.riscossioni);
+    return Objects.hash(idDominio, idIncasso, causale, importo, dataValuta, dataContabile, ibanAccredito, sct, riscossioni);
   }
 
   public static Incasso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -217,6 +239,7 @@ public class Incasso extends JSONSerializable {
     sb.append("    dataValuta: ").append(this.toIndentedString(this.dataValuta)).append("\n");
     sb.append("    dataContabile: ").append(this.toIndentedString(this.dataContabile)).append("\n");
     sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
+    sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
     sb.append("    riscossioni: ").append(this.toIndentedString(this.riscossioni)).append("\n");
     sb.append("}");
     return sb.toString();

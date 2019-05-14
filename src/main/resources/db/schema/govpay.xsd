@@ -57,7 +57,7 @@
 								<linkit:sql-table object-name="EsitoAvvisatura" object-type="EsitoAvvisatura"/>
 								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
 								<linkit:sql-table object-name="Audit" object-type="Audit"/>
-								<linkit:sql-table object-name="Avviso" object-type="Avviso"/>
+								<linkit:sql-table object-name="Stampa" object-type="Stampa"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
 								
@@ -2178,6 +2178,7 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="ibanAccredito" type="String35" minOccurs="0" />
+			<xsd:element name="sct" type="String35" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2478,43 +2479,32 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	
-	<xsd:element name="Avviso" type="Avviso" />
-	<xsd:complexType name="Avviso">
+	<xsd:element name="Stampa" type="Stampa" />
+	<xsd:complexType name="Stampa">
 		<xsd:annotation>
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true"/>
 					<linkit:sql-table-mapping generate-sql="true"
-						name="avvisi" on-delete-cascade="false">
-						<linkit:sql-table-index>
-							<linkit:sql-table-index-field name="codDominio"/>
-							<linkit:sql-table-index-field name="iuv"/>
-						</linkit:sql-table-index>
-						<linkit:sql-table-index>
-							<linkit:sql-table-index-field name="stato"/>
-						</linkit:sql-table-index>
+						name="stampe" on-delete-cascade="false">
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="codDominio" type="String35"/>
-			<xsd:element name="iuv" type="String35"/>
-			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
-			<xsd:element name="stato" type="String16"/>
-			<xsd:element name="pdf" type="xsd:base64Binary" minOccurs="0"/>
-			
-			<xsd:element name="operazione" type="Operazione">
+			<xsd:element name="idVersamento" type="id-versamento">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Operazione"
-								object-type="Operazione" relationship="none" />
+							<linkit:sql-id-mapping object-name="Versamento" object-type="Versamento"
+								relationship="reversed"/>
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="tipo" type="String16"/>
+			<xsd:element name="pdf" type="xsd:base64Binary" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2542,13 +2532,6 @@
 			<xsd:enumeration value="DEL" />
 			<xsd:enumeration value="INC" />
 			<xsd:enumeration value="N_V" />
-		</xsd:restriction>
-	</xsd:simpleType>
-	
-	<xsd:simpleType name="StatoAvvisoType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="DA_STAMPARE" />
-			<xsd:enumeration value="STAMPATO" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	

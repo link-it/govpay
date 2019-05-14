@@ -1,5 +1,6 @@
 package it.govpay.bd.model;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -23,7 +24,10 @@ public class Acl extends it.govpay.model.Acl{
 	
 	public Utenza getUtenza(BasicBD bd) throws ServiceException {
 		if(this.getIdUtenza() != null && this.utenza == null)
-			this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza()));
+			try {
+				this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza()));
+			} catch (NotFoundException e) {
+			}
 		
 		return this.utenza;
 	}

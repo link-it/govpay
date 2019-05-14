@@ -46,7 +46,10 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	
 	public Tributo getTributo(BasicBD bd) throws ServiceException {
 		if(this.tributo == null && this.getIdTributo() != null) {
-			this.tributo = AnagraficaManager.getTributo(bd, this.getIdTributo());
+			try {
+				this.tributo = AnagraficaManager.getTributo(bd, this.getIdTributo());
+			} catch (NotFoundException e) {
+			}
 		}
 		return this.tributo;
 	}
@@ -76,7 +79,10 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	
 	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
 		if(this.ibanAccredito == null && this.getIdIbanAccredito() != null) {
-			this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());
+			try {
+				this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());
+			} catch (NotFoundException e) {
+			}
 		}
 		
 		if(this.ibanAccredito == null && this.getIdIbanAccredito() == null) {
@@ -94,7 +100,10 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	
 	public IbanAccredito getIbanAppoggio(BasicBD bd) throws ServiceException {
 		if(this.ibanAppoggio == null && this.getIdIbanAppoggio() != null) {
-			this.ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAppoggio());
+			try {
+				this.ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAppoggio());
+			} catch (NotFoundException e) {
+			}
 		}
 		
 		if(this.ibanAppoggio == null && this.getTributo(bd) != null && this.getIdIbanAppoggio() == null) {

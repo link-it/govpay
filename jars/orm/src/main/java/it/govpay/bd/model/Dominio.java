@@ -85,7 +85,10 @@ public class Dominio extends it.govpay.model.Dominio {
 
 	public Applicazione getApplicazioneDefault(BasicBD bd, boolean useCacheData) throws ServiceException {
 		if(this.getIdApplicazioneDefault() != null) {
-			return AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault());
+			try {
+				return AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return null;
 	}

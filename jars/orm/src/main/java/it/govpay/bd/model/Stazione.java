@@ -20,6 +20,7 @@
 
 package it.govpay.bd.model;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -35,7 +36,10 @@ public class Stazione extends it.govpay.model.Stazione {
 
 	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
 		if(this.intermediario == null) {
-			this.intermediario = AnagraficaManager.getIntermediario(bd, this.getIdIntermediario());
+			try {
+				this.intermediario = AnagraficaManager.getIntermediario(bd, this.getIdIntermediario());
+			} catch (NotFoundException e) {
+			}
 		}
 		return this.intermediario;
 	}

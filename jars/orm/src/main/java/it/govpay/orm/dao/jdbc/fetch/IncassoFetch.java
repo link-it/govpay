@@ -72,6 +72,8 @@ public class IncassoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "nome_dispositivo", Incasso.model().NOME_DISPOSITIVO.getFieldType()));
 				this.setParameter(object, "setIbanAccredito", Incasso.model().IBAN_ACCREDITO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iban_accredito", Incasso.model().IBAN_ACCREDITO.getFieldType()));
+				setParameter(object, "setSct", Incasso.model().SCT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "sct", Incasso.model().SCT.getFieldType()));
 				return object;
 			}
 			
@@ -112,6 +114,8 @@ public class IncassoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"nomeDispositivo"));
 				this.setParameter(object, "setIbanAccredito", Incasso.model().IBAN_ACCREDITO.getFieldType(),
 					this.getObjectFromMap(map,"ibanAccredito"));
+				setParameter(object, "setSct", Incasso.model().SCT.getFieldType(),
+					this.getObjectFromMap(map,"sct"));
 				return object;
 			}
 			

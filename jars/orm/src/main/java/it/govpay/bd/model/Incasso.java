@@ -36,6 +36,7 @@ public class Incasso extends it.govpay.model.Incasso {
 	// Business
 	private transient List<Pagamento> pagamenti;
 	private transient Applicazione applicazione;
+	private transient Operatore operatore;
 	private transient Dominio dominio;
 
 
@@ -50,15 +51,41 @@ public class Incasso extends it.govpay.model.Incasso {
 	}
 
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
-		if(this.applicazione == null) {
-			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+		if(this.getIdApplicazione() != null && this.applicazione == null) {
+			try {
+				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return this.applicazione;
 	}
 
 	public void setApplicazione(long idApplicazione, BasicBD bd) throws ServiceException {
-		this.applicazione = AnagraficaManager.getApplicazione(bd, idApplicazione);
-		this.setIdApplicazione(this.applicazione.getId());
+		try {
+			this.applicazione = AnagraficaManager.getApplicazione(bd, idApplicazione);
+			this.setIdApplicazione(this.applicazione.getId());
+		} catch (NotFoundException e) {
+		}
+		
+	}
+	
+	public Operatore getOperatore(BasicBD bd) throws ServiceException {
+		if(this.getIdOperatore() != null && this.operatore == null) {
+			try {
+				this.operatore = AnagraficaManager.getOperatore(bd, this.getIdOperatore());
+			} catch (NotFoundException e) {
+			}
+		} 
+		return this.operatore;
+	}
+
+	public void setOperatore(long idOperatore, BasicBD bd) throws ServiceException {
+		try {
+			this.operatore = AnagraficaManager.getOperatore(bd, idOperatore);
+			this.setIdOperatore(this.operatore.getId());
+		} catch (NotFoundException e) {
+		}
+		
 	}
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {

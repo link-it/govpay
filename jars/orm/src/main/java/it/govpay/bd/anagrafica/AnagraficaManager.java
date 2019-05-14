@@ -303,14 +303,14 @@ public class AnagraficaManager {
 		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO, String.valueOf(tipoVersamentoDominio.getCodTipoVersamento() + "@" +  tipoVersamentoDominio.getIdDominio())));} catch (Exception e) {	}
 	}
 	
-	public static Dominio getDominio(BasicBD basicBD, long id) throws ServiceException {
+	public static Dominio getDominio(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_DOMINIO;
 			Object dominio = getDominiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Dominio) dominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -341,14 +341,14 @@ public class AnagraficaManager {
 		}
 	}
 
-	public static Applicazione getApplicazione(BasicBD basicBD, long id) throws ServiceException {
+	public static Applicazione getApplicazione(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_APPLICAZIONE;
 			Object applicazione = getApplicazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Applicazione) applicazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -418,14 +418,14 @@ public class AnagraficaManager {
 	}
 
 
-	public static UnitaOperativa getUnitaOperativa(BasicBD basicBD, long id) throws ServiceException {
+	public static UnitaOperativa getUnitaOperativa(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_UNITA_OPERATIVA;
 			Object uo = getUoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (UnitaOperativa) uo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -476,14 +476,14 @@ public class AnagraficaManager {
 	}
 
 
-	public static IbanAccredito getIbanAccredito(BasicBD basicBD, long id) throws ServiceException {
+	public static IbanAccredito getIbanAccredito(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
 			Object ibanAccredito = getIbanAccreditoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -515,14 +515,14 @@ public class AnagraficaManager {
 	}
 
 
-	public static Intermediario getIntermediario(BasicBD basicBD, long id) throws ServiceException {
+	public static Intermediario getIntermediario(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_INTERMEDIARIO;
 			Object intermediario = getIntermediariBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Intermediario) intermediario;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -553,14 +553,14 @@ public class AnagraficaManager {
 		}
 	}
 
-	public static Operatore getOperatore(BasicBD basicBD, long id) throws ServiceException {
+	public static Operatore getOperatore(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_OPERATORE;
 			Object operatore = getOperatoriBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Operatore) operatore;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -611,14 +611,14 @@ public class AnagraficaManager {
 		}
 	}
 	
-	public static Utenza getUtenza(BasicBD basicBD, long id) throws ServiceException {
+	public static Utenza getUtenza(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_UTENZA;
 			Object utenza = getUtenzeBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Utenza) utenza;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -651,14 +651,14 @@ public class AnagraficaManager {
 
 	
 	
-	public static Stazione getStazione(BasicBD basicBD, long id) throws ServiceException {
+	public static Stazione getStazione(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_STAZIONE;
 			Object stazione = getStazioniBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Stazione) stazione;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -690,14 +690,14 @@ public class AnagraficaManager {
 	}
 
 
-	public static Tributo getTributo(BasicBD basicBD, long id) throws ServiceException {
+	public static Tributo getTributo(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_TRIBUTO;
 			Object tributo = getTributiBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (Tributo) tributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -728,14 +728,14 @@ public class AnagraficaManager {
 		}
 	}
 
-	public static TipoTributo getTipoTributo(BasicBD basicBD, long id) throws ServiceException {
+	public static TipoTributo getTipoTributo(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_TIPO_TRIBUTO;
 			Object tipoTributo = getTipiTributoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (TipoTributo) tipoTributo;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -766,14 +766,14 @@ public class AnagraficaManager {
 		}
 	}
 	
-	public static TipoVersamento getTipoVersamento(BasicBD basicBD, long id) throws ServiceException {
+	public static TipoVersamento getTipoVersamento(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO;
 			Object tipoVersamento = getTipiVersamentoBDWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (TipoVersamento) tipoVersamento;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);
@@ -804,14 +804,14 @@ public class AnagraficaManager {
 		}
 	}
 	
-	public static TipoVersamentoDominio getTipoVersamentoDominio(BasicBD basicBD, long id) throws ServiceException {
+	public static TipoVersamentoDominio getTipoVersamentoDominio(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO;
 			Object tipoVersamentoDominio = getTipiVersamentoDominiBDCacheWrapper(basicBD).getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
 			return (TipoVersamentoDominio) tipoVersamentoDominio;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {
-				throw new ServiceException(t);
+				throw (NotFoundException) t;
 			}
 			if(t instanceof MultipleResultException) {
 				throw new ServiceException(t);

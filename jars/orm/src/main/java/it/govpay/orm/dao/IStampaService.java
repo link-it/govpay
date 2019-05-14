@@ -17,35 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+package it.govpay.orm.dao;
 
-package it.govpay.bd.model;
+import it.govpay.orm.Stampa;
+import org.openspcoop2.generic_project.dao.IServiceWithoutId;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-
-/**
- * Rapppresenta una Unita' Operativa
+/**     
+ * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.Stampa 
+ *
+ * @author Giovanni Bussu (bussu@link.it)
+ * @author Lorenzo Nardi (nardi@link.it)
+ * @author $Author$
+ * @version $Rev$, $Date$
  */
 
-public class IbanAccredito extends it.govpay.model.IbanAccredito {
-	private static final long serialVersionUID = 1L;
-
-	// Business
-
-	private transient Dominio dominio;
-
-	public Dominio getDominio(BasicBD bd) throws ServiceException {
-		if(this.dominio == null) {
-			try {
-				this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
-			} catch (NotFoundException e) {
-			}
-		} 
-		return this.dominio;
-	}
+public interface IStampaService extends IServiceWithoutId<Stampa> {
 
 }
-

@@ -38,6 +38,7 @@ public class Incasso extends BasicModel {
 	private String ibanAccredito;
 	private Long idApplicazione;
 	private Long idOperatore;
+	private String sct;
 	
 	@Override
 	public Long getId() {
@@ -114,6 +115,12 @@ public class Incasso extends BasicModel {
 	}
 	public void setIbanAccredito(String ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
+	}
+	public String getSct() {
+		return sct;
+	}
+	public void setSct(String sct) {
+		this.sct = sct;
 	}
 }
 

@@ -1,6 +1,5 @@
 package it.govpay.ragioneria.v1.beans.converter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +12,8 @@ import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.ragioneria.v1.beans.Incasso;
-import it.govpay.ragioneria.v1.beans.IncassoPost;
 import it.govpay.ragioneria.v1.beans.IncassoIndex;
+import it.govpay.ragioneria.v1.beans.IncassoPost;
 import it.govpay.ragioneria.v1.beans.Riscossione;
 
 public class IncassiConverter {
@@ -25,11 +24,14 @@ public class IncassiConverter {
 		dto.setCausale(incassoPost.getCausale());
 		dto.setDataValuta(incassoPost.getDataValuta());
 		dto.setDataContabile(incassoPost.getDataContabile());
-		dto.setImporto(BigDecimal.valueOf(incassoPost.getImporto().doubleValue()));
+		dto.setImporto(incassoPost.getImporto());
 		dto.setCodDominio(idDominio);
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 		dto.setApplicazione(authenticationDetails.getApplicazione());
 		dto.setOperatore(authenticationDetails.getOperatore());
+		dto.setSct(incassoPost.getSct());
+		dto.setIuv(incassoPost.getIuv());
+		dto.setIdFlusso(incassoPost.getIdFlusso());
 		return dto;
 	}
 	
@@ -40,10 +42,10 @@ public class IncassiConverter {
 		rsModel.setCausale(i.getCausale());
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
-		rsModel.setImporto(i.getImporto().doubleValue());
+		rsModel.setImporto(i.getImporto());
 		rsModel.setIdIncasso(i.getTrn());
 		rsModel.setIdDominio(i.getCodDominio());
-		
+		rsModel.setSct(i.getSct());
 		rsModel.setIbanAccredito(i.getIbanAccredito());
 		if(i.getPagamenti(null)!= null) {
 			List<Riscossione> riscossioni = new ArrayList<>();
@@ -63,10 +65,10 @@ public class IncassiConverter {
 		rsModel.setCausale(i.getCausale());
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
-		rsModel.setImporto(i.getImporto().doubleValue());
+		rsModel.setImporto(i.getImporto());
 		rsModel.setIdIncasso(i.getTrn());
 		rsModel.setIdDominio(i.getCodDominio());
-		
+		rsModel.setSct(i.getSct());
 		rsModel.setIbanAccredito(i.getIbanAccredito());
 		
 		return rsModel;

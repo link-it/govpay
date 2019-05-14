@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
@@ -9,20 +10,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "causale",
+"iuv",
+"idFlusso",
 "importo",
 "dataValuta",
 "dataContabile",
 "ibanAccredito",
+"sct",
 })
 public class IncassoPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
   
   @JsonProperty("causale")
   private String causale = null;
   
+  @JsonProperty("iuv")
+  private String iuv = null;
+  
+  @JsonProperty("idFlusso")
+  private String idFlusso = null;
+  
   @JsonProperty("importo")
-  private Double importo = null;
+  private BigDecimal importo = null;
   
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
@@ -33,8 +44,11 @@ public class IncassoPost extends it.govpay.core.beans.JSONSerializable implement
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
   
+  @JsonProperty("sct")
+  private String sct = null;
+  
   /**
-   * Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera
+   * Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
    **/
   public IncassoPost causale(String causale) {
     this.causale = causale;
@@ -50,17 +64,49 @@ public class IncassoPost extends it.govpay.core.beans.JSONSerializable implement
   }
 
   /**
+   * Identificativo univoco di riscossione.
    **/
-  public IncassoPost importo(Double importo) {
+  public IncassoPost iuv(String iuv) {
+    this.iuv = iuv;
+    return this;
+  }
+
+  @JsonProperty("iuv")
+  public String getIuv() {
+    return this.iuv;
+  }
+  public void setIuv(String iuv) {
+    this.iuv = iuv;
+  }
+
+  /**
+   * Identificativo del flusso di rendicontazione.
+   **/
+  public IncassoPost idFlusso(String idFlusso) {
+    this.idFlusso = idFlusso;
+    return this;
+  }
+
+  @JsonProperty("idFlusso")
+  public String getIdFlusso() {
+    return this.idFlusso;
+  }
+  public void setIdFlusso(String idFlusso) {
+    this.idFlusso = idFlusso;
+  }
+
+  /**
+   **/
+  public IncassoPost importo(BigDecimal importo) {
     this.importo = importo;
     return this;
   }
 
   @JsonProperty("importo")
-  public Double getImporto() {
-    return this.importo;
+  public BigDecimal getImporto() {
+    return importo;
   }
-  public void setImporto(Double importo) {
+  public void setImporto(BigDecimal importo) {
     this.importo = importo;
   }
 
@@ -112,6 +158,22 @@ public class IncassoPost extends it.govpay.core.beans.JSONSerializable implement
     this.ibanAccredito = ibanAccredito;
   }
 
+  /**
+   * Identificativo Sepa Credit Transfer
+   **/
+  public IncassoPost sct(String sct) {
+    this.sct = sct;
+    return this;
+  }
+
+  @JsonProperty("sct")
+  public String getSct() {
+    return sct;
+  }
+  public void setSct(String sct) {
+    this.sct = sct;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -122,15 +184,18 @@ public class IncassoPost extends it.govpay.core.beans.JSONSerializable implement
     }
     IncassoPost incassoPost = (IncassoPost) o;
     return Objects.equals(this.causale, incassoPost.causale) &&
+    	Objects.equals(this.iuv, incassoPost.iuv) &&
+    	Objects.equals(this.idFlusso, incassoPost.idFlusso) &&
         Objects.equals(this.importo, incassoPost.importo) &&
         Objects.equals(this.dataValuta, incassoPost.dataValuta) &&
         Objects.equals(this.dataContabile, incassoPost.dataContabile) &&
-        Objects.equals(this.ibanAccredito, incassoPost.ibanAccredito);
+        Objects.equals(this.ibanAccredito, incassoPost.ibanAccredito) &&
+        Objects.equals(sct, incassoPost.sct);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.causale, this.importo, this.dataValuta, this.dataContabile, this.ibanAccredito);
+    return Objects.hash(causale, iuv, idFlusso, importo, dataValuta, dataContabile, ibanAccredito, sct);
   }
 
   public static IncassoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -148,10 +213,13 @@ public class IncassoPost extends it.govpay.core.beans.JSONSerializable implement
     sb.append("class IncassoPost {\n");
     
     sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
+    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
+    sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
     sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
     sb.append("    dataValuta: ").append(this.toIndentedString(this.dataValuta)).append("\n");
     sb.append("    dataContabile: ").append(this.toIndentedString(this.dataContabile)).append("\n");
     sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
+    sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -170,11 +238,25 @@ public class IncassoPost extends it.govpay.core.beans.JSONSerializable implement
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(512);
+	
+	if(this.causale != null) {
+		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(512);
+	} else if(this.iuv != null) {
+		vf.getValidator("iuv", this.iuv).notNull().minLength(1).maxLength(35);
+	} else if(this.idFlusso != null) {
+		vf.getValidator("idFlusso", this.idFlusso).notNull().minLength(1).maxLength(35);
+	} else {
+		throw new ValidationException("Uno dei campi tra causale, iuv o idFlusso deve essere valorizzato");
+	}
+	
 	vf.getValidator("importo", this.importo).notNull().checkDecimalDigits();
 	vf.getValidator("dataValuta", this.dataValuta);
 	vf.getValidator("dataContabile", this.dataContabile);
-	vf.getValidator("ibanAccredito", this.ibanAccredito).minLength(1).maxLength(35);
+	if(this.ibanAccredito != null) {
+		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+		validatoreId.validaIdIbanAccredito("ibanAccredito", this.ibanAccredito);
+	}
+	vf.getValidator("sct", this.sct).minLength(1).maxLength(35);
   }
 }
 

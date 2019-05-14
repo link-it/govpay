@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.model;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -61,7 +62,10 @@ public class Tributo extends it.govpay.model.Tributo {
 	}
 	public void setIbanAccredito(BasicBD bd, long idIbanAccredito) throws ServiceException {
 		super.setIdIbanAccredito(idIbanAccredito);
-		this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
+		try {
+			this.ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
+		} catch (NotFoundException e) {
+		}
 	}
 
 	private transient IbanAccredito ibanAppoggio;
@@ -74,7 +78,10 @@ public class Tributo extends it.govpay.model.Tributo {
 	}
 	public void setIbanAppoggio(BasicBD bd, long idIbanAppoggio) throws ServiceException {
 		super.setIdIbanAppoggio(idIbanAppoggio);
-		this.ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, idIbanAppoggio);
+		try {
+			this.ibanAppoggio = AnagraficaManager.getIbanAccredito(bd, idIbanAppoggio);
+		} catch (NotFoundException e) {
+		}
 	}
 
 
@@ -82,7 +89,10 @@ public class Tributo extends it.govpay.model.Tributo {
 
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(this.dominio == null) {
-			this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+			try {
+				this.dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+			} catch (NotFoundException e) {
+			}
 		} 
 		return this.dominio;
 	}

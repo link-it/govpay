@@ -1,6 +1,5 @@
 package it.govpay.backoffice.v1.beans.converter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +19,13 @@ public class IncassiConverter {
 	public static RichiestaIncassoDTO toRichiestaIncassoDTO(IncassoPost incassoPost, String idDominio, Authentication user) {
 		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
 		dto.setCausale(incassoPost.getCausale());
+		dto.setIuv(incassoPost.getIuv());
+		dto.setIdFlusso(incassoPost.getIdFlusso());
 		dto.setDataValuta(incassoPost.getDataValuta());
 		dto.setDataContabile(incassoPost.getDataContabile());
-		dto.setImporto(BigDecimal.valueOf(incassoPost.getImporto().doubleValue()));
+		dto.setImporto(incassoPost.getImporto());
 		dto.setCodDominio(idDominio);
+		dto.setSct(incassoPost.getSct());
 		return dto;
 	}
 	
@@ -34,7 +36,7 @@ public class IncassiConverter {
 		rsModel.setCausale(i.getCausale());
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
-		rsModel.setImporto(i.getImporto().doubleValue());
+		rsModel.setImporto(i.getImporto());
 		rsModel.setIdIncasso(i.getTrn());
 		rsModel.setIdDominio(i.getCodDominio());
 		
@@ -48,6 +50,8 @@ public class IncassiConverter {
 			rsModel.setRiscossioni(riscossioni);
 		}
 		
+		rsModel.setSct(i.getSct());
+		
 		return rsModel;
 	}
 	
@@ -57,11 +61,12 @@ public class IncassiConverter {
 		rsModel.setCausale(i.getCausale());
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
-		rsModel.setImporto(i.getImporto().doubleValue());
+		rsModel.setImporto(i.getImporto());
 		rsModel.setIdIncasso(i.getTrn());
 		rsModel.setIdDominio(i.getCodDominio());
 		
 		rsModel.setIbanAccredito(i.getIbanAccredito());
+		rsModel.setSct(i.getSct());
 		
 		return rsModel;
 	}

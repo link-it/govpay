@@ -21,6 +21,7 @@ package it.govpay.bd.model;
 
 import java.util.Date;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -75,7 +76,10 @@ public class Notifica extends it.govpay.model.Notifica {
 	
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
 		if(this.applicazione == null)
-			this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+			try {
+				this.applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
+			} catch (NotFoundException e) {
+			}
 		return this.applicazione;
 	}
 	

@@ -1,5 +1,6 @@
 package it.govpay.bd.model;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -19,7 +20,10 @@ private static final long serialVersionUID = 1L;
 	public Applicazione(BasicBD bd, long idUtenza) throws ServiceException {
 		super();
 		this.setIdUtenza(idUtenza); 
-		this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza()));
+		try {
+			this.setUtenza(AnagraficaManager.getUtenza(bd, this.getIdUtenza()));
+		} catch (NotFoundException e) {
+		}
 	}
 
 

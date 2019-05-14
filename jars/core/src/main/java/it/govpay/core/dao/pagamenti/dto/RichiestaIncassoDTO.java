@@ -44,6 +44,9 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	private Date dataContabile;
 	private String dispositivo;
 	private String ibanAccredito;
+	private String iuv;
+	private String idFlusso;
+	private String sct;
 	
 	public String getTrn() {
 		return this.trn;
@@ -104,5 +107,23 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	}
 	public void setIbanAccredito(String ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
+	}
+	public String getIdFlusso() {
+		return idFlusso;
+	}
+	public void setIdFlusso(String idFlusso) {
+		this.idFlusso = idFlusso;
+	}
+	public String getIuv() {
+		return iuv;
+	}
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+	public String getSct() {
+		return sct;
+	}
+	public void setSct(String sct) {
+		this.sct = sct;
 	}
 }

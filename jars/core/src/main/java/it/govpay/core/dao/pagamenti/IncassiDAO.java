@@ -182,6 +182,7 @@ public class IncassiDAO extends BaseDAO{
 			}
 
 			richiestaIncassoDTOResponse.getIncasso().getApplicazione(bd);
+			richiestaIncassoDTOResponse.getIncasso().getOperatore(bd);
 			richiestaIncassoDTOResponse.getIncasso().getDominio(bd);
 		}finally {
 			if(bd != null)

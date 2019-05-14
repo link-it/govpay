@@ -144,6 +144,13 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "iban_accredito";
 			}
 		}
+		if(field.equals(Incasso.model().SCT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".sct";
+			}else{
+				return "sct";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -188,6 +195,9 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Incasso.model().ID_OPERATORE, returnAlias);
 		}
 		if(field.equals(Incasso.model().IBAN_ACCREDITO)){
+			return this.toTable(Incasso.model(), returnAlias);
+		}
+		if(field.equals(Incasso.model().SCT)){
 			return this.toTable(Incasso.model(), returnAlias);
 		}
 

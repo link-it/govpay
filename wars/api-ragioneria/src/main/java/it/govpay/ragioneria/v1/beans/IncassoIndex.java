@@ -1,5 +1,6 @@
 package it.govpay.ragioneria.v1.beans;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
@@ -9,21 +10,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"idDominio",
+"idIncasso",
 "causale",
 "importo",
 "dataValuta",
 "dataContabile",
 "ibanAccredito",
-"idDominio",
-"idIncasso",
+"sct",
 })
 public class IncassoIndex extends JSONSerializable {
+  
+  @JsonProperty("idDominio")
+  private String idDominio = null;
+  
+  @JsonProperty("idIncasso")
+  private String idIncasso = null;
   
   @JsonProperty("causale")
   private String causale = null;
   
   @JsonProperty("importo")
-  private Double importo = null;
+  private BigDecimal importo = null;
   
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
@@ -34,12 +42,41 @@ public class IncassoIndex extends JSONSerializable {
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
   
+  @JsonProperty("sct")
+  private String sct = null;
+  
+  /**
+   * Identificativo ente creditore
+   **/
+  public IncassoIndex idDominio(String idDominio) {
+    this.idDominio = idDominio;
+    return this;
+  }
+
   @JsonProperty("idDominio")
-  private String idDominio = null;
-  
+  public String getIdDominio() {
+    return idDominio;
+  }
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
+  }
+
+  /**
+   * Identificativo dell'incasso
+   **/
+  public IncassoIndex idIncasso(String idIncasso) {
+    this.idIncasso = idIncasso;
+    return this;
+  }
+
   @JsonProperty("idIncasso")
-  private String idIncasso = null;
-  
+  public String getIdIncasso() {
+    return idIncasso;
+  }
+  public void setIdIncasso(String idIncasso) {
+    this.idIncasso = idIncasso;
+  }
+
   /**
    * Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera
    **/
@@ -58,16 +95,16 @@ public class IncassoIndex extends JSONSerializable {
 
   /**
    **/
-  public IncassoIndex importo(Double importo) {
+  public IncassoIndex importo(BigDecimal importo) {
     this.importo = importo;
     return this;
   }
 
   @JsonProperty("importo")
-  public Double getImporto() {
+  public BigDecimal getImporto() {
     return this.importo;
   }
-  public void setImporto(Double importo) {
+  public void setImporto(BigDecimal importo) {
     this.importo = importo;
   }
 
@@ -120,35 +157,19 @@ public class IncassoIndex extends JSONSerializable {
   }
 
   /**
-   * Identificativo ente creditore
+   * Identificativo Sepa Credit Transfer
    **/
-  public IncassoIndex idDominio(String idDominio) {
-    this.idDominio = idDominio;
+  public IncassoIndex sct(String sct) {
+    this.sct = sct;
     return this;
   }
 
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return this.idDominio;
+  @JsonProperty("sct")
+  public String getSct() {
+    return sct;
   }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
-  }
-
-  /**
-   * Identificativo dell'incasso
-   **/
-  public IncassoIndex idIncasso(String idIncasso) {
-    this.idIncasso = idIncasso;
-    return this;
-  }
-
-  @JsonProperty("idIncasso")
-  public String getIdIncasso() {
-    return this.idIncasso;
-  }
-  public void setIdIncasso(String idIncasso) {
-    this.idIncasso = idIncasso;
+  public void setSct(String sct) {
+    this.sct = sct;
   }
 
   @Override
@@ -160,18 +181,19 @@ public class IncassoIndex extends JSONSerializable {
       return false;
     }
     IncassoIndex incassoIndex = (IncassoIndex) o;
-    return Objects.equals(this.causale, incassoIndex.causale) &&
-        Objects.equals(this.importo, incassoIndex.importo) &&
-        Objects.equals(this.dataValuta, incassoIndex.dataValuta) &&
-        Objects.equals(this.dataContabile, incassoIndex.dataContabile) &&
-        Objects.equals(this.ibanAccredito, incassoIndex.ibanAccredito) &&
-        Objects.equals(this.idDominio, incassoIndex.idDominio) &&
-        Objects.equals(this.idIncasso, incassoIndex.idIncasso);
+    return Objects.equals(idDominio, incassoIndex.idDominio) &&
+        Objects.equals(idIncasso, incassoIndex.idIncasso) &&
+        Objects.equals(causale, incassoIndex.causale) &&
+        Objects.equals(importo, incassoIndex.importo) &&
+        Objects.equals(dataValuta, incassoIndex.dataValuta) &&
+        Objects.equals(dataContabile, incassoIndex.dataContabile) &&
+        Objects.equals(ibanAccredito, incassoIndex.ibanAccredito) &&
+        Objects.equals(sct, incassoIndex.sct);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.causale, this.importo, this.dataValuta, this.dataContabile, this.ibanAccredito, this.idDominio, this.idIncasso);
+    return Objects.hash(idDominio, idIncasso, causale, importo, dataValuta, dataContabile, ibanAccredito, sct);
   }
 
   public static IncassoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -188,13 +210,14 @@ public class IncassoIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class IncassoIndex {\n");
     
-    sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    dataValuta: ").append(this.toIndentedString(this.dataValuta)).append("\n");
-    sb.append("    dataContabile: ").append(this.toIndentedString(this.dataContabile)).append("\n");
-    sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    idIncasso: ").append(this.toIndentedString(this.idIncasso)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
+    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
+    sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
+    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
+    sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
     sb.append("}");
     return sb.toString();
   }
