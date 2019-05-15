@@ -1,5 +1,5 @@
 -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE
--- SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+-- SET @@SESSION.sql_mode=(SELECT REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE',''));
 
 CREATE TABLE intermediari
 (
