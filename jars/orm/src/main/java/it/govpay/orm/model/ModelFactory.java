@@ -99,8 +99,6 @@ public class ModelFactory {
 	
 	public static EsitoAvvisaturaModel ESITO_AVVISATURA = new EsitoAvvisaturaModel();
 	
-	public static AvvisoModel AVVISO = new AvvisoModel();
-
 	public static StampaModel STAMPA = new StampaModel();
 	
 	public static VersamentoIncassoModel VERSAMENTO_INCASSO = new VersamentoIncassoModel();

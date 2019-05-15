@@ -87,9 +87,6 @@ public class IncassiController extends BaseController {
 			
 			// autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user); 
-//			if(domini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
 			listaIncassoDTO.setCodDomini(domini);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();

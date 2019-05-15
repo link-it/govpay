@@ -1,6 +1,8 @@
 package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,8 +74,13 @@ public class OperatoriController extends BaseController {
 			String jsonRequest = baos.toString();
 			OperatorePost operatoreRequest= JSONSerializable.parse(jsonRequest, OperatorePost.class);
 			
+			if(principal != null)
+				principal =  URLDecoder.decode(principal, StandardCharsets.UTF_8.toString());
+			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdOperatore("principal", principal);
+			
+			 
 			
 			operatoreRequest.validate();
 			
@@ -120,6 +127,9 @@ public class OperatoriController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.SCRITTURA));
 
+			if(principal != null)
+				principal =  URLDecoder.decode(principal, StandardCharsets.UTF_8.toString());
+			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdOperatore("principal", principal);
 			
@@ -165,6 +175,9 @@ public class OperatoriController extends BaseController {
 			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.LETTURA));
+			
+			if(principal != null)
+				principal =  URLDecoder.decode(principal, StandardCharsets.UTF_8.toString());
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdOperatore("principal", principal);
@@ -217,8 +230,12 @@ public class OperatoriController extends BaseController {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.SCRITTURA));
 
+			if(principal != null)
+				principal =  URLDecoder.decode(principal, StandardCharsets.UTF_8.toString());
+			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdOperatore("principal", principal);
+			
 			String jsonRequest = baos.toString();
 
 			OperatorePatchDTO operatorePatchDTO = new OperatorePatchDTO(user);
@@ -316,8 +333,4 @@ public class OperatoriController extends BaseController {
 			this.log(ctx);
 		}
     }
-
-
 }
-
-

@@ -514,6 +514,13 @@
 			<xsd:element name="id-mail-template" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:complexType name="id-stampa">
+		<xsd:sequence>
+			<xsd:element name="idVersamento" type="id-versamento"/>
+			<xsd:element name="tipo" type="String16"/>
+		</xsd:sequence>
+	</xsd:complexType>
 
 	<!-- Anagrafica -->
 
@@ -2484,9 +2491,14 @@
 		<xsd:annotation>
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true"/>
-					<linkit:sql-table-mapping generate-sql="true"
-						name="stampe" on-delete-cascade="false">
+					<linkit:interface crud="true" id="id-stampa"/>
+					<linkit:sql-table-mapping generate-sql="true" name="stampe"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_stm"/>
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-column name="id_versamento"/>
+							<linkit:sql-table-unique-field name="tipo"/>
+						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>

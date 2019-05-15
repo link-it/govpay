@@ -29,7 +29,6 @@ import org.openspcoop2.generic_project.exception.DeserializerException;
 import it.govpay.orm.ACL;
 import it.govpay.orm.Applicazione;
 import it.govpay.orm.Audit;
-import it.govpay.orm.Avviso;
 import it.govpay.orm.Batch;
 import it.govpay.orm.Connettore;
 import it.govpay.orm.Dominio;
@@ -70,6 +69,7 @@ import it.govpay.orm.IdSingolaRendicontazione;
 import it.govpay.orm.IdSingolaRevoca;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdSla;
+import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdStazione;
 import it.govpay.orm.IdTabellaControparti;
 import it.govpay.orm.IdTipoTributo;
@@ -95,6 +95,7 @@ import it.govpay.orm.RR;
 import it.govpay.orm.Rendicontazione;
 import it.govpay.orm.RendicontazionePagamento;
 import it.govpay.orm.SingoloVersamento;
+import it.govpay.orm.Stampa;
 import it.govpay.orm.Stazione;
 import it.govpay.orm.TipoTributo;
 import it.govpay.orm.TipoVersamento;
@@ -3385,6 +3386,69 @@ public abstract class AbstractDeserializer {
 	
 	/*
 	 =================================================================================
+	 Object: Stampa
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.Stampa}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Stampa}
+	 * @return Object type {@link it.govpay.orm.Stampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Stampa readStampa(String fileName) throws DeserializerException {
+		return (Stampa) this.xmlToObj(fileName, Stampa.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.Stampa}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Stampa}
+	 * @return Object type {@link it.govpay.orm.Stampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Stampa readStampa(File file) throws DeserializerException {
+		return (Stampa) this.xmlToObj(file, Stampa.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.Stampa}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.Stampa}
+	 * @return Object type {@link it.govpay.orm.Stampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Stampa readStampa(InputStream in) throws DeserializerException {
+		return (Stampa) this.xmlToObj(in, Stampa.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.Stampa}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.Stampa}
+	 * @return Object type {@link it.govpay.orm.Stampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Stampa readStampa(byte[] in) throws DeserializerException {
+		return (Stampa) this.xmlToObj(in, Stampa.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.Stampa}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.Stampa}
+	 * @return Object type {@link it.govpay.orm.Stampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Stampa readStampaFromString(String in) throws DeserializerException {
+		return (Stampa) this.xmlToObj(in.getBytes(), Stampa.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
 	 Object: id-connettore
 	 =================================================================================
 	*/
@@ -3505,69 +3569,6 @@ public abstract class AbstractDeserializer {
 	 */
 	public VistaRiscossioni readVistaRiscossioniFromString(String in) throws DeserializerException {
 		return (VistaRiscossioni) this.xmlToObj(in.getBytes(), VistaRiscossioni.class);
-	}	
-	
-	
-	
-	/*
-	 =================================================================================
-	 Object: Avviso
-	 =================================================================================
-	*/
-	
-	/**
-	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.Avviso}
-	 * 
-	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Avviso}
-	 * @return Object type {@link it.govpay.orm.Avviso}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public Avviso readAvviso(String fileName) throws DeserializerException {
-		return (Avviso) this.xmlToObj(fileName, Avviso.class);
-	}
-	
-	/**
-	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.Avviso}
-	 * 
-	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Avviso}
-	 * @return Object type {@link it.govpay.orm.Avviso}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public Avviso readAvviso(File file) throws DeserializerException {
-		return (Avviso) this.xmlToObj(file, Avviso.class);
-	}
-	
-	/**
-	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.Avviso}
-	 * 
-	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.Avviso}
-	 * @return Object type {@link it.govpay.orm.Avviso}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public Avviso readAvviso(InputStream in) throws DeserializerException {
-		return (Avviso) this.xmlToObj(in, Avviso.class);
-	}	
-	
-	/**
-	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.Avviso}
-	 * 
-	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.Avviso}
-	 * @return Object type {@link it.govpay.orm.Avviso}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public Avviso readAvviso(byte[] in) throws DeserializerException {
-		return (Avviso) this.xmlToObj(in, Avviso.class);
-	}	
-	
-	/**
-	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.Avviso}
-	 * 
-	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.Avviso}
-	 * @return Object type {@link it.govpay.orm.Avviso}
-	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
-	 */
-	public Avviso readAvvisoFromString(String in) throws DeserializerException {
-		return (Avviso) this.xmlToObj(in.getBytes(), Avviso.class);
 	}	
 	
 	
@@ -4135,6 +4136,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public IdSingolaRendicontazione readIdSingolaRendicontazioneFromString(String in) throws DeserializerException {
 		return (IdSingolaRendicontazione) this.xmlToObj(in.getBytes(), IdSingolaRendicontazione.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: id-stampa
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IdStampa}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdStampa}
+	 * @return Object type {@link it.govpay.orm.IdStampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdStampa readIdStampa(String fileName) throws DeserializerException {
+		return (IdStampa) this.xmlToObj(fileName, IdStampa.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IdStampa}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdStampa}
+	 * @return Object type {@link it.govpay.orm.IdStampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdStampa readIdStampa(File file) throws DeserializerException {
+		return (IdStampa) this.xmlToObj(file, IdStampa.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IdStampa}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IdStampa}
+	 * @return Object type {@link it.govpay.orm.IdStampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdStampa readIdStampa(InputStream in) throws DeserializerException {
+		return (IdStampa) this.xmlToObj(in, IdStampa.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IdStampa}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IdStampa}
+	 * @return Object type {@link it.govpay.orm.IdStampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdStampa readIdStampa(byte[] in) throws DeserializerException {
+		return (IdStampa) this.xmlToObj(in, IdStampa.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IdStampa}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IdStampa}
+	 * @return Object type {@link it.govpay.orm.IdStampa}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdStampa readIdStampaFromString(String in) throws DeserializerException {
+		return (IdStampa) this.xmlToObj(in.getBytes(), IdStampa.class);
 	}	
 	
 	

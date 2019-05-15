@@ -326,13 +326,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Avviso }
-     */
-    public Avviso createAvviso() {
-        return new Avviso();
-    }
-
-    /**
      * Create an instance of {@link Tributo }
      */
     public Tributo createTributo() {
@@ -442,6 +435,13 @@ public class ObjectFactory {
      */
     public IdCarrello createIdCarrello() {
         return new IdCarrello();
+    }
+
+    /**
+     * Create an instance of {@link IdStampa }
+     */
+    public IdStampa createIdStampa() {
+        return new IdStampa();
     }
 
     /**

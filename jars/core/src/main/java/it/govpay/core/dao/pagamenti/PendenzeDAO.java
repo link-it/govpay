@@ -89,9 +89,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
 import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.orm.PagamentoPortaleVersamento;
-import it.govpay.stampe.model.AvvisoPagamentoInput;
 
 public class PendenzeDAO extends BaseDAO{
 
@@ -743,15 +741,19 @@ public class PendenzeDAO extends BaseDAO{
 			
 			if(putVersamentoDTO.isStampaAvviso()) {
 				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
-				AvvisoPagamento avvisoPagamento = new AvvisoPagamento();
-				avvisoPagamento.setCodDominio(chiediVersamento.getDominio(bd).getCodDominio());
-				avvisoPagamento.setIuv(iuv.getIuv());
 				PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
-				printAvvisoDTO.setAvviso(avvisoPagamento);
-				AvvisoPagamentoInput input = avvisoBD.fromVersamento(avvisoPagamento, chiediVersamento);
-				printAvvisoDTO.setInput(input); 
+				printAvvisoDTO.setUpdate(!createOrUpdatePendenzaResponse.isCreated());
+				printAvvisoDTO.setCodDominio(chiediVersamento.getDominio(bd).getCodDominio());
+				printAvvisoDTO.setIuv(iuv.getIuv());
+				printAvvisoDTO.setVersamento(chiediVersamento); 
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
 				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
+			} else { // non devo fare la stampa.
+				if(!createOrUpdatePendenzaResponse.isCreated()) {
+					// se ho fatto l'update della pendenza e non voglio aggiornare la stampa la cancello cosi quando verra' letta la prima volta si aggiornera' da sola
+					it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
+					avvisoBD.cancellaAvviso(chiediVersamento);
+				}
 			}
 
 		} catch (ServiceException e) {
@@ -783,16 +785,12 @@ public class PendenzeDAO extends BaseDAO{
 			}
 			
 			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
-			AvvisoPagamento avvisoPagamento = new AvvisoPagamento();
-			avvisoPagamento.setCodDominio(versamento.getDominio(bd).getCodDominio());
-			avvisoPagamento.setIuv(versamento.getIuvVersamento());
 			PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
-			printAvvisoDTO.setAvviso(avvisoPagamento);
-			AvvisoPagamentoInput input = avvisoBD.fromVersamento(avvisoPagamento, versamento);
-			printAvvisoDTO.setInput(input); 
+			printAvvisoDTO.setCodDominio(versamento.getDominio(bd).getCodDominio());
+			printAvvisoDTO.setIuv(versamento.getIuvVersamento());
+			printAvvisoDTO.setVersamento(versamento); 
 			PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
 			response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
-
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		}  finally {

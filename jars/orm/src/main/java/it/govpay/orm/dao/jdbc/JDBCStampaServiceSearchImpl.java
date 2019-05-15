@@ -31,7 +31,7 @@ import org.openspcoop2.generic_project.beans.InUse;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.Union;
 import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithoutId;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
@@ -47,6 +47,9 @@ import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdStampa;
+import it.govpay.orm.IdVersamento;
 import it.govpay.orm.Stampa;
 import it.govpay.orm.dao.jdbc.converter.StampaFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.StampaFetch;
@@ -59,7 +62,7 @@ import it.govpay.orm.dao.jdbc.fetch.StampaFetch;
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithoutId<Stampa, JDBCServiceManager> {
+public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Stampa, IdStampa, JDBCServiceManager> {
 
 	private StampaFieldConverter _stampaFieldConverter = null;
 	public StampaFieldConverter getStampaFieldConverter() {
@@ -96,9 +99,70 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 	}
 	
 
+	@Override
+	public IdStampa convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa) throws NotImplementedException, ServiceException, Exception{
 	
+		IdStampa idStampa = new IdStampa();
+		idStampa.setTipo(stampa.getTipo());
+		idStampa.setIdVersamento(stampa.getIdVersamento());
+		return idStampa;
+	}
 	
+	@Override
+	public Stampa get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
+		Long id_stampa = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdStampa(jdbcProperties, log, connection, sqlQueryObject, id, true));
+		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_stampa,idMappingResolutionBehaviour);
+		
+		
+	}
 	
+	@Override
+	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
+
+		Long id_stampa = this.findIdStampa(jdbcProperties, log, connection, sqlQueryObject, id, false);
+		return id_stampa != null && id_stampa > 0;
+		
+	}
+	
+	@Override
+	public List<IdStampa> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
+
+		
+     // default behaviour (id-mapping)
+        if(idMappingResolutionBehaviour==null){
+                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+        }
+
+        List<IdStampa> list = new ArrayList<IdStampa>();
+
+		try{
+			List<IField> fields = new ArrayList<>();
+			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getStampaFieldConverter().toTable(Stampa.model())));
+			fields.add(Stampa.model().TIPO);
+
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+        
+			for(Map<String, Object> map: returnMap) {
+				IdStampa idStampa = new IdStampa();
+
+				it.govpay.orm.IdVersamento id_stampa_versamento = null;
+				Long idFK_stampa_versamento = (Long) map.get("id_versamento");
+				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+					id_stampa_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idFK_stampa_versamento, false);
+				}else{
+					id_stampa_versamento = new it.govpay.orm.IdVersamento();
+				}
+				id_stampa_versamento.setId(idFK_stampa_versamento);
+				idStampa.setIdVersamento(id_stampa_versamento);
+
+				idStampa.setTipo((String) map.get("tipo"));
+				
+				list.add(idStampa);
+			}
+		} catch(NotFoundException e) {}
+
+        return list;
+	}
 	
 	@Override
 	public List<Stampa> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
@@ -122,26 +186,18 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			
 			for(Map<String, Object> map: returnMap) {
 				
-				Object idVersamentoObj = map.remove("id_versamento");
-				Long idVersamento = null;
-				if(idVersamentoObj instanceof Long) {
-					idVersamento = (Long) idVersamentoObj;
-					
-					
-				}
+				Long idVersamento = (Long)map.remove("id_versamento");
 				
 				Stampa stampa = (Stampa)this.getStampaFetch().fetch(jdbcProperties.getDatabase(), Stampa.model(), map);
 
-				if(idVersamento != null) {
-					it.govpay.orm.IdVersamento id_stampa_versamento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_stampa_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
-					}else{
-						id_stampa_versamento = new it.govpay.orm.IdVersamento();
-					}
-					id_stampa_versamento.setId(idVersamento);
-					stampa.setIdVersamento(id_stampa_versamento);
+				it.govpay.orm.IdVersamento id_stampa_versamento = null;
+				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+					id_stampa_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
+				}else{
+					id_stampa_versamento = new it.govpay.orm.IdVersamento();
 				}
+				id_stampa_versamento.setId(idVersamento);
+				stampa.setIdVersamento(id_stampa_versamento);
 				
 				list.add(stampa);
 			}
@@ -178,6 +234,13 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 																			this.getStampaFieldConverter(), Stampa.model(),listaQuery);
 	}
 
+	@Override
+	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
+		
+		Long id_stampa = this.findIdStampa(jdbcProperties, log, connection, sqlQueryObject, id, true);
+        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_stampa);
+		
+	}
 
 	@Override
 	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
@@ -403,6 +466,32 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 	
 	// -- DB
 
+	@Override
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id, Stampa obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
+	}
+	
+	@Override
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Stampa obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
+	}
+	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa obj, Stampa imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+		if(imgSaved==null){
+			return;
+		}
+		obj.setId(imgSaved.getId());
+		if(obj.getIdVersamento()!=null && 
+				imgSaved.getIdVersamento()!=null){
+			obj.getIdVersamento().setId(imgSaved.getIdVersamento().getId());
+			if(obj.getIdVersamento().getIdApplicazione()!=null && 
+					imgSaved.getIdVersamento().getIdApplicazione()!=null){
+				obj.getIdVersamento().getIdApplicazione().setId(imgSaved.getIdVersamento().getIdApplicazione().getId());
+			}
+		}
+
+	}
 	
 	@Override
 	public Stampa get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
@@ -473,10 +562,11 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 	
 	}
 	
-	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa) throws NotFoundException, ServiceException, NotImplementedException, Exception{
+	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-		rootTableIdValues.add(stampa.getId());
+		Long longId = this.findIdStampa(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
+		rootTableIdValues.add(longId);
         return rootTableIdValues;
 	}
 	
@@ -568,9 +658,70 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
         return inUse;
+
 	}
 	
+	@Override
+	public IdStampa findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
+			throws NotFoundException, ServiceException, NotImplementedException, Exception {
+		
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
+		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+
+		sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model()));
+		sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO));
+		sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE));
+		sqlQueryObjectGet.addSelectField(this.getStampaFieldConverter().toColumn(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE,true));
+		sqlQueryObjectGet.addSelectField(this.getStampaFieldConverter().toColumn(Stampa.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE,true));
+		sqlQueryObjectGet.addSelectField(this.getStampaFieldConverter().toColumn(Stampa.model().TIPO,true));
+		sqlQueryObjectGet.setANDLogicOperator(true);
+		sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toTable(Stampa.model())+".id=?");
+		sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toTable(Stampa.model())+".id_versamento="+this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO)+".id");
+		sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE)+".id="+this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO)+".id_applicazione");
+
+		// Recupero _stampa
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_stampa = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
+		};
+		List<Class<?>> listaFieldIdReturnType_stampa = new ArrayList<Class<?>>();
+		listaFieldIdReturnType_stampa.add(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType());
+		listaFieldIdReturnType_stampa.add(Stampa.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE.getFieldType());
+		listaFieldIdReturnType_stampa.add(Stampa.model().TIPO.getFieldType());
+		it.govpay.orm.IdStampa id_stampa = null;
+		List<Object> listaFieldId_stampa = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+				listaFieldIdReturnType_stampa, searchParams_stampa);
+		if(listaFieldId_stampa==null || listaFieldId_stampa.size()<=0){
+			if(throwNotFound){
+				throw new NotFoundException("Not Found");
+			}
+		}
+		else{
+			// set _stampa
+			id_stampa = new it.govpay.orm.IdStampa();
+			IdVersamento idVersamento = new IdVersamento();
+			IdApplicazione idApplicazione = new IdApplicazione();
+			idApplicazione.setCodApplicazione((String)listaFieldId_stampa.get(0));
+			
+			idVersamento.setIdApplicazione(idApplicazione);
+			
+			idVersamento.setCodVersamentoEnte((String)listaFieldId_stampa.get(1));
+			id_stampa.setIdVersamento(idVersamento);
+			id_stampa.setTipo((String)listaFieldId_stampa.get(2));
+		}
+		
+		return id_stampa;
+		
+	}
+
+	@Override
+	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id, boolean throwNotFound)
+			throws NotFoundException, ServiceException, NotImplementedException, Exception {
+	
+		return this.findIdStampa(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
+			
+	}
 	
 	@Override
 	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
@@ -581,4 +732,68 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 														
 	}
 	
+	protected Long findIdStampa(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+
+		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+		
+		if(id.getId() != null && id.getId() > 0) {
+			return id.getId();
+		}
+		
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_stampa = null;
+		if(id.getIdVersamento().getId() != null && id.getIdVersamento().getId() > 0) {
+			// Object _singoloVersamento
+			sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model()));
+			sqlQueryObjectGet.addSelectField("id");
+			sqlQueryObjectGet.setANDLogicOperator(true);
+//			sqlQueryObjectGet.setSelectDistinct(true);
+			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toColumn(Stampa.model().TIPO,true)+"=?");
+			sqlQueryObjectGet.addWhereCondition("id_versamento=?");
+
+			// Recupero _singoloVersamento
+			searchParams_stampa = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTipo(),Stampa.model().TIPO.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getId(),Long.class)
+			};
+		} else {
+			// Object _singoloVersamento
+			sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model()));
+			sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO));
+			sqlQueryObjectGet.addFromTable(this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE));
+			sqlQueryObjectGet.addSelectField(this.getStampaFieldConverter().toTable(Stampa.model())+".id");
+			sqlQueryObjectGet.setANDLogicOperator(true);
+//			sqlQueryObjectGet.setSelectDistinct(true);
+			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toColumn(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE,true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toColumn(Stampa.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE,true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toColumn(Stampa.model().TIPO,true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toTable(Stampa.model())+".id_versamento="+this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO)+".id");
+			sqlQueryObjectGet.addWhereCondition(this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO)+".id_applicazione="+this.getStampaFieldConverter().toTable(Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE)+".id");
+
+			// Recupero _singoloVersamento
+			searchParams_stampa = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getIdApplicazione().getCodApplicazione(),Stampa.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdVersamento().getCodVersamentoEnte(),Stampa.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTipo(),Stampa.model().TIPO.getFieldType()),
+			};
+		}
+		Long id_stampa = null;
+		try{
+			id_stampa = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+						Long.class, searchParams_stampa);
+		}catch(NotFoundException notFound){
+			if(throwNotFound){
+				throw new NotFoundException(notFound);
+			}
+		}
+		if(id_stampa==null || id_stampa<=0){
+			if(throwNotFound){
+				throw new NotFoundException("Not Found");
+			}
+		}
+		
+		return id_stampa;
+	}
 }

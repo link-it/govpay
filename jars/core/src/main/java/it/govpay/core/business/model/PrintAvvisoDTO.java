@@ -1,24 +1,37 @@
 package it.govpay.core.business.model;
 
-import it.govpay.model.avvisi.AvvisoPagamento;
-import it.govpay.stampe.model.AvvisoPagamentoInput;
+import it.govpay.bd.model.Versamento;
 
 public class PrintAvvisoDTO {
-
-	private AvvisoPagamento avviso;
-	private AvvisoPagamentoInput input;
 	
-	public AvvisoPagamento getAvviso() {
-		return this.avviso;
+	private Versamento versamento;
+	private String codDominio;
+	private String iuv;
+	private boolean update;
+
+	public Versamento getVersamento() {
+		return versamento;
 	}
-	public void setAvviso(AvvisoPagamento avviso) {
-		this.avviso = avviso;
+	public void setVersamento(Versamento versamento) {
+		this.versamento = versamento;
 	}
-	public AvvisoPagamentoInput getInput() {
-		return this.input;
+	public String getIuv() {
+		return iuv;
 	}
-	public void setInput(AvvisoPagamentoInput input) {
-		this.input = input;
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+	public String getCodDominio() {
+		return codDominio;
+	}
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+	public boolean isUpdate() {
+		return update;
+	}
+	public void setUpdate(boolean update) {
+		this.update = update;
 	}
 	
 }

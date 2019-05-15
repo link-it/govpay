@@ -495,8 +495,10 @@ CREATE TABLE stampe
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_stampe') NOT NULL,
 	id_versamento BIGINT NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,tipo),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_stampe_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_stampe PRIMARY KEY (id)
 );
 

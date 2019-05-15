@@ -23,12 +23,15 @@ package it.govpay.core.business.model.tracciati.operazioni;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.Avviso;
 import it.govpay.core.beans.tracciati.Avviso.StatoEnum;
@@ -37,6 +40,7 @@ import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
 import it.govpay.core.business.Tracciati;
 import it.govpay.core.business.Versamento;
 import it.govpay.core.business.model.AnnullaVersamentoDTO;
+import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.tracciati.CostantiCaricamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -63,6 +67,15 @@ public class OperazioneFactory {
 			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(request.getVersamento(), basicBD);
 
 			Versamento versamento = new Versamento(basicBD);
+			
+			VersamentiBD versamentiBD = new VersamentiBD(basicBD);
+
+			boolean create = false;
+			try {
+				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
+			}catch(NotFoundException e) {
+				create = true;
+			}
 			
 			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 			versamento.caricaVersamento(versamentoModel, generaIuv, true);
@@ -95,6 +108,17 @@ public class OperazioneFactory {
 			StatoEnum statoPendenza = this.getStatoPendenza(versamentoModel);
 
 			avviso.setStato(statoPendenza);
+			
+			if(versamentoModel.getNumeroAvviso() != null) {
+				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(basicBD);
+				PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
+				printAvvisoDTO.setUpdate(!create);
+				printAvvisoDTO.setCodDominio(versamentoModel.getDominio(basicBD).getCodDominio());
+				printAvvisoDTO.setIuv(iuvGenerato.getIuv());
+				printAvvisoDTO.setVersamento(versamentoModel); 
+				avvisoBD.printAvviso(printAvvisoDTO);
+			}
+			
 			caricamentoResponse.setAvviso(avviso);
 			
 		} catch(GovPayException e) {

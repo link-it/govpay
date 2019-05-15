@@ -32,7 +32,7 @@ public class OperatoriConverter {
 		if(operatoreRequest.getAcl()!=null) {
 			List<Acl> aclList = new ArrayList<>();
 			for(AclPost acls: operatoreRequest.getAcl()) {
-				aclList.add(AclConverter.getAclUtenza(acls, user));
+				aclList.add(AclConverter.getAclUtenza(acls, utenza));
 			}
 			utenza.setAclPrincipal(aclList);
 		}

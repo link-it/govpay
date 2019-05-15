@@ -411,9 +411,14 @@ CREATE TABLE stampe
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
         id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza',
+        -- unique constraints
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,tipo),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_stampe_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT pk_stampe PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stampe relative alla pendenza';
+
+-- index
+CREATE UNIQUE INDEX index_stampe_1 ON stampe (id_versamento,tipo);
 
 

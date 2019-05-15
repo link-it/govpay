@@ -33,13 +33,11 @@ import it.govpay.model.BasicModel;
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IAuditService;
-import it.govpay.orm.dao.IAvvisoService;
 import it.govpay.orm.dao.IBatchService;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.IDBApplicazioneService;
 import it.govpay.orm.dao.IDBAuditService;
-import it.govpay.orm.dao.IDBAvvisoService;
 import it.govpay.orm.dao.IDBBatchService;
 import it.govpay.orm.dao.IDBConnettoreService;
 import it.govpay.orm.dao.IDBDominioService;
@@ -146,7 +144,6 @@ public class BasicBD {
 	private IEsitoAvvisaturaService esitoAvvisaturaService;
 	private IOperazioneService operazioneService;
 	private IAuditService auditService;
-	private IAvvisoService avvisoService;
 	private IVersamentoIncassoServiceSearch versamentoIncassoServiceSearch;
 	private IVistaRiscossioniServiceSearch vistaRiscossioniServiceSearch;
 	private IStampaService stampaService;
@@ -236,7 +233,6 @@ public class BasicBD {
 				this.esitoAvvisaturaService = this.serviceManager.getEsitoAvvisaturaService();
 				this.operazioneService = this.serviceManager.getOperazioneService();
 				this.auditService = this.serviceManager.getAuditService();
-				this.avvisoService = this.serviceManager.getAvvisoService();
 				this.versamentoIncassoServiceSearch = this.serviceManager.getVersamentoIncassoServiceSearch();
 				this.vistaRiscossioniServiceSearch = this.serviceManager.getVistaRiscossioniServiceSearch();
 				this.stampaService = this.serviceManager.getStampaService();
@@ -290,7 +286,6 @@ public class BasicBD {
 			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).enableSelectForUpdate();
 			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
 			((IDBAuditService)this.auditService).enableSelectForUpdate();
-			((IDBAvvisoService)this.avvisoService).enableSelectForUpdate();
 			((IDBStampaService)this.stampaService).enableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
@@ -338,7 +333,6 @@ public class BasicBD {
 			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).disableSelectForUpdate();
 			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
 			((IDBAuditService)this.auditService).disableSelectForUpdate();
-			((IDBAvvisoService)this.avvisoService).disableSelectForUpdate();
 			((IDBStampaService)this.stampaService).disableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
@@ -591,13 +585,6 @@ public class BasicBD {
 			return this.father.getAuditService();
 		}
 		return this.auditService;
-	}
-	
-	public IAvvisoService getAvvisoService() {
-		if(this.father != null) {
-			return this.father.getAvvisoService();
-		}
-		return this.avvisoService;
 	}
 	
 	public IStampaService getStampaService() {

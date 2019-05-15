@@ -25,7 +25,8 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 import org.slf4j.Logger;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import it.govpay.orm.IdStampa;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
@@ -53,7 +54,7 @@ import it.govpay.orm.dao.jdbc.JDBCServiceManager;
  * @version $Rev$, $Date$
  */
 public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
-	implements IJDBCServiceCRUDWithoutId<Stampa, JDBCServiceManager> {
+	implements IJDBCServiceCRUDWithId<Stampa, IdStampa, JDBCServiceManager> {
 
 	@Override
 	public void create(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
@@ -106,9 +107,18 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 	}
 
 	@Override
-	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-		
+	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa oldId, Stampa stampa, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObject.newSQLQueryObject();
+		Long longIdByLogicId = this.findIdStampa(jdbcProperties, log, connection, sqlQueryObjectUpdate.newSQLQueryObject(), oldId, true);
 		Long tableId = stampa.getId();
+		if(tableId != null && tableId.longValue() > 0) {
+			if(tableId.longValue() != longIdByLogicId.longValue()) {
+				throw new Exception("Ambiguous parameter: stampa.id ["+tableId+"] does not match logic id ["+longIdByLogicId+"]");
+			}
+		} else {
+			tableId = longIdByLogicId;
+			stampa.setId(tableId);
+		}
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
@@ -184,32 +194,32 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 	}
 	
 	@Override
-	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getStampaFieldConverter().toTable(Stampa.model()), 
 				this._getMapTableToPKColumn(), 
-				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, stampa),
+				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
 				this.getStampaFieldConverter(), this, null, updateFields);
 	}
 	
 	@Override
-	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id, IExpression condition, UpdateField ... updateFields) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getStampaFieldConverter().toTable(Stampa.model()), 
 				this._getMapTableToPKColumn(), 
-				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, stampa),
+				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
 				this.getStampaFieldConverter(), this, condition, updateFields);
 	}
 	
 	@Override
-	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
+	public void updateFields(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa id, UpdateModel ... updateModels) throws NotFoundException, NotImplementedException, ServiceException, Exception {
 		
 		JDBCUtilities.updateFields(jdbcProperties, log, connection, sqlQueryObject, 
 				this.getStampaFieldConverter().toTable(Stampa.model()), 
 				this._getMapTableToPKColumn(), 
-				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, stampa),
+				this._getRootTablePrimaryKeyValues(jdbcProperties, log, connection, sqlQueryObject, id),
 				this.getStampaFieldConverter(), this, updateModels);
 	}	
 	
@@ -247,16 +257,15 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 	}
 	
 	@Override
-	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Stampa stampa, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
+	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa oldId, Stampa stampa, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {
 	
 		// default behaviour (id-mapping)
 		if(idMappingResolutionBehaviour==null){
 			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
 		}
 		
-		Long id = stampa.getId();
-		if(id != null && this.exists(jdbcProperties, log, connection, sqlQueryObject, id)) {
-			this.update(jdbcProperties, log, connection, sqlQueryObject, stampa,idMappingResolutionBehaviour);		
+		if(this.exists(jdbcProperties, log, connection, sqlQueryObject, oldId)) {
+			this.update(jdbcProperties, log, connection, sqlQueryObject, oldId, stampa,idMappingResolutionBehaviour);
 		} else {
 			this.create(jdbcProperties, log, connection, sqlQueryObject, stampa,idMappingResolutionBehaviour);
 		}
@@ -282,13 +291,16 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 		
 		
 		Long longId = null;
-		if(stampa.getId()==null){
-			throw new Exception("Parameter "+stampa.getClass().getName()+".id is null");
+		if( (stampa.getId()!=null) && (stampa.getId()>0) ){
+			longId = stampa.getId();
 		}
-		if(stampa.getId()<=0){
-			throw new Exception("Parameter "+stampa.getClass().getName()+".id is less equals 0");
-		}
-		longId = stampa.getId();
+		else{
+			IdStampa idStampa = this.convertToId(jdbcProperties,log,connection,sqlQueryObject,stampa);
+			longId = this.findIdStampa(jdbcProperties,log,connection,sqlQueryObject,idStampa,false);
+			if(longId == null){
+				return; // entry not exists
+			}
+		}		
 		
 		this._delete(jdbcProperties, log, connection, sqlQueryObject, longId);
 		
@@ -318,6 +330,18 @@ public class JDBCStampaServiceImpl extends JDBCStampaServiceSearchImpl
 
 	}
 
+	@Override
+	public void deleteById(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdStampa idStampa) throws NotImplementedException,ServiceException,Exception {
+
+		Long id = null;
+		try{
+			id = this.findIdStampa(jdbcProperties, log, connection, sqlQueryObject, idStampa, true);
+		}catch(NotFoundException notFound){
+			return;
+		}
+		this._delete(jdbcProperties, log, connection, sqlQueryObject, id);
+		
+	}
 	
 	@Override
 	public NonNegativeNumber deleteAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject) throws NotImplementedException,ServiceException,Exception {

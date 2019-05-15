@@ -1,20 +1,12 @@
 package it.govpay.core.business.model;
 
-import it.govpay.model.avvisi.AvvisoPagamento.StatoAvviso;
+import it.govpay.bd.model.Versamento;
 
 public class ListaAvvisiDTO {
 
-	private StatoAvviso stato;
+	private Versamento versamento;
 	private int offset;
 	private int limit;
-
-	public StatoAvviso getStato() {
-		return this.stato;
-	}
-
-	public void setStato(StatoAvviso stato) {
-		this.stato = stato;
-	}
 
 	public int getOffset() {
 		return this.offset;
@@ -31,6 +23,13 @@ public class ListaAvvisiDTO {
 	public void setLimit(int limit) {
 		this.limit = limit;
 	}
-	
+
+	public Versamento getVersamento() {
+		return versamento;
+	}
+
+	public void setVersamento(Versamento versamento) {
+		this.versamento = versamento;
+	}
 }
 

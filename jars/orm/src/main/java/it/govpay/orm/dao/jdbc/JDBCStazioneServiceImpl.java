@@ -97,6 +97,7 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getStazioneFieldConverter().toColumn(Stazione.model().NDP_STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getStazioneFieldConverter().toColumn(Stazione.model().NDP_OPERAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getStazioneFieldConverter().toColumn(Stazione.model().NDP_DESCRIZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getStazioneFieldConverter().toColumn(Stazione.model().NDP_DATA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_intermediario","?");
 
 		// Insert stazione
@@ -109,6 +110,7 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stazione.getNdpStato(),Stazione.model().NDP_STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stazione.getNdpOperazione(),Stazione.model().NDP_OPERAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stazione.getNdpDescrizione(),Stazione.model().NDP_DESCRIZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stazione.getNdpData(),Stazione.model().NDP_DATA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_intermediario,Long.class)
 		);
 		stazione.setId(id);
@@ -193,6 +195,8 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 		lstObjects_stazione.add(new JDBCObject(stazione.getNdpOperazione(), Stazione.model().NDP_OPERAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getStazioneFieldConverter().toColumn(Stazione.model().NDP_DESCRIZIONE,false), "?");
 		lstObjects_stazione.add(new JDBCObject(stazione.getNdpDescrizione(), Stazione.model().NDP_DESCRIZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getStazioneFieldConverter().toColumn(Stazione.model().NDP_DATA,false), "?");
+		lstObjects_stazione.add(new JDBCObject(stazione.getNdpData(), Stazione.model().NDP_DATA.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_intermediario","?");
 		}

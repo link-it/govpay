@@ -3,21 +3,21 @@ package it.govpay.core.business.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.govpay.model.avvisi.AvvisoPagamento;
+import it.govpay.model.Stampa;
 
 public class ListaAvvisiDTOResponse {
 
-	private List<AvvisoPagamento> avvisi;
+	private List<Stampa> avvisi;
 	
 	public ListaAvvisiDTOResponse() {
 		this.avvisi = new ArrayList<>();
 	}
 
-	public List<AvvisoPagamento> getAvvisi() {
+	public List<Stampa> getAvvisi() {
 		return this.avvisi;
 	}
 
-	public void setAvvisi(List<AvvisoPagamento> avvisi) {
+	public void setAvvisi(List<Stampa> avvisi) {
 		this.avvisi = avvisi;
 	}
 }

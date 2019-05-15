@@ -20,7 +20,8 @@
 package it.govpay.orm.dao;
 
 import it.govpay.orm.Stampa;
-import org.openspcoop2.generic_project.dao.IDBServiceWithoutId;
+import org.openspcoop2.generic_project.dao.IDBServiceWithId;
+import it.govpay.orm.IdStampa;
 
 /**     
  * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.Stampa 
@@ -31,6 +32,6 @@ import org.openspcoop2.generic_project.dao.IDBServiceWithoutId;
  * @version $Rev$, $Date$
  */
 
-public interface IDBStampaService extends IStampaService,IDBServiceWithoutId<Stampa> {
+public interface IDBStampaService extends IStampaService,IDBServiceWithId<Stampa, IdStampa> {
 
 }

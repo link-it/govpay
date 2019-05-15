@@ -18,7 +18,6 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
-import it.govpay.model.avvisi.AvvisoPagamento;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -59,16 +58,14 @@ public class AvvisoPagamentoPdf {
 	}
 
 
-	public JasperPrint creaJasperPrintAvviso(Logger log, AvvisoPagamentoInput input, AvvisoPagamento avvisoPagamento, 
-			Properties propertiesAvvisoPerDominio, InputStream jasperTemplateInputStream,JRDataSource dataSource,Map<String, Object> parameters) throws Exception {
+	public JasperPrint creaJasperPrintAvviso(Logger log, AvvisoPagamentoInput input, Properties propertiesAvvisoPerDominio, InputStream jasperTemplateInputStream,JRDataSource dataSource,Map<String, Object> parameters) throws Exception {
 		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperTemplateInputStream);
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters, dataSource);
 		return jasperPrint;
 	}
 
-	public AvvisoPagamento creaAvviso(Logger log, AvvisoPagamentoInput input, AvvisoPagamento avvisoPagamento, AvvisoPagamentoProperties avProperties) throws Exception {
+	public byte[] creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws Exception {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
-		String codDominio = avvisoPagamento.getCodDominio();
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
 		this.caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
@@ -82,11 +79,10 @@ public class AvvisoPagamentoPdf {
 		InputStream is = AvvisoPagamentoPdf.class.getResourceAsStream(jasperTemplateFilename);
 		Map<String, Object> parameters = new HashMap<>();
 		JRDataSource dataSource = this.creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, avvisoPagamento, propertiesAvvisoPerDominio, is, dataSource,parameters);
+		JasperPrint jasperPrint = this.creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, is, dataSource,parameters);
 
 		byte[] reportToPdf = JasperExportManager.exportReportToPdf(jasperPrint);
-		avvisoPagamento.setPdf(reportToPdf);
-		return avvisoPagamento;
+		return reportToPdf;
 	}
 
 	public JRDataSource creaXmlDataSource(Logger log,AvvisoPagamentoInput input) throws UtilsException, JRException, JAXBException {
@@ -114,10 +110,7 @@ public class AvvisoPagamentoPdf {
 			AvvisoPagamentoProperties.newInstance("/var/govpay");
 
 			AvvisoPagamentoProperties avProperties = AvvisoPagamentoProperties.getInstance();
-			AvvisoPagamento av = new AvvisoPagamento();
-			av.setCodDominio("83000390019");
-
-			String codDominio = av.getCodDominio();
+			String codDominio = "83000390019";
 			Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
 			Map<String, Object> parameters = new HashMap<>();
@@ -142,7 +135,7 @@ public class AvvisoPagamentoPdf {
 			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
 
 			JRDataSource dataSource = AvvisoPagamentoPdf.getInstance().creaXmlDataSource(log,input);
-			JasperPrint jasperPrint = AvvisoPagamentoPdf.getInstance().creaJasperPrintAvviso(log, input, av, propertiesAvvisoPerDominio, jasperTemplateInputStream, dataSource,parameters);
+			JasperPrint jasperPrint = AvvisoPagamentoPdf.getInstance().creaJasperPrintAvviso(log, input, propertiesAvvisoPerDominio, jasperTemplateInputStream, dataSource,parameters);
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint,"/tmp/tmp.pdf");
 

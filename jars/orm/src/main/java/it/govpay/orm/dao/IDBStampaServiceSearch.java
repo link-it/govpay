@@ -20,7 +20,8 @@
 package it.govpay.orm.dao;
 
 import it.govpay.orm.Stampa;
-import org.openspcoop2.generic_project.dao.IDBServiceSearchWithoutId;
+import org.openspcoop2.generic_project.dao.IDBServiceSearchWithId;
+import it.govpay.orm.IdStampa;
 
 
 /** 
@@ -32,5 +33,5 @@ import org.openspcoop2.generic_project.dao.IDBServiceSearchWithoutId;
  * @version $Rev$, $Date$
  */
 
-public interface IDBStampaServiceSearch extends IStampaServiceSearch,IDBServiceSearchWithoutId<Stampa> {
+public interface IDBStampaServiceSearch extends IStampaServiceSearch,IDBServiceSearchWithId<Stampa, IdStampa> {
 }

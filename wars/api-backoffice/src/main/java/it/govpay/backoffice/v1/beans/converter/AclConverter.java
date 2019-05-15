@@ -13,6 +13,7 @@ import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.AclPost.AutorizzazioniEnum;
 import it.govpay.backoffice.v1.beans.AclPost.ServizioEnum;
 import it.govpay.bd.model.Acl;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.model.Acl.Diritti;
@@ -41,6 +42,29 @@ public class AclConverter {
 		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 		acl.setUtenza(authenticationDetails.getUtenza());
+		return acl;
+	}
+	
+	public static Acl getAclUtenza(AclPost aclPost, Utenza utenza) throws ServiceException {
+		
+		Acl acl = new Acl();
+		
+		Set<Diritti> lst = new HashSet<>();
+		for(String authS: aclPost.getAutorizzazioni()) {
+			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
+			switch(auth) {
+			case LETTURA: lst.add(Acl.Diritti.LETTURA);
+				break;
+			case SCRITTURA: lst.add(Acl.Diritti.SCRITTURA);
+				break;
+			default:
+				break;
+			}
+		}
+
+		acl.setListaDiritti(lst);
+		acl.setServizio(Servizio.toEnum(aclPost.getServizio().toString()));
+		acl.setUtenza(utenza);
 		return acl;
 	}
 	

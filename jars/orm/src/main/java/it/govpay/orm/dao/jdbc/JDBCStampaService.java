@@ -19,7 +19,8 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import it.govpay.orm.IdStampa;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -53,7 +54,7 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBStampaService {
 
 
-	private IJDBCServiceCRUDWithoutId<Stampa, JDBCServiceManager> serviceCRUD = null;
+	private IJDBCServiceCRUDWithId<Stampa, IdStampa, JDBCServiceManager> serviceCRUD = null;
 	public JDBCStampaService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
 		this.log.debug(JDBCStampaService.class.getName()+ " initialized");
@@ -157,9 +158,9 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 
 	@Override
-	public void update(Stampa stampa) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(IdStampa oldId, Stampa stampa) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(stampa, false, null);
+			this.update(oldId, stampa, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -167,9 +168,9 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 	
 	@Override
-	public void update(Stampa stampa, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(IdStampa oldId, Stampa stampa, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(stampa, false, idMappingResolutionBehaviour);
+			this.update(oldId, stampa, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -177,12 +178,12 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 	
 	@Override
-	public void update(Stampa stampa, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(stampa, validate, null);
+	public void update(IdStampa oldId, Stampa stampa, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(oldId, stampa, validate, null);
 	}
 		
 	@Override
-	public void update(Stampa stampa, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(IdStampa oldId, Stampa stampa, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -192,6 +193,9 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 			// check parameters
 			if(stampa==null){
 				throw new Exception("Parameter (type:"+Stampa.class.getName()+") 'stampa' is null");
+			}
+			if(oldId==null){
+				throw new Exception("Parameter (type:"+IdStampa.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
@@ -211,7 +215,7 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,stampa,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,stampa,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -354,7 +358,7 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 	
 	@Override
-	public void updateFields(Stampa stampa, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdStampa id, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -362,8 +366,8 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 		try{
 			
 			// check parameters
-			if(stampa==null){
-				throw new Exception("Parameter (type:"+Stampa.class.getName()+") 'stampa' is null");
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdStampa.class.getName()+") 'id' is null");
 			}
 			if(updateFields==null){
 				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
@@ -381,7 +385,7 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,stampa,updateFields);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateFields);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -421,7 +425,7 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 	
 	@Override
-	public void updateFields(Stampa stampa, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdStampa id, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -429,8 +433,8 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 		try{
 			
 			// check parameters
-			if(stampa==null){
-				throw new Exception("Parameter (type:"+Stampa.class.getName()+") 'stampa' is null");
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdStampa.class.getName()+") 'id' is null");
 			}
 			if(condition==null){
 				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
@@ -451,7 +455,7 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,stampa,condition,updateFields);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,condition,updateFields);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -491,7 +495,7 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 
 	@Override
-	public void updateFields(Stampa stampa, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdStampa id, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -499,8 +503,8 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 		try{
 			
 			// check parameters
-			if(stampa==null){
-				throw new Exception("Parameter (type:"+Stampa.class.getName()+") 'stampa' is null");
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdStampa.class.getName()+") 'id' is null");
 			}
 			if(updateModels==null){
 				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
@@ -518,7 +522,7 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,stampa,updateModels);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateModels);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -762,9 +766,9 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 
 	@Override
-	public void updateOrCreate(Stampa stampa) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(IdStampa oldId, Stampa stampa) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(stampa, false, null);
+			this.updateOrCreate(oldId, stampa, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -772,9 +776,9 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 	
 	@Override
-	public void updateOrCreate(Stampa stampa, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(IdStampa oldId, Stampa stampa, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(stampa, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(oldId, stampa, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -782,12 +786,12 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 
 	@Override
-	public void updateOrCreate(Stampa stampa, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(stampa, validate, null);
+	public void updateOrCreate(IdStampa oldId, Stampa stampa, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(oldId, stampa, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(Stampa stampa, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(IdStampa oldId, Stampa stampa, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -797,6 +801,9 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 			// check parameters
 			if(stampa==null){
 				throw new Exception("Parameter (type:"+Stampa.class.getName()+") 'stampa' is null");
+			}
+			if(oldId==null){
+				throw new Exception("Parameter (type:"+IdStampa.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
@@ -816,7 +823,7 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,stampa,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,stampa,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -1014,6 +1021,66 @@ public class JDBCStampaService extends JDBCStampaServiceSearch  implements IDBSt
 	}
 	
 
+	@Override
+	public void deleteById(IdStampa id) throws ServiceException, NotImplementedException {
+
+		Connection connection = null;
+		boolean oldValueAutoCommit = false;
+		boolean rollback = false;
+		try{
+			
+			// check parameters
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdStampa.class.getName()+") 'id' is null");
+			}
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			// transaction
+			if(this.jdbcProperties.isAutomaticTransactionManagement()){
+				oldValueAutoCommit = connection.getAutoCommit();
+				connection.setAutoCommit(false);
+			}
+
+			this.serviceCRUD.deleteById(this.jdbcProperties,this.log,connection,sqlQueryObject,id);			
+
+		}catch(ServiceException e){
+			rollback = true;
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			rollback = true;
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			rollback = true;
+			this.log.error(e.getMessage(),e); throw new ServiceException("DeleteById not completed: "+e.getMessage(),e);
+		}finally{
+			if(this.jdbcProperties.isAutomaticTransactionManagement()){
+				if(rollback){
+					try{
+						if(connection!=null)
+							connection.rollback();
+					}catch(Exception eIgnore){}
+				}else{
+					try{
+						if(connection!=null)
+							connection.commit();
+					}catch(Exception eIgnore){}
+				}
+				try{
+					if(connection!=null)
+						connection.setAutoCommit(oldValueAutoCommit);
+				}catch(Exception eIgnore){}
+			}
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+
+	}
 
 	@Override
 	public NonNegativeNumber deleteAll() throws ServiceException, NotImplementedException {

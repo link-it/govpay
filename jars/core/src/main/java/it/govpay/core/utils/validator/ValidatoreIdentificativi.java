@@ -95,16 +95,16 @@ public class ValidatoreIdentificativi {
 		this.validaId(fieldName, principal, CostantiValidazione.PATTERN_PRINCIPAL, 1, 4000);
 	}
 	
-	public StringValidator validaId(String fieldName, String id, String pattern, Integer minLength, Integer maxLength) throws ValidationException {
-		return validaId(fieldName, id, pattern, minLength, maxLength, true);
-	}
-	
 	public void validaIdPendenza(String idPendenza) throws ValidationException {
 		this.validaIdPendenza("idPendenza", idPendenza);
 	}
 	
 	public void validaIdPendenza(String fieldName, String idPendenza) throws ValidationException {
 		this.validaId(fieldName, idPendenza, CostantiValidazione.PATTERN_ID_PENDENZA, 1, 35);
+	}
+	
+	public StringValidator validaId(String fieldName, String id, String pattern, Integer minLength, Integer maxLength) throws ValidationException {
+		return validaId(fieldName, id, pattern, minLength, maxLength, true);
 	}
 	
 	public StringValidator validaId(String fieldName, String id, String pattern, Integer minLength, Integer maxLength, boolean notNull) throws ValidationException {

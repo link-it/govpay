@@ -9,9 +9,11 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Stampa;
 import it.govpay.orm.dao.jdbc.converter.StampaFieldConverter;
 
@@ -30,6 +32,10 @@ public class StampaFilter extends AbstractFilter {
 	public StampaFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Stampa.model().TIPO);
+		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
+		filterSortWrapper.setField(Stampa.model().DATA_CREAZIONE);
+		filterSortWrapper.setSortOrder(SortOrder.DESC);
+		this.addFilterSort(filterSortWrapper );
 	}
 
 	@Override

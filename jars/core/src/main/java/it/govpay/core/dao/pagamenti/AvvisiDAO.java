@@ -41,8 +41,6 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.model.avvisi.AvvisoPagamento;
-import it.govpay.stampe.model.AvvisoPagamentoInput;
 
 public class AvvisiDAO extends BaseDAO{
 
@@ -85,13 +83,10 @@ public class AvvisiDAO extends BaseDAO{
 			switch(getAvvisoDTO.getFormato()) {
 			case PDF:
 				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento(bd);
-				AvvisoPagamento avvisoPagamento = new AvvisoPagamento();
-				avvisoPagamento.setCodDominio(versamento.getDominio(bd).getCodDominio());
-				avvisoPagamento.setIuv(versamento.getIuvVersamento());
 				PrintAvvisoDTO printAvvisoDTO = new PrintAvvisoDTO();
-				printAvvisoDTO.setAvviso(avvisoPagamento);
-				AvvisoPagamentoInput input = avvisoBD.fromVersamento(avvisoPagamento, versamento);
-				printAvvisoDTO.setInput(input); 
+				printAvvisoDTO.setCodDominio(versamento.getDominio(bd).getCodDominio());
+				printAvvisoDTO.setIuv(versamento.getIuvVersamento());
+				printAvvisoDTO.setVersamento(versamento); 
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvviso(printAvvisoDTO);
 				response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 				break;

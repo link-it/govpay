@@ -1,16 +1,16 @@
 package it.govpay.core.business.model;
 
-import it.govpay.model.avvisi.AvvisoPagamento;
+import it.govpay.model.Stampa;
 
 public class PrintAvvisoDTOResponse {
 
-	private AvvisoPagamento avviso;
+	private Stampa avviso;
 
-	public AvvisoPagamento getAvviso() {
+	public Stampa getAvviso() {
 		return this.avviso;
 	}
 
-	public void setAvviso(AvvisoPagamento avviso) {
+	public void setAvviso(Stampa avviso) {
 		this.avviso = avviso;
 	}
 }
