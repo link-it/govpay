@@ -1,7 +1,11 @@
 package it.govpay.pagamento.v2.beans.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
@@ -48,6 +52,13 @@ public class ProfiloConverter {
 		case ANONIMO:
 			break;
 		case APPLICAZIONE:
+			if(leggiProfilo.getDomini()!=null) {
+				List<it.govpay.pagamento.v2.beans.Dominio> dominiLst = new ArrayList<>();
+				for(Dominio dominio: leggiProfilo.getDomini()) {
+					dominiLst.add(DominiConverter.toRsModel(dominio));
+				}
+				profilo.setDomini(dominiLst);
+			}
 			break;
 		case CITTADINO:
 			Soggetto anagrafica = popolaAnagraficaCittadino((UtenzaCittadino) user);

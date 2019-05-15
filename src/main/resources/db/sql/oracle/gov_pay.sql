@@ -321,34 +321,6 @@ end;
 
 
 
-CREATE SEQUENCE seq_utenze_tipo_vers MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE utenze_tipo_vers
-(
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_utenza NUMBER NOT NULL,
-	id_tipo_versamento NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_utv_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_utv_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
-	CONSTRAINT pk_utenze_tipo_vers PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_utenze_tipo_vers
-BEFORE
-insert on utenze_tipo_vers
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_utenze_tipo_vers.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_uo MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE uo
@@ -583,6 +555,34 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_tipi_vers_domini.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_utenze_tipo_vers MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE utenze_tipo_vers
+(
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_utenza NUMBER NOT NULL,
+	id_tipo_versamento NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_utv_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_utv_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT pk_utenze_tipo_vers PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_utenze_tipo_vers
+BEFORE
+insert on utenze_tipo_vers
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_utenze_tipo_vers.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;

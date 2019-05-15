@@ -207,23 +207,6 @@ CREATE TABLE utenze_domini
 
 
 
-CREATE SEQUENCE seq_utenze_tipo_vers start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE utenze_tipo_vers
-(
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_utenze_tipo_vers') NOT NULL,
-	id_utenza BIGINT NOT NULL,
-	id_tipo_versamento BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_utv_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_utv_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
-	CONSTRAINT pk_utenze_tipo_vers PRIMARY KEY (id)
-);
-
-
-
-
 CREATE SEQUENCE seq_uo start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE uo
@@ -380,6 +363,23 @@ CREATE TABLE tipi_vers_domini
 	CONSTRAINT fk_tvd_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
 	CONSTRAINT fk_tvd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_tipi_vers_domini PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_utenze_tipo_vers start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE utenze_tipo_vers
+(
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_utenze_tipo_vers') NOT NULL,
+	id_utenza BIGINT NOT NULL,
+	id_tipo_versamento BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_utv_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_utv_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT pk_utenze_tipo_vers PRIMARY KEY (id)
 );
 
 

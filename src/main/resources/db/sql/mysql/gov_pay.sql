@@ -206,21 +206,6 @@ CREATE TABLE utenze_domini
 
 
 
-CREATE TABLE utenze_tipo_vers
-(
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
-	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza',
-	-- fk/pk keys constraints
-	CONSTRAINT fk_utv_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
-	CONSTRAINT fk_utv_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
-	CONSTRAINT pk_utenze_tipo_vers PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sui tipi pendenza';
-
-
-
-
 CREATE TABLE uo
 (
 	cod_uo VARCHAR(35) NOT NULL COMMENT 'Codice identificativo dell\'unita operativa',
@@ -377,6 +362,21 @@ CREATE TABLE tipi_vers_domini
 
 -- index
 CREATE UNIQUE INDEX index_tipi_vers_domini_1 ON tipi_vers_domini (id_dominio,id_tipo_versamento);
+
+
+
+CREATE TABLE utenze_tipo_vers
+(
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_utenza BIGINT NOT NULL COMMENT 'Riferimento all\'utenza',
+	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza',
+	-- fk/pk keys constraints
+	CONSTRAINT fk_utv_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
+	CONSTRAINT fk_utv_id_tipo_versamento FOREIGN KEY (id_tipo_versamento) REFERENCES tipi_versamento(id),
+	CONSTRAINT pk_utenze_tipo_vers PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Autorizzazioni sui tipi pendenza';
+
 
 
 
