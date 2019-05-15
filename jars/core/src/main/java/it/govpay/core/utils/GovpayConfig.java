@@ -513,14 +513,16 @@ public class GovpayConfig {
 		Map<String, String> valori = new HashMap<>();
 		String value = null;
 		for(int i=0; i<props.length; i++) {
-			for (Object nameObj : props[i].keySet()) {
-				String name = (String) nameObj;
-				if(name.startsWith(baseName)) {
-					String key = name.substring(baseName.length());
-					try { value = getProperty(name, props[i], required, i==1, log); } catch (Exception e) { }
-					if(value != null && !value.trim().isEmpty()) {
-						if(!valori.containsKey(key)) {
-							valori.put(key, value);
+			if(props[i] != null) {
+				for (Object nameObj : props[i].keySet()) {
+					String name = (String) nameObj;
+					if(name.startsWith(baseName)) {
+						String key = name.substring(baseName.length());
+						try { value = getProperty(name, props[i], required, i==1, log); } catch (Exception e) { }
+						if(value != null && !value.trim().isEmpty()) {
+							if(!valori.containsKey(key)) {
+								valori.put(key, value);
+							}
 						}
 					}
 				}

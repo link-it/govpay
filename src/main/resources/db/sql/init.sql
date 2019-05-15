@@ -5,7 +5,8 @@ INSERT INTO operatori (nome, id_utenza) VALUES ('@RAGIONE_SOCIALE@', (select id 
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Applicazioni','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Creditore','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Rendicontazioni e Incassi','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Pagamenti e Pendenze','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Pagamenti','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Pendenze','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Giornale degli Eventi','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Configurazione e manutenzione','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica PagoPA','RW');
@@ -15,7 +16,8 @@ INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from u
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Applicazioni','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Creditore','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Rendicontazioni e Incassi','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Pagamenti e Pendenze','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Pagamenti','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Pendenze','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Giornale degli Eventi','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Configurazione e manutenzione','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica PagoPA','RW');
@@ -24,7 +26,8 @@ INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,
 -- Censimento del ruolo operatore
 
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Rendicontazioni e Incassi','R');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Pagamenti e Pendenze','R');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Pagamenti','R');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Pendenze','R');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Giornale degli Eventi','R');
 
 -- Censimento Tributo Bollo
@@ -32,10 +35,10 @@ INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Gior
 INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, descrizione) VALUES ('BOLLOT', '9', 'MBT', 'Marca da Bollo Telematica');
 
 -- Censimento Tipo Pendenza Libera
-INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi) VALUES ('LIBERO', 'Pendenza libera', 'DOVUTO', false);
+INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi, abilitato) VALUES ('LIBERO', 'Pendenza libera', 'DOVUTO', false, true);
 
 -- Censimento Tipo Pendenza Bollo
-INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi) VALUES ('BOLLOT', 'Marca da Bollo Telematica', 'DOVUTO', false);
+INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi, abilitato) VALUES ('BOLLOT', 'Marca da Bollo Telematica', 'DOVUTO', false, true);
 
 -- Configurazione delle sonde
 

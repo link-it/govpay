@@ -82,7 +82,7 @@ CREATE TABLE utenze
 	principal_originale VARCHAR2(4000 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	autorizzazione_domini_star NUMBER NOT NULL,
-	autorizzazione_tributi_star NUMBER NOT NULL,
+	autorizzazione_tipi_vers_star NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -94,7 +94,7 @@ CREATE TABLE utenze
 
 ALTER TABLE utenze MODIFY abilitato DEFAULT 1;
 ALTER TABLE utenze MODIFY autorizzazione_domini_star DEFAULT 0;
-ALTER TABLE utenze MODIFY autorizzazione_tributi_star DEFAULT 0;
+ALTER TABLE utenze MODIFY autorizzazione_tipi_vers_star DEFAULT 0;
 
 CREATE TRIGGER trg_utenze
 BEFORE

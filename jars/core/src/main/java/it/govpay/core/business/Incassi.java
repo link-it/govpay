@@ -85,12 +85,12 @@ public class Incassi extends BasicBD {
 			// Validazione dati obbligatori
 			boolean iuvIdFlussoSet = richiestaIncasso.getIuv() != null || richiestaIncasso.getIdFlusso() != null;
 			
-			if(richiestaIncasso.getCausale() == null && !iuvIdFlussoSet) {
+			if(!iuvIdFlussoSet && richiestaIncasso.getCausale() == null) {
 				ctx.getApplicationLogger().log("incasso.sintassi", "causale mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
 			}
 			
-			if(richiestaIncasso.getCausale().length() > 512 && !iuvIdFlussoSet) {
+			if(!iuvIdFlussoSet && richiestaIncasso.getCausale().length() > 512) {
 				ctx.getApplicationLogger().log("incasso.sintassi", "causale troppo lunga");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso e' stato specificata una causale che eccede il massimo numero di caratteri consentiti (512)");
 			}
