@@ -703,6 +703,35 @@ CREATE INDEX index_iuv_1 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
 
 
 
+CREATE SEQUENCE seq_incassi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE incassi
+(
+	trn VARCHAR(35) NOT NULL,
+	cod_dominio VARCHAR(35) NOT NULL,
+	causale VARCHAR(512) NOT NULL,
+	importo DOUBLE PRECISION NOT NULL,
+	data_valuta DATE,
+	data_contabile DATE,
+	data_ora_incasso TIMESTAMP NOT NULL,
+	nome_dispositivo VARCHAR(512),
+	iban_accredito VARCHAR(35),
+	sct VARCHAR(35),
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_incassi') NOT NULL,
+	id_applicazione BIGINT,
+	id_operatore BIGINT,
+	-- unique constraints
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_incassi PRIMARY KEY (id)
+);
+
+
+
+
 CREATE SEQUENCE seq_fr start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE fr
@@ -728,35 +757,6 @@ CREATE TABLE fr
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_incassi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE incassi
-(
-	trn VARCHAR(35) NOT NULL,
-	cod_dominio VARCHAR(35) NOT NULL,
-	causale VARCHAR(512) NOT NULL,
-	importo DOUBLE PRECISION NOT NULL,
-	data_valuta DATE,
-	data_contabile DATE,
-	data_ora_incasso TIMESTAMP NOT NULL,
-	nome_dispositivo VARCHAR(512),
-	iban_accredito VARCHAR(35),
-	sct VARCHAR(35),
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_incassi') NOT NULL,
-	id_applicazione BIGINT,
-	id_operatore BIGINT,
-	-- unique constraints
-	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT pk_incassi PRIMARY KEY (id)
 );
 
 

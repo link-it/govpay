@@ -1,3 +1,6 @@
+-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE
+-- SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+
 CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL COMMENT 'Identificativo intermediario su pagopa',
@@ -277,7 +280,7 @@ CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta) COM
 
 CREATE TABLE acl
 (
-	ruolo VARCHAR(255) COMMENT 'Ruolo a cui si riferisce la ACL'
+	ruolo VARCHAR(255) COMMENT 'Ruolo a cui si riferisce la ACL',
 	servizio VARCHAR(255) NOT NULL COMMENT 'Servizio su cui si riferisce l\'ACL',
 	diritti VARCHAR(255) NOT NULL COMMENT 'Autorizzazione dell\'ACL',
 	-- fk/pk columns
@@ -393,7 +396,7 @@ CREATE TABLE versamenti
 	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di inserimento della pendenza',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_validita TIMESTAMP(3) COMMENT 'Data entro la quale i dati della pendenza risultano validi e non richiedono aggiornamenti',
-    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+    	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data_scadenza TIMESTAMP(3) COMMENT 'Data oltre la quale la pendenza non e\' pagabile', 
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data dell\'ultima variazione dei dati della pendenza',
@@ -432,7 +435,7 @@ CREATE TABLE versamenti
 	anomalo BOOLEAN NOT NULL COMMENT 'Indicazione sullo stato della pendenza',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',,
+	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
 	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio afferente',
 	id_uo BIGINT COMMENT 'Riferimento all\'unita operativa afferente',
@@ -524,7 +527,7 @@ CREATE TABLE pagamenti_portale
 	tipo_utenza VARCHAR(35) NOT NULL COMMENT 'Tipologia dell\'utenza richiedente',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_applicazione BIGINT COMMENT 'Riferimento all'applicazione',
+	id_applicazione BIGINT COMMENT 'Riferimento all\'applicazione',
 	-- unique constraints
 	CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
 	-- fk/pk keys constraints
@@ -709,6 +712,36 @@ CREATE INDEX index_iuv_2 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
 
 
 
+CREATE TABLE incassi
+(
+	trn VARCHAR(35) NOT NULL COMMENT 'Identificativo del movimento bancario riconciliato',
+	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificaitvo dell\'ente',
+	causale VARCHAR(512) NOT NULL COMMENT 'Causale del bonifico',
+	importo DOUBLE NOT NULL COMMENT 'Importo riconciliato',
+	data_valuta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data valuta del bonifico',
+	data_contabile TIMESTAMP(3) DEFAULT  CURRENT_TIMESTAMP(3) COMMENT 'Data contabile del bonifico',
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3) COMMENT 'Data della riconciliazione',
+	nome_dispositivo VARCHAR(512) COMMENT 'Riferimento al giornale di cassa',
+	iban_accredito VARCHAR(35) COMMENT 'Conto di accredito',
+        sct VARCHAR(35) COMMENT 'Identificativo SEPA credit transfert',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_applicazione BIGINT COMMENT 'Riferimento all\'applicativo che ha registrato l\'inccasso',
+	id_operatore BIGINT COMMENT 'Riferimento all\'operatore che ha registrato l\'inccasso',
+	-- unique constraints
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_incassi PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Riconciliazioni';
+
+-- index
+CREATE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
+
+
+
 CREATE TABLE fr
 (
 	cod_psp VARCHAR(35) NOT NULL COMMENT 'Identificativo del PSP che ha emesso il flusso ',
@@ -740,36 +773,6 @@ CREATE TABLE fr
 
 -- index
 CREATE INDEX index_fr_1 ON fr (cod_flusso);
-
-
-
-CREATE TABLE incassi
-(
-	trn VARCHAR(35) NOT NULL COMMENT 'Identificativo del movimento bancario riconciliato',
-	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificaitvo dell\'ente',
-	causale VARCHAR(512) NOT NULL COMMENT 'Causale del bonifico',
-	importo DOUBLE NOT NULL COMMENT 'Importo riconciliato',
-	data_valuta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data valuta del bonifico',
-	data_contabile TIMESTAMP(3) DEFAULT  CURRENT_TIMESTAMP(3) COMMENT 'Data contabile del bonifico',
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3) COMMENT 'Data della riconciliazione',
-	nome_dispositivo VARCHAR(512) COMMENT 'Riferimento al giornale di cassa',
-	iban_accredito VARCHAR(35) COMMENT 'Conto di accredito',
-        sct VARCHAR(35) COMMENT 'Identificativo SEPA credit transfert',
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_applicazione BIGINT COMMENT 'Riferimento all\'applicativo che ha registrato l\'inccasso',
-	id_operatore BIGINT COMMENT 'Riferimento all\'operatore che ha registrato l\'inccasso',
-	-- unique constraints
-	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT pk_incassi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Riconciliazioni';
-
--- index
-CREATE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
 
 
 

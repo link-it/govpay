@@ -2,32 +2,30 @@
 
 INSERT INTO utenze (principal,principal_originale) VALUES ('@PRINCIPAL@','@PRINCIPAL@');
 INSERT INTO operatori (nome, id_utenza) VALUES ('@RAGIONE_SOCIALE@', (select id from utenze where principal = '@PRINCIPAL@'));
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Anagrafica Applicazioni','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Anagrafica Creditore','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Rendicontazioni e Incassi','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Pagamenti e Pendenze','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Giornale degli Eventi','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Configurazione e manutenzione','RWX');
---INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Statistiche','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Anagrafica PagoPA','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES (null,'@PRINCIPAL@','Anagrafica Ruoli','RWX');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Applicazioni','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Creditore','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Rendicontazioni e Incassi','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Pagamenti e Pendenze','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Giornale degli Eventi','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Configurazione e manutenzione','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica PagoPA','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Ruoli','RW');
 -- Censimento del ruolo amministratore
 
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Applicazioni','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Creditore','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Rendicontazioni e Incassi','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Pagamenti e Pendenze','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Giornale degli Eventi','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Configurazione e manutenzione','RWX');
---INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Statistiche','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica PagoPA','RWX');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Ruoli','RWX');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Applicazioni','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Creditore','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Rendicontazioni e Incassi','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Pagamenti e Pendenze','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Giornale degli Eventi','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Configurazione e manutenzione','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica PagoPA','RW');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Ruoli','RW');
 
 -- Censimento del ruolo operatore
 
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Operatore',null,'Rendicontazioni e Incassi','R');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Operatore',null,'Pagamenti e Pendenze','R');
-INSERT INTO acl(ruolo,principal,servizio,diritti) VALUES ('Operatore',null,'Giornale degli Eventi','R');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Rendicontazioni e Incassi','R');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Pagamenti e Pendenze','R');
+INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Giornale degli Eventi','R');
 
 -- Censimento Tributo Bollo
 

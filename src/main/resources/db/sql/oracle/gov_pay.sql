@@ -1002,6 +1002,46 @@ end;
 
 
 
+CREATE SEQUENCE seq_incassi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE incassi
+(
+	trn VARCHAR2(35 CHAR) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	causale VARCHAR2(512 CHAR) NOT NULL,
+	importo BINARY_DOUBLE NOT NULL,
+	data_valuta DATE,
+	data_contabile DATE,
+	data_ora_incasso TIMESTAMP NOT NULL,
+	nome_dispositivo VARCHAR2(512 CHAR),
+	iban_accredito VARCHAR2(35 CHAR),
+        sct VARCHAR2(35 CHAR),
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_applicazione NUMBER,
+	id_operatore NUMBER,
+	-- unique constraints
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_incassi PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_incassi
+BEFORE
+insert on incassi
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_incassi.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_fr MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE fr
@@ -1036,46 +1076,6 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_fr.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_incassi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE incassi
-(
-	trn VARCHAR2(35 CHAR) NOT NULL,
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
-	causale VARCHAR2(512 CHAR) NOT NULL,
-	importo BINARY_DOUBLE NOT NULL,
-	data_valuta DATE,
-	data_contabile DATE,
-	data_ora_incasso TIMESTAMP NOT NULL,
-	nome_dispositivo VARCHAR2(512 CHAR),
-	iban_accredito VARCHAR2(35 CHAR),
-        sct VARCHAR2(35 CHAR),
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_applicazione NUMBER,
-	id_operatore NUMBER,
-	-- unique constraints
-	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-	CONSTRAINT pk_incassi PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_incassi
-BEFORE
-insert on incassi
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_incassi.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;

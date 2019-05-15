@@ -37,7 +37,7 @@
 								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
 								<linkit:sql-table object-name="TipoVersamento" object-type="TipoVersamento"/>
 								<linkit:sql-table object-name="TipoVersamentoDominio" object-type="TipoVersamentoDominio"/>
-								<linkit:sql-table object-name="UtenzaTipoVersamento" object-type="UtenzaTipoVersamento"/>
+								<linkit:sql-table object-name="UtenzaTipoVersamento" object-type="UtenzaTipoVersamento"/>	
 								<linkit:sql-table object-name="Versamento" object-type="Versamento"/>
 								<linkit:sql-table object-name="SingoloVersamento"
 									object-type="SingoloVersamento"/>
@@ -47,8 +47,8 @@
 								<linkit:sql-table object-name="RR" object-type="RR"/>
 								<linkit:sql-table object-name="Notifica" object-type="Notifica"/>
 								<linkit:sql-table object-name="IUV" object-type="IUV"/>
-								<linkit:sql-table object-name="FR" object-type="FR"/>
 								<linkit:sql-table object-name="Incasso" object-type="Incasso"/>
+								<linkit:sql-table object-name="FR" object-type="FR"/>
 								<linkit:sql-table object-name="Pagamento" object-type="Pagamento"/>
 								<linkit:sql-table object-name="Rendicontazione"
 									object-type="Rendicontazione"/>
