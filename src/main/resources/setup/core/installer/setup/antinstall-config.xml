@@ -6,12 +6,12 @@
     <!-- Se si caricano i loadDefaults non funzionano piu' i cambi di stato per il db -->
     <!-- loadDefaults="true" > -->
 
-    <page type="input" name="intro" displayText="Installer GovPay v3.0">
+    <page type="input" name="intro" displayText="Installer GovPay v3.1">
 
-	<hidden property="antinstaller_product_version" value="3.0"/>
+	<hidden property="antinstaller_product_version" value="3.1"/>
 
         <comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay"/>
-        <comment explanatoryText="Copyright (c) 2014-2018 Link.it srl (http://www.link.it)."/>
+        <comment explanatoryText="Copyright (c) 2014-2019 Link.it srl (http://www.link.it)."/>
         <comment explanatoryText=""/>
 	<comment explanatoryText="This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."/>
         <comment explanatoryText="This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."/>
