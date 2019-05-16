@@ -156,6 +156,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     return this;
   }
 
+  
   @JsonProperty("pagaTerzi")
   public Boolean PagaTerzi() {
     return pagaTerzi;

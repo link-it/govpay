@@ -19,7 +19,7 @@ CREATE TABLE intermediari
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Intermediari pagoPA';
 
 -- index
-CREATE INDEX index_intermediari_1 ON intermediari (cod_intermediario);
+CREATE UNIQUE INDEX index_intermediari_1 ON intermediari (cod_intermediario);
 
 
 
@@ -44,7 +44,7 @@ CREATE TABLE stazioni
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Stazioni pagoPA';
 
 -- index
-CREATE INDEX index_stazioni_1 ON stazioni (cod_stazione);
+CREATE UNIQUE INDEX index_stazioni_1 ON stazioni (cod_stazione);
 
 
 
@@ -61,10 +61,10 @@ CREATE TABLE utenze
 	CONSTRAINT unique_utenze_1 UNIQUE (principal),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_utenze PRIMARY KEY (id)
-) ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Utenze di sistema';
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Utenze di sistema';
 
 -- index
-CREATE INDEX index_utenze_1 ON utenze (principal);
+CREATE UNIQUE INDEX index_utenze_1 ON utenze (principal);
 
 
 
@@ -89,8 +89,8 @@ CREATE TABLE applicazioni
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Verticali abilitati';
 
 -- index
-CREATE INDEX index_applicazioni_1 ON applicazioni (cod_applicazione);
-CREATE INDEX index_applicazioni_2 ON applicazioni (id_utenza);
+CREATE UNIQUE INDEX index_applicazioni_1 ON applicazioni (cod_applicazione);
+CREATE UNIQUE INDEX index_applicazioni_2 ON applicazioni (id_utenza);
 
 
 
@@ -123,7 +123,7 @@ CREATE TABLE domini
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Enti creditori';
 
 -- index
-CREATE INDEX index_domini_1 ON domini (cod_dominio);
+CREATE UNIQUE INDEX index_domini_1 ON domini (cod_dominio);
 
 
 
@@ -145,7 +145,7 @@ CREATE TABLE iban_accredito
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Conti di accredito';
 
 -- index
-CREATE INDEX index_iban_accredito_1 ON iban_accredito (cod_iban,id_dominio);
+CREATE UNIQUE INDEX index_iban_accredito_1 ON iban_accredito (cod_iban,id_dominio);
 
 
 
@@ -164,7 +164,7 @@ CREATE TABLE tipi_tributo
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Tipologie entrate';
 
 -- index
-CREATE INDEX index_tipi_tributo_1 ON tipi_tributo (cod_tributo);
+CREATE UNIQUE INDEX index_tipi_tributo_1 ON tipi_tributo (cod_tributo);
 
 
 
@@ -172,7 +172,7 @@ CREATE TABLE tributi
 (
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
 	tipo_contabilita VARCHAR(1) COMMENT 'Tipo di codifica della contabilita',
-	cod_contabilita VARCHAR(255) COMMENT 'Codifica della contabilita',
+	codice_contabilita VARCHAR(255) COMMENT 'Codifica della contabilita',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al dominio',
@@ -190,7 +190,7 @@ CREATE TABLE tributi
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Istanze di entrate';
 
 -- index
-CREATE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
+CREATE UNIQUE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
 
 
 
@@ -238,7 +238,7 @@ CREATE TABLE uo
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Unita operative';
 
 -- index
-CREATE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
+CREATE UNIQUE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
 
 
 
@@ -256,7 +256,7 @@ CREATE TABLE operatori
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Operatori di backoffice';
 
 -- index
-CREATE INDEX index_operatori_1 ON operatori (id_utenza);
+CREATE UNIQUE INDEX index_operatori_1 ON operatori (id_utenza);
 
 
 
@@ -274,7 +274,7 @@ CREATE TABLE connettori
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 -- index
-CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta) COMMENT 'Configurazione dei connettori';
+CREATE UNIQUE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta) COMMENT 'Configurazione dei connettori';
 
 
 
@@ -918,9 +918,9 @@ CREATE TABLE esiti_avvisatura
 
 CREATE TABLE operazioni
 (
-	tipo_operazione VARCHAR(255) NOT NULL COMMENT 'Tipo di operazione',
+	tipo_operazione VARCHAR(16) NOT NULL COMMENT 'Tipo di operazione',
 	linea_elaborazione BIGINT NOT NULL COMMENT 'Numero linea nel tracciato di origine',
-	stato VARCHAR(255) NOT NULL COMMENT 'Stato di elaborazione',
+	stato VARCHAR(16) NOT NULL COMMENT 'Stato di elaborazione',
 	dati_richiesta MEDIUMBLOB NOT NULL COMMENT 'Dati raw di richiesta',
 	dati_risposta MEDIUMBLOB COMMENT 'Dati raw di risposta',
 	dettaglio_esito VARCHAR(255) COMMENT 'Descrizione dell\'esito',

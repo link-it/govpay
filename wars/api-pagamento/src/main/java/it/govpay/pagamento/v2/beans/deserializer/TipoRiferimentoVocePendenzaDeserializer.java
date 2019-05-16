@@ -1,9 +1,6 @@
 package it.govpay.pagamento.v2.beans.deserializer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import org.openspcoop2.utils.jaxrs.JacksonJsonProvider;
 
@@ -17,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.govpay.pagamento.v2.beans.Bollo;
 import it.govpay.pagamento.v2.beans.Entrata;
-import it.govpay.pagamento.v2.beans.NuovaVocePendenza;
 import it.govpay.pagamento.v2.beans.RiferimentoEntrata;
 
 public class TipoRiferimentoVocePendenzaDeserializer extends JsonDeserializer<Object> {
