@@ -20,6 +20,7 @@ import it.govpay.core.beans.JSONSerializable;
 "idDominio",
 "numeroPagamenti",
 "importoTotale",
+"stato",
 "segnalazioni",
 })
 public class FlussoRendicontazioneIndex extends JSONSerializable {
@@ -50,6 +51,9 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   
   @JsonProperty("importoTotale")
   private Double importoTotale = null;
+  
+  @JsonProperty("stato")
+  private StatoFlussoRendicontazione stato = null;
   
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
@@ -119,6 +123,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   }
 
   /**
+   * Identificativo dell'istituto mittente
    **/
   public FlussoRendicontazioneIndex idPsp(String idPsp) {
     this.idPsp = idPsp;
@@ -150,6 +155,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   }
 
   /**
+   * Identificativo dominio destinatario
    **/
   public FlussoRendicontazioneIndex dominio(String idDominio) {
     this.idDominio = idDominio;
@@ -198,6 +204,21 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   /**
    **/
+  public FlussoRendicontazioneIndex stato(StatoFlussoRendicontazione stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoFlussoRendicontazione getStato() {
+    return stato;
+  }
+  public void setStato(StatoFlussoRendicontazione stato) {
+    this.stato = stato;
+  }
+
+  /**
+   **/
   public FlussoRendicontazioneIndex segnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
     return this;
@@ -220,21 +241,22 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
       return false;
     }
     FlussoRendicontazioneIndex flussoRendicontazioneIndex = (FlussoRendicontazioneIndex) o;
-    return Objects.equals(this.idFlusso, flussoRendicontazioneIndex.idFlusso) &&
-        Objects.equals(this.dataFlusso, flussoRendicontazioneIndex.dataFlusso) &&
-        Objects.equals(this.trn, flussoRendicontazioneIndex.trn) &&
-        Objects.equals(this.dataRegolamento, flussoRendicontazioneIndex.dataRegolamento) &&
-        Objects.equals(this.idPsp, flussoRendicontazioneIndex.idPsp) &&
-        Objects.equals(this.bicRiversamento, flussoRendicontazioneIndex.bicRiversamento) &&
-        Objects.equals(this.idDominio, flussoRendicontazioneIndex.idDominio) &&
-        Objects.equals(this.numeroPagamenti, flussoRendicontazioneIndex.numeroPagamenti) &&
-        Objects.equals(this.importoTotale, flussoRendicontazioneIndex.importoTotale) &&
-        Objects.equals(this.segnalazioni, flussoRendicontazioneIndex.segnalazioni);
+    return Objects.equals(idFlusso, flussoRendicontazioneIndex.idFlusso) &&
+        Objects.equals(dataFlusso, flussoRendicontazioneIndex.dataFlusso) &&
+        Objects.equals(trn, flussoRendicontazioneIndex.trn) &&
+        Objects.equals(dataRegolamento, flussoRendicontazioneIndex.dataRegolamento) &&
+        Objects.equals(idPsp, flussoRendicontazioneIndex.idPsp) &&
+        Objects.equals(bicRiversamento, flussoRendicontazioneIndex.bicRiversamento) &&
+        Objects.equals(idDominio, flussoRendicontazioneIndex.idDominio) &&
+        Objects.equals(numeroPagamenti, flussoRendicontazioneIndex.numeroPagamenti) &&
+        Objects.equals(importoTotale, flussoRendicontazioneIndex.importoTotale) &&
+        Objects.equals(stato, flussoRendicontazioneIndex.stato) &&
+        Objects.equals(segnalazioni, flussoRendicontazioneIndex.segnalazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idFlusso, this.dataFlusso, this.trn, this.dataRegolamento, this.idPsp, this.bicRiversamento, this.idDominio, this.numeroPagamenti, this.importoTotale, this.segnalazioni);
+    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, stato, segnalazioni);
   }
 
   public static FlussoRendicontazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -251,16 +273,17 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class FlussoRendicontazioneIndex {\n");
     
-    sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
-    sb.append("    dataFlusso: ").append(this.toIndentedString(this.dataFlusso)).append("\n");
-    sb.append("    trn: ").append(this.toIndentedString(this.trn)).append("\n");
-    sb.append("    dataRegolamento: ").append(this.toIndentedString(this.dataRegolamento)).append("\n");
-    sb.append("    idPsp: ").append(this.toIndentedString(this.idPsp)).append("\n");
-    sb.append("    bicRiversamento: ").append(this.toIndentedString(this.bicRiversamento)).append("\n");
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    numeroPagamenti: ").append(this.toIndentedString(this.numeroPagamenti)).append("\n");
-    sb.append("    importoTotale: ").append(this.toIndentedString(this.importoTotale)).append("\n");
-    sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
+    sb.append("    idFlusso: ").append(toIndentedString(idFlusso)).append("\n");
+    sb.append("    dataFlusso: ").append(toIndentedString(dataFlusso)).append("\n");
+    sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
+    sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
+    sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
+    sb.append("    bicRiversamento: ").append(toIndentedString(bicRiversamento)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    numeroPagamenti: ").append(toIndentedString(numeroPagamenti)).append("\n");
+    sb.append("    importoTotale: ").append(toIndentedString(importoTotale)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }

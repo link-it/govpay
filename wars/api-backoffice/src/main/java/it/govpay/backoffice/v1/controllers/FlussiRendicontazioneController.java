@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.ListaFlussiRendicontazione;
+import it.govpay.backoffice.v1.beans.StatoFlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.converter.FlussiRendicontazioneConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
@@ -34,6 +35,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
@@ -106,7 +108,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String ordinamento, String dataDa, String dataA, Boolean incassato, String idFlusso) {
+    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean incassato, String idFlusso, String stato) {
     	String methodName = "flussiRendicontazioneGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -145,6 +147,23 @@ public class FlussiRendicontazioneController extends BaseController {
 				findRendicontazioniDTO.setIncassato(incassato);
 			}
 			findRendicontazioniDTO.setIdFlusso(idFlusso);
+			if(stato != null) {
+				StatoFlussoRendicontazione sfr = StatoFlussoRendicontazione.fromValue(stato);
+				
+				if(sfr != null) {
+					switch (sfr) {
+					case ACQUISITO:
+						findRendicontazioniDTO.setStato(StatoFr.ACCETTATA);
+						break;
+					case ANOMALO:
+						findRendicontazioniDTO.setStato(StatoFr.ANOMALA);
+						break;
+					case RIFIUTATO:
+						findRendicontazioniDTO.setStato(StatoFr.RIFIUTATA);
+						break;
+					}
+				}
+			}
 			
 			// Autorizzazione sui domini
 			List<String> domini  = AuthorizationManager.getDominiAutorizzati(user);

@@ -22,6 +22,7 @@ import it.govpay.core.beans.JSONSerializable;
 "ragioneSocialeDominio",
 "numeroPagamenti",
 "importoTotale",
+"stato",
 "segnalazioni",
 })
 public class FlussoRendicontazioneIndex extends JSONSerializable {
@@ -58,6 +59,9 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   
   @JsonProperty("importoTotale")
   private Double importoTotale = null;
+  
+  @JsonProperty("stato")
+  private StatoFlussoRendicontazione stato = null;
   
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
@@ -240,6 +244,21 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   /**
    **/
+  public FlussoRendicontazioneIndex stato(StatoFlussoRendicontazione stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoFlussoRendicontazione getStato() {
+    return stato;
+  }
+  public void setStato(StatoFlussoRendicontazione stato) {
+    this.stato = stato;
+  }
+
+  /**
+   **/
   public FlussoRendicontazioneIndex segnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
     return this;
@@ -273,12 +292,13 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
         Objects.equals(this.ragioneSocialeDominio, flussoRendicontazioneIndex.ragioneSocialeDominio) &&
         Objects.equals(this.numeroPagamenti, flussoRendicontazioneIndex.numeroPagamenti) &&
         Objects.equals(this.importoTotale, flussoRendicontazioneIndex.importoTotale) &&
+        Objects.equals(stato, flussoRendicontazioneIndex.stato) &&
         Objects.equals(this.segnalazioni, flussoRendicontazioneIndex.segnalazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idFlusso, this.dataFlusso, this.trn, this.dataRegolamento, this.idPsp, this.ragioneSocialePsp, this.bicRiversamento, this.idDominio, this.ragioneSocialeDominio, this.numeroPagamenti, this.importoTotale, this.segnalazioni);
+    return Objects.hash(this.idFlusso, this.dataFlusso, this.trn, this.dataRegolamento, this.idPsp, this.ragioneSocialePsp, this.bicRiversamento, this.idDominio, this.ragioneSocialeDominio, this.numeroPagamenti, this.importoTotale, stato, this.segnalazioni);
   }
 
   public static FlussoRendicontazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -306,6 +326,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     sb.append("    ragioneSocialeDominio: ").append(this.toIndentedString(this.ragioneSocialeDominio)).append("\n");
     sb.append("    numeroPagamenti: ").append(this.toIndentedString(this.numeroPagamenti)).append("\n");
     sb.append("    importoTotale: ").append(this.toIndentedString(this.importoTotale)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
     sb.append("}");
     return sb.toString();

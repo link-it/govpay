@@ -29,10 +29,12 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v1.beans.FlussoRendicontazione;
 import it.govpay.ragioneria.v1.beans.FlussoRendicontazioneIndex;
 import it.govpay.ragioneria.v1.beans.ListaFlussiRendicontazione;
+import it.govpay.ragioneria.v1.beans.StatoFlussoRendicontazione;
 import it.govpay.ragioneria.v1.beans.converter.FlussiRendicontazioneConverter;
 
 
@@ -104,7 +106,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String ordinamento, String dataDa, String dataA) {
+    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, String stato) {
     	String methodName = "flussiRendicontazioneGET";  
 		IContext ctx = null;
 		String transactionId = null;
@@ -134,6 +136,23 @@ public class FlussiRendicontazioneController extends BaseController {
 			if(dataA != null) {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				findRendicontazioniDTO.setDataA(dataADate);
+			}
+			if(stato != null) {
+				StatoFlussoRendicontazione sfr = StatoFlussoRendicontazione.fromValue(stato);
+				
+				if(sfr != null) {
+					switch (sfr) {
+					case ACQUISITO:
+						findRendicontazioniDTO.setStato(StatoFr.ACCETTATA);
+						break;
+					case ANOMALO:
+						findRendicontazioniDTO.setStato(StatoFr.ANOMALA);
+						break;
+					case RIFIUTATO:
+						findRendicontazioniDTO.setStato(StatoFr.RIFIUTATA);
+						break;
+					}
+				}
 			}
 			
 			// Autorizzazione sui domini

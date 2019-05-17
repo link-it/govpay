@@ -22,6 +22,7 @@ import it.govpay.core.beans.JSONSerializable;
 "ragioneSocialeDominio",
 "numeroPagamenti",
 "importoTotale",
+"stato",
 "segnalazioni",
 "rendicontazioni",
 })
@@ -59,6 +60,9 @@ public class FlussoRendicontazione extends JSONSerializable {
   
   @JsonProperty("importoTotale")
   private Double importoTotale = null;
+  
+  @JsonProperty("stato")
+  private StatoFlussoRendicontazione stato = null;
   
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
@@ -244,6 +248,21 @@ public class FlussoRendicontazione extends JSONSerializable {
 
   /**
    **/
+  public FlussoRendicontazione stato(StatoFlussoRendicontazione stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoFlussoRendicontazione getStato() {
+    return stato;
+  }
+  public void setStato(StatoFlussoRendicontazione stato) {
+    this.stato = stato;
+  }
+
+  /**
+   **/
   public FlussoRendicontazione segnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
     return this;
@@ -292,13 +311,14 @@ public class FlussoRendicontazione extends JSONSerializable {
         Objects.equals(this.ragioneSocialeDominio, flussoRendicontazione.ragioneSocialeDominio) &&
         Objects.equals(this.numeroPagamenti, flussoRendicontazione.numeroPagamenti) &&
         Objects.equals(this.importoTotale, flussoRendicontazione.importoTotale) &&
+        Objects.equals(stato, flussoRendicontazione.stato) &&
         Objects.equals(this.segnalazioni, flussoRendicontazione.segnalazioni) &&
         Objects.equals(this.rendicontazioni, flussoRendicontazione.rendicontazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idFlusso, this.dataFlusso, this.trn, this.dataRegolamento, this.idPsp, this.ragioneSocialePsp, this.bicRiversamento, this.idDominio, this.ragioneSocialeDominio, this.numeroPagamenti, this.importoTotale, this.segnalazioni, this.rendicontazioni);
+    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, ragioneSocialePsp, bicRiversamento, idDominio, ragioneSocialeDominio, numeroPagamenti, importoTotale, stato, segnalazioni, rendicontazioni);
   }
 
   public static FlussoRendicontazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -314,20 +334,21 @@ public class FlussoRendicontazione extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FlussoRendicontazione {\n");
-    sb.append("    ").append(this.toIndentedString(super.toString())).append("\n");
-    sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
-    sb.append("    dataFlusso: ").append(this.toIndentedString(this.dataFlusso)).append("\n");
-    sb.append("    trn: ").append(this.toIndentedString(this.trn)).append("\n");
-    sb.append("    dataRegolamento: ").append(this.toIndentedString(this.dataRegolamento)).append("\n");
-    sb.append("    idPsp: ").append(this.toIndentedString(this.idPsp)).append("\n");
-    sb.append("    ragioneSocialePsp: ").append(this.toIndentedString(this.ragioneSocialePsp)).append("\n");
-    sb.append("    bicRiversamento: ").append(this.toIndentedString(this.bicRiversamento)).append("\n");
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    ragioneSocialeDominio: ").append(this.toIndentedString(this.ragioneSocialeDominio)).append("\n");
-    sb.append("    numeroPagamenti: ").append(this.toIndentedString(this.numeroPagamenti)).append("\n");
-    sb.append("    importoTotale: ").append(this.toIndentedString(this.importoTotale)).append("\n");
-    sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
-    sb.append("    rendicontazioni: ").append(this.toIndentedString(this.rendicontazioni)).append("\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    idFlusso: ").append(toIndentedString(idFlusso)).append("\n");
+    sb.append("    dataFlusso: ").append(toIndentedString(dataFlusso)).append("\n");
+    sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
+    sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
+    sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
+    sb.append("    ragioneSocialePsp: ").append(toIndentedString(ragioneSocialePsp)).append("\n");
+    sb.append("    bicRiversamento: ").append(toIndentedString(bicRiversamento)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    ragioneSocialeDominio: ").append(toIndentedString(ragioneSocialeDominio)).append("\n");
+    sb.append("    numeroPagamenti: ").append(toIndentedString(numeroPagamenti)).append("\n");
+    sb.append("    importoTotale: ").append(toIndentedString(importoTotale)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
+    sb.append("    rendicontazioni: ").append(toIndentedString(rendicontazioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -228,6 +228,12 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: stato
+          description: filtro sullo stato del flusso
+          required: false
+          schema:
+            $ref: '#/components/schemas/statoFlussoRendicontazione'
       responses:
         '200':
           description: Lista dei flussi rendicontazione
@@ -1153,7 +1159,15 @@ components:
       type: string
       enum:
         - ENTRATA
-        - MBT       
+        - MBT
+    statoFlussoRendicontazione:
+      description: Stato del flusso di rendicontazione
+      example: Acquisito
+      type: string
+      enum:
+        - Acquisito
+        - Anomalo
+        - Rifiutato
     flussoRendicontazioneIndex:
       type: object
       required:
@@ -1204,6 +1218,8 @@ components:
           description: somma degli importi rendicontati
           format: double
           example: 100.01
+        stato:
+          $ref: '#/components/schemas/statoFlussoRendicontazione'
         segnalazioni:
           type: array
           items:

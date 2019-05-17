@@ -3120,6 +3120,12 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: stato
+          description: filtro sullo stato del flusso
+          required: false
+          schema:
+            $ref: '#/components/schemas/statoFlussoRendicontazione'
       responses:
         '200':
           description: Lista dei flussi rendicontazione
@@ -5272,6 +5278,14 @@ components:
         contenuto:
           description: allegato decodificato, se previsto
           type: object
+    statoFlussoRendicontazione:
+      description: Stato del flusso di rendicontazione
+      example: Acquisito
+      type: string
+      enum:
+        - Acquisito
+        - Anomalo
+        - Rifiutato
     flussoRendicontazioneIndex:
       type: object
       required:
@@ -5331,12 +5345,7 @@ components:
           format: double
           example: 100.01
         stato:
-          type: string
-          description: Stato di pagamento dell'importo
-          example: 'Acquisito' 
-          enum:
-            - Acquisito
-            - Anomalia        
+          $ref: '#/components/schemas/statoFlussoRendicontazione'
         segnalazioni:
           type: array
           items:

@@ -47,7 +47,9 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setDataFine(listaRendicontazioniDTO.getDataA()); 
 			filter.setIncassato(listaRendicontazioniDTO.getIncassato());
 			filter.setCodFlusso(listaRendicontazioniDTO.getIdFlusso());
-
+			if(listaRendicontazioniDTO.getStato() != null)
+				filter.setStato(listaRendicontazioniDTO.getStato().toString());
+			
 			long count = rendicontazioniBD.count(filter);
 
 			List<LeggiRendicontazioneDTOResponse> resList = new ArrayList<>();

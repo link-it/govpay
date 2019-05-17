@@ -11,8 +11,10 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazioneIndex;
 import it.govpay.backoffice.v1.beans.Segnalazione;
+import it.govpay.backoffice.v1.beans.StatoFlussoRendicontazione;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Fr.Anomalia;
+import it.govpay.model.Fr.StatoFr;
 
 public class FlussiRendicontazioneConverter {
 
@@ -49,6 +51,21 @@ public class FlussiRendicontazioneConverter {
 			rendicontazioniLst.add(toRendicontazioneRsModel(rendicontazione));
 		}
 		rsModel.setRendicontazioni(rendicontazioniLst);
+		
+		StatoFr stato = fr.getStato();
+		if(stato != null) {
+			switch (stato) {
+			case ACCETTATA:
+				rsModel.setStato(StatoFlussoRendicontazione.ACQUISITO);
+				break;
+			case ANOMALA:
+				rsModel.setStato(StatoFlussoRendicontazione.ANOMALO);
+				break;
+			case RIFIUTATA:
+				rsModel.setStato(StatoFlussoRendicontazione.RIFIUTATO);
+				break;
+			}
+		}
 
 		return rsModel;
 	}
@@ -78,6 +95,21 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setRagioneSocialePsp(ctFlussoRiversamento.getIstitutoMittente().getDenominazioneMittente());
 		} catch (Exception e) {
 			
+		}
+		
+		StatoFr stato = fr.getStato();
+		if(stato != null) {
+			switch (stato) {
+			case ACCETTATA:
+				rsModel.setStato(StatoFlussoRendicontazione.ACQUISITO);
+				break;
+			case ANOMALA:
+				rsModel.setStato(StatoFlussoRendicontazione.ANOMALO);
+				break;
+			case RIFIUTATA:
+				rsModel.setStato(StatoFlussoRendicontazione.RIFIUTATO);
+				break;
+			}
 		}
 
 		return rsModel;
