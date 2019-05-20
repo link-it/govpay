@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
-import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -37,8 +36,6 @@ import it.govpay.core.dao.anagrafica.dto.ListaRuoliDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PatchRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTO;
 import it.govpay.core.dao.anagrafica.dto.PutRuoloDTOResponse;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -47,20 +44,14 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 public class RuoliController extends BaseController {
 
      public RuoliController(String nomeServizio,Logger log) {
- 		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
+ 		super(nomeServizio,log);
      }
 
     public Response ruoliGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
 		String methodName = "ruoliGET";  
-		IContext ctx = null;
-		String transactionId = null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
+		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.LETTURA));
 
@@ -85,13 +76,12 @@ public class RuoliController extends BaseController {
 			}
 			ListaRuoli response = new ListaRuoli(results, this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
     }
 
@@ -99,15 +89,9 @@ public class RuoliController extends BaseController {
 
     public Response ruoliIdRuoloGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo) {
 		String methodName = "ruoliIdRuoloGET";  
-		IContext ctx = null;
-		String transactionId = null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
+		try {
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.LETTURA));
 			
@@ -136,14 +120,12 @@ public class RuoliController extends BaseController {
 			}
 			ListaAcl response = new ListaAcl();
 			response.setAcl(results);
-
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
     }
 
@@ -151,16 +133,12 @@ public class RuoliController extends BaseController {
     @SuppressWarnings("unchecked")
 	public Response ruoliIdRuoloPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idRuolo) {
     	String methodName = "ruoliIdRuoloPATCH";  
-		IContext ctx = null;
-		String transactionId = null;
+		
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
 			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.SCRITTURA));
@@ -200,32 +178,24 @@ public class RuoliController extends BaseController {
 			
 			Ruolo response = RuoliConverter.toRsModel(idRuolo,leggiRuoloDTOResponse.getResults());
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
     }
 
 
     public Response ruoliIdRuoloPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idRuolo, java.io.InputStream is) {
     	String methodName = "ruoliIdRuoloPUT";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
 			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.SCRITTURA));
@@ -248,13 +218,12 @@ public class RuoliController extends BaseController {
 			
 			Status responseStatus = putApplicazioneDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], responseStatus.getStatusCode());
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
     }
 }

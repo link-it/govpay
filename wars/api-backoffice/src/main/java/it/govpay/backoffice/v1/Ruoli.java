@@ -40,7 +40,7 @@ public class Ruoli extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     public Response ruoliIdRuoloPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idRuolo") String idRuolo){
-        this.controller.setRequestResponse(this.request, this.response);
+    	this.controller.setContext(this.getContext());
         return this.controller.ruoliIdRuoloPATCH(this.getUser(), uriInfo, httpHeaders, is,  idRuolo);
     }
 
@@ -49,7 +49,7 @@ public class Ruoli extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     
     public Response ruoliIdRuoloPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idRuolo") String idRuolo, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
+    	this.controller.setContext(this.getContext());
         return this.controller.ruoliIdRuoloPUT(this.getUser(), uriInfo, httpHeaders,  idRuolo, is);
     }
 
@@ -58,7 +58,7 @@ public class Ruoli extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response ruoliGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
-        this.controller.setRequestResponse(this.request, this.response);
+    	this.controller.setContext(this.getContext());
         return this.controller.ruoliGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
     }
 
@@ -67,7 +67,7 @@ public class Ruoli extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response ruoliIdRuoloGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idRuolo") String idRuolo){
-        this.controller.setRequestResponse(this.request, this.response);
+    	this.controller.setContext(this.getContext());
         return this.controller.ruoliIdRuoloGET(this.getUser(), uriInfo, httpHeaders,  idRuolo);
     }
 

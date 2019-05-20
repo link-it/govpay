@@ -40,7 +40,7 @@ public class TipiPendenza extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response tipiPendenzaIdTipoPendenzaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idTipoPendenza") String idTipoPendenza){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.tipiPendenzaIdTipoPendenzaGET(this.getUser(), uriInfo, httpHeaders,  idTipoPendenza);
     }
 
@@ -49,7 +49,7 @@ public class TipiPendenza extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response tipiPendenzaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("tipo") String tipo){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.tipiPendenzaGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, tipo);
     }
 
@@ -58,7 +58,7 @@ public class TipiPendenza extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     
     public Response tipiPendenzaIdTipoPendenzaPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.tipiPendenzaIdTipoPendenzaPUT(this.getUser(), uriInfo, httpHeaders,  idTipoPendenza, is);
     }
 

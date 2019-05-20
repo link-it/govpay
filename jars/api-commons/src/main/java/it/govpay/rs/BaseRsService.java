@@ -19,16 +19,19 @@
  */
 package it.govpay.rs;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.Path;
 //import javax.ws.rs.OPTIONS;
 //import javax.ws.rs.Path;
 //import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -36,12 +39,17 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.service.context.IContext;
+
+
 public abstract class BaseRsService {
 	
 	public static final String ERRORE_INTERNO = "Errore Interno";
 
 	@Context protected HttpServletRequest request;
 	@Context protected HttpServletResponse response;
+	@Context protected UriInfo uriInfo;
 
 	protected String nomeServizio;
 	protected Logger log;
@@ -103,5 +111,58 @@ public abstract class BaseRsService {
 	}
 
 	public abstract int getVersione();
+	
+	protected synchronized IContext getContext() {
+		IContext context = ContextThreadLocal.get();
+		if(context instanceof org.openspcoop2.utils.service.context.Context) {
+			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
+			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
+		}
+		return context;
+	}
+	
+	private String getPathFromRestMethod(String methodName) {
+
+        try {
+        	Class<?> c = this.getClass();
+        	Class<?> [] interfaces = c.getInterfaces();
+        	if(interfaces==null || interfaces.length<=0) {
+        		return null;
+        	}
+        	Class<?> cInterface = null;
+        	for (int i = 0; i < interfaces.length; i++) {
+        		if (interfaces[i] != null && interfaces[i].isAnnotationPresent(Path.class)) {
+        			cInterface = interfaces[i];
+        			break;
+        		}
+			}
+        	if(cInterface==null) {
+        		return null;
+        	}
+        	Method [] methods = cInterface.getMethods();
+        	if(methods==null || methods.length<=0) {
+        		return null;
+        	}
+        	Method method = null;
+        	for (int i = 0; i < methods.length; i++) {
+        		if (methods[i] != null && methods[i].getName().equals(methodName) && methods[i].isAnnotationPresent(Path.class)) {
+        			method = methods[i];
+        			break;
+        		}
+			}
+        	if(method==null) {
+        		return null;
+        	}
+        	Path path = method.getAnnotation(Path.class);
+        	if(path==null) {
+        		return null;
+        	}
+        	return path.value();
+        } catch (Exception e) {
+            this.log.error(e.getMessage(),e);
+        }
+
+        return null;
+    }
 }
 

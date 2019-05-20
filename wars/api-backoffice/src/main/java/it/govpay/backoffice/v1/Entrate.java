@@ -39,7 +39,7 @@ public class Entrate extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     
     public Response entrateIdEntrataPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idEntrata") String idEntrata, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.entrateIdEntrataPUT(this.getUser(), uriInfo, httpHeaders,  idEntrata, is);
     }
 
@@ -48,7 +48,7 @@ public class Entrate extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response entrateIdEntrataGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idEntrata") String idEntrata){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.entrateIdEntrataGET(this.getUser(), uriInfo, httpHeaders,  idEntrata);
     }
 
@@ -57,7 +57,7 @@ public class Entrate extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response entrateGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.entrateGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi);
     }
 

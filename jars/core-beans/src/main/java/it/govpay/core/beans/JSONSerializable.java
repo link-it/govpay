@@ -1,5 +1,6 @@
 package it.govpay.core.beans;
 
+import java.io.InputStream;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -62,4 +63,22 @@ public abstract class JSONSerializable {
 	}
 
 
+	public static <T> T read(InputStream jsonIS, Class<T> t) throws ServiceException, ValidationException  {
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+		serializationConfig.setIgnoreNullValues(true);
+		return read(jsonIS, t, serializationConfig);
+	}
+	
+	public static <T> T read(InputStream jsonIS, Class<T> t, SerializationConfig serializationConfig) throws ServiceException, ValidationException  {
+		try {
+			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			
+			@SuppressWarnings("unchecked")
+			T object = (T) deserializer.readObject(jsonIS, t);
+			return object;
+		} catch(org.openspcoop2.utils.serialization.IOException e) {
+			throw new ValidationException(e.getMessage(), e);
+		}
+	}
 }

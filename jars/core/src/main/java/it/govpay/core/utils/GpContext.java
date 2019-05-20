@@ -16,6 +16,7 @@ import org.openspcoop2.utils.logger.beans.context.core.AbstractTransaction;
 import org.openspcoop2.utils.logger.beans.context.core.Actor;
 import org.openspcoop2.utils.logger.beans.context.core.BaseClient;
 import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
+import org.openspcoop2.utils.logger.beans.context.core.HttpServer;
 import org.openspcoop2.utils.logger.beans.context.core.Operation;
 import org.openspcoop2.utils.logger.beans.context.core.Request;
 import org.openspcoop2.utils.logger.beans.context.core.Role;
@@ -179,14 +180,14 @@ public class GpContext extends ApplicationContext {
 		if(user != null) client.setPrincipal(user);
 		transaction.setClient(client);
 
-//		BaseServer server = new BaseServer();
-//		server.setName(GovPay);
+		HttpServer server = new HttpServer();
+		server.setName(GovPay);
 
 		Actor to = new Actor();
 		to.setName(GovPay);
 		to.setType(TIPO_SOGGETTO_GOVPAY);
 		transaction.setTo(to);
-//		transaction.addServer(server);
+		transaction.addServer(server);
 	}
 
 	public static GpContext newContext() throws ServiceException{
@@ -201,9 +202,9 @@ public class GpContext extends ApplicationContext {
 		to.setType(TIPO_SOGGETTO_GOVPAY);
 		transaction.setTo(to);
 
-//		BaseServer server = new BaseServer();
-//		server.setName(GovPay);
-//		transaction.addServer(server);
+		HttpServer server = new HttpServer();
+		server.setName(GovPay);
+		transaction.addServer(server);
 
 		Request request = context.getRequest();
 		request.setDate(new Date());
@@ -223,9 +224,9 @@ public class GpContext extends ApplicationContext {
 //		to.setType(TIPO_SOGGETTO_GOVPAY);
 //		transaction.setTo(to);
 
-//			BaseServer server = new BaseServer();
-//			server.setName(GovPay);
-//			transaction.addServer(server);
+		HttpServer server = new HttpServer();
+		server.setName(GovPay);
+		transaction.addServer(server);
 
 		Request request = context.getRequest();
 		request.setDate(new Date());
@@ -256,7 +257,7 @@ public class GpContext extends ApplicationContext {
 
 		this.setInfoFruizione(TIPO_SERVIZIO_NDP, servizio, azione, versione);
 
-		BaseServer server = new BaseServer();
+		HttpServer server = new HttpServer();
 		server.setName(NodoDeiPagamentiSPC);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 
@@ -279,7 +280,7 @@ public class GpContext extends ApplicationContext {
 
 		this.setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, "", azione, versione.getVersione());
 
-		BaseServer server = new BaseServer();
+		HttpServer server = new HttpServer();
 		server.setName(codApplicazione);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());

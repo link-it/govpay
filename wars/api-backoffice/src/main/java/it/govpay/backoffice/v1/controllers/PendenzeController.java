@@ -26,7 +26,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.mime.MimeMultipart;
 import org.openspcoop2.utils.serialization.SerializationConfig;
-import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -86,8 +85,6 @@ import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
@@ -103,7 +100,7 @@ public class PendenzeController extends BaseController {
 	private SerializationConfig serializationConfig  = null;
 
 	public PendenzeController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
+		super(nomeServizio,log);
 
 		this.serializationConfig = new SerializationConfig();
 		this.serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
@@ -112,16 +109,9 @@ public class PendenzeController extends BaseController {
 
 	public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean addInfoIncasso) {
 		String methodName = "getByIda2aIdPendenza";  
-		IContext ctx = null;
-		String transactionId = null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
-
-		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
+		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
@@ -148,28 +138,19 @@ public class PendenzeController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 
 	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA) {
-		IContext ctx = null;
-		String transactionId = null;
-
 		String methodName = "pendenzeGET";
-		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+		String transactionId = this.context.getTransactionId();
+		try{
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			// Parametri - > DTO Input
-
 			ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
 			
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
@@ -196,7 +177,6 @@ public class PendenzeController extends BaseController {
 				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				listaPendenzeDTO.setDataDa(dataDaDate);
 			}
-				
 			
 			if(dataA!=null) {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
@@ -234,32 +214,24 @@ public class PendenzeController extends BaseController {
 			ListaPendenze response = new ListaPendenze(results, this.getServicePath(uriInfo),
 					listaPendenzeDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public Response pendenzeIdA2AIdPendenzaPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, boolean addInfoIncasso) {
 		String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
-		IContext ctx = null;
-		String transactionId = null;
-
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
 			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
@@ -319,33 +291,21 @@ public class PendenzeController extends BaseController {
 			respKo.setCodice(e.getCodEsito().name());
 			respKo.setDescrizione(e.getDescrizioneEsito());
 			respKo.setDettaglio(e.getMessage());
-			try {
-				this.logResponse(uriInfo, httpHeaders, methodName, respKo.toJSON(null), 500);
-			}catch(Exception e1) {
-				this.log.error("Errore durante il log della risposta", e1);
-			}
 			return this.handleResponseOk(Response.status(Status.INTERNAL_SERVER_ERROR).entity(this.getRespJson(respKo)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 
     public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
     	String methodName = "pendenzeIdA2AIdPendenzaPUT";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
@@ -385,30 +345,22 @@ public class PendenzeController extends BaseController {
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
-			this.logResponse(uriInfo, httpHeaders, methodName, pc.toJSON(null), responseStatus.getStatusCode());
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
     }
 
 	public Response pendenzePOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
 		String methodName = "pendenzePOST";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			baos = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
@@ -444,21 +396,19 @@ public class PendenzeController extends BaseController {
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
-			this.logResponse(uriInfo, httpHeaders, methodName, pc.toJSON(null), responseStatus.getStatusCode());
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
     }
 
 
 	public Response pendenzeTracciatiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
 		String methodName = "pendenzeTracciatiPOST";  
-		IContext ctx = null;
-		String transactionId = null;
+		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
@@ -504,11 +454,6 @@ public class PendenzeController extends BaseController {
 				// salvo il json ricevuto
 				IOUtils.copy(is, baos);
 			}
-
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
 			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
@@ -540,31 +485,22 @@ public class PendenzeController extends BaseController {
 			TracciatoPendenzeIndex rsModel = TracciatiConverter.toTracciatoPendenzeRsModelIndex(postTracciatoDTOResponse.getTracciato());
 
 			Status responseStatus = Status.CREATED;
-			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), responseStatus.getStatusCode());
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).entity(rsModel.toJSON(null,this.serializationConfig)).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 
 
 
 	public Response pendenzeTracciatiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
-		IContext ctx = null;
-		String transactionId = null;
-
 		String methodName = "pendenzeTracciatiGET";
-		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+		String transactionId = this.context.getTransactionId();
+		try{
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
@@ -607,14 +543,13 @@ public class PendenzeController extends BaseController {
 			ListaTracciatiPendenza response = new ListaTracciatiPendenza(results, this.getServicePath(uriInfo),
 					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null,this.serializationConfig), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();
 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 
@@ -622,18 +557,11 @@ public class PendenzeController extends BaseController {
 
 	public Response pendenzeTracciatiIdEsitoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
 		String methodName = "pendenzeTracciatiIdEsitoGET";  
-		IContext ctx = null;
-		String transactionId = null;
+		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
-		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-
+		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
@@ -658,13 +586,12 @@ public class PendenzeController extends BaseController {
 				throw new NonTrovataException("Tracciato di Esito non presente: elaborazione ancora in corso");
 
 			TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
-			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null,this.serializationConfig)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 
@@ -672,18 +599,11 @@ public class PendenzeController extends BaseController {
 
 	public Response pendenzeTracciatiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
 		String methodName = "pendenzeTracciatiIdGET";  
-		IContext ctx = null;
-		String transactionId = null;
+		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
-		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-
+		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
@@ -704,30 +624,22 @@ public class PendenzeController extends BaseController {
 			}
 
 			TracciatoPendenze rsModel = TracciatiConverter.toTracciatoPendenzeRsModel(tracciato);
-			this.logResponse(uriInfo, httpHeaders, methodName, rsModel.toJSON(null,this.serializationConfig), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null,this.serializationConfig)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 
 
 
 	public Response pendenzeTracciatiIdOperazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
-		IContext ctx = null;
-		String transactionId = null;
-
+		String transactionId = this.context.getTransactionId();
 		String methodName = "pendenzeTracciatiGET";
-		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			this.log.info("Esecuzione " + methodName + " in corso...");
-
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
+		try{
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
@@ -764,14 +676,13 @@ public class PendenzeController extends BaseController {
 			ListaOperazioniPendenza response = new ListaOperazioniPendenza(results, this.getServicePath(uriInfo),
 					listaTracciatiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null,this.serializationConfig), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();
 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 
@@ -779,18 +690,11 @@ public class PendenzeController extends BaseController {
 
 	public Response pendenzeTracciatiIdStampeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
 		String methodName = "pendenzeTracciatiIdStampeGET";  
-		IContext ctx = null;
-		String transactionId = null;
+		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
-		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-
+		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 
@@ -832,7 +736,7 @@ public class PendenzeController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 
 	}

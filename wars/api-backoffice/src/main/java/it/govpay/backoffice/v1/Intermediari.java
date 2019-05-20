@@ -39,7 +39,7 @@ public class Intermediari extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response intermediariIdIntermediarioGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.intermediariIdIntermediarioGET(this.getUser(), uriInfo, httpHeaders,  idIntermediario);
     }
 
@@ -48,7 +48,7 @@ public class Intermediari extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     
     public Response intermediariIdIntermediarioStazioniIdStazionePUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @PathParam("idStazione") String idStazione, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.intermediariIdIntermediarioStazioniIdStazionePUT(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione, is);
     }
 
@@ -57,7 +57,7 @@ public class Intermediari extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response intermediariGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.intermediariGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 
@@ -66,7 +66,7 @@ public class Intermediari extends BaseRsServiceV1{
     @Consumes({ "application/json" })
     
     public Response intermediariIdIntermediarioPUT(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, java.io.InputStream is){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.intermediariIdIntermediarioPUT(this.getUser(), uriInfo, httpHeaders,  idIntermediario, is);
     }
 
@@ -75,7 +75,7 @@ public class Intermediari extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response intermediariIdIntermediarioStazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.intermediariIdIntermediarioStazioniGET(this.getUser(), uriInfo, httpHeaders,  idIntermediario, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 
@@ -84,7 +84,7 @@ public class Intermediari extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response intermediariIdIntermediarioStazioniIdStazioneGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idIntermediario") String idIntermediario, @PathParam("idStazione") String idStazione){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.intermediariIdIntermediarioStazioniIdStazioneGET(this.getUser(), uriInfo, httpHeaders,  idIntermediario,  idStazione);
     }
 

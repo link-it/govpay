@@ -37,7 +37,7 @@ public class Tracciati extends BaseRsServiceV1{
     
     @Produces({ "application/octet-stream" })
     public Response tracciatiIdRispostaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.tracciatiIdRispostaGET(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
@@ -46,7 +46,7 @@ public class Tracciati extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response tracciatiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.tracciatiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina);
     }
 
@@ -55,7 +55,7 @@ public class Tracciati extends BaseRsServiceV1{
     
     @Produces({ "application/octet-stream" })
     public Response tracciatiIdRichiestaGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.tracciatiIdRichiestaGET(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
@@ -64,7 +64,7 @@ public class Tracciati extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response tracciatiIdGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.tracciatiIdGET(this.getUser(), uriInfo, httpHeaders,  id);
     }
 

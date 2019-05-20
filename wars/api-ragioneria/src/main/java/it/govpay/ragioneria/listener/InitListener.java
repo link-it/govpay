@@ -21,8 +21,6 @@ package it.govpay.ragioneria.listener;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.ServletContextEvent;
@@ -65,12 +63,6 @@ public class InitListener implements ServletContextListener {
 		try {
 			log = LoggerWrapperFactory.getLogger("boot");	
 			StartupUtils.startupServices(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
-			
-			if(GovpayConfig.getInstance().isValidazioneAPIRestAbilitata()) {
-				Map<String, String> map = new HashMap<String, String>();
-				map.put(GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE);
-				map.put(GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME, GovpayConfig.GOVPAY_PAGAMENTI_OPEN_API_FILE);
-			}
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);
 			try {

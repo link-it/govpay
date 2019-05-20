@@ -39,6 +39,7 @@ import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationTransaction;
 import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
+import org.openspcoop2.utils.logger.beans.context.core.HttpServer;
 import org.openspcoop2.utils.logger.constants.MessageType;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.MD5Constants;
@@ -58,28 +59,6 @@ public class MessageLoggingHandlerUtils {
 
 	Logger log = LoggerWrapperFactory.getLogger(MessageLoggingHandlerUtils.class);
 
-	public void logToSystemOut(boolean outboundProperty, Map<String, List<String>> httpHeaders, byte[] msg) {
-		if(this.log.isDebugEnabled()) {
-	
-			StringBuffer sb = new StringBuffer();
-	
-			try {
-				if(httpHeaders != null) {
-					sb.append("\n\tHTTP Headers: ");
-					for(String headerName : httpHeaders.keySet()) {
-						List<String> values = httpHeaders.get(headerName);
-						for(String value : values) {
-							sb.append("\n\t" + headerName + ": " + value);
-						}
-					}
-				}
-				this.log.trace(sb.toString() + "\n" + new String(msg));
-			} catch (Exception e) {
-				this.log.error("Exception in handler: " + e);
-			}
-		}
-	}
-	
 	@SuppressWarnings("unchecked")
 	public static boolean logToSystemOut(SOAPMessageContext smc, String tipoServizio, int versioneServizio, Logger log) throws UtilsException {
 		Boolean outboundProperty = (Boolean) smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
@@ -196,13 +175,14 @@ public class MessageLoggingHandlerUtils {
 				BaseServer server = (appTransaction.getServers() != null && !appTransaction.getServers().isEmpty() )? appTransaction.getServers().get(0) : null;
 				
 				if(server == null) {
-					server = new BaseServer();
+					server = new HttpServer();
 					server.setName(GpContext.GovPay);
 					appTransaction.addServer(server);
 				}
 				
-				//TODO
-				// ctx.getTransaction().getServers().get(0).setTransportCode(responseCode.intValue() + "");
+				if(server instanceof HttpServer && responseCode != null) {
+					((HttpServer) server).setResponseStatusCode(responseCode.intValue());
+				}
 			}
 			
 			if((responseCode != null && responseCode.intValue() < 299) && HttpRequestMethod.GET.equals(requestMethod) && !GovpayConfig.getInstance().isDumpAPIRestGETResponse()) {

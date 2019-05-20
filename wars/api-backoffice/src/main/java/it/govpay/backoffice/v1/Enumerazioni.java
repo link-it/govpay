@@ -33,7 +33,7 @@ public class Enumerazioni extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response enumerazioniServiziACLGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.enumerazioniServiziACLGET(this.getUser(), uriInfo, httpHeaders);
     }
 
@@ -42,7 +42,7 @@ public class Enumerazioni extends BaseRsServiceV1{
     
     @Produces({ "application/json" })
     public Response enumerazioniVersioneConnettoreGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
-        this.controller.setRequestResponse(this.request, this.response);
+        this.controller.setContext(this.getContext());
         return this.controller.enumerazioniVersioneConnettoreGET(this.getUser(), uriInfo, httpHeaders);
     }
 
