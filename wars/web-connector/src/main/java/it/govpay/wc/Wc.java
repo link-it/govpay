@@ -29,7 +29,7 @@ public class Wc extends BaseRsServiceV1 {
 	@Path("/psp")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getPsp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("idSession") String idSession, @QueryParam("esito") String esito) {
-		this.controller.setRequestResponse(this.request, this.response);
+		this.controller.setContext(this.getContext());
         return this.controller.getPsp(null, uriInfo, httpHeaders, idSession, esito);
 	}
 }

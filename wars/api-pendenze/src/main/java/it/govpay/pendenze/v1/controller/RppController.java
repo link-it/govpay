@@ -1,6 +1,5 @@
 package it.govpay.pendenze.v1.controller;
 
-import java.io.ByteArrayOutputStream;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -37,8 +35,6 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -57,22 +53,14 @@ import it.govpay.pendenze.v1.beans.converter.RptConverter;
 public class RppController extends BaseController {
 
 	public RppController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
+		super(nomeServizio,log);
 	}
 
 	public Response rppGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento) {
 		String methodName = "rppGET";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 						
@@ -172,13 +160,12 @@ public class RppController extends BaseController {
 			}
 			ListaRpp response = new ListaRpp(results, this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 
@@ -186,24 +173,15 @@ public class RppController extends BaseController {
 
 	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
-
-		String accept = "";
+		String accept = MediaType.APPLICATION_JSON;
 		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 			accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
 		}
 
 		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 						
@@ -239,7 +217,6 @@ public class RppController extends BaseController {
 //					throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
 //				}
 //				
-				this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
 			} else {
@@ -256,7 +233,6 @@ public class RppController extends BaseController {
 //						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
 //					}
 
-					this.logResponse(uriInfo, httpHeaders, methodName, b, 200);
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
 				} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
@@ -271,7 +247,6 @@ public class RppController extends BaseController {
 //					}
 					
 					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
 				} else {
@@ -284,8 +259,6 @@ public class RppController extends BaseController {
 //					if(!AuthorizationManager.isDominioAuthorized(user, ricevutaDTOResponse.getDominio().getCodDominio())) {
 //						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
 //					}
-					
-					this.logResponse(uriInfo, httpHeaders, methodName, ricevutaDTOResponse.getRpt().getXmlRt(), 200);
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
 				}
@@ -293,7 +266,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}    
 	}
 
@@ -301,24 +274,13 @@ public class RppController extends BaseController {
 
 	public Response rppIdDominioIuvCcpRptGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-
-
 		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			String accept = "";
+			String accept = MediaType.APPLICATION_JSON;
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
 			}
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 			
@@ -356,7 +318,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		} 
 	}
 
@@ -364,18 +326,10 @@ public class RppController extends BaseController {
 
 	public Response rppIdDominioIuvCcpGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpGET";  
-		IContext ctx = null;
-		String transactionId = null;		
-		ByteArrayOutputStream baos= null;
+		String transactionId = this.context.getTransactionId();		
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 			
@@ -414,7 +368,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
 	}
 

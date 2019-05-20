@@ -23,6 +23,19 @@
     
     <!-- FaultBean Exception Mapper -->
     <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>
+    
+    <!-- Context -->
+	<b:bean id="contextConfigV1" class="it.govpay.rs.v1.service.context.ContextConfig">
+	</b:bean>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory"/>
+	<b:bean id="contextV1" class="org.openspcoop2.utils.service.context.ContextFeature">
+		<b:property name="contextFactory" >
+			<b:ref bean="customContextFactory"/>
+		</b:property>
+		<b:property name="contextConfig" >
+			<b:ref bean="contextConfigV1"/>
+		</b:property>
+	</b:bean>
         
    	<!-- JAX-RS Service Impl -->
 
@@ -50,6 +63,9 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
     </jaxrs:server>
     <!-- BASIC_END -->
     
@@ -68,6 +84,9 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
     </jaxrs:server>
     <!-- SSL_END -->
     
@@ -86,6 +105,9 @@
                 <ref bean="jacksonXmlProvider"/>
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
     </jaxrs:server>
     <!-- HEADER_END -->
     

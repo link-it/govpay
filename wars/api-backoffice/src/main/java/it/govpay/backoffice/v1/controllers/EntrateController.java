@@ -26,7 +26,6 @@ import it.govpay.core.dao.anagrafica.dto.GetEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.GetEntrataDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTO;
 import it.govpay.core.dao.anagrafica.dto.PutEntrataDTOResponse;
-import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;

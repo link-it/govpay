@@ -1,6 +1,5 @@
 package it.govpay.ragioneria.v1.controller;
 
-import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +12,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -24,8 +22,6 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
@@ -44,24 +40,16 @@ import it.govpay.ragioneria.v1.beans.converter.RiscossioniConverter;
 public class RiscossioniController extends BaseController {
 
      public RiscossioniController(String nomeServizio,Logger log) {
-		super(nomeServizio,log, GovpayConfig.GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME);
+		super(nomeServizio,log);
      }
 
 
 
     public Response riscossioniIdDominioIuvIurIndiceGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String iur, Integer indice) {
     	String methodName = "riscossioniIdDominioIuvIurIndiceGET";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
 
@@ -89,14 +77,13 @@ public class RiscossioniController extends BaseController {
 			
 			Riscossione response = RiscossioniConverter.toRsModel(getRiscossioneDTOResponse.getPagamento());
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(null), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 			
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
     }
 
@@ -104,17 +91,9 @@ public class RiscossioniController extends BaseController {
 
     public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
     	String methodName = "riscossioniGET";  
-		IContext ctx = null;
-		String transactionId = null;
-		ByteArrayOutputStream baos= null;
+		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-			baos = new ByteArrayOutputStream();
-			this.logRequest(uriInfo, httpHeaders, methodName, baos);
-			
-			ctx =  GpThreadLocal.get();
-			transactionId = ctx.getTransactionId();
-			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
 
@@ -180,14 +159,13 @@ public class RiscossioniController extends BaseController {
 			ListaRiscossioni response = new ListaRiscossioni(lst, 
 					uriInfo.getRequestUri(), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, response.toJSON(campi), 200);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ctx);
+			this.log(this.context);
 		}
     }
 
