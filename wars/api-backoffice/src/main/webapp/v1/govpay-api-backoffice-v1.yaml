@@ -43,6 +43,8 @@ tags:
     description: Informazioni di configurazione del cruscotto
   - name: Reportistica
     description: Reportistica sulle operazioni di pagamento effettuate con GovPay
+  - name: Configurazioni
+    description: Servizi di configurazione della piattafomra    
 security:
   - basicAuth: []    
 paths:
@@ -3632,7 +3634,49 @@ paths:
                 items:
                   type: string   
         '500':
-          $ref: '#/components/responses/500'           
+          $ref: '#/components/responses/500'  
+  '/configurazioni/giornale':
+    get:
+      tags:
+        - Configurazioni
+      summary: Legge la configurazione del giornale degli eventi
+      responses:
+        '200':
+          description: Configurazione del giornale degli eventi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/giornale'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'                
+        '500':
+          $ref: '#/components/responses/500'    
+    post:
+      tags:
+        - Configurazioni
+      summary: Aggiorna la configurazione del giornale degli eventi
+      requestBody:
+        description: Configurazione aggiornata
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/giornale'
+      responses:
+        '200':
+          description: Configurazione aggiornata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/giornale'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'                
+        '500':
+          $ref: '#/components/responses/500'    
+                               
 components:
   responses:
     '400':
@@ -3688,6 +3732,55 @@ components:
       type: http
       scheme: basic
   schemas:
+    giornale:
+      type: array
+      items:
+        type: object
+        properties:
+          interfacce:
+            type: object
+            required:
+              - apiEnte
+              - apiPagamento
+              - apiRagioneria
+              - apiBackoffice
+              - apiPagoPA
+            properties:
+              apiEnte:
+                $ref: '#/components/schemas/gdeInterfaccia'
+              apiPagamento:
+                $ref: '#/components/schemas/gdeInterfaccia'
+              apiRagioneria:
+                $ref: '#/components/schemas/gdeInterfaccia'
+              apiBackoffice:
+                $ref: '#/components/schemas/gdeInterfaccia'
+              apiPagoPA:
+                $ref: '#/components/schemas/gdeInterfaccia'
+    gdeInterfaccia:
+      type: object
+      properties:
+        letture:
+          $ref: '#/components/schemas/gdeEvento'
+        scritture:
+          $ref: '#/components/schemas/gdeEvento'
+    gdeEvento:
+      type: object
+      required: 
+        - log
+        - dump
+      properties:
+        log:
+          type: string
+          enum:
+            - sempre
+            - mai
+            - solo errore
+        dump:
+          type: string
+          enum:
+            - sempre
+            - mai
+            - solo errore
     faultBean:
       type: object
       required:
