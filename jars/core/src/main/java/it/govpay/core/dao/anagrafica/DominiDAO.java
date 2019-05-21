@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -81,7 +82,6 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Tributo;
@@ -102,7 +102,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			// stazione
 			try {
 				putDominioDTO.getDominio().setIdStazione(AnagraficaManager.getStazione(bd, putDominioDTO.getCodStazione()).getId());
@@ -234,7 +234,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = null;
@@ -264,7 +264,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			Dominio dominio = AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio());
 			
@@ -285,7 +285,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			Dominio dominio = AnagraficaManager.getDominio(bd, getDominioDTO.getCodDominio());
 			GetDominioDTOResponse response = new GetDominioDTOResponse(dominio);
@@ -307,7 +307,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			UnitaOperativeBD unitaOperativeBD = new UnitaOperativeBD(bd);
 			UnitaOperativaFilter filter = null;
@@ -341,7 +341,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			Dominio dominio = null;
 			try {
@@ -364,7 +364,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			try {
 				// inserisco l'iddominio
@@ -399,7 +399,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
 			IbanAccreditoFilter filter = null;
@@ -431,7 +431,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			Dominio dominio = null;
 			try {
@@ -454,7 +454,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			try {
 				// inserisco l'iddominio
@@ -489,7 +489,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			TributiBD ibanAccreditoBD = new TributiBD(bd);
 			TributoFilter filter = null;
@@ -529,7 +529,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			Dominio dominio = null;
 			try {
@@ -554,7 +554,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			try {
 				// inserisco l'iddominio
 				putEntrataDominioDTO.getTributo().setIdDominio(AnagraficaManager.getDominio(bd, putEntrataDominioDTO.getIdDominio()).getId());
@@ -620,7 +620,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
 			TipoVersamentoDominioFilter filter = null;
@@ -662,7 +662,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			Dominio dominio = null;
 			try {
@@ -687,7 +687,7 @@ public class DominiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			try {
 				// inserisco l'iddominio
 				putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdDominio(AnagraficaManager.getDominio(bd, putTipoPendenzaDominioDTO.getIdDominio()).getId());

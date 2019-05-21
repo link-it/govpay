@@ -24,6 +24,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -34,7 +35,6 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient.Azione;
@@ -56,9 +56,9 @@ public class InviaRptThread implements Runnable {
 	
 	@Override
 	public void run() {
-		GpThreadLocal.set(this.ctx);
+		ContextThreadLocal.set(this.ctx);
 		BasicBD bd = null;
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
 		try {
@@ -77,7 +77,7 @@ public class InviaRptThread implements Runnable {
 			Risposta risposta = RptUtils.inviaRPT(rpt, operationId, bd);
 
 			if(bd == null) {
-				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			}
 			
 			RptBD rptBD = new RptBD(bd);
@@ -144,7 +144,7 @@ public class InviaRptThread implements Runnable {
 //					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 //				}
 			if(bd != null) bd.closeConnection();
-			GpThreadLocal.unset();
+			ContextThreadLocal.unset();
 		}
 	}
 }

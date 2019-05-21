@@ -26,6 +26,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -43,7 +44,6 @@ import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NotificaClient;
 import it.govpay.model.Connettore;
@@ -85,9 +85,9 @@ public class InviaNotificaThread implements Runnable {
 
 	@Override
 	public void run() {
-		GpThreadLocal.set(this.ctx);
+		ContextThreadLocal.set(this.ctx);
 		
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		BasicBD bd = null;
 		TipoNotifica tipoNotifica = this.notifica.getTipo();
@@ -124,7 +124,7 @@ public class InviaNotificaThread implements Runnable {
 				break;
 			}
 			
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			giornaleEventi = new GiornaleEventi(bd);
 			
 //			MDC.put(MD5Constants.OPERATION_ID, "InviaNotificaThread");
@@ -174,7 +174,7 @@ public class InviaNotificaThread implements Runnable {
 			this.notifica.setDescrizioneStato(null);
 			this.notifica.setDataAggiornamento(new Date());
 			if(bd == null)
-				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			NotificheBD notificheBD = new NotificheBD(bd);
 			notificheBD.updateSpedito(this.notifica.getId());
 			
@@ -208,7 +208,7 @@ public class InviaNotificaThread implements Runnable {
 				log.error("Errore nella consegna della notifica", e);
 			try {
 				if(bd == null)
-					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 				
 				Rpt rpt = this.notifica.getRpt(bd);
 				
@@ -286,7 +286,7 @@ public class InviaNotificaThread implements Runnable {
 //				} catch (UtilsException e) {
 //					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 //				}
-			GpThreadLocal.unset();
+			ContextThreadLocal.unset();
 		}
 	}
 

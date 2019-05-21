@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.UriInfo;
+//import javax.ws.rs.core.HttpHeaders;
+//import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import javax.xml.ws.handler.MessageContext;
 
@@ -117,45 +117,45 @@ public class GpContext extends ApplicationContext {
 //		transaction.addServer(server);
 	}
 
-	public GpContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders, HttpServletRequest request,
-			String nomeOperazione, String nomeServizio, String tipoServizio, int versioneServizio) throws ServiceException {
-		
-		this();
-
-		ApplicationTransaction transaction = (ApplicationTransaction) this.getTransaction();
-		transaction.setRole(Role.SERVER);
-		transaction.setProtocol(TIPO_PROTOCOLLO_REST);
-
-		Service service = new Service();
-		service.setName(nomeServizio);
-		service.setVersion(versioneServizio);
-		service.setType(tipoServizio);
-		transaction.setService(service);
-
-		Operation operation = new Operation();
-		operation.setMode(FlowMode.INPUT_OUTPUT);
-		operation.setName(nomeOperazione);
-		transaction.setOperation(operation);
-
-		BaseClient client = new BaseClient();
-		client.setInvocationEndpoint(request.getRequestURI());
-		client.setInterfaceName(nomeServizio);
-
-		String user = AutorizzazioneUtils.getPrincipal(SecurityContextHolder.getContext().getAuthentication()); 
-
-		if(user != null)
-			client.setPrincipal(user);
-		transaction.setClient(client);
-
-//		BaseServer server = new BaseServer();
-//		server.setName(GovPay);
-
-		Actor to = new Actor();
-		to.setName(GovPay);
-		to.setType(TIPO_SOGGETTO_GOVPAY);
-		transaction.setTo(to);
-//		transaction.addServer(server);
-	}
+//	public GpContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders, HttpServletRequest request,
+//			String nomeOperazione, String nomeServizio, String tipoServizio, int versioneServizio) throws ServiceException {
+//		
+//		this();
+//
+//		ApplicationTransaction transaction = (ApplicationTransaction) this.getTransaction();
+//		transaction.setRole(Role.SERVER);
+//		transaction.setProtocol(TIPO_PROTOCOLLO_REST);
+//
+//		Service service = new Service();
+//		service.setName(nomeServizio);
+//		service.setVersion(versioneServizio);
+//		service.setType(tipoServizio);
+//		transaction.setService(service);
+//
+//		Operation operation = new Operation();
+//		operation.setMode(FlowMode.INPUT_OUTPUT);
+//		operation.setName(nomeOperazione);
+//		transaction.setOperation(operation);
+//
+//		BaseClient client = new BaseClient();
+//		client.setInvocationEndpoint(request.getRequestURI());
+//		client.setInterfaceName(nomeServizio);
+//
+//		String user = AutorizzazioneUtils.getPrincipal(SecurityContextHolder.getContext().getAuthentication()); 
+//
+//		if(user != null)
+//			client.setPrincipal(user);
+//		transaction.setClient(client);
+//
+////		BaseServer server = new BaseServer();
+////		server.setName(GovPay);
+//
+//		Actor to = new Actor();
+//		to.setName(GovPay);
+//		to.setType(TIPO_SOGGETTO_GOVPAY);
+//		transaction.setTo(to);
+////		transaction.addServer(server);
+//	}
 
 	public GpContext(String requestUri,	String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user) throws ServiceException {
 		this();

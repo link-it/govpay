@@ -33,6 +33,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
@@ -265,7 +266,7 @@ public class RtUtils extends NdpValidationUtils {
 			throw new ServiceException(e);
 		}
 		
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
 		if(esito.validato && esito.errori.size() > 0) {
@@ -312,7 +313,7 @@ public class RtUtils extends NdpValidationUtils {
 		rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
 		rpt.setDescrizioneStato(null);
 		rpt.setXmlRt(rtByte);
-		rpt.setIdTransazioneRt(GpThreadLocal.get().getTransactionId());
+		rpt.setIdTransazioneRt(ContextThreadLocal.get().getTransactionId());
 		rpt.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.valueOf(ctRt.getIstitutoAttestante().getIdentificativoUnivocoAttestante().getTipoIdentificativoUnivoco().value()));
 		rpt.setIdentificativoAttestante(ctRt.getIstitutoAttestante().getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
 		rpt.setDenominazioneAttestante(ctRt.getIstitutoAttestante().getDenominazioneAttestante());

@@ -38,6 +38,7 @@ import org.openspcoop2.utils.logger.config.DatabaseConfigDatasource;
 import org.openspcoop2.utils.logger.config.DiagnosticConfig;
 import org.openspcoop2.utils.logger.config.Log4jConfig;
 import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
@@ -136,7 +137,7 @@ public class StartupUtils {
 			Operation opt = new Operation();
 			opt.setName("Init");
 			ctx.getApplicationContext().getTransaction().setOperation(opt);
-			GpThreadLocal.set(ctx);
+			ContextThreadLocal.set(ctx);
 		} catch (Exception e) {
 			log.error("Errore durante predisposizione del contesto: " + e);
 			if(ctx != null)

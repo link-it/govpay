@@ -33,6 +33,8 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.core.Actor;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,9 +63,6 @@ import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
-
-import org.openspcoop2.utils.service.context.IContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.Intermediario;
@@ -93,7 +92,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			String identificativoUnivocoVersamento,
 			String codiceContestoPagamento, byte[] er) {
 
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 
 		appContext.setCorrelationId(identificativoDominio + identificativoUnivocoVersamento + codiceContestoPagamento);
@@ -132,7 +131,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		evento.setFruitore("NodoDeiPagamentiSPC");
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
@@ -247,7 +246,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		Long idVersamentoLong = null;
 		Long idPagamentoPortaleLong = null;
 
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 
 		appContext.setCorrelationId(codDominio + iuv + ccp);
@@ -285,7 +284,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		evento.setFruitore("NodoDeiPagamentiSPC");
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {

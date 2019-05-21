@@ -32,6 +32,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 
 import it.govpay.bd.BasicBD;
@@ -161,7 +162,7 @@ public class VersamentoUtils {
 			throw new VersamentoScadutoException(versamento.getDataScadenza());
 		}else {
 			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita())) {
-				IContext ctx = GpThreadLocal.get();
+				IContext ctx = ContextThreadLocal.get();
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();
 				String debitore = versamento.getAnagraficaDebitore().getCodUnivoco();
@@ -195,7 +196,7 @@ public class VersamentoUtils {
 		String dominioD = dominio != null ? dominio : "-";
 		String iuvD = iuv != null ? iuv : "-";
 		
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		ctx.getApplicationLogger().log("verifica.avvio", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
 		if(applicazione.getConnettoreIntegrazione() == null) {
 			ctx.getApplicationLogger().log("verifica.nonConfigurata");

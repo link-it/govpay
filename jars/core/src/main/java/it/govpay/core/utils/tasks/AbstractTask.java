@@ -3,13 +3,13 @@ package it.govpay.core.utils.tasks;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.Operation;
 import org.openspcoop2.utils.logger.beans.context.core.Service;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.service.context.GpContextFactory;
 
 /***
@@ -40,8 +40,8 @@ public abstract class AbstractTask {
 		} catch(Throwable e) {
 			this.log.error("Execuzione task ["+this.name+"] completata con errore: " + e.getMessage(), e);
 		} finally {
-			this.log(GpThreadLocal.get());
-			GpThreadLocal.unset();
+			this.log(ContextThreadLocal.get());
+			ContextThreadLocal.unset();
 		}
 	}
 
@@ -62,7 +62,7 @@ public abstract class AbstractTask {
 		opt.setName(this.name);
 		ctx.getApplicationContext().getTransaction().setOperation(opt);
 		if(setContext)
-			GpThreadLocal.set(ctx);
+			ContextThreadLocal.set(ctx);
 		return ctx;
 	}
 	

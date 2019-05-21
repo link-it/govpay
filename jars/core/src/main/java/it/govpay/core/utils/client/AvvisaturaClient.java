@@ -8,6 +8,7 @@ import javax.xml.namespace.QName;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -19,7 +20,6 @@ import gov.telematici.pagamenti.ws.ppthead.richiesta_avvisi.IntestazionePPT;
 import it.govpay.bd.BasicBD;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Stazione;
@@ -106,7 +106,7 @@ public class AvvisaturaClient extends BasicClient {
 		if(this.isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		} 
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 
 		if(operationID != null) {

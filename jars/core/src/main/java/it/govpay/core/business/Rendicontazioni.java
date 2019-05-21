@@ -38,6 +38,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -70,7 +71,6 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
@@ -93,7 +93,7 @@ public class Rendicontazioni extends BasicBD {
 	public String downloadRendicontazioni(boolean deep) throws GovPayException, UtilsException { 
 		boolean errori = false;
 		List<String> response = new ArrayList<>();
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		try {
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizione");
@@ -291,7 +291,7 @@ public class Rendicontazioni extends BasicBD {
 										// Verifico che il pagamento non sia gia' rendicontato
 										// Controllo RIMOSSO. Non e' un'anomalia una duplice rendicontazione. L'anomalia occorre se due rendicontazioni dello stesso pagamento vengono incassate entrambe.
 //										if(pagamento.isPagamentoRendicontato(this)) {
-//											GpThreadLocal.get().getApplicationLogger().log("rendicontazioni.giaStornato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+//											ContextThreadLocal.get().getApplicationLogger().log("rendicontazioni.giaStornato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 //											log.info("Revoca [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: storno gia' rendicontato da altri flussi");
 //											rendicontazione.addAnomalia("007113", "Lo storno riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
 //										}
@@ -306,7 +306,7 @@ public class Rendicontazioni extends BasicBD {
 										// Verifico che il pagamento non sia gia' rendicontato
 										// Controllo RIMOSSO. Non e' un'anomalia una duplice rendicontazione. L'anomalia occorre se due rendicontazioni dello stesso pagamento vengono incassate entrambe.
 //										if(pagamento.isPagamentoRendicontato(this)) {
-//											GpThreadLocal.get().getApplicationLogger().log("rendicontazioni.giaRendicontato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
+//											ContextThreadLocal.get().getApplicationLogger().log("rendicontazioni.giaRendicontato", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 //											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: pagamento gia' rendicontato da altri flussi");
 //											rendicontazione.addAnomalia("007103", "Il pagamento riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
 //										}
@@ -536,7 +536,7 @@ public class Rendicontazioni extends BasicBD {
 
 	private List<TipoIdRendicontazione> chiediListaFr(NodoClient client, Stazione stazione, Dominio dominio) throws UtilsException{ 
 		List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		try {
 			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, Azione.nodoChiediElencoFlussiRendicontazione);

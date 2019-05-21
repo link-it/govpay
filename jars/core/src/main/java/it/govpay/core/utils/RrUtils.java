@@ -32,6 +32,7 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
@@ -257,9 +258,9 @@ public class RrUtils extends NdpValidationUtils {
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
 			if(bd != null) 
-				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
 			else
-				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			GiornaleEventi giornale = new GiornaleEventi(bd);
 			buildEventoCooperazione(evento, rpt, risposta, TipoEvento.nodoInviaRichiestaStorno, bd);
@@ -305,7 +306,7 @@ public class RrUtils extends NdpValidationUtils {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
 		
 		ER ctEr = null;

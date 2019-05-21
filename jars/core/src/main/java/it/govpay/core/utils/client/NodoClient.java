@@ -26,6 +26,7 @@ import javax.xml.bind.JAXBElement;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -56,7 +57,6 @@ import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt;
@@ -101,7 +101,7 @@ public class NodoClient extends BasicClient {
 		if(this.isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		} 
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
 		if(operationID != null) {
@@ -242,7 +242,7 @@ public class NodoClient extends BasicClient {
 
 			if(this.bd == null) {
 				wasNull = true;
-				this.bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+				this.bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			} else {
 				wasClosed = this.bd.isClosed();
 				if(wasClosed) this.bd.setupConnection("--");

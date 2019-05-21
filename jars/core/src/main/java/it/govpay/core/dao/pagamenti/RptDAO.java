@@ -8,6 +8,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rpt;
@@ -36,7 +37,6 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 
@@ -53,7 +53,7 @@ public class RptDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			// controllo che il dominio sia autorizzato
 			String idDominio = leggiRptDTO.getIdDominio();
@@ -93,7 +93,7 @@ public class RptDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
@@ -122,7 +122,7 @@ public class RptDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			return this.listaRpt(listaRptDTO, bd);
 		} finally {
@@ -183,7 +183,7 @@ public class RptDAO extends BaseDAO{
 		try {
 			// patch
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(patchRptDTO.getUser());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			String idDominio = patchRptDTO.getIdDominio();
 			String iuv = patchRptDTO.getIuv();

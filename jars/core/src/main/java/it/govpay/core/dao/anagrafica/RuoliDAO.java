@@ -5,6 +5,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -23,7 +24,6 @@ import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.PatchOp;
 import it.govpay.orm.ACL;
 
@@ -42,7 +42,7 @@ public class RuoliDAO extends BaseDAO{
 		BasicBD bd = null;
 		LeggiRuoloDTOResponse response = null;
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			AclBD aclBD = new AclBD(bd);
 			AclFilter filter = aclBD.newFilter();
 			filter.setRuolo(leggiRuoliDTO.getRuolo());
@@ -67,7 +67,7 @@ public class RuoliDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 	
 			AclBD rptBD = new AclBD(bd);
 			AclFilter filter = rptBD.newFilter();
@@ -97,7 +97,7 @@ public class RuoliDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 	
 			AclBD aclBD = new AclBD(bd);
 			AclFilter filter = aclBD.newFilter();
@@ -144,7 +144,7 @@ public class RuoliDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			
 			AclBD aclBD = new AclBD(bd);
 			AclFilter filter = aclBD.newFilter();

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 
 import it.govpay.bd.BasicBD;
@@ -16,7 +17,6 @@ import it.govpay.core.dao.operazioni.dto.ListaOperazioniDTOResponse;
 import it.govpay.core.dao.operazioni.exception.OperazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GpThreadLocal;
 
 public class OperazioniDAO extends BaseDAO{
 	
@@ -33,7 +33,7 @@ public class OperazioniDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			IContext ctx = GpThreadLocal.get();
+			IContext ctx = ContextThreadLocal.get();
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 			
 			String esitoOperazione = "";
@@ -74,7 +74,7 @@ public class OperazioniDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			List<LeggiOperazioneDTOResponse> results = new ArrayList<>();
 			
 			results.add(new LeggiOperazioneDTOResponse(ACQUISIZIONE_RENDICONTAZIONI));

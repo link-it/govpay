@@ -38,6 +38,7 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.core.Actor;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -87,7 +88,6 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -133,7 +133,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		Long idVersamentoLong = null;
 		Long idPagamentoPortaleLong = null;
 
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		appContext.setCorrelationId(codDominio + iuv + ccp);
 
@@ -172,7 +172,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		evento.setFruitore("NodoDeiPagamentiSPC");
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
@@ -539,7 +539,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		Long idVersamentoLong = null;
 		Long idPagamentoPortaleLong = null;
 		
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		appContext.setCorrelationId(codDominio + iuv + ccp);
 
@@ -578,7 +578,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		evento.setFruitore("NodoDeiPagamentiSPC");
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {

@@ -35,12 +35,11 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
-import org.openspcoop2.utils.service.context.IContext;
 
 
 public abstract class BaseRsService {
@@ -117,6 +116,20 @@ public abstract class BaseRsService {
 		if(context instanceof org.openspcoop2.utils.service.context.Context) {
 			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
 			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
+//			
+//			
+//			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+//			
+//			HttpRequestMethod requestMethod = HttpRequestMethod.valueOf(request.getMethod()); 
+//			
+//			String baseUri = uriInfo.getBaseUri().toString();
+//			String requestUri = uriInfo.getRequestUri().toString();
+//			int idxOfBaseUri = requestUri.indexOf(baseUri);
+//			
+//			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
+//			
+//			ctx.getRequest().addGenericProperty(new Property("HTTP-Method", requestMethod.toString()));
+//			ctx.getRequest().addGenericProperty(new Property("RequestPath", servicePathwithParameters));
 		}
 		return context;
 	}
@@ -125,21 +138,30 @@ public abstract class BaseRsService {
 
         try {
         	Class<?> c = this.getClass();
-        	Class<?> [] interfaces = c.getInterfaces();
-        	if(interfaces==null || interfaces.length<=0) {
-        		return null;
+        	// la versione V1 non implementa interfacce
+//        	Class<?> [] interfaces = c.getInterfaces();
+//        	if(interfaces==null || interfaces.length<=0) {
+//        		return null;
+//        	}
+//        	Class<?> cInterface = null;
+//        	for (int i = 0; i < interfaces.length; i++) {
+//        		if (interfaces[i] != null && interfaces[i].isAnnotationPresent(Path.class)) {
+//        			cInterface = interfaces[i];
+//        			break;
+//        		}
+//			}
+//        	if(cInterface==null) {
+//        		return null;
+//        	}
+//        	Method [] methods = cInterface.getMethods();
+        	
+        	String rsBasePathValue = "";
+        	Path rsBasePath = c.getAnnotation(Path.class);
+        	if(rsBasePath !=null) {
+        		rsBasePathValue = rsBasePath.value();
         	}
-        	Class<?> cInterface = null;
-        	for (int i = 0; i < interfaces.length; i++) {
-        		if (interfaces[i] != null && interfaces[i].isAnnotationPresent(Path.class)) {
-        			cInterface = interfaces[i];
-        			break;
-        		}
-			}
-        	if(cInterface==null) {
-        		return null;
-        	}
-        	Method [] methods = cInterface.getMethods();
+        	
+        	Method [] methods = c.getMethods();
         	if(methods==null || methods.length<=0) {
         		return null;
         	}
@@ -157,7 +179,7 @@ public abstract class BaseRsService {
         	if(path==null) {
         		return null;
         	}
-        	return path.value();
+        	return rsBasePathValue + path.value();
         } catch (Exception e) {
             this.log.error(e.getMessage(),e);
         }

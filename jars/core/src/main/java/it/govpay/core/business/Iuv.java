@@ -26,6 +26,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -37,7 +38,6 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Iuv.TipoIUV;
 
@@ -52,7 +52,7 @@ public class Iuv extends BasicBD {
 	public it.govpay.model.Iuv generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type) throws GovPayException, ServiceException, UtilsException {
 		
 		// Build prefix
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		String prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, appContext.getPagamentoCtx().getAllIuvProps(applicazione));
 		IuvBD iuvBD = new IuvBD(this);
@@ -102,7 +102,7 @@ public class Iuv extends BasicBD {
 	public void checkIUV(Dominio dominio, String iuvProposto, TipoIUV tipo) throws GovPayException, ServiceException, UtilsException {
 		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, dominio.getAuxDigit(), dominio.getStazione().getApplicationCode())) {
 //			throw new GovPayException(EsitoOperazione.VER_017, iuvProposto);
-			GpThreadLocal.get().getApplicationLogger().log("iuv.checkIUVNumericoWarn", dominio.getAuxDigit()+"", dominio.getStazione().getApplicationCode()+"",iuvProposto);
+			ContextThreadLocal.get().getApplicationLogger().log("iuv.checkIUVNumericoWarn", dominio.getAuxDigit()+"", dominio.getStazione().getApplicationCode()+"",iuvProposto);
 		}
 	}
 	
@@ -113,7 +113,7 @@ public class Iuv extends BasicBD {
 		try {
 			iuv = iuvBD.getIuv(dominio.getId(), iuvProposto);
 			if(!iuv.getCodVersamentoEnte().equals(codVersamentoEnte)) {
-				GpThreadLocal.get().getApplicationLogger().log("iuv.caricamentoIUVKo", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuvProposto);
+				ContextThreadLocal.get().getApplicationLogger().log("iuv.caricamentoIUVKo", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuvProposto);
 				throw new GovPayException(EsitoOperazione.VER_018, iuvProposto, iuv.getCodVersamentoEnte());
 			}
 		} catch (NotFoundException ne) {
@@ -128,7 +128,7 @@ public class Iuv extends BasicBD {
 			iuv.setCodVersamentoEnte(codVersamentoEnte);
 			iuv.setApplicationCode(dominio.getStazione().getApplicationCode());
 			iuvBD.insertIuv(iuv);
-			GpThreadLocal.get().getApplicationLogger().log("iuv.caricamentoIUVOk", applicazione.getCodApplicazione(), iuv.getCodVersamentoEnte(), dominio.getCodDominio(), iuv.getIuv());
+			ContextThreadLocal.get().getApplicationLogger().log("iuv.caricamentoIUVOk", applicazione.getCodApplicazione(), iuv.getCodVersamentoEnte(), dominio.getCodDominio(), iuv.getIuv());
 		}
 		return iuv;
 	}

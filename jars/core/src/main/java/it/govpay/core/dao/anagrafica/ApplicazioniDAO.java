@@ -25,6 +25,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -47,7 +48,6 @@ import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.PatchOp;
 
 public class ApplicazioniDAO extends BaseDAO {
@@ -64,7 +64,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			ApplicazioneFilter filter = null;
@@ -91,7 +91,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			return new GetApplicazioneDTOResponse(AnagraficaManager.getApplicazione(bd, getApplicazioneDTO.getCodApplicazione()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new ApplicazioneNonTrovataException("Applicazione " + getApplicazioneDTO.getCodApplicazione() + " non censita in Anagrafica");
@@ -108,7 +108,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			UtenzeBD utenzeBD = new UtenzeBD(bd);
@@ -176,7 +176,7 @@ public class ApplicazioniDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 
 			Applicazione applicazione = applicazioniBD.getApplicazione(patchDTO.getCodApplicazione());

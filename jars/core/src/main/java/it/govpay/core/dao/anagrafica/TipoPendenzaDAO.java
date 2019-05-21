@@ -20,6 +20,7 @@
 package it.govpay.core.dao.anagrafica;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -35,7 +36,6 @@ import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GpThreadLocal;
 
 public class TipoPendenzaDAO extends BaseDAO{
 	
@@ -52,7 +52,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			TipiVersamentoBD intermediariBD = new TipiVersamentoBD(bd);
 			TipoVersamentoFilter filter = intermediariBD.newFilter(false);
 			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
@@ -78,7 +78,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			TipiVersamentoBD stazioneBD = new TipiVersamentoBD(bd);
 			TipoVersamentoFilter filter = null;
@@ -108,7 +108,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			response = new GetTipoPendenzaDTOResponse(AnagraficaManager.getTipoVersamento(bd, getTipoPendenzaDTO.getCodTipoVersamento()));
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoVersamentoNonTrovatoException("TipoPendenza " + getTipoPendenzaDTO.getCodTipoVersamento() + " non censita in Anagrafica");

@@ -1,8 +1,8 @@
 package it.govpay.core.utils.service.context;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.UriInfo;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.ws.rs.core.HttpHeaders;
+//import javax.ws.rs.core.UriInfo;
 import javax.xml.ws.handler.MessageContext;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -61,20 +61,20 @@ public class GpContextFactory extends ContextFactory implements IContextFactory 
 		}
 	}
 	
-	public Context newContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders, HttpServletRequest request,
-				String nomeOperazione, String nomeServizio, String tipoServizio, int versioneServizio) throws UtilsException {
-		
-		ILogger logger = LoggerFactory.newLogger();
-		
-		GpContext context;
-		try {
-			context = new GpContext(uriInfo, rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);
-			logger.initLogger(context);
-			return new Context(logger, this.isLoggerPrefixEnabled());	
-		} catch (ServiceException e) {
-			throw new UtilsException(e);
-		}
-	}
+//	public Context newContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders, HttpServletRequest request,
+//				String nomeOperazione, String nomeServizio, String tipoServizio, int versioneServizio) throws UtilsException {
+//		
+//		ILogger logger = LoggerFactory.newLogger();
+//		
+//		GpContext context;
+//		try {
+//			context = new GpContext(uriInfo, rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);
+//			logger.initLogger(context);
+//			return new Context(logger, this.isLoggerPrefixEnabled());	
+//		} catch (ServiceException e) {
+//			throw new UtilsException(e);
+//		}
+//	}
 	
 	public Context newContext(String requestUri, String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user) throws UtilsException {
 		

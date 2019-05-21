@@ -2,6 +2,7 @@ package it.govpay.core.dao.anagrafica;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AclBD;
@@ -15,7 +16,6 @@ import it.govpay.core.dao.anagrafica.exception.AclNonTrovatoException;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GpThreadLocal;
 
 public class AclDAO extends BaseDAO{
 	
@@ -44,7 +44,7 @@ public class AclDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			return this._listaAcl(listaAclDTO, bd);
 		} finally {
 			if(bd != null)
@@ -93,7 +93,7 @@ public class AclDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			AclBD aclBD = new AclBD(bd);
 			PostAclDTOResponse leggiAclDTOResponse = new PostAclDTOResponse();
@@ -125,7 +125,7 @@ public class AclDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			new AclBD(bd).deleteAcl(deleteAclDTO.getIdAcl());
 		} catch (NotFoundException e) {
 			throw new AclNonTrovatoException(e.getMessage());

@@ -29,6 +29,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -55,7 +56,6 @@ import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
@@ -79,7 +79,7 @@ public class Incassi extends BasicBD {
 	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncasso) throws NotAuthorizedException, GovPayException, IncassiException {
 		
 		try {
-			IContext ctx = GpThreadLocal.get();
+			IContext ctx = ContextThreadLocal.get();
 			ctx.getApplicationLogger().log("incasso.richiesta");
 			
 			// Validazione dati obbligatori

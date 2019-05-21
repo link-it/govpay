@@ -94,42 +94,6 @@ public abstract class BaseController {
 		return 1;
 	}
 	
-//	public void setupContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione) throws ServiceException, UtilsException {
-//		GpContextFactory factory  = new GpContextFactory();
-//		IContext ctx = factory.newContext(uriInfo,rsHttpHeaders, this.request, nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione());
-//		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
-//		GpThreadLocal.set(ctx);
-//	}
-//
-//	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException, ResponseValidationException, ServiceException, UtilsException  {
-//		if(o != null && o instanceof JSONSerializable) {
-//			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((JSONSerializable) o).toJSON(null).getBytes(), responseCode);
-//		}
-//		else if(o != null && o instanceof String) {
-//			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((String) o).getBytes(), responseCode);
-//		}
-//		else{
-//			ObjectMapper mapper = new ObjectMapper();
-//			String json = mapper.writeValueAsString(o);
-//			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, json.getBytes(), responseCode);
-//		}
-//	}
-//	
-//	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws RequestValidationException, UtilsException {
-//		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-//				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
-//	}
-//	
-//	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, byte[] baos) throws RequestValidationException, UtilsException{
-//		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-//				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
-//	}
-//
-//	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) throws ResponseValidationException, UtilsException {
-//		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
-//				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);
-//	}
-	
 	public URI getServicePath(UriInfo uriInfo) throws URISyntaxException {
 		String baseUri = uriInfo.getBaseUri().toString();
 		String requestUri = uriInfo.getRequestUri().toString();
@@ -191,11 +155,6 @@ public abstract class BaseController {
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
 		respKo.setDescrizione("Errore interno");
 		respKo.setDettaglio(e.getMessage());
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, Status.INTERNAL_SERVER_ERROR.getStatusCode());
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta", e1);
-//		}
 		
 		String respKoJson = this.getRespJson(respKo);
 		 
@@ -226,12 +185,6 @@ public abstract class BaseController {
 		respKo.setCodice(e.getCode());
 		respKo.setDescrizione(e.getMessage());
 		respKo.setDettaglio(e.getDetails());
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, e.getTransportErrorCode());
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 
 		String respJson = this.getRespJson(respKo);
 		return handleResponseKo(Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
@@ -253,12 +206,6 @@ public abstract class BaseController {
 			respKo.setDescrizione(e.getDescrizioneEsito());
 			respKo.setDettaglio(e.getMessageV3());
 		}
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 		
 		String respJson = this.getRespJson(respKo);
 		
@@ -274,12 +221,6 @@ public abstract class BaseController {
 			respKo.setDettaglio(e.getMessage());
 		
 		int statusCode = 400;
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 		
 		String respJson = this.getRespJson(respKo);
 		

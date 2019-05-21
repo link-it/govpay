@@ -19,6 +19,19 @@
  */
 package it.govpay.core.utils;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+
+import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
+
+import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPSP;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiMarcaBolloDigitale;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloVersamentoRPT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRPT;
@@ -34,34 +47,21 @@ import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoVersamento;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.pagamento.util.IuvUtils;
-import it.govpay.model.Anagrafica;
-import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
-import it.govpay.model.IbanAccredito;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.util.IuvUtils;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.IbanAccredito;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.SingoloVersamento.TipoBollo;
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
-
-import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-
-import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPSP;
 
 public class RptBuilder {
 	
@@ -161,7 +161,7 @@ public class RptBuilder {
 		rpt.setModelloPagamento(modelloPagamento);
 		rpt.setPspRedirectURL(null);
 		rpt.setStato(StatoRpt.RPT_ATTIVATA);
-		rpt.setIdTransazioneRpt(GpThreadLocal.get().getTransactionId());
+		rpt.setIdTransazioneRpt(ContextThreadLocal.get().getTransactionId());
 		rpt.setBloccante(true);
 		rpt.setEsitoPagamento(EsitoPagamento.IN_CORSO);
 

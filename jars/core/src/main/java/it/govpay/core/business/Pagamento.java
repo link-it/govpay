@@ -35,6 +35,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -63,7 +64,6 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
@@ -87,7 +87,7 @@ public class Pagamento extends BasicBD {
 
 	public String verificaTransazioniPendenti() throws GovPayException {
 
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		List<String> response = new ArrayList<>();
 		try {
 			ctx.getApplicationLogger().log("pendenti.avvio");
@@ -131,7 +131,7 @@ public class Pagamento extends BasicBD {
 
 				// Ho acquisito tutti gli stati pendenti. 
 				// Tutte quelle in stato terminale, 
-			//	this.setupConnection(GpThreadLocal.get().getTransactionId());
+			//	this.setupConnection(ContextThreadLocal.get().getTransactionId());
 
 				RptBD rptBD = new RptBD(this);
 
@@ -231,7 +231,7 @@ public class Pagamento extends BasicBD {
 	 * @throws UtilsException 
 	 */
 	private Map<String, String> acquisisciPendenti(NodoClient client, Intermediario intermediario, Stazione stazione, List<Dominio> lstDomini, boolean perDominio, Calendar da, Calendar a, long soglia) throws UtilsException {
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		Map<String, String> statiRptPendenti = new HashMap<>();
 		
@@ -345,7 +345,7 @@ public class Pagamento extends BasicBD {
 	}
 
 	public AvviaRichiestaStornoDTOResponse avviaStorno(AvviaRichiestaStornoDTO dto) throws ServiceException, GovPayException, UtilsException {
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<>(); 
 		Rpt rpt = null;

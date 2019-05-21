@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -21,9 +22,6 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Acl.Diritti;
-import it.govpay.model.Acl.Servizio;
 import it.govpay.orm.VistaRiscossioni;
 
 public class EntratePrevisteDAO extends BaseDAO{
@@ -33,7 +31,7 @@ public class EntratePrevisteDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			// Autorizzazione sui domini
 			List<String> codDomini = AuthorizationManager.getDominiAutorizzati(listaEntratePrevisteDTO.getUser());
 			if(codDomini == null) {

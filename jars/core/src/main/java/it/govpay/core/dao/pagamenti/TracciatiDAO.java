@@ -32,6 +32,7 @@ import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
@@ -56,7 +57,6 @@ import it.govpay.core.dao.pagamenti.exception.TracciatoNonTrovatoException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
@@ -72,7 +72,7 @@ public class TracciatiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
 			tracciato.getOperatore(bd);
@@ -91,7 +91,7 @@ public class TracciatiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
@@ -114,7 +114,7 @@ public class TracciatiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			TracciatiBD tracciatoBD = new TracciatiBD(bd);
 			Tracciato tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId());
@@ -138,7 +138,7 @@ public class TracciatiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			return this.listaTracciati(listaTracciatiDTO, bd);
 		} finally {
@@ -192,7 +192,7 @@ public class TracciatiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			
 			SerializationConfig config = new SerializationConfig();
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -245,7 +245,7 @@ public class TracciatiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			return this.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO, bd);
 		} finally {

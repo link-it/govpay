@@ -95,7 +95,7 @@ public class Check {
 						StringBuffer sb = new StringBuffer(parametri.getNome());
 						sb.append(": ").append(writer.getBuffer().toString());
 						String msg = sb.toString();
-						log.info(msg);
+						log.debug(msg);
 					}
 
 					sommarioSonda.setNome(parametri.getNome());

@@ -11,6 +11,7 @@ import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.application.ApplicationContext;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -37,7 +38,6 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
@@ -65,7 +65,7 @@ public class Rpt extends BasicBD{
 	}
 
 	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Authentication authentication, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException, UtilsException {
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		try {
 			appContext.getPagamentoCtx().setCarrello(true);
@@ -256,7 +256,7 @@ public class Rpt extends BasicBD{
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
 				risposta = RptUtils.inviaCarrelloRPT(intermediario, stazione, rpts, operationId, this);
-				this.setupConnection(GpThreadLocal.get().getTransactionId());
+				this.setupConnection(ContextThreadLocal.get().getTransactionId());
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
@@ -366,7 +366,7 @@ public class Rpt extends BasicBD{
 	}
 
 	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, PagamentoPortale pagamentoPortale, Exception e) throws ServiceException, GovPayException, UtilsException { 
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
 		this.setupConnection(ctx.getTransactionId());
 		String sessionId = null;

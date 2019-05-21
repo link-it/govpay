@@ -7,6 +7,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Pagamento;
@@ -20,7 +21,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RiscossioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GpThreadLocal;
 
 public class RiscossioniDAO extends BaseDAO{
 
@@ -31,7 +31,7 @@ public class RiscossioniDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			PagamentoFilter filter = pagamentiBD.newFilter();
@@ -78,7 +78,7 @@ public class RiscossioniDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			Pagamento flussoPagamento = pagamentiBD.getPagamento(leggiRiscossioniDTO.getIdDominio(), leggiRiscossioniDTO.getIuv(), leggiRiscossioniDTO.getIur(), leggiRiscossioniDTO.getIndice());

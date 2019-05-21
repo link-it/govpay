@@ -49,10 +49,6 @@ public class GovpayConfig {
 	}
 
 	public static final String PROPERTIES_FILE = "/govpay.properties";
-	public static final String GOVPAY_BACKOFFICE_OPEN_API_FILE = "/govpay-api-backoffice.json";
-	public static final String GOVPAY_BACKOFFICE_OPEN_API_FILE_NAME = "back_office";
-	public static final String GOVPAY_PAGAMENTI_OPEN_API_FILE = "/govpay-api-pagamento.yaml";
-	public static final String GOVPAY_PAGAMENTI_OPEN_API_FILE_NAME = "pagamenti";
 	public static final String MSG_DIAGNOSTICI_PROPERTIES_FILE = "/msgDiagnostici.properties";
 	public static final String LOG4J2_XML_FILE = "/log4j2.xml";
 	
@@ -98,7 +94,6 @@ public class GovpayConfig {
 	
 	private String urlGovpayWC = null;
 	
-	private boolean validazioneAPIRest;
 	private boolean dumpAPIRestGETResponse;
 	
 	private String appName;
@@ -148,7 +143,6 @@ public class GovpayConfig {
 		this.mLogDS = null;
 		this.batchOn=true;
 		this.pddAuthEnable = true;
-		this.validazioneAPIRest = false;
 		this.dumpAPIRestGETResponse = false;
 		this.batchCaricamentoTracciati = false;
 		this.timeoutPendentiModello3 = false;
@@ -393,10 +387,6 @@ public class GovpayConfig {
 			String batchCaricamentoTracciatiString = getProperty("it.govpay.batch.caricamentoTracciati.enabled", this.props, false, log);
 			if(batchCaricamentoTracciatiString != null && Boolean.valueOf(batchCaricamentoTracciatiString))
 				this.batchCaricamentoTracciati = true;
-			
-			String validazioneAPIRestString = getProperty("it.govpay.rs.validazione.enabled", this.props, false, log);
-			if(validazioneAPIRestString != null && Boolean.valueOf(validazioneAPIRestString))
-				this.validazioneAPIRest = true;
 			
 			String dumpAPIRestGETResponseMessageString = getProperty("it.govpay.rs.dumpGetResponse.enabled", this.props, false, log);
 			if(dumpAPIRestGETResponseMessageString != null && Boolean.valueOf(dumpAPIRestGETResponseMessageString))
@@ -678,10 +668,6 @@ public class GovpayConfig {
 
 	public boolean isBatchAvvisiPagamento() {
 		return this.batchAvvisiPagamento;
-	}
-	
-	public boolean isValidazioneAPIRestAbilitata() {
-		return this.validazioneAPIRest;
 	}
 
 	public boolean isDumpAPIRestGETResponse() {

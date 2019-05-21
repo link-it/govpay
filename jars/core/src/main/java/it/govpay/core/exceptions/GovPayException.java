@@ -21,6 +21,7 @@ package it.govpay.core.exceptions;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
@@ -28,7 +29,6 @@ import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 
 public class GovPayException extends Exception {
@@ -503,7 +503,7 @@ public class GovPayException extends Exception {
 			response.setDettaglioEsito(this.getMessage());
 			this.log(log);
 			try {
-				GpThreadLocal.get().getApplicationLogger().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
+				ContextThreadLocal.get().getApplicationLogger().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
 			} catch (UtilsException e) {
 				LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la scrittura dell'esito operazione: "+ e.getMessage(),e);
 			}

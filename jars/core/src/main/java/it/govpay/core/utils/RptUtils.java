@@ -32,6 +32,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -147,9 +148,9 @@ public class RptUtils {
 			// Se mi chiama InviaRptThread, BD e' null
 			boolean newCon = bd == null;
 			if(!newCon) 
-				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
 			else {
-				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			}
 			
 			try {
@@ -190,9 +191,9 @@ public class RptUtils {
 			// Se mi chiama InviaRptThread, BD e' null
 			boolean newCon = bd == null;
 			if(!newCon) 
-				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
 			else {
-				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			}
 			try {
 				GiornaleEventi giornale = new GiornaleEventi(bd);
@@ -266,7 +267,7 @@ public class RptUtils {
 			boolean insertNotificaOk = false;
 			String msg = ".";
 			StatoRpt stato_originale = rpt.getStato();
-			IContext ctx = GpThreadLocal.get();
+			IContext ctx = ContextThreadLocal.get();
 			GpContext appContext = (GpContext) ctx.getApplicationContext();
 			switch (stato_originale) {
 			case RPT_RIFIUTATA_NODO:

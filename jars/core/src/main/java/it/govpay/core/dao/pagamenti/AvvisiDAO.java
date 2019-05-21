@@ -20,6 +20,7 @@
 package it.govpay.core.dao.pagamenti;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
@@ -38,7 +39,6 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
@@ -49,7 +49,7 @@ public class AvvisiDAO extends BaseDAO{
 		Versamento versamento = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 

@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.dump.DumpRequest;
 import org.openspcoop2.utils.service.context.dump.DumpResponse;
@@ -60,7 +61,6 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
 import it.govpay.model.Connettore;
@@ -286,7 +286,7 @@ public abstract class BasicClient {
 		int responseCode;
 		HttpURLConnection connection = null;
 		byte[] msg = null;
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		String urlString = this.url.toExternalForm();
 		if(isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
@@ -454,7 +454,7 @@ public abstract class BasicClient {
 		int responseCode;
 		HttpURLConnection connection = null;
 		byte[] msg = null;
-		IContext ctx = GpThreadLocal.get();
+		IContext ctx = ContextThreadLocal.get();
 		String urlString = this.url.toExternalForm();
 		if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		try {

@@ -26,6 +26,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
@@ -58,7 +59,6 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.PatchOp;
 
 
@@ -76,7 +76,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 		LeggiProfiloDTOResponse response = new LeggiProfiloDTOResponse();
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 			response.setNome(userDetails.getIdentificativo());
@@ -108,7 +108,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			OperatoriBD applicazioniBD = new OperatoriBD(bd);
 			
 			Operatore operatore = applicazioniBD.getOperatore(leggiOperatore.getPrincipal());
@@ -127,7 +127,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			OperatoriBD applicazioniBD = new OperatoriBD(bd);
 			OperatoreFilter filter = null;
@@ -157,7 +157,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			UtenzeBD utenzeBD = new UtenzeBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter(false);
@@ -222,7 +222,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			new OperatoriBD(bd).deleteOperatore(deleteOperatoreDTO.getPrincipal());
 		} catch (NotFoundException e) {
 			throw new OperatoreNonTrovatoException(e.getMessage());
@@ -237,7 +237,7 @@ public class UtentiDAO extends BaseDAO{
 		BasicBD bd = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId(), useCacheData);
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			Operatore operatore = operatoriBD.getOperatore(patchDTO.getIdOperatore());

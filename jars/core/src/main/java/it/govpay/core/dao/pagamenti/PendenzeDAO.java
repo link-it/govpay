@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
@@ -79,7 +80,6 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
@@ -108,7 +108,7 @@ public class PendenzeDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			return this.listaPendenzeConInformazioniIncasso(listaPendenzaDTO, bd);
 		}finally {
 			if(bd != null)
@@ -206,7 +206,7 @@ public class PendenzeDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 //			return listaPendenzaDTO.isInfoIncasso() ? this.listaPendenzeConInformazioniIncasso(listaPendenzaDTO, bd) : this.listaPendenze(listaPendenzaDTO, bd);
 			return this.listaPendenze(listaPendenzaDTO, bd);
 		}finally {
@@ -308,7 +308,7 @@ public class PendenzeDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
 			versamentoIncasso = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
@@ -378,7 +378,7 @@ public class PendenzeDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			Versamento versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, leggiPendenzaDTO.getCodA2A()).getId(), leggiPendenzaDTO.getCodPendenza());
@@ -497,7 +497,7 @@ public class PendenzeDAO extends BaseDAO{
 		
 		try {
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(patchPendenzaDTO.getUser());
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
@@ -707,7 +707,7 @@ public class PendenzeDAO extends BaseDAO{
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
@@ -771,7 +771,7 @@ public class PendenzeDAO extends BaseDAO{
 		BasicBD bd = null;
 		
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(leggiPendenzaDTO.getIdDominio(), leggiPendenzaDTO.getNumeroAvviso()); 

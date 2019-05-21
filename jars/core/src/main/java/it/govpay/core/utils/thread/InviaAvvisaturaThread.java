@@ -11,6 +11,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
@@ -32,7 +33,6 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.AvvisaturaClient;
 import it.govpay.core.utils.client.AvvisaturaClient.Azione;
 import it.govpay.core.utils.client.BasicClient.ClientException;
@@ -77,8 +77,8 @@ public class InviaAvvisaturaThread implements Runnable {
 
 	@Override
 	public void run() {
-		GpThreadLocal.set(this.ctx);
-		IContext ctx = GpThreadLocal.get();
+		ContextThreadLocal.set(this.ctx);
+		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		BasicBD bd = null;
 		GiornaleEventi giornaleEventi = null;
@@ -220,7 +220,7 @@ public class InviaAvvisaturaThread implements Runnable {
 //				} catch (UtilsException e) {
 //					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 //				}
-			GpThreadLocal.unset();
+			ContextThreadLocal.unset();
 		}
 	}
 
