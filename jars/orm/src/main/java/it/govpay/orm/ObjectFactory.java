@@ -347,6 +347,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Configurazione }
+     */
+    public Configurazione createConfigurazione() {
+        return new Configurazione();
+    }
+
+    /**
      * Create an instance of {@link Rendicontazione }
      */
     public Rendicontazione createRendicontazione() {

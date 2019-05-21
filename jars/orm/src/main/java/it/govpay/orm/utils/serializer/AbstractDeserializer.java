@@ -30,6 +30,7 @@ import it.govpay.orm.ACL;
 import it.govpay.orm.Applicazione;
 import it.govpay.orm.Audit;
 import it.govpay.orm.Batch;
+import it.govpay.orm.Configurazione;
 import it.govpay.orm.Connettore;
 import it.govpay.orm.Dominio;
 import it.govpay.orm.EsitoAvvisatura;
@@ -3947,6 +3948,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public UtenzaDominio readUtenzaDominioFromString(String in) throws DeserializerException {
 		return (UtenzaDominio) this.xmlToObj(in.getBytes(), UtenzaDominio.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: Configurazione
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.Configurazione}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Configurazione}
+	 * @return Object type {@link it.govpay.orm.Configurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Configurazione readConfigurazione(String fileName) throws DeserializerException {
+		return (Configurazione) this.xmlToObj(fileName, Configurazione.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.Configurazione}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Configurazione}
+	 * @return Object type {@link it.govpay.orm.Configurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Configurazione readConfigurazione(File file) throws DeserializerException {
+		return (Configurazione) this.xmlToObj(file, Configurazione.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.Configurazione}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.Configurazione}
+	 * @return Object type {@link it.govpay.orm.Configurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Configurazione readConfigurazione(InputStream in) throws DeserializerException {
+		return (Configurazione) this.xmlToObj(in, Configurazione.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.Configurazione}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.Configurazione}
+	 * @return Object type {@link it.govpay.orm.Configurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Configurazione readConfigurazione(byte[] in) throws DeserializerException {
+		return (Configurazione) this.xmlToObj(in, Configurazione.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.Configurazione}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.Configurazione}
+	 * @return Object type {@link it.govpay.orm.Configurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Configurazione readConfigurazioneFromString(String in) throws DeserializerException {
+		return (Configurazione) this.xmlToObj(in.getBytes(), Configurazione.class);
 	}	
 	
 	

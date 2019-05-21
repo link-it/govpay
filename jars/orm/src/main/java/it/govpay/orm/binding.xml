@@ -331,6 +331,10 @@
     <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
     <value name="tipo" field="tipo" usage="required"/>
   </mapping>
+  <mapping name="Configurazione" class="it.govpay.orm.Configurazione">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="giornaleEventi" field="giornaleEventi" usage="optional"/>
+  </mapping>
   <mapping name="Dominio" class="it.govpay.orm.Dominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure field="idStazione" usage="required" map-as="it.govpay.orm.IdStazione"/>

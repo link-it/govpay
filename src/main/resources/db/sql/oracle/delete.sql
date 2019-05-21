@@ -34,3 +34,4 @@ DELETE FROM applicazioni;
 DELETE FROM utenze;
 DELETE FROM stazioni;
 DELETE FROM intermediari;
+DELETE FROM configurazione;

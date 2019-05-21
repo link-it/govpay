@@ -34,11 +34,13 @@ import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IAuditService;
 import it.govpay.orm.dao.IBatchService;
+import it.govpay.orm.dao.IConfigurazioneService;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.IDBApplicazioneService;
 import it.govpay.orm.dao.IDBAuditService;
 import it.govpay.orm.dao.IDBBatchService;
+import it.govpay.orm.dao.IDBConfigurazioneService;
 import it.govpay.orm.dao.IDBConnettoreService;
 import it.govpay.orm.dao.IDBDominioService;
 import it.govpay.orm.dao.IDBEsitoAvvisaturaService;
@@ -147,7 +149,7 @@ public class BasicBD {
 	private IVersamentoIncassoServiceSearch versamentoIncassoServiceSearch;
 	private IVistaRiscossioniServiceSearch vistaRiscossioniServiceSearch;
 	private IStampaService stampaService;
-	
+	private IConfigurazioneService configurazioneService;
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
 	
 	private String idTransaction;
@@ -236,7 +238,7 @@ public class BasicBD {
 				this.versamentoIncassoServiceSearch = this.serviceManager.getVersamentoIncassoServiceSearch();
 				this.vistaRiscossioniServiceSearch = this.serviceManager.getVistaRiscossioniServiceSearch();
 				this.stampaService = this.serviceManager.getStampaService();
-				
+				this.configurazioneService = this.serviceManager.getConfigurazioneService();
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
@@ -287,6 +289,7 @@ public class BasicBD {
 			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
 			((IDBAuditService)this.auditService).enableSelectForUpdate();
 			((IDBStampaService)this.stampaService).enableSelectForUpdate();
+			((IDBConfigurazioneService)this.configurazioneService).enableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
@@ -334,6 +337,7 @@ public class BasicBD {
 			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
 			((IDBAuditService)this.auditService).disableSelectForUpdate();
 			((IDBStampaService)this.stampaService).disableSelectForUpdate();
+			((IDBConfigurazioneService)this.configurazioneService).disableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
@@ -614,6 +618,13 @@ public class BasicBD {
 			return this.father.getVistaRiscossioniServiceSearch();
 		}
 		return vistaRiscossioniServiceSearch;
+	}
+	
+	public IConfigurazioneService getConfigurazioneService() {
+		if(this.father != null) {
+			return this.father.getConfigurazioneService();
+		}
+		return this.configurazioneService;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {

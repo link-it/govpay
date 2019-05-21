@@ -34,6 +34,8 @@ import it.govpay.orm.dao.IAuditService;
 import it.govpay.orm.dao.IAuditServiceSearch;
 import it.govpay.orm.dao.IBatchService;
 import it.govpay.orm.dao.IBatchServiceSearch;
+import it.govpay.orm.dao.IConfigurazioneService;
+import it.govpay.orm.dao.IConfigurazioneServiceSearch;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IConnettoreServiceSearch;
 import it.govpay.orm.dao.IDominioService;
@@ -137,6 +139,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	protected DataSource get_Datasource() throws ServiceException {
 		throw new ServiceException("Connection managed from framework");
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Configurazione type:Configurazione
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Configurazione}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Configurazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IConfigurazioneServiceSearch getConfigurazioneServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCConfigurazioneServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Configurazione}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Configurazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IConfigurazioneService getConfigurazioneService() throws ServiceException,NotImplementedException{
+		return new JDBCConfigurazioneService(this.unlimitedJdbcServiceManager);
 	}
 	
 	
