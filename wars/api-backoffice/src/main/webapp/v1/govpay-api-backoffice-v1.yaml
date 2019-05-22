@@ -3733,29 +3733,29 @@ components:
       scheme: basic
   schemas:
     giornale:
-      type: array
-      items:
-        type: object
-        properties:
-          interfacce:
-            type: object
-            required:
-              - apiEnte
-              - apiPagamento
-              - apiRagioneria
-              - apiBackoffice
-              - apiPagoPA
-            properties:
-              apiEnte:
-                $ref: '#/components/schemas/gdeInterfaccia'
-              apiPagamento:
-                $ref: '#/components/schemas/gdeInterfaccia'
-              apiRagioneria:
-                $ref: '#/components/schemas/gdeInterfaccia'
-              apiBackoffice:
-                $ref: '#/components/schemas/gdeInterfaccia'
-              apiPagoPA:
-                $ref: '#/components/schemas/gdeInterfaccia'
+      type: object
+      required:
+        - interfacce
+      properties:
+        interfacce:
+          type: object
+          required:
+            - apiEnte
+            - apiPagamento
+            - apiRagioneria
+            - apiBackoffice
+            - apiPagoPA
+          properties:
+            apiEnte:
+              $ref: '#/components/schemas/gdeInterfaccia'
+            apiPagamento:
+              $ref: '#/components/schemas/gdeInterfaccia'
+            apiRagioneria:
+              $ref: '#/components/schemas/gdeInterfaccia'
+            apiBackoffice:
+              $ref: '#/components/schemas/gdeInterfaccia'
+            apiPagoPA:
+              $ref: '#/components/schemas/gdeInterfaccia'
     gdeInterfaccia:
       type: object
       properties:
