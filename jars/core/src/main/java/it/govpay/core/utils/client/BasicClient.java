@@ -425,7 +425,7 @@ public abstract class BasicClient {
 	
 	private ServerConfig getServerConfig(IContext ctx) {
 		ServerConfig serverConfig = new ServerConfig();
-		serverConfig.setDump(GovpayConfig.getInstance().isContextDumpEnabled());
+		serverConfig.setDump(GovpayConfig.getInstance().isScritturaDumpFileEnabled());
 		serverConfig.setOperationId(this.getOperationId());
 		serverConfig.setServerId(this.serverID);
 		return serverConfig;

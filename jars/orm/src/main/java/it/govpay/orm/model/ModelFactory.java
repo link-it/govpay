@@ -29,6 +29,8 @@ package it.govpay.orm.model;
  */
 public class ModelFactory {
 
+	public static ConfigurazioneModel CONFIGURAZIONE = new ConfigurazioneModel();
+	
 	public static DominioModel DOMINIO = new DominioModel();
 	
 	public static UoModel UO = new UoModel();

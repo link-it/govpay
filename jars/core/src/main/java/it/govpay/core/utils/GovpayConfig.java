@@ -92,10 +92,6 @@ public class GovpayConfig {
 	private Properties[] props;
 	private IConservazione conservazionePlugin;
 	
-	private String urlGovpayWC = null;
-	
-	private boolean dumpAPIRestGETResponse;
-	
 	private String appName;
 	private String ambienteDeploy;
 	
@@ -116,13 +112,14 @@ public class GovpayConfig {
 	
 	private Integer intervalloDisponibilitaPagamentoUtenzaAnonima;
 	
-	private boolean contextDumpEnabled;
+	private boolean scritturaDiagnosticiFileEnabled;
+	private boolean scritturaDumpFileEnabled;
 	
 	private String codTipoVersamentoPendenzeLibere;
 	private String codTipoVersamentoPendenzeNonCensite;
 	
 	private Properties corsProperties;
-
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -143,7 +140,6 @@ public class GovpayConfig {
 		this.mLogDS = null;
 		this.batchOn=true;
 		this.pddAuthEnable = true;
-		this.dumpAPIRestGETResponse = false;
 		this.batchCaricamentoTracciati = false;
 		this.timeoutPendentiModello3 = false;
 		this.timeoutPendentiModello3Mins = null;
@@ -173,7 +169,9 @@ public class GovpayConfig {
 		this.codTipoVersamentoPendenzeLibere = Versamento.TIPO_VERSAMENTO_LIBERO;
 		this.codTipoVersamentoPendenzeNonCensite = Versamento.TIPO_VERSAMENTO_LIBERO;
 		
-		this.contextDumpEnabled = true;
+		this.scritturaDiagnosticiFileEnabled = false;
+		this.scritturaDumpFileEnabled = false;
+		
 		this.corsProperties = new Properties();
 		try {
 
@@ -378,8 +376,6 @@ public class GovpayConfig {
 				this.conservazionePlugin = (IConservazione) instance;
 			}
 			
-			this.urlGovpayWC = getProperty("it.govpay.wc.url", this.props, false, log);
-
 			String batchAvvisiPagamentoStampaAvvisiString = getProperty("it.govpay.batch.avvisiPagamento.stampaAvvisiPagamento", this.props, false, log);
 			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
 				this.batchAvvisiPagamento = true;
@@ -387,10 +383,6 @@ public class GovpayConfig {
 			String batchCaricamentoTracciatiString = getProperty("it.govpay.batch.caricamentoTracciati.enabled", this.props, false, log);
 			if(batchCaricamentoTracciatiString != null && Boolean.valueOf(batchCaricamentoTracciatiString))
 				this.batchCaricamentoTracciati = true;
-			
-			String dumpAPIRestGETResponseMessageString = getProperty("it.govpay.rs.dumpGetResponse.enabled", this.props, false, log);
-			if(dumpAPIRestGETResponseMessageString != null && Boolean.valueOf(dumpAPIRestGETResponseMessageString))
-				this.dumpAPIRestGETResponse = true;
 			
 			String timeoutPendentiString = getProperty("it.govpay.modello3.timeoutPagamento", props, false, log);
 			if(timeoutPendentiString != null && !timeoutPendentiString.equalsIgnoreCase("false")) {
@@ -488,6 +480,15 @@ public class GovpayConfig {
 			
 			Map<String, String> properties = getProperties("it.govpay.configurazioneFiltroCors.",this.props, false, log);
 			this.corsProperties.putAll(properties);
+			
+			
+			String scritturaDiagnosticiFileEnabledString = getProperty("it.govpay.context.savataggioDiagnosticiSuFile.enabled", this.props, false, log);
+			if(scritturaDiagnosticiFileEnabledString != null && Boolean.valueOf(scritturaDiagnosticiFileEnabledString))
+				this.scritturaDiagnosticiFileEnabled = true;
+			
+			String scritturaDumpFileEnabledString = getProperty("it.govpay.context.savataggioDumpSuFile.enabled", this.props, false, log);
+			if(scritturaDumpFileEnabledString != null && Boolean.valueOf(scritturaDumpFileEnabledString))
+				this.scritturaDumpFileEnabled = true;
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -662,16 +663,8 @@ public class GovpayConfig {
 		return this.conservazionePlugin;
 	}
 
-	public String getUrlGovpayWC() {
-		return this.urlGovpayWC;
-	}
-
 	public boolean isBatchAvvisiPagamento() {
 		return this.batchAvvisiPagamento;
-	}
-
-	public boolean isDumpAPIRestGETResponse() {
-		return this.dumpAPIRestGETResponse;
 	}
 
 	public Integer getCacheLogo() {
@@ -758,10 +751,6 @@ public class GovpayConfig {
 		return intervalloControlloRptPendenti;
 	}
 
-	public boolean isContextDumpEnabled() {
-		return contextDumpEnabled;
-	}
-
 	public Integer getIntervalloDisponibilitaPagamentoUtenzaAnonima() {
 		return intervalloDisponibilitaPagamentoUtenzaAnonima;
 	}
@@ -777,4 +766,13 @@ public class GovpayConfig {
 	public Properties getCORSProperties() {
 		return corsProperties;
 	}
+
+	public boolean isScritturaDiagnosticiFileEnabled() {
+		return scritturaDiagnosticiFileEnabled;
+	}
+
+	public boolean isScritturaDumpFileEnabled() {
+		return scritturaDumpFileEnabled;
+	}
+
 }

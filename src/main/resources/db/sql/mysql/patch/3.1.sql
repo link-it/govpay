@@ -422,3 +422,14 @@ CREATE TABLE stampe
 CREATE UNIQUE INDEX index_stampe_1 ON stampe (id_versamento,tipo);
 
 
+
+-- 21/05/2019 Aggiunta tabella per memorizzare la configurazione
+
+CREATE TABLE configurazione
+(
+	giornale_eventi LONGTEXT,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_configurazione PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;

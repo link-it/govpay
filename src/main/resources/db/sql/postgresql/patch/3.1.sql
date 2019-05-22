@@ -503,4 +503,18 @@ CREATE TABLE stampe
 );
 
 
+-- 21/05/2019 Aggiunta tabella per memorizzare la configurazione
+
+CREATE SEQUENCE seq_configurazione start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE configurazione
+(
+	giornale_eventi TEXT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_configurazione') NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_configurazione PRIMARY KEY (id)
+);
+
+
 

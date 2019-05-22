@@ -1,6 +1,19 @@
 -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE
 -- SET @@SESSION.sql_mode=(SELECT REPLACE(@@SESSION.sql_mode,'NO_ZERO_DATE',''));
 
+
+CREATE TABLE configurazione
+(
+	giornale_eventi LONGTEXT,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_configurazione PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+
+
+
 CREATE TABLE intermediari
 (
 	cod_intermediario VARCHAR(35) NOT NULL COMMENT 'Identificativo intermediario su pagopa',

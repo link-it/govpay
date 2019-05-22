@@ -1,3 +1,17 @@
+CREATE SEQUENCE seq_configurazione start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE configurazione
+(
+	giornale_eventi TEXT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_configurazione') NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT pk_configurazione PRIMARY KEY (id)
+);
+
+
+
+
 CREATE SEQUENCE seq_intermediari start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE intermediari

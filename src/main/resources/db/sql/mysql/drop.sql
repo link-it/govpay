@@ -35,3 +35,4 @@ DROP TABLE applicazioni;
 DROP TABLE utenze;
 DROP TABLE stazioni;
 DROP TABLE intermediari;
+DROP TABLE configurazione;
