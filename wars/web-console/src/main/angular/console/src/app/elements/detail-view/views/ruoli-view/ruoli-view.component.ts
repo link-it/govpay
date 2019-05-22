@@ -51,12 +51,17 @@ export class RuoliViewComponent implements OnInit, IModalDialog {
       });
       auths = (auths.length != 0)?auths.join(', '):'Nessuna.';
       let _std = new Standard();
-      _std.titolo = new Dato({ label: item.servizio, value: '' });
+      _std.titolo = new Dato({ label: this.us.mapACL(item.servizio), value: '' });
       _std.sottotitolo = new Dato({ label: Voce.AUTORIZZAZIONI+': ', value: auths });
       let p = new Parameters();
       p.jsonP = item;
       p.model = _std;
       return p;
+    });
+
+    // Sort autorizzazioni
+    this.autorizzazioni.sort((item1, item2) => {
+      return (item1.model.titolo.label>item2.model.titolo.label)?1:(item1.model.titolo.label<item2.model.titolo.label)?-1:0;
     });
   }
 

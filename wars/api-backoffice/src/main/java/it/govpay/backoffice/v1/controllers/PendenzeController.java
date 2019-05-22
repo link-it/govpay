@@ -648,8 +648,8 @@ public class PendenzeController extends BaseController {
 
 			ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO = new ListaOperazioniTracciatoDTO(user);
 
-			listaOperazioniTracciatoDTO.setPagina(pagina);
 			listaOperazioniTracciatoDTO.setLimit(risultatiPerPagina);
+			listaOperazioniTracciatoDTO.setPagina(pagina);
 			listaOperazioniTracciatoDTO.setIdTracciato((long) id);
 			
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);

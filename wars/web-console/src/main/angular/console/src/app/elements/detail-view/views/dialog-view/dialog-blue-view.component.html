@@ -4,7 +4,9 @@
 </mat-toolbar>
 <form class="full-absolute overflow-auto p-4" [style.top.px]="_Y"
       [formGroup]="blueModalForm" novalidate (ngSubmit)="_save(blueModalForm)">
-  <ng-container #bdfec></ng-container>
+  <div class="container px-0 px-lg-3">
+    <ng-container #bdfec></ng-container>
+  </div>
   <button mat-fab class="fab-action" type="submit" [disabled]="!_isBlueValid">
     <i class="material-icons">save</i>
   </button>

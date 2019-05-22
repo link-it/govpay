@@ -1,0 +1,40 @@
+<div class="d-flex flex-nowrap align-items-center">
+  <button mat-button class="dropdown-toggle has-settings" color="accent" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <mat-icon class="has-settings">attach_file</mat-icon>
+    Json Schema
+  </button>
+  <div class="dropdown-menu">
+    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button">
+      <mat-icon>folder_open</mat-icon>
+      Carica...
+    </button>
+    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button">
+      <mat-icon>open_in_new</mat-icon>
+      Visualizza
+    </button>
+    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button">
+      <mat-icon>restore</mat-icon>
+      Ripristina
+    </button>
+  </div>
+</div>
+<!--
+<div class="row align-items-center flex-nowrap">
+  <button mat-icon-button class="action" type="button" (click)="_showSchemaContent(true)" *ngIf="_jsonSchemaSelected">
+    <mat-icon aria-label="Open schema json">open_in_new</mat-icon>
+  </button>
+  <button mat-icon-button class="action mx-3" type="button" (click)="_trashSchemaSelection(true)" *ngIf="_trashSchema">
+    <mat-icon aria-label="Remove schema json">delete</mat-icon>
+  </button>
+  <div class="d-flex align-items-center flex-nowrap" *ngIf="!_trashSchema">
+    <button mat-icon-button class="action" type="button" (click)="iSchemaBrowse.click()">
+      <mat-icon aria-label="Schema json">attach_file</mat-icon>
+    </button>
+    <label class="m-0 regular-16 color-gray text-truncate">{{_schema}}</label>
+    <button mat-icon-button class="action regular-14 color-gray" *ngIf="_schemaSelected"
+            type="button" (click)="_clear('schema', true)">
+      <mat-icon aria-label="Schema json">cancel</mat-icon>
+    </button>
+  </div>
+</div>
+-->

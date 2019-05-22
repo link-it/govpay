@@ -48,7 +48,7 @@ export class AuthGuardService implements OnDestroy {
    */
   private checkAuthorities(state: RouterStateSnapshot): boolean {
     let _tracciatiAccess = UtilService.PROFILO_UTENTE.acl.filter((acl) => {
-      if(acl.servizio == 'Pagamenti e Pendenze') {
+      if(acl.servizio == 'Pagamenti' || acl.servizio == 'Pendenze') {
         return (acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1);
       }
       return false;

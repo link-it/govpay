@@ -21,6 +21,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   @Input() iban_cc = [];
   @Input() entrate = [];
   @Input() unita_operative = [];
+  @Input() tipiPendenza = [];
 
   @Input() json: any;
   @Input() modified: boolean = false;
@@ -32,6 +33,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
 
   protected _IBAN = UtilService.IBAN_ACCREDITO;
   protected _ENTRATA_DOMINIO = UtilService.ENTRATA_DOMINIO;
+  protected _TIPI_PENDENZA_DOMINIO = UtilService.TIPI_PENDENZA_DOMINIO;
   protected _UNITA = UtilService.UNITA_OPERATIVA;
   protected _PLUS_CREDIT = UtilService.USER_ACL.hasCreditore;
 
@@ -136,6 +138,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     this.elencoUnitaOperative(json);
     this.elencoAccreditiIban(json);
     this.elencoEntrateDominio(json);
+    this.elencoTipiPendenzaDominio(json);
   }
 
   protected elencoUnitaOperative(json: any) {
@@ -169,6 +172,17 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       return p;
     }, this);
     this.entrate = _de.slice(0);
+  }
+
+  protected elencoTipiPendenzaDominio(json: any) {
+    let p: Parameters;
+    let _de = json.tipiPendenza.map(function(item) {
+      p = new Parameters();
+      p.jsonP = item;
+      p.model = this._mapNewItemByType(item, this._TIPI_PENDENZA_DOMINIO);
+      return p;
+    }, this);
+    this.tipiPendenza = _de.slice(0);
   }
 
   protected _onError(event) {
@@ -260,12 +274,19 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         _std.titolo = new Dato({ value: item.tipoEntrata.descrizione });
         _std.sottotitolo = new Dato({ label: Voce.ID_ENTRATA+': ', value: item.idEntrata });
       break;
+      case this._TIPI_PENDENZA_DOMINIO:
+        _std.titolo = new Dato({ value: item.descrizione });
+        _std.sottotitolo = new Dato({ label: Voce.ID_TIPO_PENDENZA+': ', value: item.idTipoPendenza });
+      break;
       case this._UNITA:
         _std.titolo = new Dato({ value: item.ragioneSociale });
         _std.sottotitolo = new Dato({ label: Voce.ID_UNITA+': ', value: item.idUnita });
       break;
       case this._IBAN:
         _std.titolo = new Dato({ value: item.iban });
+        const _st = Dato.arraysToDato([ Voce.MY_BANK, Voce.IBAN_POSTALE, Voce.ABILITATO ],
+          [ UtilService.ABILITA[item.mybank.toString()], UtilService.ABILITA[item.postale.toString()], UtilService.ABILITA[item.abilitato.toString()] ], ', ');
+        _std.sottotitolo = _st;
       break;
     }
     return _std;
@@ -294,6 +315,15 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         };
         UtilService.blueDialogBehavior.next(_mb);
       break;
+      case this._TIPI_PENDENZA_DOMINIO:
+        _mb.info = {
+          viewModel: _viewModel,
+          parent: this,
+          dialogTitle: (!mode)?'Nuova pendenza':'Modifica pendenza',
+          templateName: this._TIPI_PENDENZA_DOMINIO
+        };
+        UtilService.blueDialogBehavior.next(_mb);
+      break;
       case this._IBAN:
         _mb.info = {
           viewModel: _viewModel,
@@ -307,13 +337,13 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   }
 
   /**
-   * Save Dominio|Entrata-Dominio|Unità operativa|Iban (Put to: /domini/{idDominio} )
+   * Save Dominio|Entrata-Dominio|Unità operativa|Iban|tipoPendenza (Put to: /domini/{idDominio} )
    * @param {BehaviorSubject<any>} responseService
    * @param {ModalBehavior} mb
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     let _id = mb.info.viewModel['idDominio'] || this.json.idDominio;
-    let _service = UtilService.URL_DOMINI+'/'+_id;
+    let _service = UtilService.URL_DOMINI+'/'+encodeURIComponent(_id);
     let _json = null;
     switch(mb.info.templateName) {
       case UtilService.DOMINIO:
@@ -321,13 +351,17 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         delete _json.idDominio;
       break;
       case this._ENTRATA_DOMINIO:
-        _service += UtilService.URL_ENTRATE+'/'+mb.info.viewModel.idEntrata;
+        _service += UtilService.URL_ENTRATE+'/'+encodeURIComponent(mb.info.viewModel.idEntrata);
         _json = JSON.parse(JSON.stringify(mb.info.viewModel));
         delete _json.idEntrata;
         delete _json['tipoEntrata'];
       break;
+      case this._TIPI_PENDENZA_DOMINIO:
+        _service += UtilService.URL_TIPI_PENDENZA+'/'+encodeURIComponent(mb.info.viewModel.idTipoPendenza);
+        _json = JSON.parse(JSON.stringify(mb.info.viewModel.valori));
+      break;
       case this._UNITA:
-        _service += UtilService.URL_UNITA_OPERATIVE+'/'+mb.info.viewModel.idUnita;
+        _service += UtilService.URL_UNITA_OPERATIVE+'/'+encodeURIComponent(mb.info.viewModel.idUnita);
         _json = JSON.parse(JSON.stringify(mb.info.viewModel));
         delete _json.idUnita;
       break;
@@ -358,9 +392,10 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       switch(mb.info.templateName) {
         case UtilService.DOMINIO:
           if(mb.editMode) {
-            let j = { e: this.json['entrate'], ia: this.json['contiAccredito'], uo: this.json['unitaOperative'] };
+            let j = { e: this.json['entrate'], tp: this.json['tipiPendenza'], ia: this.json['contiAccredito'], uo: this.json['unitaOperative'] };
             let json = mb.info.viewModel;
             json['entrate'] = j.e;
+            json['tipiPendenza'] = j.tp;
             json['contiAccredito'] = j.ia;
             json['unitaOperative'] = j.uo;
             // this.mapJsonDetail(json);
@@ -375,6 +410,23 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
           } else {
             this.entrate.map((item) => {
               if (item.jsonP.idEntrata == mb.info.viewModel['idEntrata']) {
+                Object.keys(p.jsonP).forEach((key) => {
+                  item.jsonP[key]= p.jsonP[key];
+                });
+                item.model = p.model;
+              }
+              return item;
+            });
+          }
+        break;
+        case this._TIPI_PENDENZA_DOMINIO:
+          p.jsonP = mb.info.viewModel;
+          p.model = this._mapNewItemByType(mb.info.viewModel, this._TIPI_PENDENZA_DOMINIO);
+          if(!mb.editMode) {
+            this.tipiPendenza.push(p);
+          } else {
+            this.tipiPendenza.map((item) => {
+              if (item.jsonP.idTipoPendenza == mb.info.viewModel['idTipoPendenza']) {
                 Object.keys(p.jsonP).forEach((key) => {
                   item.jsonP[key]= p.jsonP[key];
                 });

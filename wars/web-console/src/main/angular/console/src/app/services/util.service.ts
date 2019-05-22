@@ -56,6 +56,8 @@ export class UtilService {
     hasApplicazioni: false,
     hasRuoli: false,
     hasPagamentiePendenze: false,
+    hasPagamenti: false,
+    hasPendenze: false,
     hasRendiIncassi: false,
     hasGdE: false,
     hasConfig: false
@@ -74,8 +76,8 @@ export class UtilService {
 
   public static DIRITTI_CODE: any[] = [
     { label: UtilService._LABEL.LETTURA, code: UtilService._CODE.LETTURA },
-    { label: UtilService._LABEL.SCRITTURA, code: UtilService._CODE.SCRITTURA },
-    { label: UtilService._LABEL.ESECUZIONE, code: UtilService._CODE.ESECUZIONE }
+    { label: UtilService._LABEL.SCRITTURA, code: UtilService._CODE.SCRITTURA }
+    // { label: UtilService._LABEL.ESECUZIONE, code: UtilService._CODE.ESECUZIONE } // Non più usata
   ];
 
   //STATI PAGAMENTO
@@ -168,13 +170,19 @@ export class UtilService {
   public static AUTODETERMINAZIONE_ENTRATE: any = { label: 'Autodeterminazione delle Entrate', value: 'autodeterminazione'};
   public static TUTTE_ENTRATE: any = { label: 'Tutte', value: '*'};
 
+  //LISTA OPERAZIONI TIPI PENDENZA
+  public static AUTODETERMINAZIONE_TIPI_PENDENZA: any = { label: 'Autodeterminazione tipi pendenza', value: 'autodeterminazione'};
+  public static TUTTI_TIPI_PENDENZA: any = { label: 'Tutti', value: '*'};
+  public static TIPOLOGIA_PENDENZA: any[] = [ { label: 'Spontanea', value: 'spontanea'}, { label: 'Dovuta', value: 'dovuta'} ];
+
   //LISTA OPERAZIONI DOMINI
   public static TUTTI_DOMINI: any = { label: 'Tutti', value: '*'};
 
   //LISTA SERVIZI
   public static SERVIZI: string[] = [];
   public static CONFIGURAZIONE_E_MANUTENZIONE: string = 'Configurazione e manutenzione';
-  public static PAGAMENTI_E_PENDENZE: string = 'Pagamenti e Pendenze';
+  public static PAGAMENTI_ACL_LABEL: string = 'Pagamenti';
+  public static PENDENZE_ACL_LABEL: string = 'Pendenze';
 
   //TIPI SOGGETTO
   public static TIPI_SOGGETTO: any = {
@@ -209,7 +217,7 @@ export class UtilService {
   };
 
   public static TIPI_CONTABILITA: any = {
-    ENTRATA: 'Entrata',
+    CAPITOLO: 'Capitolo',
     SPECIALE: 'Speciale',
     SIOPE: 'Siope',
     ALTRO: 'Altro'
@@ -237,6 +245,7 @@ export class UtilService {
   public static URL_APPLICAZIONI: string = '/applicazioni';
   public static URL_STAZIONI: string = '/stazioni';
   public static URL_ENTRATE: string = '/entrate';
+  public static URL_TIPI_PENDENZA: string = '/tipiPendenza';
   public static URL_DOMINI: string = '/domini';
   public static URL_OPERATORI: string = '/operatori';
   public static URL_ACLS: string = '/acl';
@@ -290,6 +299,7 @@ export class UtilService {
   //Component view ref
   public static DASHBOARD: string = 'dashboard';
   public static PENDENZE: string = 'pendenze';
+  public static SCHEDA_PENDENZE: string = 'scheda_pendenze';
   public static PAGAMENTI: string = 'pagamenti';
   public static REGISTRO_INTERMEDIARI: string = 'registro_intermediari';
   public static RPPS: string = 'richieste_pagamenti';
@@ -334,17 +344,25 @@ export class UtilService {
   public static RPP: string = 'richiesta_pagamento';
   public static INCASSO: string = 'incasso';
   public static ENTRATA: string = 'entrata';
+  public static TIPI_PENDENZA: string = 'tipi_pendenza';
+  public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
   public static IBAN_ACCREDITO: string = 'iban_accredito';
   public static PENDENZA: string = 'pendenza';
+  public static SCHEDA_PENDENZA: string = 'scheda_pendenza';
   public static NO_TYPE: string = '-';
+  //Json schema generators
+  public static A2_JSON_SCHEMA_FORM: string = 'json-schema-form';
   //Material standard ref
   public static INPUT: string = 'input';
+  public static FILTERABLE: string = 'filterable';
   public static DATE_PICKER: string = 'date_picker';
   public static SELECT: string = 'select';
   public static SLIDE_TOGGLE: string = 'slide_toggle';
   public static LABEL: string = 'label';
+  //Sidelist item view
+  public static ITEM_VIEW: string = 'item_view';
 
   //Behaviors
   public static profiloUtenteBehavior: BehaviorSubject<ModalBehavior> = new BehaviorSubject(null);
@@ -488,8 +506,7 @@ export class UtilService {
 
   openDialog(component: any, _mb: ModalBehavior): void {
     let dialogRef = this.dialog.open(component, {
-      width: '50%',
-      //height: '50%',
+      minWidth: '50%',
       data: _mb
     });
 
@@ -646,7 +663,7 @@ export class UtilService {
     switch(service) {
       case UtilService.PENDENZE:
         _list = [
-          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
                    eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
@@ -702,7 +719,10 @@ export class UtilService {
       case UtilService.RENDICONTAZIONI:
         _list = [
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
-          new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+          // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+          //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+          //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
@@ -712,7 +732,10 @@ export class UtilService {
       case UtilService.GIORNALE_EVENTI:
         _list = [
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
-          new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+          // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+          //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+          //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
@@ -726,7 +749,10 @@ export class UtilService {
       case UtilService.RISCOSSIONI:
         _list = [
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
-          new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+          // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+          //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+          //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           // new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
@@ -745,9 +771,64 @@ export class UtilService {
           new FormInput({ id: 'statoTracciatoPendenza', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiTracciatoPendenza() })
         ];
       break;
+      case UtilService.INCASSI:
+        _list = [
+          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
+            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+              eventType: 'idDominio-async-load', preventSelection: true } }, this.http)
+        ];
+      break;
     }
 
     return _list;
+  }
+
+  mapACL(acl: string): string {
+    return UtilService.MAP_ACL(acl);
+  }
+
+ public static MAP_ACL(acl: string): string {
+    let map = acl;
+    switch(acl) {
+      case 'Anagrafica Creditore':
+        map = 'Anagrafica Enti';
+        break;
+      case 'Anagrafica Ruoli':
+        map = 'Anagrafica Operatori';
+        break;
+      case 'Pagamenti':
+        map = 'Backoffice Pagamenti';
+        break;
+      case 'Pendenze':
+        map = 'Backoffice Pendenze';
+        break;
+      case 'Rendicontazioni e Incassi':
+        map = 'Backoffice Ragioneria';
+        break;
+      case 'Configurazione e manutenzione':
+        map = 'Gestione Batch';
+        break;
+    }
+    return map;
+  }
+
+  /**
+   *
+   * Ordinamento voci menu di navigazione
+   *
+   * @param item1
+   * @param item2
+   * @returns {boolean}
+   */
+  public static SortMenu(item1, item2): number {
+    if(item1.sort > item2.sort) {
+      return 1;
+    }
+    if(item1.sort < item2.sort) {
+      return -1;
+    }
+
+    return 0;
   }
 
   /**
@@ -765,7 +846,9 @@ export class UtilService {
         });
       }
     }
-    return _elenco;
+    return _elenco.sort((item1, item2) => {
+      return (item1.label>item2.label)?1:(item1.label<item2.label)?-1:0;
+    });
   }
 
   asyncElencoApplicazioniPendenza(response: any): any[] {

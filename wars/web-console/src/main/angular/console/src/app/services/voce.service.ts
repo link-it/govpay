@@ -4,10 +4,15 @@ import { Injectable } from '@angular/core';
 export class Voce {
 
   public static ABILITATO: string = 'Abilitato';
+  public static API_PAGAMENTI: string = 'API Pagamenti';
+  public static API_PENDENZE: string = 'API Pendenze';
+  public static API_RAGIONERIA: string = 'API Ragioneria';
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';
   public static AUTORIZZAZIONI: string = 'Autorizzazioni';
+  public static AUTORIZZAZIONI_API: string = 'Autorizzazioni API';
+  public static AUTORIZZAZIONI_BACKOFFICE: string = 'Autorizzazioni Backoffice';
   public static AUX: string = 'Aux';
   public static AVVISO: string = 'N. avviso';
 
@@ -44,6 +49,7 @@ export class Voce {
   public static DENOMINAZIONE: string = 'Denominazione';
   public static DESCRIZIONE: string = 'Descrizione';
   public static DOMINIO: string = 'Dominio';
+  public static DOMINI: string = 'Domini';
 
   public static EMAIL: string = 'Email';
   public static ENTE_CREDITORE: string = 'Ente creditore';
@@ -57,6 +63,7 @@ export class Voce {
 
   public static HOSTNAME: string = 'Hostname';
 
+  public static IBAN_POSTALE: string = 'Iban postale';
   public static ID_A2A: string = 'Id A2A';
   public static ID_BOLLO: string = 'Id bollo';
   public static ID_CANALE: string = 'Id canale';
@@ -65,12 +72,14 @@ export class Voce {
   public static ID_FLUSSO: string = 'Id rendicontazione';
   public static ID_INCASSO: string = 'Id incasso';
   public static ID_INTERMEDIARIO: string = 'Id intermediario';
+  public static ID_TIPO_PENDENZA: string = 'Id tipo pendenza';
   public static ID_PSP: string = 'Id PSP';
   public static ID_PENDENZA: string = 'Id pendenza';
   public static ID_SESSIONE: string = 'Id carrello';
   public static ID_STAZIONE: string = 'Id stazione';
   public static ID_UNITA: string = 'Id unità';
   public static IDENTIFICATIVO: string = 'Identificativo';
+  public static IDF_IUV: string = 'Flusso/IUV';
   public static IMPORTO: string = 'Importo';
   public static INCASSO: string = 'Incasso';
   public static INDICE_PENDENZA: string = 'Indice pendenza';
@@ -89,6 +98,7 @@ export class Voce {
   public static LUOGO: string = 'Località';
 
   public static MODULO: string = 'Modulo interno che ha emesso l\'evento';
+  public static MY_BANK: string = 'My Bank';
 
   public static NAZIONE: string = 'Nazione';
   public static NO_PSP: string = 'PSP non pervenuto';
@@ -108,15 +118,18 @@ export class Voce {
   public static PASSWORD: string = 'Password';
   public static PEC: string = 'Pec';
   public static PENDENZA: string = 'Pendenza';
+  public static PENDENZE: string = 'Pendenze';
   public static PORTA: string = 'Porta';
   public static PRINCIPAL: string = 'Principal';
   public static PROVINCIA: string = 'Provincia';
   public static PSP: string = 'Psp';
 
   public static RAGIONE_SOCIALE: string = 'Ragione sociale';
+  public static RIEPILOGO: string = 'Riepilogo informazioni';
   public static RISORSA: string = 'Risorsa';
 
   public static SCADENZA: string = 'Scadenza';
+  public static SCT: string = 'SCT';
   public static SECRET_CODE: string = 'Codice di segregazione';
   public static SERVIZIO_AVVISATURA: string = 'Servizio avvisatura';
   public static SERVIZIO_RPT: string = 'Servizio RPT';

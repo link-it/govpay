@@ -123,6 +123,14 @@ i.material-icons {
   color: $link-primary-text !important;
 }
 
+.full-transparent-absolute {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
 .full-absolute {
   position: absolute;
   background-color: $link-gray-container;
@@ -174,4 +182,28 @@ i.material-icons {
   .card-container {
     max-width: 740px !important;
   }
+}
+
+// Overridden styles
+// Angualr2-json-schema-form
+#jForm json-schema-form {
+
+  legend {
+    font-weight: normal !important;
+    font-size: 1.25rem;
+  }
+
+  .array-item {
+    box-shadow: none !important;
+    cursor: auto !important;
+  }
+
+  .mat-focused .mat-form-field-underline .mat-form-field-ripple {
+    background-color: mat-color($link-accent) !important;
+  }
+
+  .mat-focused .mat-form-field-label {
+    color: mat-color($link-accent) !important;
+  }
+
 }

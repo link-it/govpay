@@ -35,6 +35,7 @@ export class AppComponent implements AfterContentChecked {
 
   _contentMarginTop: number = 0;
   _extraSideNavQueryMatches: MediaQueryList;
+  _keepOnEsc: boolean = false;
   _open: boolean = false;
   _headerMenuIcon: boolean = false;
   _headerMenuTitle: boolean = false;
@@ -151,6 +152,7 @@ export class AppComponent implements AfterContentChecked {
   protected _sideNavMode() {
     this._extraSideNavQueryMatches = this.ls.checkLargeMediaMatch();
     this._open = this._extraSideNavQueryMatches.matches;
+    this._keepOnEsc = this._extraSideNavQueryMatches.matches;
     return this._extraSideNavQueryMatches.matches?'side':'over';
   }
 
@@ -238,7 +240,7 @@ export class AppComponent implements AfterContentChecked {
     this._sideNavSetup = {
       _utenteConnesso: '',
       menu: [
-        { link: UtilService.URL_DASHBOARD, name: UtilService.TXT_DASHBOARD, xhttp: false, icon: false }
+        { link: UtilService.URL_DASHBOARD, name: UtilService.TXT_DASHBOARD, xhttp: false, icon: false, sort: 0 }
       ],
       secMenu: [],
       terMenu: [],
@@ -246,37 +248,46 @@ export class AppComponent implements AfterContentChecked {
     };
     this._sideNavSetup.utenteConnesso = UtilService.PROFILO_UTENTE.nome;
     Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
+    UtilService.USER_ACL.hasPagamentiePendenze = false;
     UtilService.PROFILO_UTENTE.acl.forEach((acl) => {
       switch(acl.servizio) {
         case 'Anagrafica Applicazioni':
           UtilService.USER_ACL.hasApplicazioni = true;
-          this._sideNavSetup.secMenu.push({ link: UtilService.URL_APPLICAZIONI, name: UtilService.TXT_APPLICAZIONI, xhttp: false, icon: false });
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_APPLICAZIONI, name: UtilService.TXT_APPLICAZIONI, xhttp: false, icon: false, sort: 2 });
           break;
         case 'Anagrafica Creditore':
           UtilService.USER_ACL.hasCreditore = true;
-          // this._sideNavSetup.secMenu.push({ link: UtilService.URL_ENTRATE, name: UtilService.TXT_ENTRATE, xhttp: false, icon: false });
+          // this._sideNavSetup.secMenu.push({ link: UtilService.URL_ENTRATE, name: UtilService.TXT_ENTRATE, xhttp: false, icon: false, sort: -1 });
           break;
         case 'Rendicontazioni e Incassi':
-          UtilService.USER_ACL.hasRendiIncassi = true;
-          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RENDICONTAZIONI, name: UtilService.TXT_RENDICONTAZIONI, xhttp: false, icon: false });
-          this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false });
-          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false });
+          UtilService.USER_ACL.hasRendiIncassi = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
+          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RENDICONTAZIONI, name: UtilService.TXT_RENDICONTAZIONI, xhttp: false, icon: false, sort: 0 });
+          this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 1 });
+          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 2 });
           break;
-        case 'Pagamenti e Pendenze':
-          UtilService.USER_ACL.hasPagamentiePendenze = true;
-          this._sideNavSetup.menu.push({ link: UtilService.URL_PENDENZE, name: UtilService.TXT_PENDENZE, xhttp: false, icon: false });
-          this._sideNavSetup.menu.push({ link: UtilService.URL_PAGAMENTI, name: UtilService.TXT_PAGAMENTI, xhttp: false, icon: false });
-          if(acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
-            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false });
+        case 'Pagamenti':
+          this._sideNavSetup.menu.push({ link: UtilService.URL_PAGAMENTI, name: UtilService.TXT_PAGAMENTI, xhttp: false, icon: false, sort: 1 });
+          if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
+            UtilService.USER_ACL.hasPagamentiePendenze = true;
+            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 3 });
+          }
+          break;
+        case 'Pendenze':
+          // UtilService.USER_ACL.hasPagamentiePendenze = true;
+          UtilService.USER_ACL.hasPendenze = true;
+          this._sideNavSetup.menu.push({ link: UtilService.URL_PENDENZE, name: UtilService.TXT_PENDENZE, xhttp: false, icon: false, sort: 2 });
+          if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
+            UtilService.USER_ACL.hasPagamentiePendenze = true;
+            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 4 });
           }
           break;
         case 'Giornale degli Eventi':
           UtilService.USER_ACL.hasGdE = true;
-          this._sideNavSetup.menu.push({ link: UtilService.URL_GIORNALE_EVENTI, name: UtilService.TXT_GIORNALE_EVENTI, xhttp: false, icon: false });
+          this._sideNavSetup.menu.push({ link: UtilService.URL_GIORNALE_EVENTI, name: UtilService.TXT_GIORNALE_EVENTI, xhttp: false, icon: false, sort: 3 });
           break;
         case 'Configurazione e manutenzione':
           UtilService.USER_ACL.hasConfig = true;
-          this._sideNavSetup.secMenu.push({ link: UtilService.URL_OPERATORI, name: UtilService.TXT_OPERATORI, xhttp: false, icon: false });
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_OPERATORI, name: UtilService.TXT_OPERATORI, xhttp: false, icon: false, sort: 3 });
           // this._sideNavSetup.quaMenu.push({ link: '#', name: UtilService.TXT_MAN_NOTIFICHE, xhttp: true, icon: false });
           this._sideNavSetup.quaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false });
           this._sideNavSetup.quaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false });
@@ -284,16 +295,20 @@ export class AppComponent implements AfterContentChecked {
           break;
         case 'Anagrafica PagoPA':
           UtilService.USER_ACL.hasPagoPA = true;
-          this._sideNavSetup.secMenu.push({ link: UtilService.URL_DOMINI, name: UtilService.TXT_DOMINI, xhttp: false, icon: false });
-          this._sideNavSetup.secMenu.push({ link: UtilService.URL_REGISTRO_INTERMEDIARI, name: UtilService.TXT_REGISTRO_INTERMEDIARI, xhttp: false, icon: false });
-          //this._sideNavSetup.secMenu.push({ link: UtilService.URL_RPPS, name: UtilService.TXT_RPPS, xhttp: false, icon: false });
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_DOMINI, name: UtilService.TXT_DOMINI, xhttp: false, icon: false, sort: 1 });
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_REGISTRO_INTERMEDIARI, name: UtilService.TXT_REGISTRO_INTERMEDIARI, xhttp: false, icon: false, sort: 0 });
+          //this._sideNavSetup.secMenu.push({ link: UtilService.URL_RPPS, name: UtilService.TXT_RPPS, xhttp: false, icon: false, sort: -1 });
           break;
         case 'Anagrafica Ruoli':
           UtilService.USER_ACL.hasRuoli = true;
-          this._sideNavSetup.secMenu.push({ link: UtilService.URL_RUOLI, name: UtilService.TXT_RUOLI, xhttp: false, icon: false });
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_RUOLI, name: UtilService.TXT_RUOLI, xhttp: false, icon: false, sort: 4 });
           break;
       }
     });
+    this._sideNavSetup.menu.sort(UtilService.SortMenu);
+    this._sideNavSetup.secMenu.sort(UtilService.SortMenu);
+    this._sideNavSetup.terMenu.sort(UtilService.SortMenu);
+    this._sideNavSetup.quaMenu.sort(UtilService.SortMenu);
   }
 
   /**

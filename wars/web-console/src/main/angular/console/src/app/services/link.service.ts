@@ -143,4 +143,8 @@ export class LinkService implements OnDestroy{
     return this.cFR.resolveComponentFactory(componentType).create(this.injRef);
   }
 
+  resolveComponentType(_componentType: any): ComponentRef<any> {
+    return this.cFR.resolveComponentFactory(_componentType).create(this.injRef);
+  }
+
 }

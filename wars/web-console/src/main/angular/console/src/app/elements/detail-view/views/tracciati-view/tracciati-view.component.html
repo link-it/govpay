@@ -8,13 +8,16 @@
     </div>
   </mat-tab>
   <mat-tab label="OPERAZIONI">
-    <div class="container my-4 operazioni card-container">
-      <mat-card class="shadow no-border-radius pb-0" *ngIf="operazioni.length!=0">
-        <p class="d-block matcard-title pb-3 color-gray regular-24">Elenco operazioni</p>
-        <link-item-view *ngFor="let item of operazioni" [component-data]="item" [use-item-view-directive]="true"
-                        [show-over-icons]="false" class="link-item-view-fill">
-        </link-item-view>
-      </mat-card>
+    <div class="full-transparent-absolute overflow-y-auto" link-scroll
+         [bottomLimit]="!_isLoading" (onScrollBottom)="_loadMoreData()">
+      <div class="container my-4 operazioni card-container">
+        <mat-card class="shadow no-border-radius pb-0" *ngIf="operazioni.length!=0">
+          <p class="d-block matcard-title pb-3 color-gray regular-24">Elenco operazioni</p>
+          <link-item-view *ngFor="let item of operazioni" [component-data]="item" [use-item-view-directive]="true"
+                          [show-over-icons]="false" class="link-item-view-fill">
+          </link-item-view>
+        </mat-card>
+      </div>
     </div>
   </mat-tab>
 </mat-tab-group>

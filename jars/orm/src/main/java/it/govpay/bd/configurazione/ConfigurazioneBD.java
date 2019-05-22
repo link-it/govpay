@@ -4,6 +4,7 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Configurazione;
@@ -28,7 +29,7 @@ public class ConfigurazioneBD extends BasicBD {
 		try {
 			it.govpay.orm.Configurazione configurazioneVO = ConfigurazioneConverter.toVO(configurazione);
 			this.getConfigurazioneService().updateOrCreate(configurazioneVO);
-		} catch (NotImplementedException e) {
+		} catch (NotImplementedException | IOException e) {
 			throw new ServiceException(e);
 		}
 	}

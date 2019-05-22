@@ -30,6 +30,8 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
   @Input() json: any;
   @Input() modified: boolean = false;
 
+  protected _isLoading: boolean = false;
+  protected _lastResponse: any;
   protected info: Riepilogo;
 
   constructor(public gps: GovpayService, public us: UtilService) { }
@@ -54,21 +56,26 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
       });
   }
 
-  protected operazioniTracciato() {
-    let _url = UtilService.URL_TRACCIATI+'/'+this.json.id+'/'+UtilService.OPERAZIONI_TRACCIATO;
+  protected operazioniTracciato(service?: string, concat?: boolean) {
+    let _url = (service || UtilService.URL_TRACCIATI+'/'+this.json.id+'/'+UtilService.OPERAZIONI_TRACCIATO);
+    concat = concat || false;
+    this._isLoading = true;
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         let _json = _response.body;
-        this.mapJsonDetail(_json, true);
+        this._lastResponse = JSON.parse(JSON.stringify(_response.body));
+        this.mapJsonDetail(_json, true, concat);
+        this._isLoading = false;
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
+        this._isLoading = false;
         this.gps.updateSpinner(false);
         this.us.onError(error);
       });
   }
 
-  protected mapJsonDetail(_json: any, _operazioni: boolean = false) {
+  protected mapJsonDetail(_json: any, _operazioni: boolean = false, concat: boolean = false) {
     if(!_operazioni) {
       //Riepilogo
       this.json = _json;
@@ -96,7 +103,7 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
       }
     } else {
       //Dettaglio operazioni tracciato
-      this.operazioni = _json.risultati.map(function(item) {
+      const _temp = _json.risultati.map(function(item) {
         let _std = new StandardCollapse();
         _std.titolo = new Dato({ value: item.identificativoPendenza });
         _std.sottotitolo = new Dato({ value: UtilService.TIPO_OPERAZIONI_TRACCIATO[item.tipoOperazione].LABEL });
@@ -144,6 +151,7 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
         p.type = UtilService.STANDARD_COLLAPSE;
         return p;
       }, this);
+      this.operazioni = concat?this.operazioni.concat(_temp):_temp;
     }
   }
 
@@ -158,7 +166,7 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
   refresh(mb: ModalBehavior) {}
 
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
-    let _service = UtilService.URL_PENDENZE;
+    let _service = UtilService.URL_PENDENZE + '/' + UtilService.TRACCIATI;
 
     let _data;
     let _autoHeaders = true;
@@ -245,6 +253,25 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
     } catch (e) {
       this.gps.updateSpinner(false);
       this.us.alert('Si è verificato un errore non previsto durante la creazione del file.');
+    }
+  }
+
+  /**
+   * Get last result data
+   * @returns {any}
+   */
+  getLastResult(): any {
+    return this._lastResponse;
+  }
+
+  /**
+   * _loadMoreData: Infinite scrolling
+   * @private
+   */
+  protected _loadMoreData() {
+    let _results = this.getLastResult();
+    if(_results && _results['prossimiRisultati']) {
+      this.operazioniTracciato(_results['prossimiRisultati'], true);
     }
   }
 

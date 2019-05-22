@@ -5,6 +5,7 @@ import { FormInput } from '../../../../../../classes/view/form-input';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UtilService } from '../../../../../../services/util.service';
 import { MatDialog } from '@angular/material';
+import { GovpayService } from '../../../../../../services/govpay.service';
 
 declare global {
   interface String {
@@ -27,8 +28,10 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
   protected _jsonFormInput: boolean = false;
   protected _name: string = '';
   protected _base64File: any = null;
+  protected _intermediariStazione: any[] = [];
+  protected _stazioniDominio: string[] = [];
 
-  constructor(private _sanitizer: DomSanitizer, public us: UtilService, protected askDialog: MatDialog) {
+  constructor(private _sanitizer: DomSanitizer, public us: UtilService, public gps: GovpayService, protected askDialog: MatDialog) {
     String.prototype.multiReplace = function(find: string[], replace: string[]): string {
       let replaceString = this;
       for (let i = 0; i < find.length; i++) {
@@ -43,10 +46,12 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       this._jsonFormInput = true;
       this.fGroup.addControl('idDominio_ctrl', new FormControl('', Validators.required));
     } else {
+      this._loadIntermediariStazione();
       this.fGroup.addControl('ragioneSociale_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('idDominio_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('area_ctrl', new FormControl(''));
       this.fGroup.addControl('gln_ctrl', new FormControl('', Validators.required));
+      this.fGroup.addControl('intermediarioStazione_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('stazione_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('abilita_ctrl', new FormControl(false));
       this.fGroup.addControl('indirizzo_ctrl', new FormControl(''));
@@ -81,6 +86,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
           this.fGroup.controls['ragioneSociale_ctrl'].setValue((this.json.ragioneSociale)?this.json.ragioneSociale:'');
           this.fGroup.controls['area_ctrl'].setValue((this.json.area)?this.json.area:'');
           this.fGroup.controls['gln_ctrl'].setValue((this.json.gln)?this.json.gln:'');
+          this.fGroup.controls['intermediarioStazione_ctrl'].setValue((this.json.stazione)?this.json.stazione.split('_')[0]:'');
           this.fGroup.controls['stazione_ctrl'].setValue((this.json.stazione)?this.json.stazione:'');
           this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
           this.fGroup.controls['indirizzo_ctrl'].setValue((this.json.indirizzo)?this.json.indirizzo:'');
@@ -198,6 +204,45 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
     });
   }
 
+  protected _loadIntermediariStazione(): any {
+    let _service = UtilService.URL_REGISTRO_INTERMEDIARI;
+    this.gps.getDataService(_service).subscribe(
+      (_response) => {
+        this.gps.updateSpinner(false);
+        this._intermediariStazione = _response.body['risultati'].map(function(item) {
+          return new Dato({ label: item.denominazione, value: item.idIntermediario });
+        });
+        if(this.json && this.json.stazione) {
+          this._loadStazioniDominio(this.json.stazione.split('_')[0]);
+        }
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  protected _intermediarioChange(event) {
+    this.fGroup.controls['stazione_ctrl'].setValue('');
+    this._stazioniDominio = [];
+    this._loadStazioniDominio(event.value);
+  }
+
+  protected _loadStazioniDominio(intermediario: string): any {
+    let _service = UtilService.URL_REGISTRO_INTERMEDIARI + '/' + intermediario + UtilService.URL_STAZIONI;
+    this.gps.getDataService(_service).subscribe(
+      (_response) => {
+        this.gps.updateSpinner(false);
+        this._stazioniDominio = _response.body['risultati'].map(function(item) {
+          return item.idStazione;
+        });
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
   mapToJson(): any {
     let _info = this.fGroup.value;
     let _json:any = {};
@@ -252,6 +297,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
 
 import { Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Dato } from '../../../../../../classes/view/dato';
 
 @Component({
   selector: 'link-alert-dialog',

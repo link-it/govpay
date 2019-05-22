@@ -1,6 +1,7 @@
 package it.govpay.bd.model.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.model.Configurazione;
 
@@ -13,10 +14,10 @@ public class ConfigurazioneConverter {
 		return dto;
 	}
 	
-	public static it.govpay.orm.Configurazione toVO(Configurazione dto) {
+	public static it.govpay.orm.Configurazione toVO(Configurazione dto) throws IOException {
 		it.govpay.orm.Configurazione vo = new it.govpay.orm.Configurazione();
 		vo.setId(dto.getId());
-		vo.setGiornaleEventi(dto.getGiornaleEventi());
+		vo.setGiornaleEventi(dto.getGiornaleJson());
 		return vo;
 	}
 }

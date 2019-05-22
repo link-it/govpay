@@ -29,6 +29,8 @@ import org.openspcoop2.utils.cache.CacheJMXUtils;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.cache.ApplicazioniBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.ApplicazioniBDCacheWrapper;
+import it.govpay.bd.anagrafica.cache.ConfigurazioneBDCacheJmx;
+import it.govpay.bd.anagrafica.cache.ConfigurazioneBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.DominiBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.DominiBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.IbanAccreditoBDCacheJmx;
@@ -59,6 +61,7 @@ import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Configurazione;
 import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.TipoVersamento;
@@ -81,6 +84,7 @@ public class AnagraficaManager {
 	private static final String CACHE_KEY_GET_APPLICAZIONE = "getApplicazione";
 	private static final String CACHE_KEY_GET_TIPO_VERSAMENTO = "getTipoVersamento";
 	private static final String CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO = "getTipoVersamentoDominio";
+	private static final String CACHE_KEY_GET_CONFIGURAZIONE = "getConfigurazione";
 
 	private static final boolean DEBUG = false;
 	
@@ -96,6 +100,7 @@ public class AnagraficaManager {
 	private static UtenzeBDCacheWrapper utenzeBDCacheWrapper, utenzeBDNoCacheWrapper;
 	private static TipiVersamentoBDCacheWrapper tipiVersamentoBDCacheWrapper, tipiVersamentoBDNoCacheWrapper;
 	private static TipiVersamentoDominiBDCacheWrapper tipiVersamentoDominiBDCacheWrapper, tipiVersamentoDominiBDNoCacheWrapper;
+	private static ConfigurazioneBDCacheWrapper configurazioneBDCacheWrapper, configurazioneBDNoCacheWrapper;
 
 	private AnagraficaManager(String domain) throws UtilsException {
 		
@@ -111,6 +116,7 @@ public class AnagraficaManager {
 		utenzeBDCacheWrapper = new UtenzeBDCacheWrapper(true, LoggerWrapperFactory.getLogger(UtenzeBDCacheWrapper.class));
 		tipiVersamentoBDCacheWrapper = new TipiVersamentoBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TipiVersamentoBDCacheWrapper.class));
 		tipiVersamentoDominiBDCacheWrapper = new TipiVersamentoDominiBDCacheWrapper(true, LoggerWrapperFactory.getLogger(TipiVersamentoDominiBDCacheWrapper.class));
+		configurazioneBDCacheWrapper = new ConfigurazioneBDCacheWrapper(true, LoggerWrapperFactory.getLogger(ConfigurazioneBDCacheWrapper.class));
 		
 		dominiBDNoCacheWrapper = new DominiBDCacheWrapper(false, LoggerWrapperFactory.getLogger(DominiBDCacheWrapper.class));
 		applicazioniBDNoCacheWrapper = new ApplicazioniBDCacheWrapper(false, LoggerWrapperFactory.getLogger(ApplicazioniBDCacheWrapper.class));
@@ -124,6 +130,7 @@ public class AnagraficaManager {
 		utenzeBDNoCacheWrapper = new UtenzeBDCacheWrapper(false, LoggerWrapperFactory.getLogger(UtenzeBDCacheWrapper.class));
 		tipiVersamentoBDNoCacheWrapper = new TipiVersamentoBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TipiVersamentoBDCacheWrapper.class));
 		tipiVersamentoDominiBDNoCacheWrapper = new TipiVersamentoDominiBDCacheWrapper(false, LoggerWrapperFactory.getLogger(TipiVersamentoDominiBDCacheWrapper.class));
+		configurazioneBDNoCacheWrapper = new ConfigurazioneBDCacheWrapper(false, LoggerWrapperFactory.getLogger(ConfigurazioneBDCacheWrapper.class));
 
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), domain, "domini");
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new ApplicazioniBDCacheJmx(), domain, "applicazioni");
@@ -137,6 +144,7 @@ public class AnagraficaManager {
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new UtenzeBDCacheJmx(), domain, "utenze");
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiVersamentoBDCacheJmx(), domain, "tipiVersamento");
 		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new TipiVersamentoDominiBDCacheJmx(), domain, "tipiVersamentoDomini");
+		CacheJMXUtils.register(LoggerWrapperFactory.getLogger(AnagraficaManager.class), new ConfigurazioneBDCacheJmx(), domain, "configurazione");
 	}
 
 	public static AnagraficaManager newInstance(String dominio) throws UtilsException {
@@ -191,6 +199,10 @@ public class AnagraficaManager {
 		return tipiVersamentoDominiBDCacheWrapper;
 	}
 	
+	public static ConfigurazioneBDCacheWrapper getConfigurazioneBDCacheWrapper() {
+		return configurazioneBDCacheWrapper;
+	}
+	
 	public static DominiBDCacheWrapper getDominiBDWrapper(BasicBD bd) {
 		return bd.isUseCache() ? dominiBDCacheWrapper : dominiBDNoCacheWrapper;
 	}
@@ -237,6 +249,10 @@ public class AnagraficaManager {
 	
 	public static TipiVersamentoDominiBDCacheWrapper getTipiVersamentoDominiBDCacheWrapper(BasicBD bd) {
 		return bd.isUseCache() ? tipiVersamentoDominiBDCacheWrapper : tipiVersamentoDominiBDNoCacheWrapper;
+	}
+	
+	public static ConfigurazioneBDCacheWrapper getConfigurazioneBDCacheWrapper(BasicBD bd) {
+		return bd.isUseCache() ? configurazioneBDCacheWrapper : configurazioneBDNoCacheWrapper;
 	}
 	
 	public static void removeFromCache(Applicazione applicazione) {
@@ -301,6 +317,10 @@ public class AnagraficaManager {
 	public static void removeFromCache(TipoVersamentoDominio tipoVersamentoDominio) {
 		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO, String.valueOf(tipoVersamentoDominio.getId())));} catch (Exception e) {	}
 		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO, String.valueOf(tipoVersamentoDominio.getCodTipoVersamento() + "@" +  tipoVersamentoDominio.getIdDominio())));} catch (Exception e) {	}
+	}
+	
+	public static void removeFromCache(Configurazione configurazione) {
+		try {configurazioneBDCacheWrapper.removeObjectCache(configurazioneBDCacheWrapper.getKeyCache(CACHE_KEY_GET_CONFIGURAZIONE, CACHE_KEY_GET_CONFIGURAZIONE));} catch (Exception e) {	}
 	}
 	
 	public static Dominio getDominio(BasicBD basicBD, long id) throws ServiceException, NotFoundException  {
@@ -841,6 +861,25 @@ public class AnagraficaManager {
 			throw new ServiceException(t);
 		}
 	}
+	
+	public static Configurazione getConfigurazione(BasicBD basicBD) throws ServiceException, NotFoundException {
+		try {
+			String method = CACHE_KEY_GET_CONFIGURAZIONE;
+			Object configurazione = getConfigurazioneBDCacheWrapper(basicBD).getObjectCache(basicBD, DEBUG, CACHE_KEY_GET_CONFIGURAZIONE, method);
+			return (Configurazione) configurazione;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}
+	}
 
 
 	public static void unregister() {
@@ -859,6 +898,7 @@ public class AnagraficaManager {
 		tipiTributoBDCacheWrapper.resetCache();
 		tipiVersamentoBDCacheWrapper.resetCache();
 		tipiVersamentoDominiBDCacheWrapper.resetCache();
+		configurazioneBDCacheWrapper.resetCache();
 	}
 
 }

@@ -13,6 +13,7 @@ import { Dato } from '../../classes/view/dato';
 import * as moment from 'moment';
 import { ModalBehavior } from '../../classes/modal-behavior';
 import { IExport } from '../../classes/interfaces/IExport';
+import { ItemViewComponent } from '../item-view/item-view.component';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -110,6 +111,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     let _mb = new ModalBehavior();
     let _component;
     switch(this.rsc.fullPath) { // ROUTING - fullPath
+      case UtilService.URL_PENDENZE:
+        _mb.info = {
+          dialogTitle: 'Nuova pendenza',
+          templateName: UtilService.SCHEDA_PENDENZA
+        };
+        _component = this.ls.componentRefByName(UtilService.SCHEDA_PENDENZA);
+        break;
       case UtilService.URL_REGISTRO_INTERMEDIARI:
         _mb.info = {
           dialogTitle: 'Nuovo intermediario',
@@ -292,7 +300,11 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       case UtilService.URL_DOMINI:
       case UtilService.URL_RUOLI:
       case UtilService.URL_TRACCIATI:
+      case UtilService.URL_PENDENZE:
         _fabAction = true;
+        break;
+      case UtilService.URL_INCASSI:
+        _fabAction = UtilService.USER_ACL.hasRendiIncassi;
         break;
       default:
     }
@@ -310,6 +322,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           UtilService.dialogBehavior.next(_mb);
           break;
         default:
+        case UtilService.PENDENZA:
           UtilService.blueDialogBehavior.next(_mb);
       }
     } else {
@@ -477,6 +490,15 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
           _mappedElement.model = this.mapNewItem(json);
           _mappedElement.jsonP = json;
           _mappedElement?this.listResults.push(_mappedElement):null;
+        break;
+        case UtilService.INCASSO:
+          _mappedElement = new Parameters();
+          _mappedElement.model = this.mapNewItem(json);
+          _mappedElement.jsonP = json;
+          this.listResults.unshift(_mappedElement);
+          const _component = this.ls.resolveComponentType(ItemViewComponent);
+          _component.instance._componentData = _mappedElement;
+          this._livClick(_component.instance);
         break;
         default:
           this.getList();
@@ -677,7 +699,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     let zip = new JSZip();
     zip.file(this._csv.name, this._csv.data);
     zip.generateAsync({type: 'blob'}).then(function (zipData) {
-      FileSaver(zipData, this._csv.structure.name);
+      FileSaver(zipData, this._csv.structure.name + '.zip');
       this.gps.updateProgress(false);
     }.bind(this));
   }

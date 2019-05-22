@@ -3738,24 +3738,26 @@ components:
         - interfacce
       properties:
         interfacce:
-          type: object
-          required:
-            - apiEnte
-            - apiPagamento
-            - apiRagioneria
-            - apiBackoffice
-            - apiPagoPA
-          properties:
-            apiEnte:
-              $ref: '#/components/schemas/gdeInterfaccia'
-            apiPagamento:
-              $ref: '#/components/schemas/gdeInterfaccia'
-            apiRagioneria:
-              $ref: '#/components/schemas/gdeInterfaccia'
-            apiBackoffice:
-              $ref: '#/components/schemas/gdeInterfaccia'
-            apiPagoPA:
-              $ref: '#/components/schemas/gdeInterfaccia'
+          $ref: '#/components/schemas/gdeInterfacce'
+    gdeInterfacce:
+      type: object
+      required:
+        - apiEnte
+        - apiPagamento
+        - apiRagioneria
+        - apiBackoffice
+        - apiPagoPA
+      properties:
+        apiEnte:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiPagamento:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiRagioneria:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiBackoffice:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiPagoPA:
+          $ref: '#/components/schemas/gdeInterfaccia'
     gdeInterfaccia:
       type: object
       properties:

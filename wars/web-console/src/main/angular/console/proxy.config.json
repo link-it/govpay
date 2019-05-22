@@ -1,6 +1,12 @@
 {
+  "giulio/govpay/backend/api/backoffice/rs/form/*": {
+    "target": "http://10.114.87.69:8080",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
   "/govpay/backend/api/backoffice/rs/form/*": {
-    "target": "http://fpi.link.it:8080",
+    "target": "http://dock1:61428",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

@@ -9,6 +9,7 @@ import { CronoCodeViewComponent } from '../elements/item-view/views/crono-code-v
 import { KeyValueViewComponent } from '../elements/item-view/views/key-value-view/key-value-view.component';
 
 import { InputViewComponent } from '../elements/item-view/views/input-view/input-view.component';
+import { FilterableViewComponent } from '../elements/item-view/views/filterable-view/filterable-view.component';
 import { SelectViewComponent } from '../elements/item-view/views/select-view/select-view.component';
 import { BooleanViewComponent } from '../elements/item-view/views/boolean-view/boolean-view.component';
 import { LabelViewComponent } from '../elements/item-view/views/label-view/label-view.component';
@@ -25,9 +26,12 @@ import { StazioneViewComponent } from '../elements/detail-view/views/dialog-view
 import { IntermediarioViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/intermediario-view/intermediario-view.component';
 import { ApplicazioneViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/applicazione-view/applicazione-view.component';
 import { EntrataViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/entrata-view/entrata-view.component';
+import { TipiPendenzaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tipi-pendenza-view/tipi-pendenza-view.component';
 import { DominioViewComponent, AlertDialog } from '../elements/detail-view/views/dialog-view/dialog-views/dominio-view/dominio-view.component';
 import { PendenzaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/pendenza-view/pendenza-view.component';
+import { SchedaPendenzaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/scheda-pendenza-view/scheda-pendenza-view.component';
 import { EntrataDominioViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/entrata-dominio-view/entrata-dominio-view.component';
+import { TipiPendenzaDominioViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tipi-pendenza-dominio-view/tipi-pendenza-dominio-view.component';
 import { UnitaOperativaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/unita-operativa-view/unita-operativa-view.component';
 import { AclViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/acl-view/acl-view.component';
 import { IbanViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/iban-view/iban-view.component';
@@ -70,11 +74,14 @@ export class EntryPointList {
     StazioneViewComponent,
     IncassoViewComponent,
     EntrataViewComponent,
+    TipiPendenzaViewComponent,
     DominioViewComponent, AlertDialog,
     EntrataDominioViewComponent,
+    TipiPendenzaDominioViewComponent,
     UnitaOperativaViewComponent,
     IbanViewComponent,
     PendenzaViewComponent,
+    SchedaPendenzaViewComponent,
     IntermediarioViewComponent,
     ApplicazioneViewComponent,
     OperatoreViewComponent,
@@ -84,6 +91,7 @@ export class EntryPointList {
     CronoCodeViewComponent,
     KeyValueViewComponent,
     InputViewComponent,
+    FilterableViewComponent,
     DatePickerViewComponent, TimePickerDialogComponent,
     SelectViewComponent,
     BooleanViewComponent,
@@ -151,6 +159,9 @@ export class EntryPointList {
         _type = KeyValueViewComponent;
         break;
       //Dialog views
+      case UtilService.SCHEDA_PENDENZA:
+        _type = SchedaPendenzaViewComponent;
+        break;
       case UtilService.STAZIONE:
         _type = StazioneViewComponent;
         break;
@@ -175,6 +186,9 @@ export class EntryPointList {
       case UtilService.ENTRATA:
         _type = EntrataViewComponent;
         break;
+      case UtilService.TIPI_PENDENZA:
+        _type = TipiPendenzaViewComponent;
+        break;
       case UtilService.INCASSO:
         _type = IncassoViewComponent;
         break;
@@ -183,6 +197,9 @@ export class EntryPointList {
         break;
       case UtilService.ENTRATA_DOMINIO:
         _type = EntrataDominioViewComponent;
+        break;
+      case UtilService.TIPI_PENDENZA_DOMINIO:
+        _type = TipiPendenzaDominioViewComponent;
         break;
       case UtilService.UNITA_OPERATIVA:
         _type = UnitaOperativaViewComponent;
@@ -202,6 +219,9 @@ export class EntryPointList {
       //Material Lib
       case UtilService.INPUT:
         _type = InputViewComponent;
+        break;
+      case UtilService.FILTERABLE:
+        _type = FilterableViewComponent;
         break;
       case UtilService.DATE_PICKER:
         _type = DatePickerViewComponent;
@@ -307,6 +327,9 @@ export class EntryPointList {
       case 'EntrataViewComponent':
         _name = UtilService.ENTRATA;
         break;
+      case 'TipiPendenzaViewComponent':
+        _name = UtilService.TIPI_PENDENZA;
+        break;
       case 'IncassoViewComponent':
         _name = UtilService.INCASSO;
         break;
@@ -316,11 +339,17 @@ export class EntryPointList {
       case 'EntrataDominioViewComponent':
         _name = UtilService.ENTRATA_DOMINIO;
         break;
+      case 'TipiPendenzaDominioViewComponent':
+        _name = UtilService.TIPI_PENDENZA_DOMINIO;
+        break;
       case 'UnitaOperativaViewComponent':
         _name = UtilService.UNITA_OPERATIVA;
         break;
       case 'IbanViewComponent':
         _name = UtilService.IBAN_ACCREDITO;
+        break;
+      case 'SchedaPendenzaViewComponent':
+        _name = UtilService.SCHEDA_PENDENZA;
         break;
       case 'PendenzaViewComponent':
         _name = UtilService.PENDENZA;
@@ -334,6 +363,9 @@ export class EntryPointList {
       //Material Lib
       case 'InputViewComponent':
         _name = UtilService.INPUT;
+        break;
+      case 'FilterableViewComponent':
+        _name = UtilService.FILTERABLE;
         break;
       case 'DatePickerViewComponent':
         _name = UtilService.DATE_PICKER;

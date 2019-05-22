@@ -56,7 +56,8 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
       importo: this.us.currencyFormat(this.json.importo),
       extraInfo: [
         { label: Voce.CAUSALE+': ', value: this.json.causale },
-        { label: Voce.DATA_CONTABILE+': ', value: _dci }
+        { label: Voce.DATA_CONTABILE+': ', value: _dci },
+        { label: Voce.SCT+': ', value: this.json.sct }
       ]
     });
 
@@ -92,15 +93,17 @@ export class IncassiViewComponent implements IModalDialog, OnInit {
     let _method = null;
     switch(mb.info.templateName) {
       case UtilService.INCASSO:
-        _service = UtilService.URL_INCASSI;
+        _service = UtilService.URL_INCASSI + '/' + encodeURIComponent(mb.info.viewModel['idDominio']);
         _json = mb.info.viewModel;
+        delete _json.idDominio;
         _method = UtilService.METHODS.POST;
         break;
     }
     if(_json && _service) {
       this.gps.saveData(_service, _json, null, _method).subscribe(
-        () => {
+        (response) => {
           this.gps.updateSpinner(false);
+          mb.info.viewModel = response.body;
           responseService.next(true);
         },
         (error) => {

@@ -1,101 +1,117 @@
-<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_jsonFormInput">
-  <mat-select placeholder="Dominio" formControlName="idDominio_ctrl" multiple required>
-    <mat-option *ngFor="let item of json.values" [value]="item">{{item.label}}</mat-option>
-  </mat-select>
-</mat-form-field>
-<mat-card class="shadow no-border-radius container-fluid" *ngIf="!_jsonFormInput">
-  <div class="row">
-    <mat-form-field class="col-12 col-sm-4" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Id dominio" formControlName="idDominio_ctrl" autocomplete="off" required>
+<div class="row">
+  <div class="col-12 col-lg-2"></div>
+  <div class="col-12 col-lg-8">
+    <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_jsonFormInput">
+      <mat-select placeholder="Dominio" formControlName="idDominio_ctrl" multiple required>
+        <mat-option *ngFor="let item of json.values" [value]="item">{{item.label}}</mat-option>
+      </mat-select>
     </mat-form-field>
-    <mat-form-field class="col-12 col-sm-4" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Ragione sociale" formControlName="ragioneSociale_ctrl" autocomplete="off" required>
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-4" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Area" formControlName="area_ctrl" autocomplete="off">
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Global location number" formControlName="gln_ctrl" autocomplete="off" required>
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Stazione" formControlName="stazione_ctrl" autocomplete="off" required>
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Indirizzo" formControlName="indirizzo_ctrl" autocomplete="off">
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Numero civico" formControlName="civico_ctrl" autocomplete="off">
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Cap" formControlName="cap_ctrl" autocomplete="off">
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Località" formControlName="localita_ctrl" autocomplete="off">
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Provincia" formControlName="provincia_ctrl" autocomplete="off">
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Nazione" formControlName="nazione_ctrl" autocomplete="off">
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Email" formControlName="email_ctrl" autocomplete="off">
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Pec" formControlName="pec_ctrl" autocomplete="off">
-    </mat-form-field>
-  </div>
-  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-    <input matInput placeholder="Sito web" formControlName="web_ctrl" autocomplete="off">
-  </mat-form-field>
-  <div class="row">
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Telefono" formControlName="tel_ctrl" autocomplete="off">
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Fax" formControlName="fax_ctrl" autocomplete="off">
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="CBill" formControlName="cbill_ctrl" autocomplete="off">
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Prefisso IUV" formControlName="iuvPrefix_ctrl" autocomplete="off">
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Aux" formControlName="auxDigit_ctrl" autocomplete="off">
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Codice di segregazione" formControlName="segregationCode_ctrl" autocomplete="off">
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Autorizzazione stampa PT" formControlName="autStampaPosteItaliane_ctrl" autocomplete="off">
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <div class="col-12" [formGroup]="fGroup">
-      <input #iBrowse hidden placeholder="Logo" type="file" formControlName="logo_ctrl" autocomplete="off">
-      <div class="d-inline action" *ngIf="!_base64File" (click)="_select()">Sfoglia...</div>
-      <div class="d-block b64-group" *ngIf="_base64File">
-        <img class="d-block w-50" [src]="_base64File"/>
-        <mat-icon class="action b64-icon" (click)="_resetSelection()">delete</mat-icon>
+    <mat-card class="shadow no-border-radius container-fluid mb-3" *ngIf="!_jsonFormInput">
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-4" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Id dominio" formControlName="idDominio_ctrl" autocomplete="off" required>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-4" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Ragione sociale" formControlName="ragioneSociale_ctrl" autocomplete="off" required>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-4" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Area" formControlName="area_ctrl" autocomplete="off">
+        </mat-form-field>
       </div>
-    </div>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Global location number" formControlName="gln_ctrl" autocomplete="off" required>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select placeholder="Intermediario" formControlName="intermediarioStazione_ctrl" (selectionChange)="_intermediarioChange($event)" required>
+            <mat-option *ngFor="let _interSta of _intermediariStazione" [value]="_interSta.value">{{_interSta.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select placeholder="Stazione" formControlName="stazione_ctrl" required>
+            <mat-option *ngFor="let _stazione of _stazioniDominio" [value]="_stazione">{{_stazione}}</mat-option>
+          </mat-select>
+          <!--<input matInput placeholder="Stazione" formControlName="stazione_ctrl" autocomplete="off" required>-->
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Indirizzo" formControlName="indirizzo_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Numero civico" formControlName="civico_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Cap" formControlName="cap_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Località" formControlName="localita_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Provincia" formControlName="provincia_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Nazione" formControlName="nazione_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Email" formControlName="email_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Pec" formControlName="pec_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput placeholder="Sito web" formControlName="web_ctrl" autocomplete="off">
+      </mat-form-field>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Telefono" formControlName="tel_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Fax" formControlName="fax_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="CBill" formControlName="cbill_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Prefisso IUV" formControlName="iuvPrefix_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-3" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Aux" formControlName="auxDigit_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Codice di segregazione" formControlName="segregationCode_ctrl" autocomplete="off">
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Autorizzazione stampa PT" formControlName="autStampaPosteItaliane_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <div class="w-100 mt-3" [formGroup]="fGroup">
+        <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
+      </div>
+    </mat-card>
+    <mat-card class="shadow no-border-radius container-fluid mb-3" *ngIf="!_jsonFormInput">
+      <div class="row">
+        <div class="col-12" [formGroup]="fGroup">
+          <input #iBrowse hidden placeholder="Logo" type="file" formControlName="logo_ctrl" autocomplete="off">
+          <div class="d-inline action" *ngIf="!_base64File" (click)="_select()">Sfoglia...</div>
+          <div class="d-block b64-group" *ngIf="_base64File">
+            <img class="d-block w-50" [src]="_base64File"/>
+            <mat-icon class="action b64-icon" (click)="_resetSelection()">delete</mat-icon>
+          </div>
+        </div>
+      </div>
+    </mat-card>
   </div>
-  <div class="w-100 mt-3" [formGroup]="fGroup">
-    <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
-  </div>
-</mat-card>
+  <div class="col-12 col-lg-2"></div>
+</div>

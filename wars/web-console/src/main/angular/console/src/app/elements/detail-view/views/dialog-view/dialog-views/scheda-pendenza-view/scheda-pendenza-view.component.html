@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col-12 col-lg-2"></div>
+  <div class="col-12 col-lg-8">
+    <mat-card class="shadow no-border-radius mb-4">
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <mat-select placeholder="Dominio" formControlName="domini_ctrl"
+                    (selectionChange)="_dominiChangeSelection($event)" required>
+          <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <mat-select placeholder="Tipo pendenza" formControlName="tipiPendenzaDominio_ctrl"
+                    (selectionChange)="_tipiPendenzaDominioChangeSelection($event)" required>
+          <mat-option *ngFor="let item of _tipiPendenzaDominio" [value]="item">{{item.descrizione}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="w-100 d-none" [formGroup]="fGroup">
+        <mat-checkbox formControlName="_autoSchemaForm_ctrl" [disableRipple]="true"
+                      (change)="_checkChange($event)" required hidden></mat-checkbox>
+      </div>
+    </mat-card>
+  </div>
+  <div class="col-12 col-lg-2"></div>
+</div>
+<div class="row" [hidden]="!_showAutomaticForm">
+  <div class="col-12 col-lg-2"></div>
+  <div class="col-12 col-lg-8">
+    <mat-card id="jForm" class="shadow no-border-radius mb-4">
+      <ng-container #jsContainer></ng-container>
+    </mat-card>
+  </div>
+  <div class="col-12 col-lg-2"></div>
+</div>

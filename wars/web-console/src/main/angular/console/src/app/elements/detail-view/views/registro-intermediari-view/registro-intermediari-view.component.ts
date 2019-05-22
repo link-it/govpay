@@ -180,6 +180,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
     _mb.editMode = mode;
     _mb.info = {
       viewModel: _viewModel,
+      parent: this,
       dialogTitle: (!mode)?'Nuova stazione':'Modifica stazione',
       templateName: UtilService.STAZIONE
     };

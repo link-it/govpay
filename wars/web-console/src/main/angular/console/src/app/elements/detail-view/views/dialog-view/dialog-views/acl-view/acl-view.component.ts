@@ -40,7 +40,8 @@ export class AclViewComponent implements IFormComponent, OnInit {
       this.autorizzazioni.forEach((el) => {
         el.disabled = false;
         if (target.value.toLowerCase() != UtilService.CONFIGURAZIONE_E_MANUTENZIONE.toLowerCase() &&
-            target.value.toLowerCase() != UtilService.PAGAMENTI_E_PENDENZE.toLowerCase() &&
+            target.value.toLowerCase() != UtilService.PAGAMENTI_ACL_LABEL.toLowerCase() &&
+            target.value.toLowerCase() != UtilService.PENDENZE_ACL_LABEL.toLowerCase() &&
             el.label == UtilService._LABEL.ESECUZIONE) {
           el.disabled = true;
         }
@@ -59,7 +60,8 @@ export class AclViewComponent implements IFormComponent, OnInit {
       let i = ctrl.value.indexOf(UtilService._CODE.ESECUZIONE);
       if(i != -1 && target.value &&
         target.value.toLowerCase() != UtilService.CONFIGURAZIONE_E_MANUTENZIONE.toLowerCase() &&
-        target.value.toLowerCase() != UtilService.PAGAMENTI_E_PENDENZE.toLowerCase()) {
+        target.value.toLowerCase() != UtilService.PAGAMENTI_ACL_LABEL.toLowerCase() &&
+        target.value.toLowerCase() != UtilService.PENDENZE_ACL_LABEL.toLowerCase()) {
         ctrl.value.splice(i, 1);
         ctrl.setValue(ctrl.value);
       }

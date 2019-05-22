@@ -66,7 +66,7 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
    * @private
    */
   protected _loadMoreData() {
-    let _fd = this.formFieldsData();
+    //let _fd = this.formFieldsData();
     //let _query = this._formQuery({ value: _fd });
     let _results = this.sideList.getLastResult();
     if(_results && _results['prossimiRisultati']) {

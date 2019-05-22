@@ -13,22 +13,11 @@
     </mat-form-field>
   </div>
   <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Codice contabilita" formControlName="codiceContabilita_ctrl" autocomplete="off" required>
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
     <mat-select #contabilita placeholder="Tipo contabilità" formControlName="tipoContabilita_ctrl">
       <mat-option *ngFor="let item of contabilita_items" [value]="item.value">{{item.label}}</mat-option>
     </mat-select>
   </mat-form-field>
-  <div class="row">
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Codice contabilita" formControlName="codiceContabilita_ctrl" autocomplete="off" required>
-    </mat-form-field>
-    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="Codifica IUV" formControlName="codificaIUV_ctrl" autocomplete="off">
-    </mat-form-field>
-  </div>
-  <div class="row">
-    <div class="col-12" [formGroup]="fGroup">
-      <mat-slide-toggle formControlName="attivazione_ctrl" color="accent">Pagamento spontaneo</mat-slide-toggle>
-      <mat-slide-toggle class="ml-3" formControlName="pagaTerzi_ctrl" color="accent">Pagabile da altri</mat-slide-toggle>
-    </div>
-  </div>
 </div>

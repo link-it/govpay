@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { MediaMatcher } from "@angular/cdk/layout";
 import { HttpClientModule } from '@angular/common/http';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppComponent } from './app.component';
 
@@ -18,8 +19,9 @@ import { RouteReuseStrategy } from '@angular/router';
 import { ListReuseStrategy } from './list-reuse-strategy';
 import { EntryListComponents } from './classes/entry-point-list';
 
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDatepickerModule, MatNativeDateModule, DateAdapter } from '@angular/material';
-import { MatButtonModule, MatIconModule, MatMenuModule, MatListModule, MatTabsModule, MatSlideToggleModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatMenuModule, MatListModule, MatTabsModule, MatSlideToggleModule, MatCheckboxModule } from '@angular/material';
 import { MatDialogModule, MatSidenavModule, MatToolbarModule, MatTooltipModule, MatCardModule } from '@angular/material';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -51,6 +53,9 @@ import { DashboardViewComponent } from './elements/detail-view/views/dashboard-v
 import { BadgeCardComponent } from './elements/badge-card/badge-card.component';
 import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/nota-view/nota-view.component';
 
+import { JsonSchemaFormModule, MaterialDesignFrameworkModule } from 'angular2-json-schema-form';
+import { GeneratorsEntryListComponents } from "./classes/generators-entry-point-list";
+import { JsfLoaderViewComponent } from './elements/jsf-loader-view/jsf-loader-view.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +81,8 @@ import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dial
     LogoComponent,
     TimepickerScrollDirective,
     BadgeCardComponent,
-    NotaViewComponent
+    NotaViewComponent,
+    JsfLoaderViewComponent
   ],
   imports: [
     BrowserModule,
@@ -94,6 +100,8 @@ import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dial
     MatExpansionModule,
     MatCardModule,
     MatInputModule,
+    MatCheckboxModule,
+    MatAutocompleteModule,
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
@@ -103,9 +111,12 @@ import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dial
     MatSlideToggleModule,
     MatDatepickerModule, MatNativeDateModule,
     MatProgressSpinnerModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    FlexLayoutModule,
+    MaterialDesignFrameworkModule,
+    JsonSchemaFormModule.forRoot(MaterialDesignFrameworkModule)
   ],
-  entryComponents: [ EntryListComponents, DialogViewComponent ],
+  entryComponents: [ EntryListComponents, GeneratorsEntryListComponents, DialogViewComponent, ItemViewComponent ],
   providers: [ { provide: RouteReuseStrategy, useClass: ListReuseStrategy },
     MediaMatcher, LinkService, GovpayService, UtilService,
     { provide: DateAdapter, useClass: DateFormat }, AuthGuardService
