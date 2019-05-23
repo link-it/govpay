@@ -558,7 +558,7 @@ public class PendenzeDAO extends BaseDAO{
 					eventoNota.setOggetto("Pendenza annullata");
 					eventoNota.setTesto(versamentoLetto.getDescrizioneStato());
 					eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
-					eventoNota.setData(new Date());
+					eventoNota.setDataRichiesta(new Date());
 					eventoNota.setTipoEvento(TipoNota.SistemaInfo);
 					eventoNota.setCodDominio(versamentoLetto.getUo(bd).getDominio(bd).getCodDominio());
 					eventoNota.setIdVersamento(versamentoLetto.getId());
@@ -573,7 +573,7 @@ public class PendenzeDAO extends BaseDAO{
 					eventoNota.setOggetto("Pendenza ripristinata");
 					eventoNota.setTesto(versamentoLetto.getDescrizioneStato());
 					eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
-					eventoNota.setData(new Date());
+					eventoNota.setDataRichiesta(new Date());
 					eventoNota.setTipoEvento(TipoNota.SistemaInfo);
 					eventoNota.setCodDominio(versamentoLetto.getUo(bd).getDominio(bd).getCodDominio());
 					eventoNota.setIdVersamento(versamentoLetto.getId());
@@ -621,7 +621,7 @@ public class PendenzeDAO extends BaseDAO{
 		EventoNota eventoNota = new EventoNota();
 		eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
 		eventoNota.setAutore(userDetails.getIdentificativo());
-		eventoNota.setData(new Date());
+		eventoNota.setDataRichiesta(new Date());
 		eventoNota.setTesto(motivazione);
 		eventoNota.setTipoEvento(TipoNota.SistemaInfo);
 

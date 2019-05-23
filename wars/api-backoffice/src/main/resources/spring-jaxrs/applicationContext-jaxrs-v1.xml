@@ -28,13 +28,25 @@
     <!-- Context -->
 	<b:bean id="contextConfigV1" class="it.govpay.rs.v1.service.context.ContextConfig">
 	</b:bean>
-	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory"/>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory">
+		<b:property name="apiName" value="API_BACKOFFICE" />
+	</b:bean>
 	<b:bean id="contextV1" class="org.openspcoop2.utils.service.context.ContextFeature">
 		<b:property name="contextFactory" >
 			<b:ref bean="customContextFactory"/>
 		</b:property>
 		<b:property name="contextConfig" >
 			<b:ref bean="contextConfigV1"/>
+		</b:property>
+	</b:bean>
+	
+	<!-- Giornale Eventi -->
+	<b:bean id="giornaleEventiConfigV1" class="it.govpay.rs.eventi.GiornaleEventiConfig">
+		<b:property name="apiName" value="API_BACKOFFICE" />
+	</b:bean>
+	<b:bean id="giornaleEventiV1" class="it.govpay.rs.eventi.GiornaleEventiFeature">
+		<b:property name="giornaleEventiConfig" >
+			<b:ref bean="giornaleEventiConfigV1"/>
 		</b:property>
 	</b:bean>
         
@@ -103,6 +115,7 @@
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
         <jaxrs:features>
+        	<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV1" />
 		</jaxrs:features>
     </jaxrs:server>
@@ -143,6 +156,7 @@
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
         <jaxrs:features>
+			<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV1" />
 		</jaxrs:features>
     </jaxrs:server>
@@ -183,6 +197,7 @@
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
          <jaxrs:features>
+			<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV1" />
 		</jaxrs:features>
     </jaxrs:server>
@@ -223,6 +238,7 @@
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
         <jaxrs:features>
+			<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV1" />
 		</jaxrs:features>
     </jaxrs:server>
@@ -263,6 +279,7 @@
                 <ref bean="webApplicationExceptionMapper" />
         </jaxrs:providers>
         <jaxrs:features>
+			<ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV1" />
 		</jaxrs:features>
     </jaxrs:server>

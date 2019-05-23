@@ -338,7 +338,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						eventoNota.setOggetto(e.getDescrizioneEsito());
 						eventoNota.setTesto(e.getMessageNota());
 						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
+						eventoNota.setDataRichiesta(new Date());
 						eventoNota.setTipoEvento(e.getTipoNota()); 
 						eventoNota.setCodDominio(rifTransazione.getCodDominio());
 						eventoNota.setIuv(rifTransazione.getIuv());
@@ -363,7 +363,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						eventoNota.setOggetto(e.getDescrizioneEsito());
 						eventoNota.setTesto(e.getMessageNota());
 						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
+						eventoNota.setDataRichiesta(new Date());
 						eventoNota.setTipoEvento(e.getTipoNota());
 						eventoNota.setCodDominio(versamentoModel.getUo(bd).getDominio(bd).getCodDominio());
 						eventoNota.setIuv(versamentoModel.getIuvVersamento());
@@ -406,7 +406,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						eventoNota.setOggetto(transazioneResponse.getDescrizioneEsito());
 						eventoNota.setTesto(transazioneResponse.getDettaglioEsito());
 						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
+						eventoNota.setDataRichiesta(new Date());
 						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal); 
 						eventoNota.setCodDominio(rifTransazione.getCodDominio());
 						eventoNota.setIuv(rifTransazione.getIuv());
@@ -429,7 +429,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						eventoNota.setOggetto(transazioneResponse.getDescrizioneEsito());
 						eventoNota.setTesto(transazioneResponse.getDettaglioEsito());
 						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
+						eventoNota.setDataRichiesta(new Date());
 						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal); 
 						eventoNota.setCodDominio(versamentoModel.getUo(bd).getDominio(bd).getCodDominio());
 						eventoNota.setIuv(versamentoModel.getIuvVersamento());

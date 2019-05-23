@@ -215,7 +215,7 @@ public class RptDAO extends BaseDAO{
 					eventoNota.setOggetto("Tentativo di pagamento "+azione);
 					eventoNota.setTesto("Tentativo di pagamento [idDominio:"+idDominio+", IUV:"+iuv+", CCP:"+ccp+"] "+azione+" via API.");
 					eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
-					eventoNota.setData(new Date());
+					eventoNota.setDataRichiesta(new Date());
 					eventoNota.setTipoEvento(TipoNota.SistemaInfo);
 					eventoNota.setCodDominio(idDominio);
 					eventoNota.setIdVersamento(rpt.getIdVersamento());

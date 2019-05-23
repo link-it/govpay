@@ -26,9 +26,11 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.converter.EventoConverter;
 import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoGenerico;
 import it.govpay.bd.model.eventi.EventoIntegrazione;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.EventiBD;
+import it.govpay.core.utils.EventoContext;
 
 public class GiornaleEventi extends BasicBD {
 	
@@ -42,6 +44,22 @@ public class GiornaleEventi extends BasicBD {
 		try {
 			EventiBD eventiBD = new EventiBD(this);
 			eventiBD.insertEvento(evento);
+		} catch (Exception e) {
+			log.error("Errore nella registrazione degli eventi", e);
+		}
+	}
+	
+//	public void registraEventoCtx(EventoContext eventoCtx) {
+//		try {
+//			this._registraEvento(EventoConverter.fromEventoGenericoToEvento(eventoGenerico));
+//		} catch (Exception e) {
+//			log.error("Errore nella registrazione degli eventi", e);
+//		}
+//	}
+	
+	public void registraEventoGenerico(EventoGenerico eventoGenerico) {
+		try {
+			this._registraEvento(EventoConverter.fromEventoGenericoToEvento(eventoGenerico));
 		} catch (Exception e) {
 			log.error("Errore nella registrazione degli eventi", e);
 		}

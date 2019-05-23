@@ -114,7 +114,7 @@ public class Notifica  extends BasicBD{
 						eventoNota.setOggetto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata.");
 						eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata: trovata una notifica di annullamento/fallimento per la stessa RPT ["+key+"] schedulata per l'invio.");
 						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
+						eventoNota.setDataRichiesta(new Date());
 						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal);
 						eventoNota.setCodDominio(rpt.getCodDominio());
 						eventoNota.setIuv(rpt.getIuv());
@@ -132,7 +132,7 @@ public class Notifica  extends BasicBD{
 						eventoNota.setOggetto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata.");
 						eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata: trovata una notifica di attivazione per la stessa RPT ["+key+"] schedulata per l'invio.");
 						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
+						eventoNota.setDataRichiesta(new Date());
 						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal);
 						eventoNota.setCodDominio(rpt.getCodDominio());
 						eventoNota.setIuv(rpt.getIuv());

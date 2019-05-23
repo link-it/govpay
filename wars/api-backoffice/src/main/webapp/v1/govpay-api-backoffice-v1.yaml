@@ -3747,6 +3747,7 @@ components:
         - apiRagioneria
         - apiBackoffice
         - apiPagoPA
+        - apiPendenze
       properties:
         apiEnte:
           $ref: '#/components/schemas/gdeInterfaccia'
@@ -3757,6 +3758,8 @@ components:
         apiBackoffice:
           $ref: '#/components/schemas/gdeInterfaccia'
         apiPagoPA:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiPendenze:
           $ref: '#/components/schemas/gdeInterfaccia'
     gdeInterfaccia:
       type: object

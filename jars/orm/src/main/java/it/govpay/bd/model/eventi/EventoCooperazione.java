@@ -29,11 +29,8 @@ public class EventoCooperazione extends EventoGenerico {
 	public static final String COMPONENTE = "FESP";
 	public static final String NDP = "NodoDeiPagamentiSPC";
 
-	private Date dataRichiesta;
-	private Date dataRisposta;
 	private String codPsp;
 	private TipoVersamento tipoVersamento;
-	private String componente;
 	private String fruitore;
 	private String erogatore;
 	private String codStazione;
@@ -44,25 +41,13 @@ public class EventoCooperazione extends EventoGenerico {
 	public EventoCooperazione() {
 		super();
 		this.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
-		this.dataRichiesta = new Date();
-		this.componente = COMPONENTE;
+		this.setDataRichiesta(new Date());
+		this.setComponente(COMPONENTE);
 		this.codPsp = Rpt.codPspWISP20;
 		this.codCanale = Rpt.codCanaleWISP20;
 		this.tipoVersamento = Rpt.tipoVersamentoWISP20;
 	}
 
-	public Date getDataRichiesta() {
-		return this.dataRichiesta;
-	}
-	public void setDataRichiesta(Date data_richiesta) {
-		this.dataRichiesta = data_richiesta;
-	}
-	public Date getDataRisposta() {
-		return this.dataRisposta;
-	}
-	public void setDataRisposta(Date data_risposta) {
-		this.dataRisposta = data_risposta;
-	}
 	public String getCodPsp() {
 		return this.codPsp;
 	}
@@ -74,12 +59,6 @@ public class EventoCooperazione extends EventoGenerico {
 	}
 	public void setTipoVersamento(TipoVersamento tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
-	}
-	public String getComponente() {
-		return this.componente;
-	}
-	public void setComponente(String componente) {
-		this.componente = componente;
 	}
 	public void setTipoEvento(TipoEvento tipoEvento) {
 		if(tipoEvento != null)

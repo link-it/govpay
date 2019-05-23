@@ -30,6 +30,8 @@ import it.gov.spcoop.puntoaccessopa.servizi.avvisidigitali.NodoInviaAvvisoDigita
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.EventoContext.Categoria;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.model.Rpt;
 import it.govpay.model.Versionabile.Versione;
@@ -44,6 +46,7 @@ public class GpContext extends ApplicationContext {
 	 */
 	private static final long serialVersionUID = 1L; 
 	private PagamentoContext pagamentoCtx;
+	private EventoContext eventoCtx;
 
 	public static final String NOT_SET = "<Non valorizzato>";
 
@@ -115,6 +118,15 @@ public class GpContext extends ApplicationContext {
 		to.setType(TIPO_SOGGETTO_GOVPAY);
 		transaction.setTo(to);
 //		transaction.addServer(server);
+		
+		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
+		this.getEventoCtx().setRole(Role.SERVER);
+		this.getEventoCtx().setDataRichiesta(new Date());
+		this.getEventoCtx().setMethod((String) msgCtx.get(MessageContext.HTTP_REQUEST_METHOD));
+		this.getEventoCtx().setComponente(Componente.API_PAGOPA);
+		this.getEventoCtx().setUrl(servletRequest.getRequestURI());
+		this.getEventoCtx().setPrincipal(user);
+		this.getEventoCtx().setTipoEvento((String) msgCtx.get(MessageContext.HTTP_REQUEST_METHOD), operation.getName());
 	}
 
 //	public GpContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders, HttpServletRequest request,
@@ -157,7 +169,7 @@ public class GpContext extends ApplicationContext {
 ////		transaction.addServer(server);
 //	}
 
-	public GpContext(String requestUri,	String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user) throws ServiceException {
+	public GpContext(String requestUri,	String nomeServizio, String nomeOperazione, String httpMethod, int versioneServizio, String user, Componente componente) throws ServiceException {
 		this();
 		ApplicationTransaction transaction = (ApplicationTransaction) this.getTransaction();
 		transaction.setRole(Role.SERVER);
@@ -188,6 +200,15 @@ public class GpContext extends ApplicationContext {
 		to.setType(TIPO_SOGGETTO_GOVPAY);
 		transaction.setTo(to);
 		transaction.addServer(server);
+		
+		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
+		this.getEventoCtx().setRole(Role.SERVER);
+		this.getEventoCtx().setDataRichiesta(new Date());
+		this.getEventoCtx().setMethod(httpMethod);
+		this.getEventoCtx().setComponente(componente);
+		this.getEventoCtx().setUrl(requestUri);
+		this.getEventoCtx().setPrincipal(user);
+		this.getEventoCtx().setTipoEvento(httpMethod, nomeOperazione);
 	}
 
 	public static GpContext newContext() throws ServiceException{
@@ -208,6 +229,10 @@ public class GpContext extends ApplicationContext {
 
 		Request request = context.getRequest();
 		request.setDate(new Date());
+		
+		context.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
+		context.getEventoCtx().setRole(Role.SERVER);
+		context.getEventoCtx().setDataRichiesta(new Date());
 
 		return context;
 	}
@@ -230,6 +255,10 @@ public class GpContext extends ApplicationContext {
 
 		Request request = context.getRequest();
 		request.setDate(new Date());
+		
+		context.getEventoCtx().setCategoriaEvento(Categoria.INTERNO);
+		context.getEventoCtx().setRole(Role.CLIENT);
+		context.getEventoCtx().setDataRichiesta(new Date());
 		
 		return context;
 	}
@@ -357,6 +386,12 @@ public class GpContext extends ApplicationContext {
 		if(this.pagamentoCtx == null) 
 			this.pagamentoCtx = new PagamentoContext();
 		return this.pagamentoCtx;
+	}
+	
+	public EventoContext getEventoCtx() {
+		if(this.eventoCtx == null) 
+			this.eventoCtx = new EventoContext();
+		return this.eventoCtx;
 	}
 
 	public BaseServer getServerByOperationId(String operationID) {

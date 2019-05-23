@@ -1482,17 +1482,16 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-
-			<xsd:element name="codDominio" type="String35" minOccurs="0"/>
-			<xsd:element name="iuv" type="String35" minOccurs="0"/>
-			<xsd:element name="ccp" type="String35" minOccurs="0"/>
+			<xsd:element name="componente" type="String35" minOccurs="0"/>
 			<xsd:element name="categoriaEvento" type="String1" minOccurs="0"/>
-			<xsd:element name="tipoEvento" type="String35" minOccurs="0"/>
+			<xsd:element name="tipoEvento" type="String70" minOccurs="0"/>
 			<xsd:element name="sottotipoEvento" type="String35" minOccurs="0" />
 			<xsd:element name="data" type="xsd:dateTime" minOccurs="0" />
 			<xsd:element name="intervallo" type="xsd:long" minOccurs="0" />
-			<xsd:element name="classnameDettaglio" type="xsd:string" minOccurs="0" />
-			<xsd:element name="dettaglio" type="xsd:string" minOccurs="0">
+			<xsd:element name="esito" type="String4" minOccurs="0"/>
+			<xsd:element name="sottotipoEsito" type="xsd:integer" minOccurs="0"/>
+			<xsd:element name="dettaglioEsito" type="xsd:string" minOccurs="0" />
+			<xsd:element name="parametriRichiesta" type="xsd:string" minOccurs="0">
             	<xsd:annotation>
 	            	<xsd:appinfo>
                     	<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1501,6 +1500,24 @@
                 	</xsd:appinfo>
 	            </xsd:annotation>
             </xsd:element>
+			<xsd:element name="parametriRisposta" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="datiControparte" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 
 			
 			<xsd:element name="idVersamento" type="id-versamento" minOccurs="0">

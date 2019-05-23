@@ -98,7 +98,6 @@ public class InviaAvvisaturaThread implements Runnable {
 
 			ctx.getApplicationLogger().log("versamento.avvisaturaDigitale");
 
-			evento.setData(new Date());
 			evento.setDataRichiesta(new Date());
 			
 			ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleSpedizione");

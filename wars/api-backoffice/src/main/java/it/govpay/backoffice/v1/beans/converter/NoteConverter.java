@@ -37,7 +37,7 @@ public class NoteConverter {
 	public static Nota toRsModel(EventoNota nota) {
 		Nota rsModel = new Nota();
 		rsModel.setAutore(nota.getAutore());
-		rsModel.setData(nota.getData());
+		rsModel.setData(nota.getDataRichiesta());
 		rsModel.setTesto(nota.getTesto());
 		rsModel.setPrincipal(nota.getPrincipal());
 		rsModel.setOggetto(nota.getOggetto());

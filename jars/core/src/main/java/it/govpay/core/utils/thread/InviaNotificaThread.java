@@ -148,7 +148,7 @@ public class InviaNotificaThread implements Runnable {
 				eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase()
 						+ " pagamento annullata: connettore di notifica dell'applicazione "+this.applicazione.getCodApplicazione()+" non configurato.");
 				eventoNota.setPrincipal(null);
-				eventoNota.setData(new Date());
+				eventoNota.setDataRichiesta(new Date());
 				eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
 				eventoNota.setCodDominio(this.rpt.getCodDominio());
 				eventoNota.setIuv(this.rpt.getIuv());

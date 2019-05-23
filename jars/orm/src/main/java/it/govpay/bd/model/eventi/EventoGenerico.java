@@ -9,7 +9,6 @@ public class EventoGenerico implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	private Date data;
 	private String codDominio;
 	private String iuv;
 	private String ccp;
@@ -20,18 +19,33 @@ public class EventoGenerico implements Serializable{
 	private String descrizioneEsito;
 	private Long idVersamento;
 	private Long idPagamentoPortale;
-
+	private String componente;
+	private Date dataRichiesta;
+	private Date dataRisposta;
+	private String dettaglioRichiesta;
+	private String dettaglioRisposta;
+	
 	public EventoGenerico() {
 		this.categoriaEvento = CategoriaEvento.INTERNO;
-		this.data = new Date();
+		this.dataRichiesta = new Date();
 	}
 
-	public Date getData() {
-		return this.data;
+	public String getDettaglioRichiesta() {
+		return dettaglioRichiesta;
 	}
-	public void setData(Date data_richiesta) {
-		this.data = data_richiesta;
+
+	public void setDettaglioRichiesta(String dettaglioRichiesta) {
+		this.dettaglioRichiesta = dettaglioRichiesta;
 	}
+
+	public String getDettaglioRisposta() {
+		return dettaglioRisposta;
+	}
+
+	public void setDettaglioRisposta(String dettaglioRisposta) {
+		this.dettaglioRisposta = dettaglioRisposta;
+	}
+
 	public String getCodDominio() {
 		return this.codDominio;
 	}
@@ -91,5 +105,23 @@ public class EventoGenerico implements Serializable{
 	}
 	public void setIdPagamentoPortale(Long idPagamentoPortale) {
 		this.idPagamentoPortale = idPagamentoPortale;
+	}
+	public String getComponente() {
+		return this.componente;
+	}
+	public void setComponente(String componente) {
+		this.componente = componente;
+	}
+	public Date getDataRichiesta() {
+		return this.dataRichiesta;
+	}
+	public void setDataRichiesta(Date data_richiesta) {
+		this.dataRichiesta = data_richiesta;
+	}
+	public Date getDataRisposta() {
+		return this.dataRisposta;
+	}
+	public void setDataRisposta(Date data_risposta) {
+		this.dataRisposta = data_risposta;
 	}
 }

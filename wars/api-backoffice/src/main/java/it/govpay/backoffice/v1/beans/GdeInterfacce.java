@@ -16,6 +16,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "apiRagioneria",
 "apiBackoffice",
 "apiPagoPA",
+"apiPendenze",
 })
 public class GdeInterfacce extends JSONSerializable implements IValidable {
   
@@ -33,6 +34,9 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
   
   @JsonProperty("apiPagoPA")
   private GdeInterfaccia apiPagoPA = null;
+  
+  @JsonProperty("apiPendenze")
+  private GdeInterfaccia apiPendenze = null;
   
   /**
    **/
@@ -109,6 +113,21 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
     this.apiPagoPA = apiPagoPA;
   }
 
+  /**
+   **/
+  public GdeInterfacce apiPendenze(GdeInterfaccia apiPendenze) {
+    this.apiPendenze = apiPendenze;
+    return this;
+  }
+
+  @JsonProperty("apiPendenze")
+  public GdeInterfaccia getApiPendenze() {
+    return apiPendenze;
+  }
+  public void setApiPendenze(GdeInterfaccia apiPendenze) {
+    this.apiPendenze = apiPendenze;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -122,12 +141,13 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
         Objects.equals(apiPagamento, gdeInterfacce.apiPagamento) &&
         Objects.equals(apiRagioneria, gdeInterfacce.apiRagioneria) &&
         Objects.equals(apiBackoffice, gdeInterfacce.apiBackoffice) &&
-        Objects.equals(apiPagoPA, gdeInterfacce.apiPagoPA);
+        Objects.equals(apiPagoPA, gdeInterfacce.apiPagoPA) &&
+        Objects.equals(apiPendenze, gdeInterfacce.apiPendenze);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(apiEnte, apiPagamento, apiRagioneria, apiBackoffice, apiPagoPA);
+    return Objects.hash(apiEnte, apiPagamento, apiRagioneria, apiBackoffice, apiPagoPA, apiPendenze);
   }
   
   public static GdeInterfacce parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -149,6 +169,7 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
     sb.append("    apiRagioneria: ").append(toIndentedString(apiRagioneria)).append("\n");
     sb.append("    apiBackoffice: ").append(toIndentedString(apiBackoffice)).append("\n");
     sb.append("    apiPagoPA: ").append(toIndentedString(apiPagoPA)).append("\n");
+    sb.append("    apiPendenze: ").append(toIndentedString(apiPendenze)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -172,6 +193,7 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
 		vf.getValidator("apiRagioneria", this.apiRagioneria).notNull().validateFields();
 		vf.getValidator("apiBackoffice", this.apiBackoffice).notNull().validateFields();
 		vf.getValidator("apiPagoPA", this.apiPagoPA).notNull().validateFields();
+		vf.getValidator("apiPendenze", this.apiPendenze).notNull().validateFields();
  	}
 }
 

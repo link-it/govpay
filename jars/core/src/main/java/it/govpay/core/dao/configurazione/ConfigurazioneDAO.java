@@ -43,7 +43,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 	}
 
 
-	public PutConfigurazioneDTOResponse createOrUpdate(PutConfigurazioneDTO putConfigurazioneDTO) throws ConfigurazioneNonTrovataException, ServiceException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {  
+	public PutConfigurazioneDTOResponse salvaConfigurazioneGiornaleEventi(PutConfigurazioneDTO putConfigurazioneDTO) throws ConfigurazioneNonTrovataException, ServiceException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException {  
 		PutConfigurazioneDTOResponse putConfigurazioneDTOResponse = new PutConfigurazioneDTOResponse();
 		BasicBD bd = null;
 
@@ -61,6 +61,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 				created = true;
 			}
 			
+			// aggiorno configurazione del giornale eventi
 			configurazione.setGiornale(putConfigurazioneDTO.getGiornale());
 			
 			// flag creazione o update
@@ -75,38 +76,4 @@ public class ConfigurazioneDAO extends BaseDAO{
 		}
 		return putConfigurazioneDTOResponse;
 	}
-
-//	public GetApplicazioneDTOResponse patch(ApplicazionePatchDTO patchDTO) throws ServiceException,ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
-//		BasicBD bd = null;
-//
-//		try {
-//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
-//			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-//
-//			Applicazione applicazione = applicazioniBD.getApplicazione(patchDTO.getCodApplicazione());
-//			
-//			GetApplicazioneDTOResponse getApplicazioneDTOResponse = new GetApplicazioneDTOResponse(applicazione);
-//
-//			for(PatchOp op: patchDTO.getOp()) {
-//				UtenzaPatchUtils.patchUtenza(op, getApplicazioneDTOResponse.getApplicazione().getUtenza(), bd);
-//			}
-//
-//			//applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
-//			
-//			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione());
-//			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione().getUtenza()); 
-//			
-//			applicazione = applicazioniBD.getApplicazione(patchDTO.getCodApplicazione());
-//			getApplicazioneDTOResponse.setApplicazione(applicazione);
-//
-//			return getApplicazioneDTOResponse;
-//		}catch(NotFoundException e) {
-//			throw new ApplicazioneNonTrovataException("Non esiste un'applicazione associata all'ID ["+patchDTO.getCodApplicazione()+"]");
-//		}finally {
-//			if(bd != null)
-//				bd.closeConnection();
-//		}
-//
-//	}
-	
 }

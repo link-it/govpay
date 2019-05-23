@@ -285,7 +285,7 @@ public class UtenzaPatchUtils {
 		EventoNota nota = new EventoNota();
 		nota.setPrincipal(userDetails.getUtenza().getPrincipal());
 		nota.setAutore(userDetails.getUtenza().getIdentificativo());
-		nota.setData(new Date());
+		nota.setDataRichiesta(new Date());
 		nota.setTesto((String)map.get(TESTO_NOTA_KEY));
 		nota.setOggetto((String)map.get(OGGETTO_NOTA_KEY));
 		nota.setTipoEvento(TipoNota.valueOf((String) map.get(TIPO_NOTA_KEY)));

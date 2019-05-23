@@ -418,7 +418,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					eventoNota.setOggetto("Creazione RPT non completata.");
 					eventoNota.setTesto(e.getMessage());
 					eventoNota.setPrincipal(null);
-					eventoNota.setData(new Date());
+					eventoNota.setDataRichiesta(new Date());
 					eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal);
 					eventoNota.setCodDominio(codDominio);
 					eventoNota.setIuv(iuv);

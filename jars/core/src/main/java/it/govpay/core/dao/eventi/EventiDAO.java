@@ -17,8 +17,12 @@ import it.govpay.bd.pagamento.filters.EventiFilter;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
+import it.govpay.core.dao.eventi.dto.PutEventoDTO;
+import it.govpay.core.dao.eventi.dto.PutEventoDTOResponse;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.EventoContext;
+import it.govpay.model.Evento.CategoriaEvento;
 
 public class EventiDAO extends BaseDAO {
 
@@ -75,4 +79,46 @@ public class EventiDAO extends BaseDAO {
 		return new ListaEventiDTOResponse(count, resList);
 	}
 
+	
+	public PutEventoDTOResponse inserisciEvento(PutEventoDTO putEventoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
+		PutEventoDTOResponse putEventoDTOResponse = new PutEventoDTOResponse();
+		BasicBD bd = null;
+		
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			EventiBD eventiBD = new EventiBD(bd);
+			
+			Evento evento = new Evento();
+			
+			EventoContext eventoGenerico = putEventoDTO.getEvento();
+			 
+			evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
+			evento.setCcp(eventoGenerico.getCcp());
+			evento.setCodDominio(eventoGenerico.getCodDominio());
+			evento.setData(eventoGenerico.getDataRichiesta());
+			evento.setClassnameDettaglio(EventoContext.class.getName());
+			evento.setDettaglio(""); 
+			evento.setIdPagamentoPortale(eventoGenerico.getIdPagamentoPortale()); 
+			evento.setIdVersamento(eventoGenerico.getIdVersamento());
+			evento.setIuv(eventoGenerico.getIuv());
+			evento.setSottotipoEvento(eventoGenerico.getSottotipoEvento());
+			if(eventoGenerico.getTipoEvento() != null)
+				evento.setTipoEvento(eventoGenerico.getTipoEvento());
+			if(eventoGenerico.getDataRisposta() != null) {
+				if(eventoGenerico.getDataRichiesta() != null) {
+					evento.setIntervallo(eventoGenerico.getDataRisposta().getTime() - eventoGenerico.getDataRichiesta().getTime());
+				} else {
+					evento.setIntervallo(0l);
+				}
+			} else {
+				evento.setIntervallo(0l);
+			}
+			
+			eventiBD.insertEvento(evento);
+			return putEventoDTOResponse;
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
 }

@@ -982,7 +982,6 @@ public class Operazioni{
 						log.warn("Spedizione avvisatura Versamento [Dominio: "+versamento.getDominio(bd).getCodDominio()+", NumeroAvviso: "+versamento.getNumeroAvviso()+"] in modalita' sincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP valido.");
 						versamentiBD.updateVersamentoModalitaAvvisatura(versamento.getId(), ModoAvvisatura.ASICNRONA.getValue());
 						EventoCooperazione evento = new EventoCooperazione();
-						evento.setData(new Date());
 						evento.setDataRichiesta(new Date());
 						evento.setAltriParametriRichiesta(null);
 						evento.setAltriParametriRisposta(null);

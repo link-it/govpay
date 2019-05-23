@@ -29,7 +29,10 @@ import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.eventi.DettaglioRichiesta;
+import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.EventoGenerico;
 import it.govpay.bd.model.eventi.EventoIntegrazione;
 import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -147,7 +150,7 @@ public class EventoConverter {
 		evento.setCodDominio(eventoCooperazione.getCodDominio());
 		evento.setData(eventoCooperazione.getDataRichiesta());
 		evento.setClassnameDettaglio(EventoCooperazione.class.getName());
-		evento.setDettaglio(getDettaglioEventoCooperazione(eventoCooperazione)); 
+		evento.setDettaglio(getEventoAsString(eventoCooperazione)); 
 		evento.setIdPagamentoPortale(eventoCooperazione.getIdPagamentoPortale()); 
 		evento.setIdVersamento(eventoCooperazione.getIdVersamento());
 		if(eventoCooperazione.getDataRisposta() != null) {
@@ -176,7 +179,7 @@ public class EventoConverter {
 		evento.setCodDominio(eventointegrazione.getCodDominio());
 		evento.setData(eventointegrazione.getDataRichiesta());
 		evento.setClassnameDettaglio(EventoIntegrazione.class.getName());
-		evento.setDettaglio(getDettaglioEventoIntegrazione(eventointegrazione)); 
+		evento.setDettaglio(getEventoAsString(eventointegrazione)); 
 		evento.setIdPagamentoPortale(eventointegrazione.getIdPagamentoPortale()); 
 		evento.setIdVersamento(eventointegrazione.getIdVersamento());
 		if(eventointegrazione.getDataRisposta() != null) {
@@ -229,15 +232,48 @@ public class EventoConverter {
 		return eventoCooperazione;
 	}
 	
+	public static EventoGenerico toEventoGenerico(Evento evento) throws IOException {
+		EventoGenerico eventoCooperazione = evento.getDettaglioObject(EventoGenerico.class);
+		return eventoCooperazione;
+	}
+	
+	public static Evento fromEventoGenericoToEvento(EventoGenerico eventoGenerico) throws IOException {
+		Evento evento = new Evento();
+		
+		evento.setCategoriaEvento(eventoGenerico.getCategoriaEvento());
+		evento.setCcp(eventoGenerico.getCcp());
+		evento.setCodDominio(eventoGenerico.getCodDominio());
+		evento.setData(eventoGenerico.getDataRichiesta());
+		evento.setClassnameDettaglio(EventoGenerico.class.getName());
+		evento.setDettaglio(getEventoAsString(eventoGenerico)); 
+		evento.setIdPagamentoPortale(eventoGenerico.getIdPagamentoPortale()); 
+		evento.setIdVersamento(eventoGenerico.getIdVersamento());
+		evento.setIuv(eventoGenerico.getIuv());
+		evento.setSottotipoEvento(eventoGenerico.getSottotipoEvento());
+		if(eventoGenerico.getTipoEvento() != null)
+			evento.setTipoEvento(eventoGenerico.getTipoEvento());
+		if(eventoGenerico.getDataRisposta() != null) {
+			if(eventoGenerico.getDataRichiesta() != null) {
+				evento.setIntervallo(eventoGenerico.getDataRisposta().getTime() - eventoGenerico.getDataRichiesta().getTime());
+			} else {
+				evento.setIntervallo(0l);
+			}
+		} else {
+			evento.setIntervallo(0l);
+		}
+		
+		return evento;
+	}
+	
 	public static Evento fromEventoNotaToEvento(EventoNota eventoNota) throws IOException {
 		Evento evento = new Evento();
 		
 		evento.setCategoriaEvento(eventoNota.getCategoriaEvento());
 		evento.setCcp(eventoNota.getCcp());
 		evento.setCodDominio(eventoNota.getCodDominio());
-		evento.setData(eventoNota.getData());
+		evento.setData(eventoNota.getDataRichiesta());
 		evento.setClassnameDettaglio(EventoNota.class.getName());
-		evento.setDettaglio(getDettaglioEventoNota(eventoNota)); 
+		evento.setDettaglio(getEventoAsString(eventoNota)); 
 		evento.setIdPagamentoPortale(eventoNota.getIdPagamentoPortale()); 
 		evento.setIdVersamento(eventoNota.getIdVersamento());
 		evento.setIuv(eventoNota.getIuv());
@@ -253,27 +289,60 @@ public class EventoConverter {
 		return eventoNota;
 	}
 	
-	public static String getDettaglioEventoIntegrazione(EventoIntegrazione eventoIntegrazione) throws IOException {
+	
+	public static String getEventoAsString(Object obj) throws IOException {
 		SerializationConfig serializationConfig = new SerializationConfig();
 		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
-		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
 		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
-		return serializer.getObject(eventoIntegrazione); 
+		return serializer.getObject(obj); 
 	}
 	
-	public static String getDettaglioEventoCooperazione(EventoCooperazione eventoCooperazione) throws IOException {
-		SerializationConfig serializationConfig = new SerializationConfig();
-		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
-		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
-		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
-		return serializer.getObject(eventoCooperazione); 
-	}
-
-	public static String getDettaglioEventoNota(EventoNota eventoNota) throws IOException {
-		SerializationConfig serializationConfig = new SerializationConfig();
-		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
-		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
-		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
-		return serializer.getObject(eventoNota); 
-	}
+//	public static String getDettaglioEventoIntegrazione(EventoIntegrazione eventoIntegrazione) throws IOException {
+//		SerializationConfig serializationConfig = new SerializationConfig();
+//		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+//		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+//		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+//		return serializer.getObject(eventoIntegrazione); 
+//	}
+//	
+//	public static String getDettaglioEventoCooperazione(EventoCooperazione eventoCooperazione) throws IOException {
+//		SerializationConfig serializationConfig = new SerializationConfig();
+//		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+//		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+//		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+//		return serializer.getObject(eventoCooperazione); 
+//	}
+//
+//	public static String getDettaglioEventoGenerico(EventoGenerico eventoGenerico) throws IOException {
+//		SerializationConfig serializationConfig = new SerializationConfig();
+//		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+//		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+//		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+//		return serializer.getObject(eventoGenerico); 
+//	}
+//	
+//	public static String getDettaglioEventoNota(EventoNota eventoNota) throws IOException {
+//		SerializationConfig serializationConfig = new SerializationConfig();
+//		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+//		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+//		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+//		return serializer.getObject(eventoNota); 
+//	}
+//	
+//	public String getDettaglioRichiesta(DettaglioRichiesta dettaglioRichiesta) throws org.openspcoop2.utils.serialization.IOException {
+//		SerializationConfig serializationConfig = new SerializationConfig();
+//		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+//		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+//		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+//		return serializer.getObject(dettaglioRichiesta); 
+//	}
+//	
+//	public String getDettaglioRisposta(DettaglioRisposta dettaglioRisposta) throws org.openspcoop2.utils.serialization.IOException {
+//		SerializationConfig serializationConfig = new SerializationConfig();
+//		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+//		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+//		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+//		return serializer.getObject(dettaglioRisposta); 
+//	}
 }

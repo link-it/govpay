@@ -114,6 +114,7 @@ public class GovpayConfig {
 	
 	private boolean scritturaDiagnosticiFileEnabled;
 	private boolean scritturaDumpFileEnabled;
+	private boolean giornaleEventiEnabled;
 	
 	private String codTipoVersamentoPendenzeLibere;
 	private String codTipoVersamentoPendenzeNonCensite;
@@ -171,6 +172,7 @@ public class GovpayConfig {
 		
 		this.scritturaDiagnosticiFileEnabled = false;
 		this.scritturaDumpFileEnabled = false;
+		this.giornaleEventiEnabled = false;
 		
 		this.corsProperties = new Properties();
 		try {
@@ -490,6 +492,10 @@ public class GovpayConfig {
 			if(scritturaDumpFileEnabledString != null && Boolean.valueOf(scritturaDumpFileEnabledString))
 				this.scritturaDumpFileEnabled = true;
 			
+			String giornaleEventiEnabledString = getProperty("it.govpay.context.giornaleEventi.enabled", this.props, false, log);
+			if(giornaleEventiEnabledString != null && Boolean.valueOf(giornaleEventiEnabledString))
+				this.giornaleEventiEnabled = true;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -773,6 +779,10 @@ public class GovpayConfig {
 
 	public boolean isScritturaDumpFileEnabled() {
 		return scritturaDumpFileEnabled;
+	}
+
+	public boolean isGiornaleEventiEnabled() {
+		return giornaleEventiEnabled;
 	}
 
 }
