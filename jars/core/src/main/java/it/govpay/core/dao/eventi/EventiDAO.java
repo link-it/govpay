@@ -22,7 +22,6 @@ import it.govpay.core.dao.eventi.dto.PutEventoDTOResponse;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoContext;
-import it.govpay.model.Evento.CategoriaEvento;
 
 public class EventiDAO extends BaseDAO {
 
@@ -74,6 +73,12 @@ public class EventiDAO extends BaseDAO {
 		List<Evento> resList = new ArrayList<>();
 		if(count > 0) {
 			resList = eventiBD.findAll(filter);
+			
+			for (Evento evento : resList) {
+				evento.getRpt(bd);
+				evento.getVersamento(bd);
+				evento.getPagamentoPortale(bd);
+			}
 		} 
 
 		return new ListaEventiDTOResponse(count, resList);
@@ -88,32 +93,9 @@ public class EventiDAO extends BaseDAO {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			EventiBD eventiBD = new EventiBD(bd);
 			
-			Evento evento = new Evento();
-			
 			EventoContext eventoGenerico = putEventoDTO.getEvento();
 			 
-			evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
-			evento.setCcp(eventoGenerico.getCcp());
-			evento.setCodDominio(eventoGenerico.getCodDominio());
-			evento.setData(eventoGenerico.getDataRichiesta());
-			evento.setClassnameDettaglio(EventoContext.class.getName());
-			evento.setDettaglio(""); 
-			evento.setIdPagamentoPortale(eventoGenerico.getIdPagamentoPortale()); 
-			evento.setIdVersamento(eventoGenerico.getIdVersamento());
-			evento.setIuv(eventoGenerico.getIuv());
-			evento.setSottotipoEvento(eventoGenerico.getSottotipoEvento());
-			if(eventoGenerico.getTipoEvento() != null)
-				evento.setTipoEvento(eventoGenerico.getTipoEvento());
-			if(eventoGenerico.getDataRisposta() != null) {
-				if(eventoGenerico.getDataRichiesta() != null) {
-					evento.setIntervallo(eventoGenerico.getDataRisposta().getTime() - eventoGenerico.getDataRichiesta().getTime());
-				} else {
-					evento.setIntervallo(0l);
-				}
-			} else {
-				evento.setIntervallo(0l);
-			}
-			
+			Evento evento = eventoGenerico.toEventoDTO();
 			eventiBD.insertEvento(evento);
 			return putEventoDTOResponse;
 		} finally {

@@ -67,25 +67,18 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(Evento.model().COD_DOMINIO)){
+		if(field.equals(Evento.model().COMPONENTE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_dominio";
+				return this.toAliasTable(field)+".componente";
 			}else{
-				return "cod_dominio";
+				return "componente";
 			}
 		}
-		if(field.equals(Evento.model().IUV)){
+		if(field.equals(Evento.model().RUOLO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iuv";
+				return this.toAliasTable(field)+".ruolo";
 			}else{
-				return "iuv";
-			}
-		}
-		if(field.equals(Evento.model().CCP)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ccp";
-			}else{
-				return "ccp";
+				return "ruolo";
 			}
 		}
 		if(field.equals(Evento.model().CATEGORIA_EVENTO)){
@@ -123,18 +116,46 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "intervallo";
 			}
 		}
-		if(field.equals(Evento.model().CLASSNAME_DETTAGLIO)){
+		if(field.equals(Evento.model().ESITO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".classname_dettaglio";
+				return this.toAliasTable(field)+".esito";
 			}else{
-				return "classname_dettaglio";
+				return "esito";
 			}
 		}
-		if(field.equals(Evento.model().DETTAGLIO)){
+		if(field.equals(Evento.model().SOTTOTIPO_ESITO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".dettaglio";
+				return this.toAliasTable(field)+".sottotipo_esito";
 			}else{
-				return "dettaglio";
+				return "sottotipo_esito";
+			}
+		}
+		if(field.equals(Evento.model().DETTAGLIO_ESITO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dettaglio_esito";
+			}else{
+				return "dettaglio_esito";
+			}
+		}
+		if(field.equals(Evento.model().PARAMETRI_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".parametri_richiesta";
+			}else{
+				return "parametri_richiesta";
+			}
+		}
+		if(field.equals(Evento.model().PARAMETRI_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".parametri_risposta";
+			}else{
+				return "parametri_risposta";
+			}
+		}
+		if(field.equals(Evento.model().DATI_CONTROPARTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_controparte";
+			}else{
+				return "dati_controparte";
 			}
 		}
 		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
@@ -221,6 +242,27 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "versante_identificativo";
 			}
 		}
+		if(field.equals(Evento.model().ID_RPT.COD_MSG_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_msg_richiesta";
+			}else{
+				return "cod_msg_richiesta";
+			}
+		}
+		if(field.equals(Evento.model().ID_RPT.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(Evento.model().ID_RPT.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -234,13 +276,10 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(Evento.model().COD_DOMINIO)){
+		if(field.equals(Evento.model().COMPONENTE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().IUV)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().CCP)){
+		if(field.equals(Evento.model().RUOLO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().CATEGORIA_EVENTO)){
@@ -258,10 +297,22 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().INTERVALLO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().CLASSNAME_DETTAGLIO)){
+		if(field.equals(Evento.model().ESITO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().DETTAGLIO)){
+		if(field.equals(Evento.model().SOTTOTIPO_ESITO)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().DETTAGLIO_ESITO)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().PARAMETRI_RICHIESTA)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().PARAMETRI_RISPOSTA)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().DATI_CONTROPARTE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
@@ -300,6 +351,15 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
 			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
+		if(field.equals(Evento.model().ID_RPT.COD_MSG_RICHIESTA)){
+			return this.toTable(Evento.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_RPT.COD_DOMINIO)){
+			return this.toTable(Evento.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(Evento.model().ID_RPT.IUV)){
+			return this.toTable(Evento.model().ID_RPT, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -327,6 +387,9 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Evento.model().ID_RPT)){
+			return "rpt";
 		}
 
 

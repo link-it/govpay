@@ -862,25 +862,30 @@ CREATE TABLE rendicontazioni
 
 CREATE TABLE eventi
 (
-	cod_dominio VARCHAR(35) COMMENT 'Identificativo dell\'Ente creditore',
-	iuv VARCHAR(35) COMMENT 'Identificativo univoco di versamento',
-	ccp VARCHAR(35) COMMENT 'Codice contesto di pagamento',
+	componente VARCHAR(35) COMMENT 'Componente che ha generato l\'evento',
+	ruolo VARCHAR(1) COMMENT 'Ruolo (Client/Server)',
 	categoria_evento VARCHAR(1) COMMENT 'Categoria dell\'evento',
-	tipo_evento VARCHAR(35) COMMENT 'Tipologia dell\'evento',
+	tipo_evento VARCHAR(70) COMMENT 'Tipologia dell\'evento',
 	sottotipo_evento VARCHAR(35) COMMENT 'Sotto tipologia dell\'evento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data TIMESTAMP(3) COMMENT 'Data di emissione dell\'evento',
-	intervallo BIGINT COMMENT 'Intermvallo tra l\'evento di richiesta e risposta',
-	classname_dettaglio VARCHAR(255) COMMENT 'Classe per interpretare il dettaglio dell\'evento',
-	dettaglio LONGTEXT COMMENT 'Dati di dettaglio dell\'evento',
+	intervallo BIGINT COMMENT 'Intervallo tra l\'evento di richiesta e risposta',
+	esito VARCHAR(4) COMMENT 'Esito operazione registrata',
+	sottotipo_esito INT COMMENT 'Response Code restituito dall\' operazione',
+	dettaglio_esito VARCHAR(255) COMMENT 'Dettaglio esito in forma estesa',
+	parametri_richiesta LONGTEXT COMMENT 'Dettagli della richiesta',
+	parametri_risposta LONGTEXT COMMENT 'Dettagli della risposta',
+	dati_controparte LONGTEXT COMMENT 'Dati relativi alle transazioni pagopa',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT COMMENT 'Riferimento alla pendenza',
 	id_pagamento_portale BIGINT COMMENT 'Riferimento al pagamento',
+	id_rpt BIGINT COMMENT 'Riferimento alla transazione di pagamento',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_evt_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Giornale degli eventi';
 

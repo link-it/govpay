@@ -37,14 +37,14 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.EventoNota;
-import it.govpay.bd.model.eventi.EventoNota.TipoNota;
+import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -501,7 +501,7 @@ public class PendenzeDAO extends BaseDAO{
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-			EventoNota eventoNota = null;
+			Evento eventoNota = null;
 			it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, patchPendenzaDTO.getIdA2a()).getId(), patchPendenzaDTO.getIdPendenza());
 			
 			// controllo che il dominio e tipo versamento siano autorizzati
@@ -526,12 +526,9 @@ public class PendenzeDAO extends BaseDAO{
 						}
 					}
 					eventoNota = this.patchStato(patchPendenzaDTO.getUser(), versamentoLetto, op, motivazione, bd);
-					eventoNota.setCodDominio(versamentoLetto.getUo(bd).getDominio(bd).getCodDominio());
 					eventoNota.setIdVersamento(versamentoLetto.getId());
-					eventoNota.setIuv(versamentoLetto.getIuvVersamento());
-					
-					eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
-					giornaleEventi.registraEventoNota(eventoNota);
+					eventoNota.setTipoEvento("PATCH-PENDENZAPATCH");
+					giornaleEventi.registraEvento(eventoNota);
 				}
 				
 				if(PATH_DESCRIZIONE_STATO.equals(op.getPath())) {
@@ -544,41 +541,41 @@ public class PendenzeDAO extends BaseDAO{
 				
 				if(PATH_NOTA.equals(op.getPath())) {
 					eventoNota = this.patchNota(patchPendenzaDTO.getUser(), versamentoLetto, op, bd);
-					eventoNota.setCodDominio(versamentoLetto.getUo(bd).getDominio(bd).getCodDominio());
 					eventoNota.setIdVersamento(versamentoLetto.getId());
-					eventoNota.setIuv(versamentoLetto.getIuvVersamento());
-					giornaleEventi.registraEventoNota(eventoNota);
+					giornaleEventi.registraEvento(eventoNota);
 				}
 				
 				// Casi di operazioni patch che implicano una nota:
 				// ANNULLAMENTO
 				if(PATH_DESCRIZIONE_STATO.equals(op.getPath()) && PATH_STATO.equals(op.getPath()) && this.getNuovoStatoVersamento(op).equals(StatoVersamento.ANNULLATO)) {
-			 		eventoNota = new EventoNota();
-					eventoNota.setAutore(userDetails.getUtenza().getIdentificativo());
-					eventoNota.setOggetto("Pendenza annullata");
-					eventoNota.setTesto(versamentoLetto.getDescrizioneStato());
-					eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
-					eventoNota.setDataRichiesta(new Date());
-					eventoNota.setTipoEvento(TipoNota.SistemaInfo);
-					eventoNota.setCodDominio(versamentoLetto.getUo(bd).getDominio(bd).getCodDominio());
+			 		eventoNota = new Evento();
+					eventoNota.setDettaglioEsito("Pendenza annullata");
+					eventoNota.setData(new Date());
+					eventoNota.setTipoEvento("PATCH-PENDENZAPATCH");
 					eventoNota.setIdVersamento(versamentoLetto.getId());
-					eventoNota.setIuv(versamentoLetto.getIuvVersamento());
-					giornaleEventi.registraEventoNota(eventoNota);
+					DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+					dettaglioRichiesta.setPrincipal(userDetails.getUtenza().getPrincipal());
+					dettaglioRichiesta.setUtente(userDetails.getIdentificativo());
+					dettaglioRichiesta.setDataOraRichiesta(new Date());
+					dettaglioRichiesta.setPayload(versamentoLetto.getDescrizioneStato());
+					eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
+					giornaleEventi.registraEvento(eventoNota);
 				}
 				
 				// RIPRISTINO
 				if(PATH_DESCRIZIONE_STATO.equals(op.getPath()) && PATH_STATO.equals(op.getPath()) && this.getNuovoStatoVersamento(op).equals(StatoVersamento.NON_ESEGUITO)) {
-			 		eventoNota = new EventoNota();
-					eventoNota.setAutore(userDetails.getUtenza().getIdentificativo());
-					eventoNota.setOggetto("Pendenza ripristinata");
-					eventoNota.setTesto(versamentoLetto.getDescrizioneStato());
-					eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
-					eventoNota.setDataRichiesta(new Date());
-					eventoNota.setTipoEvento(TipoNota.SistemaInfo);
-					eventoNota.setCodDominio(versamentoLetto.getUo(bd).getDominio(bd).getCodDominio());
+			 		eventoNota = new Evento();
+					eventoNota.setDettaglioEsito("Pendenza ripristinata");
+					eventoNota.setData(new Date());
+					eventoNota.setTipoEvento("PATCH-PENDENZAPATCH");
 					eventoNota.setIdVersamento(versamentoLetto.getId());
-					eventoNota.setIuv(versamentoLetto.getIuvVersamento());
-					giornaleEventi.registraEventoNota(eventoNota);
+					DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+					dettaglioRichiesta.setPrincipal(userDetails.getUtenza().getPrincipal());
+					dettaglioRichiesta.setUtente(userDetails.getIdentificativo());
+					dettaglioRichiesta.setDataOraRichiesta(new Date());
+					dettaglioRichiesta.setPayload(versamentoLetto.getDescrizioneStato());
+					eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
+					giornaleEventi.registraEvento(eventoNota);
 				}
 				
 			}
@@ -610,7 +607,7 @@ public class PendenzeDAO extends BaseDAO{
 		versamentoLetto.setDescrizioneStato(descrizioneStato);
 	}
 
-	private EventoNota patchStato(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, String motivazione, BasicBD bd) throws ValidationException {
+	private Evento patchStato(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, String motivazione, BasicBD bd) throws ValidationException {
 		if(!op.getOp().equals(OpEnum.REPLACE)) {
 			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 		}
@@ -618,12 +615,15 @@ public class PendenzeDAO extends BaseDAO{
 		StatoVersamento nuovoStato = this.getNuovoStatoVersamento(op);
 		
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		EventoNota eventoNota = new EventoNota();
-		eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
-		eventoNota.setAutore(userDetails.getIdentificativo());
-		eventoNota.setDataRichiesta(new Date());
-		eventoNota.setTesto(motivazione);
-		eventoNota.setTipoEvento(TipoNota.SistemaInfo);
+		Evento eventoNota = new Evento();
+		eventoNota.setTipoEvento("PATCH-PENDENZAPATCH");
+		eventoNota.setData(new Date());
+		DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+		dettaglioRichiesta.setPrincipal(userDetails.getUtenza().getPrincipal());
+		dettaglioRichiesta.setUtente(userDetails.getIdentificativo());
+		dettaglioRichiesta.setDataOraRichiesta(new Date());
+		dettaglioRichiesta.setPayload(motivazione);
+		eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
 
 		switch (nuovoStato) {
 		case ANNULLATO:
@@ -636,7 +636,7 @@ public class PendenzeDAO extends BaseDAO{
 					versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
 				}
 				
-				eventoNota.setOggetto("Pendenza annullata");
+				eventoNota.setDettaglioEsito("Pendenza annullata");
 			} else {
 				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO");
 			}
@@ -651,7 +651,7 @@ public class PendenzeDAO extends BaseDAO{
 					versamentoLetto.setAvvisaturaModalita(avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
 				}
 				
-				eventoNota.setOggetto("Pendenza ripristinata");
+				eventoNota.setDettaglioEsito("Pendenza ripristinata");
 			} else {
 				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad NON_ESEGUITO da uno stato diverso da ANNULLATO");
 			}
@@ -674,7 +674,7 @@ public class PendenzeDAO extends BaseDAO{
 		versamentoLetto.setAck(ackVersamento != null ? ackVersamento.booleanValue() : false);
 	}
 	
-	private EventoNota patchNota(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, BasicBD bd) throws ValidationException, ServiceException, NotFoundException { 
+	private Evento patchNota(Authentication authentication, it.govpay.bd.model.Versamento versamentoLetto, PatchOp op, BasicBD bd) throws ValidationException, ServiceException, NotFoundException { 
 		if(!op.getOp().equals(OpEnum.ADD)) {
 			throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));
 		}

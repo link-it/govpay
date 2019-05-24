@@ -33,21 +33,25 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.EventoCooperazione;
-import it.govpay.bd.model.eventi.EventoIntegrazione;
-import it.govpay.bd.model.eventi.EventoNota;
+import it.govpay.bd.model.eventi.Controparte;
+import it.govpay.bd.model.eventi.DettaglioRichiesta;
+import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NotificaClient;
 import it.govpay.model.Connettore;
 import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.EsitoEvento;
+import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Versionabile.Versione;
@@ -92,7 +96,7 @@ public class InviaNotificaThread implements Runnable {
 		BasicBD bd = null;
 		TipoNotifica tipoNotifica = this.notifica.getTipo();
 		GiornaleEventi giornaleEventi = null;
-		EventoIntegrazione evento = new EventoIntegrazione();
+		Evento evento = new Evento();
 		String messaggioRichiesta = null;
 		String messaggioRisposta = null;
 		try {
@@ -141,21 +145,24 @@ public class InviaNotificaThread implements Runnable {
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();
 				notificheBD.updateAnnullata(this.notifica.getId(), "Connettore Notifica non configurato, notifica annullata.", tentativi, prossima);
 				
-				EventoNota eventoNota = new EventoNota();
-				eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-				eventoNota.setOggetto("Notifica " +tipoNotifica.name().toLowerCase()
-						+ " pagamento annullata: connettore non configurato.");
-				eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase()
-						+ " pagamento annullata: connettore di notifica dell'applicazione "+this.applicazione.getCodApplicazione()+" non configurato.");
-				eventoNota.setPrincipal(null);
-				eventoNota.setDataRichiesta(new Date());
-				eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
-				eventoNota.setCodDominio(this.rpt.getCodDominio());
-				eventoNota.setIuv(this.rpt.getIuv());
-				eventoNota.setCcp(this.rpt.getCcp());
+				Evento eventoNota = new Evento();
+				eventoNota.setCategoriaEvento(CategoriaEvento.INTERNO);
+				eventoNota.setEsitoEvento(EsitoEvento.KO);
+				eventoNota.setData(new Date());
+				eventoNota.setTipoEvento("Errore configurazione");
 				eventoNota.setIdPagamentoPortale(this.rpt.getIdPagamentoPortale());
-				eventoNota.setIdVersamento(this.rpt.getIdVersamento());					
-				giornaleEventi.registraEventoNota(eventoNota);
+				eventoNota.setIdVersamento(this.rpt.getIdVersamento());	
+				eventoNota.setIdRpt(this.rpt.getId());
+				DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+				dettaglioRichiesta.setPrincipal(null);
+				dettaglioRichiesta.setUtente(null);
+				dettaglioRichiesta.setDataOraRichiesta(new Date());
+				dettaglioRichiesta.setPayload("Notifica " +tipoNotifica.name().toLowerCase()
+						+ " pagamento annullata: connettore di notifica dell'applicazione "+this.applicazione.getCodApplicazione()+" non configurato.");
+				eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
+				
+				
+				giornaleEventi.registraEvento(eventoNota);
 				
 				return;
 			}
@@ -198,7 +205,7 @@ public class InviaNotificaThread implements Runnable {
 			}
 			
 			buildEventoIntegrazione(evento, ctx.getTransactionId(), applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, tipoNotifica.name(), "OK", null, messaggioRichiesta, messaggioRisposta, bd);
-			giornaleEventi.registraEventointegrazione(evento);
+			giornaleEventi.registraEvento(evento);
 			 
 			log.info("Notifica consegnata con successo");
 		} catch(Exception e) {
@@ -271,7 +278,7 @@ public class InviaNotificaThread implements Runnable {
 					}
 					
 					buildEventoIntegrazione(evento, ctx.getTransactionId(), applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, tipoNotifica.name(), "KO", e.getMessage(), messaggioRichiesta, messaggioRisposta, bd);
-					giornaleEventi.registraEventointegrazione(evento);
+					giornaleEventi.registraEvento(evento);
 				}
 				
 			} catch (Exception ee) {
@@ -294,27 +301,32 @@ public class InviaNotificaThread implements Runnable {
 		return this.completed;
 	}
 	
-	private void buildEventoIntegrazione(EventoIntegrazione evento, String idTransazione, 
+	private void buildEventoIntegrazione(Evento  evento, String idTransazione, 
 			String codApplicazione, String tipoEvento, 
 			String sottotipoEvento, String esito, String descrizioneEsito,  
 			String messaggioRichiesta, String messaggioRisposta, BasicBD bd) {
-		evento.setAltriParametriRichiesta(null);
-		evento.setAltriParametriRisposta(null);
-		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_INTEGRAZIONE);
-		evento.setCodDominio(this.dominio.getCodDominio());
-		evento.setComponente(EventoCooperazione.COMPONENTE);
-		evento.setDataRisposta(new Date());
-		evento.setErogatore(codApplicazione);
-		evento.setEsito(esito);
-		evento.setDescrizioneEsito(descrizioneEsito);
-		evento.setFruitore(EventoCooperazione.COMPONENTE);
-		evento.setIuv(this.rpt.getIuv());
-		evento.setCcp(this.rpt.getCcp());
+		
+		Controparte controparte = new Controparte();
+		controparte.setErogatore(codApplicazione);
+		controparte.setFruitore(Evento.COMPONENTE_COOPERAZIONE);
+		evento.setControparte(controparte);
+		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA);
+		evento.setRuoloEvento(RuoloEvento.CLIENT);
+		evento.setComponente(Componente.API_PAGOPA.name());
+		evento.setIntervalloFromData(new Date());
+		evento.setEsitoEvento(EsitoEvento.OK); // TODO rivedere
+		evento.setDettaglioEsito(descrizioneEsito);
 		evento.setSottotipoEvento(sottotipoEvento);
 		evento.setTipoEvento(tipoEvento);
-		evento.setAltriParametriRichiesta(messaggioRichiesta);
-		evento.setAltriParametriRisposta(messaggioRisposta);
+		DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+		dettaglioRichiesta.setPayload(messaggioRichiesta);
+		evento.setDettaglioRichiesta(dettaglioRichiesta);
+		DettaglioRisposta dettaglioRisposta = new DettaglioRisposta();
+		dettaglioRisposta.setPayload(messaggioRisposta);
+		evento.setDettaglioRisposta(dettaglioRisposta );
 		evento.setIdVersamento(this.versamento.getId());
-		evento.setIdTransazione(idTransazione);
+		evento.setIdRpt(this.rpt.getId());
+		evento.setIdVersamento(this.versamento.getId());
+		 // evento.setIdTransazione(idTransazione); // TODO Ripristino
 	}
 }

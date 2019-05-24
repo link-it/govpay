@@ -52,28 +52,34 @@ public class EventoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Evento.model())){
 				Evento object = new Evento();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				this.setParameter(object, "setCodDominio", Evento.model().COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Evento.model().COD_DOMINIO.getFieldType()));
-				this.setParameter(object, "setIuv", Evento.model().IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", Evento.model().IUV.getFieldType()));
-				this.setParameter(object, "setCcp", Evento.model().CCP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ccp", Evento.model().CCP.getFieldType()));
-				this.setParameter(object, "setCategoriaEvento", Evento.model().CATEGORIA_EVENTO.getFieldType(),
+				setParameter(object, "setComponente", Evento.model().COMPONENTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "componente", Evento.model().COMPONENTE.getFieldType()));
+				setParameter(object, "setRuolo", Evento.model().RUOLO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ruolo", Evento.model().RUOLO.getFieldType()));
+				setParameter(object, "setCategoriaEvento", Evento.model().CATEGORIA_EVENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "categoria_evento", Evento.model().CATEGORIA_EVENTO.getFieldType()));
-				this.setParameter(object, "setTipoEvento", Evento.model().TIPO_EVENTO.getFieldType(),
+				setParameter(object, "setTipoEvento", Evento.model().TIPO_EVENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo_evento", Evento.model().TIPO_EVENTO.getFieldType()));
-				this.setParameter(object, "setSottotipoEvento", Evento.model().SOTTOTIPO_EVENTO.getFieldType(),
+				setParameter(object, "setSottotipoEvento", Evento.model().SOTTOTIPO_EVENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "sottotipo_evento", Evento.model().SOTTOTIPO_EVENTO.getFieldType()));
-				this.setParameter(object, "setData", Evento.model().DATA.getFieldType(),
+				setParameter(object, "setData", Evento.model().DATA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data", Evento.model().DATA.getFieldType()));
-				this.setParameter(object, "setIntervallo", Evento.model().INTERVALLO.getFieldType(),
+				setParameter(object, "setIntervallo", Evento.model().INTERVALLO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "intervallo", Evento.model().INTERVALLO.getFieldType()));
-				this.setParameter(object, "setClassnameDettaglio", Evento.model().CLASSNAME_DETTAGLIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "classname_dettaglio", Evento.model().CLASSNAME_DETTAGLIO.getFieldType()));
-				this.setParameter(object, "setDettaglio", Evento.model().DETTAGLIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "dettaglio", Evento.model().DETTAGLIO.getFieldType()));
+				setParameter(object, "setEsito", Evento.model().ESITO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "esito", Evento.model().ESITO.getFieldType()));
+				setParameter(object, "setSottotipoEsito", Evento.model().SOTTOTIPO_ESITO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "sottotipo_esito", Evento.model().SOTTOTIPO_ESITO.getFieldType()));
+				setParameter(object, "setDettaglioEsito", Evento.model().DETTAGLIO_ESITO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dettaglio_esito", Evento.model().DETTAGLIO_ESITO.getFieldType()));
+				setParameter(object, "setParametriRichiesta", Evento.model().PARAMETRI_RICHIESTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "parametri_richiesta", Evento.model().PARAMETRI_RICHIESTA.getFieldType()));
+				setParameter(object, "setParametriRisposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "parametri_risposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType()));
+				setParameter(object, "setDatiControparte", Evento.model().DATI_CONTROPARTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dati_controparte", Evento.model().DATI_CONTROPARTE.getFieldType()));
 				return object;
 			}
 			
@@ -94,28 +100,34 @@ public class EventoFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Evento.model())){
 				Evento object = new Evento();
-				this.setParameter(object, "setId", Long.class,
+				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				this.setParameter(object, "setCodDominio", Evento.model().COD_DOMINIO.getFieldType(),
-					this.getObjectFromMap(map,"codDominio"));
-				this.setParameter(object, "setIuv", Evento.model().IUV.getFieldType(),
-					this.getObjectFromMap(map,"iuv"));
-				this.setParameter(object, "setCcp", Evento.model().CCP.getFieldType(),
-					this.getObjectFromMap(map,"ccp"));
-				this.setParameter(object, "setCategoriaEvento", Evento.model().CATEGORIA_EVENTO.getFieldType(),
+				setParameter(object, "setComponente", Evento.model().COMPONENTE.getFieldType(),
+					this.getObjectFromMap(map,"componente"));
+				setParameter(object, "setRuolo", Evento.model().RUOLO.getFieldType(),
+					this.getObjectFromMap(map,"ruolo"));
+				setParameter(object, "setCategoriaEvento", Evento.model().CATEGORIA_EVENTO.getFieldType(),
 					this.getObjectFromMap(map,"categoriaEvento"));
-				this.setParameter(object, "setTipoEvento", Evento.model().TIPO_EVENTO.getFieldType(),
+				setParameter(object, "setTipoEvento", Evento.model().TIPO_EVENTO.getFieldType(),
 					this.getObjectFromMap(map,"tipoEvento"));
-				this.setParameter(object, "setSottotipoEvento", Evento.model().SOTTOTIPO_EVENTO.getFieldType(),
+				setParameter(object, "setSottotipoEvento", Evento.model().SOTTOTIPO_EVENTO.getFieldType(),
 					this.getObjectFromMap(map,"sottotipoEvento"));
-				this.setParameter(object, "setData", Evento.model().DATA.getFieldType(),
+				setParameter(object, "setData", Evento.model().DATA.getFieldType(),
 					this.getObjectFromMap(map,"data"));
-				this.setParameter(object, "setIntervallo", Evento.model().INTERVALLO.getFieldType(),
+				setParameter(object, "setIntervallo", Evento.model().INTERVALLO.getFieldType(),
 					this.getObjectFromMap(map,"intervallo"));
-				this.setParameter(object, "setClassnameDettaglio", Evento.model().CLASSNAME_DETTAGLIO.getFieldType(),
-					this.getObjectFromMap(map,"classnameDettaglio"));
-				this.setParameter(object, "setDettaglio", Evento.model().DETTAGLIO.getFieldType(),
-					this.getObjectFromMap(map,"dettaglio"));
+				setParameter(object, "setEsito", Evento.model().ESITO.getFieldType(),
+					this.getObjectFromMap(map,"esito"));
+				setParameter(object, "setSottotipoEsito", Evento.model().SOTTOTIPO_ESITO.getFieldType(),
+					this.getObjectFromMap(map,"sottotipoEsito"));
+				setParameter(object, "setDettaglioEsito", Evento.model().DETTAGLIO_ESITO.getFieldType(),
+					this.getObjectFromMap(map,"dettaglioEsito"));
+				setParameter(object, "setParametriRichiesta", Evento.model().PARAMETRI_RICHIESTA.getFieldType(),
+					this.getObjectFromMap(map,"parametriRichiesta"));
+				setParameter(object, "setParametriRisposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType(),
+					this.getObjectFromMap(map,"parametriRisposta"));
+				setParameter(object, "setDatiControparte", Evento.model().DATI_CONTROPARTE.getFieldType(),
+					this.getObjectFromMap(map,"datiControparte"));
 				return object;
 			}
 			

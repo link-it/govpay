@@ -35,18 +35,22 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Evento">
  * 		&lt;sequence>
- * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="componente" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ruolo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="categoriaEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="sottotipoEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="intervallo" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="classnameDettaglio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dettaglio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="esito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="sottotipoEsito" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dettaglioEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="parametriRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="parametriRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="datiControparte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idRpt" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -61,18 +65,22 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Evento", 
   propOrder = {
-  	"codDominio",
-  	"iuv",
-  	"ccp",
+  	"componente",
+  	"ruolo",
   	"categoriaEvento",
   	"tipoEvento",
   	"sottotipoEvento",
   	"data",
   	"intervallo",
-  	"classnameDettaglio",
-  	"dettaglio",
+  	"esito",
+  	"sottotipoEsito",
+  	"dettaglioEsito",
+  	"parametriRichiesta",
+  	"parametriRisposta",
+  	"datiControparte",
   	"idVersamento",
-  	"idPagamentoPortale"
+  	"idPagamentoPortale",
+  	"idRpt"
   }
 )
 
@@ -96,28 +104,20 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getCodDominio() {
-    return this.codDominio;
+  public java.lang.String getComponente() {
+    return this.componente;
   }
 
-  public void setCodDominio(java.lang.String codDominio) {
-    this.codDominio = codDominio;
+  public void setComponente(java.lang.String componente) {
+    this.componente = componente;
   }
 
-  public java.lang.String getIuv() {
-    return this.iuv;
+  public java.lang.String getRuolo() {
+    return this.ruolo;
   }
 
-  public void setIuv(java.lang.String iuv) {
-    this.iuv = iuv;
-  }
-
-  public java.lang.String getCcp() {
-    return this.ccp;
-  }
-
-  public void setCcp(java.lang.String ccp) {
-    this.ccp = ccp;
+  public void setRuolo(java.lang.String ruolo) {
+    this.ruolo = ruolo;
   }
 
   public java.lang.String getCategoriaEvento() {
@@ -160,20 +160,52 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.intervallo = intervallo;
   }
 
-  public java.lang.String getClassnameDettaglio() {
-    return this.classnameDettaglio;
+  public java.lang.String getEsito() {
+    return this.esito;
   }
 
-  public void setClassnameDettaglio(java.lang.String classnameDettaglio) {
-    this.classnameDettaglio = classnameDettaglio;
+  public void setEsito(java.lang.String esito) {
+    this.esito = esito;
   }
 
-  public java.lang.String getDettaglio() {
-    return this.dettaglio;
+  public java.lang.Integer getSottotipoEsito() {
+    return this.sottotipoEsito;
   }
 
-  public void setDettaglio(java.lang.String dettaglio) {
-    this.dettaglio = dettaglio;
+  public void setSottotipoEsito(java.lang.Integer sottotipoEsito) {
+    this.sottotipoEsito = sottotipoEsito;
+  }
+
+  public java.lang.String getDettaglioEsito() {
+    return this.dettaglioEsito;
+  }
+
+  public void setDettaglioEsito(java.lang.String dettaglioEsito) {
+    this.dettaglioEsito = dettaglioEsito;
+  }
+
+  public java.lang.String getParametriRichiesta() {
+    return this.parametriRichiesta;
+  }
+
+  public void setParametriRichiesta(java.lang.String parametriRichiesta) {
+    this.parametriRichiesta = parametriRichiesta;
+  }
+
+  public java.lang.String getParametriRisposta() {
+    return this.parametriRisposta;
+  }
+
+  public void setParametriRisposta(java.lang.String parametriRisposta) {
+    this.parametriRisposta = parametriRisposta;
+  }
+
+  public java.lang.String getDatiControparte() {
+    return this.datiControparte;
+  }
+
+  public void setDatiControparte(java.lang.String datiControparte) {
+    this.datiControparte = datiControparte;
   }
 
   public IdVersamento getIdVersamento() {
@@ -190,6 +222,14 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
 
   public void setIdPagamentoPortale(IdPagamentoPortale idPagamentoPortale) {
     this.idPagamentoPortale = idPagamentoPortale;
+  }
+
+  public IdRpt getIdRpt() {
+    return this.idRpt;
+  }
+
+  public void setIdRpt(IdRpt idRpt) {
+    this.idRpt = idRpt;
   }
 
   private static final long serialVersionUID = 1L;
@@ -212,16 +252,12 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codDominio",required=false,nillable=false)
-  protected java.lang.String codDominio;
+  @XmlElement(name="componente",required=false,nillable=false)
+  protected java.lang.String componente;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="iuv",required=false,nillable=false)
-  protected java.lang.String iuv;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ccp",required=false,nillable=false)
-  protected java.lang.String ccp;
+  @XmlElement(name="ruolo",required=false,nillable=false)
+  protected java.lang.String ruolo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="categoriaEvento",required=false,nillable=false)
@@ -245,17 +281,36 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   protected long intervallo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="classnameDettaglio",required=false,nillable=false)
-  protected java.lang.String classnameDettaglio;
+  @XmlElement(name="esito",required=false,nillable=false)
+  protected java.lang.String esito;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @XmlElement(name="sottotipoEsito",required=false,nillable=false)
+  protected java.lang.Integer sottotipoEsito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="dettaglio",required=false,nillable=false)
-  protected java.lang.String dettaglio;
+  @XmlElement(name="dettaglioEsito",required=false,nillable=false)
+  protected java.lang.String dettaglioEsito;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="parametriRichiesta",required=false,nillable=false)
+  protected java.lang.String parametriRichiesta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="parametriRisposta",required=false,nillable=false)
+  protected java.lang.String parametriRisposta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="datiControparte",required=false,nillable=false)
+  protected java.lang.String datiControparte;
 
   @XmlElement(name="idVersamento",required=false,nillable=false)
   protected IdVersamento idVersamento;
 
   @XmlElement(name="idPagamentoPortale",required=false,nillable=false)
   protected IdPagamentoPortale idPagamentoPortale;
+
+  @XmlElement(name="idRpt",required=false,nillable=false)
+  protected IdRpt idRpt;
 
 }

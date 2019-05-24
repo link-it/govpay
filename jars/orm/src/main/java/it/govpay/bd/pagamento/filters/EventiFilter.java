@@ -39,9 +39,8 @@ public class EventiFilter extends AbstractFilter{
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
-		this.listaFieldSimpleSearch.add(Evento.model().IUV);
-		this.listaFieldSimpleSearch.add(Evento.model().CCP);
-		this.listaFieldSimpleSearch.add(Evento.model().COD_DOMINIO);
+		this.listaFieldSimpleSearch.add(Evento.model().COMPONENTE);
+		this.listaFieldSimpleSearch.add(Evento.model().TIPO_EVENTO);
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class EventiFilter extends AbstractFilter{
 			boolean addAnd = false;
 			
 			if(this.codDominio != null){
-				newExpression.equals(Evento.model().COD_DOMINIO, this.codDominio);
+				newExpression.equals(Evento.model().ID_RPT.COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
 			
@@ -62,7 +61,7 @@ public class EventiFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.in(Evento.model().COD_DOMINIO, this.codDomini);
+				newExpression.in(Evento.model().ID_RPT.COD_DOMINIO, this.codDomini);
 				addAnd = true;
 			}
 
@@ -71,17 +70,17 @@ public class EventiFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(Evento.model().IUV, this.iuv, LikeMode.ANYWHERE);
+				newExpression.ilike(Evento.model().ID_RPT.IUV, this.iuv, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			
-			if(this.ccp != null && StringUtils.isNotEmpty(this.ccp)) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.ilike(Evento.model().CCP, this.ccp, LikeMode.ANYWHERE);
-				addAnd = true;
-			}
+//			if(this.ccp != null && StringUtils.isNotEmpty(this.ccp)) {
+//				if(addAnd)
+//					newExpression.and();
+//				
+//				newExpression.ilike(Evento.model().ID_RPT.CCP, this.ccp, LikeMode.ANYWHERE);
+//				addAnd = true;
+//			}
 			
 			
 			if(this.datainizio != null && this.dataFine != null) {

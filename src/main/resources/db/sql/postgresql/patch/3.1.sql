@@ -519,4 +519,36 @@ CREATE TABLE configurazione
 -- 22/05/2019 Configurazione Giornale Eventi
 INSERT INTO configurazione (giornale_eventi) values ('{"apiEnte":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}}}');
 
+-- 24/05/2019 nuova tabella eventi
+DROP TABLE eventi;
+
+
+CREATE TABLE eventi
+(
+	componente VARCHAR(35),
+	ruolo VARCHAR(1),
+	categoria_evento VARCHAR(1),
+	tipo_evento VARCHAR(70),
+	sottotipo_evento VARCHAR(35),
+	data TIMESTAMP,
+	intervallo BIGINT,
+	esito VARCHAR(4),
+	sottotipo_esito INT,
+	dettaglio_esito VARCHAR(255),
+	parametri_richiesta TEXT,
+	parametri_risposta TEXT,
+	dati_controparte TEXT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
+	id_versamento BIGINT,
+	id_pagamento_portale BIGINT,
+	id_rpt BIGINT,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_evt_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT pk_eventi PRIMARY KEY (id)
+);
+
+
 

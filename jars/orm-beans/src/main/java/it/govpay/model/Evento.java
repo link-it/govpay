@@ -31,19 +31,23 @@ public class Evento extends BasicModel {
 	private Long id;
 	private Long idVersamento;
 	private Long idPagamentoPortale;
-	private String codDominio;
-	private String iuv;
-	private String ccp;
+	private Long idRpt;
+	private String componente;
 	private CategoriaEvento categoriaEvento;
+	private RuoloEvento ruoloEvento;
 	private String tipoEvento;
 	private String sottotipoEvento;
 	private Long intervallo;
 	private Date data;
-	private String dettaglio;
-	private String classnameDettaglio;
+	private EsitoEvento esitoEvento;
+	private Integer sottotipoEsito;
+	private String dettaglioEsito;
+	private String parametriRichiesta;
+	private String parametriRisposta;
+	private String datiControparte;
 	
 	public enum CategoriaEvento {
-		INTERNO ("B"), INTERFACCIA_COOPERAZIONE ("C"), INTERFACCIA_INTEGRAZIONE ("I"), UTENTE ("U");
+		INTERNO ("B"), INTERFACCIA ("I"), UTENTE ("U");
 		
 		private String codifica;
 
@@ -70,8 +74,65 @@ public class Evento extends BasicModel {
 		}
 	}
 	
+	public enum RuoloEvento {
+		CLIENT ("C"), SERVER ("S");
+		
+		private String codifica;
+
+		RuoloEvento(String codifica) {
+			this.codifica = codifica;
+		}
+		public String getCodifica() {
+			return this.codifica;
+		}
+		
+		public static RuoloEvento toEnum(String codifica) throws ServiceException {
+			
+			for(RuoloEvento p : RuoloEvento.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			
+			throw new ServiceException("Codifica inesistente per RuoloEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(RuoloEvento.values()));
+		}
+		
+		@Override
+		public String toString() {
+			return String.valueOf(this.codifica);
+		}
+	}
+	
+	public enum EsitoEvento {
+		OK ("OK"), KO("KO"), FAIL("FAIL");
+		
+		private String codifica;
+
+		EsitoEvento(String codifica) {
+			this.codifica = codifica;
+		}
+		public String getCodifica() {
+			return this.codifica;
+		}
+		
+		public static EsitoEvento toEnum(String codifica) throws ServiceException {
+			
+			for(EsitoEvento p : EsitoEvento.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			
+			throw new ServiceException("Codifica inesistente per EsitoEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoEvento.values()));
+		}
+		
+		@Override
+		public String toString() {
+			return String.valueOf(this.codifica);
+		}
+	}
+	
 	public Evento() {
-		this.categoriaEvento = CategoriaEvento.INTERFACCIA_COOPERAZIONE;
+		this.categoriaEvento = CategoriaEvento.INTERFACCIA;
+		this.ruoloEvento = RuoloEvento.SERVER;
 		this.data  = new Date();
 	}
 	
@@ -81,24 +142,6 @@ public class Evento extends BasicModel {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public String getCodDominio() {
-		return this.codDominio;
-	}
-	public void setCodDominio(String codDominio) {
-		this.codDominio = codDominio;
-	}
-	public String getIuv() {
-		return this.iuv;
-	}
-	public void setIuv(String iuv) {
-		this.iuv = iuv;
-	}
-	public String getCcp() {
-		return this.ccp;
-	}
-	public void setCcp(String ccp) {
-		this.ccp = ccp;
 	}
 	public CategoriaEvento getCategoriaEvento() {
 		return this.categoriaEvento;
@@ -152,20 +195,90 @@ public class Evento extends BasicModel {
 	public void setData(Date data) {
 		this.data = data;
 	}
-
-	public String getDettaglio() {
-		return dettaglio;
+	
+	public void setIntervalloFromData(Date data) {
+		if(data != null) {
+			if(this.getData() != null) {
+				this.setIntervallo(data.getTime() - this.getData().getTime());
+			} else {
+				this.setIntervallo(0l);
+			}
+		} else {
+			this.setIntervallo(0l);
+		}
 	}
 
-	public void setDettaglio(String dettaglio) {
-		this.dettaglio = dettaglio;
+	public Long getIdRpt() {
+		return idRpt;
 	}
 
-	public String getClassnameDettaglio() {
-		return classnameDettaglio;
+	public void setIdRpt(Long idRpt) {
+		this.idRpt = idRpt;
 	}
 
-	public void setClassnameDettaglio(String classnameDettaglio) {
-		this.classnameDettaglio = classnameDettaglio;
+	public String getComponente() {
+		return componente;
 	}
+
+	public void setComponente(String componente) {
+		this.componente = componente;
+	}
+
+	public RuoloEvento getRuoloEvento() {
+		return ruoloEvento;
+	}
+
+	public void setRuoloEvento(RuoloEvento ruoloEvento) {
+		this.ruoloEvento = ruoloEvento;
+	}
+
+	public EsitoEvento getEsitoEvento() {
+		return esitoEvento;
+	}
+
+	public void setEsitoEvento(EsitoEvento esitoEvento) {
+		this.esitoEvento = esitoEvento;
+	}
+
+	public Integer getSottotipoEsito() {
+		return sottotipoEsito;
+	}
+
+	public void setSottotipoEsito(Integer sottotipoEsito) {
+		this.sottotipoEsito = sottotipoEsito;
+	}
+
+	public String getDettaglioEsito() {
+		return dettaglioEsito;
+	}
+
+	public void setDettaglioEsito(String dettaglioEsito) {
+		this.dettaglioEsito = dettaglioEsito;
+	}
+
+	public String getParametriRichiesta() {
+		return parametriRichiesta;
+	}
+
+	public void setParametriRichiesta(String parametriRichiesta) {
+		this.parametriRichiesta = parametriRichiesta;
+	}
+
+	public String getParametriRisposta() {
+		return parametriRisposta;
+	}
+
+	public void setParametriRisposta(String parametriRisposta) {
+		this.parametriRisposta = parametriRisposta;
+	}
+
+	public String getDatiControparte() {
+		return datiControparte;
+	}
+
+	public void setDatiControparte(String datiControparte) {
+		this.datiControparte = datiControparte;
+	}
+
+	 
 }

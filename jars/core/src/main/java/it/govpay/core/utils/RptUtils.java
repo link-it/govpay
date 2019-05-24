@@ -49,18 +49,20 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.Evento.TipoEventoCooperazione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.eventi.EventoCooperazione;
-import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
+import it.govpay.bd.model.eventi.Controparte;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
@@ -69,6 +71,7 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.EsitoPagamento;
@@ -129,7 +132,7 @@ public class RptUtils {
 	
 	public static it.govpay.core.business.model.Risposta inviaRPT(Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
 		if(bd != null) bd.closeConnection();
-		EventoCooperazione evento = new EventoCooperazione();
+		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
 			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), operationId, bd);
@@ -155,8 +158,8 @@ public class RptUtils {
 			
 			try {
 				GiornaleEventi giornale = new GiornaleEventi(bd);
-				buildEventoCoperazione(evento, rpt, risposta, TipoEvento.nodoInviaRPT, bd);
-				giornale.registraEventoCooperazione(evento);
+				buildEventoCoperazione(evento, rpt, risposta, TipoEventoCooperazione.nodoInviaRPT, bd);
+				giornale.registraEvento(evento);
 			} finally {
 				if(newCon) bd.closeConnection();
 			}
@@ -165,7 +168,7 @@ public class RptUtils {
 
 	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
 		if(bd != null) bd.closeConnection();
-		EventoCooperazione evento = new EventoCooperazione();
+		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
 			NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, bd);
@@ -198,8 +201,8 @@ public class RptUtils {
 			try {
 				GiornaleEventi giornale = new GiornaleEventi(bd);
 				for(Rpt rpt : rpts) {
-					buildEventoCoperazione(evento, rpt, risposta, TipoEvento.nodoInviaCarrelloRPT, bd);
-					giornale.registraEventoCooperazione(evento); 
+					buildEventoCoperazione(evento, rpt, risposta, TipoEventoCooperazione.nodoInviaCarrelloRPT, bd);
+					giornale.registraEvento(evento); 
 				}
 			} finally {
 				if(newCon) bd.closeConnection();
@@ -207,27 +210,34 @@ public class RptUtils {
 		}
 	}
 	
-	private static void buildEventoCoperazione(EventoCooperazione evento, Rpt rpt, Risposta risposta, TipoEvento tipoEvento, BasicBD bd) throws ServiceException {
-		evento.setAltriParametriRichiesta(null);
-		evento.setAltriParametriRisposta(null);
-		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
-		evento.setCcp(rpt.getCcp());
-		evento.setCodCanale(rpt.getCodCanale());
-		evento.setCodDominio(rpt.getCodDominio());
-		evento.setCodPsp(rpt.getCodPsp());
-		evento.setCodStazione(rpt.getCodStazione());
-		evento.setComponente(EventoCooperazione.COMPONENTE);
-		evento.setDataRisposta(new Date());
-		evento.setErogatore(EventoCooperazione.NDP);
-		if(risposta != null)
-			evento.setEsito(risposta.getEsito());
-		else
-			evento.setEsito("Errore di trasmissione al Nodo");
-		evento.setFruitore(rpt.getIntermediario(bd).getDenominazione());
-		evento.setIuv(rpt.getIuv());
+	private static void buildEventoCoperazione(Evento evento, Rpt rpt, Risposta risposta, TipoEventoCooperazione tipoEvento, BasicBD bd) throws ServiceException {
+		
+		Controparte controparte = new Controparte();
+		controparte.setCodCanale(rpt.getCodCanale());
+		controparte.setCodPsp(rpt.getCodPsp());
+		controparte.setCodStazione(rpt.getStazione(bd).getCodStazione());
+		controparte.setErogatore(Evento.NDP);
+		controparte.setFruitore(rpt.getIntermediario(bd).getDenominazione());
+		controparte.setTipoVersamento(rpt.getTipoVersamento());
+		evento.setControparte(controparte);
+		evento.setDettaglioRichiesta(null);
+		evento.setDettaglioRisposta(null);
+		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA);
+		evento.setIdRpt(rpt.getId());
+		evento.setComponente(Componente.API_PAGOPA.name());
+		evento.setIntervalloFromData(new Date());
+		
+		if(risposta != null) {
+			evento.setEsitoEvento(EsitoEvento.OK); // TODO
+			evento.setDettaglioEsito(risposta.getEsito());
+		}
+		else {
+			evento.setEsitoEvento(EsitoEvento.FAIL);
+			evento.setDettaglioEsito("Errore di trasmissione al Nodo");
+		}
+		
 		evento.setSottotipoEvento(null);
-		evento.setTipoEvento(tipoEvento);
-		evento.setTipoVersamento(rpt.getTipoVersamento());
+		evento.setTipoEvento(tipoEvento.name());
 
 		if(rpt.getVersamento(bd) != null) {
 			evento.setIdVersamento(rpt.getVersamento(bd).getId());

@@ -114,26 +114,30 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 		try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getEventoFieldConverter().toTable(Evento.model())));
-			fields.add(Evento.model().COD_DOMINIO);
-			fields.add(Evento.model().IUV);
-			fields.add(Evento.model().CCP);
 			fields.add(Evento.model().CATEGORIA_EVENTO);
-			fields.add(Evento.model().TIPO_EVENTO);
-			fields.add(Evento.model().SOTTOTIPO_EVENTO);
-			fields.add(Evento.model().INTERVALLO);
+			fields.add(Evento.model().COMPONENTE);
 			fields.add(Evento.model().DATA);
-			fields.add(Evento.model().CLASSNAME_DETTAGLIO);
-			fields.add(Evento.model().DETTAGLIO);
+			fields.add(Evento.model().DATI_CONTROPARTE);
+			fields.add(Evento.model().DETTAGLIO_ESITO);
+			fields.add(Evento.model().ESITO);
+			fields.add(Evento.model().INTERVALLO);
+			fields.add(Evento.model().PARAMETRI_RICHIESTA);
+			fields.add(Evento.model().PARAMETRI_RISPOSTA);
+			fields.add(Evento.model().RUOLO);
+			fields.add(Evento.model().SOTTOTIPO_ESITO);
+			fields.add(Evento.model().SOTTOTIPO_EVENTO);
+			fields.add(Evento.model().TIPO_EVENTO);
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getFieldConverter().toTable(Evento.model())));
 			fields.add(new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", this.getFieldConverter().toTable(Evento.model())));
+			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getFieldConverter().toTable(Evento.model())));
 		
-
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				
 				Object idVersamentoObj = map.remove("id_versamento");
 				Object idPagamentoPortaleObj = map.remove("id_pagamento_portale");
+				Object idRptObj = map.remove("id_rpt");
 
 				Evento evento = (Evento)this.getEventoFetch().fetch(jdbcProperties.getDatabase(), Evento.model(), map);
 				
@@ -159,6 +163,18 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 					}
 					id_pagamento.setId(idPagamentoPortale);
 					evento.setIdPagamentoPortale(id_pagamento);
+				}
+				
+				if(idRptObj instanceof Long) {
+					Long idRpt = (Long) idRptObj;
+					it.govpay.orm.IdRpt id_rpt = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findId(idRpt, false);
+					}else{
+						id_rpt = new it.govpay.orm.IdRpt();
+					}
+					id_rpt.setId(idRpt);
+					evento.setIdRpt(id_rpt);
 				}
 				
 				
@@ -463,7 +479,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getEventoFieldConverter().toTable(Evento.model()));
-		sqlQueryObject.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,true));
+		sqlQueryObject.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COMPONENTE,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
@@ -504,7 +520,13 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
-	
+
+		if(expression.inUseModel(Evento.model().ID_RPT,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(Evento.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_RPT);
+			sqlQueryObject.addWhereCondition(tableName1+".id_rpt="+tableName2+".id");
+		}
+
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Evento evento) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -528,7 +550,37 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Evento.model()))
 			));
-        
+
+		// Evento.model().ID_VERSAMENTO
+		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_VERSAMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_VERSAMENTO))
+			));
+
+		// Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Evento.model().ID_PAGAMENTO_PORTALE
+		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_PAGAMENTO_PORTALE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_PAGAMENTO_PORTALE))
+			));
+
+		// Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
+			));
+
+		// Evento.model().ID_RPT
+		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_RPT),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_RPT))
+			));
+
         return mapTableToPKColumn;		
 	}
 	

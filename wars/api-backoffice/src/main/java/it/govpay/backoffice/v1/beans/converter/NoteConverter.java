@@ -5,7 +5,7 @@ package it.govpay.backoffice.v1.beans.converter;
 
 import it.govpay.backoffice.v1.beans.Nota;
 import it.govpay.backoffice.v1.beans.TipoNota;
-import it.govpay.bd.model.eventi.EventoNota;
+import it.govpay.bd.model.Evento;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -34,13 +34,17 @@ public class NoteConverter {
 	 * @param nota
 	 * @return
 	 */
-	public static Nota toRsModel(EventoNota nota) {
+	public static Nota toRsModel(Evento nota) {
 		Nota rsModel = new Nota();
-		rsModel.setAutore(nota.getAutore());
-		rsModel.setData(nota.getDataRichiesta());
-		rsModel.setTesto(nota.getTesto());
-		rsModel.setPrincipal(nota.getPrincipal());
-		rsModel.setOggetto(nota.getOggetto());
+		
+		rsModel.setData(nota.getData());
+		if(nota.getDettaglioRichiesta() != null) {
+			rsModel.setAutore(nota.getDettaglioRichiesta().getUtente());
+			rsModel.setTesto(nota.getDettaglioRichiesta().getPayload());
+			rsModel.setPrincipal(nota.getDettaglioRichiesta().getPrincipal());
+			rsModel.setOggetto(nota.getDettaglioEsito());
+		}
+		
 		rsModel.setTipo(TipoNota.UTENTE);
 		return rsModel;
 	}

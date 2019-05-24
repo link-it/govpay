@@ -50,11 +50,12 @@ import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTel
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.Evento.TipoEventoCooperazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.eventi.EventoCooperazione;
-import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
+import it.govpay.bd.model.eventi.Controparte;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -65,6 +66,7 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.RtUtils;
+import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Intermediario;
 
 @WebService(serviceName = "PagamentiTelematiciRTservice",
@@ -122,13 +124,13 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 		BasicBD bd = null;
 
-		EventoCooperazione evento = new EventoCooperazione();
-		evento.setCodStazione(identificativoStazioneIntermediarioPA);
-		evento.setCodDominio(identificativoDominio);
-		evento.setIuv(identificativoUnivocoVersamento);
-		evento.setCcp(codiceContestoPagamento);
-		evento.setTipoEvento(TipoEvento.paaInviaEsitoStorno);
-		evento.setFruitore("NodoDeiPagamentiSPC");
+		Evento evento = new Evento();
+		
+		Controparte controparte = new Controparte();
+		controparte.setCodStazione(identificativoStazioneIntermediarioPA);
+		controparte.setFruitore("NodoDeiPagamentiSPC");
+		evento.setControparte(controparte);
+		evento.setTipoEvento(TipoEventoCooperazione.paaInviaEsitoStorno.name());
 
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
@@ -155,7 +157,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					}
 				}
 
-				evento.setErogatore(intermediario.getDenominazione());
+				controparte.setErogatore(intermediario.getDenominazione());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, identificativoDominio);
 			}
@@ -187,9 +189,10 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			
 			evento.setIdVersamento(rr.getRpt(bd).getVersamento(bd).getId());
 			evento.setIdPagamentoPortale(rr.getRpt(bd).getIdPagamentoPortale());
-			evento.setCodCanale(rr.getRpt(bd).getCodCanale());
-			evento.setTipoVersamento(rr.getRpt(bd).getTipoVersamento());
+			controparte.setCodCanale(rr.getRpt(bd).getCodCanale());
+			controparte.setTipoVersamento(rr.getRpt(bd).getTipoVersamento());
 			response.setEsito("OK");
+			evento.setEsitoEvento(EsitoEvento.OK);
 			ctx.getApplicationLogger().log("er.ricezioneOk");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
@@ -200,6 +203,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			evento.setEsitoEvento(EsitoEvento.FAIL);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, identificativoDominio, e.getMessage(), e), response);
@@ -209,14 +213,15 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			evento.setEsitoEvento(EsitoEvento.FAIL);
 		} finally {
 			try{
 				if(bd != null) {
 					bd.setAutoCommit(true);
 					GiornaleEventi ge = new GiornaleEventi(bd);
-					evento.setEsito(response.getEsito());
-					evento.setDataRisposta(new Date());
-					ge.registraEventoCooperazione(evento);
+					evento.setDettaglioEsito(response.getEsito());
+					evento.setIntervalloFromData(new Date());
+					ge.registraEvento(evento);
 				}
 
 				if(ctx != null) {
@@ -275,13 +280,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 		BasicBD bd = null;
 
-		EventoCooperazione evento = new EventoCooperazione();
-		evento.setCodStazione(header.getIdentificativoStazioneIntermediarioPA());
-		evento.setCodDominio(codDominio);
-		evento.setIuv(iuv);
-		evento.setCcp(ccp);
-		evento.setTipoEvento(TipoEvento.paaInviaRT);
-		evento.setFruitore("NodoDeiPagamentiSPC");
+		Evento evento = new Evento();
+		Controparte controparte = new Controparte();
+		controparte.setCodStazione(header.getIdentificativoStazioneIntermediarioPA());
+		controparte.setFruitore("NodoDeiPagamentiSPC");
+		evento.setControparte(controparte);
+		evento.setTipoEvento(TipoEventoCooperazione.paaInviaRT.name());
 
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
@@ -308,7 +312,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 					}
 				}
 
-				evento.setErogatore(intermediario.getDenominazione());
+				controparte.setErogatore(intermediario.getDenominazione());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
@@ -343,13 +347,14 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
 			
-			evento.setCodCanale(rpt.getCodCanale());
-			evento.setTipoVersamento(rpt.getTipoVersamento());
+			controparte.setCodCanale(rpt.getCodCanale());
+			controparte.setTipoVersamento(rpt.getTipoVersamento());
 
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
 			esito.setEsito("OK");
 			response.setPaaInviaRTRisposta(esito);
 			ctx.getApplicationLogger().log("rt.ricezioneOk");
+			evento.setEsitoEvento(EsitoEvento.OK);
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
@@ -359,6 +364,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			evento.setEsitoEvento(EsitoEvento.FAIL);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
@@ -368,18 +374,18 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			evento.setEsitoEvento(EsitoEvento.FAIL);
 		} finally {
 			try{
 				if(bd != null) {
 					bd.setAutoCommit(true);
 					GiornaleEventi ge = new GiornaleEventi(bd);
-					evento.setEsito(response.getPaaInviaRTRisposta().getEsito());
-					evento.setDataRisposta(new Date());
+					evento.setIntervalloFromData(new Date());
 					
 					evento.setIdVersamento(idVersamentoLong);
 					evento.setIdPagamentoPortale(idPagamentoPortaleLong);
 					
-					ge.registraEventoCooperazione(evento);
+					ge.registraEvento(evento);
 				}
 
 

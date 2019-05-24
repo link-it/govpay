@@ -1483,6 +1483,7 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="componente" type="String35" minOccurs="0"/>
+			<xsd:element name="ruolo" type="String1" minOccurs="0"/>
 			<xsd:element name="categoriaEvento" type="String1" minOccurs="0"/>
 			<xsd:element name="tipoEvento" type="String70" minOccurs="0"/>
 			<xsd:element name="sottotipoEvento" type="String35" minOccurs="0" />

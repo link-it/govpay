@@ -25,18 +25,24 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.StEsitoOperazione;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
+import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.EventoCooperazione;
+import it.govpay.bd.model.eventi.Controparte;
+import it.govpay.bd.model.eventi.DettaglioRichiesta;
+import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.utils.AvvisaturaUtils;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.AvvisaturaClient;
 import it.govpay.core.utils.client.AvvisaturaClient.Azione;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.EsitoEvento;
+import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Versamento.ModoAvvisatura;
 
@@ -83,7 +89,7 @@ public class InviaAvvisaturaThread implements Runnable {
 		BasicBD bd = null;
 		GiornaleEventi giornaleEventi = null;
 		VersamentiBD versamentiBD = null;
-		EventoCooperazione evento = new EventoCooperazione();
+		Evento evento = new Evento();
 		String messaggioRichiesta = null;
 		String messaggioRisposta = null;
 		try {
@@ -98,7 +104,7 @@ public class InviaAvvisaturaThread implements Runnable {
 
 			ctx.getApplicationLogger().log("versamento.avvisaturaDigitale");
 
-			evento.setDataRichiesta(new Date());
+			evento.setData(new Date());
 			
 			ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleSpedizione");
 
@@ -122,7 +128,7 @@ public class InviaAvvisaturaThread implements Runnable {
 				String esito = fault.getFaultCode() != null ? fault.getFaultCode() : StEsitoOperazione.KO.name();
 
 				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), esito, fault.getDescription(), messaggioRichiesta, messaggioRisposta, bd);
-				giornaleEventi.registraEventoCooperazione(evento);
+				giornaleEventi.registraEvento(evento);
 
 				// se l'avvisatura e' andata male allora passo il controllo alla modalita' asincrona
 				//this.versamento.setAvvisaturaModalita(ModoAvvisatura.ASICNRONA.getValue());
@@ -160,7 +166,7 @@ public class InviaAvvisaturaThread implements Runnable {
 
 				// emetto un evento ok
 				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.OK.name(), null, messaggioRichiesta, messaggioRisposta, bd);
-				giornaleEventi.registraEventoCooperazione(evento);
+				giornaleEventi.registraEvento(evento);
 
 				log.info("Avvisatura Digitale inviata correttamente al nodo");
 				ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleOk");
@@ -186,7 +192,7 @@ public class InviaAvvisaturaThread implements Runnable {
 
 			if(giornaleEventi != null) {
 				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.KO.name(), e.getMessage(), messaggioRichiesta, messaggioRisposta, bd);
-				giornaleEventi.registraEventoCooperazione(evento);
+				giornaleEventi.registraEvento(evento);
 			}
 		} catch(Exception e) {
 			log.error("Errore nella spedizione della Avvisatura Digitale", e);
@@ -208,7 +214,7 @@ public class InviaAvvisaturaThread implements Runnable {
 
 			if(giornaleEventi != null) {
 				buildEventoCoperazione(evento, AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name(), StEsitoOperazione.KO.name(), e.getMessage(), messaggioRichiesta, messaggioRisposta, bd);
-				giornaleEventi.registraEventoCooperazione(evento);
+				giornaleEventi.registraEvento(evento);
 			}
 		} finally {
 			this.completed = true;
@@ -227,23 +233,27 @@ public class InviaAvvisaturaThread implements Runnable {
 		return this.completed;
 	}
 
-	private void buildEventoCoperazione(EventoCooperazione evento, String tipoEvento, String esito, String descrizioneEsito, String messaggioRichiesta, String messaggioRisposta, BasicBD bd) {
-		evento.setAltriParametriRichiesta(null);
-		evento.setAltriParametriRisposta(null);
-		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
-		evento.setCodDominio(this.dominio.getCodDominio());
-		evento.setCodStazione(this.stazione.getCodStazione());
-		evento.setComponente(EventoCooperazione.COMPONENTE);
-		evento.setDataRisposta(new Date());
-		evento.setErogatore(EventoCooperazione.NDP);
-		evento.setEsito(esito);
-		evento.setDescrizioneEsito(descrizioneEsito);
-		evento.setFruitore(this.intermediario.getDenominazione());
-		evento.setIuv(this.versamento.getIuvVersamento());
+	private void buildEventoCoperazione(Evento evento, String tipoEvento, String esito, String descrizioneEsito, String messaggioRichiesta, String messaggioRisposta, BasicBD bd) {
+		
+		Controparte controparte = new Controparte();
+		controparte.setCodStazione(this.stazione.getCodStazione());
+		controparte.setErogatore(Evento.NDP);
+		controparte.setFruitore(this.intermediario.getDenominazione());
+		evento.setControparte(controparte);
+		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA);
+		evento.setRuoloEvento(RuoloEvento.CLIENT);
+		evento.setComponente(Componente.API_PAGOPA.name());
+		evento.setIntervalloFromData(new Date());
+		evento.setEsitoEvento(EsitoEvento.OK); // TODO rivedere
+		evento.setDettaglioEsito(descrizioneEsito);
 		evento.setSottotipoEvento(this.avviso.getTipoOperazione().name());
 		evento.setTipoEvento(tipoEvento);
-		evento.setAltriParametriRichiesta(messaggioRichiesta);
-		evento.setAltriParametriRisposta(messaggioRisposta);
+		DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+		dettaglioRichiesta.setPayload(messaggioRichiesta);
+		evento.setDettaglioRichiesta(dettaglioRichiesta);
+		DettaglioRisposta dettaglioRisposta = new DettaglioRisposta();
+		dettaglioRisposta.setPayload(messaggioRisposta);
+		evento.setDettaglioRisposta(dettaglioRisposta );
 
 		evento.setIdVersamento(this.versamento.getId());
 	}

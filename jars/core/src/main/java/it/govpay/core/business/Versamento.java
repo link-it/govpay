@@ -19,6 +19,8 @@
  */
 package it.govpay.core.business;
 
+import java.util.Date;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -33,7 +35,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.eventi.EventoNota;
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
@@ -52,6 +55,8 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
@@ -293,16 +298,19 @@ public class Versamento extends BasicBD {
 					return;
 				}
 
-				EventoNota eventoNota = new EventoNota();
-				eventoNota.setAutore(applicazione.getCodApplicazione());
-				eventoNota.setCodDominio(versamentoLetto.getUo(this).getDominio(this).getCodDominio());
+				Evento eventoNota = new Evento();
+				eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
+				eventoNota.setEsitoEvento(EsitoEvento.OK);
 				eventoNota.setIdVersamento(versamentoLetto.getId());
-				eventoNota.setIuv(versamentoLetto.getIuvVersamento());
-				eventoNota.setOggetto("Pagamento eseguito extra-pagoPA");
-				eventoNota.setPrincipal(applicazione.getPrincipal());
-				eventoNota.setTesto("Notificato esecuzione del pagamento fuori dal circuito pagoPA");
-				eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
-				giornaleEventi.registraEventoNota(eventoNota );
+				eventoNota.setDettaglioEsito("Pagamento eseguito extra-pagoPA");
+				eventoNota.setTipoEvento("Notifica esecuzione del pagamento fuori dal circuito pagoPA");
+				DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+				dettaglioRichiesta.setPrincipal(applicazione.getUtenza().getPrincipal());
+				dettaglioRichiesta.setUtente(applicazione.getCodApplicazione());
+				dettaglioRichiesta.setDataOraRichiesta(new Date());
+				dettaglioRichiesta.setPayload("Notificato esecuzione del pagamento fuori dal circuito pagoPA");
+				eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
+				giornaleEventi.registraEvento(eventoNota);
 				
 				// Se è già ESEGUITO segnalo che e' un pagamento duplicato
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ESEGUITO)) {

@@ -16,8 +16,6 @@ import it.govpay.backoffice.v1.beans.PagamentoPost;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.StatoPagamento;
 import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.converter.EventoConverter;
-import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
@@ -82,14 +80,12 @@ public class PagamentiPortaleConverter {
 			List<Nota> note = new ArrayList<>();
 			for(Evento evento: eventi) {
 				switch (evento.getCategoriaEvento()) { 
-				case INTERFACCIA_INTEGRAZIONE:
-				case INTERFACCIA_COOPERAZIONE:
+				case INTERFACCIA:
 					break;
 				case INTERNO:
 				case UTENTE:
 				default:
-					EventoNota nota = EventoConverter.toEventoNota(evento);
-					note.add(NoteConverter.toRsModel(nota));
+					note.add(NoteConverter.toRsModel(evento));
 					break;
 				}
 			}
@@ -146,14 +142,12 @@ public class PagamentiPortaleConverter {
 			List<Nota> note = new ArrayList<>();
 			for(Evento evento: dto.getEventi()) {
 				switch (evento.getCategoriaEvento()) { 
-				case INTERFACCIA_INTEGRAZIONE:
-				case INTERFACCIA_COOPERAZIONE:
+				case INTERFACCIA:
 					break;
 				case INTERNO:
 				case UTENTE:
 				default:
-					EventoNota nota = EventoConverter.toEventoNota(evento);
-					note.add(NoteConverter.toRsModel(nota));
+					note.add(NoteConverter.toRsModel(evento));
 					break;
 				}
 			}

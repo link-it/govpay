@@ -4,14 +4,19 @@ import java.util.Date;
 
 import org.openspcoop2.utils.logger.beans.context.core.Role;
 
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.eventi.Controparte;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
+import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.EsitoEvento;
+import it.govpay.model.Evento.RuoloEvento;
 
 public class EventoContext {
-	
+
 	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE};
 	public enum Esito {OK, KO, FAIL};
-	public enum Categoria { INTERFACCIA, INTERNO };
+	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
 
 	private Componente componente;
 	private Role role;
@@ -19,28 +24,29 @@ public class EventoContext {
 	private String tipoEvento;
 	private String sottotipoEvento;
 	private Esito esito;
-	private String sottotipoEsito;
+	private Integer sottotipoEsito;
 	private String descrizioneEsito;
-	
+
 	private String principal;
 	private String utente;
 	private Date dataRichiesta;
 	private Date dataRisposta;
-	
+
 	private String method;
 	private String url;
-	
+
 	private Integer status;
-	
+
 	private DettaglioRichiesta dettaglioRichiesta;
 	private DettaglioRisposta dettaglioRisposta;
-	
+	private Controparte controparte;
+
 	private String codDominio;
 	private String iuv;
 	private String ccp;
 	private String idA2A;
 	private String idPendenza;
-	
+
 	private Long idVersamento;
 	private Long idPagamentoPortale;
 	private Long idRpt;
@@ -79,13 +85,13 @@ public class EventoContext {
 			sb.append(httpMethod.toUpperCase());
 		if(sb.length() > 0 && nomeOperazione != null)
 			sb.append("-");
-		
+
 		if(nomeOperazione != null)
 			sb.append(nomeOperazione.toUpperCase());
-		
+
 		this.tipoEvento = sb.toString();
 	}
-	
+
 	public void setTipoEvento(String tipoEvento) {
 		this.tipoEvento = tipoEvento;
 	}
@@ -106,11 +112,11 @@ public class EventoContext {
 		this.esito = esito;
 	}
 
-	public String getSottotipoEsito() {
+	public Integer getSottotipoEsito() {
 		return sottotipoEsito;
 	}
 
-	public void setSottotipoEsito(String sottotipoEsito) {
+	public void setSottotipoEsito(Integer sottotipoEsito) {
 		this.sottotipoEsito = sottotipoEsito;
 	}
 
@@ -257,5 +263,79 @@ public class EventoContext {
 		this.idRpt = idRpt;
 	}
 
-	
+	public Controparte getControparte() {
+		return controparte;
+	}
+
+	public void setControparte(Controparte controparte) {
+		this.controparte = controparte;
+	}
+
+	public Evento toEventoDTO() {
+		Evento dto = new Evento();
+
+		if(this.getCategoriaEvento() != null) {
+			switch (this.getCategoriaEvento()) {
+			case INTERFACCIA:
+				dto.setCategoriaEvento(CategoriaEvento.INTERFACCIA);
+				break;
+			case INTERNO:
+				dto.setCategoriaEvento(CategoriaEvento.INTERNO);
+				break;
+			case UTENTE:
+				dto.setCategoriaEvento(CategoriaEvento.UTENTE);
+				break;
+			}
+		}
+		if(this.getComponente() != null)
+			dto.setComponente(this.getComponente().toString());
+		dto.setData(this.getDataRichiesta());
+		dto.setControparte(this.getControparte());
+		dto.setDettaglioEsito(this.getDescrizioneEsito());
+		if(this.getEsito() != null) {
+			switch(this.getEsito()) {
+			case FAIL:
+				dto.setEsitoEvento(EsitoEvento.FAIL);
+				break;
+			case KO:
+				dto.setEsitoEvento(EsitoEvento.KO);
+				break;
+			case OK:
+				dto.setEsitoEvento(EsitoEvento.OK);
+				break;
+			}
+		}
+		//dto.setId(this.getId());
+		if(this.getDataRisposta() != null) {
+			if(this.getDataRichiesta() != null) {
+				dto.setIntervallo(this.getDataRisposta().getTime() - this.getDataRichiesta().getTime());
+			} else {
+				dto.setIntervallo(0l);
+			}
+		} else {
+			dto.setIntervallo(0l);
+		}
+		dto.setDettaglioRichiesta(this.getDettaglioRichiesta());
+		dto.setDettaglioRisposta(this.getDettaglioRisposta());
+		if(this.getRole() != null) {
+			switch(this.getRole()) {
+			case CLIENT:
+				dto.setRuoloEvento(RuoloEvento.CLIENT);
+				break;
+			case SERVER:
+				dto.setRuoloEvento(RuoloEvento.SERVER);
+				break;
+			}
+		}
+		dto.setSottotipoEsito(this.getSottotipoEsito());
+		dto.setSottotipoEvento(this.getSottotipoEvento());
+		dto.setTipoEvento(this.getTipoEvento());
+		dto.setIdVersamento(this.getIdVersamento());
+		dto.setIdPagamentoPortale(this.getIdPagamentoPortale());
+		dto.setIdRpt(this.getIdRpt());
+
+		return dto;
+	}
+
+
 }

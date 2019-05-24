@@ -24,13 +24,7 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.converter.EventoConverter;
-import it.govpay.bd.model.eventi.EventoCooperazione;
-import it.govpay.bd.model.eventi.EventoGenerico;
-import it.govpay.bd.model.eventi.EventoIntegrazione;
-import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.EventiBD;
-import it.govpay.core.utils.EventoContext;
 
 public class GiornaleEventi extends BasicBD {
 	
@@ -40,50 +34,10 @@ public class GiornaleEventi extends BasicBD {
 		super(basicBD);
 	}
 
-	private void _registraEvento(Evento evento) {
+	public void registraEvento(Evento evento) {
 		try {
 			EventiBD eventiBD = new EventiBD(this);
 			eventiBD.insertEvento(evento);
-		} catch (Exception e) {
-			log.error("Errore nella registrazione degli eventi", e);
-		}
-	}
-	
-//	public void registraEventoCtx(EventoContext eventoCtx) {
-//		try {
-//			this._registraEvento(EventoConverter.fromEventoGenericoToEvento(eventoGenerico));
-//		} catch (Exception e) {
-//			log.error("Errore nella registrazione degli eventi", e);
-//		}
-//	}
-	
-	public void registraEventoGenerico(EventoGenerico eventoGenerico) {
-		try {
-			this._registraEvento(EventoConverter.fromEventoGenericoToEvento(eventoGenerico));
-		} catch (Exception e) {
-			log.error("Errore nella registrazione degli eventi", e);
-		}
-	}
-	
-	public void registraEventoCooperazione(EventoCooperazione eventoCooperazione) {
-		try {
-			this._registraEvento(EventoConverter.fromEventoCooperazioneToEvento(eventoCooperazione));
-		} catch (Exception e) {
-			log.error("Errore nella registrazione degli eventi", e);
-		}
-	}
-	
-	public void registraEventoNota(EventoNota eventoNota) {
-		try {
-			this._registraEvento(EventoConverter.fromEventoNotaToEvento(eventoNota));
-		} catch (Exception e) {
-			log.error("Errore nella registrazione degli eventi", e);
-		}
-	}
-	
-	public void registraEventointegrazione(EventoIntegrazione eventoIntegrazione) {
-		try {
-			this._registraEvento(EventoConverter.fromEventointegrazioneToEvento(eventoIntegrazione));
 		} catch (Exception e) {
 			log.error("Errore nella registrazione degli eventi", e);
 		}

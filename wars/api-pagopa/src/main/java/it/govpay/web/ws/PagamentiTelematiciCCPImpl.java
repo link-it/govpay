@@ -59,6 +59,8 @@ import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematiciccp.PagamentiTe
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.Evento.TipoEventoCooperazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -66,9 +68,8 @@ import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.EventoCooperazione;
-import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
-import it.govpay.bd.model.eventi.EventoNota;
+import it.govpay.bd.model.eventi.Controparte;
+import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -93,6 +94,8 @@ import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
@@ -162,15 +165,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		PaaAttivaRPTRisposta response = new PaaAttivaRPTRisposta();
 		log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
 
-		EventoCooperazione evento = new EventoCooperazione();
-		evento.setCodStazione(codStazione);
-		evento.setCodDominio(codDominio);
-		evento.setIuv(iuv);
-		evento.setCcp(ccp);
-		evento.setTipoEvento(TipoEvento.paaAttivaRPT);
-		evento.setCodPsp(bodyrichiesta.getIdentificativoPSP());
-		evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
-		evento.setFruitore("NodoDeiPagamentiSPC");
+		Evento evento = new Evento();
+		Controparte controparte = new Controparte();
+		controparte.setCodStazione(codStazione);
+		controparte.setFruitore("NodoDeiPagamentiSPC");
+		evento.setControparte(controparte);
+		evento.setTipoEvento(TipoEventoCooperazione.paaAttivaRPT.name());
+		controparte.setCodPsp(bodyrichiesta.getIdentificativoPSP());
+		controparte.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
@@ -197,7 +199,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 				}
 
-				evento.setErogatore(intermediario.getDenominazione());
+				controparte.setErogatore(intermediario.getDenominazione());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
@@ -334,9 +336,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 			// Identificazione del Psp e del canale
 
-			evento.setCodPsp(bodyrichiesta.getIdentificativoPSP());
-			evento.setCodCanale(bodyrichiesta.getIdentificativoCanalePSP());
-			evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
+			controparte.setCodPsp(bodyrichiesta.getIdentificativoPSP());
+			controparte.setCodCanale(bodyrichiesta.getIdentificativoCanalePSP());
+			controparte.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 
 			// Creazione dell'RPT
 			Rpt rpt = new RptBuilder().buildRptAttivata(bodyrichiesta.getIdentificativoIntermediarioPSP(), bodyrichiesta.getIdentificativoPSP(), bodyrichiesta.getIdentificativoCanalePSP(), versamento, iuv, ccp, bodyrichiesta.getDatiPagamentoPSP(), bd);
@@ -413,25 +415,27 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					pagamentoPortale.setAck(false);
 					ppbd.updatePagamento(pagamentoPortale, true);
 					
-					EventoNota eventoNota = new EventoNota();
-					eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-					eventoNota.setOggetto("Creazione RPT non completata.");
-					eventoNota.setTesto(e.getMessage());
-					eventoNota.setPrincipal(null);
-					eventoNota.setDataRichiesta(new Date());
-					eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal);
-					eventoNota.setCodDominio(codDominio);
-					eventoNota.setIuv(iuv);
-					eventoNota.setCcp(ccp);
+					Evento eventoNota = new Evento();
+					eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
+					eventoNota.setDettaglioEsito("Creazione RPT non completata.");
+					eventoNota.setData(new Date());
+					eventoNota.setTipoEvento("Creazione RPT non completata.");
 					eventoNota.setIdPagamentoPortale(idPagamentoPortaleLong);
-					eventoNota.setIdVersamento(idVersamentoLong);					
+					eventoNota.setIdVersamento(idVersamentoLong);
 					
-					giornaleEventi.registraEventoNota(eventoNota);
+					DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+					dettaglioRichiesta.setPrincipal(null);
+					dettaglioRichiesta.setPayload(e.getMessage());
+					dettaglioRichiesta.setDataOraRichiesta(new Date());
+					eventoNota.setDettaglioRichiesta(dettaglioRichiesta );
+					
+					giornaleEventi.registraEvento(eventoNota);
 					
 					ppbd.commit();
 					throw e;
 				}
 				
+				evento.setIdRpt(rpt.getId());
 				RptUtils.inviaRPTAsync(rpt, bd, ctx);
 			}
 
@@ -477,6 +481,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaAttivaRPTRisposta(esito);
 			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
+			evento.setEsitoEvento(EsitoEvento.OK);
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
@@ -486,6 +491,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			evento.setEsitoEvento(EsitoEvento.FAIL);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, codDominio, response);
@@ -495,17 +501,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			evento.setEsitoEvento(EsitoEvento.FAIL);
 		} finally {
 			try{
 				if(bd != null) {
 					GiornaleEventi ge = new GiornaleEventi(bd);
-					evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());
-					evento.setDataRisposta(new Date());
-					
+					evento.setIntervalloFromData(new Date());
 					evento.setIdVersamento(idVersamentoLong);
 					evento.setIdPagamentoPortale(idPagamentoPortaleLong);
 					
-					ge.registraEventoCooperazione(evento);
+					ge.registraEvento(evento);
 				}
 			}catch(Exception e){
 				log.error(e.getMessage(),e);
@@ -568,15 +573,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		BasicBD bd = null;
 		PaaVerificaRPTRisposta response = new PaaVerificaRPTRisposta();
 
-		EventoCooperazione evento = new EventoCooperazione();
-		evento.setCodStazione(codStazione);
-		evento.setCodDominio(codDominio);
-		evento.setIuv(iuv);
-		evento.setCcp(ccp);
-		evento.setTipoEvento(TipoEvento.paaVerificaRPT);
-		evento.setCodPsp(psp);
-		evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
-		evento.setFruitore("NodoDeiPagamentiSPC");
+		Evento evento = new Evento();
+		Controparte controparte = new Controparte();
+		controparte.setCodStazione(codStazione);
+		controparte.setFruitore("NodoDeiPagamentiSPC");
+		evento.setControparte(controparte);
+		evento.setTipoEvento(TipoEventoCooperazione.paaVerificaRPT.name());
+		controparte.setCodPsp(psp);
+		controparte.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
@@ -602,7 +606,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 				}
 
-				evento.setErogatore(intermediario.getDenominazione());
+				controparte.setErogatore(intermediario.getDenominazione());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
@@ -781,6 +785,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaVerificaRPTRisposta(esito);
 			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
+			evento.setEsitoEvento(EsitoEvento.OK);
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
@@ -790,6 +795,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			evento.setEsitoEvento(EsitoEvento.FAIL);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, codDominio, response);
@@ -799,18 +805,18 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			evento.setEsitoEvento(EsitoEvento.FAIL);
 		} finally {
 			try{
 				if(bd != null) {
 					try{
 						GiornaleEventi ge = new GiornaleEventi(bd);
-						evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());
-						evento.setDataRisposta(new Date());
+						evento.setIntervalloFromData(new Date());
 						
 						evento.setIdVersamento(idVersamentoLong);
 						evento.setIdPagamentoPortale(idPagamentoPortaleLong);
 						
-						ge.registraEventoCooperazione(evento);
+						ge.registraEvento(evento);
 					}catch(Exception e){log.error(e.getMessage(),e);}
 				}
 

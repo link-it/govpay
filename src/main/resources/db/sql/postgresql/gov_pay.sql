@@ -849,23 +849,28 @@ CREATE SEQUENCE seq_eventi start 1 increment 1 maxvalue 9223372036854775807 minv
 
 CREATE TABLE eventi
 (
-	cod_dominio VARCHAR(35),
-	iuv VARCHAR(35),
-	ccp VARCHAR(35),
+	componente VARCHAR(35),
+	ruolo VARCHAR(1),
 	categoria_evento VARCHAR(1),
-	tipo_evento VARCHAR(35),
+	tipo_evento VARCHAR(70),
 	sottotipo_evento VARCHAR(35),
 	data TIMESTAMP,
 	intervallo BIGINT,
-	classname_dettaglio VARCHAR(255),
-	dettaglio TEXT,
+	esito VARCHAR(4),
+	sottotipo_esito INT,
+	dettaglio_esito VARCHAR(255),
+	parametri_richiesta TEXT,
+	parametri_risposta TEXT,
+	dati_controparte TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
 	id_versamento BIGINT,
 	id_pagamento_portale BIGINT,
+	id_rpt BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_evt_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 );
 

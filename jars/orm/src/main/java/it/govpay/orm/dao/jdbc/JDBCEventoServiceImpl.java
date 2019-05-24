@@ -101,37 +101,63 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 			}
 		}
 
+		// Object _rpt
+		Long id_rpt = null;
+		it.govpay.orm.IdRpt idLogic_rpt = null;
+		// TODO Impostare il corretto metodo che contiene l'identificativo logico
+		//idLogic_rpt = evento.getRPT();
+		if(idLogic_rpt!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findTableId(idLogic_rpt, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_rpt = idLogic_rpt.getId();
+				if(id_rpt==null || id_rpt<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object evento
 		sqlQueryObjectInsert.addInsertTable(this.getEventoFieldConverter().toTable(Evento.model()));
-		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().IUV,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().CCP,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().COMPONENTE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().RUOLO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().CATEGORIA_EVENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().TIPO_EVENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().SOTTOTIPO_EVENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().DATA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().INTERVALLO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().CLASSNAME_DETTAGLIO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().DETTAGLIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().ESITO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().SOTTOTIPO_ESITO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().DETTAGLIO_ESITO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().PARAMETRI_RICHIESTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().PARAMETRI_RISPOSTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().DATI_CONTROPARTE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_pagamento_portale","?");
+		sqlQueryObjectInsert.addInsertField("id_rpt","?");
 
 		// Insert evento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getEventoFetch().getKeyGeneratorObject(Evento.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCodDominio(),Evento.model().COD_DOMINIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getIuv(),Evento.model().IUV.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCcp(),Evento.model().CCP.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getComponente(),Evento.model().COMPONENTE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getRuolo(),Evento.model().RUOLO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCategoriaEvento(),Evento.model().CATEGORIA_EVENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getTipoEvento(),Evento.model().TIPO_EVENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getSottotipoEvento(),Evento.model().SOTTOTIPO_EVENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getData(),Evento.model().DATA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getIntervallo(),Evento.model().INTERVALLO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getClassnameDettaglio(),Evento.model().CLASSNAME_DETTAGLIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getDettaglio(),Evento.model().DETTAGLIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getEsito(),Evento.model().ESITO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getSottotipoEsito(),Evento.model().SOTTOTIPO_ESITO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getDettaglioEsito(),Evento.model().DETTAGLIO_ESITO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getParametriRichiesta(),Evento.model().PARAMETRI_RICHIESTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getParametriRisposta(),Evento.model().PARAMETRI_RISPOSTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getDatiControparte(),Evento.model().DATI_CONTROPARTE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamentoPortale,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamentoPortale,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class)
 		);
 		evento.setId(id);
 
@@ -202,18 +228,34 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 			}
 		}
 
+		// Object _evento_rpt
+		Long id_evento_rpt = null;
+		it.govpay.orm.IdRpt idLogic_evento_rpt = null;
+		// TODO Impostare il corretto metodo che contiene l'identificativo logico
+		//idLogic_evento_rpt = evento.getRPT();
+		if(idLogic_evento_rpt!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_evento_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findTableId(idLogic_evento_rpt, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_evento_rpt = idLogic_evento_rpt.getId();
+				if(id_evento_rpt==null || id_evento_rpt<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object evento
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getEventoFieldConverter().toTable(Evento.model()));
 		boolean isUpdate_evento = true;
-		java.util.List<JDBCObject> lstObjects_evento = new java.util.ArrayList<>();
-		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,false), "?");
-		lstObjects_evento.add(new JDBCObject(evento.getCodDominio(), Evento.model().COD_DOMINIO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().IUV,false), "?");
-		lstObjects_evento.add(new JDBCObject(evento.getIuv(), Evento.model().IUV.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().CCP,false), "?");
-		lstObjects_evento.add(new JDBCObject(evento.getCcp(), Evento.model().CCP.getFieldType()));
+		java.util.List<JDBCObject> lstObjects_evento = new java.util.ArrayList<JDBCObject>();
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().COMPONENTE,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getComponente(), Evento.model().COMPONENTE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().RUOLO,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getRuolo(), Evento.model().RUOLO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().CATEGORIA_EVENTO,false), "?");
 		lstObjects_evento.add(new JDBCObject(evento.getCategoriaEvento(), Evento.model().CATEGORIA_EVENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().TIPO_EVENTO,false), "?");
@@ -224,10 +266,18 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		lstObjects_evento.add(new JDBCObject(evento.getData(), Evento.model().DATA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().INTERVALLO,false), "?");
 		lstObjects_evento.add(new JDBCObject(evento.getIntervallo(), Evento.model().INTERVALLO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().CLASSNAME_DETTAGLIO,false), "?");
-		lstObjects_evento.add(new JDBCObject(evento.getClassnameDettaglio(), Evento.model().CLASSNAME_DETTAGLIO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().DETTAGLIO,false), "?");
-		lstObjects_evento.add(new JDBCObject(evento.getDettaglio(), Evento.model().DETTAGLIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().ESITO,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getEsito(), Evento.model().ESITO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().SOTTOTIPO_ESITO,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getSottotipoEsito(), Evento.model().SOTTOTIPO_ESITO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().DETTAGLIO_ESITO,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getDettaglioEsito(), Evento.model().DETTAGLIO_ESITO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().PARAMETRI_RICHIESTA,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getParametriRichiesta(), Evento.model().PARAMETRI_RICHIESTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().PARAMETRI_RISPOSTA,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getParametriRisposta(), Evento.model().PARAMETRI_RISPOSTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().DATI_CONTROPARTE,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getDatiControparte(), Evento.model().DATI_CONTROPARTE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}
@@ -235,10 +285,16 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_pagamento_portale","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_rpt","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_evento.add(new JDBCObject(id_evento_versamento, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_evento.add(new JDBCObject(id_evento_pagamentoPortale, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_evento.add(new JDBCObject(id_evento_rpt, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_evento.add(new JDBCObject(tableId, Long.class));

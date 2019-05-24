@@ -1205,23 +1205,28 @@ CREATE SEQUENCE seq_eventi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 
 CREATE TABLE eventi
 (
-	cod_dominio VARCHAR2(35 CHAR),
-	iuv VARCHAR2(35 CHAR),
-	ccp VARCHAR2(35 CHAR),
+	componente VARCHAR2(35 CHAR),
+	ruolo VARCHAR2(1 CHAR),
 	categoria_evento VARCHAR2(1 CHAR),
-	tipo_evento VARCHAR2(35 CHAR),
+	tipo_evento VARCHAR2(70 CHAR),
 	sottotipo_evento VARCHAR2(35 CHAR),
 	data TIMESTAMP,
 	intervallo NUMBER,
-	classname_dettaglio VARCHAR2(255 CHAR),
-	dettaglio CLOB,
+	esito VARCHAR2(4 CHAR),
+	sottotipo_esito NUMBER,
+	dettaglio_esito VARCHAR2(255 CHAR),
+	parametri_richiesta CLOB,
+	parametri_risposta CLOB,
+	dati_controparte CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER,
 	id_pagamento_portale NUMBER,
+	id_rpt NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_evt_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 );
 

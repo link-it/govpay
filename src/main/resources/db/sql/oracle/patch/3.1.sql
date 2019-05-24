@@ -502,5 +502,47 @@ end;
 -- 22/05/2019 Configurazione Giornale Eventi
 INSERT INTO configurazione (giornale_eventi) values ('{"apiEnte":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}}}');
 
+-- 24/05/2019 nuova tabella eventi
+DROP TABLE eventi;
+
+CREATE TABLE eventi
+(
+	componente VARCHAR2(35 CHAR),
+	ruolo VARCHAR2(1 CHAR),
+	categoria_evento VARCHAR2(1 CHAR),
+	tipo_evento VARCHAR2(70 CHAR),
+	sottotipo_evento VARCHAR2(35 CHAR),
+	data TIMESTAMP,
+	intervallo NUMBER,
+	esito VARCHAR2(4 CHAR),
+	sottotipo_esito NUMBER,
+	dettaglio_esito VARCHAR2(255 CHAR),
+	parametri_richiesta CLOB,
+	parametri_risposta CLOB,
+	dati_controparte CLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER,
+	id_pagamento_portale NUMBER,
+	id_rpt NUMBER,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
+	CONSTRAINT fk_evt_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT pk_eventi PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_eventi
+BEFORE
+insert on eventi
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_eventi.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
 
 

@@ -22,14 +22,15 @@ import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
-import it.govpay.bd.model.eventi.EventoNota;
-import it.govpay.bd.model.eventi.EventoNota.TipoNota;
+import it.govpay.bd.model.eventi.DettaglioRichiesta;
+import it.govpay.bd.model.Evento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.PatchOp;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
@@ -278,17 +279,20 @@ public class UtenzaPatchUtils {
 		
 	}
 
-	public static EventoNota getNotaFromPatch(Authentication authentication, PatchOp op, BasicBD bd) throws ValidationException, ServiceException { 
+	public static Evento getNotaFromPatch(Authentication authentication, PatchOp op, BasicBD bd) throws ValidationException, ServiceException { 
 		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
 		
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		EventoNota nota = new EventoNota();
-		nota.setPrincipal(userDetails.getUtenza().getPrincipal());
-		nota.setAutore(userDetails.getUtenza().getIdentificativo());
-		nota.setDataRichiesta(new Date());
-		nota.setTesto((String)map.get(TESTO_NOTA_KEY));
-		nota.setOggetto((String)map.get(OGGETTO_NOTA_KEY));
-		nota.setTipoEvento(TipoNota.valueOf((String) map.get(TIPO_NOTA_KEY)));
+		Evento nota = new Evento();
+		nota.setCategoriaEvento(CategoriaEvento.UTENTE);
+		DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+		dettaglioRichiesta.setPrincipal(userDetails.getUtenza().getPrincipal());
+		dettaglioRichiesta.setUtente(userDetails.getUtenza().getIdentificativo());
+		dettaglioRichiesta.setDataOraRichiesta(new Date());
+		dettaglioRichiesta.setPayload((String)map.get(TESTO_NOTA_KEY));
+		nota.setDettaglioRichiesta(dettaglioRichiesta );
+		nota.setDettaglioEsito((String)map.get(OGGETTO_NOTA_KEY));
+		nota.setTipoEvento((String) map.get(TIPO_NOTA_KEY));
 				
 		return nota;
 	}
