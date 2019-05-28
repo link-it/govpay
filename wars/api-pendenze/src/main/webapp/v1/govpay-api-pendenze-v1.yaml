@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/backend/api/pendenze/rs/v1/
+  - url: ${it.govpay.apiurl}/govpay/backend/api/pendenze/rs/basic/v1/
 tags:
   - name: Pendenze
     description: Consultazione delle posizioni debitorie
@@ -24,6 +24,7 @@ paths:
     get:
       tags:
         - Pendenze
+      operationId: findPendenze
       summary: Elenco delle pendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
       parameters:
@@ -144,6 +145,7 @@ paths:
         essere composta da più voci fino ad un massimo di cinque, ciascuna
         avente un identificativo _idVocePendenza_ assegnato dal gestionale come
         riferimento interno. 
+      operationId: addPendenza
       parameters:
         - in: path
           name: idA2A
@@ -239,6 +241,7 @@ paths:
       tags:
         - Pendenze
       summary: Aggiornamento di una pendenza
+      operationId: updatePendenza      
       parameters:
         - in: path
           name: idA2A
@@ -276,6 +279,7 @@ paths:
     get:
       tags:
         - Pendenze
+      operationId: getPendenza        
       summary: Dettaglio di una pendenza per identificativo
       description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
       parameters:

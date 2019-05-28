@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/backend/api/backoffice/rs/v1/
+  - url: ${it.govpay.apiurl}/govpay/backend/api/backoffice/rs/basic/v1/
 tags:
   - name: Enti Creditori
     description: Anagrafica degli Enti Creditori  
@@ -2190,6 +2190,7 @@ paths:
     post:
       tags:
         - Pendenze
+      operationId: addPendenza
       description: >-
         Per ciascuna pendenza viene richiesto un identificativo (_idPendenza_)
         valido per il gestionale che ne effettua il caricamento (_idA2A_).
