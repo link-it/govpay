@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/backend/api/pendenze/rs/v2/
+  - url: ${it.govpay.apiurl}/govpay/backend/api/pendenze/rs/basic/v2/
 tags:
   - name: Transazioni
     description: Consultazione delle transazioni di pagamento a pagoPA    
