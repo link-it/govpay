@@ -19,10 +19,7 @@
  */
 package it.govpay.web.ws;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
-import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
 
@@ -50,8 +47,6 @@ import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTel
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.Evento.TipoEventoCooperazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
@@ -59,14 +54,13 @@ import it.govpay.bd.model.eventi.Controparte;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.RtUtils;
-import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Intermediario;
 
 @WebService(serviceName = "PagamentiTelematiciRTservice",
@@ -77,7 +71,7 @@ wsdlLocation = "/wsdl/PaPerNodo.wsdl")
 
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 
-@HandlerChain(file="../../../../handler-chains/handler-chain-ndp.xml")
+//@HandlerChain(file="../../../../handler-chains/handler-chain-ndp.xml")
 
 public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
@@ -100,7 +94,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		appContext.setCorrelationId(identificativoDominio + identificativoUnivocoVersamento + codiceContestoPagamento);
 
 		Actor from = new Actor();
-		from.setName("NodoDeiPagamentiSPC");
+		from.setName(GpContext.NodoDeiPagamentiSPC);
 		from.setType(GpContext.TIPO_SOGGETTO_NDP);
 		appContext.getTransaction().setFrom(from);
 
@@ -124,13 +118,10 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 		BasicBD bd = null;
 
-		Evento evento = new Evento();
-		
 		Controparte controparte = new Controparte();
 		controparte.setCodStazione(identificativoStazioneIntermediarioPA);
-		controparte.setFruitore("NodoDeiPagamentiSPC");
-		evento.setControparte(controparte);
-		evento.setTipoEvento(TipoEventoCooperazione.paaInviaEsitoStorno.name());
+		controparte.setFruitore(GpContext.NodoDeiPagamentiSPC);
+		appContext.getEventoCtx().setControparte(controparte);
 
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
@@ -187,12 +178,14 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 			Rr rr = RrUtils.acquisisciEr(identificativoDominio, identificativoUnivocoVersamento, codiceContestoPagamento, er, bd);
 			
-			evento.setIdVersamento(rr.getRpt(bd).getVersamento(bd).getId());
-			evento.setIdPagamentoPortale(rr.getRpt(bd).getIdPagamentoPortale());
+			
+			appContext.getEventoCtx().setIdRpt(rr.getRpt(bd).getId());
+			appContext.getEventoCtx().setIdVersamento(rr.getRpt(bd).getVersamento(bd).getId());
+			appContext.getEventoCtx().setIdPagamentoPortale(rr.getRpt(bd).getIdPagamentoPortale());
 			controparte.setCodCanale(rr.getRpt(bd).getCodCanale());
 			controparte.setTipoVersamento(rr.getRpt(bd).getTipoVersamento());
 			response.setEsito("OK");
-			evento.setEsitoEvento(EsitoEvento.OK);
+			appContext.getEventoCtx().setEsito(Esito.OK);
 			ctx.getApplicationLogger().log("er.ricezioneOk");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
@@ -203,7 +196,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
-			evento.setEsitoEvento(EsitoEvento.FAIL);
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, identificativoDominio, e.getMessage(), e), response);
@@ -213,29 +207,11 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
-			evento.setEsitoEvento(EsitoEvento.FAIL);
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
-			try{
-				if(bd != null) {
-					bd.setAutoCommit(true);
-					GiornaleEventi ge = new GiornaleEventi(bd);
-					evento.setDettaglioEsito(response.getEsito());
-					evento.setIntervalloFromData(new Date());
-					ge.registraEvento(evento);
-				}
-
-				if(ctx != null) {
-					GpContext.setResult(appContext.getTransaction(),response.getFault() == null ? null : response.getFault().getFaultCode());
-					try {
-						ctx.getApplicationLogger().log();
-					} catch (UtilsException e) {
-						log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-					}
-				}
-			}catch(Exception e){
-				log.error(e.getMessage(),e);
-			}
-
+			
+			GpContext.setResult(appContext.getTransaction(),response.getFault() == null ? null : response.getFault().getFaultCode());
 			if(bd != null) bd.closeConnection();
 		}
 		return response;
@@ -250,6 +226,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		
 		Long idVersamentoLong = null;
 		Long idPagamentoPortaleLong = null;
+		Long idRptLong = null;
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -257,7 +234,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		appContext.setCorrelationId(codDominio + iuv + ccp);
 
 		Actor from = new Actor();
-		from.setName("NodoDeiPagamentiSPC");
+		from.setName(GpContext.NodoDeiPagamentiSPC);
 		from.setType(GpContext.TIPO_SOGGETTO_NDP);
 		appContext.getTransaction().setFrom(from);
 
@@ -280,12 +257,10 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 		BasicBD bd = null;
 
-		Evento evento = new Evento();
 		Controparte controparte = new Controparte();
 		controparte.setCodStazione(header.getIdentificativoStazioneIntermediarioPA());
-		controparte.setFruitore("NodoDeiPagamentiSPC");
-		evento.setControparte(controparte);
-		evento.setTipoEvento(TipoEventoCooperazione.paaInviaRT.name());
+		controparte.setFruitore(GpContext.NodoDeiPagamentiSPC);
+		appContext.getEventoCtx().setControparte(controparte);
 
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
@@ -343,6 +318,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			
 			idVersamentoLong = rpt.getVersamento(bd).getId();
 			idPagamentoPortaleLong = rpt.getIdPagamentoPortale();
+			idRptLong = rpt.getId();
+			log.debug("IDRPT: " + idRptLong); 
+			
+			appContext.getEventoCtx().setIdVersamento(idVersamentoLong);
+			appContext.getEventoCtx().setIdPagamentoPortale(idPagamentoPortaleLong);
+			appContext.getEventoCtx().setIdRpt(idRptLong);
 			
 			appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
@@ -354,7 +335,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			esito.setEsito("OK");
 			response.setPaaInviaRTRisposta(esito);
 			ctx.getApplicationLogger().log("rt.ricezioneOk");
-			evento.setEsitoEvento(EsitoEvento.OK);
+			appContext.getEventoCtx().setDescrizioneEsito("Acquisita ricevuta di pagamento [IUV: " + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] emessa da " + rpt.getDenominazioneAttestante());
+			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
@@ -364,7 +346,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
-			evento.setEsitoEvento(EsitoEvento.FAIL);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
@@ -374,30 +357,11 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
-			evento.setEsitoEvento(EsitoEvento.FAIL);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 		} finally {
-			try{
-				if(bd != null) {
-					bd.setAutoCommit(true);
-					GiornaleEventi ge = new GiornaleEventi(bd);
-					evento.setIntervalloFromData(new Date());
-					
-					evento.setIdVersamento(idVersamentoLong);
-					evento.setIdPagamentoPortale(idPagamentoPortaleLong);
-					
-					ge.registraEvento(evento);
-				}
-
-
-				if(ctx != null) {
-					GpContext.setResult(appContext.getTransaction(), response.getPaaInviaRTRisposta().getFault() == null ? null : response.getPaaInviaRTRisposta().getFault().getFaultCode());
-					ctx.getApplicationLogger().log();
-				}
-
-			}catch(Exception e){
-				try { log.error(e.getMessage(),e); } catch(Throwable t) {}
-			}
-
+			
+			GpContext.setResult(appContext.getTransaction(), response.getPaaInviaRTRisposta().getFault() == null ? null : response.getPaaInviaRTRisposta().getFault().getFaultCode());
 			if(bd != null) bd.closeConnection();
 		}
 		return response;
@@ -452,7 +416,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		fault.setDescription("Non implementato");
 		
 		risposta.setFault(fault);
-		// TODO Auto-generated method stub
 		return risposta;
 	}
 }

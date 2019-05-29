@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.exception.ConfigurazioneNonTrovataException;
 import it.govpay.core.dao.eventi.EventiDAO;
@@ -37,6 +36,7 @@ import it.govpay.core.dao.eventi.dto.PutEventoDTO;
 import it.govpay.core.dao.eventi.dto.PutEventoDTOResponse;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 
 public class GiornaleEventiOutInterceptor  extends AbstractPhaseInterceptor<Message>  {
@@ -92,6 +92,9 @@ public class GiornaleEventiOutInterceptor  extends AbstractPhaseInterceptor<Mess
 					// avoid logging the default responseCode 200 for the decoupled responses
 					responseCode = (Integer)message.get(Message.RESPONSE_CODE);
 				}
+				
+				if(this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_PAGOPA)) {
+				}
 
 				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], StatusCode ["+responseCode+"]");
 
@@ -109,17 +112,19 @@ public class GiornaleEventiOutInterceptor  extends AbstractPhaseInterceptor<Mess
 					}
 
 					if(logEvento) {
-						Date dataIngresso = appContext.getRequest().getDate();
+						Date dataIngresso = appContext.getEventoCtx().getDataRichiesta();
 						Date dataUscita = new Date();
 						// lettura informazioni dalla richiesta
 						final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
 						DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
-						dettaglioRichiesta.setHeaders(eventRequest.getHeaders());
-						dettaglioRichiesta.setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
-						dettaglioRichiesta.setUtente(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()).getIdentificativo());
-						dettaglioRichiesta.setUrl(eventRequest.getAddress());
+						
+						dettaglioRichiesta.setPrincipal(appContext.getEventoCtx().getPrincipal());
+						dettaglioRichiesta.setUtente(appContext.getEventoCtx().getUtente());
+						dettaglioRichiesta.setUrl(appContext.getEventoCtx().getUrl());
+						dettaglioRichiesta.setMethod(appContext.getEventoCtx().getMethod());
 						dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
-						dettaglioRichiesta.setMethod(httpMethodS);
+						dettaglioRichiesta.setHeaders(eventRequest.getHeaders());
+						
 
 						// lettura informazioni dalla response
 						final LogEvent eventResponse = new DefaultLogEventMapper().map(message);

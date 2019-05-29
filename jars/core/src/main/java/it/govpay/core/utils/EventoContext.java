@@ -18,13 +18,13 @@ public class EventoContext {
 	public enum Esito {OK, KO, FAIL};
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
 
+	private boolean registraEvento = false;
 	private Componente componente;
 	private Role role;
 	private Categoria categoriaEvento;
 	private String tipoEvento;
 	private String sottotipoEvento;
 	private Esito esito;
-	private Integer sottotipoEsito;
 	private String descrizioneEsito;
 
 	private String principal;
@@ -50,6 +50,12 @@ public class EventoContext {
 	private Long idVersamento;
 	private Long idPagamentoPortale;
 	private Long idRpt;
+	
+	private String idTransazione;
+	
+	public EventoContext() {
+		this.dataRichiesta = new Date();
+	}
 
 	public Componente getComponente() {
 		return componente;
@@ -79,18 +85,18 @@ public class EventoContext {
 		return tipoEvento;
 	}
 
-	public void setTipoEvento(String httpMethod, String nomeOperazione) {
-		StringBuilder sb = new StringBuilder();
-		if(httpMethod != null)
-			sb.append(httpMethod.toUpperCase());
-		if(sb.length() > 0 && nomeOperazione != null)
-			sb.append("-");
-
-		if(nomeOperazione != null)
-			sb.append(nomeOperazione.toUpperCase());
-
-		this.tipoEvento = sb.toString();
-	}
+//	public void setTipoEvento(String httpMethod, String nomeOperazione) {
+//		StringBuilder sb = new StringBuilder();
+//		if(httpMethod != null)
+//			sb.append(httpMethod.toUpperCase());
+//		if(sb.length() > 0 && nomeOperazione != null)
+//			sb.append("-");
+//
+//		if(nomeOperazione != null)
+//			sb.append(nomeOperazione.toUpperCase());
+//
+//		this.tipoEvento = sb.toString();
+//	}
 
 	public void setTipoEvento(String tipoEvento) {
 		this.tipoEvento = tipoEvento;
@@ -110,14 +116,6 @@ public class EventoContext {
 
 	public void setEsito(Esito esito) {
 		this.esito = esito;
-	}
-
-	public Integer getSottotipoEsito() {
-		return sottotipoEsito;
-	}
-
-	public void setSottotipoEsito(Integer sottotipoEsito) {
-		this.sottotipoEsito = sottotipoEsito;
 	}
 
 	public String getPrincipal() {
@@ -327,7 +325,7 @@ public class EventoContext {
 				break;
 			}
 		}
-		dto.setSottotipoEsito(this.getSottotipoEsito());
+		dto.setSottotipoEsito(this.getStatus());
 		dto.setSottotipoEvento(this.getSottotipoEvento());
 		dto.setTipoEvento(this.getTipoEvento());
 		dto.setIdVersamento(this.getIdVersamento());
@@ -335,6 +333,22 @@ public class EventoContext {
 		dto.setIdRpt(this.getIdRpt());
 
 		return dto;
+	}
+
+	public String getIdTransazione() {
+		return idTransazione;
+	}
+
+	public void setIdTransazione(String idTransazione) {
+		this.idTransazione = idTransazione;
+	}
+
+	public boolean isRegistraEvento() {
+		return registraEvento;
+	}
+
+	public void setRegistraEvento(boolean registraEvento) {
+		this.registraEvento = registraEvento;
 	}
 
 

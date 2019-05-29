@@ -34,8 +34,6 @@ public class ConfigurazioneDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 			return new LeggiConfigurazioneDTOResponse(AnagraficaManager.getConfigurazione(bd));
-		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-			throw new ConfigurazioneNonTrovataException("Configurazione Govpay non definita.");
 		} finally {
 			if(bd != null)
 				bd.closeConnection();

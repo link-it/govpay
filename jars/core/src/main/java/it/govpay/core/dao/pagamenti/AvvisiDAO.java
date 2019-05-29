@@ -39,6 +39,7 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
@@ -60,6 +61,8 @@ public class AvvisiDAO extends BaseDAO{
 			else 
 				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
 
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdVersamento(versamento.getId());
+			
 			Dominio dominio = versamento.getDominio(versamentiBD);
 //			TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
 			

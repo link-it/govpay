@@ -31,6 +31,9 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -95,43 +98,6 @@ public abstract class BaseController {
 		return 1;
 	}
 	
-//	public void setupContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione) throws ServiceException, UtilsException{
-//		GpContextFactory factory  = new GpContextFactory();
-//		IContext ctx = factory.newContext(uriInfo,rsHttpHeaders, this.request, nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione());
-//		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
-//		GpThreadLocal.set(ctx);
-//	}
-//
-//	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException, ResponseValidationException, ServiceException, UtilsException {
-//		if(o != null && o instanceof JSONSerializable) {
-//			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((JSONSerializable) o).toJSON(null).getBytes(), responseCode);
-//		}
-//		else if(o != null && o instanceof String) {
-//			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, ((String) o).getBytes(), responseCode);
-//		}
-//		else{
-//			ObjectMapper mapper = new ObjectMapper();
-//			String json = mapper.writeValueAsString(o);
-//			this.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, json.getBytes(), responseCode);
-//		}
-//	}
-//	
-//	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, ByteArrayOutputStream baos) throws RequestValidationException, UtilsException {
-//		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-//				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
-//	}
-//	
-//	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione, byte[] baos) throws RequestValidationException, UtilsException{
-//		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-//				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, false);
-//	}
-//
-//
-//	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) throws ResponseValidationException, UtilsException {
-//		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
-//				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, this.getVersione(), this.log, true, responseCode);
-//	}
-	
 	public URI getServicePath(UriInfo uriInfo) throws URISyntaxException {
 		String baseUri = uriInfo.getBaseUri().toString();
 		String requestUri = uriInfo.getRequestUri().toString();
@@ -171,6 +137,10 @@ public abstract class BaseController {
 	
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
 		
+		if(e instanceof UnprocessableEntityException) {
+			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, (UnprocessableEntityException)e,transactionId);
+		}
+		
 		if(e instanceof IncassiException) {
 			return this.handleIncassiException(uriInfo, httpHeaders, methodName, (IncassiException)e,transactionId);
 		}
@@ -197,15 +167,11 @@ public abstract class BaseController {
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
 		respKo.setDescrizione("Errore interno");
 		respKo.setDettaglio(e.getMessage());
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, Status.INTERNAL_SERVER_ERROR.getStatusCode());
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta", e1);
-//		}
 		
 		String respKoJson = this.getRespJson(respKo);
-		 
-		return handleResponseKo(Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKoJson), transactionId).build();
+		ResponseBuilder responseBuilder = Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKoJson); 
+		this.handleEventoFail(responseBuilder, transactionId, respKo.getDettaglio());
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
 	protected String getRespJson(FaultBean respKo) {
@@ -231,15 +197,14 @@ public abstract class BaseController {
 		respKo.setCodice(e.getCode());
 		respKo.setDescrizione(e.getMessage());
 		respKo.setDettaglio(e.getDetails());
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, e.getTransportErrorCode());
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 
 		String respJson = this.getRespJson(respKo);
-		return handleResponseKo(Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
+		if(e.getTransportErrorCode() > 499)
+			this.handleEventoFail(responseBuilder, transactionId, respKo.getDettaglio());
+		else 
+			this.handleEventoKo(responseBuilder, transactionId, respKo.getDettaglio());
+		return handleResponseKo(responseBuilder, transactionId).build(); 
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
@@ -258,16 +223,34 @@ public abstract class BaseController {
 			respKo.setDescrizione(e.getDescrizioneEsito());
 			respKo.setDettaglio(e.getMessageV3());
 		}
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 		
 		String respJson = this.getRespJson(respKo);
+		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
+		if(statusCode > 499)
+			this.handleEventoFail(responseBuilder, transactionId, respKo.getDettaglio());
+		else 
+			this.handleEventoKo(responseBuilder, transactionId, respKo.getDettaglio());
 		
-		return handleResponseKo(Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+		return handleResponseKo(responseBuilder, transactionId).build();
+	}
+	
+	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
+		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+		
+		FaultBean respKo = new FaultBean();
+		respKo.setCategoria(CategoriaEnum.RICHIESTA);
+		respKo.setCodice("SEMANTICA");
+		respKo.setDescrizione("Richiesta non valida");
+		respKo.setDettaglio(e.getDetails());
+
+		String respJson = this.getRespJson(respKo);
+		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
+		if(e.getTransportErrorCode() > 499)
+			this.handleEventoFail(responseBuilder, transactionId, respKo.getDettaglio());
+		else 
+			this.handleEventoKo(responseBuilder, transactionId, respKo.getDettaglio());
+		
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 	
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
@@ -279,16 +262,11 @@ public abstract class BaseController {
 			respKo.setDettaglio(e.getMessage());
 		
 		int statusCode = 400;
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, statusCode);
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 		
 		String respJson = this.getRespJson(respKo);
-		
-		return handleResponseKo(Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
+		this.handleEventoKo(responseBuilder, transactionId, respKo.getDettaglio());
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 	
 	private Response handleIncassiException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IncassiException e, String transactionId) {
@@ -299,23 +277,24 @@ public abstract class BaseController {
 		respKo.setCodice(e.getCode());
 		respKo.setDescrizione(e.getMessage());
 		respKo.setDettaglio(e.getDetails());
-//		
-//		try {
-//			this.logResponse(uriInfo, httpHeaders, methodName, respKo, e.getTransportErrorCode());
-//		}catch(Exception e1) {
-//			this.log.error("Errore durante il log della risposta  "+methodName+":", e1.getMessage(), e);
-//		}
 
 		String respJson = this.getRespJson(respKo);
-		return handleResponseKo(Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
+		if(e.getTransportErrorCode() > 499)
+			this.handleEventoFail(responseBuilder, transactionId, respKo.getDettaglio());
+		else 
+			this.handleEventoKo(responseBuilder, transactionId, respKo.getDettaglio());
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
 		this.log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
+		ResponseBuilder responseBuilder = Response.seeOther(e.getURILocation());
+		this.handleEventoOk(responseBuilder, transactionId);
 		if(transactionId != null)
-			return Response.seeOther(e.getURILocation()).header(this.transactionIdHeaderName, transactionId).build();
+			return responseBuilder.header(this.transactionIdHeaderName, transactionId).build();
 		else
-			return Response.seeOther(e.getURILocation()).build();
+			return responseBuilder.build();
 	}
 
 	protected void log(IContext ctx) {
@@ -332,5 +311,34 @@ public abstract class BaseController {
 		if(!AuthorizationManager.isAuthorized(authentication, tipoUtenza, servizi, listaDiritti)) {
 			throw AuthorizationManager.toNotAuthorizedException(authentication);
 		}
+	}
+	
+	protected ResponseBuilder handleEventoOk(ResponseBuilder responseBuilder, String transactionId) {
+		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		ctx.getEventoCtx().setEsito(Esito.OK);
+		if(transactionId != null)
+			ctx.getEventoCtx().setIdTransazione(transactionId);
+		
+		return responseBuilder;
+	}
+	
+	protected ResponseBuilder handleEventoKo(ResponseBuilder responseBuilder, String transactionId, String dettaglioEsito) {
+		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		ctx.getEventoCtx().setEsito(Esito.KO);
+		if(transactionId != null)
+			ctx.getEventoCtx().setIdTransazione(transactionId);
+		ctx.getEventoCtx().setDescrizioneEsito(dettaglioEsito);
+		
+		return responseBuilder;
+	}
+	
+	protected ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String dettaglioEsito) {
+		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		ctx.getEventoCtx().setEsito(Esito.FAIL);
+		if(transactionId != null)
+			ctx.getEventoCtx().setIdTransazione(transactionId);
+		ctx.getEventoCtx().setDescrizioneEsito(dettaglioEsito);
+		
+		return responseBuilder;
 	}
 }

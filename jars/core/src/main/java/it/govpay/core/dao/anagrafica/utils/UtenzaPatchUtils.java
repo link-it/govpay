@@ -4,6 +4,7 @@
 package it.govpay.core.dao.anagrafica.utils;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -13,6 +14,11 @@ import java.util.Set;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.serialization.IOException;
+import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
@@ -26,11 +32,14 @@ import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.Evento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.EsitoEvento;
+import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.PatchOp;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
@@ -279,21 +288,34 @@ public class UtenzaPatchUtils {
 		
 	}
 
-	public static Evento getNotaFromPatch(Authentication authentication, PatchOp op, BasicBD bd) throws ValidationException, ServiceException { 
+	public static Evento getNotaFromPatch(Authentication authentication, PatchOp op, BasicBD bd) throws ValidationException, ServiceException, IOException {  
 		LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
 		
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		Evento nota = new Evento();
-		nota.setCategoriaEvento(CategoriaEvento.UTENTE);
+		Evento eventoUtente = new Evento();
+		eventoUtente.setCategoriaEvento(CategoriaEvento.UTENTE);
+		eventoUtente.setRuoloEvento(RuoloEvento.CLIENT);
+		eventoUtente.setEsitoEvento(EsitoEvento.OK);
+		eventoUtente.setSottotipoEsito(200);
 		DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
 		dettaglioRichiesta.setPrincipal(userDetails.getUtenza().getPrincipal());
 		dettaglioRichiesta.setUtente(userDetails.getUtenza().getIdentificativo());
 		dettaglioRichiesta.setDataOraRichiesta(new Date());
-		dettaglioRichiesta.setPayload((String)map.get(TESTO_NOTA_KEY));
-		nota.setDettaglioRichiesta(dettaglioRichiesta );
-		nota.setDettaglioEsito((String)map.get(OGGETTO_NOTA_KEY));
-		nota.setTipoEvento((String) map.get(TIPO_NOTA_KEY));
+		dettaglioRichiesta.setPayload(getDettaglioAsString(op));
+		eventoUtente.setDettaglioRichiesta(dettaglioRichiesta );
+		eventoUtente.setDettaglioEsito((String)map.get(OGGETTO_NOTA_KEY));
 				
-		return nota;
+		return eventoUtente;
+	}
+	
+	public static String getDettaglioAsString(Object obj) throws IOException {
+		if(obj != null) {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			return serializer.getObject(obj); 
+		}
+		return null;
 	}
 }

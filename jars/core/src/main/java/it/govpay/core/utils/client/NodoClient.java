@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 
 import javax.xml.bind.JAXBElement;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
@@ -56,6 +57,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Intermediario;
@@ -76,7 +78,7 @@ public class NodoClient extends BasicClient {
 	private String azione, dominio, stazione, errore, faultCode;
 	private BasicBD bd;
 	
-	public NodoClient(Intermediario intermediario, String operationID, BasicBD bd) throws ClientException {
+	public NodoClient(Intermediario intermediario, String operationID, BasicBD bd) throws ClientException, ServiceException {
 		super(intermediario, TipoOperazioneNodo.NODO);
 		this.bd = bd;
 		if(objectFactory == null || log == null ){
@@ -84,6 +86,10 @@ public class NodoClient extends BasicClient {
 		}
 		this.isAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
 		this.operationID = operationID;
+		this.componente = Componente.API_PAGOPA;
+		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		
+		this.getEventoCtx().setComponente(this.componente); 
 	}
 	
 	@Override

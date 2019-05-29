@@ -127,6 +127,7 @@ public class PendenzeController extends BaseController {
 			
  			Dominio dominio = ricevutaDTOResponse.getDominio();
 			TipoVersamento tipoVersamento = ricevutaDTOResponse.getTipoVersamento();
+			
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
@@ -241,6 +242,7 @@ public class PendenzeController extends BaseController {
 			PatchPendenzaDTO patchPendenzaDTO = new PatchPendenzaDTO(user);
 			patchPendenzaDTO.setIdA2a(idA2A);
 			patchPendenzaDTO.setIdPendenza(idPendenza);
+			patchPendenzaDTO.setInfoIncasso(addInfoIncasso);
 
 			String jsonRequest = baos.toString();
 
@@ -271,15 +273,7 @@ public class PendenzeController extends BaseController {
 
 			patchPendenzaDTO.setOp(PatchOpConverter.toModel(lstOp));
 
-			pendenzeDAO.patch(patchPendenzaDTO);
-
-			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
-
-			leggiPendenzaDTO.setCodA2A(idA2A);
-			leggiPendenzaDTO.setCodPendenza(idPendenza);
-			leggiPendenzaDTO.setInfoIncasso(addInfoIncasso);
-
-			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenzaConInformazioniIncasso(leggiPendenzaDTO);
+			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.patch(patchPendenzaDTO);
 
 			Pendenza pendenza =	PendenzeConverter.toRsModelConInfoIncasso(ricevutaDTOResponse);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
@@ -390,7 +384,7 @@ public class PendenzeController extends BaseController {
 			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
-
+			
 			PendenzaCreata pc = new PendenzaCreata();
 			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());

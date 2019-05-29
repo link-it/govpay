@@ -5,7 +5,7 @@
 	
 	<context-param>
     	<param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/applicationContext-security.xml,/WEB-INF/applicationContext-timers.xml</param-value>
+        <param-value>/WEB-INF/applicationContext-jaxws.xml,/WEB-INF/applicationContext-security.xml,/WEB-INF/applicationContext-timers.xml</param-value>
     </context-param>
     
     <listener>
@@ -27,4 +27,16 @@
 	    <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
 	
+	
+	<servlet>
+        <servlet-name>CXFServlet</servlet-name>
+        <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+   
+   
+    <servlet-mapping>
+        <servlet-name>CXFServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
 </web-app>

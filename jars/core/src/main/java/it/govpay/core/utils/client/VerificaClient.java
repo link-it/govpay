@@ -34,6 +34,7 @@ import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
@@ -41,6 +42,7 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -61,10 +63,13 @@ public class VerificaClient extends BasicClient {
 	private String codApplicazione;
 
 
-	public VerificaClient(Applicazione applicazione) throws ClientException {
+	public VerificaClient(Applicazione applicazione, BasicBD bd) throws ClientException, ServiceException {
 		super(applicazione, TipoConnettore.VERIFICA);
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.codApplicazione = applicazione.getCodApplicazione();
+		this.componente = Componente.API_ENTE;
+		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.getEventoCtx().setComponente(this.componente); 
 	}
 
 	/**
@@ -97,7 +102,8 @@ public class VerificaClient extends BasicClient {
 			List<Property> headerProperties = new ArrayList<>();
 			headerProperties.add(new Property("Accept", "application/json"));
 			String jsonResponse = "";
-
+			String swaggerOperationID = "getAvviso";
+					
 			String path = null;
 
 			if(iuv == null) {
@@ -109,7 +115,7 @@ public class VerificaClient extends BasicClient {
 			PendenzaVerificata pendenzaVerificata = null;
 			try {
 				try {
-					jsonResponse = new String(this.getJson(path, headerProperties));
+					jsonResponse = new String(this.getJson(path, headerProperties, swaggerOperationID));
 					pendenzaVerificata = ConverterUtils.parse(jsonResponse, PendenzaVerificata.class); 
 				}catch(ClientException e) {
 					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());

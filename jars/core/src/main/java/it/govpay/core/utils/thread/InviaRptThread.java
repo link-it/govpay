@@ -33,10 +33,13 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.RptBD;
+import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
@@ -60,11 +63,8 @@ public class InviaRptThread implements Runnable {
 		BasicBD bd = null;
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
-		
+		NodoClient client = null;
 		try {
-//			MDC.put(MD5Constants.OPERATION_ID, "InviaRptThread");
-//			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
-			
 			String operationId = appContext.setupNodoClient(this.rpt.getStazione(bd).getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaCarrelloRPT);
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + "]");
 			
@@ -74,7 +74,11 @@ public class InviaRptThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("pagamento.invioRptAttivata");
 				
-			Risposta risposta = RptUtils.inviaRPT(rpt, operationId, bd);
+			client = new it.govpay.core.utils.client.NodoClient(this.rpt.getIntermediario(bd), operationId, bd);
+			client.getEventoCtx().setIdRpt(this.rpt.getId());
+			client.getEventoCtx().setIdVersamento(this.rpt.getIdVersamento());
+			client.getEventoCtx().setIdPagamentoPortale(this.rpt.getIdPagamentoPortale());
+			Risposta risposta = RptUtils.inviaRPT(client, this.rpt, operationId, bd);
 
 			if(bd == null) {
 				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
@@ -104,6 +108,10 @@ public class InviaRptThread implements Runnable {
 				rptBD.updateRpt(this.rpt.getId(), null, descrizione, null, null,null);
 				log.warn("RPT rifiutata dal nodo con fault " + descrizione);
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
+				if(client != null) {
+					client.getEventoCtx().setEsito(Esito.KO);
+					client.getEventoCtx().setDescrizioneEsito(descrizione);
+				}
 			} else {
 				// RPT accettata dal Nodo
 				// Invio la notifica e aggiorno lo stato
@@ -120,9 +128,14 @@ public class InviaRptThread implements Runnable {
 					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, bd,ctx));
 				log.info("RPT inviata correttamente al nodo");
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
+				client.getEventoCtx().setEsito(Esito.OK);
 			}
 		} catch (ClientException e) {
 			log.error("Errore nella spedizione della RPT", e);
+			if(client != null) {
+				client.getEventoCtx().setEsito(Esito.FAIL);
+				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			}	
 			try {
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataFail", e.getMessage());
 			} catch (UtilsException e1) {
@@ -130,6 +143,10 @@ public class InviaRptThread implements Runnable {
 			}
 		} catch (Exception e) {
 			log.error("Errore nella spedizione della RPT", e);
+			if(client != null) {
+				client.getEventoCtx().setEsito(Esito.FAIL);
+				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			}	
 			try {
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataFail", e.getMessage());
 			} catch (UtilsException e1) {
@@ -137,6 +154,11 @@ public class InviaRptThread implements Runnable {
 			}
 			if(bd != null) bd.rollback();
 		} finally {
+			if(client != null && client.getEventoCtx().isRegistraEvento()) {
+				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
+				giornaleEventi.registraEvento(client.getEventoCtx().toEventoDTO());
+			}
+			
 //			if(ctx != null)
 //				try {
 //					ctx.getApplicationLogger().log();

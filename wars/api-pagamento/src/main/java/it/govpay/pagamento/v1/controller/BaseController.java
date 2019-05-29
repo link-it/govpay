@@ -31,6 +31,8 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -162,7 +164,9 @@ public abstract class BaseController {
 		respKo.setDettaglio(e.getMessage());
 		String respKoJson = this.getRespJson(respKo);
 		 
-		return handleResponseKo(Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKoJson), transactionId).build();
+		ResponseBuilder responseBuilder = Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKoJson); 
+		this.handleEventoFail(responseBuilder, transactionId, respKo.getDettaglio());
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
 	protected String getRespJson(FaultBean respKo) {
@@ -190,7 +194,12 @@ public abstract class BaseController {
 		respKo.setDettaglio(e.getDetails());
 
 		String respJson = this.getRespJson(respKo);
-		return handleResponseKo(Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
+		if(e.getTransportErrorCode() > 499)
+			this.handleEventoFail(responseBuilder, transactionId, respKo.getDettaglio());
+		else 
+			this.handleEventoKo(responseBuilder, transactionId, respKo.getDettaglio());
+		return handleResponseKo(responseBuilder, transactionId).build(); 
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
@@ -211,8 +220,13 @@ public abstract class BaseController {
 		}
 		
 		String respJson = this.getRespJson(respKo);
+		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
+		if(statusCode > 499)
+			this.handleEventoFail(responseBuilder, transactionId, respKo.getDettaglio());
+		else 
+			this.handleEventoKo(responseBuilder, transactionId, respKo.getDettaglio());
 		
-		return handleResponseKo(Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 	
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
@@ -226,16 +240,19 @@ public abstract class BaseController {
 		int statusCode = 400;
 		
 		String respJson = this.getRespJson(respKo);
-		
-		return handleResponseKo(Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
+		this.handleEventoKo(responseBuilder, transactionId, respKo.getDettaglio());
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
 		this.log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
+		ResponseBuilder responseBuilder = Response.seeOther(e.getURILocation());
+		this.handleEventoOk(responseBuilder, transactionId);
 		if(transactionId != null)
-			return Response.seeOther(e.getURILocation()).header(this.transactionIdHeaderName, transactionId).build();
+			return responseBuilder.header(this.transactionIdHeaderName, transactionId).build();
 		else
-			return Response.seeOther(e.getURILocation()).build();
+			return responseBuilder.build();
 	}
 	
 	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
@@ -248,7 +265,13 @@ public abstract class BaseController {
 		respKo.setDettaglio(e.getDetails());
 
 		String respJson = this.getRespJson(respKo);
-		return handleResponseKo(Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson), transactionId).build();
+		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
+		if(e.getTransportErrorCode() > 499)
+			this.handleEventoFail(responseBuilder, transactionId, respKo.getDettaglio());
+		else 
+			this.handleEventoKo(responseBuilder, transactionId, respKo.getDettaglio());
+		
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
 	protected void log(IContext ctx) {
@@ -265,5 +288,34 @@ public abstract class BaseController {
 		if(!AuthorizationManager.isAuthorized(authentication, tipoUtenza, servizi, listaDiritti)) {
 			throw AuthorizationManager.toNotAuthorizedException(authentication);
 		}
+	}
+	
+	protected ResponseBuilder handleEventoOk(ResponseBuilder responseBuilder, String transactionId) {
+		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		ctx.getEventoCtx().setEsito(Esito.OK);
+		if(transactionId != null)
+			ctx.getEventoCtx().setIdTransazione(transactionId);
+		
+		return responseBuilder;
+	}
+	
+	protected ResponseBuilder handleEventoKo(ResponseBuilder responseBuilder, String transactionId, String dettaglioEsito) {
+		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		ctx.getEventoCtx().setEsito(Esito.KO);
+		if(transactionId != null)
+			ctx.getEventoCtx().setIdTransazione(transactionId);
+		ctx.getEventoCtx().setDescrizioneEsito(dettaglioEsito);
+		
+		return responseBuilder;
+	}
+	
+	protected ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String dettaglioEsito) {
+		GpContext ctx = (GpContext) this.context.getApplicationContext();
+		ctx.getEventoCtx().setEsito(Esito.FAIL);
+		if(transactionId != null)
+			ctx.getEventoCtx().setIdTransazione(transactionId);
+		ctx.getEventoCtx().setDescrizioneEsito(dettaglioEsito);
+		
+		return responseBuilder;
 	}
 }

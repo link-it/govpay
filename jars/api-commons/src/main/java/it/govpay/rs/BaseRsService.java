@@ -124,9 +124,10 @@ public abstract class BaseRsService {
 			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 			ctx.getEventoCtx().setMethod(this.request.getMethod());
-			ctx.getEventoCtx().setTipoEvento(this.request.getMethod(), context.getMethodName());
+			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
 			ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
-			ctx.getEventoCtx().setUtente(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()).getIdentificativo());
+			if(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()) != null)
+				ctx.getEventoCtx().setUtente(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()).getIdentificativo());
 			String baseUri = uriInfo.getBaseUri().toString();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);

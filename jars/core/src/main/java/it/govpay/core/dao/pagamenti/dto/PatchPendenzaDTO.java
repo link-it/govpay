@@ -8,6 +8,7 @@ public class PatchPendenzaDTO extends AbstractPatchDTO  {
 	
 	private String idA2a;
 	private String idPendenza;
+	private boolean infoIncasso = false;
 
 	public PatchPendenzaDTO(Authentication user) {
 		super(user);
@@ -27,6 +28,14 @@ public class PatchPendenzaDTO extends AbstractPatchDTO  {
 
 	public void setIdPendenza(String idPendenza) {
 		this.idPendenza = idPendenza;
+	}
+
+	public boolean isInfoIncasso() {
+		return infoIncasso;
+	}
+
+	public void setInfoIncasso(boolean infoIncasso) {
+		this.infoIncasso = infoIncasso;
 	}
 
 }

@@ -38,11 +38,13 @@ import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.client.v1.NotificaConverter;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Versionabile.Versione;
@@ -52,10 +54,14 @@ public class NotificaClient extends BasicClient {
 	private static Logger log = LoggerWrapperFactory.getLogger(NotificaClient.class);
 	private Versione versione;
 
-	public NotificaClient(Applicazione applicazione, String operationID) throws ClientException {
+	public NotificaClient(Applicazione applicazione, String operationID, BasicBD bd) throws ClientException, ServiceException {
 		super(applicazione, TipoConnettore.NOTIFICA);
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.operationID = operationID;
+		
+		this.componente = Componente.API_ENTE;
+		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.getEventoCtx().setComponente(this.componente); 
 	}
 
 	/**
@@ -81,6 +87,10 @@ public class NotificaClient extends BasicClient {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
+		// salvataggio id Rpt/ versamento/ pagamento
+		this.getEventoCtx().setIdRpt(rpt.getId());
+		this.getEventoCtx().setIdPagamentoPortale(rpt.getIdPagamentoPortale());
+		this.getEventoCtx().setIdVersamento(rpt.getIdVersamento());
 		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
 
 		List<Property> headerProperties = new ArrayList<>();
@@ -89,12 +99,14 @@ public class NotificaClient extends BasicClient {
 		StringBuilder sb = new StringBuilder();
 		Map<String, String> queryParams = new HashMap<>();
 		HttpRequestMethod httpMethod = HttpRequestMethod.POST;
+		String swaggerOperationID = this.getSwaggerOperationId(notifica, bd);
 
 		switch (notifica.getTipo()) {
 		case ANNULLAMENTO:
 		case FALLIMENTO:
 			sb.append("/pagamenti/" + codDominio + "/"+ iuv);
 			sb.append("/").append(ccp).append("/annulla");
+			
 			break;
 		case ATTIVAZIONE:
 		case RICEVUTA:
@@ -110,6 +122,7 @@ public class NotificaClient extends BasicClient {
 			if(rpt.getCodCarrello() != null) {
 				queryParams.put("idCarrello", encode(rpt.getCodCarrello()));
 			}
+			
 			break;
 		}
 
@@ -128,10 +141,28 @@ public class NotificaClient extends BasicClient {
 		
 		jsonBody = this.getMessaggioRichiesta(notifica, bd);
 
-		return this.sendJson(sb.toString(), jsonBody, headerProperties, httpMethod);
+		return this.sendJson(sb.toString(), jsonBody, headerProperties, httpMethod, swaggerOperationID);
 	}
 
-	public String getMessaggioRichiesta(Notifica notifica, BasicBD bd) throws ServiceException, JAXBException, SAXException {
+	public String getSwaggerOperationId(Notifica notifica, BasicBD bd) {
+		String swaggerOperationID = "";
+		
+		switch (notifica.getTipo()) {
+		case ANNULLAMENTO:
+		case FALLIMENTO:
+			swaggerOperationID = "deletePagamento";
+
+			break;
+		case ATTIVAZIONE:
+		case RICEVUTA:
+			swaggerOperationID = "addPagamento";
+			break;
+		}
+		
+		return swaggerOperationID;
+	}
+	
+	private String getMessaggioRichiesta(Notifica notifica, BasicBD bd) throws ServiceException, JAXBException, SAXException {
 		Rpt rpt = notifica.getRpt(bd);
 		String jsonBody = "";
 		

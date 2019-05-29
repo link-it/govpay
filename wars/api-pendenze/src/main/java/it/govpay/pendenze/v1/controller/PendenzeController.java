@@ -77,7 +77,6 @@ public class PendenzeController extends BaseController {
 			// filtro sull'applicazione			
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
 				throw AuthorizationManager.toNotAuthorizedException(user);
-//				throw new GovPayException(EsitoOperazione.APP_002, AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione(), idA2A);
 			}
 
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
@@ -88,13 +87,6 @@ public class PendenzeController extends BaseController {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
-
-//			Dominio dominio = leggiPendenzaDTOResponse.getDominio();
-//			TipoVersamento tipoVersamento = leggiPendenzaDTOResponse.getTipoVersamento();
-//			// controllo che il dominio e tipo versamento siano autorizzati
-//			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
-//				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
-//			}
 
 			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamentoIncasso(), leggiPendenzaDTOResponse.getRpts());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
@@ -250,14 +242,7 @@ public class PendenzeController extends BaseController {
 
 			patchPendenzaDTO.setOp(PatchOpConverter.toModel(lstOp));
 
-			pendenzeDAO.patch(patchPendenzaDTO);
-
-			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
-
-			leggiPendenzaDTO.setCodA2A(idA2A);
-			leggiPendenzaDTO.setCodPendenza(idPendenza);
-
-			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
+			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.patch(patchPendenzaDTO);
 
 			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamentoIncasso(), leggiPendenzaDTOResponse.getRpts());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
@@ -324,7 +309,7 @@ public class PendenzeController extends BaseController {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
-
+			
 			PendenzaCreata pc = new PendenzaCreata();
 			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());

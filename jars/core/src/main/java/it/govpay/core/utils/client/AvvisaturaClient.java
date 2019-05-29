@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.context.core.BaseServer;
@@ -18,7 +19,12 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtRisposta;
 import gov.telematici.pagamenti.ws.avvisi_digitali.ObjectFactory;
 import gov.telematici.pagamenti.ws.ppthead.richiesta_avvisi.IntestazionePPT;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.eventi.Controparte;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Intermediario;
@@ -38,14 +44,31 @@ public class AvvisaturaClient extends BasicClient {
 	private static Logger log = LoggerWrapperFactory.getLogger(AvvisaturaClient.class);
 	private String errore, faultCode;
 	private ObjectFactory objectFactory = null;
+	private Intermediario intermediario = null;
+	private Stazione stazione = null;
+	private Versamento versamento = null;
 
-	public AvvisaturaClient(Intermediario intermediario, String operationID, BasicBD bd) throws ClientException {
+	public AvvisaturaClient(Versamento versamento, Intermediario intermediario, Stazione stazione, String operationID, BasicBD bd) throws ClientException, ServiceException {
 		super(intermediario, TipoOperazioneNodo.AVVISATURA);
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
 		}
 		this.isAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
 		this.operationID = operationID;
+		this.componente = Componente.API_PAGOPA;
+		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.stazione = stazione;
+		this.intermediario = intermediario;
+		this.versamento = versamento;
+		
+		this.getEventoCtx().setComponente(this.componente); 
+		this.getEventoCtx().setIdVersamento(this.versamento.getId());
+		
+		Controparte controparte = new Controparte();
+		controparte.setCodStazione(this.stazione.getCodStazione());
+		controparte.setErogatore(Evento.NDP);
+		controparte.setFruitore(this.intermediario.getDenominazione());
+		this.getEventoCtx().setControparte(controparte);
 	}
 
 	@Override
@@ -59,7 +82,7 @@ public class AvvisaturaClient extends BasicClient {
 		return (CtNodoInviaAvvisoDigitaleRisposta) response;
 	}
 
-	public byte[] getByteRichiesta(Intermediario intermediario, Stazione stazione,
+	private byte[] getByteRichiesta(Intermediario intermediario, Stazione stazione,
 			CtNodoInviaAvvisoDigitale ctNodoInviaAvvisoDigitale) throws ClientException {
 		JAXBElement<?> bodyJAXB = new JAXBElement<CtNodoInviaAvvisoDigitale>(_NodoInviaAvvisoDigitale_QNAME, CtNodoInviaAvvisoDigitale.class, null, ctNodoInviaAvvisoDigitale);
 

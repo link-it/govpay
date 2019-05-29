@@ -42,7 +42,8 @@ public class EventoConverter {
 			vo.setDatiControparte(dto.getDettaglioAsString(dto.getControparte()));
 		} catch (IOException e) {
 		}
-		vo.setDettaglioEsito(dto.getDettaglioEsito());
+		if(dto.getDettaglioEsito() != null)
+			vo.setDettaglioEsito(dto.getDettaglioEsito().length() < 255 ? dto.getDettaglioEsito() : dto.getDettaglioEsito().substring(0, 255));
 		if(dto.getEsitoEvento() != null)
 			vo.setEsito(dto.getEsitoEvento().toString());
 		vo.setId(dto.getId());

@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
 
@@ -60,7 +59,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.Evento.TipoEventoCooperazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -87,6 +85,7 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptBuilder;
@@ -95,7 +94,6 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Evento.CategoriaEvento;
-import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
@@ -113,7 +111,7 @@ targetNamespace = "http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelema
 portName = "PPTPort",
 wsdlLocation="/wsdl/PaPerNodoPagamentoPsp.wsdl")
 
-@HandlerChain(file="../../../../handler-chains/handler-chain-ndp.xml")
+//@HandlerChain(file="../../../../handler-chains/handler-chain-ndp.xml")
 
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
@@ -135,13 +133,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		Long idVersamentoLong = null;
 		Long idPagamentoPortaleLong = null;
+		Long idRptLong = null;
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		appContext.setCorrelationId(codDominio + iuv + ccp);
 
 		Actor from = new Actor();
-		from.setName("NodoDeiPagamentiSPC");
+		from.setName(GpContext.NodoDeiPagamentiSPC);
 		from.setType(GpContext.TIPO_SOGGETTO_NDP);
 		appContext.getTransaction().setFrom(from);
 
@@ -165,12 +164,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		PaaAttivaRPTRisposta response = new PaaAttivaRPTRisposta();
 		log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
 
-		Evento evento = new Evento();
 		Controparte controparte = new Controparte();
 		controparte.setCodStazione(codStazione);
-		controparte.setFruitore("NodoDeiPagamentiSPC");
-		evento.setControparte(controparte);
-		evento.setTipoEvento(TipoEventoCooperazione.paaAttivaRPT.name());
+		controparte.setFruitore(GpContext.NodoDeiPagamentiSPC);
+		appContext.getEventoCtx().setControparte(controparte);
+//		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paaAttivaRPT.name());
 		controparte.setCodPsp(bodyrichiesta.getIdentificativoPSP());
 		controparte.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		try {
@@ -353,6 +351,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			try {
 				Rpt oldrpt = rptBD.getRpt(codDominio, iuv, ccp);
 				idPagamentoPortaleLong = oldrpt.getIdPagamentoPortale();
+				idRptLong = oldrpt.getId();
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, "RTP attivata in data " + oldrpt.getDataMsgRichiesta() + " [idMsgRichiesta: " + oldrpt.getCodMsgRichiesta() + "]" , codDominio);
 			} catch (NotFoundException e2) {
 
@@ -405,9 +404,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				try {
 					// 	L'RPT non esiste, procedo
 					rptBD.insertRpt(rpt);
+					idRptLong = rpt.getId();
 				}catch(ServiceException e) {
 					bd.rollback();
 					bd.disableSelectForUpdate();
+
 					// update della entry pagamento portale
 					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 					pagamentoPortale.setStato(STATO.FALLITO);
@@ -415,6 +416,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					pagamentoPortale.setAck(false);
 					ppbd.updatePagamento(pagamentoPortale, true);
 					
+					// TODO eliminare nota
 					Evento eventoNota = new Evento();
 					eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
 					eventoNota.setDettaglioEsito("Creazione RPT non completata.");
@@ -435,7 +437,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					throw e;
 				}
 				
-				evento.setIdRpt(rpt.getId());
 				RptUtils.inviaRPTAsync(rpt, bd, ctx);
 			}
 
@@ -481,7 +482,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaAttivaRPTRisposta(esito);
 			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
-			evento.setEsitoEvento(EsitoEvento.OK);
+			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
@@ -491,7 +492,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
-			evento.setEsitoEvento(EsitoEvento.FAIL);
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, codDominio, response);
@@ -501,30 +503,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
-			evento.setEsitoEvento(EsitoEvento.FAIL);
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
-			try{
-				if(bd != null) {
-					GiornaleEventi ge = new GiornaleEventi(bd);
-					evento.setIntervalloFromData(new Date());
-					evento.setIdVersamento(idVersamentoLong);
-					evento.setIdPagamentoPortale(idPagamentoPortaleLong);
-					
-					ge.registraEvento(evento);
-				}
-			}catch(Exception e){
-				log.error(e.getMessage(),e);
-			}
-
-			if(ctx != null) {
-				GpContext.setResult(appContext.getTransaction(), response.getPaaAttivaRPTRisposta().getFault() == null ? null : response.getPaaAttivaRPTRisposta().getFault().getFaultCode());
-				try {
-					ctx.getApplicationLogger().log();
-				} catch (UtilsException e) {
-					log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-				}
-			}
-
+			
+			appContext.getEventoCtx().setIdVersamento(idVersamentoLong);
+			appContext.getEventoCtx().setIdPagamentoPortale(idPagamentoPortaleLong);
+			appContext.getEventoCtx().setIdRpt(idRptLong);
+			GpContext.setResult(appContext.getTransaction(), response.getPaaAttivaRPTRisposta().getFault() == null ? null : response.getPaaAttivaRPTRisposta().getFault().getFaultCode());
 			if(bd != null) bd.closeConnection();
 		}
 		return response;
@@ -543,13 +529,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		Long idVersamentoLong = null;
 		Long idPagamentoPortaleLong = null;
+		Long idRptLong =  null;
 		
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		appContext.setCorrelationId(codDominio + iuv + ccp);
 
 		Actor from = new Actor();
-		from.setName("NodoDeiPagamentiSPC");
+		from.setName(GpContext.NodoDeiPagamentiSPC);
 		from.setType(GpContext.TIPO_SOGGETTO_NDP);
 		appContext.getTransaction().setFrom(from);
 
@@ -573,12 +560,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		BasicBD bd = null;
 		PaaVerificaRPTRisposta response = new PaaVerificaRPTRisposta();
 
-		Evento evento = new Evento();
 		Controparte controparte = new Controparte();
 		controparte.setCodStazione(codStazione);
-		controparte.setFruitore("NodoDeiPagamentiSPC");
-		evento.setControparte(controparte);
-		evento.setTipoEvento(TipoEventoCooperazione.paaVerificaRPT.name());
+		controparte.setFruitore(GpContext.NodoDeiPagamentiSPC);
+		appContext.getEventoCtx().setControparte(controparte);
+//		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paaVerificaRPT.name());
 		controparte.setCodPsp(psp);
 		controparte.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		try {
@@ -730,6 +716,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				
 				for(Rpt rpt_pendente : rpt_pendenti) {
 					idPagamentoPortaleLong = rpt_pendente.getIdPagamentoPortale();
+					idRptLong = rpt_pendente.getId();	
 					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
 					
 					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
@@ -785,7 +772,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaVerificaRPTRisposta(esito);
 			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
-			evento.setEsitoEvento(EsitoEvento.OK);
+			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
@@ -795,7 +782,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
-			evento.setEsitoEvento(EsitoEvento.FAIL);
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, codDominio, response);
@@ -805,33 +793,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
-			evento.setEsitoEvento(EsitoEvento.FAIL);
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
-			try{
-				if(bd != null) {
-					try{
-						GiornaleEventi ge = new GiornaleEventi(bd);
-						evento.setIntervalloFromData(new Date());
-						
-						evento.setIdVersamento(idVersamentoLong);
-						evento.setIdPagamentoPortale(idPagamentoPortaleLong);
-						
-						ge.registraEvento(evento);
-					}catch(Exception e){log.error(e.getMessage(),e);}
-				}
-
-				if(ctx != null) {
-					GpContext.setResult(appContext.getTransaction(), response.getPaaVerificaRPTRisposta().getFault() == null ? null : response.getPaaVerificaRPTRisposta().getFault().getFaultCode());
-					try {
-						ctx.getApplicationLogger().log();
-					} catch (UtilsException e) {
-						log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-					}
-				}
-			}catch(Exception e1){
-				log.error(e1.getMessage(),e1);
-			}
-
+			appContext.getEventoCtx().setIdRpt(idRptLong);
+			appContext.getEventoCtx().setIdVersamento(idVersamentoLong);
+			appContext.getEventoCtx().setIdPagamentoPortale(idPagamentoPortaleLong);
+			GpContext.setResult(appContext.getTransaction(), response.getPaaVerificaRPTRisposta().getFault() == null ? null : response.getPaaVerificaRPTRisposta().getFault().getFaultCode());
 			if(bd != null) bd.closeConnection();
 		}
 		return response;

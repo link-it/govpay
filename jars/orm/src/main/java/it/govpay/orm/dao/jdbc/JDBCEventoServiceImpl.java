@@ -104,8 +104,7 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		// Object _rpt
 		Long id_rpt = null;
 		it.govpay.orm.IdRpt idLogic_rpt = null;
-		// TODO Impostare il corretto metodo che contiene l'identificativo logico
-		//idLogic_rpt = evento.getRPT();
+		idLogic_rpt = evento.getIdRpt();
 		if(idLogic_rpt!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
@@ -231,8 +230,7 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		// Object _evento_rpt
 		Long id_evento_rpt = null;
 		it.govpay.orm.IdRpt idLogic_evento_rpt = null;
-		// TODO Impostare il corretto metodo che contiene l'identificativo logico
-		//idLogic_evento_rpt = evento.getRPT();
+		idLogic_evento_rpt = evento.getIdRpt();
 		if(idLogic_evento_rpt!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){

@@ -27,7 +27,6 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
 import it.govpay.core.utils.GpContext;
@@ -58,8 +57,8 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 
 	private boolean logToSystemOut(SOAPMessageContext smc) {
 		try {
-			return MessageLoggingHandlerUtils.logToSystemOut(smc, GpContext.TIPO_SERVIZIO_NDP, 010702, log);
-		} catch (UtilsException e) {
+			return MessageLoggingHandlerUtils.handleMessage(smc, GpContext.TIPO_SERVIZIO_NDP, 010702, log);
+		} catch (Exception e) {
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 			return true;
 		}

@@ -42,16 +42,31 @@
 			<scope>provided</scope>
 		</dependency>
 
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.jboss.spec.javax.xml.ws</groupId> -->
+<!-- 			<artifactId>jboss-jaxws-api_2.2_spec</artifactId> -->
+<!-- 			<scope>provided</scope> -->
+<!-- 		</dependency> -->
+
 		<dependency>
-			<groupId>org.jboss.spec.javax.xml.ws</groupId>
-			<artifactId>jboss-jaxws-api_2.2_spec</artifactId>
-			<scope>provided</scope>
+		    <groupId>javax.xml.ws</groupId>
+		    <artifactId>jaxws-api</artifactId>
+		    <version>2.2.1</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        </dependency>
+        
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-context</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-api</artifactId>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -80,6 +95,12 @@
 							<directory>src/main/resources/spring-timers</directory>
 							<filtering>true</filtering>
 							<include>applicationContext-timers.xml</include>
+							<targetPath>WEB-INF</targetPath>							
+						</webResource>
+						<webResource>
+							<directory>src/main/resources/spring-jaxws</directory>
+							<filtering>true</filtering>
+							<include>applicationContext-jaxws.xml</include>
 							<targetPath>WEB-INF</targetPath>							
 						</webResource>
 					</webResources>
