@@ -54,6 +54,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
@@ -99,6 +100,7 @@ public class Rendicontazioni extends BasicBD {
 		try {
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizione");
 			DominiBD dominiBD = new DominiBD(this);
+			Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
 
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
@@ -121,11 +123,11 @@ public class Rendicontazioni extends BasicBD {
 
 					for(Dominio dominio : lstDomini) { 
 						log.debug("Acquisizione dei flussi di rendicontazione per il dominio [" + dominio.getCodDominio() + "] in corso.");
-						flussiDaAcquisire.addAll(this.chiediListaFr(stazione, dominio));
+						flussiDaAcquisire.addAll(this.chiediListaFr(stazione, dominio, giornale));
 					}
 				} else {
 					log.debug("Acquisizione dei flussi di rendicontazione per la stazione [" + stazione.getCodStazione() + "] in corso.");
-					flussiDaAcquisire.addAll(this.chiediListaFr(stazione, null));
+					flussiDaAcquisire.addAll(this.chiediListaFr(stazione, null, giornale));
 				}
 
 				this.setupConnection(ctx.getTransactionId());
@@ -157,7 +159,7 @@ public class Rendicontazioni extends BasicBD {
 						NodoChiediFlussoRendicontazioneRisposta risposta;
 						
 						try {
-							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, this);
+							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale, this);
 							risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
 							chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.OK);
 						} catch (Exception e) {
@@ -551,7 +553,7 @@ public class Rendicontazioni extends BasicBD {
 		return false;
 	}
 
-	private List<TipoIdRendicontazione> chiediListaFr(Stazione stazione, Dominio dominio) throws UtilsException{ 
+	private List<TipoIdRendicontazione> chiediListaFr(Stazione stazione, Dominio dominio, Giornale giornale) throws UtilsException{ 
 		List<TipoIdRendicontazione> flussiDaAcquisire = new ArrayList<>();
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -570,7 +572,7 @@ public class Rendicontazioni extends BasicBD {
 			NodoChiediElencoFlussiRendicontazioneRisposta risposta;
 			try {
 				Intermediario intermediario = stazione.getIntermediario(this);
-				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, this);
+				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, giornale, this);
 				risposta = chiediFlussoRendicontazioniClient.nodoChiediElencoFlussiRendicontazione(richiesta, stazione.getIntermediario(this).getDenominazione());
 				chiediFlussoRendicontazioniClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (Exception e) {
@@ -625,8 +627,19 @@ public class Rendicontazioni extends BasicBD {
 			return flussiDaAcquisire;
 		}  finally {
 			if(chiediFlussoRendicontazioniClient != null && chiediFlussoRendicontazioniClient.getEventoCtx().isRegistraEvento()) {
-				GiornaleEventi giornaleEventi = new GiornaleEventi(this);
-				giornaleEventi.registraEvento(chiediFlussoRendicontazioniClient.getEventoCtx().toEventoDTO());
+				try {
+					this.setupConnection(ctx.getTransactionId());
+					GiornaleEventi giornaleEventi = new GiornaleEventi(this);
+					giornaleEventi.registraEvento(chiediFlussoRendicontazioniClient.getEventoCtx().toEventoDTO());
+				}catch (ServiceException e) {
+					log.error("Errore durante l'acquisizione dei flussi di rendicontazione", e);
+				}finally {
+					try {
+						if(!this.isClosed())
+							this.closeConnection();
+					} catch (ServiceException e) {
+					}
+				}
 			}
 		}
 

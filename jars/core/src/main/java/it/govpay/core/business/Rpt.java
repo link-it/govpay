@@ -20,6 +20,7 @@ import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
@@ -79,6 +80,7 @@ public class Rpt extends BasicBD{
 			ctx.getApplicationLogger().log("pagamento.avviaTransazioneCarrelloWISP20");
 
 			Stazione stazione = null;
+			Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
 
 			for(Versamento versamentoModel : versamenti) {
 
@@ -257,7 +259,7 @@ public class Rpt extends BasicBD{
 				String operationId = appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
-				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, this);
+				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale, this);
 				risposta = RptUtils.inviaCarrelloRPT(clientInviaCarrelloRPT, intermediario, stazione, rpts, operationId, this);
 				this.setupConnection(ContextThreadLocal.get().getTransactionId());
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
@@ -335,7 +337,7 @@ public class Rpt extends BasicBD{
 					try {
 						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
-						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, this);
+						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale, this);
 						chiediStatoRptClient.getEventoCtx().setIdRpt(rpts.get(0).getId());
 						chiediStatoRptClient.getEventoCtx().setIdVersamento(rpts.get(0).getIdVersamento());
 						chiediStatoRptClient.getEventoCtx().setIdPagamentoPortale(rpts.get(0).getIdPagamentoPortale());
@@ -403,7 +405,7 @@ public class Rpt extends BasicBD{
 						clientInviaCarrelloRPT.getEventoCtx().setIdRpt(rpt.getId());
 						clientInviaCarrelloRPT.getEventoCtx().setIdVersamento(rpt.getIdVersamento());
 						clientInviaCarrelloRPT.getEventoCtx().setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-						RptUtils.popolaEventoCooperazione(clientInviaCarrelloRPT, rpt,  this);
+						RptUtils.popolaEventoCooperazione(clientInviaCarrelloRPT, rpt, intermediario, stazione); 
 
 						if(!clientInviaCarrelloRPT.getEventoCtx().getEsito().equals(Esito.OK) && clientInviaCarrelloRPT.getEventoCtx().getDescrizioneEsito() == null) {
 							clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(rpt.getDescrizioneStato());

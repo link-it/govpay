@@ -28,9 +28,13 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
@@ -67,6 +71,9 @@ public class InviaNotificaThread implements Runnable {
 	private Applicazione applicazione = null;
 	private Connettore connettoreNotifica = null;
 	private IContext ctx = null;
+	private Giornale giornale = null;
+	private String rptKey = null;
+	private List<Pagamento> pagamenti  = null;
 
 	public InviaNotificaThread(Notifica notifica, BasicBD bd, IContext ctx) throws ServiceException {
 		// Verifico che tutti i campi siano valorizzati
@@ -77,13 +84,14 @@ public class InviaNotificaThread implements Runnable {
 		this.rpt = this.notifica.getRpt(bd);
 		this.applicazione = this.notifica.getApplicazione(bd);
 		this.connettoreNotifica = this.applicazione.getConnettoreIntegrazione();
-		List<Pagamento> pagamenti = this.rpt.getPagamenti(bd);
+		this.pagamenti = this.rpt.getPagamenti(bd);
 		if(pagamenti != null) {
 			for(Pagamento pagamento : pagamenti)
 				pagamento.getSingoloVersamento(bd);
 		}
 		this.ctx = ctx;
-		
+		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.rptKey = this.notifica.getRptKey(bd);
 	}
 
 	@Override
@@ -92,6 +100,7 @@ public class InviaNotificaThread implements Runnable {
 		
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		BasicBD bd = null;
 		TipoNotifica tipoNotifica = this.notifica.getTipo();
 		NotificaClient client = null;
@@ -105,8 +114,8 @@ public class InviaNotificaThread implements Runnable {
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", rpt.getCodCarrello()));
 			} 
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.notifica.getRpt(null).getIuv()));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", this.notifica.getRpt(null).getCcp()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.rpt.getIuv()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", this.rpt.getCcp()));
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoNotifica", tipoNotifica.name().toLowerCase()));
 			
 			switch (tipoNotifica) {
@@ -123,13 +132,11 @@ public class InviaNotificaThread implements Runnable {
 				ctx.getApplicationLogger().log("notifica.rt");
 				break;
 			}
-			
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			
-			log.info("Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.notifica.getRptKey(bd) +"] all'applicazione [CodApplicazione: " + this.notifica.getApplicazione(null).getCodApplicazione() + "]");
+			 
+			log.info("Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.rptKey +"] all'applicazione [CodApplicazione: " + this.applicazione.getCodApplicazione() + "]");
 			if(connettoreNotifica == null || connettoreNotifica.getUrl() == null) {
-				
-				
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+
 				ctx.getApplicationLogger().log("notifica.annullata");
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
 				NotificheBD notificheBD = new NotificheBD(bd);
@@ -158,14 +165,14 @@ public class InviaNotificaThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("notifica.spedizione");
 			
-			client = new NotificaClient(applicazione, operationId, bd);
+			client = new NotificaClient(this.applicazione, operationId, this.giornale, bd);
 			
 			Controparte controparte = new Controparte();
 			controparte.setErogatore(this.applicazione.getCodApplicazione());
 			controparte.setFruitore(Evento.COMPONENTE_COOPERAZIONE);
 			client.getEventoCtx().setControparte(controparte);
 			
-			client.invoke(this.notifica,bd);
+			client.invoke(this.notifica, this.rpt, this.applicazione, this.versamento, this.pagamenti, bd);
 			
 			this.notifica.setStato(StatoSpedizione.SPEDITO);
 			this.notifica.setDescrizioneStato(null);

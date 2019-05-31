@@ -245,6 +245,7 @@ public class BasicBD {
 			}
 			this.isClosed = false;
 		}
+		log.debug("DEBUG CONNESSIONI OPEN ["+getCaller()+"]");
 	}
 
 	
@@ -665,6 +666,7 @@ public class BasicBD {
 		} catch (Throwable e) {
 			log.error("Errore durante la chiusura della connessione.", e);
 		}
+		log.debug("DEBUG CONNESSIONI CLOSE ["+getCaller()+"]");
 	}
 	
 	public void commit() throws ServiceException{

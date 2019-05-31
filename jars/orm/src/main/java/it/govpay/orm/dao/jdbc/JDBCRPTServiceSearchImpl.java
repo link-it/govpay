@@ -821,7 +821,9 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-
+		if((id!=null && id.getId()!=null && id.getId()>0))
+			return id.getId();
+		
 		// Object _rpt
 		sqlQueryObjectGet.addFromTable(this.getRPTFieldConverter().toTable(RPT.model()));
 		sqlQueryObjectGet.addSelectField("id");

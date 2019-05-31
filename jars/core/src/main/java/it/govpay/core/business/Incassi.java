@@ -59,6 +59,7 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
+import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
@@ -333,14 +334,10 @@ public class Incassi extends BasicBD {
 								
 								Evento eventoNota = new Evento();
 								eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
+								eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
 								eventoNota.setIdVersamento(versamento.getId());
 								eventoNota.setEsitoEvento(EsitoEvento.OK);
-								DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
-								dettaglioRichiesta.setPrincipal(null);
-								dettaglioRichiesta.setUtente(null);
-								dettaglioRichiesta.setDataOraRichiesta(new Date());
-								dettaglioRichiesta.setPayload("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
-								eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
+								eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
 								eventoNota.setTipoEvento("Pagamento eseguito senza RPT");
 								giornaleEventi.registraEvento(eventoNota);
 							} catch (MultipleResultException e) {

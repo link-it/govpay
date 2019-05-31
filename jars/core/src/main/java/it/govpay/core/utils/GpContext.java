@@ -1,6 +1,7 @@
 package it.govpay.core.utils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -228,7 +229,7 @@ public class GpContext extends ApplicationContext {
 		return this._setupNodoClient(codStazione, codDominio, NodoInviaAvvisoDigitaleService.SERVICE.getLocalPart(), azione.toString(), 1);
 	}
 
-	private String _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
+	private synchronized String _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
 //		Actor to = new Actor();
 //		to.setName(NodoDeiPagamentiSPC);
 //		to.setType(TIPO_SOGGETTO_NDP);
@@ -241,7 +242,7 @@ public class GpContext extends ApplicationContext {
 		
 		// TODO Capire come indicare gli actor per i vari server.
 
-		this.setInfoFruizione(TIPO_SERVIZIO_NDP, servizio, azione, versione);
+		// this.setInfoFruizione(TIPO_SERVIZIO_NDP, servizio, azione, versione);
 
 		HttpServer server = new HttpServer();
 		server.setName(NodoDeiPagamentiSPC);
@@ -251,7 +252,7 @@ public class GpContext extends ApplicationContext {
 		return server.getIdOperation();
 	}
 
-	public String setupPaClient(String codApplicazione, String azione, String url, Versione versione) {
+	public synchronized String setupPaClient(String codApplicazione, String azione, String url, Versione versione) {
 //		Actor to = new Actor();
 //		to.setName(codApplicazione);
 //		to.setType(TIPO_SOGGETTO_APP);
@@ -264,7 +265,7 @@ public class GpContext extends ApplicationContext {
 		
 		// TODO Capire come indicare gli actor per i vari server.
 
-		this.setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, "", azione, versione.getVersione());
+		// this.setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, "", azione, versione.getVersione());
 
 		HttpServer server = new HttpServer();
 		server.setName(codApplicazione);
@@ -275,7 +276,7 @@ public class GpContext extends ApplicationContext {
 		return server.getIdOperation();
 	}
 
-	private void setInfoFruizione(String tipoServizio, String servizio, String operazione, int version) {
+//	private void setInfoFruizione(String tipoServizio, String servizio, String operazione, int version) {
 //		Service service = new Service();
 //		service.setName(servizio);
 //		service.setVersion(version);
@@ -289,7 +290,7 @@ public class GpContext extends ApplicationContext {
 		
 		// TODO Capire come indicare il tipo di servizio fruito dai vari server.
 		
-	}
+//	}
 
 	public ApplicationTransaction getTransaction() {
 		return (ApplicationTransaction) super.getTransaction(); 
@@ -351,8 +352,9 @@ public class GpContext extends ApplicationContext {
 		return this.eventoCtx;
 	}
 
-	public BaseServer getServerByOperationId(String operationID) {
-		for (BaseServer baseServer : this.getTransaction().getServers()) {
+	public synchronized BaseServer getServerByOperationId(String operationID) {
+		List<BaseServer> servers = this.getTransaction().getServers();
+		for (BaseServer baseServer : servers) {
 			if(operationID.equals(baseServer.getIdOperation())) {
 				return baseServer;
 			}

@@ -47,6 +47,8 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Notifica;
@@ -125,35 +127,35 @@ public class RptUtils {
 			return text;
 	}
 
-	public static it.govpay.core.business.model.Risposta inviaRPT(NodoClient client, Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
-		if(bd != null) bd.closeConnection();
-		it.govpay.core.business.model.Risposta risposta = null;
-		try {
-			NodoInviaRPT inviaRPT = new NodoInviaRPT();
-			inviaRPT.setIdentificativoCanale(rpt.getCodCanale());
-			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCodIntermediarioPsp());
-			inviaRPT.setIdentificativoPSP(rpt.getCodPsp());
-			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
-			inviaRPT.setRpt(rpt.getXmlRpt());
-
-			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
-			inviaRPT.setTipoFirma("");
-			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
-			return risposta;
-		} finally {
-			// Se mi chiama InviaRptThread, BD e' null
-			boolean newCon = bd == null;
-			if(!newCon) 
-				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-			else {
-				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			}
-			popolaEventoCooperazione(client, rpt, bd);
-		}
-	}
+//	public static it.govpay.core.business.model.Risposta inviaRPT(NodoClient client, Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
+//		if(bd != null) bd.closeConnection();
+//		it.govpay.core.business.model.Risposta risposta = null;
+//		try {
+//			NodoInviaRPT inviaRPT = new NodoInviaRPT();
+//			inviaRPT.setIdentificativoCanale(rpt.getCodCanale());
+//			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCodIntermediarioPsp());
+//			inviaRPT.setIdentificativoPSP(rpt.getCodPsp());
+//			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
+//			inviaRPT.setRpt(rpt.getXmlRpt());
+//
+//			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
+//			inviaRPT.setTipoFirma("");
+//			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
+//			return risposta;
+//		} finally {
+//			// Se mi chiama InviaRptThread, BD e' null
+//			boolean newCon = bd == null;
+//			if(!newCon) 
+//				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+//			else {
+//				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+//			}
+//			popolaEventoCooperazione(client, rpt, rpt.getIntermediario(bd), rpt.getStazione(bd));
+//		}
+//	}
 
 	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(NodoClient client, Intermediario intermediario, Stazione stazione, List<Rpt> rpts, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
-		if(bd != null) bd.closeConnection();
+//		if(bd != null) bd.closeConnection();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
 			//			NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, bd);
@@ -177,23 +179,23 @@ public class RptUtils {
 			return risposta;
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
-			boolean newCon = bd == null;
-			if(!newCon) 
-				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-			else {
-				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			}
+//			boolean newCon = bd == null;
+//			if(!newCon) 
+//				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+//			else {
+//				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+//			}
 		}
 	}
 
-	public static void popolaEventoCooperazione(NodoClient client, Rpt rpt, BasicBD bd) throws ServiceException {
+	public static void popolaEventoCooperazione(NodoClient client, Rpt rpt, Intermediario intermediario, Stazione stazione) throws ServiceException {
 
 		Controparte controparte = new Controparte();
 		controparte.setCodCanale(rpt.getCodCanale());
 		controparte.setCodPsp(rpt.getCodPsp());
-		controparte.setCodStazione(rpt.getStazione(bd).getCodStazione());
+		controparte.setCodStazione(stazione.getCodStazione());
 		controparte.setErogatore(Evento.NDP);
-		controparte.setFruitore(rpt.getIntermediario(bd).getDenominazione());
+		controparte.setFruitore(intermediario.getDenominazione());
 		controparte.setTipoVersamento(rpt.getTipoVersamento());
 		client.getEventoCtx().setControparte(controparte);
 	}
@@ -224,6 +226,7 @@ public class RptUtils {
 			StatoRpt stato_originale = rpt.getStato();
 			IContext ctx = ContextThreadLocal.get();
 			GpContext appContext = (GpContext) ctx.getApplicationContext();
+			Giornale giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
 			switch (stato_originale) {
 			case RPT_RIFIUTATA_NODO:
 			case RPT_RIFIUTATA_PSP:
@@ -284,7 +287,7 @@ public class RptUtils {
 						richiesta.setPassword(rpt.getStazione(bd).getPassword());
 						richiesta.setIdentificativoUnivocoVersamento(rpt.getIuv());
 						richiesta.setCodiceContestoPagamento(rpt.getCcp());
-						chiediStatoRptClient = new NodoClient(intermediario, null, bd);
+						chiediStatoRptClient = new NodoClient(intermediario, null, giornale, bd);
 						chiediStatoRptClient.getEventoCtx().setIdRpt(rpt.getId());
 						chiediStatoRptClient.getEventoCtx().setIdVersamento(rpt.getIdVersamento());
 						chiediStatoRptClient.getEventoCtx().setIdPagamentoPortale(rpt.getIdPagamentoPortale());
@@ -349,7 +352,7 @@ public class RptUtils {
 									nodoChiediCopiaRT.setPassword(rpt.getStazione(bd).getPassword());
 									nodoChiediCopiaRT.setIdentificativoUnivocoVersamento(rpt.getIuv());
 									nodoChiediCopiaRT.setCodiceContestoPagamento(rpt.getCcp());
-									chiediCopiaRTClient = new NodoClient(intermediario, null, bd);
+									chiediCopiaRTClient = new NodoClient(intermediario, null, giornale, bd);
 									chiediCopiaRTClient.setOperationId(operationId);
 									chiediCopiaRTClient.getEventoCtx().setIdRpt(rpt.getId());
 									chiediCopiaRTClient.getEventoCtx().setIdVersamento(rpt.getIdVersamento());

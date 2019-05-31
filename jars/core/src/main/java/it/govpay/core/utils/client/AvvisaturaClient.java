@@ -19,7 +19,7 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtRisposta;
 import gov.telematici.pagamenti.ws.avvisi_digitali.ObjectFactory;
 import gov.telematici.pagamenti.ws.ppthead.richiesta_avvisi.IntestazionePPT;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.Controparte;
@@ -48,7 +48,7 @@ public class AvvisaturaClient extends BasicClient {
 	private Stazione stazione = null;
 	private Versamento versamento = null;
 
-	public AvvisaturaClient(Versamento versamento, Intermediario intermediario, Stazione stazione, String operationID, BasicBD bd) throws ClientException, ServiceException {
+	public AvvisaturaClient(Versamento versamento, Intermediario intermediario, Stazione stazione, Giornale giornale, String operationID, BasicBD bd) throws ClientException, ServiceException {
 		super(intermediario, TipoOperazioneNodo.AVVISATURA);
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
@@ -56,7 +56,7 @@ public class AvvisaturaClient extends BasicClient {
 		this.isAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
 		this.operationID = operationID;
 		this.componente = Componente.API_PAGOPA;
-		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.setGiornale(giornale);
 		this.stazione = stazione;
 		this.intermediario = intermediario;
 		this.versamento = versamento;

@@ -44,9 +44,11 @@ import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPT;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.TipoRPTPendente;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
@@ -95,6 +97,7 @@ public class Pagamento extends BasicBD {
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
 			DominiBD dominiBD = new DominiBD(this);
+			Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
 
 			for(Stazione stazione : lstStazioni) {
 
@@ -121,7 +124,7 @@ public class Pagamento extends BasicBD {
 				Calendar inizioFinestra = (Calendar) fineFinestra.clone();
 				inizioFinestra.add(Calendar.DATE, -finestra);
 
-				Map<String, String> statiRptPendenti = this.acquisisciPendenti(intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
+				Map<String, String> statiRptPendenti = this.acquisisciPendenti(giornale,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
 
 				log.info("Identificate sul NodoSPC " + statiRptPendenti.size() + " RPT pendenti");
 				ctx.getApplicationLogger().log("pendenti.listaPendentiOk", stazione.getCodStazione(), statiRptPendenti.size() + "");
@@ -226,8 +229,9 @@ public class Pagamento extends BasicBD {
 	 * @param a
 	 * @return
 	 * @throws UtilsException 
+	 * @throws ServiceException 
 	 */
-	private Map<String, String> acquisisciPendenti(Intermediario intermediario, Stazione stazione, List<Dominio> lstDomini, boolean perDominio, Calendar da, Calendar a, long soglia) throws UtilsException {
+	private Map<String, String> acquisisciPendenti(Giornale giornale, Intermediario intermediario, Stazione stazione, List<Dominio> lstDomini, boolean perDominio, Calendar da, Calendar a, long soglia) throws UtilsException, ServiceException {
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		Map<String, String> statiRptPendenti = new HashMap<>();
@@ -259,7 +263,8 @@ public class Pagamento extends BasicBD {
 			try {
 				try {
 					appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediListaPendentiRPT);
-					chiediListaPendentiClient = new NodoClient(intermediario, null, this);
+					chiediListaPendentiClient = new NodoClient(intermediario, null, giornale, this);
+					this.closeConnection();
 					risposta = chiediListaPendentiClient.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
 					chiediListaPendentiClient.getEventoCtx().setEsito(Esito.OK);
 				} catch (Exception e) {
@@ -276,8 +281,9 @@ public class Pagamento extends BasicBD {
 						ctx.getApplicationLogger().log("pendenti.listaPendentiFail", stazione.getCodStazione(), e.getMessage());
 						break;
 					}
-					
-				}  
+				} finally {
+					this.setupConnection(ctx.getTransactionId()); 
+				}
 
 				if(risposta != null) {
 					if(risposta.getFault() != null) {
@@ -323,9 +329,9 @@ public class Pagamento extends BasicBD {
 							Calendar mezzo = (Calendar) a.clone();
 							mezzo.add(Calendar.DATE, -finestra);
 							log.debug("Lista pendenti con troppi elementi. Ricalcolo la finestra: (dal " + dateFormat.format(da.getTime()) + " a " + dateFormat.format(a.getTime()) + ")");
-							statiRptPendenti.putAll(this.acquisisciPendenti(intermediario, stazione, lstDomini, false, da, mezzo, soglia));
+							statiRptPendenti.putAll(this.acquisisciPendenti(giornale, intermediario, stazione, lstDomini, false, da, mezzo, soglia));
 							mezzo.add(Calendar.DATE, 1);
-							statiRptPendenti.putAll(this.acquisisciPendenti(intermediario, stazione, lstDomini, false, mezzo, a, soglia));
+							statiRptPendenti.putAll(this.acquisisciPendenti(giornale, intermediario, stazione, lstDomini, false, mezzo, a, soglia));
 							return statiRptPendenti;
 						} else {
 							if(perDominio) {
@@ -334,7 +340,7 @@ public class Pagamento extends BasicBD {
 							} else {
 								ctx.getApplicationLogger().log("pendenti.listaPendentiDailyPiena", stazione.getCodStazione(), dateFormat.format(a.getTime()));
 								log.debug("Lista pendenti con troppi elementi, scalo a dominio.");
-								return this.acquisisciPendenti(intermediario, stazione, lstDomini, true, da, a, soglia);
+								return this.acquisisciPendenti(giornale, intermediario, stazione, lstDomini, true, da, a, soglia);
 							}
 						}
 					}
@@ -365,6 +371,7 @@ public class Pagamento extends BasicBD {
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<>(); 
 		Rpt rpt = null;
+		Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
 		try {
 			RptBD rptBD = new RptBD(this);
 			rpt = rptBD.getRpt(dto.getCodDominio(), dto.getIuv(), dto.getCcp());
@@ -429,7 +436,7 @@ public class Pagamento extends BasicBD {
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
 			ctx.getApplicationLogger().log("rr.invioRr");
 
-			nodoInviaRRClient = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(this), operationId, this);
+			nodoInviaRRClient = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(this), operationId, giornale, this);
 			nodoInviaRRClient.getEventoCtx().setIdRpt(rpt.getId());
 			nodoInviaRRClient.getEventoCtx().setIdVersamento(rpt.getIdVersamento());
 			nodoInviaRRClient.getEventoCtx().setIdPagamentoPortale(rpt.getIdPagamentoPortale());

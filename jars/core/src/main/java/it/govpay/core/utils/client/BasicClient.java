@@ -150,7 +150,7 @@ public abstract class BasicClient {
 	protected String operationID;
 	protected String serverID;
 	protected Componente componente;
-	protected Giornale giornale;
+	private Giornale giornale;
 	protected EventoContext eventoCtx;
 
 	protected IntegrationContext integrationCtx;
@@ -309,9 +309,7 @@ public abstract class BasicClient {
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
 			ServerInfoResponse serverInfoResponse = new ServerInfoResponse();
 			
-
 			// Creazione Connessione
-			
 			HttpURLConnection connection = null;
 			byte[] msg = null;
 			IContext ctx = ContextThreadLocal.get();
@@ -463,7 +461,9 @@ public abstract class BasicClient {
 		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
 			boolean logEvento = false;
 			boolean dumpEvento = false;
-			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(this.componente, this.giornale);
+			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(this.componente, this.getGiornale());
+			
+			log.debug("Log Evento Client: ["+this.componente +"] Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
 
 			if(configurazioneInterfaccia != null) {
 				if(GiornaleEventi.isRequestLettura(httpMethod)) {
@@ -744,6 +744,14 @@ public abstract class BasicClient {
 
 	public EventoContext getEventoCtx() {
 		return eventoCtx;
+	}
+
+	public Giornale getGiornale() {
+		return giornale;
+	}
+
+	public void setGiornale(Giornale giornale) {
+		this.giornale = giornale;
 	}
 
 }

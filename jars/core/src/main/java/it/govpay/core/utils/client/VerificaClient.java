@@ -68,7 +68,7 @@ public class VerificaClient extends BasicClient {
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.codApplicazione = applicazione.getCodApplicazione();
 		this.componente = Componente.API_ENTE;
-		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.setGiornale(AnagraficaManager.getConfigurazione(bd).getGiornale());
 		this.getEventoCtx().setComponente(this.componente); 
 	}
 

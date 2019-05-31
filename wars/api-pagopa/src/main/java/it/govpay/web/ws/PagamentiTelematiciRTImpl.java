@@ -319,7 +319,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			idVersamentoLong = rpt.getVersamento(bd).getId();
 			idPagamentoPortaleLong = rpt.getIdPagamentoPortale();
 			idRptLong = rpt.getId();
-			log.debug("IDRPT: " + idRptLong); 
 			
 			appContext.getEventoCtx().setIdVersamento(idVersamentoLong);
 			appContext.getEventoCtx().setIdPagamentoPortale(idPagamentoPortaleLong);

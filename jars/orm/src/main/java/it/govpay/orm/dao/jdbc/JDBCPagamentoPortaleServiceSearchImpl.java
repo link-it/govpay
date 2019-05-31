@@ -710,6 +710,9 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+		
+		if((id!=null && id.getId()!=null && id.getId()>0))
+			return id.getId();
 
 		// Object _pagamentoPortale
 		sqlQueryObjectGet.addFromTable(this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model()));

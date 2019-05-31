@@ -30,7 +30,9 @@ import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.pagamento.EventiBD;
+import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.utils.EventoContext.Esito;
 
 public class GiornaleEventi extends BasicBD {
 	
@@ -89,6 +91,32 @@ public class GiornaleEventi extends BasicBD {
 			return true;
 		case SOLO_ERRORE:
 			return responseCode > 399;
+		}
+		
+		return false;
+	}
+	
+	public static boolean dumpEvento(GdeEvento evento, EventoContext.Esito esito) {
+		switch (evento.getDump()) {
+		case MAI:
+			return false;
+		case SEMPRE:
+			return true;
+		case SOLO_ERRORE:
+			return !esito.equals(Esito.OK);
+		}
+		
+		return false;
+	}
+	
+	public static boolean logEvento(GdeEvento evento,  EventoContext.Esito esito) {
+		switch (evento.getLog()) {
+		case MAI:
+			return false;
+		case SEMPRE:
+			return true;
+		case SOLO_ERRORE:
+			return !esito.equals(Esito.OK);
 		}
 		
 		return false;

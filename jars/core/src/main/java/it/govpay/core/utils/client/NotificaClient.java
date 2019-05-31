@@ -38,10 +38,13 @@ import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versamento;
+import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.EventoContext.Componente;
@@ -54,13 +57,13 @@ public class NotificaClient extends BasicClient {
 	private static Logger log = LoggerWrapperFactory.getLogger(NotificaClient.class);
 	private Versione versione;
 
-	public NotificaClient(Applicazione applicazione, String operationID, BasicBD bd) throws ClientException, ServiceException {
+	public NotificaClient(Applicazione applicazione, String operationID, Giornale giornale, BasicBD bd) throws ClientException, ServiceException {
 		super(applicazione, TipoConnettore.NOTIFICA);
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.operationID = operationID;
 		
 		this.componente = Componente.API_ENTE;
-		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.setGiornale(giornale);
 		this.getEventoCtx().setComponente(this.componente); 
 	}
 
@@ -82,8 +85,7 @@ public class NotificaClient extends BasicClient {
 	 * @throws NdpException 
 	 * @throws UtilsException 
 	 */
-	public byte[] invoke(Notifica notifica, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException {
-		Rpt rpt = notifica.getRpt(bd); 
+	public byte[] invoke(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
@@ -99,7 +101,7 @@ public class NotificaClient extends BasicClient {
 		StringBuilder sb = new StringBuilder();
 		Map<String, String> queryParams = new HashMap<>();
 		HttpRequestMethod httpMethod = HttpRequestMethod.POST;
-		String swaggerOperationID = this.getSwaggerOperationId(notifica, bd);
+		String swaggerOperationID = this.getSwaggerOperationId(notifica, rpt, bd);
 
 		switch (notifica.getTipo()) {
 		case ANNULLAMENTO:
@@ -139,12 +141,12 @@ public class NotificaClient extends BasicClient {
 			sb.append(key).append("=").append(queryParams.get(key));
 		}
 		
-		jsonBody = this.getMessaggioRichiesta(notifica, bd);
+		jsonBody = this.getMessaggioRichiesta(notifica, rpt, applicazione, versamento, pagamenti, bd);
 
 		return this.sendJson(sb.toString(), jsonBody, headerProperties, httpMethod, swaggerOperationID);
 	}
 
-	public String getSwaggerOperationId(Notifica notifica, BasicBD bd) {
+	public String getSwaggerOperationId(Notifica notifica, Rpt rpt, BasicBD bd) {
 		String swaggerOperationID = "";
 		
 		switch (notifica.getTipo()) {
@@ -162,20 +164,19 @@ public class NotificaClient extends BasicClient {
 		return swaggerOperationID;
 	}
 	
-	private String getMessaggioRichiesta(Notifica notifica, BasicBD bd) throws ServiceException, JAXBException, SAXException {
-		Rpt rpt = notifica.getRpt(bd);
+	private String getMessaggioRichiesta(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException, JAXBException, SAXException {
 		String jsonBody = "";
 		
 		switch (notifica.getTipo()) {
 		case ANNULLAMENTO:
 		case FALLIMENTO:
-			it.govpay.ec.v1.beans.NotificaAnnullamento notificaCancellazioneRsModel = new NotificaConverter().toNotificaCancellazioneRsModel(notifica, rpt, bd);
+			it.govpay.ec.v1.beans.NotificaAnnullamento notificaCancellazioneRsModel = new NotificaConverter().toNotificaCancellazioneRsModel(notifica, rpt);
 			jsonBody = ConverterUtils.toJSON(notificaCancellazioneRsModel, null);
 
 			break;
 		case ATTIVAZIONE:
 		case RICEVUTA:
-			it.govpay.ec.v1.beans.Notifica notificaRsModel = new NotificaConverter().toRsModel(notifica, rpt, bd);
+			it.govpay.ec.v1.beans.Notifica notificaRsModel = new NotificaConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti, bd);
 			jsonBody = ConverterUtils.toJSON(notificaRsModel, null);
 			break;
 		}

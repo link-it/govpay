@@ -12,7 +12,9 @@ import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtAvvisoDigitale;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtEsitoAvvisatura;
@@ -22,6 +24,8 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitale;
 import gov.telematici.pagamenti.ws.avvisi_digitali.CtNodoInviaAvvisoDigitaleRisposta;
 import gov.telematici.pagamenti.ws.avvisi_digitali.StEsitoOperazione;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
 import it.govpay.bd.model.Evento;
@@ -51,6 +55,7 @@ public class InviaAvvisaturaThread implements Runnable {
 	private String idTransazione = null;
 	private Dominio dominio = null;
 	private IContext ctx = null;
+	private Giornale giornale = null;
 
 	public InviaAvvisaturaThread(Versamento versamento, String idTransazione, BasicBD bd, IContext ctx) throws ServiceException {
 		this.idTransazione = idTransazione;
@@ -73,6 +78,7 @@ public class InviaAvvisaturaThread implements Runnable {
 			throw new ServiceException(e);
 		}
 		this.ctx = ctx;
+		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
 	}
 
 	@Override
@@ -80,25 +86,22 @@ public class InviaAvvisaturaThread implements Runnable {
 		ContextThreadLocal.set(this.ctx);
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		BasicBD bd = null;
 		VersamentiBD versamentiBD = null;
 		AvvisaturaClient client = null;
 		try {
-			bd = BasicBD.newInstance(this.idTransazione);
-			versamentiBD = new VersamentiBD(bd);
-
 			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.avviso.getIdentificativoDominio(), Azione.nodoInviaAvvisoDigitale);
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.avviso.getIdentificativoDominio()));
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codAvviso", this.avviso.getCodiceAvviso()));
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoOperazione", this.avviso.getTipoOperazione().name()));
 
 			ctx.getApplicationLogger().log("versamento.avvisaturaDigitale");
-
 			ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleSpedizione");
 
 			log.info("Spedizione Avvisatura al Nodo [Dominio: " + this.avviso.getIdentificativoDominio() + ", NumeroAvviso: "+this.avviso.getCodiceAvviso()+", TipoAvvisatura: "+this.avviso.getTipoOperazione()+"]");
 
-			client = new AvvisaturaClient(this.versamento, this.intermediario, this.stazione, operationId,bd);
+			client = new AvvisaturaClient(this.versamento, this.intermediario, this.stazione, this.giornale, operationId, bd);
 			
 			Controparte controparte = new Controparte();
 			controparte.setCodStazione(this.stazione.getCodStazione());
@@ -111,6 +114,9 @@ public class InviaAvvisaturaThread implements Runnable {
 			ctNodoInviaAvvisoDigitale.setPassword(this.stazione.getPassword()); 
 			
 			CtNodoInviaAvvisoDigitaleRisposta risposta = client.nodoInviaAvvisoDigitale(this.intermediario, this.stazione, ctNodoInviaAvvisoDigitale ); 
+			
+			bd = BasicBD.newInstance(this.idTransazione);
+			versamentiBD = new VersamentiBD(bd);
 			
 			if(risposta.getEsitoOperazione() == null || !risposta.getEsitoOperazione().equals(StEsitoOperazione.OK)) {
 				CtFaultBean fault = risposta.getFault();

@@ -55,6 +55,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Componente;
@@ -78,7 +79,7 @@ public class NodoClient extends BasicClient {
 	private String azione, dominio, stazione, errore, faultCode;
 	private BasicBD bd;
 	
-	public NodoClient(Intermediario intermediario, String operationID, BasicBD bd) throws ClientException, ServiceException {
+	public NodoClient(Intermediario intermediario, String operationID, Giornale giornale, BasicBD bd) throws ClientException, ServiceException {
 		super(intermediario, TipoOperazioneNodo.NODO);
 		this.bd = bd;
 		if(objectFactory == null || log == null ){
@@ -87,7 +88,7 @@ public class NodoClient extends BasicClient {
 		this.isAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
 		this.operationID = operationID;
 		this.componente = Componente.API_PAGOPA;
-		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.setGiornale(giornale);
 		
 		this.getEventoCtx().setComponente(this.componente); 
 	}
