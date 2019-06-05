@@ -13,8 +13,8 @@
 		<unzip src="${file}" dest="${file}.tmp" />
 		<foreach target="filler" param="file">
 			<fileset dir="${file}.tmp">
-			  <include name="*.yaml" />
-			  <include name="*.html" />
+			  <include name="**/*.yaml" />
+			  <include name="**/*.html" />
 			</fileset>
 		</foreach>
 		<delete file="${file}" />

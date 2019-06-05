@@ -1,6 +1,6 @@
 VERSION=3.1.0-SNAPSHOT
 
-mvn -f ../../../../pom.xml -Denv=installer_template clean install
+#mvn -f ../../../../pom.xml -Denv=installer_template clean package 
 
 # Directory
 COPYING_FILE=../../../../COPYING
