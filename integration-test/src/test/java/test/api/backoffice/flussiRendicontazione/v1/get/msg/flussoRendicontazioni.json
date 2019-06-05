@@ -1,0 +1,17 @@
+{
+  "idFlusso": "#notnull",
+  "dataFlusso": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+  "trn": "#notnull",
+  "dataRegolamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+  "idPsp": "#string",
+  "ragioneSocialePsp": "#string",
+  "bicRiversamento": "##string",
+  "idDominio": "#string",
+  "ragioneSocialeDominio": "#string",
+  "numeroPagamenti": "#number",
+  "importoTotale":"#? isImportoConDueDecimali(_)",
+  "stato" : "#notnull",
+  "segnalazioni": "##[]",
+  "rendicontazioni": "#[] rendicontazioneSchema"
+}
+

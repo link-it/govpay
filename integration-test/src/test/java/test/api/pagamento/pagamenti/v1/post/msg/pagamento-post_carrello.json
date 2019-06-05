@@ -1,0 +1,43 @@
+{
+    "pendenze": [
+		{
+			"idA2A": '#(idA2A)',
+			"idPendenza": '#(idPendenza1)'
+		},
+		{
+			"idDominio": '#(idDominio)',
+			"numeroAvviso": '#(numeroAvviso)'
+		},
+		{
+			"idA2A": "#(idA2A)",
+			"idPendenza": '#(idPendenza2)',		
+			"idDominio": "#(idDominio)",
+		 	"causale": '#("Pagamento spontaneo n." + idPendenza2)',
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "RSSMRA30A01H501I",
+				"anagrafica": "Mario Rossi",
+				"email": "mario.rossi@email.agid.gov.it",
+				"cellulare": "+39 000-0000000"
+			},
+			"importo": 115.99,
+			"tassonomiaAvviso": "Servizi erogati dal comune",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 99.99,
+					"descrizione": "Diritti e segreteria",
+					"codEntrata": "SEGRETERIA"
+				},
+				{
+					"idVocePendenza": "2",
+					"importo": 16.00,
+					"descrizione": "Marca da bollo",
+					"tipoBollo": "Imposta di bollo",
+					"hashDocumento": "a/CWqtFtCEyA/ymBySahGSaqKMiak5mlX3BoX0jupy8=",
+					"provinciaResidenza": "RO"
+				}
+			]
+		}
+	]
+}

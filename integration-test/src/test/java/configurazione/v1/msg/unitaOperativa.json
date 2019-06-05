@@ -1,0 +1,16 @@
+{
+  "ragioneSociale": "Ufficio uno",
+  "indirizzo": "Borgo stretto",
+  "civico": "55bis",
+  "cap": 99999,
+  "localita": "Milano",
+  "provincia": "Roma",
+  "nazione": "IT",
+  "email": "peo@creditore.it",
+  "pec": "pec@creditore.it",
+  "tel": "021234567890",
+  "fax": "021234567890",
+  "web": "http://www.comune.it/",
+  "area": "Affari generali e istituzionali",
+  "abilitato": true
+}

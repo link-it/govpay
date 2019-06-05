@@ -1,0 +1,25 @@
+{
+ 	"causale": '#("Pagamento dovuto n." + idPendenza)',
+	"soggettoPagatore": {
+		"tipo": "F",
+		"identificativo": "RSSMRA30A01H501I",
+		"anagrafica": "Mario Rossi",
+		"email": "mario.rossi@testmail.it",
+		"cellulare": "+39 000-0000000"
+	},
+	"importo": 16.00,
+	"dataValidita": "2900-12-31",
+	"dataScadenza": "2999-12-31",
+	"tassonomiaAvviso": "Servizi erogati dal comune",
+	"idDominio": '#(idDominio)',
+	"voci": [
+		{
+			"idVocePendenza": "1",
+			"importo": 16.00,
+			"descrizione": "Marca da bollo",
+			"tipoBollo": "01",
+			"hashDocumento": "a/CWqtFtCEyA/ymBySahGSaqKMiak5mlX3BoX0jupy8=",
+			"provinciaResidenza": "RO"
+		}
+	]
+}

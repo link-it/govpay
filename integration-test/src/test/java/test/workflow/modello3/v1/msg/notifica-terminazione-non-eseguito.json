@@ -1,0 +1,129 @@
+{
+   "idA2A":"#(idA2A)",
+   "idPendenza":"#(idPendenza + '')",
+   "rpt":{
+      "versioneOggetto":"6.2.0",
+      "dominio":{
+         "identificativoDominio": "#(idDominio)",
+         "identificativoStazioneRichiedente":"#(idStazione)"
+      },
+      "identificativoMessaggioRichiesta":"#notnull",
+      "dataOraMessaggioRichiesta":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
+      "autenticazioneSoggetto":"#notnull",
+      "soggettoVersante": "#ignore",
+      "soggettoPagatore":{
+         "identificativoUnivocoPagatore":{
+            "tipoIdentificativoUnivoco":"#(pendenzaPut.soggettoPagatore.tipo)",
+            "codiceIdentificativoUnivoco":"#(pendenzaPut.soggettoPagatore.identificativo)"
+         },
+         "anagraficaPagatore":"#(pendenzaPut.soggettoPagatore.anagrafica)",
+         "indirizzoPagatore":"#(pendenzaPut.soggettoPagatore.indirizzo)",
+         "civicoPagatore":"#(pendenzaPut.soggettoPagatore.civico)",
+         "capPagatore":"#(pendenzaPut.soggettoPagatore.cap)",
+         "localitaPagatore":"#(pendenzaPut.soggettoPagatore.localita)",
+         "provinciaPagatore":"#(pendenzaPut.soggettoPagatore.provincia)",
+         "nazionePagatore":"#(pendenzaPut.soggettoPagatore.nazione)",
+         "e-mailPagatore":"#(pendenzaPut.soggettoPagatore.email)"
+      },
+      "enteBeneficiario":{
+         "identificativoUnivocoBeneficiario":{
+            "tipoIdentificativoUnivoco":"G",
+            "codiceIdentificativoUnivoco":"#(idDominio)"
+         },
+         "denominazioneBeneficiario":"#(dominio.ragioneSociale)",
+         "codiceUnitOperBeneficiario":"#ignore",
+         "denomUnitOperBeneficiario":"#ignore",
+         "indirizzoBeneficiario":"#(dominio.indirizzo)",
+         "civicoBeneficiario":"#(dominio.civico)",
+         "capBeneficiario":"#(dominio.cap)",
+         "localitaBeneficiario":"#(dominio.localita)",
+         "provinciaBeneficiario":"#(dominio.provincia)",
+         "nazioneBeneficiario":"#(dominio.nazione)"
+      },
+      "datiVersamento":{
+         "dataEsecuzionePagamento":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "importoTotaleDaVersare":"#(pendenzaPut.importo + '')",
+         "tipoVersamento":"#notnull",
+         "identificativoUnivocoVersamento":"#(iuv)",
+         "codiceContestoPagamento":"#(ccp + '')",
+         "ibanAddebito":"#ignore",
+         "bicAddebito":"#ignore",
+         "firmaRicevuta":"0",
+         "datiSingoloVersamento":[
+            {
+               "importoSingoloVersamento":"#(pendenzaPut.voci[0].importo + '')",
+               "commissioneCaricoPA":null,
+               "ibanAccredito":"#(ibanAccredito)",
+               "bicAccredito":"#(bicAccredito)",
+               "ibanAppoggio":"#(ibanAccreditoPostale)",
+               "bicAppoggio":"#(bicAccreditoPostale)",
+               "credenzialiPagatore": "#ignore",
+               "causaleVersamento":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
+               "datiSpecificiRiscossione":"9/SEGRETERIA",
+               "datiMarcaBolloDigitale":null
+            }
+         ]
+      }
+   },
+   "rt": {
+	   "versioneOggetto":"6.2.0",
+	   "dominio":{
+	      "identificativoDominio":"#(idDominio)",
+	      "identificativoStazioneRichiedente":"#(idStazione)"
+	   },
+	   "identificativoMessaggioRicevuta":"#notnull",
+	   "dataOraMessaggioRicevuta":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
+	   "riferimentoMessaggioRichiesta":"#notnull",
+	   "riferimentoDataRichiesta":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
+	   "istitutoAttestante":"#ignore",
+	   "enteBeneficiario":{
+	      "identificativoUnivocoBeneficiario":{
+	         "tipoIdentificativoUnivoco":"G",
+	         "codiceIdentificativoUnivoco":"#(idDominio)"
+	      },
+	      "denominazioneBeneficiario":"#(dominio.ragioneSociale)",
+	      "codiceUnitOperBeneficiario":"#ignore",
+	      "denomUnitOperBeneficiario":"#ignore",
+	      "indirizzoBeneficiario":"#(dominio.indirizzo)",
+	      "civicoBeneficiario":"#(dominio.civico)",
+	      "capBeneficiario":"#(dominio.cap)",
+	      "localitaBeneficiario":"#(dominio.localita)",
+	      "provinciaBeneficiario":"#(dominio.provincia)",
+	      "nazioneBeneficiario":"#(dominio.nazione)"
+ 	   },
+       "soggettoVersante": "#ignore",
+       "soggettoPagatore":{
+          "identificativoUnivocoPagatore":{
+             "tipoIdentificativoUnivoco":"#(pendenzaPut.soggettoPagatore.tipo)",
+             "codiceIdentificativoUnivoco":"#(pendenzaPut.soggettoPagatore.identificativo)"
+          },
+          "anagraficaPagatore":"#(pendenzaPut.soggettoPagatore.anagrafica)",
+          "indirizzoPagatore":"#(pendenzaPut.soggettoPagatore.indirizzo)",
+          "civicoPagatore":"#(pendenzaPut.soggettoPagatore.civico)",
+          "capPagatore":"#(pendenzaPut.soggettoPagatore.cap)",
+          "localitaPagatore":"#(pendenzaPut.soggettoPagatore.localita)",
+          "provinciaPagatore":"#(pendenzaPut.soggettoPagatore.provincia)",
+          "nazionePagatore":"#(pendenzaPut.soggettoPagatore.nazione)",
+          "e-mailPagatore":"#(pendenzaPut.soggettoPagatore.email)"
+       },
+	   "datiPagamento":{
+	      "codiceEsitoPagamento":"1",
+	      "importoTotalePagato":"0.00",
+	      "identificativoUnivocoVersamento":"#(iuv)",
+	      "CodiceContestoPagamento":"#(ccp + '')",
+	      "datiSingoloPagamento":[
+	         {
+	            "singoloImportoPagato":"0.00",
+	            "esitoSingoloPagamento":"#ignore",
+	            "dataEsitoSingoloPagamento":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
+	            "identificativoUnivocoRiscossione":"n/a",
+	            "causaleVersamento":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
+	            "datiSpecificiRiscossione":"9/SEGRETERIA",
+	            "commissioniApplicatePSP":null,
+	            "allegatoRicevuta":null
+	         }
+	      ]
+	   }
+	},
+	"riscossioni":null
+}

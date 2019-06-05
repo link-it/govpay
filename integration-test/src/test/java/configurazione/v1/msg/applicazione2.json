@@ -1,0 +1,52 @@
+{
+	"principal": '#(idA2A2)',
+	"codificaAvvisi": {
+		"codificaIuv": "65",
+		"regExpIuv": "65[0-9]*",
+		"generazioneIuvInterna": false
+	},
+	"domini": [
+		'*'
+	],
+	"tipiPendenza": [
+		'*'
+	],
+	"apiPagamenti": true,
+	"apiPendenze": true,
+	"apiRagioneria": true,
+	"acl": [
+		{
+			"servizio": "Pagamenti",
+			"autorizzazioni": [
+				"R",
+				"W"
+			]
+		},
+		{
+			"servizio": "Pendenze",
+			"autorizzazioni": [
+				"R",
+				"W"
+			]
+		},
+		{
+			"servizio": "Rendicontazioni e Incassi",
+			"autorizzazioni": [
+				"R",
+				"W"
+			]
+		},
+		{
+			"servizio": "Giornale degli Eventi",
+			"autorizzazioni": [
+				"R",
+				"W"
+			]
+		}
+	],
+	"servizioIntegrazione": {
+		"url": '#(ente_api_url + "/v1")',
+		"versioneApi": "REST v1"
+	},
+	"abilitato": true
+}
