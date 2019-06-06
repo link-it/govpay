@@ -1,0 +1,18 @@
+<div class="col-12" [formGroup]="fGroup">
+  <input type="text" formControlName="tracciato_ctrl" hidden>
+  <input #iBrowse type="file" hidden>
+  <div class="d-block action link-key-value-fill" (click)="_select()">
+    <p *ngIf="!doc.file">Seleziona tracciato...</p>
+    <div *ngIf="doc.file" class="d-flex align-items-center">
+      <p class="w-100 m-0 pr-3">{{doc.filename}}</p>
+      <button mat-icon-button type="button" (click)="_resetSelection($event)"><mat-icon>delete</mat-icon></button>
+    </div>
+  </div>
+</div>
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_externalConverters.length > 1">
+  <mat-select #contabilita placeholder="Tipo tracciato" formControlName="conversione_ctrl"
+              [(value)]="_methodSelected" (selectionChange)="_onChangeConversion()"
+              [compareWith]="_comparingFct" required>
+    <mat-option *ngFor="let item of _externalConverters" [value]="item">{{item.name}}</mat-option>
+  </mat-select>
+</mat-form-field>

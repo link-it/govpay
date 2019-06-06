@@ -1,0 +1,18 @@
+<mat-card class="no-shadow container-fluid p-0">
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <mat-select #servizio [placeholder]="_RISORSA" formControlName="servizio_ctrl"
+                  (selectionChange)="_onChangeServizio(servizio, 'autorizzazioni_ctrl')" required>
+        <mat-option *ngFor="let servizio of servizi" [value]="servizio">{{us.mapACL(servizio)}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <mat-select [placeholder]="_OPERAZIONI" formControlName="autorizzazioni_ctrl"
+                  (selectionChange)="_onChangeDiritti(servizio, 'autorizzazioni_ctrl')" multiple required>
+        <mat-option *ngFor="let item of autorizzazioni" [value]="item.code" [disabled]="item.disabled">{{item.label}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-card>

@@ -2,21 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
-	<artifactId>govpay</artifactId>
-	<version>2.4.4</version>
+	<artifactId>bom</artifactId>
+	<version>3.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
 	<modules>
-		<module>govpay-orm-beans</module>
-		<module>govpay-orm</module>
-		<module>govpay-core-beans</module>
-		<module>govpay-stampe</module>
-		<module>govpay-core</module>
-		<module>govpay-ejb</module>
-		<module>govpay-web</module>
-		<module>govpay-ear</module>
-		<module>govpay-web-console</module>
+		<module>jars</module>
+		<module>wars</module>
+		<module>ear</module>
 	</modules>
 
 	<profiles>
@@ -34,41 +28,108 @@
 	</profiles>
 
 	<properties>
-		<javaVersion>1.6</javaVersion>
+		<javaVersion>1.8</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openspcoop2.version>2.3.8</openspcoop2.version>
 		<rel-to-parent>.</rel-to-parent>
+		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
+		
+		<!-- op2 -->
+		<openspcoop2.version>3.1.0-SNAPSHOT</openspcoop2.version>
+		
+		<!-- log -->
+		<slf4j.version>1.7.21</slf4j.version>
+		<logger.version>2.6.2</logger.version>
+		
+		<!-- swagger -->
+		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-1-SNAPSHOT</swagger-codegen-maven-plugin.version>
+		<swagger.version>1.5.21</swagger.version>
+		<swagger.v3.version>2.0.3</swagger.v3.version>
+		<swagger.parser.version>2.0.2</swagger.parser.version>
+		<swagger.parser.v3.version>2.0.2</swagger.parser.v3.version>
+		
+		<!-- cxf -->
+		<cxf.version>3.2.5</cxf.version>
+		<cxf-api.version>2.7.11</cxf-api.version>
+		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
+		
+		<!-- jackson -->
+		<jackson.version>2.9.6</jackson.version>
+		
+		<!-- Spring -->
+		<spring.version>5.0.8.RELEASE</spring.version>
+		
+		<!-- Spring Security -->
+		<spring.security.version>5.0.7.RELEASE</spring.security.version>
+		
+		<!-- Spring Security Ldap plugin -->
+		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
+		
+		<!-- joda time -->
+		<joda-time.version>2.10</joda-time.version>
+
+		<!-- Commons -->
+		<commons-jcs-core.version>2.2</commons-jcs-core.version>
+		<commons.csv.version>1.5</commons.csv.version>
+		<commons.codec.version>1.11</commons.codec.version>
+		<commons.io.version>2.6</commons.io.version>
+		<commons.lang.version>2.6</commons.lang.version>
+		<commons.pool2.version>2.6.0</commons.pool2.version>
+		
+		<!-- soap -->
+		<soap.version>2.3.1</soap.version>
+		
+		<!-- xmlsec -->
+		<xmlsec.version>2.1.2</xmlsec.version>
+		
+		<!-- freemarker -->
+		<freemarker.version>2.3.23</freemarker.version>
+		
+		<!-- http client -->
+		<httpclient.version>4.5.6</httpclient.version>
+		
+		<!-- concurrent -->
+		<concurrent.version>1.3.4</concurrent.version>
+		
+		<!-- jsch -->
+		<jsch.version>0.1.54</jsch.version>
+		
+		<!-- fge_json-schema-validator -->
+		<fge_json-schema-validator.version>2.2.6</fge_json-schema-validator.version>
+		
+		<!-- networknt_json-schema-validator -->
+		<networknt_json-schema-validator.version>0.1.21</networknt_json-schema-validator.version>
+		
+		<!-- org.json -->
+		<org.json.json.version>20180813</org.json.json.version>
+		
+		<!-- xercesImpl -->
+		<xercesImpl.version>2.12.0</xercesImpl.version>
+		
+		<!-- mime-util -->
+		<mime-util.version>2.1.1</mime-util.version>
+		
+		<!-- xml-security-impl -->
+		<xml-security-impl.version>1.0</xml-security-impl.version>
+		
+		<!-- servlet api -->
+		<javax.servlet.api3.version>3.1.0</javax.servlet.api3.version>
+		
+		<!-- webjars- swagger ui api -->
+		<webjars-swaggerui.version>3.20.3</webjars-swaggerui.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-api</artifactId>
-				<version>2.3</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-core</artifactId>
-				<version>2.3</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-1.2-api</artifactId>
-				<version>2.3</version>
-			</dependency>
 
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
-				<version>1.10</version>
+				<version>${commons.codec.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-core-beans</artifactId>
+				<artifactId>core-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -76,7 +137,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-core</artifactId>
+				<artifactId>api-commons</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -84,7 +145,15 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-ear</artifactId>
+				<artifactId>core</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>ear</artifactId>
 				<version>${project.version}</version>
 				<type>ear</type>
 				<scope>compile</scope>
@@ -92,16 +161,15 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-web</artifactId>
+				<artifactId>api-pagopa</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
 
-
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-ejb</artifactId>
+				<artifactId>orm-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -109,7 +177,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-orm-beans</artifactId>
+				<artifactId>orm</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -117,7 +185,7 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-orm</artifactId>
+				<artifactId>stampe</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
@@ -125,65 +193,315 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-stampe</artifactId>
+				<artifactId>web-connector</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>client-api-ente</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
 
 			<dependency>
-				<groupId>org.apache.cxf.xjc-utils</groupId>
-				<artifactId>cxf-xjc-runtime</artifactId>
-				<version>2.7.0</version>
+				<groupId>it.govpay</groupId>
+				<artifactId>api-pagamento</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>api-pendenze</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>api-gestione</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>pagopa-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>api-ragioneria</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>api-backoffice</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>web-console</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>fonts-TitilliumWeb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>${logger.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>${logger.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-jcl</artifactId>
+				<version>${logger.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-slf4j-impl</artifactId>
+				<version>${logger.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-1.2-api</artifactId>
+				<version>${logger.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.4</version>
+				<version>${commons.io.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
-				<version>2.6</version>
+				<version>${commons.lang.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-pool2</artifactId>
-				<version>2.4.2</version>
+				<version>${commons.pool2.version}</version>
 			</dependency>
 
+			<!-- dipendenze openspcoop -->
 			<dependency>
 				<groupId>org.openspcoop2</groupId>
 				<artifactId>openspcoop2_generic-project</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
+			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache sql jdbc datasource xml id logger transport csv sonde rest openapi xml2json date resources jmx mime jaxrs io service -->
 			<dependency>
-				<groupId>org.openspcoop2</groupId>
-				<artifactId>openspcoop2_utils</artifactId>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-core</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.apache.jcs</groupId>
-				<artifactId>jcs</artifactId>
-				<version>1.3</version>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-beans</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-json</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-serialization</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-jaxb</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-cache</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-sql</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-jdbc</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-datasource</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-xml</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-id</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-logger</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-transport</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-csv</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-sonde</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-rest</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-openapi</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-xml2json</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-date</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-resources</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-jmx</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-mime</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-jaxrs</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-io</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-service</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-certificate</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${httpclient.version}</version>
+			</dependency>
+
+			<dependency>
+			    <groupId>org.apache.commons</groupId>
+			    <artifactId>commons-jcs-core</artifactId>
+			    <version>${commons-jcs-core.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>concurrent</groupId>
 				<artifactId>concurrent</artifactId>
-				<version>1.3.4</version>
-			</dependency>
-
-			<dependency>
-				<groupId>net.sf.json-lib</groupId>
-				<artifactId>json-lib</artifactId>
-				<version>2.4</version>
-				<classifier>jdk15</classifier>
+				<version>${concurrent.version}</version>
 			</dependency>
 
 			<dependency>
@@ -193,26 +511,313 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			
+			<dependency>
+			    <groupId>com.github.fge</groupId>
+			    <artifactId>json-schema-validator</artifactId>
+			   <version>${fge_json-schema-validator.version}</version>
+			</dependency>
 
+			<dependency>
+			    <groupId>javax.servlet</groupId>
+			    <artifactId>javax.servlet-api</artifactId>
+			    <version>${javax.servlet.api3.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.networknt</groupId>
+				<artifactId>json-schema-validator</artifactId>
+				<version>${networknt_json-schema-validator.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>${org.json.json.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>${xercesImpl.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>eu.medsea.mimeutil</groupId>
+				<artifactId>mime-util</artifactId>
+				<version>${mime-util.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.xml.security</groupId>
+				<artifactId>xml-security-impl</artifactId>
+				<version>${xml-security-impl.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.freemarker</groupId>
+				<artifactId>freemarker</artifactId>
+				<version>${freemarker.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-csv</artifactId>
+				<version>${commons.csv.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>soap</groupId>
+				<artifactId>soap</artifactId>
+				<version>${soap.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.santuario</groupId>
+				<artifactId>xmlsec</artifactId>
+				<version>${xmlsec.version}</version>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+			<dependency>
+				<groupId>com.jcraft</groupId>
+				<artifactId>jsch</artifactId>
+				<version>${jsch.version}</version>
+			</dependency>
+
+			<!-- REST LIB -->
+			<dependency>
+			    <groupId>io.swagger.core.v3</groupId>
+			    <artifactId>swagger-models</artifactId>
+			    <version>${swagger.v3.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.swagger.core.v3</groupId>
+				<artifactId>swagger-core</artifactId>
+				<version>${swagger.v3.version}</version>
+			</dependency>
+
+			<dependency>
+			    <groupId>io.swagger.parser.v3</groupId>
+			    <artifactId>swagger-parser</artifactId>
+			    <version>${swagger.parser.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>io.swagger.parser.v3</groupId>
+				<artifactId>swagger-parser-core</artifactId>
+				<version>${swagger.parser.v3.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.swagger.parser.v3</groupId>
+				<artifactId>swagger-parser-v3</artifactId>
+				<version>${swagger.parser.v3.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>io.swagger.codegen.v3</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>${swagger-codegen-maven-plugin.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-annotations</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-jaxrs</artifactId>
+				<version>${swagger.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-rs-service-description</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+
+			<!-- CXF -->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-api</artifactId>
+				<version>${cxf-api.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.cxf.xjc-utils</groupId>
+				<artifactId>cxf-xjc-runtime</artifactId>
+				<version>${cxf.xjc.runtime.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-rs-client</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+
+			<dependency>
+	            <groupId>org.apache.cxf</groupId>
+	            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+	            <version>${cxf.version}</version>
+	        </dependency>
+
+			<dependency>
+	            <groupId>org.apache.cxf</groupId>
+	            <artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+	            <version>${cxf.version}</version>
+			</dependency>
+
+            <dependency>
+	            <groupId>org.apache.cxf</groupId>
+	            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+	            <version>${cxf.version}</version>
+            </dependency>
+            
+            <dependency>
+	            <groupId>org.apache.cxf</groupId>
+	            <artifactId>cxf-rt-ws-policy</artifactId>
+	            <version>${cxf.version}</version>
+            </dependency>
+
+			<dependency>
+	            <groupId>org.apache.cxf</groupId>
+	            <artifactId>cxf-rt-wsdl</artifactId>
+	            <version>${cxf.version}</version>
+            </dependency>
+
+			<!-- Jackson -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-jaxb-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				<artifactId>jackson-jaxrs-json-provider</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				<artifactId>jackson-jaxrs-xml-provider</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-joda</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			
+			<!-- Spring -->
+            <dependency>
+            	<groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            
+            <!-- Spring Security -->
+            <dependency>
+            	<groupId>org.springframework.security</groupId>
+            	<artifactId>spring-security-web</artifactId>
+            	<version>${spring.security.version}</version>
+            </dependency>
+            
+            <dependency>
+            	<groupId>org.springframework.security</groupId>
+            	<artifactId>spring-security-core</artifactId>
+            	<version>${spring.security.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+      	    	<version>${spring.security.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-ldap</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+            
+            <!-- Spring Security Ldap Plugin -->
+        	<dependency>
+    	        <groupId>org.springframework.ldap</groupId>
+	            <artifactId>spring-ldap-core</artifactId>
+           		<version>${spring.ldap.version}</version>
+        	</dependency>
+
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>${joda-time.version}</version>
+			</dependency>
+			
+			<!-- webjar-swagger ui -->
+			<dependency>
+				<groupId>org.webjars</groupId>
+				<artifactId>swagger-ui</artifactId>
+				<version>${webjars-swaggerui.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
-		<filters>
-			<filter>${rel-to-parent}/resources/filters/${env}.filter.properties</filter>
-		</filters>
-		<resources>
-			<resource>
-				<directory>resources/setup/</directory>
-			</resource>
-		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>${filter-file}</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -239,5 +844,32 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<repositories>
+		<repository>
+            <id>linkit-releases</id>
+            <url>https://maven.link.it/content/repositories/public/</url>
+        </repository>
+        <repository>
+            <id>linkit-snapshot</id>
+            <url>https://maven.link.it/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>linkit-thirdparty</id>
+            <url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
+        </repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+            <id>linkit-releases</id>
+            <url>https://maven.link.it/content/repositories/public/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>linkit-snapshot</id>
+            <url>https://maven.link.it/content/repositories/snapshots/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>linkit-thirdparty</id>
+            <url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
+        </pluginRepository>
+	</pluginRepositories>
 </project>

@@ -1,0 +1,42 @@
+<mat-card class="no-shadow container-fluid">
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <mat-select #tipo_entrata placeholder="Tipo entrata" formControlName="tipoEntrata_ctrl"
+                  (selectionChange)="_onChangeSelection(tipo_entrata)" [compareWith]="_tipoEntrataComparingFct" required>
+        <mat-option *ngFor="let item of tipiEntrata_items" [value]="item.jsonP">{{item.model.titolo.label}}</mat-option>
+        <mat-option>Nuova entrata...</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <mat-select #iban_acc placeholder="IBAN accredito" formControlName="ibanAccredito_ctrl" (selectionChange)="_onIbanChangeSelection(iban_acc, iban_app, true)" required>
+        <mat-option *ngFor="let item of ibanAccredito_items" [value]="item.jsonP['iban']">{{item.jsonP['iban']}}{{item.jsonP['postale']?' (Postale)':''}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <mat-select #iban_app placeholder="IBAN appoggio" formControlName="ibanAppoggio_ctrl" (selectionChange)="_onIbanChangeSelection(iban_acc, iban_app, false)">
+        <mat-option>Nessuno</mat-option>
+        <mat-option *ngFor="let item of ibanAppoggio_items" [value]="item.jsonP['iban']">{{item.jsonP['iban']}}{{item.jsonP['postale']?' (Postale)':''}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <mat-select [placeholder]="_phTc" formControlName="tipoContabilita_ctrl" (selectionChange)="_onChange(_phTc)">
+        <mat-option *ngFor="let item of contabilita_items" [value]="item.value">{{item.label}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <input matInput [placeholder]="_phCc" formControlName="codiceContabilita_ctrl"
+             (input)="_onChange(_phCc)" autocomplete="off">
+    </mat-form-field>
+  </div>
+  <div class="w-100" [formGroup]="fGroup">
+    <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
+  </div>
+</mat-card>

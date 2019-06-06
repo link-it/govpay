@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Questo WSDL rappresenta l'interfaccia esposta dal Nodo dei Pagamenti Telematici per avvisi pull . -->
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+                  xmlns:sac="http://ws.pagamenti.telematici.gov/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tns="http://PuntoAccessoPA.spcoop.gov.it/servizi/ChiediElencoAvvisiDigitali"
+                  targetNamespace="http://PuntoAccessoPA.spcoop.gov.it/servizi/ChiediElencoAvvisiDigitali">
+
+    <wsdl:types>
+        <xsd:schema version="2.1" targetNamespace="http://ws.pagamenti.telematici.gov/">
+			<xsd:annotation>
+				<xsd:appinfo xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
+					<jaxb:schemaBindings>
+						<jaxb:package name="gov.telematici.pagamenti.ws.chiedi_elenco_avvisi" />
+					</jaxb:schemaBindings>
+				</xsd:appinfo>
+			</xsd:annotation>
+
+            <xsd:element name="intestazionePPT" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="identificativoIntermediarioPA" type="sac:stText35"/>
+                        <xsd:element name="identificativoStazioneIntermediarioPA" type="sac:stText35"/>
+                        <xsd:element name="identificativoDominio" type="sac:stText35"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ctElencoAvvisiDigitali">
+                <xsd:sequence>
+                    <xsd:element name="avvisoDigitale" type="sac:ctAvvisoDigitale" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ctPaaChiediElencoAvvisiDigitali">
+                <xsd:sequence>
+                    <xsd:element name="identificativoPSP" type="sac:stText35"/>
+                    <xsd:element name="codiceFiscaleDebitore" type="sac:stText35"/>
+                    <xsd:element name="codiceServizio" type="sac:stCodiceServizio" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="periodoRiferimento" type="sac:ctPeriodoRiferimento" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ctPaaChiediElencoAvvisiDigitaliRisposta">
+                <xsd:complexContent>
+                    <xsd:extension base="sac:ctRisposta">
+                        <xsd:sequence>
+                            <xsd:element name="esitoOperazione" type="sac:stEsitoOperazione"/>
+                            <xsd:element name="elencoAvvisiDigitali" type="sac:ctElencoAvvisiDigitali"/>
+                        </xsd:sequence>
+                    </xsd:extension>
+                </xsd:complexContent>
+            </xsd:complexType>
+
+            <!-- Wrapper Elements -->
+            <xsd:element name="paaChiediElencoAvvisiDigitali" type="sac:ctPaaChiediElencoAvvisiDigitali" />
+            <xsd:element name="paaChiediElencoAvvisiDigitaliRisposta" type="sac:ctPaaChiediElencoAvvisiDigitaliRisposta"/>
+
+        </xsd:schema>
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Import manuale avvisi-digitali-1.0.xsd -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+		<xsd:schema attributeFormDefault="unqualified"
+		            elementFormDefault="qualified"
+		            version="1.0"
+		            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		            xmlns:sac="http://ws.pagamenti.telematici.gov/"
+		            targetNamespace="http://ws.pagamenti.telematici.gov/">
+		
+			<xsd:simpleType name="stTassonomiaAvviso">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:pattern value="[0-9]{2,2}" />
+					<xsd:enumeration value="00"/> <!--cartelle esattoriali -->
+		            <xsd:enumeration value="01"/> <!--diritti e concessioni -->
+		            <xsd:enumeration value="02"/> <!--imposte e tasse -->
+		            <xsd:enumeration value="03"/> <!--imu tasi e altre tasse comunali -->
+		            <xsd:enumeration value="04"/> <!--ingressi a mostre e musei -->
+		            <xsd:enumeration value="05"/> <!--multe e sanzioni amministrative -->
+		            <xsd:enumeration value="06"/> <!--previdenza e infortuni -->
+		            <xsd:enumeration value="07"/> <!--servizi erogati dal comune -->
+		            <xsd:enumeration value="08"/> <!--servizi erogati da altri enti -->
+		            <xsd:enumeration value="09"/> <!--servizi scolastici -->
+		            <xsd:enumeration value="10"/> <!--tassa automobilistica -->
+		            <xsd:enumeration value="11"/> <!--ticket e prestazioni sanitarie -->
+		            <xsd:enumeration value="12"/> <!--trasporti, mobilità e parcheggi -->
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <!-- AVVISI -->
+		    <xsd:complexType name="ctAvvisoDigitale">
+		        <xsd:sequence>
+		            <xsd:element name="identificativoDominio" type="sac:stText35"/>
+		            <xsd:element name="anagraficaBeneficiario" type="sac:stText35"/>
+		            <xsd:element name="identificativoMessaggioRichiesta" type="sac:stIdentificativoMessaggioRichiesta"/>
+		            <xsd:element name="tassonomiaAvviso" type="sac:stTassonomiaAvviso"/>
+		            <xsd:element name="codiceAvviso" type="sac:stCodiceAvviso"/>
+		            <xsd:element name="soggettoPagatore" type="sac:ctSoggettoPagatore"/>
+		            <xsd:element name="dataScadenzaPagamento" type="sac:stISODate"/>
+		            <xsd:element name="dataScadenzaAvviso" type="sac:stISODate"/>
+		            <xsd:element name="importoAvviso" type="sac:stImporto"/>
+		            <xsd:element name="eMailSoggetto" type="sac:stEMail" minOccurs="0" />
+		            <xsd:element name="cellulareSoggetto" type="sac:stCellulareSoggetto" minOccurs="0" />
+		            <xsd:element name="descrizionePagamento" type="sac:stText140"/>
+		            <xsd:element name="urlAvviso" type="sac:stText140" minOccurs="0"/>
+					<xsd:element name="datiSingoloVersamento" type="sac:ctDatiSingoloVersamento" maxOccurs="5"/>
+					<xsd:element name="tipoPagamento" type="sac:stTipoPagamento"/>
+					<xsd:element name="tipoOperazione" type="sac:stTipoOperazione"/>
+		        </xsd:sequence>
+		    </xsd:complexType>
+		
+		    <!-- Root Element -->
+		    <xsd:element name="listaAvvisiDigitali">
+		        <xsd:complexType>
+		            <xsd:sequence>
+		                <xsd:element name="versioneOggetto" type="sac:stText16" />
+		                <xsd:element name="avvisoDigitale" type="sac:ctAvvisoDigitale" minOccurs="1" maxOccurs="unbounded" />
+		            </xsd:sequence>
+		        </xsd:complexType>
+		    </xsd:element>
+		
+		    <!-- ESITI AVVISI -->
+		    <xsd:simpleType name="stCodiceEsito">
+		        <xsd:restriction base="xsd:integer">
+		            <xsd:minInclusive value="0" />
+		            <xsd:maxInclusive value="99999" />
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stTipoCanaleEsito">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:pattern value="[0-9]{1,1}" />
+		            <xsd:enumeration value="0"/><!-- nessun canale -->
+		            <xsd:enumeration value="1"/><!-- SMS -->
+		            <xsd:enumeration value="2"/><!-- e-mail -->
+		            <xsd:enumeration value="3"/><!-- mobile payment -->
+		            <xsd:enumeration value="4"/><!-- altro canale PSP -->
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:complexType name="ctEsitoAvvisatura">
+		        <xsd:sequence>
+		            <xsd:element name="tipoCanaleEsito" type="sac:stTipoCanaleEsito" />
+		            <xsd:element name="identificativoCanale" type="sac:stText35" minOccurs="0" />
+		            <xsd:element name="dataEsito" type="sac:stISODate" />
+		            <xsd:element name="codiceEsito" type="sac:stCodiceEsito" />
+		            <xsd:element name="descrizioneEsito" type="sac:stText140" minOccurs="0" />
+		        </xsd:sequence>
+		    </xsd:complexType>
+		
+		    <xsd:complexType name="ctEsitoAvvisoDigitale">
+		        <xsd:sequence>
+		            <xsd:element name="identificativoDominio" type="sac:stText35" />
+		            <xsd:element name="identificativoMessaggioRichiesta" type="sac:stIdentificativoMessaggioRichiesta" />
+		            <xsd:element name="esitoAvvisatura" type="sac:ctEsitoAvvisatura" minOccurs="0" maxOccurs="unbounded" />
+		        </xsd:sequence>
+		    </xsd:complexType>
+		
+		    <xsd:complexType name="listaEsitoAvvisiDigitali">
+		        <xsd:sequence>
+		            <xsd:element name="versioneOggetto" type="sac:stText16" />
+		            <xsd:element name="identificativoFlusso" type="sac:stIdentificativoFlusso" />
+		            <xsd:element name="esitoAvvisoDigitale" type="sac:ctEsitoAvvisoDigitale" minOccurs="1" maxOccurs="unbounded" />
+		        </xsd:sequence>
+		    </xsd:complexType>
+			
+			<xsd:complexType name="ctDatiSingoloVersamento">
+		        <xsd:sequence>
+		            <xsd:element name="ibanAccredito" type="sac:stIBANIdentifier" minOccurs="0"/>
+		            <xsd:element name="ibanAppoggio" type="sac:stIBANIdentifier" minOccurs="0"/>
+		        </xsd:sequence>
+		    </xsd:complexType>
+			
+				<xsd:simpleType name="stTipoOperazione">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:length value="1"/>
+		            <xsd:enumeration value="C"/><!-- Creazione di un nuovo avviso-->
+		            <xsd:enumeration value="U"/><!-- Modifica di un avviso esistente -->
+		            <xsd:enumeration value="D"/><!-- Cancellazione di un avviso esistente -->
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <!-- Root Element -->
+		    <xsd:element name="listaEsitoAvvisiDigitali" type="sac:listaEsitoAvvisiDigitali" />
+		</xsd:schema>
+		
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Import manuale sac-common-types-1.0.xsd -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        
+		<xsd:schema attributeFormDefault="unqualified"
+		            elementFormDefault="qualified"
+		            version="1.0"
+		            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		            xmlns="http://ws.pagamenti.telematici.gov/"
+		            targetNamespace="http://ws.pagamenti.telematici.gov/">
+		
+		    <xsd:simpleType name="stText16">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:minLength value="1"/>
+		            <xsd:maxLength value="16"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stText35">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:minLength value="1"/>
+		            <xsd:maxLength value="35"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stText70">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:minLength value="1"/>
+		            <xsd:maxLength value="70"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stText140">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:minLength value="1"/>
+		            <xsd:maxLength value="140"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stTipoIdentificativoUnivocoPersFG">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:length value="1"/>
+		            <xsd:enumeration value="F"/><!-- Persona Fisica -->
+		            <xsd:enumeration value="G"/><!-- Persona Giuridica -->
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stISODate">
+		        <xsd:restriction base="xsd:date"/>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stISODateTime">
+		        <xsd:restriction base="xsd:dateTime"/>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stTipoAzioneAggiornamento">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:length value="1"/>
+		            <xsd:enumeration value="A"/><!-- Attivazione -->
+		            <xsd:enumeration value="D"/><!-- Disattivazione -->
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stEsitoOperazione">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:length value="2"/>
+		            <xsd:enumeration value="OK"/>
+		            <xsd:enumeration value="KO"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stIdentificativoMessaggioRichiesta">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:minLength value="1"/>
+		            <xsd:maxLength value="20"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stImporto">
+		        <xsd:restriction base="xsd:decimal">
+		            <xsd:minInclusive value="0.01"/>
+		            <xsd:maxInclusive value="99999999.99"/>
+		            <xsd:fractionDigits value="2"/>
+		            <xsd:totalDigits value="12"/>
+		            <xsd:pattern value="\d+\.\d{2}" />
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stCellulareSoggetto">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:pattern value="\+[0-9]{2,2}\s[0-9]{3,3}\-[0-9]{7,7}"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stEMail">
+		        <xsd:restriction base="xsd:string">
+					<xsd:pattern value="[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)*"/>
+		            <xsd:maxLength value="256"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stIdentificativoFlusso">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:minLength value="1"/>
+		            <xsd:maxLength value="70"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:simpleType name="stCodiceAvviso">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:pattern value="[0-9]{18,18}"/>
+		        </xsd:restriction>
+		    </xsd:simpleType>
+		
+		    <xsd:complexType name="ctFaultBean">
+		        <xsd:sequence>
+		            <xsd:element name="faultCode" type="xsd:string"/>
+		            <xsd:element name="faultString" type="xsd:string"/>
+		            <xsd:element name="id" type="xsd:string"/>
+		            <xsd:element name="description" type="xsd:string" minOccurs="0"/>
+		            <xsd:element name="serial" type="xsd:int" minOccurs="0"/>
+		        </xsd:sequence>
+		    </xsd:complexType>
+		
+		    <xsd:complexType name="ctIdentificativoUnivocoPersonaFG">
+		        <xsd:sequence>
+		            <xsd:element name="tipoIdentificativoUnivoco" type="stTipoIdentificativoUnivocoPersFG" minOccurs="1">
+		                <xsd:annotation>
+		                    <xsd:documentation>Campo alfanumerico che indica la natura del
+		                        soggetto, può assumere i seguenti valori:
+		                    </xsd:documentation>
+		                    <xsd:documentation>F - Persona Fisica</xsd:documentation>
+		                    <xsd:documentation>G - Persona Giuridica</xsd:documentation>
+		                </xsd:annotation>
+		            </xsd:element>
+		            <xsd:element name="codiceIdentificativoUnivoco" type="stText35" minOccurs="1">
+		                <xsd:annotation>
+		                    <xsd:documentation>Campo alfanumerico che può contenere il codice
+		                        fiscale o, in alternativa, la partita IVA del soggetto.
+		                    </xsd:documentation>
+		                </xsd:annotation>
+		            </xsd:element>
+		        </xsd:sequence>
+		    </xsd:complexType>
+		
+		    <xsd:complexType name="ctSoggettoPagatore">
+		        <xsd:sequence>
+		            <xsd:element name="anagraficaPagatore" type="stText70" minOccurs="1">
+		                <xsd:annotation>
+		                    <xsd:documentation>Indica il nominativo o la ragione sociale del pagatore.</xsd:documentation>
+		                </xsd:annotation>
+		            </xsd:element>
+		            <xsd:element name="identificativoUnivocoPagatore" type="ctIdentificativoUnivocoPersonaFG" minOccurs="1">
+		                <xsd:annotation>
+		                    <xsd:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione fiscale
+		                        del pagatore.
+		                    </xsd:documentation>
+		                </xsd:annotation>
+		            </xsd:element>
+		        </xsd:sequence>
+		    </xsd:complexType>
+		
+		    <xsd:complexType name="ctRisposta">
+		        <xsd:sequence>
+		            <xsd:element name="fault" type="ctFaultBean" minOccurs="0"/>
+		        </xsd:sequence>
+		    </xsd:complexType>
+		
+		    <xsd:complexType name="ctPeriodoRiferimento">
+		        <xsd:sequence>
+		            <xsd:element name="annoDA" type="xsd:gYear"/>
+		            <xsd:element name="annoA" type="xsd:gYear"/>
+		        </xsd:sequence>
+		    </xsd:complexType>
+		
+		    <xsd:simpleType name="stCodiceServizio">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:pattern value="[0-9]{5,5}" />
+		        </xsd:restriction>
+		    </xsd:simpleType>
+			
+			<xsd:simpleType name="stIBANIdentifier">
+				<xsd:restriction base="xsd:string">
+					<xsd:pattern value="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+				<xsd:simpleType name="stTipoPagamento">
+		        <xsd:restriction base="xsd:string">
+		            <xsd:pattern value="[0-9]{1,1}" />
+		            <xsd:enumeration value="0"/><!-- Contestuale -->
+		            <xsd:enumeration value="1"/><!-- Non contestuale -->
+		        </xsd:restriction>
+		    </xsd:simpleType>
+			
+		</xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="paaChiediElencoAvvisiDigitali">
+        <wsdl:part name="bodyrichiesta" element="sac:paaChiediElencoAvvisiDigitali"/>
+    </wsdl:message>
+    <wsdl:message name="paaChiediElencoAvvisiDigitaliRisposta">
+        <wsdl:part name="bodyrisposta" element="sac:paaChiediElencoAvvisiDigitaliRisposta"/>
+    </wsdl:message>
+
+    <wsdl:portType name="ChiediElencoAvvisiDigitali">
+        <wsdl:operation name="paaChiediElencoAvvisiDigitali">
+            <wsdl:input message="tns:paaChiediElencoAvvisiDigitali"
+                        wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaChiediElencoAvvisiDigitali"/>
+            <wsdl:output message="tns:paaChiediElencoAvvisiDigitaliRisposta"
+                         wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaChiediElencoAvvisiDigitaliRisposta"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="ChiediElencoAvvisiDigitaliBinding" type="tns:ChiediElencoAvvisiDigitali">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="paaChiediElencoAvvisiDigitali">
+            <soap:operation soapAction="paaChiediElencoAvvisiDigitali"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="ChiediElencoAvvisiDigitaliService">
+        <wsdl:port name="PPTPort" binding="tns:ChiediElencoAvvisiDigitaliBinding">
+            <soap:address location="http://PuntoAccessoPA.spcoop.gov.it/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

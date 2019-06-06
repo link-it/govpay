@@ -1,0 +1,76 @@
+
+<project name="utils" basedir=".">
+	
+	<description>
+        	UTILS
+	</description>
+
+	<macrodef name="properties-filler">
+		<attribute name="template"/>
+		<sequential>
+		<copy file="@{template}" toFile="@{template}.new">
+        		<filterset>
+                		<filter token="GOVPAY_HOME" value="${antinstaller_work_folder_noendsep}"/>
+	                	<filter token="GOVPAY_LOG" value="${antinstaller_log_folder_noendsep}"/>
+        		        <filter token="GOVPAY_BATCH_EXPORT" value="${antinstaller_work_folder_noendsep}${file.separator}estrattoConto"/>
+	        	        <filter token="GOVPAY_BATCH_EXPORT_PDF" value="${antinstaller_work_folder_noendsep}${file.separator}estrattoConto"/>
+        	        	<filter token="GOVPAY_LOGO" value="${antinstaller_work_folder_noendsep}${file.separator}logo"/>
+	                	<filter token="GOVPAY_CONSOLE_LOGO" value="${antinstaller_work_folder_noendsep}${file.separator}logo"/>
+		                <filter token="GOVPAY_BATCH_LOGO" value="${antinstaller_work_folder_noendsep}${file.separator}logo"/>
+        		        <filter token="GOVPAY_URL_VERIFICA" value="${antinstaller_pddcheck}"/>
+                		<filter token="GOVPAY_TIPO_DATABASE" value="${antinstaller_tipo_database}"/>
+		                <filter token="GOVPAY_LOG_SHOWSQL" value="false"/>
+        		        <filter token="GOVPAY_DATASOURCE" value="govpay"/>
+                		<filter token="GOVPAY_JMX_AS" value="${antinstaller_as}"/>
+
+                                <filter token="GOVPAY_URL_VERIFICA" value="${protocollo}://${antinstaller_domain_name}:${antinstaller_domain_port}/openspcoop2/PD"/>
+                                <filter token="GOVPAY_API_URL" value="${protocollo}://${antinstaller_domain_name}:${antinstaller_domain_port}"/>
+                                <filter token="GOVPAY_WISP_URL" value="${protocollo}://${antinstaller_domain_name}:${antinstaller_domain_port}/govpay-ndpsym/wisp/"/>
+                                <filter token="GOVPAY_WC_URL" value="${protocollo}://${antinstaller_domain_name}:${antinstaller_domain_port}/govpay/frontend/web/connector/ecsp/v1/gw"/>
+                                <filter token="GOVPAY_AUTENTICAZIONE" value="${autenticazione}"/>
+
+
+                                <filter token="DS_NAME" value="${datasource_name}"/>
+                                <filter token="DATABASE" value="${antinstaller_dbname}"/>
+                                <filter token="INSTANCE" value="${antinstaller_dbname}"/>
+                                <filter token="HOST" value="${antinstaller_dbhost}"/>
+                                <filter token="PORT" value="${antinstaller_dbport}"/>
+                                <filter token="USERNAME" value="${antinstaller_dbusername}"/>
+                                <filter token="PASSWORD" value="${antinstaller_dbpassword}"/>
+                                <filter token="NOME_DRIVER_JDBC" value="${antinstaller_modulo_driver}"/>
+
+		        </filterset>
+		</copy>
+		<delete file="@{template}" />
+		<move file="@{template}.new" tofile="@{template}"/>
+		</sequential>
+	</macrodef>
+
+	<target name="filler">
+		<properties-filler template="${file}" />
+	</target>
+
+	<target name="replace_token">
+		<replace file="${file}" token="${token}" value="${value}"/>
+	</target>
+	
+	<target name="set_property">
+		<replace file="${file}" token="${token}=" value="#${token}="/>
+		<replace file="${file}" token="${token} =" value="#${token} ="/>
+		<if>
+			<not>
+				<equals arg1="${value}" arg2="@unset@" />
+			</not>
+			<then>
+				<concat destfile="${file}" append="yes" >
+${token}=${value}
+				</concat>
+			</then>
+		</if>
+	</target>
+	
+	<target name="dos2unix">
+		<fixcrlf srcdir="${dir}" includes="${file}" eol="lf" eof="remove" />
+	</target>
+	
+</project>

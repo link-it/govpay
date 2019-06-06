@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns:b="http://www.springframework.org/schema/beans"
+        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+        xmlns:cxf="http://cxf.apache.org/core"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+
+    <b:import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <b:import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+        
+	<!-- Parameter Converter -->
+    <b:bean id="parameterConverter" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider"/>
+
+	<!--  Object BodyReader -->
+    <b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader"/>
+
+    <!--  Jackson Provider for JSON/XML -->
+    <b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider"/>
+    <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider"/>
+    
+    <!-- FaultBean Exception Mapper -->
+    <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>
+    
+    <!-- Context -->
+	<b:bean id="contextConfigV1" class="it.govpay.rs.v1.service.context.ContextConfig">
+	</b:bean>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory"/>
+	<b:bean id="contextV1" class="org.openspcoop2.utils.service.context.ContextFeature">
+		<b:property name="contextFactory" >
+			<b:ref bean="customContextFactory"/>
+		</b:property>
+		<b:property name="contextConfig" >
+			<b:ref bean="contextConfigV1"/>
+		</b:property>
+	</b:bean>
+        
+   	<!-- JAX-RS Service Impl V1 -->
+
+   	<b:bean id="avvisiV1" class="it.govpay.pagamento.v1.Avvisi"/>
+   	<b:bean id="dominiV1" class="it.govpay.pagamento.v1.Domini"/>
+   	<b:bean id="pagamentiV1" class="it.govpay.pagamento.v1.Pagamenti"/>
+   	<b:bean id="pendenzeV1" class="it.govpay.pagamento.v1.Pendenze"/>
+   	<b:bean id="profiloV1" class="it.govpay.pagamento.v1.Profilo"/>
+   	<b:bean id="rppV1" class="it.govpay.pagamento.v1.Rpp"/>
+   	
+   	<!-- JAX-RS Configuration -->
+   
+   
+   <!-- Servizi V1 -->
+	<!-- BASIC_START -->
+    <jaxrs:server id="apiPagamentoV1Basic" address="/basic/v1/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="avvisiV1" />
+			   	<ref bean="dominiV1" />
+			   	<ref bean="pagamentiV1" />
+			   	<ref bean="pendenzeV1" />
+			   	<ref bean="profiloV1" />
+			   	<ref bean="rppV1" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- BASIC_END -->
+    
+    <!-- Servizi SSL V1 -->
+	<!-- SSL_START  -->
+    <jaxrs:server id="apiPagamentoV1SSL" address="/ssl/v1/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="avvisiV1" />
+			   	<ref bean="dominiV1" />
+			   	<ref bean="pagamentiV1" />
+			   	<ref bean="pendenzeV1" />
+			   	<ref bean="profiloV1" />
+			   	<ref bean="rppV1" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SSL_END -->
+    
+    <!-- Servizi SPID V1 -->
+	<!-- SPID_START  -->
+    <jaxrs:server id="apiPagamentoV1Spid" address="/spid/v1/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="avvisiV1" />
+			   	<ref bean="dominiV1" />
+			   	<ref bean="pagamentiV1" />
+			   	<ref bean="pendenzeV1" />
+			   	<ref bean="profiloV1" />
+			   	<ref bean="rppV1" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SPID_END -->
+    
+   <!-- Servizi Public V1 -->
+	<!-- PUBLIC_START  -->
+    <jaxrs:server id="apiPagamentoV1Public" address="/public/v1/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="avvisiV1" />
+			   	<ref bean="dominiV1" />
+			   	<ref bean="pagamentiV1" />
+			   	<ref bean="pendenzeV1" />
+			   	<ref bean="profiloV1" />
+			   	<ref bean="rppV1" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- PUBLIC_END -->
+    
+       <!-- Servizi Header V1 -->
+	<!-- HEADER_START  -->
+    <jaxrs:server id="apiPagamentoV1Header" address="/header/v1/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="avvisiV1" />
+			   	<ref bean="dominiV1" />
+			   	<ref bean="pagamentiV1" />
+			   	<ref bean="pendenzeV1" />
+			   	<ref bean="profiloV1" />
+			   	<ref bean="rppV1" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- HEADER_END -->
+    
+</b:beans>
+        

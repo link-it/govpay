@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns:b="http://www.springframework.org/schema/beans"
+        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+        xmlns:cxf="http://cxf.apache.org/core"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+
+        <b:import resource="classpath:META-INF/cxf/cxf.xml"/>
+        <b:import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+        
+	<!-- CXF Configuration -->
+<!--     <cxf:bus> -->
+<!--         <cxf:features> -->
+<!--             <cxf:logging/> -->
+<!--         </cxf:features> -->
+<!--     </cxf:bus> -->
+
+	<!-- Parameter Converter -->
+    <b:bean id="parameterConverter" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider"/>
+
+	<!--  Object BodyReader -->
+    <b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader"/>
+
+    <!--  Jackson Provider for JSON/XML -->
+    <b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider"/>
+    <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider"/>
+    
+    <!-- FaultBean Exception Mapper -->
+    <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>
+    
+    <!-- Context -->
+	<b:bean id="contextConfigV1" class="it.govpay.rs.v1.service.context.ContextConfig">
+	</b:bean>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory"/>
+	<b:bean id="contextV1" class="org.openspcoop2.utils.service.context.ContextFeature">
+		<b:property name="contextFactory" >
+			<b:ref bean="customContextFactory"/>
+		</b:property>
+		<b:property name="contextConfig" >
+			<b:ref bean="contextConfigV1"/>
+		</b:property>
+	</b:bean>
+        
+   	<!-- JAX-RS Service Impl -->
+
+   	<b:bean id="wc" class="it.govpay.wc.Wc"/>
+       
+   	<!-- JAX-RS Configuration -->
+   
+   <!-- Servizi V1 -->
+
+    <jaxrs:server id="webConnector" address="/ecsp/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="wc" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+ 		<jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    
+</b:beans>
+        

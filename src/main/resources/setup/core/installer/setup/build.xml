@@ -1,0 +1,148 @@
+
+<project name="setup" basedir=".">
+	
+	<description>
+        	SETUP
+	</description>
+
+	<import file="local_env.xml" />
+	
+	<!-- estensione di ant (if .... ) -->
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+          <classpath>
+              <pathelement location="${lib}/ant/ant-contrib-1.0b3.jar"/>
+          </classpath>
+	</taskdef>
+	
+	<import file="./ant/properties-build.xml" />
+	<import file="./ant/ds-build.xml" />
+	<import file="./ant/sql-build.xml" />
+	
+	
+	<property name="librerie" value="../lib/" />
+	<property name="archivi" value="../archivi/" />
+	<property name="sql" value="../sql/" />
+	<property name="datasource" value="../datasource/" />
+	
+	<!-- Ripulisce la distribuzione -->
+	<target name="installer_clean">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+
+	
+	<!-- Create the build directory structure used by compile -->
+	<target name="installer_init">
+		<mkdir dir="${build}" />
+		<mkdir dir="${tmp_dir}" />
+		<mkdir dir="${dist}" />
+	</target>
+
+	
+	<target name="init_setup" depends="installer_clean,installer_init">
+		<unzip src="${archivi}/govpay.ear" dest="${tmp_dir}/govpay"/>
+	</target>
+		
+	<target name="setup_properties">
+                 <echo>
+                  $${antinstaller_work_folder}    => ${antinstaller_work_folder}
+                  $${antinstaller_log_folder}    => ${antinstaller_log_folder}
+                 </echo>
+
+		 <script language="javascript">
+			  var sep = project.getProperty('file.separator');
+			  var workf = project.getProperty('antinstaller_work_folder');
+			  if (workf.endsWith(sep) ) {
+			        workf= workf.substring(0,workf.length() - 1);
+			  }
+			  project.setUserProperty('antinstaller_work_folder_noendsep', workf);
+
+			  var logf = project.getProperty('antinstaller_log_folder');
+			  if (logf.endsWith(sep) ) {
+			        logf= logf.substring(0,logf.length() - 1);
+			  }
+			  project.setUserProperty('antinstaller_log_folder_noendsep', logf);
+
+			  /* impostazioni URL statiche */
+			  project.setUserProperty('protocollo', 'https');
+			  if (project.getUserProperty('protocollo') === 'https') {
+				project.setUserProperty('autenticazione', 'ssl');
+			  } else {
+
+				project.setUserProperty('autenticazione', 'basic');
+			  }
+		 </script>
+
+
+		 <echo>
+		  $${antinstaller_work_folder_noendsep}    => ${antinstaller_work_folder_noendsep}
+		  $${antinstaller_log_folder_noendsep}    => ${antinstaller_log_folder_noendsep}
+		  $${protocollo}    => ${protocollo}
+		  $${autenticazione}    => ${autenticazione}
+		 </echo>
+
+		
+		<!-- GovPay EAR -->
+
+		<foreach target="govpay_war_properties" param="file" >
+		   <fileset dir="${tmp_dir}/govpay/"> 
+		     <include name="**/*.war"/>
+		   </fileset>
+		</foreach>
+
+		<antcall target="govpay_properties_settings">
+			<param name="file" value="${tmp_dir}/govpay/properties/govpay.properties"/>
+		</antcall>
+		<antcall target="govpay_logger_properties_settings">
+			<param name="file" value="${tmp_dir}/govpay/properties/log4j2.xml"/>
+		</antcall>
+
+		<antcall target="dos2unix">
+			<param name="dir" value="${tmp_dir}/govpay/properties"/>
+			<param name="file" value="*.properties"/>
+		</antcall>
+
+	</target>
+		
+	<target name="setup_datasource">
+		<copy file="${datasource}/${antinstaller_tipo_database}/govpay-ds.xml" todir="${tmp_dir}"/>
+		<antcall target="ds_settings">
+			<param name="file" value="${tmp_dir}/govpay-ds.xml"/>
+		</antcall>
+	</target>
+
+	<target name="setup_sql">
+		<copy file="${sql}/${antinstaller_tipo_database}/gov_pay.sql" todir="${tmp_dir}"/>
+		<concat destfile="${tmp_dir}/gov_pay.sql" append="yes" >
+			<header filtering="no" trimleading="yes">
+
+-- Init
+                
+			</header>
+			<filelist dir="${sql}" files="init.sql"/>
+		</concat>
+                <antcall target="sql_settings">
+                        <param name="file" value="${tmp_dir}/gov_pay.sql"/>
+                </antcall>
+        </target>
+
+	<target name="setup_completo"  depends="init_setup, setup_properties, setup_datasource, setup_sql, setup_finished"/>
+	<target name="setup_finished">
+		<delete dir="${dist}"/>
+		<mkdir dir="${dist}/archivi" />
+		<zip destfile="${dist}/archivi/govpay.ear" basedir="${tmp_dir}/govpay"/>
+		<mkdir dir="${dist}/datasource" />
+		<copy file="${tmp_dir}/govpay-ds.xml" todir="${dist}/datasource" />
+		<mkdir dir="${dist}/sql" />
+		<mkdir dir="${dist}/sql/patch" />
+		<copy file="${tmp_dir}/gov_pay.sql" todir="${dist}/sql"/>		
+		<copy todir="${dist}/sql/patch">
+			<fileset dir="${sql}/${antinstaller_tipo_database}/patch"> 
+				<include name="**/*.sql" />
+			</fileset>
+		</copy>
+		<delete dir="${build}"/>
+	</target>
+
+
+</project>

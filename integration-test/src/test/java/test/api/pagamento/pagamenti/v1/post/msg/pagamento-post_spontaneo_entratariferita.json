@@ -1,0 +1,24 @@
+{
+	"pendenze": [
+		{
+			"idA2A": "#(idA2A)",
+			"idPendenza": '#(idPendenza)',		
+			"idDominio": "#(idDominio)",
+		 	"causale": '#("Pagamento spontaneo n." + idPendenza)',
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "RSSMRA30A01H501I",
+				"anagrafica": "Mario Rossi"
+			},
+			"importo": 109.99,
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 109.99,
+					"descrizione": "Diritti e segreteria",
+					"codEntrata": "SEGRETERIA"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,10 @@
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="verifyDisplay()" floatLabel="always">
+  <mat-label></mat-label>
+  <input type="text" matInput [matDatepicker]="picker" autocomplete="off" [required]="json.required" [placeholder]="json.label"
+         formControlName="{{json.id}}_ctrl" [(ngModel)]="_pickerDate" name="pickerDate">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker touchUi></mat-datepicker>
+  <button mat-icon-button matSuffix (click)="_overlayTimepicker(_pickerDate, $event)" *ngIf="json.showTime" type="button">
+    <mat-icon>access_time</mat-icon>
+  </button>
+</mat-form-field>

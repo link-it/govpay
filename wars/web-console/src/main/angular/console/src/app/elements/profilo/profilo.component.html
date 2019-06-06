@@ -1,0 +1,17 @@
+<div class="container my-4 card-container" *ngIf="cards.length != 0">
+  <mat-card class="shadow no-border-radius p-0 mb-3">
+    <p class="container py-3 mb-3 matcard-title color-gray regular-24">{{username}}</p>
+    <div class="pb-3">
+      <link-key-value-view *ngFor="let info of info.domini" [info]="info"></link-key-value-view>
+    </div>
+    <div class="pb-3">
+      <link-key-value-view *ngFor="let info of info.tipiPendenza" [info]="info"></link-key-value-view>
+    </div>
+  </mat-card>
+  <mat-card class="shadow no-border-radius p-0">
+    <p class="container py-3 matcard-title color-gray regular-24">{{_voce.AUTORIZZAZIONI}}</p>
+    <div *ngFor="let card of cards" class="card-profilo py-3">
+      <link-key-value-view *ngFor="let info of card" [info]="info"></link-key-value-view>
+    </div>
+  </mat-card>
+</div>

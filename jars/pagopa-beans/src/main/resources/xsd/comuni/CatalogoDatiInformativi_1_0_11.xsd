@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0.11">
+	<xs:annotation>
+		<xs:documentation>Catalogo dati informativi</xs:documentation>
+		<xs:documentation>24/10/2015 - allineamento a versione 1.7 dell'Allegato B</xs:documentation>
+		<xs:documentation>27/10/2016 - adeguamento per versione 1.3 WISP</xs:documentation>
+	</xs:annotation>
+
+	<xs:element name="listaInformativePSP" type="ctListaInformativePSP"/>
+	<xs:element name="informativaPSP" type="ctInformativaPSP"/>
+
+	<xs:simpleType name="stText35">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="35"/>
+		</xs:restriction>
+
+	</xs:simpleType>
+	<xs:simpleType name="stText70">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="70"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stZeroUno">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stZero">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stUno">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stText140">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="140"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stImporto">
+		<xs:restriction base="xs:decimal">
+			<xs:minInclusive value="0.00"/>
+			<xs:maxInclusive value="999999999.99"/>
+			<xs:fractionDigits value="2"/>
+			<xs:totalDigits value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stTipoVersamento">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BBT"/> <!-- Bonifico Bancario di Tesoreria -->
+			<xs:enumeration value="BP"/> <!-- Bollettino Postale -->
+			<xs:enumeration value="AD"/> <!-- Addebito Diretto -->
+			<xs:enumeration value="CP"/> <!-- Carta di Pagamento -->
+			<xs:enumeration value="PO"/> <!-- Pagamento attivato presso PSP  -->
+			<xs:enumeration value="OBEP"/> <!-- Online Banking Electronic Payment -->
+			<xs:maxLength value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stCodiceLingua">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="IT"/> <!-- Italiano -->
+			<xs:enumeration value="EN"/> <!-- Inglese -->
+			<xs:enumeration value="DE"/> <!-- Tedesco -->
+			<xs:enumeration value="FR"/> <!-- Francese -->
+			<xs:enumeration value="SL"/> <!-- Sloveno  -->
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stParoleChiave">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="American Express"/>
+			<xs:enumeration value="Diners"/>
+			<xs:enumeration value="Maestro"/>
+			<xs:enumeration value="Mastercard"/>
+			<xs:enumeration value="MyBank"/>
+			<xs:enumeration value="PagoBancomat"/>
+			<xs:enumeration value="PayPal"/>
+			<xs:enumeration value="Visa"/>
+			<xs:enumeration value="Visa Electron"/>
+			<xs:enumeration value="V-Pay"/>
+			<xs:enumeration value="Wallet"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stUrlInformazioni">
+		<xs:restriction base="xs:anyURI">
+			<xs:maxLength value="255"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stModelloPagamento">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0"/> <!-- Modello di pagamento immediato (con redirezione) -->
+			<xs:enumeration value="1"/> <!-- Modello di pagamento immediato multibeneficiario -->
+			<xs:enumeration value="2"/> <!-- Modello di pagamento differito -->
+			<xs:enumeration value="4"/> <!-- Modello di pagamento attivato presso il psp -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stTipoCanaleServizio">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0"/><!-- Presso i propri sportelli  -->
+			<xs:enumeration value="1"/><!-- On-line (home banking o portale dedicato)  -->
+			<xs:enumeration value="2"/><!-- Mobile banking (app)  -->
+			<xs:enumeration value="3"/><!-- Phone banking  -->
+			<xs:enumeration value="4"/><!-- ATM  -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stPlateaErogazioneServizio">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0"/><!-- Verso la propria clientela  -->
+			<xs:enumeration value="1"/><!-- Verso tutti  -->
+			<xs:enumeration value="2"/><!-- Verso tutti, solo con bollettino postale  -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stDateTimeGiornoOra">
+		<xs:restriction base="xs:dateTime">
+			<xs:pattern value="\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="ctIdentificazioneServizio">
+		<xs:sequence>
+			<xs:element type="stText35" name="nomeServizio"/>
+			<xs:element type="xs:base64Binary" name="logoServizio"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ctListaInformativePSP">
+		<xs:sequence>
+			<xs:element type="ctInformativaPSP" name="informativaPSP" maxOccurs="unbounded" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ctInformativaPSP">
+		<xs:sequence>
+			<xs:element type="stText35" name="identificativoFlusso"/>
+			<xs:element type="stText35" name="identificativoPSP"/>
+			<xs:element type="stText70" name="ragioneSociale"/>
+			<xs:element type="ctInformativaMaster" name="informativaMaster"/>
+			<xs:element type="ctListaInformativaDetail" name="listaInformativaDetail"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ctListaInformativaDetail">
+		<xs:sequence>
+			<xs:element type="ctInformativaDetail" name="informativaDetail" maxOccurs="unbounded" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ctListaInformazioniServizio">
+		<xs:sequence>
+			<xs:element type="ctInformazioniServizio" name="informazioniServizio" maxOccurs="unbounded" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ctListaParoleChiave">
+		<xs:sequence>
+			<xs:element type="stParoleChiave" name="paroleChiave" maxOccurs="5" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ctListaFasceCostoServizio">
+		<xs:sequence>
+			<xs:element type="ctFasciaCostoServizio" name="fasciaCostoServizio" maxOccurs="8" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ctInformativaMaster">
+		<xs:sequence>
+			<xs:element type="stDateTimeGiornoOra" name="dataPubblicazione"/>
+			<xs:element type="stDateTimeGiornoOra" name="dataInizioValidita"/>
+			<xs:element type="stUrlInformazioni" name="urlInformazioniPSP"/>
+			<xs:element type="stZeroUno" name="stornoPagamento"/>
+			<xs:element type="stZeroUno" name="marcaBolloDigitale"/>
+			<xs:element type="xs:base64Binary" name="logoPSP"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ctInformativaDetail">
+		<xs:sequence>
+			<xs:element type="stText35" name="identificativoIntermediario"/>
+			<xs:element type="stText35" name="identificativoCanale"/>
+			<xs:element type="stTipoVersamento" name="tipoVersamento"/>
+			<xs:element type="stModelloPagamento" name="modelloPagamento"/>
+			<xs:element type="xs:int" name="priorita"/>
+			<xs:element type="stZeroUno" name="canaleApp"/>
+			<xs:element type="stZeroUno" name="servizioAlleImprese" minOccurs="0"/>
+			<xs:element type="ctIdentificazioneServizio" name="identificazioneServizio" minOccurs="0"/>
+			<xs:element type="ctListaInformazioniServizio" name="listaInformazioniServizio"/>
+			<xs:element type="ctListaParoleChiave" name="listaParoleChiave" minOccurs="0"/>
+			<xs:element type="ctCostiServizio" name="costiServizio"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ctCostiServizio">
+		<xs:sequence>
+			<xs:element type="stUno" name="tipoCostoTransazione"/> 
+			<xs:element type="stZero" name="tipoCommissione"/>
+			<xs:element type="stTipoCanaleServizio" name="tipoCanaleServizio" minOccurs="0"/>
+			<xs:element type="stPlateaErogazioneServizio" name="plateaErogazioneServizio" minOccurs="0"/>
+			<xs:element type="ctListaFasceCostoServizio" name="listaFasceCostoServizio"/>
+		</xs:sequence>
+	</xs:complexType>
+		
+	<xs:complexType name="ctInformazioniServizio">
+		<xs:sequence>
+			<xs:element type="stCodiceLingua" name="codiceLingua"/>
+			<xs:element type="stText140" name="descrizioneServizio" minOccurs="0"/>
+			<xs:element type="stText140" name="disponibilitaServizio"/>
+			<xs:element type="stText140" name="limitazioniServizio" minOccurs="0"/>
+			<xs:element type="stUrlInformazioni" name="urlInformazioniCanale" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ctFasciaCostoServizio">
+		<xs:sequence>
+			<xs:element type="stImporto" name="importoMassimoFascia"/>
+			<xs:element type="stImporto" name="costoFisso"/>
+			<xs:element type="stImporto" name="valoreCommissione"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>
+
+
+

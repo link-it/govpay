@@ -1,0 +1,42 @@
+@import '../../../../node_modules/@angular/material/theming';
+@import '../../../styles/variables';
+
+.mat-elevation-card {
+  -webkit-box-shadow: 0 1px 1px 0 $link-shadow !important;
+  box-shadow: 0 1px 1px 0 $link-shadow !important;
+}
+
+.badge-spinner {
+  position: absolute !important;
+  top: calc(50% - 30px);
+  left: calc(50% - 30px);
+  transform: translate(-50%, -50%);
+}
+
+//Material design override
+mat-card {
+  border-radius: 0 !important;
+}
+
+.mat-card {
+  background: transparent;
+}
+//Fine - Material design override
+
+.badge-standard {
+  background: $link-border-light-gray;
+  color: $link-primary-text;
+}
+
+.badge-standard-sub-color {
+  color: rgba(21, 21, 21, .6);
+}
+
+.badge-warning {
+  background: mat-color($link-error);
+  color: $link-light;
+}
+
+.badge-warning-sub-color {
+  color: rgba(255, 255, 255, .6);
+}

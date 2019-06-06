@@ -1,0 +1,67 @@
+<div class="w-100">
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="dominio_ctrl" (selectionChange)="_onChangeDominio($event)" required>
+        <mat-select-trigger>
+          {{fGroup?.controls['dominio_ctrl']?.value?.ragioneSociale}}
+        </mat-select-trigger>
+        <mat-option *ngFor="let dominio of _domini" [value]="dominio">
+          <div class="d-block lh-15">
+            <p class="m-0">{{dominio.ragioneSociale}}</p>
+            <small class="d-block">{{dominio.idDominio}}</small>
+          </div>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <input #idfIuv matInput [placeholder]="_voce.IDF_IUV"
+             [matAutocomplete]="idfIuvPanel" (keyup)="_keyUp(idfIuv)" formControlName="idfIuv_ctrl" required>
+      <mat-spinner color="primary" mode="indeterminate" diameter="20" matSuffix *ngIf="_searching"></mat-spinner>
+      <mat-hint>{{_mapRisultati()}}</mat-hint>
+      <mat-autocomplete #idfIuvPanel="matAutocomplete" (optionSelected)="_codeSelection($event, idfIuv)">
+        <mat-option class="idf-iuv" *ngFor="let item of _idfIuv" [value]="item">
+          <div class="d-block lh-15">
+            <p class="m-0">{{item.label}}</p>
+            <small class="d-block">{{item.data}}</small>
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <div class="col-12 pt-3" *ngIf="fGroup?.controls['importo_ctrl']?.value">
+      <label class="w-100">Importo {{us.currencyFormat(fGroup?.controls['importo_ctrl']?.value)}}</label>
+    </div>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="SCT" formControlName="sct_ctrl" autocomplete="off" required>
+    </mat-form-field>
+  </div>
+  <!--<div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Causale" formControlName="causale_ctrl" autocomplete="off" required>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Importo" formControlName="importo_ctrl" autocomplete="off" required>
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <mat-form-field class="col-12 col-md-6" color="accent" [formGroup]="fGroup">
+      <input type="text" matInput [matDatepicker]="pickerDV" autocomplete="off"
+             placeholder="Data valuta" formControlName="dataValuta_ctrl">
+      <mat-datepicker-toggle matSuffix [for]="pickerDV"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDV></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="col-12 col-md-6" color="accent" [formGroup]="fGroup">
+      <input type="text" matInput [matDatepicker]="pickerDC" autocomplete="off"
+             placeholder="Data contabile" formControlName="dataContabile_ctrl">
+      <mat-datepicker-toggle matSuffix [for]="pickerDC"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDC></mat-datepicker>
+    </mat-form-field>
+  </div>-->
+</div>

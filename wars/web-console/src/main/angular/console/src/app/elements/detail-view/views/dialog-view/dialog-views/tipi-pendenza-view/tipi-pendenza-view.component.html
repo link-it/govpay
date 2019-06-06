@@ -1,0 +1,68 @@
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_jsonFormInput">
+  <mat-select placeholder="Tipo pendenza" formControlName="idTipoPendenza_ctrl" multiple required>
+    <mat-option *ngFor="let item of json.values" [value]="item">{{item.label}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<div class="w-100" *ngIf="!_jsonFormInput">
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Descrizione" formControlName="descrizione_ctrl" autocomplete="off" required>
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Id Tipo pendenza" formControlName="idTipoPendenza_ctrl" autocomplete="off" required>
+    </mat-form-field>
+  </div>
+  <div class="row mb-2">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <mat-select placeholder="Tipologia" formControlName="tipo_ctrl" required>
+        <mat-option *ngFor="let _tipo of _tipologie" [value]="_tipo.value">{{_tipo.label}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Codifica IUV" formControlName="codificaIUV_ctrl" autocomplete="off">
+    </mat-form-field>
+  </div>
+  <div class="row">
+    <div class="col-6 mb-3" [formGroup]="fGroup">
+      <mat-slide-toggle class="mr-3" formControlName="abilitato_ctrl" color="accent">Abilitato</mat-slide-toggle>
+    </div>
+    <div class="col-6 mb-3" [formGroup]="fGroup">
+      <mat-slide-toggle formControlName="pagaTerzi_ctrl" color="accent">Pagabile da altri</mat-slide-toggle>
+    </div>
+  </div>
+  <!--<div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <mat-select placeholder="Generatore form" formControlName="generatore_ctrl">
+        <mat-option *ngFor="let _tipo of _generatori" [value]="_tipo.value">{{_tipo.label}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>-->
+  <div class="row">
+    <div class="col-12 col-sm-6 mb-3 mb-sm-0" [formGroup]="fGroup">
+      <input #iSchemaBrowse type="file" (change)="readJsonSchema($event)" hidden>
+      <div class="row align-items-center flex-nowrap">
+        <button mat-icon-button class="action" type="button" (click)="iSchemaBrowse.click()">
+          <mat-icon aria-label="Schema json">attach_file</mat-icon>
+        </button>
+        <label class="m-0 regular-16 color-gray text-truncate">{{_schema}}</label>
+        <button mat-icon-button class="action regular-14 color-gray" *ngIf="_schemaSelected"
+                type="button" (click)="_clear(iSchemaBrowse, 'schema', true)">
+          <mat-icon aria-label="Schema json">cancel</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6" [formGroup]="fGroup">
+      <input #iLayoutBrowse type="file" (change)="readJsonLayout($event)" hidden>
+      <div class="row align-items-center flex-nowrap">
+        <button mat-icon-button class="action" type="button" (click)="iLayoutBrowse.click()">
+          <mat-icon aria-label="Schema json">attach_file</mat-icon>
+        </button>
+        <label class="m-0 regular-16 color-gray text-truncate">{{_datiAllegati}}</label>
+        <button mat-icon-button class="action regular-14 color-gray" *ngIf="_layoutSelected"
+                type="button" (click)="_clear(iLayoutBrowse, 'datiAllegati')">
+          <mat-icon aria-label="Schema json">cancel</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

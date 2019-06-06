@@ -1,0 +1,8 @@
+<mat-card class="mb-3 mat-elevation-card badge-standard" [class.badge-warning]="_badgeWarning">
+  <mat-card-content>
+    <h1>{{_badgeValue}}</h1>
+    <p class="m-0 regular-24">{{_badgeTitle}}</p>
+    <p class="m-0 regular-14 badge-standard-sub-color" [class.badge-warning-sub-color]="_badgeWarning">{{_badgeSubTitle}}</p>
+    <mat-spinner diameter="30" color="primary" class="badge-spinner" *ngIf="_isLoading"></mat-spinner>
+  </mat-card-content>
+</mat-card>

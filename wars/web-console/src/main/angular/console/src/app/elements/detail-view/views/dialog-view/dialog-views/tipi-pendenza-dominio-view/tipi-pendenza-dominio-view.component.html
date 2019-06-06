@@ -1,0 +1,83 @@
+<div class="row">
+  <div class="col-12 col-lg-2"></div>
+  <div class="col-12 col-lg-8">
+    <mat-card class="no-shadow container-fluid">
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <mat-select #tipo_pendenza placeholder="Tipo pendenza" formControlName="tipoPendenza_ctrl"
+                    (selectionChange)="_onChangeSelection(tipo_pendenza)" [compareWith]="_tipoPendenzaComparingFct" required>
+          <mat-option *ngFor="let item of tipiPendenza_items" [value]="item.jsonP">{{item.model.titolo.label}}</mat-option>
+          <mat-option>Nuovo tipo pendenza...</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <input matInput [placeholder]="_phCiuv" formControlName="codificaIUV_ctrl" autocomplete="off">
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <mat-select placeholder="Pagabile da altri" formControlName="pagaTerzi_ctrl">
+          <mat-option>Default</mat-option>
+          <mat-option [value]="true">Si</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <mat-select placeholder="Abilitato" formControlName="abilita_ctrl">
+          <mat-option>Default</mat-option>
+          <mat-option [value]="true">Si</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!--<div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select placeholder="Generatore form" formControlName="generatore_ctrl">
+            <mat-option *ngFor="let _tipo of _generatori" [value]="_tipo.value">{{_tipo.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>-->
+      <div class="row">
+        <div class="col-12 col-sm-6 mb-3 mb-sm-0" [formGroup]="fGroup">
+          <input #iSchemaBrowse type="file" (change)="readJsonSchema($event)" hidden>
+          <div class="row align-items-center flex-nowrap">
+            <button mat-icon-button class="action" type="button" (click)="_showSchemaContent(true)" *ngIf="_jsonSchemaSelected">
+              <mat-icon aria-label="Open schema json">open_in_new</mat-icon>
+            </button>
+            <button mat-icon-button class="action mx-3" type="button" (click)="_trashSchemaSelection(true)" *ngIf="_trashSchema">
+              <mat-icon aria-label="Remove schema json">delete</mat-icon>
+            </button>
+            <div class="d-flex align-items-center flex-nowrap" *ngIf="!_trashSchema">
+              <button mat-icon-button class="action" type="button" (click)="iSchemaBrowse.click()">
+                <mat-icon aria-label="Schema json">attach_file</mat-icon>
+              </button>
+              <label class="m-0 regular-16 color-gray text-truncate">{{_schema}}</label>
+              <button mat-icon-button class="action regular-14 color-gray" *ngIf="_schemaSelected"
+                      type="button" (click)="_clear('schema', true)">
+                <mat-icon aria-label="Schema json">cancel</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6" [formGroup]="fGroup">
+          <input #iLayoutBrowse type="file" (change)="readJsonLayout($event)" hidden>
+          <div class="row align-items-center flex-nowrap">
+            <button mat-icon-button class="action" type="button" (click)="_showSchemaContent()" *ngIf="_jsonLayoutSelected">
+              <mat-icon aria-label="Open layout json">open_in_new</mat-icon>
+            </button>
+            <button mat-icon-button class="action mx-3" type="button" (click)="_trashSchemaSelection()" *ngIf="_trashlayout">
+              <mat-icon aria-label="Remove layout json">delete</mat-icon>
+            </button>
+            <div class="d-flex align-items-center flex-nowrap" *ngIf="!_trashlayout">
+              <button mat-icon-button class="action" type="button" (click)="iLayoutBrowse.click()">
+                <mat-icon aria-label="Layout json">attach_file</mat-icon>
+              </button>
+              <label class="m-0 regular-16 color-gray text-truncate">{{_datiAllegati}}</label>
+              <button mat-icon-button class="action regular-14 color-gray" *ngIf="_layoutSelected"
+                      type="button" (click)="_clear('datiAllegati')">
+                <mat-icon aria-label="Layout json">cancel</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div class="col-12 col-lg-2"></div>
+</div>

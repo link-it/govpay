@@ -1,0 +1,13 @@
+{
+	"denominazione": "Soggetto Intermediario",
+	"principalPagoPa": '#(ndpsym_user)',
+	"servizioPagoPa": {
+		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")',
+		"auth": {
+			"tipo": "Server",
+			"tsLocation": "/tmp/keystore.jks",
+			"tsPassword": "kspwd",
+		}
+	},
+	"abilitato": true
+}

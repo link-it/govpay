@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.2.1">
+    <xs:annotation>
+        <xs:documentation>Informativa Conto Accredito</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="informativaContoAccredito " type="ctInformativaContoAccredito" />
+
+    <xs:simpleType name="stText35">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="35" />
+        </xs:restriction>
+    </xs:simpleType>
+
+ 	<xs:simpleType name="stText70">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="70" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="stSellerBankIdentifier">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="50" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="stIBANIdentifier">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="stBICIdentifier">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="stCF">
+        <xs:restriction base="xs:string">
+            <xs:length value="11"/>
+            <xs:pattern value="[0-9]{11}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="ctInformativaContoAccredito">
+        <xs:sequence>
+            <xs:element type="stText35" name="identificativoFlusso" />
+            <xs:element type="stCF" name="identificativoDominio" />
+            <xs:element type="stText70" name="ragioneSociale" />
+            <xs:element type="xs:dateTime" name="dataPubblicazione" />
+            <xs:element type="xs:dateTime" name="dataInizioValidita" />
+            <xs:element type="ctContiDiAccredito" name="contiDiAccredito" />
+        </xs:sequence>
+    </xs:complexType>
+
+   <xs:complexType name="ctInfoContoDiAccreditoPair">
+        <xs:sequence>
+            <xs:element type="stIBANIdentifier" name="ibanAccredito" minOccurs="1" />
+            <xs:element type="stSellerBankIdentifier" name="idBancaSeller" minOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ctContiDiAccredito">
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element type="stIBANIdentifier" name="ibanAccredito" minOccurs="0"/>
+            <xs:element type="ctInfoContoDiAccreditoPair" name="infoContoDiAccreditoPair" minOccurs="0"/>
+        </xs:choice>
+    </xs:complexType>
+
+</xs:schema>

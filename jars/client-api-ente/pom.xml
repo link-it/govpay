@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>jars</artifactId>
+		<groupId>it.govpay</groupId>
+		<version>3.1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>client-api-ente</artifactId>
+	<packaging>jar</packaging>
+	<name>GovPay - jars - Client EC</name>
+
+	<properties>
+		<rel-to-parent>../..</rel-to-parent>
+	</properties>
+
+	<dependencies>
+<!-- 		<dependency> -->
+<!-- 			<groupId>io.swagger.codegen.v3</groupId> -->
+<!-- 			<artifactId>swagger-codegen-maven-plugin</artifactId> -->
+<!-- 			<scope>provided</scope> -->
+<!-- 		</dependency> -->
+
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-jaxrs</artifactId>
+			<scope>provided</scope>			
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-client</artifactId>
+			<scope>provided</scope>	
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-xml-provider</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-joda</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<filters>
+			<filter>${filter-file}</filter>
+		</filters>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+<!-- 		<plugins> -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>io.swagger.codegen.v3</groupId> -->
+<!-- 				<artifactId>swagger-codegen-maven-plugin</artifactId> -->
+<!-- 				<version>${swagger-codegen-maven-plugin.version}</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<goals> -->
+<!-- 							<goal>generate</goal> -->
+<!-- 						</goals> -->
+<!-- 						<id>generate-sources</id> -->
+<!-- 						<phase>generate-sources</phase> -->
+<!-- 						<configuration> -->
+<!-- 							<inputSpec>${project.basedir}/src/main/resources/govpay-api-ec-v1.yaml</inputSpec> -->
+<!-- 							<language>jaxrs-cxf</language> -->
+<!-- 							<configOptions> -->
+<!-- 								<dateLibrary>joda</dateLibrary> -->
+<!-- 								<sourceFolder>target/generated-sources/java/</sourceFolder> -->
+<!-- 								<apiPackage>it.govpay.ec.v1</apiPackage> -->
+<!-- 								<invokerPackage>it.govpay.ec.v1.client</invokerPackage> -->
+<!-- 								<modelPackage>it.govpay.ec.v1.beans</modelPackage> -->
+<!-- 							</configOptions> -->
+<!-- 							<output>${project.basedir}</output> -->
+<!-- 							<generateApiTests>false</generateApiTests> -->
+<!-- 							<generateModelTests>false</generateModelTests> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+<!-- 		</plugins> -->
+	</build>
+</project>

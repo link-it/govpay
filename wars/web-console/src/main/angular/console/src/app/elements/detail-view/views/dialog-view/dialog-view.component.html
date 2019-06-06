@@ -1,0 +1,10 @@
+<div class="d-block">
+  <p class="w-100 regular-24 color-gray">{{data.info.dialogTitle}}</p>
+  <form [formGroup]="modalForm" novalidate (ngSubmit)="_save(modalForm)">
+    <ng-container #dfec class="w-100"></ng-container>
+    <div class="d-flex justify-content-end mt-4">
+      <button mat-button color="accent" type="reset" (click)="_close()">Annulla</button>
+      <button mat-button color="accent" type="submit" [disabled]="!_isValid">Salva</button>
+    </div>
+  </form>
+</div>

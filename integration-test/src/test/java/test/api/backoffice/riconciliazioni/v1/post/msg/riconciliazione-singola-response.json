@@ -1,0 +1,24 @@
+{
+   "idDominio":"#(idDominio)",
+   "idIncasso":"#notnull",
+   "causale":"#(causale)",
+   "importo":"#(importo)",
+   "riscossioni":[
+      {
+         "idDominio":"#(idDominio)",
+         "iuv":"#(iuv)",
+         "iur":"#notnull",
+         "indice":1,
+         "pendenza":"#string",
+         "idVocePendenza":"1",
+         "rpp":"#notnull",
+         "stato":"INCASSATA",
+         "tipo":"ENTRATA",
+         "importo":"#(importo)",
+         "data":"#notnull",
+         "incasso":"#string",
+         "allegato": "#ignore"
+      }
+   ]
+}
+

@@ -1,0 +1,8 @@
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="verifyDisplay()">
+  <mat-select [placeholder]="json.label" formControlName="{{json.id}}_ctrl" (selectionChange)="_onChangeSelection()"
+              [required]="json.required">
+    <mat-option>{{json.noOptionLabel}}</mat-option>
+    <mat-option *ngFor="let item of json.values" [value]="item.value" [matTooltip]="item.value"
+                #tooltip="matTooltip" (mouseover)="tooltip.show()" (mouseout)="tooltip.hide()">{{item.label}}</mat-option>
+  </mat-select>
+</mat-form-field>

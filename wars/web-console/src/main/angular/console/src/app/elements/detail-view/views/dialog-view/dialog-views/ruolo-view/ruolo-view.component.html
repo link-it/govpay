@@ -1,0 +1,8 @@
+<mat-card class="no-shadow container-fluid">
+  <div class="row">
+    <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+      <input matInput [placeholder]="_IDENTIFICATIVO" formControlName="id_ctrl" autocomplete="off" required>
+    </mat-form-field>
+  </div>
+  <link-acl-view class="acl-fill" [fGroup]="fGroup"></link-acl-view>
+</mat-card>

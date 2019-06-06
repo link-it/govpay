@@ -1,0 +1,23 @@
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_jsonFormInput">
+  <mat-select placeholder="Entrata" formControlName="idEntrata_ctrl" multiple required>
+    <mat-option *ngFor="let item of json.values" [value]="item">{{item.label}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<div class="w-100" *ngIf="!_jsonFormInput">
+  <div class="row">
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Descrizione" formControlName="descrizione_ctrl" autocomplete="off" required>
+    </mat-form-field>
+    <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+      <input matInput placeholder="Id entrata" formControlName="idEntrata_ctrl" autocomplete="off" required>
+    </mat-form-field>
+  </div>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput placeholder="Codice contabilita" formControlName="codiceContabilita_ctrl" autocomplete="off" required>
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <mat-select #contabilita placeholder="Tipo contabilità" formControlName="tipoContabilita_ctrl">
+      <mat-option *ngFor="let item of contabilita_items" [value]="item.value">{{item.label}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

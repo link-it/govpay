@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>bom</artifactId>
+		<groupId>it.govpay</groupId>
+		<version>3.1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>ear</artifactId>
+	<packaging>ear</packaging>
+	<name>GovPay - ear</name>
+
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+		<war-base-name>govpay</war-base-name>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-pagopa</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-pagopa</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-pagamento</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-pagamento</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>web-connector</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>web-connector</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-pendenze</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-pendenze</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-backoffice</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-backoffice</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-ragioneria</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-ragioneria</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-commons</artifactId>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-commons</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>web-console</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>web-console</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>fonts-TitilliumWeb</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/application</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<finalName>govpay</finalName>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<defaultLibBundleDir>lib/</defaultLibBundleDir>
+					<skinnyWars>true</skinnyWars>
+					<initializeInOrder>true</initializeInOrder>
+					<filtering>true</filtering>
+					<filters>
+						<filter>${basedir}/${filter-file}</filter>
+					</filters>
+					<modules>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>api-pagopa</artifactId>
+							<contextRoot>/${war-base-name}/frontend/api/pagopa</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>api-pagamento</artifactId>
+							<contextRoot>/${war-base-name}/frontend/api/pagamento</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>web-connector</artifactId>
+							<contextRoot>/${war-base-name}/frontend/web/connector</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>api-pendenze</artifactId>
+							<contextRoot>/${war-base-name}/backend/api/pendenze</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>api-ragioneria</artifactId>
+							<contextRoot>/${war-base-name}/backend/api/ragioneria</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>api-backoffice</artifactId>
+							<contextRoot>/${war-base-name}/backend/api/backoffice</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>web-console</artifactId>
+							<contextRoot>/${war-base-name}/backend/gui/backoffice</contextRoot>
+						</webModule>
+					</modules>
+					<version>6</version>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

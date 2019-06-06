@@ -1,0 +1,21 @@
+@import '~@angular/material/theming';
+@import '../../../../../../../styles/variables.scss';
+
+.b64-icon {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 5px;
+  box-sizing: content-box;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.b64-icon:hover {
+  color: mat-color($link-accent);;
+}
+
+.b64-group {
+  padding-left: 16px;
+  margin-left: 16px;
+}

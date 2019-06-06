@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>wars</artifactId>
+		<groupId>it.govpay</groupId>
+		<version>3.1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>web-console</artifactId>
+	<packaging>war</packaging>
+	<name>GovPay - wars - Cruscotto di gestione</name>
+	
+	<properties>
+		<rel-to-parent>../..</rel-to-parent>
+	</properties>
+	
+	<dependencies>
+<!-- 		<dependency> -->
+<!-- 			<groupId>it.govpay</groupId> -->
+<!-- 			<artifactId>api-commons</artifactId> -->
+<!-- 			<type>jar</type> -->
+<!-- 		</dependency> -->
+	
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<filters>
+			<filter>${filter-file}</filter>
+		</filters>
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.1</version>
+				<configuration>
+					<webResources>
+						<webResource>
+							<directory>src/main/webapp</directory>
+						</webResource>
+					</webResources>
+					<webXml>src/main/resources/web.xml</webXml>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+	                <archive>
+	                    <manifest>
+	                        <addClasspath>true</addClasspath>
+	                        <classpathPrefix>lib/</classpathPrefix>
+	                    </manifest>
+	                    <manifestEntries>
+							<Class-Path>properties/</Class-Path>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

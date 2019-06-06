@@ -1,0 +1,8 @@
+<div class="container-fluid px-0 px-md-3 h-100 overflow-auto" link-scroll
+     [bottomLimit]="!_preventMultiCall" (onScrollBottom)="_loadMoreData()">
+  <div class="row list-flexible">
+    <link-form-view #fv class="col-4 py-3 h-100 d-block" *ngIf="_isVisible()" [fields]="_fields"
+                    (submit-form-data)="_formSubmit($event)"></link-form-view>
+    <link-side-list #sl class="col py-3 w-100 h-100" [(is-loading-progress)]="_preventMultiCall"></link-side-list>
+  </div>
+</div>

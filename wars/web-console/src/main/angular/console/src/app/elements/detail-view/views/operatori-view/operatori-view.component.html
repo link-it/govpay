@@ -1,0 +1,9 @@
+<div class="container pt-4 card-container">
+  <mat-card class="shadow no-border-radius mb-4">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">{{voce.RIEPILOGO}}</p>
+    <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioni" [info]="item"></link-key-value-view>
+    <p class="d-block matcard-title py-3 color-gray regular-24" *ngIf="acls.length != 0">{{voce.AUTORIZZAZIONI_BACKOFFICE}}</p>
+    <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of acls" [info]="item"></link-key-value-view>
+  </mat-card>
+</div>
+<button mat-fab class="fab-action" (click)="_editOperatore()"><i class="material-icons">edit</i></button>

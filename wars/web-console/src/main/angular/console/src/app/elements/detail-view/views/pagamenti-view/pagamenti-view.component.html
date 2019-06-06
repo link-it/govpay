@@ -1,0 +1,31 @@
+<div class="container p-3 card-container">
+  <mat-card class="shadow no-border-radius mb-3" *ngIf="info">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">Riepilogo</p>
+    <link-riepilogo-view [info]="info"></link-riepilogo-view>
+  </mat-card>
+  <mat-card class="shadow no-border-radius mb-3" *ngIf="pagamenti.length!=0">
+    <p class="matcard-title pb-3 color-gray regular-24">Carrello pendenze</p>
+    <link-item-view *ngFor="let item of pagamenti" [component-data]="item" [use-item-view-directive]="true"
+                    [show-over-icons]="false" [over-icons]="_importiOverIcons" class="link-item-view-fill">
+    </link-item-view>
+    <div class="row sub-totale medium-16" *ngIf="pagamenti.length != 0">
+      <div class="col-6 px-0 m-0">
+        <p class="text-truncate mb-1">Totale</p>
+      </div>
+      <div class="col-6 px-0 m-0 text-right">
+        <p class="text-truncate mb-1">{{us.currencyFormat(_paymentsSum)}}</p>
+      </div>
+    </div>
+  </mat-card>
+  <mat-card class="shadow no-border-radius mb-3">
+    <div class="d-flex flex-row">
+      <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">Note</p>
+      <mat-icon class="action" (click)="_addEdit(NOTA, ADD, true)"><i class="material-icons dark-material-icons">add</i></mat-icon>
+    </div>
+    <mat-card-content>
+      <p class="d-block matcard-title regular-16 normal-color" *ngIf="informazioni.length == 0">Nessuna segnalazione presente.</p>
+      <link-item-view *ngFor="let item of informazioni" [component-data]="item" [use-item-view-directive]="true"
+                      [show-over-icons]="false" class="link-item-view-fill no-directive-border"></link-item-view>
+    </mat-card-content>
+  </mat-card>
+</div>

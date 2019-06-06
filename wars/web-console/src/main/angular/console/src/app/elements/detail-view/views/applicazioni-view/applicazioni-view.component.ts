@@ -1,0 +1,216 @@
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
+import { GovpayService } from '../../../../services/govpay.service';
+import { UtilService } from '../../../../services/util.service';
+import { Voce } from "../../../../services/voce.service";
+import { Dato } from '../../../../classes/view/dato';
+import { ModalBehavior } from '../../../../classes/modal-behavior';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+@Component({
+  selector: 'link-applicazioni-view',
+  templateUrl: './applicazioni-view.component.html',
+  styleUrls: ['./applicazioni-view.component.scss']
+})
+export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterViewInit{
+
+  @Input() domini = [];
+  @Input() tipiPendenza = [];
+  @Input() acls = [];
+  @Input() informazioni = [];
+  @Input() aapi = [];
+  @Input() avvisi = [];
+  @Input() serviziApi = [];
+  // @Input() notifiche = [];
+
+  @Input() json: any;
+  @Input() modified: boolean = false;
+
+  protected voce = Voce;
+  protected DOMINIO = UtilService.DOMINIO;
+  protected ENTRATA = UtilService.ENTRATA;
+  protected ACL = UtilService.ACL;
+  protected ADD = UtilService.PATCH_METHODS.ADD;
+  protected _OPERAZIONI = Voce.OPERAZIONI;
+
+  constructor(public gps: GovpayService, public us: UtilService) { }
+
+  ngOnInit() {
+    this.dettaglioApplicazione();
+  }
+
+  ngAfterViewInit() {
+  }
+
+  protected dettaglioApplicazione() {
+    let _url = UtilService.URL_APPLICAZIONI+'/'+encodeURIComponent(this.json.idA2A);
+    this.gps.getDataService(_url).subscribe(
+      function (_response) {
+        this.json = _response.body;
+        this.mapJsonDetail();
+        this.gps.updateSpinner(false);
+      }.bind(this),
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  protected mapJsonDetail() {
+    let _dettaglio = { info: [], api: [], avviso: [], serviziApi: [], domini: [], tipiPendenza: [], acl: [] };
+    _dettaglio.info.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
+    _dettaglio.info.push(new Dato({ label: Voce.ID_A2A, value: this.json.idA2A }));
+    _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
+    _dettaglio.api.push(new Dato({ label: Voce.API_PAGAMENTI, value: UtilService.ABILITA[this.json.apiPagamenti.toString()] }));
+    _dettaglio.api.push(new Dato({ label: Voce.API_PENDENZE, value: UtilService.ABILITA[this.json.apiPendenze.toString()] }));
+    _dettaglio.api.push(new Dato({ label: Voce.API_RAGIONERIA, value: UtilService.ABILITA[this.json.apiRagioneria.toString()] }));
+    if(this.json.codificaAvvisi) {
+      _dettaglio.avviso.push(new Dato({ label: Voce.IUV_CODEC, value: this.json.codificaAvvisi.codificaIuv }));
+      _dettaglio.avviso.push(new Dato({ label: Voce.IUV_REGEX, value: this.json.codificaAvvisi.regExpIuv }));
+      _dettaglio.avviso.push(new Dato({ label: Voce.IUV_GENERATION, value: UtilService.ABILITA[this.json.codificaAvvisi.generazioneIuvInterna.toString()] }));
+    }
+    if(this.json.servizioIntegrazione) {
+      _dettaglio.serviziApi.push(new Dato({ label: Voce.URL, value: this.json.servizioIntegrazione.url }));
+      _dettaglio.serviziApi.push(new Dato({ label: Voce.VERSIONE_API, value: this.json.servizioIntegrazione.versioneApi }));
+      if(this.json.servizioIntegrazione.auth) {
+        _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: '' }));
+        if(this.json.servizioIntegrazione.auth.username) {
+          _dettaglio.serviziApi.push(new Dato({label: Voce.USERNAME, value: this.json.servizioIntegrazione.auth.username }));
+          _dettaglio.serviziApi.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioIntegrazione.auth.password }));
+        }
+        if(this.json.servizioIntegrazione.auth.tipo) {
+          _dettaglio.serviziApi.push(new Dato({label: Voce.TIPO, value: this.json.servizioIntegrazione.auth.tipo }));
+          _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioIntegrazione.auth.ksLocation }));
+          _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioIntegrazione.auth.ksPassword }));
+          if(this.json.servizioIntegrazione.auth.tsLocation) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.TRUST_STORE_LOC, value: this.json.servizioIntegrazione.auth.tsLocation }));
+          }
+          if(this.json.servizioIntegrazione.auth.tsPassword) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.TRUST_STORE_PWD, value: this.json.servizioIntegrazione.auth.tsPassword }));
+          }
+        }
+      }
+    }
+
+    if(this.json.domini.length != 0) {
+      this.json.domini.forEach((item, index) => {
+        _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.DOMINI, value: item.ragioneSociale }));
+      });
+    } else {
+      _dettaglio.domini.push(new Dato({ label: Voce.DOMINI, value: 'Nessuna informazione' }));
+    }
+    if(this.json.tipiPendenza.length != 0) {
+      this.json.tipiPendenza.forEach((item, index) => {
+        _dettaglio.tipiPendenza.push(new Dato({ label: (index != 0)?'':Voce.PENDENZE, value: item.descrizione }));
+      });
+    } else {
+      _dettaglio.tipiPendenza.push(new Dato({ label: Voce.PENDENZE, value: 'Nessuna informazione' }));
+    }
+
+    if(this.json.acl.length != 0) {
+      this.json.acl.forEach((item) => {
+        let auths = item.autorizzazioni.map((s) => {
+          const codes = UtilService.DIRITTI_CODE.filter((a) => {
+            return (a.code == s);
+          });
+          return (codes.length!=0)?codes[0].label:'';
+        });
+        _dettaglio.acl.push(new Dato({ label: this.us.mapACL(item.servizio), value: auths.join(', ') }));
+      });
+
+      // Sort Acls
+      _dettaglio.acl.sort((item1, item2) => {
+        return (item1.label>item2.label)?1:(item1.label<item2.label)?-1:0;
+      });
+    } else {
+      _dettaglio.acl.push(new Dato({ label: Voce.AUTORIZZAZIONI_BACKOFFICE, value: 'Nessuna autorizzazione' }));
+    }
+
+    this.informazioni = _dettaglio.info.slice(0);
+    this.aapi = _dettaglio.api.slice(0);
+    this.avvisi = _dettaglio.avviso.slice(0);
+    this.serviziApi = _dettaglio.serviziApi.slice(0);
+    this.domini = _dettaglio.domini.slice(0);
+    this.tipiPendenza = _dettaglio.tipiPendenza.slice(0);
+    this.acls = _dettaglio.acl.slice(0);
+  }
+
+  protected _editApplicazione(event: any) {
+    let _mb = new ModalBehavior();
+    _mb.editMode = true;
+    _mb.info = {
+      viewModel: this.json,
+      dialogTitle: 'Modifica applicazione',
+      templateName: UtilService.APPLICAZIONE
+    };
+    _mb.async_callback = this.save.bind(this);
+    _mb.closure = this.refresh.bind(this);
+    UtilService.blueDialogBehavior.next(_mb);
+  }
+
+  refresh(mb: ModalBehavior) {
+    this.modified = false;
+    if(mb && mb.info && mb.info.viewModel) {
+      this.modified = true;
+      if(mb.info.templateName === UtilService.APPLICAZIONE) {
+        this.json = mb.info.viewModel;
+        this.mapJsonDetail();
+      }
+    }
+  }
+
+  /**
+   * Save Applicazione|Dominio|tipiPendenza|Acl (Put to: /applicazioni/{idA2A} )
+   * @param {BehaviorSubject<any>} responseService
+   * @param {ModalBehavior} mb
+   */
+  save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
+    if(mb && mb.info.viewModel) {
+      let _json;
+      let _query = null;
+      let _method = null;
+      let _id = (mb.editMode)?this.json['idA2A']:mb.info.viewModel['idA2A'];
+      let _service = UtilService.URL_APPLICAZIONI+'/'+encodeURIComponent(_id);
+      if(mb.info.templateName === UtilService.APPLICAZIONE) {
+        _json = {
+          idA2A: mb.info.viewModel.idA2A,
+          principal: mb.info.viewModel.principal,
+          codificaAvvisi: mb.info.viewModel.codificaAvvisi,
+          domini: mb.info.viewModel.domini,
+          tipiPendenza: mb.info.viewModel.tipiPendenza,
+          apiPagamenti: mb.info.viewModel.apiPagamenti,
+          apiPendenze: mb.info.viewModel.apiPendenze,
+          apiRagioneria: mb.info.viewModel.apiRagioneria,
+          acl: mb.info.viewModel.acl,
+          servizioIntegrazione: mb.info.viewModel.servizioIntegrazione,
+          abilitato: mb.info.viewModel.abilitato
+        };
+        delete _json.idA2A;
+        _json.domini = _json.domini.map((d) => {
+          return d.idDominio;
+        });
+        _json.tipiPendenza = _json.tipiPendenza.map((e) => {
+          return e.idTipoPendenza;
+        });
+      }
+      this.gps.saveData(_service, _json, _query, _method).subscribe(
+        (response) => {
+          this.gps.updateSpinner(false);
+          responseService.next(true);
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        });
+    }
+  }
+
+  title(): string {
+    return UtilService.defaultDisplay({ value: this.json?this.json.principal:null });
+  }
+
+  infoDetail(): any {
+    return {};
+  }
+
+}

@@ -1,0 +1,44 @@
+<div class="row">
+  <div class="col-12 col-lg-2"></div>
+  <div class="col-12 col-lg-8">
+    <mat-card class="no-shadow">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{voce.RIEPILOGO}}</p>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Principal" formControlName="principal_ctrl" autocomplete="off" required>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput placeholder="Nome" formControlName="ragioneSociale_ctrl" autocomplete="off" required>
+        </mat-form-field>
+      </div>
+      <div class="w-100" [formGroup]="fGroup">
+        <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
+      </div>
+      <div class="w-100 my-4">
+        <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="voce.DOMINI" formControlName="dominio_ctrl" multiple [compareWith]="dominioCmpFn">
+            <mat-option *ngFor="let item of domini" [value]="item">{{item.ragioneSociale}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="voce.PENDENZE" formControlName="tipoPendenza_ctrl" multiple [compareWith]="pendenzaCmpFn">
+            <mat-option *ngFor="let item of tipiPendenza" [value]="item">{{item.descrizione}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <p class="d-block matcard-title py-3 color-gray regular-24">{{voce.AUTORIZZAZIONI_BACKOFFICE}}</p>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngFor="let item of acl; let i = index">
+          <mat-select [placeholder]="item.mapACL" [formControlName]="'autorizzazioni_ctrl_'+i">
+            <mat-option value="">Non autorizzato</mat-option>
+            <mat-option value="R">Lettura</mat-option>
+            <mat-option value="R,W">Scrittura</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card>
+  </div>
+  <div class="col-12 col-lg-2"></div>
+</div>

@@ -1,0 +1,10 @@
+@import '~@angular/material/theming';
+@import '../../../../../styles/variables.scss';
+
+:host {
+  display: block;
+}
+
+p {
+  margin: 0;
+}

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema attributeFormDefault="unqualified"
+            elementFormDefault="qualified"
+            version="1.0"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://ws.pagamenti.telematici.gov/"
+            targetNamespace="http://ws.pagamenti.telematici.gov/">
+
+    <xsd:simpleType name="stText16">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="16"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stText35">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="35"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stText70">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="70"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stText140">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="140"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stTipoIdentificativoUnivocoPersFG">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="1"/>
+            <xsd:enumeration value="F"/><!-- Persona Fisica -->
+            <xsd:enumeration value="G"/><!-- Persona Giuridica -->
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stISODate">
+        <xsd:restriction base="xsd:date"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stISODateTime">
+        <xsd:restriction base="xsd:dateTime"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stTipoAzioneAggiornamento">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="1"/>
+            <xsd:enumeration value="A"/><!-- Attivazione -->
+            <xsd:enumeration value="D"/><!-- Disattivazione -->
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stEsitoOperazione">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="2"/>
+            <xsd:enumeration value="OK"/>
+            <xsd:enumeration value="KO"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stIdentificativoMessaggioRichiesta">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="20"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stImporto">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:minInclusive value="0.01"/>
+            <xsd:maxInclusive value="99999999.99"/>
+            <xsd:fractionDigits value="2"/>
+            <xsd:totalDigits value="12"/>
+            <xsd:pattern value="\d+\.\d{2}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stCellulareSoggetto">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\+[0-9]{2,2}\s[0-9]{3,3}\-[0-9]{7,7}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stEMail">
+        <xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)*"/>
+            <xsd:maxLength value="256"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stIdentificativoFlusso">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+            <xsd:maxLength value="70"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="stCodiceAvviso">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]{18,18}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="ctFaultBean">
+        <xsd:sequence>
+            <xsd:element name="faultCode" type="xsd:string"/>
+            <xsd:element name="faultString" type="xsd:string"/>
+            <xsd:element name="id" type="xsd:string"/>
+            <xsd:element name="description" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="serial" type="xsd:int" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ctIdentificativoUnivocoPersonaFG">
+        <xsd:sequence>
+            <xsd:element name="tipoIdentificativoUnivoco" type="stTipoIdentificativoUnivocoPersFG" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Campo alfanumerico che indica la natura del
+                        soggetto, può assumere i seguenti valori:
+                    </xsd:documentation>
+                    <xsd:documentation>F - Persona Fisica</xsd:documentation>
+                    <xsd:documentation>G - Persona Giuridica</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="codiceIdentificativoUnivoco" type="stText35" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Campo alfanumerico che può contenere il codice
+                        fiscale o, in alternativa, la partita IVA del soggetto.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ctSoggettoPagatore">
+        <xsd:sequence>
+            <xsd:element name="anagraficaPagatore" type="stText70" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Indica il nominativo o la ragione sociale del pagatore.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="identificativoUnivocoPagatore" type="ctIdentificativoUnivocoPersonaFG" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione fiscale
+                        del pagatore.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ctRisposta">
+        <xsd:sequence>
+            <xsd:element name="fault" type="ctFaultBean" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ctPeriodoRiferimento">
+        <xsd:sequence>
+            <xsd:element name="annoDA" type="xsd:gYear"/>
+            <xsd:element name="annoA" type="xsd:gYear"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="stCodiceServizio">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]{5,5}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+	
+	<xsd:simpleType name="stIBANIdentifier">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+		<xsd:simpleType name="stTipoPagamento">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]{1,1}" />
+            <xsd:enumeration value="0"/><!-- Contestuale -->
+            <xsd:enumeration value="1"/><!-- Non contestuale -->
+        </xsd:restriction>
+    </xsd:simpleType>
+	
+</xsd:schema>

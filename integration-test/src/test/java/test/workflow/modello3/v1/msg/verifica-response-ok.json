@@ -1,0 +1,27 @@
+{
+	"esito":"OK",
+	"datiPagamentoPA": {
+		"importoSingoloVersamento": '#(pendenzaPut.importo + "")',
+		"ibanAccredito": '#(ibanAccredito)',
+		"bicAccredito": "#(bicAccredito)",
+		"enteBeneficiario": {
+			"identificativoUnivocoBeneficiario":{
+				"tipoIdentificativoUnivoco":"G",
+				"codiceIdentificativoUnivoco": '#(idDominio)'
+			},
+			"denominazioneBeneficiario": '#(dominio.ragioneSociale)',
+			"codiceUnitOperBeneficiario": null,
+			"denomUnitOperBeneficiario": null,
+			"indirizzoBeneficiario": '#(dominio.indirizzo)',
+			"civicoBeneficiario": '#(dominio.civico)',
+			"capBeneficiario": '#(dominio.cap)',
+			"localitaBeneficiario": '#(dominio.localita)',
+			"provinciaBeneficiario": '#(dominio.provincia)',
+			"nazioneBeneficiario": '#(dominio.nazione)'
+		},
+		"credenzialiPagatore": null,
+		"causaleVersamento": '#(pendenzaPut.causale)',
+		"spezzoniCausaleVersamento": null
+	}, 
+	fault: null
+}

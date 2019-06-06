@@ -1,0 +1,209 @@
+@import 'variables.scss';
+
+$theme: mat-light-theme($link-primary, $link-accent, $link-error);
+
+@include angular-material-theme($theme);
+
+// Overridden styles
+// mat-datepicker-toggle button
+mat-datepicker-toggle button {
+  color: $link-primary-text !important;
+}
+
+body,
+.mat-drawer-container {
+  color: $link-primary-text;
+}
+
+//SCSS global classes
+.break-all {
+  -ms-word-break: break-all !important;
+  word-break: break-all !important;
+}
+
+.stato-error {
+  color: mat-color($link-error);
+}
+
+.stato-warning {
+  color: mat-color($link-warning);
+}
+
+.stato-normal {
+  color: $link-primary-text;
+}
+
+.normal-color {
+  color: $link-primary-text;
+}
+
+.light-color{
+  color: $link-light;
+}
+
+.medium-24 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.medium-16 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.medium-14 {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.medium-18 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.regular-24 {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.regular-18 {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.regular-16 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.regular-14 {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.lh-130 {
+  line-height: 130%;
+}
+
+.lh-100 {
+  line-height: 100%;
+}
+
+.lh-90 {
+  line-height: 90%;
+}
+
+.color-gray {
+  color: $link-secondary-text !important;
+}
+
+.head-shadow {
+  box-shadow: 0 2px 2px 0 $link-shadow !important;
+}
+
+.shadow {
+  box-shadow: 0 1px 1px 0 $link-shadow !important;
+}
+
+.active-route {
+  color: black;
+  background-color: $link-over-item;
+}
+
+a, a:hover {
+  text-decoration: none;
+  color: $link-primary-text;
+}
+
+i.material-icons {
+  color: $link-light;
+}
+
+.dark-material-icons {
+  color: $link-primary-text !important;
+}
+
+.full-transparent-absolute {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.full-absolute {
+  position: absolute;
+  background-color: $link-gray-container;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.fac-simile {
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.fac-simile span {
+  font-size: 25vmin;
+  opacity: .035;
+}
+
+.default-background {
+  background-color: $link-form-background;
+}
+
+//News [innerHTML]
+.news-body h1,
+.news-body h2,
+.news-body h3,
+.news-body h4,
+.news-body h5,
+.news-body h6 {
+  font-size: 20px;
+  color: mat-color($link-primary);
+}
+
+.news-body a,
+.news-body a:hover  {
+  text-decoration: none;
+  color: mat-color($link-accent) !important;
+}
+
+//Bootstrap Override
+//.card-container
+@media (min-width: 768px) {
+  .card-container {
+    max-width: 740px !important;
+  }
+}
+
+// Overridden styles
+// Angualr2-json-schema-form
+#jForm json-schema-form {
+
+  legend {
+    font-weight: normal !important;
+    font-size: 1.25rem;
+  }
+
+  .array-item {
+    box-shadow: none !important;
+    cursor: auto !important;
+  }
+
+  .mat-focused .mat-form-field-underline .mat-form-field-ripple {
+    background-color: mat-color($link-accent) !important;
+  }
+
+  .mat-focused .mat-form-field-label {
+    color: mat-color($link-accent) !important;
+  }
+
+}

@@ -1,0 +1,7 @@
+<div class="d-block" (click)="_collapse()">
+  <link-standard-view [info]="info" [dataRef]="dataRef"></link-standard-view>
+  <p class="mt-4" *ngIf="_expanded && info.motivo">{{info.motivo}}</p>
+  <div class="mt-4" *ngIf="_expanded && info.elenco">
+    <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of info.elenco" [info]="item"></link-key-value-view>
+  </div>
+</div>

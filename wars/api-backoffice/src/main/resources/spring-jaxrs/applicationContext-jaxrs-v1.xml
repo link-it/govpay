@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns:b="http://www.springframework.org/schema/beans"
+        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+        xmlns:cxf="http://cxf.apache.org/core"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+
+        <b:import resource="classpath:META-INF/cxf/cxf.xml"/>
+        <b:import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+        
+	<!-- Parameter Converter -->
+    <b:bean id="parameterConverter" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider"/>
+
+	<!--  Object BodyReader -->
+    <b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader"/>
+
+    <!--  Jackson Provider for JSON/XML -->
+   	<b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider"/>
+    <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider"/>
+
+    
+    <!-- FaultBean Exception Mapper -->
+    <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>
+    
+    <!-- Context -->
+	<b:bean id="contextConfigV1" class="it.govpay.rs.v1.service.context.ContextConfig">
+	</b:bean>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory"/>
+	<b:bean id="contextV1" class="org.openspcoop2.utils.service.context.ContextFeature">
+		<b:property name="contextFactory" >
+			<b:ref bean="customContextFactory"/>
+		</b:property>
+		<b:property name="contextConfig" >
+			<b:ref bean="contextConfigV1"/>
+		</b:property>
+	</b:bean>
+        
+   	<!-- JAX-RS Service Impl -->
+
+   	<b:bean id="applicazioni" class="it.govpay.backoffice.v1.Applicazioni"/>
+   	<b:bean id="avvisi" class="it.govpay.backoffice.v1.Avvisi"/>
+   	<b:bean id="check" class="it.govpay.backoffice.v1.Check"/>
+   	<b:bean id="configurazioni" class="it.govpay.backoffice.v1.Configurazioni"/>
+   	<b:bean id="domini" class="it.govpay.backoffice.v1.Domini"/>
+   	<b:bean id="entrate" class="it.govpay.backoffice.v1.Entrate"/>
+   	<b:bean id="enumerazioni" class="it.govpay.backoffice.v1.Enumerazioni"/>
+   	<b:bean id="eventi" class="it.govpay.backoffice.v1.Eventi"/>
+   	<b:bean id="flussiRendicontazione" class="it.govpay.backoffice.v1.FlussiRendicontazione"/>
+   	<b:bean id="incassi" class="it.govpay.backoffice.v1.Incassi"/>
+   	<b:bean id="info" class="it.govpay.backoffice.v1.Info"/>
+   	<b:bean id="intermediari" class="it.govpay.backoffice.v1.Intermediari"/>
+   	<b:bean id="operatori" class="it.govpay.backoffice.v1.Operatori"/>
+   	<b:bean id="operazioni" class="it.govpay.backoffice.v1.Operazioni"/>
+   	<b:bean id="pagamenti" class="it.govpay.backoffice.v1.Pagamenti"/>
+   	<b:bean id="pendenze" class="it.govpay.backoffice.v1.Pendenze"/>
+   	<b:bean id="profilo" class="it.govpay.backoffice.v1.Profilo"/>
+   	<b:bean id="reportistiche" class="it.govpay.backoffice.v1.Reportistiche"/>
+   	<b:bean id="riscossioni" class="it.govpay.backoffice.v1.Riscossioni"/>
+   	<b:bean id="rpp" class="it.govpay.backoffice.v1.Rpp"/>
+   	<b:bean id="ruoli" class="it.govpay.backoffice.v1.Ruoli"/>
+   	<b:bean id="tracciati" class="it.govpay.backoffice.v1.Tracciati"/>
+   	<b:bean id="tipiPendenza" class="it.govpay.backoffice.v1.TipiPendenza"/>
+       
+   	<!-- JAX-RS Configuration -->
+   
+   <!-- Servizi V1 -->
+
+	<!-- BASIC_START -->
+    <jaxrs:server id="apiBackofficeBasicV1" address="/basic/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="configurazioni" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- BASIC_END -->
+    
+    <!-- SSL_START -->
+    <jaxrs:server id="apiBackofficeSSLV1" address="/ssl/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="configurazioni" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SSL_END -->
+    
+    <!-- FORM_START -->
+    <jaxrs:server id="apiBackofficeFormV1" address="/form/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="configurazioni" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+         <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- FORM_END -->
+    
+     <!-- HEADER_START -->
+    <jaxrs:server id="apiBackofficeHeaderV1" address="/header/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="configurazioni" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- HEADER_END -->
+    
+    <!-- SPID_START -->
+    <jaxrs:server id="apiBackofficeSpidV1" address="/spid/v1/">
+        <jaxrs:serviceBeans>
+                <ref bean="applicazioni" />
+			   	<ref bean="avvisi" />
+			   	<ref bean="check" />
+			   	<ref bean="configurazioni" />
+			   	<ref bean="domini" />
+			   	<ref bean="entrate" />
+			   	<ref bean="enumerazioni" />
+			   	<ref bean="eventi" />
+			   	<ref bean="flussiRendicontazione" />
+			   	<ref bean="incassi" />
+			   	<ref bean="info" />
+			   	<ref bean="intermediari" />
+			   	<ref bean="operatori" />
+			   	<ref bean="operazioni" />
+			   	<ref bean="pagamenti" />
+			   	<ref bean="pendenze" />
+			   	<ref bean="profilo" />
+			   	<ref bean="reportistiche" />
+			   	<ref bean="riscossioni" />
+			   	<ref bean="rpp" />
+			   	<ref bean="ruoli" />
+			   	<ref bean="tracciati" />
+			   	<ref bean="tipiPendenza" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+			<ref bean="contextV1" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SPID_END -->
+    
+</b:beans>
+        
