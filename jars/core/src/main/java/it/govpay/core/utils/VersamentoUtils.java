@@ -205,6 +205,11 @@ public class VersamentoUtils {
 			throw new VersamentoSconosciutoException();
 		}
 		VerificaClient verificaClient = new VerificaClient(applicazione,bd);
+		// salvataggio id Rpt/ versamento/ pagamento
+		verificaClient.getEventoCtx().setCodDominio(dominio);
+		verificaClient.getEventoCtx().setIuv(iuv);
+		verificaClient.getEventoCtx().setIdA2A(applicazione.getCodApplicazione());
+		verificaClient.getEventoCtx().setIdPendenza(codVersamentoEnte);
 		Versamento versamento = null;
 		try {
 			try {
@@ -252,10 +257,6 @@ public class VersamentoUtils {
 			
 			if(eventoCtx.isRegistraEvento()) {
 				// log evento
-				if(versamento != null) {
-					eventoCtx.setIdVersamento(versamento.getId());
-				}
-				
 				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
 				giornaleEventi.registraEvento(eventoCtx.toEventoDTO());
 			}

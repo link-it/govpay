@@ -69,55 +69,6 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
-		// Object _versamento
-		Long id_versamento = null;
-		it.govpay.orm.IdVersamento idLogic_versamento = evento.getIdVersamento();
-		if(idLogic_versamento!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findTableId(idLogic_versamento, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_versamento = idLogic_versamento.getId();
-				if(id_versamento==null || id_versamento<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _pagamentoPortale
-		Long id_pagamentoPortale = null;
-		it.govpay.orm.IdPagamentoPortale idLogic_pagamentoPortale = evento.getIdPagamentoPortale();
-		if(idLogic_pagamentoPortale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_pagamentoPortale = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findTableId(idLogic_pagamentoPortale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_pagamentoPortale = idLogic_pagamentoPortale.getId();
-				if(id_pagamentoPortale==null || id_pagamentoPortale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _rpt
-		Long id_rpt = null;
-		it.govpay.orm.IdRpt idLogic_rpt = null;
-		idLogic_rpt = evento.getIdRpt();
-		if(idLogic_rpt!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findTableId(idLogic_rpt, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt = idLogic_rpt.getId();
-				if(id_rpt==null || id_rpt<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object evento
 		sqlQueryObjectInsert.addInsertTable(this.getEventoFieldConverter().toTable(Evento.model()));
@@ -134,9 +85,12 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().PARAMETRI_RICHIESTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().PARAMETRI_RISPOSTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().DATI_CONTROPARTE,false),"?");
-		sqlQueryObjectInsert.addInsertField("id_versamento","?");
-		sqlQueryObjectInsert.addInsertField("id_pagamento_portale","?");
-		sqlQueryObjectInsert.addInsertField("id_rpt","?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().COD_VERSAMENTO_ENTE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().COD_APPLICAZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().CCP,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false),"?");
 
 		// Insert evento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getEventoFetch().getKeyGeneratorObject(Evento.model());
@@ -154,9 +108,12 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getParametriRichiesta(),Evento.model().PARAMETRI_RICHIESTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getParametriRisposta(),Evento.model().PARAMETRI_RISPOSTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getDatiControparte(),Evento.model().DATI_CONTROPARTE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_pagamentoPortale,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCodVersamentoEnte(),Evento.model().COD_VERSAMENTO_ENTE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCodApplicazione(),Evento.model().COD_APPLICAZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getIuv(),Evento.model().IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCcp(),Evento.model().CCP.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCodDominio(),Evento.model().COD_DOMINIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getIdSessione(),Evento.model().ID_SESSIONE.getFieldType())
 		);
 		evento.setId(id);
 
@@ -195,55 +152,6 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
-		// Object _evento_versamento
-		Long id_evento_versamento = null;
-		it.govpay.orm.IdVersamento idLogic_evento_versamento = evento.getIdVersamento();
-		if(idLogic_evento_versamento!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_evento_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findTableId(idLogic_evento_versamento, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_evento_versamento = idLogic_evento_versamento.getId();
-				if(id_evento_versamento==null || id_evento_versamento<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _evento_pagamentoPortale
-		Long id_evento_pagamentoPortale = null;
-		it.govpay.orm.IdPagamentoPortale idLogic_evento_pagamentoPortale = evento.getIdPagamentoPortale();
-		if(idLogic_evento_pagamentoPortale!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_evento_pagamentoPortale = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findTableId(idLogic_evento_pagamentoPortale, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_evento_pagamentoPortale = idLogic_evento_pagamentoPortale.getId();
-				if(id_evento_pagamentoPortale==null || id_evento_pagamentoPortale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _evento_rpt
-		Long id_evento_rpt = null;
-		it.govpay.orm.IdRpt idLogic_evento_rpt = null;
-		idLogic_evento_rpt = evento.getIdRpt();
-		if(idLogic_evento_rpt!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_evento_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findTableId(idLogic_evento_rpt, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_evento_rpt = idLogic_evento_rpt.getId();
-				if(id_evento_rpt==null || id_evento_rpt<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object evento
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -276,24 +184,18 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		lstObjects_evento.add(new JDBCObject(evento.getParametriRisposta(), Evento.model().PARAMETRI_RISPOSTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().DATI_CONTROPARTE,false), "?");
 		lstObjects_evento.add(new JDBCObject(evento.getDatiControparte(), Evento.model().DATI_CONTROPARTE.getFieldType()));
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_pagamento_portale","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_rpt","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_evento.add(new JDBCObject(id_evento_versamento, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_evento.add(new JDBCObject(id_evento_pagamentoPortale, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_evento.add(new JDBCObject(id_evento_rpt, Long.class));
-		}
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().COD_VERSAMENTO_ENTE,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getCodVersamentoEnte(), Evento.model().COD_VERSAMENTO_ENTE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().COD_APPLICAZIONE,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getCodApplicazione(), Evento.model().COD_APPLICAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().IUV,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getIuv(), Evento.model().IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().CCP,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getCcp(), Evento.model().CCP.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getCodDominio(), Evento.model().COD_DOMINIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getIdSessione(), Evento.model().ID_SESSIONE.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_evento.add(new JDBCObject(tableId, Long.class));
 

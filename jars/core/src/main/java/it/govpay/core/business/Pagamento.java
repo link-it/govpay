@@ -437,9 +437,17 @@ public class Pagamento extends BasicBD {
 			ctx.getApplicationLogger().log("rr.invioRr");
 
 			nodoInviaRRClient = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(this), operationId, giornale, this);
-			nodoInviaRRClient.getEventoCtx().setIdRpt(rpt.getId());
-			nodoInviaRRClient.getEventoCtx().setIdVersamento(rpt.getIdVersamento());
-			nodoInviaRRClient.getEventoCtx().setIdPagamentoPortale(rpt.getIdPagamentoPortale());
+			// salvataggio id Rpt/ versamento/ pagamento
+			nodoInviaRRClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
+			nodoInviaRRClient.getEventoCtx().setIuv(rpt.getIuv());
+			nodoInviaRRClient.getEventoCtx().setCcp(rpt.getCcp());
+			nodoInviaRRClient.getEventoCtx().setIdA2A(rpt.getVersamento(this).getApplicazione(this).getCodApplicazione());
+			nodoInviaRRClient.getEventoCtx().setIdPendenza(rpt.getVersamento(this).getCodVersamentoEnte());
+			try {
+				if(rpt.getPagamentoPortale(this) != null)
+					nodoInviaRRClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(this).getIdSessione());
+			} catch (NotFoundException e) {	}
+			
 			Risposta risposta = RrUtils.inviaRr(nodoInviaRRClient, rr, rpt, operationId, this);
 			nodoInviaRRClient.getEventoCtx().setEsito(Esito.OK);
 

@@ -106,6 +106,10 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		appContext.getRequest().addGenericProperty(new Property("ccp", codiceContestoPagamento));
 		appContext.getRequest().addGenericProperty(new Property("codDominio", identificativoDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", identificativoUnivocoVersamento));
+		
+		appContext.getEventoCtx().setCodDominio(identificativoDominio);
+		appContext.getEventoCtx().setIuv(identificativoUnivocoVersamento);
+		appContext.getEventoCtx().setCcp(codiceContestoPagamento);
 		try {
 			ctx.getApplicationLogger().log("er.ricezione");
 		} catch (UtilsException e) {
@@ -178,10 +182,13 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 			Rr rr = RrUtils.acquisisciEr(identificativoDominio, identificativoUnivocoVersamento, codiceContestoPagamento, er, bd);
 			
+			appContext.getEventoCtx().setIdA2A(rr.getRpt(bd).getVersamento(bd).getApplicazione(bd).getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(rr.getRpt(bd).getVersamento(bd).getCodVersamentoEnte());
+			try {
+				if(rr.getRpt(bd).getPagamentoPortale(bd) != null)
+					appContext.getEventoCtx().setIdPagamento(rr.getRpt(bd).getPagamentoPortale(bd).getIdSessione());
+			} catch (NotFoundException e) {	}
 			
-			appContext.getEventoCtx().setIdRpt(rr.getRpt(bd).getId());
-			appContext.getEventoCtx().setIdVersamento(rr.getRpt(bd).getVersamento(bd).getId());
-			appContext.getEventoCtx().setIdPagamentoPortale(rr.getRpt(bd).getIdPagamentoPortale());
 			controparte.setCodCanale(rr.getRpt(bd).getCodCanale());
 			controparte.setTipoVersamento(rr.getRpt(bd).getTipoVersamento());
 			response.setEsito("OK");
@@ -224,10 +231,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		
-		Long idVersamentoLong = null;
-		Long idPagamentoPortaleLong = null;
-		Long idRptLong = null;
-
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 
@@ -246,6 +249,11 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+		
+		appContext.getEventoCtx().setCodDominio(codDominio);
+		appContext.getEventoCtx().setIuv(iuv);
+		appContext.getEventoCtx().setCcp(ccp);
+		
 		try {
 			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
 		} catch (UtilsException e) {
@@ -316,13 +324,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 			Rpt rpt = RtUtils.acquisisciRT(codDominio, iuv, ccp, bodyrichiesta.getTipoFirma(), bodyrichiesta.getRt(), false, bd);
 			
-			idVersamentoLong = rpt.getVersamento(bd).getId();
-			idPagamentoPortaleLong = rpt.getIdPagamentoPortale();
-			idRptLong = rpt.getId();
-			
-			appContext.getEventoCtx().setIdVersamento(idVersamentoLong);
-			appContext.getEventoCtx().setIdPagamentoPortale(idPagamentoPortaleLong);
-			appContext.getEventoCtx().setIdRpt(idRptLong);
+			appContext.getEventoCtx().setIdA2A(rpt.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
+			try {
+				if(rpt.getPagamentoPortale(bd) != null)
+					appContext.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(bd).getIdSessione());
+			} catch (NotFoundException e) {	}
 			
 			appContext.getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
 			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");

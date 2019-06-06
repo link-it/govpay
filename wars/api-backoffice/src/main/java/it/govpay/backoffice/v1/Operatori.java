@@ -57,7 +57,7 @@ public class Operatori extends BaseRsServiceV1{
     @Path("/{principal}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response operatoriPrincipalPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("principal") String principal){
+    public Response updateOperatore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("principal") String principal){
         this.controller.setContext(this.getContext());
         return this.controller.operatoriPrincipalPATCH(this.getUser(), uriInfo, httpHeaders, is,  principal);
     }

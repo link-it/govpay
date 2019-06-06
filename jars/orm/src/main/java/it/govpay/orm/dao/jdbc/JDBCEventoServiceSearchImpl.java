@@ -48,7 +48,6 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
 import it.govpay.orm.Evento;
-import it.govpay.orm.SingoloVersamento;
 import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.EventoFetch;
 
@@ -127,57 +126,17 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			fields.add(Evento.model().SOTTOTIPO_ESITO);
 			fields.add(Evento.model().SOTTOTIPO_EVENTO);
 			fields.add(Evento.model().TIPO_EVENTO);
-			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getFieldConverter().toTable(Evento.model())));
-			fields.add(new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", this.getFieldConverter().toTable(Evento.model())));
-			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getFieldConverter().toTable(Evento.model())));
+			fields.add(Evento.model().COD_VERSAMENTO_ENTE);
+			fields.add(Evento.model().COD_APPLICAZIONE);
+			fields.add(Evento.model().IUV);
+			fields.add(Evento.model().CCP);
+			fields.add(Evento.model().COD_DOMINIO);
+			fields.add(Evento.model().ID_SESSIONE);
 		
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				
-				Object idVersamentoObj = map.remove("id_versamento");
-				Object idPagamentoPortaleObj = map.remove("id_pagamento_portale");
-				Object idRptObj = map.remove("id_rpt");
-
 				Evento evento = (Evento)this.getEventoFetch().fetch(jdbcProperties.getDatabase(), Evento.model(), map);
-				
-				if(idVersamentoObj instanceof Long) {
-					Long idVersamento = (Long) idVersamentoObj;
-					it.govpay.orm.IdVersamento id_versamento_ente = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_ente = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
-					}else{
-						id_versamento_ente = new it.govpay.orm.IdVersamento();
-					}
-					id_versamento_ente.setId(idVersamento);
-					evento.setIdVersamento(id_versamento_ente);
-				}
-	
-				if(idPagamentoPortaleObj instanceof Long) {
-					Long idPagamentoPortale = (Long) idPagamentoPortaleObj;
-					it.govpay.orm.IdPagamentoPortale id_pagamento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_pagamento = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findId(idPagamentoPortale, false);
-					}else{
-						id_pagamento = new it.govpay.orm.IdPagamentoPortale();
-					}
-					id_pagamento.setId(idPagamentoPortale);
-					evento.setIdPagamentoPortale(id_pagamento);
-				}
-				
-				if(idRptObj instanceof Long) {
-					Long idRpt = (Long) idRptObj;
-					it.govpay.orm.IdRpt id_rpt = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findId(idRpt, false);
-					}else{
-						id_rpt = new it.govpay.orm.IdRpt();
-					}
-					id_rpt.setId(idRpt);
-					evento.setIdRpt(id_rpt);
-				}
-				
-				
 				list.add(evento);
 			}
 		} catch(NotFoundException e) {}
@@ -493,39 +452,6 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-		
-		if(expression.inUseModel(Evento.model().ID_VERSAMENTO,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(Evento.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
-		}
-		
-		
-		if(expression.inUseModel(Evento.model().ID_PAGAMENTO_PORTALE,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(Evento.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_PAGAMENTO_PORTALE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_pagamento_portale="+tableName2+".id");
-		}
-		
-		if(expression.inUseModel(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE,false)){
-			
-			if(!expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO,false)){
-				String tableName1 = this.getFieldConverter().toAliasTable(Evento.model());
-				String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO);
-				sqlQueryObject.addFromTable(tableName2);
-				sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
-			}
-			
-			String tableName1 = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO);
-			String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
-		}
-
-		if(expression.inUseModel(Evento.model().ID_RPT,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(Evento.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_RPT);
-			sqlQueryObject.addWhereCondition(tableName1+".id_rpt="+tableName2+".id");
-		}
 
 	}
 	
@@ -550,37 +476,6 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Evento.model()))
 			));
-
-		// Evento.model().ID_VERSAMENTO
-		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_VERSAMENTO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_VERSAMENTO))
-			));
-
-		// Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE))
-			));
-
-		// Evento.model().ID_PAGAMENTO_PORTALE
-		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_PAGAMENTO_PORTALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_PAGAMENTO_PORTALE))
-			));
-
-		// Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE))
-			));
-
-		// Evento.model().ID_RPT
-		mapTableToPKColumn.put(converter.toTable(Evento.model().ID_RPT),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Evento.model().ID_RPT))
-			));
-
         return mapTableToPKColumn;		
 	}
 	

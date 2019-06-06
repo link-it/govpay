@@ -49,14 +49,17 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.DATA = new Field("data",java.util.Date.class,"Evento",Evento.class);
 		this.INTERVALLO = new Field("intervallo",long.class,"Evento",Evento.class);
 		this.ESITO = new Field("esito",java.lang.String.class,"Evento",Evento.class);
-		this.SOTTOTIPO_ESITO = new Field("sottotipoEsito",java.lang.Integer.class,"Evento",Evento.class);
+		this.SOTTOTIPO_ESITO = new Field("sottotipoEsito",java.lang.String.class,"Evento",Evento.class);
 		this.DETTAGLIO_ESITO = new Field("dettaglioEsito",java.lang.String.class,"Evento",Evento.class);
-		this.PARAMETRI_RICHIESTA = new Field("parametriRichiesta",java.lang.String.class,"Evento",Evento.class);
-		this.PARAMETRI_RISPOSTA = new Field("parametriRisposta",java.lang.String.class,"Evento",Evento.class);
+		this.PARAMETRI_RICHIESTA = new Field("parametriRichiesta",byte[].class,"Evento",Evento.class);
+		this.PARAMETRI_RISPOSTA = new Field("parametriRisposta",byte[].class,"Evento",Evento.class);
 		this.DATI_CONTROPARTE = new Field("datiControparte",java.lang.String.class,"Evento",Evento.class);
-		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"Evento",Evento.class));
-		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new Field("idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"Evento",Evento.class));
-		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new Field("idRpt",it.govpay.orm.IdRpt.class,"Evento",Evento.class));
+		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"Evento",Evento.class);
+		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"Evento",Evento.class);
+		this.IUV = new Field("iuv",java.lang.String.class,"Evento",Evento.class);
+		this.CCP = new Field("ccp",java.lang.String.class,"Evento",Evento.class);
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Evento",Evento.class);
+		this.ID_SESSIONE = new Field("idSessione",java.lang.String.class,"Evento",Evento.class);
 	
 	}
 	
@@ -72,14 +75,17 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.DATA = new ComplexField(father,"data",java.util.Date.class,"Evento",Evento.class);
 		this.INTERVALLO = new ComplexField(father,"intervallo",long.class,"Evento",Evento.class);
 		this.ESITO = new ComplexField(father,"esito",java.lang.String.class,"Evento",Evento.class);
-		this.SOTTOTIPO_ESITO = new ComplexField(father,"sottotipoEsito",java.lang.Integer.class,"Evento",Evento.class);
+		this.SOTTOTIPO_ESITO = new ComplexField(father,"sottotipoEsito",java.lang.String.class,"Evento",Evento.class);
 		this.DETTAGLIO_ESITO = new ComplexField(father,"dettaglioEsito",java.lang.String.class,"Evento",Evento.class);
-		this.PARAMETRI_RICHIESTA = new ComplexField(father,"parametriRichiesta",java.lang.String.class,"Evento",Evento.class);
-		this.PARAMETRI_RISPOSTA = new ComplexField(father,"parametriRisposta",java.lang.String.class,"Evento",Evento.class);
+		this.PARAMETRI_RICHIESTA = new ComplexField(father,"parametriRichiesta",byte[].class,"Evento",Evento.class);
+		this.PARAMETRI_RISPOSTA = new ComplexField(father,"parametriRisposta",byte[].class,"Evento",Evento.class);
 		this.DATI_CONTROPARTE = new ComplexField(father,"datiControparte",java.lang.String.class,"Evento",Evento.class);
-		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"Evento",Evento.class));
-		this.ID_PAGAMENTO_PORTALE = new it.govpay.orm.model.IdPagamentoPortaleModel(new ComplexField(father,"idPagamentoPortale",it.govpay.orm.IdPagamentoPortale.class,"Evento",Evento.class));
-		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new ComplexField(father,"idRpt",it.govpay.orm.IdRpt.class,"Evento",Evento.class));
+		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"Evento",Evento.class);
+		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"Evento",Evento.class);
+		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Evento",Evento.class);
+		this.CCP = new ComplexField(father,"ccp",java.lang.String.class,"Evento",Evento.class);
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Evento",Evento.class);
+		this.ID_SESSIONE = new ComplexField(father,"idSessione",java.lang.String.class,"Evento",Evento.class);
 	
 	}
 	
@@ -111,11 +117,17 @@ public class EventoModel extends AbstractModel<Evento> {
 	 
 	public IField DATI_CONTROPARTE = null;
 	 
-	public it.govpay.orm.model.IdVersamentoModel ID_VERSAMENTO = null;
+	public IField COD_VERSAMENTO_ENTE = null;
 	 
-	public it.govpay.orm.model.IdPagamentoPortaleModel ID_PAGAMENTO_PORTALE = null;
+	public IField COD_APPLICAZIONE = null;
 	 
-	public it.govpay.orm.model.IdRptModel ID_RPT = null;
+	public IField IUV = null;
+	 
+	public IField CCP = null;
+	 
+	public IField COD_DOMINIO = null;
+	 
+	public IField ID_SESSIONE = null;
 	 
 
 	@Override

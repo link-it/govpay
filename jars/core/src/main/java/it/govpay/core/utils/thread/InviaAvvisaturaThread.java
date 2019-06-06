@@ -26,6 +26,7 @@ import gov.telematici.pagamenti.ws.avvisi_digitali.StEsitoOperazione;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
 import it.govpay.bd.model.Evento;
@@ -56,6 +57,7 @@ public class InviaAvvisaturaThread implements Runnable {
 	private Dominio dominio = null;
 	private IContext ctx = null;
 	private Giornale giornale = null;
+	private Applicazione applicazione = null;
 
 	public InviaAvvisaturaThread(Versamento versamento, String idTransazione, BasicBD bd, IContext ctx) throws ServiceException {
 		this.idTransazione = idTransazione;
@@ -65,7 +67,8 @@ public class InviaAvvisaturaThread implements Runnable {
 		this.dominio = this.versamento.getDominio(bd);
 		this.stazione = dominio.getStazione();
 		this.intermediario = this.stazione.getIntermediario(bd);
-
+		this.applicazione = this.versamento.getApplicazione(bd);
+		
 		List<SingoloVersamento> singoliVersamenti = this.versamento.getSingoliVersamenti(bd);
 		for(SingoloVersamento singoloVersamento: singoliVersamenti) {
 			singoloVersamento.getIbanAccredito(bd);
@@ -107,7 +110,10 @@ public class InviaAvvisaturaThread implements Runnable {
 			controparte.setCodStazione(this.stazione.getCodStazione());
 			controparte.setErogatore(Evento.NDP);
 			controparte.setFruitore(this.intermediario.getDenominazione());
+			
 			client.getEventoCtx().setControparte(controparte);
+			client.getEventoCtx().setIdA2A(this.applicazione.getCodApplicazione());
+			client.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
 
 			CtNodoInviaAvvisoDigitale ctNodoInviaAvvisoDigitale = new CtNodoInviaAvvisoDigitale();
 			ctNodoInviaAvvisoDigitale.setAvvisoDigitaleWS(this.avviso);

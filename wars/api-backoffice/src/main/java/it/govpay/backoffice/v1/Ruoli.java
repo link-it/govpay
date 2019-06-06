@@ -39,7 +39,7 @@ public class Ruoli extends BaseRsServiceV1{
     @Path("/{idRuolo}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response ruoliIdRuoloPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idRuolo") String idRuolo){
+    public Response updateRuolo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idRuolo") String idRuolo){
     	this.controller.setContext(this.getContext());
         return this.controller.ruoliIdRuoloPATCH(this.getUser(), uriInfo, httpHeaders, is,  idRuolo);
     }

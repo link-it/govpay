@@ -121,6 +121,7 @@ paths:
       tags:
         - Pendenze
       summary: Aggiornamento di uno o più campi di una pendenza
+      operationId: updatePendenza
       parameters:
         - in: path
           name: idA2A

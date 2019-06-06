@@ -25,13 +25,18 @@ public class EventiFilter extends AbstractFilter{
 	private List<String> codDomini;
 	private String iuv;
 	private String ccp;
-	private Long idApplicazione;
 	private String codApplicazione;
 	private String codVersamentoEnte;
 	private String idSessione;
 	private Date datainizio;
 	private Date dataFine;
 	private List<Long> idEventi= null;
+	private String esito;
+	private String componente;
+	private String tipoEvento;
+	private String categoria;
+	private String ruolo;
+	
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -52,7 +57,7 @@ public class EventiFilter extends AbstractFilter{
 			boolean addAnd = false;
 			
 			if(this.codDominio != null){
-				newExpression.equals(Evento.model().ID_RPT.COD_DOMINIO, this.codDominio);
+				newExpression.equals(Evento.model().COD_DOMINIO, this.codDominio);
 				addAnd = true;
 			}
 			
@@ -61,7 +66,7 @@ public class EventiFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.in(Evento.model().ID_RPT.COD_DOMINIO, this.codDomini);
+				newExpression.in(Evento.model().COD_DOMINIO, this.codDomini);
 				addAnd = true;
 			}
 
@@ -70,17 +75,17 @@ public class EventiFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(Evento.model().ID_RPT.IUV, this.iuv, LikeMode.ANYWHERE);
+				newExpression.ilike(Evento.model().IUV, this.iuv, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			
-//			if(this.ccp != null && StringUtils.isNotEmpty(this.ccp)) {
-//				if(addAnd)
-//					newExpression.and();
-//				
-//				newExpression.ilike(Evento.model().ID_RPT.CCP, this.ccp, LikeMode.ANYWHERE);
-//				addAnd = true;
-//			}
+			if(this.ccp != null && StringUtils.isNotEmpty(this.ccp)) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.ilike(Evento.model().CCP, this.ccp, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
 			
 			
 			if(this.datainizio != null && this.dataFine != null) {
@@ -89,22 +94,29 @@ public class EventiFilter extends AbstractFilter{
 
 				newExpression.between(Evento.model().DATA, this.datainizio,this.dataFine);
 				addAnd = true;
-			}
-			
-			if(this.idApplicazione != null) {
-				if(addAnd)
-					newExpression.and();
+			} else {
+				if(this.datainizio != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.greaterEquals(Evento.model().DATA, this.datainizio);
+					addAnd = true;
+				} 
 				
-				CustomField idApplicazioneField = new CustomField("id_applicazione",  Long.class, "id_applicazione",  eventoFieldConverter.toTable(Evento.model().ID_VERSAMENTO));
-				newExpression.equals(idApplicazioneField, this.idApplicazione);
-				addAnd = true;
+				if(this.dataFine != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.lessEquals(Evento.model().DATA, this.dataFine);
+					addAnd = true;
+				}
 			}
 			
 			if(this.codVersamentoEnte!= null) {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE, this.codVersamentoEnte);
+				newExpression.equals(Evento.model().COD_VERSAMENTO_ENTE, this.codVersamentoEnte);
 				addAnd = true;
 			}
 			
@@ -112,7 +124,7 @@ public class EventiFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+				newExpression.equals(Evento.model().COD_APPLICAZIONE, this.codApplicazione);
 				addAnd = true;
 			}
 			
@@ -120,17 +132,56 @@ public class EventiFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE, this.idSessione);
+				newExpression.equals(Evento.model().ID_SESSIONE, this.idSessione);
 				addAnd = true;
 			}
 			
-			
+			if(this.esito != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().ESITO, this.esito);
+				addAnd = true;
+			}
 			
 			if(this.idEventi != null && !this.idEventi.isEmpty()){
 				CustomField idEventoField = new CustomField("id",  Long.class, "id",  eventoFieldConverter.toTable(Evento.model()));
 				newExpression.in(idEventoField, this.idEventi);
 				addAnd = true;
 			}
+			
+			if(this.componente != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().COMPONENTE, this.componente);
+				addAnd = true;
+			}
+			
+			if(this.categoria != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().CATEGORIA_EVENTO, this.categoria);
+				addAnd = true;
+			}
+			
+			if(this.ruolo != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().RUOLO, this.ruolo);
+				addAnd = true;
+			}
+			
+			if(this.tipoEvento != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().TIPO_EVENTO, this.tipoEvento);
+				addAnd = true;
+			}
+			
 
 			return newExpression;
 		}  catch (NotImplementedException e) {
@@ -198,14 +249,6 @@ public class EventiFilter extends AbstractFilter{
 		this.codVersamentoEnte = codVersamentoEnte;
 	}
 
-	public Long getIdApplicazione() {
-		return this.idApplicazione;
-	}
-
-	public void setIdApplicazione(Long idApplicazione) {
-		this.idApplicazione = idApplicazione;
-	}
-
 	public List<String> getCodDomini() {
 		return codDomini;
 	}
@@ -228,6 +271,46 @@ public class EventiFilter extends AbstractFilter{
 
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
+	}
+
+	public String getEsito() {
+		return esito;
+	}
+
+	public void setEsito(String esito) {
+		this.esito = esito;
+	}
+
+	public String getComponente() {
+		return componente;
+	}
+
+	public void setComponente(String componente) {
+		this.componente = componente;
+	}
+
+	public String getTipoEvento() {
+		return tipoEvento;
+	}
+
+	public void setTipoEvento(String tipoEvento) {
+		this.tipoEvento = tipoEvento;
+	}
+
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
+	public String getRuolo() {
+		return ruolo;
+	}
+
+	public void setRuolo(String ruolo) {
+		this.ruolo = ruolo;
 	}
 	
 }

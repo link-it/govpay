@@ -40,7 +40,6 @@ import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -333,9 +332,10 @@ public class Incassi extends BasicBD {
 								versamentiBD.updateVersamento(versamento);
 								
 								Evento eventoNota = new Evento();
-								eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
+								eventoNota.setCategoriaEvento(CategoriaEvento.INTERNO);
 								eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
-								eventoNota.setIdVersamento(versamento.getId());
+								eventoNota.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
+								eventoNota.setCodApplicazione(versamento.getApplicazione(this).getCodApplicazione());
 								eventoNota.setEsitoEvento(EsitoEvento.OK);
 								eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
 								eventoNota.setTipoEvento("Pagamento eseguito senza RPT");

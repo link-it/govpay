@@ -338,9 +338,17 @@ public class Rpt extends BasicBD{
 						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale, this);
-						chiediStatoRptClient.getEventoCtx().setIdRpt(rpts.get(0).getId());
-						chiediStatoRptClient.getEventoCtx().setIdVersamento(rpts.get(0).getIdVersamento());
-						chiediStatoRptClient.getEventoCtx().setIdPagamentoPortale(rpts.get(0).getIdPagamentoPortale());
+						// salvataggio id Rpt/ versamento/ pagamento
+						chiediStatoRptClient.getEventoCtx().setCodDominio(rpts.get(0).getCodDominio());
+						chiediStatoRptClient.getEventoCtx().setIuv(rpts.get(0).getIuv());
+						chiediStatoRptClient.getEventoCtx().setCcp(rpts.get(0).getCcp());
+						chiediStatoRptClient.getEventoCtx().setIdA2A(rpts.get(0).getVersamento(this).getApplicazione(this).getCodApplicazione());
+						chiediStatoRptClient.getEventoCtx().setIdPendenza(rpts.get(0).getVersamento(this).getCodVersamentoEnte());
+						try {
+							if(rpts.get(0).getPagamentoPortale(this) != null)
+								chiediStatoRptClient.getEventoCtx().setIdPagamento(rpts.get(0).getPagamentoPortale(this).getIdSessione());
+						} catch (NotFoundException e1) {}
+						
 						risposta = RptUtils.chiediStatoRPT(chiediStatoRptClient, intermediario, stazione, rpts.get(0), operationId, this);
 						chiediStatoRptClient.getEventoCtx().setEsito(Esito.OK);
 					} catch (ClientException ee) {
@@ -402,9 +410,17 @@ public class Rpt extends BasicBD{
 						this.setupConnection(ContextThreadLocal.get().getTransactionId());
 					GiornaleEventi giornaleEventi = new GiornaleEventi(this);
 					for(it.govpay.bd.model.Rpt rpt : rpts) {
-						clientInviaCarrelloRPT.getEventoCtx().setIdRpt(rpt.getId());
-						clientInviaCarrelloRPT.getEventoCtx().setIdVersamento(rpt.getIdVersamento());
-						clientInviaCarrelloRPT.getEventoCtx().setIdPagamentoPortale(rpt.getIdPagamentoPortale());
+						// salvataggio id Rpt/ versamento/ pagamento
+						clientInviaCarrelloRPT.getEventoCtx().setCodDominio(rpt.getCodDominio());
+						clientInviaCarrelloRPT.getEventoCtx().setIuv(rpt.getIuv());
+						clientInviaCarrelloRPT.getEventoCtx().setCcp(rpt.getCcp());
+						clientInviaCarrelloRPT.getEventoCtx().setIdA2A(rpt.getVersamento(this).getApplicazione(this).getCodApplicazione());
+						clientInviaCarrelloRPT.getEventoCtx().setIdPendenza(rpt.getVersamento(this).getCodVersamentoEnte());
+						try {
+							if(rpt.getPagamentoPortale(this) != null)
+								clientInviaCarrelloRPT.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(this).getIdSessione());
+						} catch (NotFoundException e) {	}
+						
 						RptUtils.popolaEventoCooperazione(clientInviaCarrelloRPT, rpt, intermediario, stazione); 
 
 						if(!clientInviaCarrelloRPT.getEventoCtx().getEsito().equals(Esito.OK) && clientInviaCarrelloRPT.getEventoCtx().getDescrizioneEsito() == null) {

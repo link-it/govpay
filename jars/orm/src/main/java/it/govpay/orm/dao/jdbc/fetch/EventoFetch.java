@@ -80,6 +80,18 @@ public class EventoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "parametri_risposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType()));
 				setParameter(object, "setDatiControparte", Evento.model().DATI_CONTROPARTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_controparte", Evento.model().DATI_CONTROPARTE.getFieldType()));
+				setParameter(object, "setCodVersamentoEnte", Evento.model().COD_VERSAMENTO_ENTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Evento.model().COD_VERSAMENTO_ENTE.getFieldType()));
+				setParameter(object, "setCodApplicazione", Evento.model().COD_APPLICAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", Evento.model().COD_APPLICAZIONE.getFieldType()));
+				setParameter(object, "setIuv", Evento.model().IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv", Evento.model().IUV.getFieldType()));
+				setParameter(object, "setCcp", Evento.model().CCP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ccp", Evento.model().CCP.getFieldType()));
+				setParameter(object, "setCodDominio", Evento.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Evento.model().COD_DOMINIO.getFieldType()));
+				setParameter(object, "setIdSessione", Evento.model().ID_SESSIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "id_sessione", Evento.model().ID_SESSIONE.getFieldType()));
 				return object;
 			}
 			
@@ -128,6 +140,18 @@ public class EventoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"parametriRisposta"));
 				setParameter(object, "setDatiControparte", Evento.model().DATI_CONTROPARTE.getFieldType(),
 					this.getObjectFromMap(map,"datiControparte"));
+				setParameter(object, "setCodVersamentoEnte", Evento.model().COD_VERSAMENTO_ENTE.getFieldType(),
+					this.getObjectFromMap(map,"codVersamentoEnte"));
+				setParameter(object, "setCodApplicazione", Evento.model().COD_APPLICAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"codApplicazione"));
+				setParameter(object, "setIuv", Evento.model().IUV.getFieldType(),
+					this.getObjectFromMap(map,"iuv"));
+				setParameter(object, "setCcp", Evento.model().CCP.getFieldType(),
+					this.getObjectFromMap(map,"ccp"));
+				setParameter(object, "setCodDominio", Evento.model().COD_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"codDominio"));
+				setParameter(object, "setIdSessione", Evento.model().ID_SESSIONE.getFieldType(),
+					this.getObjectFromMap(map,"idSessione"));
 				return object;
 			}
 			

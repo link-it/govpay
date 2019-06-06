@@ -6,7 +6,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.openspcoop2.utils.service.BaseImpl;
 import org.openspcoop2.utils.service.context.IContext;
-import org.openspcoop2.utils.service.fault.jaxrs.FaultCode;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
@@ -21,9 +20,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.rs.v2.acl.impl.TipoUtenzaOnlyAcl;
-import it.govpay.rs.v2.acl.Acl;
-import it.govpay.rs.v2.acl.AuthorizationRules;
 import it.govpay.pendenze.v2.api.PendenzeApi;
 import it.govpay.pendenze.v2.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pendenze.v2.beans.NuovaPendenza;
@@ -34,6 +30,9 @@ import it.govpay.pendenze.v2.beans.Pendenze;
 import it.govpay.pendenze.v2.beans.StatoPendenza;
 //import it.govpay.pendenze.v2.beans.TipiPendenza;
 import it.govpay.pendenze.v2.beans.converter.PendenzeConverter;
+import it.govpay.rs.v2.acl.Acl;
+import it.govpay.rs.v2.acl.AuthorizationRules;
+import it.govpay.rs.v2.acl.impl.TipoUtenzaOnlyAcl;
 /**
  * GovPay - API Pagamento
  */
@@ -192,7 +191,7 @@ public class PendenzeApiServiceImpl extends BaseImpl implements PendenzeApi {
 	}
 	
 	@Override
-	public void pendenzeIdA2AIdPendenzaPatch(String idA2A, String idPendenza, List<PatchOp> body) {
+	public void updatePendenza(String idA2A, String idPendenza, List<PatchOp> body) {
 		// TODO Auto-generated method stub
 	}
 

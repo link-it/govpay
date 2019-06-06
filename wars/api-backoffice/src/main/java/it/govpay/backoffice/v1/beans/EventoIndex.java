@@ -1,8 +1,10 @@
 package it.govpay.backoffice.v1.beans;
 
+
 import java.util.Date;
 import java.util.Objects;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,10 +29,8 @@ import it.govpay.core.beans.JSONSerializable;
 "idPendenza",
 "idPagamento",
 "controparte",
-"parametriRichiesta",
-"parametriRisposta",
 })
-public class Evento extends JSONSerializable {
+public class EventoIndex extends JSONSerializable {
   
   @JsonProperty("id")
   private Long id = null;
@@ -86,16 +86,10 @@ public class Evento extends JSONSerializable {
   @JsonProperty("controparte")
   private Controparte controparte = null;
   
-  @JsonProperty("parametriRichiesta")
-  private Object parametriRichiesta = null;
-  
-  @JsonProperty("parametriRisposta")
-  private Object parametriRisposta = null;
-  
   /**
    * Identificativo evento
    **/
-  public Evento id(Long id) {
+  public EventoIndex id(Long id) {
     this.id = id;
     return this;
   }
@@ -110,7 +104,7 @@ public class Evento extends JSONSerializable {
 
   /**
    **/
-  public Evento componente(ComponenteEvento componente) {
+  public EventoIndex componente(ComponenteEvento componente) {
     this.componente = componente;
     return this;
   }
@@ -125,7 +119,7 @@ public class Evento extends JSONSerializable {
 
   /**
    **/
-  public Evento categoriaEvento(CategoriaEvento categoriaEvento) {
+  public EventoIndex categoriaEvento(CategoriaEvento categoriaEvento) {
     this.categoriaEvento = categoriaEvento;
     return this;
   }
@@ -140,7 +134,7 @@ public class Evento extends JSONSerializable {
 
   /**
    **/
-  public Evento ruolo(RuoloEvento ruolo) {
+  public EventoIndex ruolo(RuoloEvento ruolo) {
     this.ruolo = ruolo;
     return this;
   }
@@ -155,7 +149,7 @@ public class Evento extends JSONSerializable {
 
   /**
    **/
-  public Evento tipoEvento(String tipoEvento) {
+  public EventoIndex tipoEvento(String tipoEvento) {
     this.tipoEvento = tipoEvento;
     return this;
   }
@@ -170,7 +164,7 @@ public class Evento extends JSONSerializable {
 
   /**
    **/
-  public Evento esito(EsitoEvento esito) {
+  public EventoIndex esito(EsitoEvento esito) {
     this.esito = esito;
     return this;
   }
@@ -186,7 +180,7 @@ public class Evento extends JSONSerializable {
   /**
    * Data emissione evento
    **/
-  public Evento dataEvento(Date dataEvento) {
+  public EventoIndex dataEvento(Date dataEvento) {
     this.dataEvento = dataEvento;
     return this;
   }
@@ -202,7 +196,7 @@ public class Evento extends JSONSerializable {
   /**
    * Durata evento (in millisecondi)
    **/
-  public Evento durataEvento(Long durataEvento) {
+  public EventoIndex durataEvento(Long durataEvento) {
     this.durataEvento = durataEvento;
     return this;
   }
@@ -217,7 +211,7 @@ public class Evento extends JSONSerializable {
 
   /**
    **/
-  public Evento sottotipoEvento(String sottotipoEvento) {
+  public EventoIndex sottotipoEvento(String sottotipoEvento) {
     this.sottotipoEvento = sottotipoEvento;
     return this;
   }
@@ -233,7 +227,7 @@ public class Evento extends JSONSerializable {
   /**
    * Descrizione dell'esito
    **/
-  public Evento sottotipoEsito(String sottotipoEsito) {
+  public EventoIndex sottotipoEsito(String sottotipoEsito) {
     this.sottotipoEsito = sottotipoEsito;
     return this;
   }
@@ -248,7 +242,7 @@ public class Evento extends JSONSerializable {
 
   /**
    **/
-  public Evento dettaglioEsito(String dettaglioEsito) {
+  public EventoIndex dettaglioEsito(String dettaglioEsito) {
     this.dettaglioEsito = dettaglioEsito;
     return this;
   }
@@ -264,7 +258,7 @@ public class Evento extends JSONSerializable {
   /**
    * Identificativo ente creditore
    **/
-  public Evento idDominio(String idDominio) {
+  public EventoIndex idDominio(String idDominio) {
     this.idDominio = idDominio;
     return this;
   }
@@ -280,7 +274,7 @@ public class Evento extends JSONSerializable {
   /**
    * Identificativo univoco di versamento
    **/
-  public Evento iuv(String iuv) {
+  public EventoIndex iuv(String iuv) {
     this.iuv = iuv;
     return this;
   }
@@ -296,7 +290,7 @@ public class Evento extends JSONSerializable {
   /**
    * Codice contesto di pagamento
    **/
-  public Evento ccp(String ccp) {
+  public EventoIndex ccp(String ccp) {
     this.ccp = ccp;
     return this;
   }
@@ -312,7 +306,7 @@ public class Evento extends JSONSerializable {
   /**
    * Identificativo del gestionale responsabile della pendenza
    **/
-  public Evento idA2A(String idA2A) {
+  public EventoIndex idA2A(String idA2A) {
     this.idA2A = idA2A;
     return this;
   }
@@ -328,7 +322,7 @@ public class Evento extends JSONSerializable {
   /**
    * Identificativo della pendenza nel gestionale responsabile
    **/
-  public Evento idPendenza(String idPendenza) {
+  public EventoIndex idPendenza(String idPendenza) {
     this.idPendenza = idPendenza;
     return this;
   }
@@ -344,7 +338,7 @@ public class Evento extends JSONSerializable {
   /**
    * Identificativo del pagamento assegnato da GovPay
    **/
-  public Evento idPagamento(String idPagamento) {
+  public EventoIndex idPagamento(String idPagamento) {
     this.idPagamento = idPagamento;
     return this;
   }
@@ -359,7 +353,7 @@ public class Evento extends JSONSerializable {
 
   /**
    **/
-  public Evento controparte(Controparte controparte) {
+  public EventoIndex controparte(Controparte controparte) {
     this.controparte = controparte;
     return this;
   }
@@ -372,38 +366,6 @@ public class Evento extends JSONSerializable {
     this.controparte = controparte;
   }
 
-  /**
-   * Dettaglio del messaggio di richiesta
-   **/
-  public Evento parametriRichiesta(Object parametriRichiesta) {
-    this.parametriRichiesta = parametriRichiesta;
-    return this;
-  }
-
-  @JsonProperty("parametriRichiesta")
-  public Object getParametriRichiesta() {
-    return parametriRichiesta;
-  }
-  public void setParametriRichiesta(Object parametriRichiesta) {
-    this.parametriRichiesta = parametriRichiesta;
-  }
-
-  /**
-   * Dettaglio del messaggio di risposta
-   **/
-  public Evento parametriRisposta(Object parametriRisposta) {
-    this.parametriRisposta = parametriRisposta;
-    return this;
-  }
-
-  @JsonProperty("parametriRisposta")
-  public Object getParametriRisposta() {
-    return parametriRisposta;
-  }
-  public void setParametriRisposta(Object parametriRisposta) {
-    this.parametriRisposta = parametriRisposta;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -412,48 +374,46 @@ public class Evento extends JSONSerializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Evento evento = (Evento) o;
-    return Objects.equals(id, evento.id) &&
-        Objects.equals(componente, evento.componente) &&
-        Objects.equals(categoriaEvento, evento.categoriaEvento) &&
-        Objects.equals(ruolo, evento.ruolo) &&
-        Objects.equals(tipoEvento, evento.tipoEvento) &&
-        Objects.equals(esito, evento.esito) &&
-        Objects.equals(dataEvento, evento.dataEvento) &&
-        Objects.equals(durataEvento, evento.durataEvento) &&
-        Objects.equals(sottotipoEvento, evento.sottotipoEvento) &&
-        Objects.equals(sottotipoEsito, evento.sottotipoEsito) &&
-        Objects.equals(dettaglioEsito, evento.dettaglioEsito) &&
-        Objects.equals(idDominio, evento.idDominio) &&
-        Objects.equals(iuv, evento.iuv) &&
-        Objects.equals(ccp, evento.ccp) &&
-        Objects.equals(idA2A, evento.idA2A) &&
-        Objects.equals(idPendenza, evento.idPendenza) &&
-        Objects.equals(idPagamento, evento.idPagamento) &&
-        Objects.equals(controparte, evento.controparte) &&
-        Objects.equals(parametriRichiesta, evento.parametriRichiesta) &&
-        Objects.equals(parametriRisposta, evento.parametriRisposta);
+    EventoIndex eventoIndex = (EventoIndex) o;
+    return Objects.equals(id, eventoIndex.id) &&
+        Objects.equals(componente, eventoIndex.componente) &&
+        Objects.equals(categoriaEvento, eventoIndex.categoriaEvento) &&
+        Objects.equals(ruolo, eventoIndex.ruolo) &&
+        Objects.equals(tipoEvento, eventoIndex.tipoEvento) &&
+        Objects.equals(esito, eventoIndex.esito) &&
+        Objects.equals(dataEvento, eventoIndex.dataEvento) &&
+        Objects.equals(durataEvento, eventoIndex.durataEvento) &&
+        Objects.equals(sottotipoEvento, eventoIndex.sottotipoEvento) &&
+        Objects.equals(sottotipoEsito, eventoIndex.sottotipoEsito) &&
+        Objects.equals(dettaglioEsito, eventoIndex.dettaglioEsito) &&
+        Objects.equals(idDominio, eventoIndex.idDominio) &&
+        Objects.equals(iuv, eventoIndex.iuv) &&
+        Objects.equals(ccp, eventoIndex.ccp) &&
+        Objects.equals(idA2A, eventoIndex.idA2A) &&
+        Objects.equals(idPendenza, eventoIndex.idPendenza) &&
+        Objects.equals(idPagamento, eventoIndex.idPagamento) &&
+        Objects.equals(controparte, eventoIndex.controparte);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, controparte, parametriRichiesta, parametriRisposta);
+    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, controparte);
   }
 
-  public static Evento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return parse(json, Evento.class);
+  public static EventoIndex parse(String json) throws ServiceException, ValidationException { 
+    return (EventoIndex) parse(json, EventoIndex.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "evento";
+    return "eventoIndex";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Evento {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("class EventoIndex {\n");
+    
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    componente: ").append(toIndentedString(componente)).append("\n");
     sb.append("    categoriaEvento: ").append(toIndentedString(categoriaEvento)).append("\n");
@@ -472,8 +432,6 @@ public class Evento extends JSONSerializable {
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
     sb.append("    controparte: ").append(toIndentedString(controparte)).append("\n");
-    sb.append("    parametriRichiesta: ").append(toIndentedString(parametriRichiesta)).append("\n");
-    sb.append("    parametriRisposta: ").append(toIndentedString(parametriRisposta)).append("\n");
     sb.append("}");
     return sb.toString();
   }

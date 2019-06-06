@@ -52,7 +52,7 @@ public class Pagamenti extends BaseRsServiceV1{
     @Path("/{id}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response pagamentiIdPATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("id") String id){
+    public Response updatePagamento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("id") String id){
         this.controller.setContext(this.getContext());
         return this.controller.pagamentiIdPATCH(this.getUser(), uriInfo, httpHeaders, is,  id);
     }

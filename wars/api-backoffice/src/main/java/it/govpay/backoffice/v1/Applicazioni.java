@@ -61,7 +61,7 @@ public class Applicazioni extends BaseRsServiceV1{
     @Path("/{idA2A}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response applicazioniIdA2APATCH(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idA2A") String idA2A){
+    public Response updateApplicazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @PathParam("idA2A") String idA2A){
         this.controller.setContext(this.getContext());
         return this.controller.applicazioniIdA2APATCH(this.getUser(), uriInfo, httpHeaders, is,  idA2A);
     }

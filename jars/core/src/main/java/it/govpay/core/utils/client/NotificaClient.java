@@ -42,9 +42,9 @@ import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.EventoContext.Componente;
@@ -85,14 +85,11 @@ public class NotificaClient extends BasicClient {
 	 * @throws NdpException 
 	 * @throws UtilsException 
 	 */
-	public byte[] invoke(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException {
+	public byte[] invoke(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti,
+			PagamentoPortale pagamentoPortale,  BasicBD bd) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
-		// salvataggio id Rpt/ versamento/ pagamento
-		this.getEventoCtx().setIdRpt(rpt.getId());
-		this.getEventoCtx().setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-		this.getEventoCtx().setIdVersamento(rpt.getIdVersamento());
 		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
 
 		List<Property> headerProperties = new ArrayList<>();

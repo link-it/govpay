@@ -19,8 +19,6 @@
  */
 package it.govpay.core.business;
 
-import java.util.Date;
-
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -35,8 +33,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
@@ -55,8 +51,6 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.model.Evento.CategoriaEvento;
-import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
@@ -281,71 +275,6 @@ public class Versamento extends BasicBD {
 		}
 	}
 	
-	public void notificaPagamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte) throws GovPayException {
-		try {
-			VersamentiBD versamentiBD = new VersamentiBD(this);
-			GiornaleEventi giornaleEventi = new GiornaleEventi(this);
-			
-			this.setAutoCommit(false);
-			this.enableSelectForUpdate();
-			
-			try {
-				
-				
-				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
-				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE)) {
-					log.info("Notifica di pagamento extra pagoPA [" + applicazione.getCodApplicazione() + " " + versamentoLetto.getCodVersamentoEnte() + "] duplicata.");
-					return;
-				}
-
-				Evento eventoNota = new Evento();
-				eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
-				eventoNota.setEsitoEvento(EsitoEvento.OK);
-				eventoNota.setIdVersamento(versamentoLetto.getId());
-				eventoNota.setDettaglioEsito("Pagamento eseguito extra-pagoPA");
-				eventoNota.setTipoEvento("Notifica esecuzione del pagamento fuori dal circuito pagoPA");
-				DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
-				dettaglioRichiesta.setPrincipal(applicazione.getUtenza().getPrincipal());
-				dettaglioRichiesta.setUtente(applicazione.getCodApplicazione());
-				dettaglioRichiesta.setDataOraRichiesta(new Date());
-				dettaglioRichiesta.setPayload("Notificato esecuzione del pagamento fuori dal circuito pagoPA");
-				eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
-				giornaleEventi.registraEvento(eventoNota);
-				
-				// Se è già ESEGUITO segnalo che e' un pagamento duplicato
-				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ESEGUITO)) {
-					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") gia' pagato senza rpt. Aggiornamento non necessario.");
-					versamentoLetto.setAnomalo(true);
-					versamentoLetto.setDescrizioneStato("Pagamento duplicato");
-					return;
-				}
-				
-				// Se è in stato NON_ESEGUITO lo eseguo senza RPT
-				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) || versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
-					versamentoLetto.setStatoVersamento(StatoVersamento.ESEGUITO_ALTRO_CANALE);
-					versamentiBD.updateVersamento(versamentoLetto);
-					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") pagato senza rpt.");
-					return;
-				}
-				
-				// Se non è ne ANNULLATO ne NON_ESEGUITO non lo posso annullare
-				throw new GovPayException(EsitoOperazione.VER_016, codApplicazione, codVersamentoEnte, versamentoLetto.getStatoVersamento().toString());
-				
-			} catch (NotFoundException e) {
-				// Versamento inesistente
-				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
-			} finally {
-				this.commit();
-			}
-		} catch (Exception e) {
-			this.rollback();
-			if(e instanceof GovPayException)
-				throw (GovPayException) e;
-			else 
-				throw new GovPayException(e);
-		}
-	}
-
 	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref, Dominio dominio) throws ServiceException, GovPayException, UtilsException {
 		// conversione numeroAvviso in iuv
 		String iuv = VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),dominio.getStazione().getApplicationCode(),dominio.getSegregationCode());

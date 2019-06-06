@@ -67,8 +67,6 @@ import it.govpay.model.Stazione;
 
 public class NodoClient extends BasicClient {
 
-
-
 	public enum Azione {
 		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione
 	}

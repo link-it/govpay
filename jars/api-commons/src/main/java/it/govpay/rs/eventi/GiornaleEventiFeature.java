@@ -8,16 +8,17 @@ import org.apache.cxf.common.injection.NoJSR250Annotations;
 import org.apache.cxf.feature.AbstractFeature;
 import org.apache.cxf.interceptor.InterceptorProvider;
 
-
 @NoJSR250Annotations
 @Provider(value = Type.Feature)
 public class GiornaleEventiFeature extends AbstractFeature{
 
 	private GiornaleEventiOutInterceptor out;
 	private GiornaleEventiConfig giornaleEventiConfig = null;
+	private GiornaleEventiCollectorOutInterceptor outCollector;
 	
 	public GiornaleEventiFeature() {
 		this.out = new GiornaleEventiOutInterceptor();
+		this.outCollector = new GiornaleEventiCollectorOutInterceptor();
 	}
 	
 	@Override
@@ -25,10 +26,13 @@ public class GiornaleEventiFeature extends AbstractFeature{
 		if(this.giornaleEventiConfig == null) {
 			this.giornaleEventiConfig = new GiornaleEventiConfig();
 			this.out.setGiornaleEventiConfig(this.giornaleEventiConfig);
+			this.outCollector.setGiornaleEventiConfig(this.giornaleEventiConfig);
 		}
 		
-		provider.getOutInterceptors().add(this.out);
-        provider.getOutFaultInterceptors().add(this.out);
+			provider.getOutInterceptors().add(this.outCollector);
+			provider.getOutFaultInterceptors().add(this.outCollector);
+			provider.getOutInterceptors().add(this.out);
+			provider.getOutFaultInterceptors().add(this.out);
 	}
 	
 	public GiornaleEventiConfig getGiornaleEventiConfig() {
@@ -38,5 +42,6 @@ public class GiornaleEventiFeature extends AbstractFeature{
 	public void setGiornaleEventiConfig(GiornaleEventiConfig giornaleEventiConfig) {
 		this.giornaleEventiConfig = giornaleEventiConfig;
 		this.out.setGiornaleEventiConfig(giornaleEventiConfig);
+		this.outCollector.setGiornaleEventiConfig(giornaleEventiConfig);
 	}
 }

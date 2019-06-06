@@ -25,6 +25,7 @@ public class EventoContext {
 	private String tipoEvento;
 	private String sottotipoEvento;
 	private Esito esito;
+	private String sottotipoEsito;
 	private String descrizioneEsito;
 
 	private String principal;
@@ -46,12 +47,11 @@ public class EventoContext {
 	private String ccp;
 	private String idA2A;
 	private String idPendenza;
+	private String idPagamento;
 
-	private Long idVersamento;
-	private Long idPagamentoPortale;
-	private Long idRpt;
 	
 	private String idTransazione;
+	private Long id;
 	
 	public EventoContext() {
 		this.dataRichiesta = new Date();
@@ -237,30 +237,6 @@ public class EventoContext {
 		this.idPendenza = idPendenza;
 	}
 
-	public Long getIdVersamento() {
-		return idVersamento;
-	}
-
-	public void setIdVersamento(Long idVersamento) {
-		this.idVersamento = idVersamento;
-	}
-
-	public Long getIdPagamentoPortale() {
-		return idPagamentoPortale;
-	}
-
-	public void setIdPagamentoPortale(Long idPagamentoPortale) {
-		this.idPagamentoPortale = idPagamentoPortale;
-	}
-
-	public Long getIdRpt() {
-		return idRpt;
-	}
-
-	public void setIdRpt(Long idRpt) {
-		this.idRpt = idRpt;
-	}
-
 	public Controparte getControparte() {
 		return controparte;
 	}
@@ -325,12 +301,15 @@ public class EventoContext {
 				break;
 			}
 		}
-		dto.setSottotipoEsito(this.getStatus());
+		dto.setSottotipoEsito(this.getSottotipoEsito());
 		dto.setSottotipoEvento(this.getSottotipoEvento());
 		dto.setTipoEvento(this.getTipoEvento());
-		dto.setIdVersamento(this.getIdVersamento());
-		dto.setIdPagamentoPortale(this.getIdPagamentoPortale());
-		dto.setIdRpt(this.getIdRpt());
+		dto.setCodApplicazione(this.idA2A);
+		dto.setCodVersamentoEnte(this.idPendenza);
+		dto.setCodDominio(this.codDominio);
+		dto.setIuv(this.iuv);
+		dto.setCcp(this.ccp);
+		dto.setIdSessione(this.idPagamento);
 
 		return dto;
 	}
@@ -349,6 +328,30 @@ public class EventoContext {
 
 	public void setRegistraEvento(boolean registraEvento) {
 		this.registraEvento = registraEvento;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getIdPagamento() {
+		return idPagamento;
+	}
+
+	public void setIdPagamento(String idPagamento) {
+		this.idPagamento = idPagamento;
+	}
+
+	public String getSottotipoEsito() {
+		return sottotipoEsito;
+	}
+
+	public void setSottotipoEsito(String sottotipoEsito) {
+		this.sottotipoEsito = sottotipoEsito;
 	}
 
 

@@ -40,7 +40,6 @@ import gov.telematici.pagamenti.ws.rpt.NodoChiediCopiaRTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPT;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaCarrelloRPT;
-import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
 import gov.telematici.pagamenti.ws.rpt.TipoElementoListaRPT;
 import gov.telematici.pagamenti.ws.rpt.TipoListaRPT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
@@ -288,9 +287,16 @@ public class RptUtils {
 						richiesta.setIdentificativoUnivocoVersamento(rpt.getIuv());
 						richiesta.setCodiceContestoPagamento(rpt.getCcp());
 						chiediStatoRptClient = new NodoClient(intermediario, null, giornale, bd);
-						chiediStatoRptClient.getEventoCtx().setIdRpt(rpt.getId());
-						chiediStatoRptClient.getEventoCtx().setIdVersamento(rpt.getIdVersamento());
-						chiediStatoRptClient.getEventoCtx().setIdPagamentoPortale(rpt.getIdPagamentoPortale());
+						// salvataggio id Rpt/ versamento/ pagamento
+						chiediStatoRptClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
+						chiediStatoRptClient.getEventoCtx().setIuv(rpt.getIuv());
+						chiediStatoRptClient.getEventoCtx().setCcp(rpt.getCcp());
+						chiediStatoRptClient.getEventoCtx().setIdA2A(rpt.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
+						chiediStatoRptClient.getEventoCtx().setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
+						try {
+							if(rpt.getPagamentoPortale(bd) != null)
+								chiediStatoRptClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(bd).getIdSessione());
+						} catch (NotFoundException e) {	}
 						chiediStatoRptClient.setOperationId(operationId); 
 						risposta = chiediStatoRptClient.nodoChiediStatoRpt(richiesta, rpt.getStazione(bd).getIntermediario(bd).getDenominazione());
 						chiediStatoRptClient.getEventoCtx().setEsito(Esito.OK);
@@ -354,9 +360,16 @@ public class RptUtils {
 									nodoChiediCopiaRT.setCodiceContestoPagamento(rpt.getCcp());
 									chiediCopiaRTClient = new NodoClient(intermediario, null, giornale, bd);
 									chiediCopiaRTClient.setOperationId(operationId);
-									chiediCopiaRTClient.getEventoCtx().setIdRpt(rpt.getId());
-									chiediCopiaRTClient.getEventoCtx().setIdVersamento(rpt.getIdVersamento());
-									chiediCopiaRTClient.getEventoCtx().setIdPagamentoPortale(rpt.getIdPagamentoPortale());
+									// salvataggio id Rpt/ versamento/ pagamento
+									chiediCopiaRTClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
+									chiediCopiaRTClient.getEventoCtx().setIuv(rpt.getIuv());
+									chiediCopiaRTClient.getEventoCtx().setCcp(rpt.getCcp());
+									chiediCopiaRTClient.getEventoCtx().setIdA2A(rpt.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
+									chiediCopiaRTClient.getEventoCtx().setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
+									try {
+										if(rpt.getPagamentoPortale(bd) != null)
+											chiediCopiaRTClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(bd).getIdSessione());
+									} catch (NotFoundException e) {	}
 									nodoChiediCopiaRTRisposta = chiediCopiaRTClient.nodoChiediCopiaRT(nodoChiediCopiaRT, rpt.getIntermediario(bd).getDenominazione());
 									chiediCopiaRTClient.getEventoCtx().setEsito(Esito.OK);
 								} finally {

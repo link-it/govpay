@@ -857,20 +857,20 @@ CREATE TABLE eventi
 	data TIMESTAMP,
 	intervallo BIGINT,
 	esito VARCHAR(4),
-	sottotipo_esito INT,
-	dettaglio_esito VARCHAR(255),
-	parametri_richiesta TEXT,
-	parametri_risposta TEXT,
+	sottotipo_esito VARCHAR(35),
+	dettaglio_esito TEXT,
+	parametri_richiesta BYTEA,
+	parametri_risposta BYTEA,
 	dati_controparte TEXT,
+	cod_versamento_ente VARCHAR(35),
+	cod_applicazione VARCHAR(35),
+	iuv VARCHAR(35),
+	ccp VARCHAR(35),
+	cod_dominio VARCHAR(35),
+	id_sessione VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
-	id_versamento BIGINT,
-	id_pagamento_portale BIGINT,
-	id_rpt BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_evt_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 );
 

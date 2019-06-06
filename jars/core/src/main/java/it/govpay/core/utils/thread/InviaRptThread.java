@@ -20,6 +20,7 @@
 package it.govpay.core.utils.thread;
 
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -35,9 +36,12 @@ import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
@@ -59,6 +63,9 @@ public class InviaRptThread implements Runnable {
 	private Giornale giornale;
 	private Intermediario intermediario = null;
 	private Stazione stazione = null;
+	private Applicazione applicazione = null;
+	private PagamentoPortale pagamentoPortale = null;
+	private Versamento versamento = null;
 	
 	public InviaRptThread(Rpt rpt, BasicBD bd, IContext ctx) throws ServiceException {
 		this.rpt = rpt;
@@ -66,7 +73,12 @@ public class InviaRptThread implements Runnable {
 		this.stazione = this.rpt.getStazione(bd);
 		this.ctx = ctx;
 		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
-		
+		this.versamento = this.rpt.getVersamento(bd);
+		this.applicazione = this.versamento.getApplicazione(bd);
+		try {
+			this.pagamentoPortale = this.rpt.getPagamentoPortale(bd);
+		} catch (NotFoundException e) {
+		}
 	}
 	
 	@Override
@@ -89,9 +101,15 @@ public class InviaRptThread implements Runnable {
 			ctx.getApplicationLogger().log("pagamento.invioRptAttivata");
 				
 			client = new it.govpay.core.utils.client.NodoClient(this.intermediario, operationId, this.giornale, bd);
-			client.getEventoCtx().setIdRpt(this.rpt.getId());
-			client.getEventoCtx().setIdVersamento(this.rpt.getIdVersamento());
-			client.getEventoCtx().setIdPagamentoPortale(this.rpt.getIdPagamentoPortale());
+			// salvataggio id Rpt/ versamento/ pagamento
+			client.getEventoCtx().setCodDominio(this.rpt.getCodDominio());
+			client.getEventoCtx().setIuv(this.rpt.getIuv());
+			client.getEventoCtx().setCcp(this.rpt.getCcp());
+			client.getEventoCtx().setIdA2A(this.applicazione.getCodApplicazione());
+			client.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
+			if(this.pagamentoPortale != null)
+				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
+			
 			RptUtils.popolaEventoCooperazione(client, this.rpt, this.intermediario, this.stazione);
 			
 			NodoInviaRPT inviaRPT = new NodoInviaRPT();
@@ -190,13 +208,6 @@ public class InviaRptThread implements Runnable {
 				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
 				giornaleEventi.registraEvento(client.getEventoCtx().toEventoDTO());
 			}
-			
-//			if(ctx != null)
-//				try {
-//					ctx.getApplicationLogger().log();
-//				} catch (UtilsException e) {
-//					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
-//				}
 			if(bd != null) bd.closeConnection();
 			ContextThreadLocal.unset();
 		}

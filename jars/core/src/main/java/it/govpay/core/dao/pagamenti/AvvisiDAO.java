@@ -53,6 +53,9 @@ public class AvvisiDAO extends BaseDAO{
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
 
 			if(getAvvisoDTO.getNumeroAvviso() != null)
 				versamento = versamentiBD.getVersamentoFromDominioNumeroAvviso(getAvvisoDTO.getCodDominio(), getAvvisoDTO.getNumeroAvviso());
@@ -61,14 +64,7 @@ public class AvvisiDAO extends BaseDAO{
 			else 
 				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
 
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdVersamento(versamento.getId());
-			
 			Dominio dominio = versamento.getDominio(versamentiBD);
-//			TipoVersamento tipoVersamento = versamento.getTipoVersamento(versamentiBD);
-			
-//			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(getAvvisoDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
-//				throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
-//			}
 
 			// controllo eventuali accessi anonimi al servizio di lettura avviso
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(getAvvisoDTO.getUser());

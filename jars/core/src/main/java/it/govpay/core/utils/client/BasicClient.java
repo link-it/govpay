@@ -487,7 +487,7 @@ public abstract class BasicClient {
 					dettaglioRichiesta.setPrincipal(this.getEventoCtx().getPrincipal());
 					dettaglioRichiesta.setUtente(this.getEventoCtx().getUtente());
 					dettaglioRichiesta.setUrl(this.getEventoCtx().getUrl());
-					dettaglioRichiesta.setMethod(this.getEventoCtx().getMethod());
+					dettaglioRichiesta.setMethod(httpMethod.toString());
 					dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
 					dettaglioRichiesta.setHeaders(dumpRequest.getHeaders());
 
@@ -500,6 +500,7 @@ public abstract class BasicClient {
 
 					this.getEventoCtx().setDataRisposta(dataUscita);
 					this.getEventoCtx().setStatus(responseCode);
+					this.getEventoCtx().setSottotipoEsito(responseCode + "");
 
 					if(dumpEvento) {
 						// dump richiesta

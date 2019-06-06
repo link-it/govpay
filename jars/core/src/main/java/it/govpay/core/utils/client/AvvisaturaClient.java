@@ -46,7 +46,7 @@ public class AvvisaturaClient extends BasicClient {
 	private ObjectFactory objectFactory = null;
 	private Intermediario intermediario = null;
 	private Stazione stazione = null;
-	private Versamento versamento = null;
+//	private Versamento versamento = null;
 
 	public AvvisaturaClient(Versamento versamento, Intermediario intermediario, Stazione stazione, Giornale giornale, String operationID, BasicBD bd) throws ClientException, ServiceException {
 		super(intermediario, TipoOperazioneNodo.AVVISATURA);
@@ -59,10 +59,9 @@ public class AvvisaturaClient extends BasicClient {
 		this.setGiornale(giornale);
 		this.stazione = stazione;
 		this.intermediario = intermediario;
-		this.versamento = versamento;
+//		this.versamento = versamento;
 		
 		this.getEventoCtx().setComponente(this.componente); 
-		this.getEventoCtx().setIdVersamento(this.versamento.getId());
 		
 		Controparte controparte = new Controparte();
 		controparte.setCodStazione(this.stazione.getCodStazione());

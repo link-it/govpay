@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -164,10 +165,12 @@ public class RptBD extends BasicBD {
 	 * @throws NotFoundException
 	 * @throws ServiceException
 	 */
-	public void sbloccaRpt(long idRpt, boolean statoBlocco) throws NotFoundException, ServiceException{
+	public void sbloccaRpt(long idRpt, boolean statoBlocco,String descrizione ) throws NotFoundException, ServiceException{
 		try {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(RPT.model().BLOCCANTE, statoBlocco));
+			if(StringUtils.isNotEmpty(descrizione))
+				lstUpdateFields.add(new UpdateField(RPT.model().DESCRIZIONE_STATO, descrizione));
 
 			((JDBCRPTService)this.getRptService()).updateFields(idRpt, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {

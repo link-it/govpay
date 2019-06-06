@@ -32,7 +32,7 @@ public class Enumerazioni extends BaseRsServiceV1{
     @Path("/serviziACL")
     
     @Produces({ "application/json" })
-    public Response enumerazioniServiziACLGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+    public Response findEnumerazioniServiziACL(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setContext(this.getContext());
         return this.controller.enumerazioniServiziACLGET(this.getUser(), uriInfo, httpHeaders);
     }
@@ -41,7 +41,7 @@ public class Enumerazioni extends BaseRsServiceV1{
     @Path("/versioneConnettore")
     
     @Produces({ "application/json" })
-    public Response enumerazioniVersioneConnettoreGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+    public Response findEnumerazioniVersioneConnettore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setContext(this.getContext());
         return this.controller.enumerazioniVersioneConnettoreGET(this.getUser(), uriInfo, httpHeaders);
     }

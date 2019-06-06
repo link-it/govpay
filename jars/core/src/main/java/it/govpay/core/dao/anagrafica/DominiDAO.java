@@ -261,6 +261,7 @@ public class DominiDAO extends BaseDAO{
 				filter.setRagioneSociale(listaDominiDTO.getRagioneSociale());
 				filter.setAbilitato(listaDominiDTO.getAbilitato());
 			}
+			filter.setIdDomini(listaDominiDTO.getIdDomini());
 			filter.setOffset(listaDominiDTO.getOffset());
 			filter.setLimit(listaDominiDTO.getLimit());
 			filter.getFilterSortList().addAll(listaDominiDTO.getFieldSortList());

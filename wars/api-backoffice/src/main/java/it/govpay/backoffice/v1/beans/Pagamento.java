@@ -30,7 +30,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 "lingua",
 "rpp",
 "verificato",
-"note",
 })
 public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   
@@ -230,9 +229,6 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("verificato")
   private Boolean verificato = null;
   
-  @JsonProperty("note")
-  private List<Nota> note = null;
-  
   /**
    * Identificativo del pagamento assegnato da GovPay
    **/
@@ -409,7 +405,6 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
    **/
   public Pagamento contoAddebito(ContoAddebito contoAddebito) {
     this.contoAddebito = contoAddebito;
@@ -534,21 +529,6 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
     this.verificato = verificato;
   }
 
-  /**
-   **/
-  public Pagamento note(List<Nota> note) {
-    this.note = note;
-    return this;
-  }
-
-  @JsonProperty("note")
-  public List<Nota> getNote() {
-    return this.note;
-  }
-  public void setNote(List<Nota> note) {
-    this.note = note;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -558,31 +538,30 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
       return false;
     }
     Pagamento pagamento = (Pagamento) o;
-    return Objects.equals(this.id, pagamento.id) &&
-        Objects.equals(this.nome, pagamento.nome) &&
-        Objects.equals(this.dataRichiestaPagamento, pagamento.dataRichiestaPagamento) &&
-        Objects.equals(this.idSessionePortale, pagamento.idSessionePortale) &&
-        Objects.equals(this.idSessionePsp, pagamento.idSessionePsp) &&
-        Objects.equals(this.importo, pagamento.importo) &&
-        Objects.equals(this.modello, pagamento.modello) &&
-        Objects.equals(this.stato, pagamento.stato) &&
-	Objects.equals(this.descrizioneStato, pagamento.descrizioneStato) &&
-        Objects.equals(this.pspRedirectUrl, pagamento.pspRedirectUrl) &&
-        Objects.equals(this.urlRitorno, pagamento.urlRitorno) &&
-        Objects.equals(this.contoAddebito, pagamento.contoAddebito) &&
-        Objects.equals(this.dataEsecuzionePagamento, pagamento.dataEsecuzionePagamento) &&
-        Objects.equals(this.credenzialiPagatore, pagamento.credenzialiPagatore) &&
-        Objects.equals(this.soggettoVersante, pagamento.soggettoVersante) &&
-        Objects.equals(this.autenticazioneSoggetto, pagamento.autenticazioneSoggetto) &&
-        Objects.equals(this.lingua, pagamento.lingua) &&
-        Objects.equals(this.rpp, pagamento.rpp) &&
-        Objects.equals(this.verificato, pagamento.verificato) &&
-        Objects.equals(this.note, pagamento.note);
+    return Objects.equals(id, pagamento.id) &&
+        Objects.equals(nome, pagamento.nome) &&
+        Objects.equals(dataRichiestaPagamento, pagamento.dataRichiestaPagamento) &&
+        Objects.equals(idSessionePortale, pagamento.idSessionePortale) &&
+        Objects.equals(idSessionePsp, pagamento.idSessionePsp) &&
+        Objects.equals(importo, pagamento.importo) &&
+        Objects.equals(modello, pagamento.modello) &&
+        Objects.equals(stato, pagamento.stato) &&
+        Objects.equals(descrizioneStato, pagamento.descrizioneStato) &&
+        Objects.equals(pspRedirectUrl, pagamento.pspRedirectUrl) &&
+        Objects.equals(urlRitorno, pagamento.urlRitorno) &&
+        Objects.equals(contoAddebito, pagamento.contoAddebito) &&
+        Objects.equals(dataEsecuzionePagamento, pagamento.dataEsecuzionePagamento) &&
+        Objects.equals(credenzialiPagatore, pagamento.credenzialiPagatore) &&
+        Objects.equals(soggettoVersante, pagamento.soggettoVersante) &&
+        Objects.equals(autenticazioneSoggetto, pagamento.autenticazioneSoggetto) &&
+        Objects.equals(lingua, pagamento.lingua) &&
+        Objects.equals(rpp, pagamento.rpp) &&
+        Objects.equals(verificato, pagamento.verificato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.nome, this.dataRichiestaPagamento, this.idSessionePortale, this.idSessionePsp, this.importo, this.modello, this.stato, this.descrizioneStato, this.pspRedirectUrl, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua, this.rpp, this.verificato, this.note);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, modello, stato, descrizioneStato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato);
   }
 
   public static Pagamento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -599,26 +578,25 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Pagamento {\n");
     
-    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
-    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
-    sb.append("    dataRichiestaPagamento: ").append(this.toIndentedString(this.dataRichiestaPagamento)).append("\n");
-    sb.append("    idSessionePortale: ").append(this.toIndentedString(this.idSessionePortale)).append("\n");
-    sb.append("    idSessionePsp: ").append(this.toIndentedString(this.idSessionePsp)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    modello: ").append(this.toIndentedString(this.modello)).append("\n");
-    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
-    sb.append("    descrizioneStato: ").append(this.toIndentedString(this.descrizioneStato)).append("\n");
-    sb.append("    pspRedirectUrl: ").append(this.toIndentedString(this.pspRedirectUrl)).append("\n");
-    sb.append("    urlRitorno: ").append(this.toIndentedString(this.urlRitorno)).append("\n");
-    sb.append("    contoAddebito: ").append(this.toIndentedString(this.contoAddebito)).append("\n");
-    sb.append("    dataEsecuzionePagamento: ").append(this.toIndentedString(this.dataEsecuzionePagamento)).append("\n");
-    sb.append("    credenzialiPagatore: ").append(this.toIndentedString(this.credenzialiPagatore)).append("\n");
-    sb.append("    soggettoVersante: ").append(this.toIndentedString(this.soggettoVersante)).append("\n");
-    sb.append("    autenticazioneSoggetto: ").append(this.toIndentedString(this.autenticazioneSoggetto)).append("\n");
-    sb.append("    lingua: ").append(this.toIndentedString(this.lingua)).append("\n");
-    sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
-    sb.append("    verificato: ").append(this.toIndentedString(this.verificato)).append("\n");
-    sb.append("    note: ").append(this.toIndentedString(this.note)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");
+    sb.append("    idSessionePortale: ").append(toIndentedString(idSessionePortale)).append("\n");
+    sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    modello: ").append(toIndentedString(modello)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
+    sb.append("    pspRedirectUrl: ").append(toIndentedString(pspRedirectUrl)).append("\n");
+    sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
+    sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
+    sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");
+    sb.append("    credenzialiPagatore: ").append(toIndentedString(credenzialiPagatore)).append("\n");
+    sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");
+    sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
+    sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
+    sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
+    sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

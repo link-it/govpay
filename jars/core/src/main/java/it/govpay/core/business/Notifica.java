@@ -13,12 +13,7 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.pagamento.NotificheBD;
-import it.govpay.model.Evento.CategoriaEvento;
-import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Notifica.TipoNotifica;
 
 public class Notifica  extends BasicBD{
@@ -46,7 +41,6 @@ public class Notifica  extends BasicBD{
 	
 	public List<it.govpay.bd.model.Notifica> findNotificheDaSpedire() throws ServiceException{
 		NotificheBD notificheBD = new NotificheBD(this);
-		GiornaleEventi giornaleEventi = new GiornaleEventi(this);						
 		List<it.govpay.bd.model.Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
 		
 		if(notifiche.size() == 0) {
@@ -101,53 +95,18 @@ public class Notifica  extends BasicBD{
 			if(notifichePerChiave.size() > 1) {
 				blackListChiaviRptAttivazione.add(key);
 				
-				Evento eventoNota = null;
-				DettaglioRichiesta dettaglioRichiesta = null;
 				for(it.govpay.bd.model.Notifica notifica: notifichePerChiave) {
 					Date prossima = new GregorianCalendar(9999,1,1).getTime();
 					TipoNotifica tipoNotifica = notifica.getTipo();
-					Rpt rpt = notifica.getRpt(this);
 					long tentativi = notifica.getTentativiSpedizione() + 1;
 					
 					switch (tipoNotifica) {
 					case ATTIVAZIONE:
 						notificheBD.updateAnnullata(notifica.getId(), "Trovata una notifica di annullamento/fallimento per la stessa RPT ["+key+"] schedulata per l'invio, spedizione annullata", tentativi, prossima);
-						
-						eventoNota = new Evento();
-						eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
-						eventoNota.setEsitoEvento(EsitoEvento.KO);
-						eventoNota.setData(new Date());
-						eventoNota.setTipoEvento("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata.");
-						eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-						eventoNota.setIdVersamento(rpt.getIdVersamento());	
-						eventoNota.setIdRpt(rpt.getId());
-						dettaglioRichiesta = new DettaglioRichiesta();
-						dettaglioRichiesta.setPrincipal(null);
-						dettaglioRichiesta.setUtente(null);
-						dettaglioRichiesta.setDataOraRichiesta(new Date());
-						dettaglioRichiesta.setPayload("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata: trovata una notifica di annullamento/fallimento per la stessa RPT ["+key+"] schedulata per l'invio.");
-						eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
-						giornaleEventi.registraEvento(eventoNota);
 						break;
 					case ANNULLAMENTO:
 					case FALLIMENTO:
 						notificheBD.updateAnnullata(notifica.getId(), "Trovata una notifica di attivazione per la stessa RPT ["+key+"] schedulata per l'invio, spedizione annullata", tentativi, prossima);
-						
-						eventoNota = new Evento();
-						eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
-						eventoNota.setEsitoEvento(EsitoEvento.KO);
-						eventoNota.setData(new Date());
-						eventoNota.setTipoEvento("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata.");
-						eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-						eventoNota.setIdVersamento(rpt.getIdVersamento());
-						eventoNota.setIdRpt(rpt.getId());
-						dettaglioRichiesta = new DettaglioRichiesta();
-						dettaglioRichiesta.setPrincipal(null);
-						dettaglioRichiesta.setUtente(null);
-						dettaglioRichiesta.setDataOraRichiesta(new Date());
-						dettaglioRichiesta.setPayload("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata: trovata una notifica di attivazione per la stessa RPT ["+key+"] schedulata per l'invio.");
-						eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
-						giornaleEventi.registraEvento(eventoNota);
 						break;
 					case RICEVUTA:
 						break;

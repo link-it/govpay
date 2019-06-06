@@ -43,14 +43,17 @@ import java.io.Serializable;
  * 			&lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="intervallo" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="esito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="sottotipoEsito" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="sottotipoEsito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dettaglioEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="parametriRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="parametriRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="parametriRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="parametriRisposta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="datiControparte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idPagamentoPortale" type="{http://www.govpay.it/orm}id-pagamento-portale" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idRpt" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -78,9 +81,12 @@ import java.io.Serializable;
   	"parametriRichiesta",
   	"parametriRisposta",
   	"datiControparte",
-  	"idVersamento",
-  	"idPagamentoPortale",
-  	"idRpt"
+  	"codVersamentoEnte",
+  	"codApplicazione",
+  	"iuv",
+  	"ccp",
+  	"codDominio",
+  	"idSessione"
   }
 )
 
@@ -168,11 +174,11 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.esito = esito;
   }
 
-  public java.lang.Integer getSottotipoEsito() {
+  public java.lang.String getSottotipoEsito() {
     return this.sottotipoEsito;
   }
 
-  public void setSottotipoEsito(java.lang.Integer sottotipoEsito) {
+  public void setSottotipoEsito(java.lang.String sottotipoEsito) {
     this.sottotipoEsito = sottotipoEsito;
   }
 
@@ -184,19 +190,19 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.dettaglioEsito = dettaglioEsito;
   }
 
-  public java.lang.String getParametriRichiesta() {
+  public byte[] getParametriRichiesta() {
     return this.parametriRichiesta;
   }
 
-  public void setParametriRichiesta(java.lang.String parametriRichiesta) {
+  public void setParametriRichiesta(byte[] parametriRichiesta) {
     this.parametriRichiesta = parametriRichiesta;
   }
 
-  public java.lang.String getParametriRisposta() {
+  public byte[] getParametriRisposta() {
     return this.parametriRisposta;
   }
 
-  public void setParametriRisposta(java.lang.String parametriRisposta) {
+  public void setParametriRisposta(byte[] parametriRisposta) {
     this.parametriRisposta = parametriRisposta;
   }
 
@@ -208,28 +214,52 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.datiControparte = datiControparte;
   }
 
-  public IdVersamento getIdVersamento() {
-    return this.idVersamento;
+  public java.lang.String getCodVersamentoEnte() {
+    return this.codVersamentoEnte;
   }
 
-  public void setIdVersamento(IdVersamento idVersamento) {
-    this.idVersamento = idVersamento;
+  public void setCodVersamentoEnte(java.lang.String codVersamentoEnte) {
+    this.codVersamentoEnte = codVersamentoEnte;
   }
 
-  public IdPagamentoPortale getIdPagamentoPortale() {
-    return this.idPagamentoPortale;
+  public java.lang.String getCodApplicazione() {
+    return this.codApplicazione;
   }
 
-  public void setIdPagamentoPortale(IdPagamentoPortale idPagamentoPortale) {
-    this.idPagamentoPortale = idPagamentoPortale;
+  public void setCodApplicazione(java.lang.String codApplicazione) {
+    this.codApplicazione = codApplicazione;
   }
 
-  public IdRpt getIdRpt() {
-    return this.idRpt;
+  public java.lang.String getIuv() {
+    return this.iuv;
   }
 
-  public void setIdRpt(IdRpt idRpt) {
-    this.idRpt = idRpt;
+  public void setIuv(java.lang.String iuv) {
+    this.iuv = iuv;
+  }
+
+  public java.lang.String getCcp() {
+    return this.ccp;
+  }
+
+  public void setCcp(java.lang.String ccp) {
+    this.ccp = ccp;
+  }
+
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
+  }
+
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
+  }
+
+  public java.lang.String getIdSessione() {
+    return this.idSessione;
+  }
+
+  public void setIdSessione(java.lang.String idSessione) {
+    this.idSessione = idSessione;
   }
 
   private static final long serialVersionUID = 1L;
@@ -284,33 +314,48 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @XmlElement(name="esito",required=false,nillable=false)
   protected java.lang.String esito;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="sottotipoEsito",required=false,nillable=false)
-  protected java.lang.Integer sottotipoEsito;
+  protected java.lang.String sottotipoEsito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="dettaglioEsito",required=false,nillable=false)
   protected java.lang.String dettaglioEsito;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="parametriRichiesta",required=false,nillable=false)
-  protected java.lang.String parametriRichiesta;
+  protected byte[] parametriRichiesta;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="parametriRisposta",required=false,nillable=false)
-  protected java.lang.String parametriRisposta;
+  protected byte[] parametriRisposta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="datiControparte",required=false,nillable=false)
   protected java.lang.String datiControparte;
 
-  @XmlElement(name="idVersamento",required=false,nillable=false)
-  protected IdVersamento idVersamento;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codVersamentoEnte",required=false,nillable=false)
+  protected java.lang.String codVersamentoEnte;
 
-  @XmlElement(name="idPagamentoPortale",required=false,nillable=false)
-  protected IdPagamentoPortale idPagamentoPortale;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codApplicazione",required=false,nillable=false)
+  protected java.lang.String codApplicazione;
 
-  @XmlElement(name="idRpt",required=false,nillable=false)
-  protected IdRpt idRpt;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuv",required=false,nillable=false)
+  protected java.lang.String iuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ccp",required=false,nillable=false)
+  protected java.lang.String ccp;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=false,nillable=false)
+  protected java.lang.String codDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="idSessione",required=false,nillable=false)
+  protected java.lang.String idSessione;
 
 }

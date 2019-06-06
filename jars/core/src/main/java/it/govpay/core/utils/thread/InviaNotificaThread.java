@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -40,6 +41,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.Controparte;
@@ -51,9 +53,6 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NotificaClient;
 import it.govpay.model.Connettore;
-import it.govpay.model.Evento.CategoriaEvento;
-import it.govpay.model.Evento.EsitoEvento;
-import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Versionabile.Versione;
@@ -74,6 +73,7 @@ public class InviaNotificaThread implements Runnable {
 	private Giornale giornale = null;
 	private String rptKey = null;
 	private List<Pagamento> pagamenti  = null;
+	private PagamentoPortale pagamentoPortale = null;
 
 	public InviaNotificaThread(Notifica notifica, BasicBD bd, IContext ctx) throws ServiceException {
 		// Verifico che tutti i campi siano valorizzati
@@ -92,6 +92,10 @@ public class InviaNotificaThread implements Runnable {
 		this.ctx = ctx;
 		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
 		this.rptKey = this.notifica.getRptKey(bd);
+		try {
+			this.pagamentoPortale = this.rpt.getPagamentoPortale(bd);
+		} catch (NotFoundException e) {
+		}
 	}
 
 	@Override
@@ -143,23 +147,6 @@ public class InviaNotificaThread implements Runnable {
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();
 				notificheBD.updateAnnullata(this.notifica.getId(), "Connettore Notifica non configurato, notifica annullata.", tentativi, prossima);
-				
-				Evento eventoInterno = new Evento();
-				eventoInterno.setRuoloEvento(RuoloEvento.CLIENT);
-				eventoInterno.setCategoriaEvento(CategoriaEvento.INTERNO);
-				eventoInterno.setEsitoEvento(EsitoEvento.KO);
-				eventoInterno.setSottotipoEsito(500);
-				eventoInterno.setData(new Date());
-				eventoInterno.setIntervallo(0l);
-				eventoInterno.setTipoEvento(CONNETTORE_NOTIFICA_DISABILITATO);
-				eventoInterno.setIdPagamentoPortale(this.rpt.getIdPagamentoPortale());
-				eventoInterno.setIdVersamento(this.rpt.getIdVersamento());	
-				eventoInterno.setIdRpt(this.rpt.getId());
-				eventoInterno.setDettaglioEsito("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata: connettore di notifica dell'applicazione "+this.applicazione.getCodApplicazione()+" non configurato.");
-				
-				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-				giornaleEventi.registraEvento(eventoInterno);
-				
 				return;
 			}
 			
@@ -171,8 +158,17 @@ public class InviaNotificaThread implements Runnable {
 			controparte.setErogatore(this.applicazione.getCodApplicazione());
 			controparte.setFruitore(Evento.COMPONENTE_COOPERAZIONE);
 			client.getEventoCtx().setControparte(controparte);
+			// salvataggio id Rpt/ versamento/ pagamento
+			client.getEventoCtx().setCodDominio(this.rpt.getCodDominio());
+			client.getEventoCtx().setIuv(this.rpt.getIuv());
+			client.getEventoCtx().setCcp(this.rpt.getCcp());
+			client.getEventoCtx().setIdA2A(this.applicazione.getCodApplicazione());
+			client.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
+			if(this.pagamentoPortale != null)
+				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
 			
-			client.invoke(this.notifica, this.rpt, this.applicazione, this.versamento, this.pagamenti, bd);
+			
+			client.invoke(this.notifica, this.rpt, this.applicazione, this.versamento, this.pagamenti, this.pagamentoPortale, bd);
 			
 			this.notifica.setStato(StatoSpedizione.SPEDITO);
 			this.notifica.setDescrizioneStato(null);

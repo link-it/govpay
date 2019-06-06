@@ -515,20 +515,20 @@ CREATE TABLE eventi
 	data TIMESTAMP,
 	intervallo NUMBER,
 	esito VARCHAR2(4 CHAR),
-	sottotipo_esito NUMBER,
-	dettaglio_esito VARCHAR2(255 CHAR),
-	parametri_richiesta CLOB,
-	parametri_risposta CLOB,
+	sottotipo_esito VARCHAR2(35 CHAR),
+	dettaglio_esito CLOB,
+	parametri_richiesta BLOB,
+	parametri_risposta BLOB,
 	dati_controparte CLOB,
+	cod_versamento_ente VARCHAR2(35 CHAR),
+	cod_applicazione VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR),
+	ccp VARCHAR2(35 CHAR),
+	cod_dominio VARCHAR2(35 CHAR),
+	id_sessione VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_versamento NUMBER,
-	id_pagamento_portale NUMBER,
-	id_rpt NUMBER,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-	CONSTRAINT fk_evt_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 );
 

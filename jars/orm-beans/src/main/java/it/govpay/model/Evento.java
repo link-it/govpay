@@ -29,9 +29,6 @@ public class Evento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-	private Long idVersamento;
-	private Long idPagamentoPortale;
-	private Long idRpt;
 	private String componente;
 	private CategoriaEvento categoriaEvento;
 	private RuoloEvento ruoloEvento;
@@ -40,11 +37,21 @@ public class Evento extends BasicModel {
 	private Long intervallo;
 	private Date data;
 	private EsitoEvento esitoEvento;
-	private Integer sottotipoEsito;
+	private String sottotipoEsito;
 	private String dettaglioEsito;
-	private String parametriRichiesta;
-	private String parametriRisposta;
+	private byte[] parametriRichiesta;
+	private byte[] parametriRisposta;
 	private String datiControparte;
+	
+	private String codDominio;
+	private String iuv;
+	private String ccp;
+	
+	private String codVersamentoEnte;
+	private String codApplicazione;
+	
+	private String idSessione;
+	
 	
 	public enum CategoriaEvento {
 		INTERNO ("B"), INTERFACCIA ("I"), UTENTE ("U");
@@ -156,22 +163,6 @@ public class Evento extends BasicModel {
 		this.sottotipoEvento = sottotipoEvento;
 	}
 
-	public Long getIdVersamento() {
-		return idVersamento;
-	}
-
-	public void setIdVersamento(Long idVersamento) {
-		this.idVersamento = idVersamento;
-	}
-
-	public Long getIdPagamentoPortale() {
-		return idPagamentoPortale;
-	}
-
-	public void setIdPagamentoPortale(Long idPagamentoPortale) {
-		this.idPagamentoPortale = idPagamentoPortale;
-	}
-
 	public String getTipoEvento() {
 		return tipoEvento;
 	}
@@ -208,14 +199,6 @@ public class Evento extends BasicModel {
 		}
 	}
 
-	public Long getIdRpt() {
-		return idRpt;
-	}
-
-	public void setIdRpt(Long idRpt) {
-		this.idRpt = idRpt;
-	}
-
 	public String getComponente() {
 		return componente;
 	}
@@ -240,11 +223,11 @@ public class Evento extends BasicModel {
 		this.esitoEvento = esitoEvento;
 	}
 
-	public Integer getSottotipoEsito() {
+	public String getSottotipoEsito() {
 		return sottotipoEsito;
 	}
 
-	public void setSottotipoEsito(Integer sottotipoEsito) {
+	public void setSottotipoEsito(String sottotipoEsito) {
 		this.sottotipoEsito = sottotipoEsito;
 	}
 
@@ -256,19 +239,19 @@ public class Evento extends BasicModel {
 		this.dettaglioEsito = dettaglioEsito;
 	}
 
-	public String getParametriRichiesta() {
+	public byte[] getParametriRichiesta() {
 		return parametriRichiesta;
 	}
 
-	public void setParametriRichiesta(String parametriRichiesta) {
+	public void setParametriRichiesta(byte[] parametriRichiesta) {
 		this.parametriRichiesta = parametriRichiesta;
 	}
 
-	public String getParametriRisposta() {
+	public byte[] getParametriRisposta() {
 		return parametriRisposta;
 	}
 
-	public void setParametriRisposta(String parametriRisposta) {
+	public void setParametriRisposta(byte[] parametriRisposta) {
 		this.parametriRisposta = parametriRisposta;
 	}
 
@@ -280,5 +263,51 @@ public class Evento extends BasicModel {
 		this.datiControparte = datiControparte;
 	}
 
-	 
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+
+	public String getCcp() {
+		return ccp;
+	}
+
+	public void setCcp(String ccp) {
+		this.ccp = ccp;
+	}
+
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
+	}
 }

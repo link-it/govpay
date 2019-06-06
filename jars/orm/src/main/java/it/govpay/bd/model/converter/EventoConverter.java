@@ -26,9 +26,6 @@ import it.govpay.bd.model.Evento;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
-import it.govpay.orm.IdPagamentoPortale;
-import it.govpay.orm.IdRpt;
-import it.govpay.orm.IdVersamento;
 
 public class EventoConverter {
 
@@ -49,11 +46,11 @@ public class EventoConverter {
 		vo.setId(dto.getId());
 		vo.setIntervallo(dto.getIntervallo() != null ? dto.getIntervallo() : 0l); 
 		try {
-			vo.setParametriRichiesta(dto.getDettaglioAsString(dto.getDettaglioRichiesta()));
+			vo.setParametriRichiesta(dto.getDettaglioAsBytes(dto.getDettaglioRichiesta()));
 		} catch (IOException e) {
 		}
 		try {
-			vo.setParametriRisposta(dto.getDettaglioAsString(dto.getDettaglioRisposta()));
+			vo.setParametriRisposta(dto.getDettaglioAsBytes(dto.getDettaglioRisposta()));
 		} catch (IOException e) {
 		}
 		if(dto.getRuoloEvento() != null)
@@ -61,23 +58,12 @@ public class EventoConverter {
 		vo.setSottotipoEsito(dto.getSottotipoEsito());
 		vo.setSottotipoEvento(dto.getSottotipoEvento());
 		vo.setTipoEvento(dto.getTipoEvento());
-		if(dto.getIdVersamento() != null && dto.getIdVersamento() > 0) {
-			IdVersamento idVersamento = new IdVersamento();
-			idVersamento.setId(dto.getIdVersamento());
-			vo.setIdVersamento(idVersamento );
-		}
-		
-		if(dto.getIdPagamentoPortale() != null && dto.getIdPagamentoPortale() > 0) {
-			IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
-			idPagamentoPortale.setId(dto.getIdPagamentoPortale());
-			vo.setIdPagamentoPortale(idPagamentoPortale);
-		}
-		
-		if(dto.getIdRpt() != null && dto.getIdRpt() > 0) {
-			IdRpt idRpt = new IdRpt();
-			idRpt.setId(dto.getIdRpt());
-			vo.setIdRpt(idRpt);
-		}
+		vo.setCodApplicazione(dto.getCodApplicazione());
+		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
+		vo.setCodDominio(dto.getCodDominio());
+		vo.setIuv(dto.getIuv());
+		vo.setCcp(dto.getCcp());
+		vo.setIdSessione(dto.getIdSessione());
 		
 		return vo;
 	}
@@ -101,14 +87,12 @@ public class EventoConverter {
 		dto.setSottotipoEsito(vo.getSottotipoEsito());
 		dto.setSottotipoEvento(vo.getSottotipoEvento());
 		dto.setTipoEvento(vo.getTipoEvento());
-		if(vo.getIdVersamento() != null)
-			dto.setIdVersamento(vo.getIdVersamento().getId());
-		
-		if(vo.getIdPagamentoPortale() != null)
-			dto.setIdPagamentoPortale(vo.getIdPagamentoPortale().getId());
-
-		if(vo.getIdRpt() != null)
-			dto.setIdRpt(vo.getIdRpt().getId());
+		dto.setCodApplicazione(vo.getCodApplicazione());
+		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
+		dto.setCodDominio(vo.getCodDominio());
+		dto.setIuv(vo.getIuv());
+		dto.setCcp(vo.getCcp());
+		dto.setIdSessione(vo.getIdSessione());
 		
 		return dto;
 	}

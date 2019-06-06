@@ -158,109 +158,46 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "dati_controparte";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+		if(field.equals(Evento.model().COD_VERSAMENTO_ENTE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_versamento_ente";
 			}else{
 				return "cod_versamento_ente";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+		if(field.equals(Evento.model().COD_APPLICAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_applicazione";
 			}else{
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+		if(field.equals(Evento.model().IUV)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".debitore_identificativo";
+				return this.toAliasTable(field)+".iuv";
 			}else{
-				return "debitore_identificativo";
+				return "iuv";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+		if(field.equals(Evento.model().CCP)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".debitore_anagrafica";
+				return this.toAliasTable(field)+".ccp";
 			}else{
-				return "debitore_anagrafica";
+				return "ccp";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_versamento_lotto";
-			}else{
-				return "cod_versamento_lotto";
-			}
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_anno_tributario";
-			}else{
-				return "cod_anno_tributario";
-			}
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".importo_totale";
-			}else{
-				return "importo_totale";
-			}
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".causale_versamento";
-			}else{
-				return "causale_versamento";
-			}
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".stato_versamento";
-			}else{
-				return "stato_versamento";
-			}
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_sessione";
-			}else{
-				return "id_sessione";
-			}
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
-			}
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".versante_identificativo";
-			}else{
-				return "versante_identificativo";
-			}
-		}
-		if(field.equals(Evento.model().ID_RPT.COD_MSG_RICHIESTA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_msg_richiesta";
-			}else{
-				return "cod_msg_richiesta";
-			}
-		}
-		if(field.equals(Evento.model().ID_RPT.COD_DOMINIO)){
+		if(field.equals(Evento.model().COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
 			}else{
 				return "cod_dominio";
 			}
 		}
-		if(field.equals(Evento.model().ID_RPT.IUV)){
+		if(field.equals(Evento.model().ID_SESSIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iuv";
+				return this.toAliasTable(field)+".id_sessione";
 			}else{
-				return "iuv";
+				return "id_sessione";
 			}
 		}
 
@@ -315,50 +252,23 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().DATI_CONTROPARTE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().COD_VERSAMENTO_ENTE)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
+		if(field.equals(Evento.model().COD_APPLICAZIONE)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().IUV)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().CCP)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().COD_DOMINIO)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
-			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_RPT.COD_MSG_RICHIESTA)){
-			return this.toTable(Evento.model().ID_RPT, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_RPT.COD_DOMINIO)){
-			return this.toTable(Evento.model().ID_RPT, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_RPT.IUV)){
-			return this.toTable(Evento.model().ID_RPT, returnAlias);
+		if(field.equals(Evento.model().ID_SESSIONE)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
 
 
@@ -375,21 +285,6 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Evento.model())){
 			return "eventi";
-		}
-		if(model.equals(Evento.model().ID_VERSAMENTO)){
-			return "versamenti";
-		}
-		if(model.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
-			return "applicazioni";
-		}
-		if(model.equals(Evento.model().ID_PAGAMENTO_PORTALE)){
-			return "pagamenti_portale";
-		}
-		if(model.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
-			return "applicazioni";
-		}
-		if(model.equals(Evento.model().ID_RPT)){
-			return "rpt";
 		}
 
 

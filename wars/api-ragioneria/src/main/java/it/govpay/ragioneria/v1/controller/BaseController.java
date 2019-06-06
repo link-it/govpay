@@ -122,6 +122,7 @@ public abstract class BaseController {
 	}
 	
 	protected ResponseBuilder handleResponseOk(ResponseBuilder responseBuilder, String transactionId) {
+		this.handleEventoOk(responseBuilder, transactionId);
 		if(transactionId != null)
 			return responseBuilder.header(this.transactionIdHeaderName, transactionId);
 		else 
