@@ -1,0 +1,2 @@
+insert into stazioni values ('11111111113', '11111111113_01', 'GovPayTest', 'http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice', 'http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice', 'ndpsym', 'password', 'ndpsym', 'password', 'localhost', 'ndpsym', 'password', 'localhost'); 
+insert into domini values ('11111111113', '11111111113_01', '12345678903', 'http://localhost:8080/govpay/frontend/web/connector/ecsp/psp', '0', null, 'Unita Sanitaria Locale');

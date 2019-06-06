@@ -1,0 +1,8 @@
+{
+  ragioneSociale: 'Mario Rossi',
+  domini: ['*'],
+  tipiPendenza: ['*'],
+  acl: [ { servizio: 'Rendicontazioni e Incassi', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: false
+}
+

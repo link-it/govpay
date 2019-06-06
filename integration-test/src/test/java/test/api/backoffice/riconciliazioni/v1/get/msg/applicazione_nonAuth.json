@@ -1,0 +1,19 @@
+{
+	"principal": '#(idA2A)',
+	"codificaAvvisi": {
+		"codificaIuv": "34",
+		"regExpIuv": ".*",
+		"generazioneIuvInterna": false
+	},
+	"domini": ['*'],
+	"tipiPendenza": [ ],
+	"apiPagamenti": true,
+	"apiPendenze": true,
+	"apiRagioneria": true,
+	"acl": [ ],
+	"servizioIntegrazione": {
+		"url": '#(ente_api_url + "/v1")',
+		"versioneApi": "REST v1"
+	},
+	"abilitato": true
+}
