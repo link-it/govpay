@@ -1,4 +1,4 @@
-VERSION=3.1.0-SNAPSHOT
+VERSION=3.1.0-RC1
 
 #mvn -f ../../../../pom.xml -Denv=installer_template clean package 
 
