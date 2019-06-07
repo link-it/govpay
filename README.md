@@ -1,11 +1,6 @@
 # GovPay - Porta di accesso al sistema pagoPA
 Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Partner tecnologici alle componenti centrali del progetto pagoPA.
 
-| Versione&nbsp;&nbsp;&nbsp; | Documentazione&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Novità principali  |
-|:--------:|:-----------------------------------------|:-------------------|
-| [3.0.0-RC3](https://github.com/link-it/GovPay/releases/tag/3.0.0-rc3) | [Manuale di Installazione](./resources/doc/pdf/GovPay-ManualeInstallazione.pdf)<br/>[Manuale di Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)<br/>[Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf) | Nuove API REST di integrazione, revisione completo dei cruscotti di gestione e monitoraggio<br>Per maggiori informazioni, consulta le [note di rilascio](https://github.com/link-it/GovPay/releases/tag/3.0.0-rc3)
-| [2.5.7](https://github.com/link-it/GovPay/releases/tag/2.5.7) | [Manuale di Installazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeInstallazione.pdf)<br/>[Manuale di Integrazione](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)<br/>[Manuale Utente](https://github.com/link-it/GovPay/blob/2.5.7/resources/doc/pdf/GovPay-ManualeUtente.pdf) | Supporto WISP 2.0.<br><br>Per maggiori informazioni, consulta le [note di rilascio](https://github.com/link-it/GovPay/releases/tag/2.5.7)
-
 ## Contatti
 
 - Segnalazioni: [GitHub Issues](https://github.com/link-it/GovPay/issues)
@@ -18,7 +13,7 @@ Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Par
 * Specifiche Attuative dei Codici di Versamento, riversamento e rendicontazione (SACIV), v1.3.1 
 * Specifiche Attuative del Nodo dei Pagamenti-SPC (SANP), v2.1  
 * Wizard Interattivo per la Scelta dei PSP (WISP), v2.0
-* Avviso di pagamento analogico nel sistema pagoPA, v2.1
+* Avviso di pagamento analogico nel sistema pagoPA, v2.2.1
 
 ### Configurabilità
 
@@ -27,17 +22,17 @@ Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Par
 * Servizi di integrazione per la realizzazione di un archivio di pagamenti in attesa distribuiti
 * Integrazione utenze e ruoli da Sistemi esterni di Identity Management
 
-### API per l'integrazione applicativa
+### API REST per l'integrazione applicativa
 
 * API orientata ai portali per l'attivazione dei pagamenti
-* API orientata ai Gestionali per la gestione delle posizioni debitorie
-* API orientata agli Uffici contabili per le operazioni di riconciliazione
-* Profilazione degli applicativi interni al dominio, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
+* API orientata ai verticali per la gestione delle posizioni debitorie
+* API orientata agli uffici contabili per le operazioni di riconciliazione
+* API di backoffice per lo sviluppo di cruscotti di gestione personalizzati
 
 ### Cruscotto di gestione e monitoraggio dei pagamenti
 
 * Implementazione delle funzionalita di Tavolo Operativo richieste dalla specifica AgID
-* Profilazione degli utenti console, per l'autorizzazione mirata su operazioni, domini e tributi di competenza
+* Profilazione degli utenti console, per l'autorizzazione mirata su operazioni, domini e tipologie di pagamento di competenza
 * Gestione archivio pagamenti in attesa (APA)
 * Consultazione delle pendenze e dei pagamenti eseguiti
 * Gestione della riconciliazione
