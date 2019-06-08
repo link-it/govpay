@@ -1,6 +1,11 @@
 # GovPay - Porta di accesso al sistema pagoPA
 Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Partner tecnologici alle componenti centrali del progetto pagoPA.
 
+## Documentazione
+
+- Manuale di installazione: [pdf](src/main/resources/doc/pdf/GovPay-ManualeInstallazione.pdf)
+- Manuale di integrazione: [pdf](src/main/resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)
+
 ## Contatti
 
 - Segnalazioni: [GitHub Issues](https://github.com/link-it/GovPay/issues)
