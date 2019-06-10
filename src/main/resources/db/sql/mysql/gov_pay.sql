@@ -876,7 +876,7 @@ CREATE TABLE eventi
 	dettaglio_esito LONGTEXT COMMENT 'Dettaglio esito in forma estesa',
 	parametri_richiesta MEDIUMBLOB COMMENT 'Dettagli della richiesta',
 	parametri_risposta MEDIUMBLOB COMMENT 'Dettagli della risposta',
-	dati_controparte LONGTEXT COMMENT 'Dati relativi alle transazioni pagopa',
+	dati_pago_pa LONGTEXT COMMENT 'Dati relativi alle transazioni pagopa',
 	cod_versamento_ente VARCHAR(35) COMMENT 'Identificativo della pendenza nel verticale di competenza',
 	cod_applicazione VARCHAR(35) COMMENT 'Codice identificativo del verticale',
 	iuv VARCHAR(35) COMMENT 'Identificativo univoco di versamento',

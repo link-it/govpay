@@ -270,6 +270,13 @@ public class Pagamento extends BasicBD {
 				} catch (Exception e) {
 					log.warn("Errore durante la richiesta di lista pendenti", e);
 					if(chiediListaPendentiClient != null) {
+						if(e instanceof GovPayException) {
+							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+						} else if(e instanceof ClientException) {
+							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+						} else {
+							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+						}
 						chiediListaPendentiClient.getEventoCtx().setEsito(Esito.FAIL);
 						chiediListaPendentiClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 					}
@@ -293,6 +300,7 @@ public class Pagamento extends BasicBD {
 						String fs = risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "-";
 						String fd = risposta.getFault().getDescription() != null ? risposta.getFault().getDescription() : "-";
 						if(chiediListaPendentiClient != null) {
+							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(fc);
 							chiediListaPendentiClient.getEventoCtx().setEsito(Esito.KO);
 							chiediListaPendentiClient.getEventoCtx().setDescrizioneEsito(fd);
 						}
@@ -464,6 +472,7 @@ public class Pagamento extends BasicBD {
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
 
 				if(nodoInviaRRClient != null) {
+					nodoInviaRRClient.getEventoCtx().setSottotipoEsito(fb.getFaultCode());
 					nodoInviaRRClient.getEventoCtx().setEsito(Esito.KO);
 					nodoInviaRRClient.getEventoCtx().setDescrizioneEsito(descrizione);
 				}
@@ -481,6 +490,7 @@ public class Pagamento extends BasicBD {
 			}
 		} catch (ClientException e) {
 			if(nodoInviaRRClient != null) {
+				nodoInviaRRClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
 				nodoInviaRRClient.getEventoCtx().setEsito(Esito.FAIL);
 				nodoInviaRRClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 			}	

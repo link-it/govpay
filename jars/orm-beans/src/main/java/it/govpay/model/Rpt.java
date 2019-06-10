@@ -208,6 +208,8 @@ public class Rpt extends BasicModel{
 	private String denominazioneAttestante;
 	private boolean bloccante;
 	
+	private String faultCode;
+	
 	public TipoIdentificativoAttestante getTipoIdentificativoAttestante() {
 		return this.tipoIdentificativoAttestante;
 	}
@@ -437,6 +439,12 @@ public class Rpt extends BasicModel{
 	}
 	public void setBloccante(boolean bloccante) {
 		this.bloccante = bloccante;
+	}
+	public String getFaultCode() {
+		return faultCode;
+	}
+	public void setFaultCode(String faultCode) {
+		this.faultCode = faultCode;
 	}
 
 }

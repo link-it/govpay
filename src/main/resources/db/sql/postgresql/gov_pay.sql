@@ -861,7 +861,7 @@ CREATE TABLE eventi
 	dettaglio_esito TEXT,
 	parametri_richiesta BYTEA,
 	parametri_risposta BYTEA,
-	dati_controparte TEXT,
+	dati_pago_pa TEXT,
 	cod_versamento_ente VARCHAR(35),
 	cod_applicazione VARCHAR(35),
 	iuv VARCHAR(35),

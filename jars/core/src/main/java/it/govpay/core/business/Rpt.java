@@ -34,6 +34,7 @@ import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
+import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.DateUtils;
@@ -126,7 +127,7 @@ public class Rpt extends BasicBD{
 							} catch (ClientException e) {
 								log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: errore di interazione con il servizio di verifica.");
 								throw new GovPayException(EsitoOperazione.VER_014, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(), e.getMessage());
-							} catch (ValidationException e) {
+							} catch (VersamentoNonValidoException e) {
 								log.warn("Aggiornamento del versamento [" + versamentoModel.getCodVersamentoEnte() + "] applicazione [" + versamentoModel.getApplicazione(this).getCodApplicazione() + "] fallito: errore di validazine dei dati ricevuti dal servizio di verifica.");
 								throw new GovPayException(EsitoOperazione.VER_014, versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(), e.getMessage());
 							}
@@ -270,13 +271,16 @@ public class Rpt extends BasicBD{
 						for(FaultBean fb : risposta.getListaErroriRPT()) {
 							it.govpay.bd.model.Rpt rpt = rpts.get(fb.getSerial() - 1);
 							String descrizione = null; 
+							String faultCode = null;
 							if(fb != null) {
+								faultCode = fb.getFaultCode();
 								descrizione = "[" + fb.getFaultCode() + "] " + fb.getFaultString();
 								descrizione = fb.getDescription() != null ? descrizione + ": " + fb.getDescription() : descrizione;
 							}
 							rpt.setStato(StatoRpt.RPT_RIFIUTATA_NODO);
 							rpt.setDescrizioneStato(descrizione);
 							rpt.setEsitoPagamento(EsitoPagamento.RIFIUTATO);
+							rpt.setFaultCode(faultCode);
 							rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null,EsitoPagamento.RIFIUTATO);
 						}
 
@@ -300,6 +304,7 @@ public class Rpt extends BasicBD{
 					ctx.getApplicationLogger().log("rpt.invioKo", risposta.getLog());
 					log.info("RPT rifiutata dal Nodo dei Pagamenti: " + risposta.getLog());
 					if(clientInviaCarrelloRPT != null) {
+						clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(risposta.getFaultBean().getFaultCode());
 						clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.KO);
 						//						clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(risposta.toString());
 					}
@@ -324,6 +329,7 @@ public class Rpt extends BasicBD{
 				//   - RPT esistente: faccio come OK
 				//   - Errore nella richiesta: rendo un errore NDP per stato sconosciuto
 				if(clientInviaCarrelloRPT != null) {
+					clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
 					clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.FAIL);
 					clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				}
@@ -363,6 +369,7 @@ public class Rpt extends BasicBD{
 					}  
 					if(risposta.getEsito() == null) {
 						if(chiediStatoRptClient != null) {
+							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(risposta.getFault().getFaultCode());
 							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
 							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(risposta.getFault().getFaultString());
 						}
@@ -379,6 +386,7 @@ public class Rpt extends BasicBD{
 							ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTcompletato");
 							log.info("Processo di pagamento gia' completato.");
 							if(chiediStatoRptClient != null) {
+								chiediStatoRptClient.getEventoCtx().setSottotipoEsito("PAA_NODO_INDISPONIBILE"); 
 								chiediStatoRptClient.getEventoCtx().setEsito(Esito.KO);
 								chiediStatoRptClient.getEventoCtx().setDescrizioneEsito("Richiesta di pagamento gia' gestita dal Nodo dei Pagamenti");
 							}
@@ -423,6 +431,8 @@ public class Rpt extends BasicBD{
 						
 						RptUtils.popolaEventoCooperazione(clientInviaCarrelloRPT, rpt, intermediario, stazione); 
 
+						if(rpt.getFaultCode() != null)
+							clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(rpt.getFaultCode());
 						if(!clientInviaCarrelloRPT.getEventoCtx().getEsito().equals(Esito.OK) && clientInviaCarrelloRPT.getEventoCtx().getDescrizioneEsito() == null) {
 							clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(rpt.getDescrizioneStato());
 						}

@@ -53,7 +53,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.DETTAGLIO_ESITO = new Field("dettaglioEsito",java.lang.String.class,"Evento",Evento.class);
 		this.PARAMETRI_RICHIESTA = new Field("parametriRichiesta",byte[].class,"Evento",Evento.class);
 		this.PARAMETRI_RISPOSTA = new Field("parametriRisposta",byte[].class,"Evento",Evento.class);
-		this.DATI_CONTROPARTE = new Field("datiControparte",java.lang.String.class,"Evento",Evento.class);
+		this.DATI_PAGO_PA = new Field("datiPagoPA",java.lang.String.class,"Evento",Evento.class);
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"Evento",Evento.class);
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"Evento",Evento.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"Evento",Evento.class);
@@ -79,7 +79,7 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.DETTAGLIO_ESITO = new ComplexField(father,"dettaglioEsito",java.lang.String.class,"Evento",Evento.class);
 		this.PARAMETRI_RICHIESTA = new ComplexField(father,"parametriRichiesta",byte[].class,"Evento",Evento.class);
 		this.PARAMETRI_RISPOSTA = new ComplexField(father,"parametriRisposta",byte[].class,"Evento",Evento.class);
-		this.DATI_CONTROPARTE = new ComplexField(father,"datiControparte",java.lang.String.class,"Evento",Evento.class);
+		this.DATI_PAGO_PA = new ComplexField(father,"datiPagoPA",java.lang.String.class,"Evento",Evento.class);
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"Evento",Evento.class);
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"Evento",Evento.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Evento",Evento.class);
@@ -115,7 +115,7 @@ public class EventoModel extends AbstractModel<Evento> {
 	 
 	public IField PARAMETRI_RISPOSTA = null;
 	 
-	public IField DATI_CONTROPARTE = null;
+	public IField DATI_PAGO_PA = null;
 	 
 	public IField COD_VERSAMENTO_ENTE = null;
 	 

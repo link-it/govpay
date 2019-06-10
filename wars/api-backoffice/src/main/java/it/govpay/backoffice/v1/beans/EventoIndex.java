@@ -28,7 +28,7 @@ import it.govpay.core.beans.JSONSerializable;
 "idA2A",
 "idPendenza",
 "idPagamento",
-"controparte",
+"datiPagoPA",
 })
 public class EventoIndex extends JSONSerializable {
   
@@ -83,8 +83,8 @@ public class EventoIndex extends JSONSerializable {
   @JsonProperty("idPagamento")
   private String idPagamento = null;
   
-  @JsonProperty("controparte")
-  private Controparte controparte = null;
+  @JsonProperty("datiPagoPA")
+  private DatiPagoPA datiPagoPA = null;
   
   /**
    * Identificativo evento
@@ -353,17 +353,17 @@ public class EventoIndex extends JSONSerializable {
 
   /**
    **/
-  public EventoIndex controparte(Controparte controparte) {
-    this.controparte = controparte;
+  public EventoIndex datiPagoPA(DatiPagoPA datiPagoPA) {
+    this.datiPagoPA = datiPagoPA;
     return this;
   }
 
-  @JsonProperty("controparte")
-  public Controparte getControparte() {
-    return controparte;
+  @JsonProperty("datiPagoPA")
+  public DatiPagoPA getDatiPagoPA() {
+    return datiPagoPA;
   }
-  public void setControparte(Controparte controparte) {
-    this.controparte = controparte;
+  public void setDatiPagoPA(DatiPagoPA datiPagoPA) {
+    this.datiPagoPA = datiPagoPA;
   }
 
   @Override
@@ -392,12 +392,12 @@ public class EventoIndex extends JSONSerializable {
         Objects.equals(idA2A, eventoIndex.idA2A) &&
         Objects.equals(idPendenza, eventoIndex.idPendenza) &&
         Objects.equals(idPagamento, eventoIndex.idPagamento) &&
-        Objects.equals(controparte, eventoIndex.controparte);
+        Objects.equals(datiPagoPA, eventoIndex.datiPagoPA);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, controparte);
+    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA);
   }
 
   public static EventoIndex parse(String json) throws ServiceException, ValidationException { 
@@ -431,7 +431,7 @@ public class EventoIndex extends JSONSerializable {
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
-    sb.append("    controparte: ").append(toIndentedString(controparte)).append("\n");
+    sb.append("    datiPagoPA: ").append(toIndentedString(datiPagoPA)).append("\n");
     sb.append("}");
     return sb.toString();
   }

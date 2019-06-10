@@ -47,7 +47,7 @@ import java.io.Serializable;
  * 			&lt;element name="dettaglioEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="parametriRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="parametriRisposta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="datiControparte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="datiPagoPA" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -80,7 +80,7 @@ import java.io.Serializable;
   	"dettaglioEsito",
   	"parametriRichiesta",
   	"parametriRisposta",
-  	"datiControparte",
+  	"datiPagoPA",
   	"codVersamentoEnte",
   	"codApplicazione",
   	"iuv",
@@ -206,12 +206,12 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.parametriRisposta = parametriRisposta;
   }
 
-  public java.lang.String getDatiControparte() {
-    return this.datiControparte;
+  public java.lang.String getDatiPagoPA() {
+    return this.datiPagoPA;
   }
 
-  public void setDatiControparte(java.lang.String datiControparte) {
-    this.datiControparte = datiControparte;
+  public void setDatiPagoPA(java.lang.String datiPagoPA) {
+    this.datiPagoPA = datiPagoPA;
   }
 
   public java.lang.String getCodVersamentoEnte() {
@@ -331,8 +331,8 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   protected byte[] parametriRisposta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="datiControparte",required=false,nillable=false)
-  protected java.lang.String datiControparte;
+  @XmlElement(name="datiPagoPA",required=false,nillable=false)
+  protected java.lang.String datiPagoPA;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codVersamentoEnte",required=false,nillable=false)

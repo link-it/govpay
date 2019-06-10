@@ -1502,7 +1502,7 @@
 			</xsd:element>
 			<xsd:element name="parametriRichiesta" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="parametriRisposta" type="xsd:base64Binary" minOccurs="0"/>
-			<xsd:element name="datiControparte" type="xsd:string" minOccurs="0">
+			<xsd:element name="datiPagoPA" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">

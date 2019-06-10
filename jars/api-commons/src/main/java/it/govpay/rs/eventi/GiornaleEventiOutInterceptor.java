@@ -58,14 +58,15 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 					
 					final LogEvent eventResponse = new DefaultLogEventMapper().map(message);
 					
-					eventoCtx.getDettaglioRisposta().setHeaders(eventResponse.getHeaders());
+					eventoCtx.getDettaglioRisposta().setHeadersFromMap(eventResponse.getHeaders());
 					eventoCtx.getDettaglioRisposta().setStatus(responseCode);
 					eventoCtx.getDettaglioRisposta().setDataOraRisposta(dataUscita);
 
 					eventoCtx.setDataRisposta(dataUscita);
 					eventoCtx.setStatus(responseCode);
-					if(responseCode != null)
-					eventoCtx.setSottotipoEsito(responseCode + "");
+					// se non ho impostato un sottotipo esito genero uno di default che corrisponde allo status code
+					if(responseCode != null && eventoCtx.getSottotipoEsito() == null)
+						eventoCtx.setSottotipoEsito(responseCode + "");
 					
 					PutEventoDTO putEventoDTO = new PutEventoDTO(context.getAuthentication());
 					putEventoDTO.setEvento(eventoCtx);

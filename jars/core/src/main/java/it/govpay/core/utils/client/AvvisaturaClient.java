@@ -22,7 +22,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.Controparte;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
@@ -63,11 +63,12 @@ public class AvvisaturaClient extends BasicClient {
 		
 		this.getEventoCtx().setComponente(this.componente); 
 		
-		Controparte controparte = new Controparte();
-		controparte.setCodStazione(this.stazione.getCodStazione());
-		controparte.setErogatore(Evento.NDP);
-		controparte.setFruitore(this.intermediario.getDenominazione());
-		this.getEventoCtx().setControparte(controparte);
+		DatiPagoPA datiPagoPA = new DatiPagoPA();
+		datiPagoPA.setCodStazione(this.stazione.getCodStazione());
+		datiPagoPA.setErogatore(Evento.NDP);
+		datiPagoPA.setFruitore(this.intermediario.getCodIntermediario());
+		datiPagoPA.setCodIntermediario(this.intermediario.getCodIntermediario());
+		this.getEventoCtx().setDatiPagoPA(datiPagoPA);
 	}
 
 	@Override
@@ -85,6 +86,8 @@ public class AvvisaturaClient extends BasicClient {
 			CtNodoInviaAvvisoDigitale ctNodoInviaAvvisoDigitale) throws ClientException {
 		JAXBElement<?> bodyJAXB = new JAXBElement<CtNodoInviaAvvisoDigitale>(_NodoInviaAvvisoDigitale_QNAME, CtNodoInviaAvvisoDigitale.class, null, ctNodoInviaAvvisoDigitale);
 
+		this.getEventoCtx().getDatiPagoPA().setCodDominio(ctNodoInviaAvvisoDigitale.getAvvisoDigitaleWS().getIdentificativoDominio()); 
+		
 		IntestazionePPT intestazione = new IntestazionePPT();
 		intestazione.setIdentificativoDominio(ctNodoInviaAvvisoDigitale.getAvvisoDigitaleWS().getIdentificativoDominio());
 		intestazione.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());

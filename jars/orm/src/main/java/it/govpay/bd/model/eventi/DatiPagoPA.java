@@ -3,16 +3,17 @@ package it.govpay.bd.model.eventi;
 import java.io.Serializable;
 
 import it.govpay.model.Rpt;
+import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 
-public class Controparte implements Serializable{
+public class DatiPagoPA implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public Controparte() {
+	public DatiPagoPA() {
 		this.codPsp = Rpt.codPspWISP20;
 		this.codCanale = Rpt.codCanaleWISP20;
 		this.tipoVersamento = Rpt.tipoVersamentoWISP20;
@@ -20,10 +21,14 @@ public class Controparte implements Serializable{
 	
 	private String codPsp;
 	private TipoVersamento tipoVersamento;
+	private ModelloPagamento modelloPagamento;
 	private String fruitore;
 	private String erogatore;
 	private String codStazione;
 	private String codCanale;
+	private String codIntermediario;
+	private String codIntermediarioPsp;
+	private String codDominio;
 
 	public String getCodPsp() {
 		return codPsp;
@@ -60,6 +65,30 @@ public class Controparte implements Serializable{
 	}
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;
+	}
+	public ModelloPagamento getModelloPagamento() {
+		return modelloPagamento;
+	}
+	public void setModelloPagamento(ModelloPagamento modelloPagamento) {
+		this.modelloPagamento = modelloPagamento;
+	}
+	public String getCodIntermediario() {
+		return codIntermediario;
+	}
+	public void setCodIntermediario(String codIntermediario) {
+		this.codIntermediario = codIntermediario;
+	}
+	public String getCodIntermediarioPsp() {
+		return codIntermediarioPsp;
+	}
+	public void setCodIntermediarioPsp(String codIntermediarioPsp) {
+		this.codIntermediarioPsp = codIntermediarioPsp;
+	}
+	public String getCodDominio() {
+		return codDominio;
+	}
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
 	}
 	
 	

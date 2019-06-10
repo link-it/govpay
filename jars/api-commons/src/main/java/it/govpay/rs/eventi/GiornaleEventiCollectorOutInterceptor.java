@@ -1,6 +1,7 @@
 package it.govpay.rs.eventi;
 
 import java.io.OutputStream;
+import java.util.Base64;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -87,12 +88,12 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 						dettaglioRichiesta.setUrl(eventoCtx.getUrl());
 						dettaglioRichiesta.setMethod(eventoCtx.getMethod());
 						dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
-						dettaglioRichiesta.setHeaders(eventRequest.getHeaders());
+						dettaglioRichiesta.setHeadersFromMap(eventRequest.getHeaders());
 						
 						// lettura informazioni dalla response
 						final LogEvent eventResponse = new DefaultLogEventMapper().map(message);
 						DettaglioRisposta dettaglioRisposta = new DettaglioRisposta();
-						dettaglioRisposta.setHeaders(eventResponse.getHeaders());
+						dettaglioRisposta.setHeadersFromMap(eventResponse.getHeaders());
 						dettaglioRisposta.setDataOraRisposta(dataUscita);
 
 						eventoCtx.setDataRisposta(dataUscita);
@@ -106,7 +107,8 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 							} else {
 								eventRequest.setPayload(AbstractLoggingInterceptor.CONTENT_SUPPRESSED);
 							}
-							dettaglioRichiesta.setPayload(eventRequest.getPayload());
+							if(eventRequest.getPayload() != null)
+								dettaglioRichiesta.setPayload(Base64.getEncoder().encodeToString(eventRequest.getPayload().getBytes()));
 
 							// dump risposta
 							final OutputStream os = message.getContent(OutputStream.class);
@@ -188,7 +190,8 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 					event.setPayload(CONTENT_SUPPRESSED);
 				}
 				
-				this.eventoCtx.getDettaglioRisposta().setPayload(event.getPayload());
+				if(event.getPayload() != null)
+					this.eventoCtx.getDettaglioRisposta().setPayload(Base64.getEncoder().encodeToString(event.getPayload().getBytes()));
 
 				try {
 					// empty out the cache

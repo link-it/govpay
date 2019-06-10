@@ -5,7 +5,7 @@ import java.util.Date;
 import org.openspcoop2.utils.logger.beans.context.core.Role;
 
 import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.eventi.Controparte;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.model.Evento.CategoriaEvento;
@@ -40,7 +40,7 @@ public class EventoContext {
 
 	private DettaglioRichiesta dettaglioRichiesta;
 	private DettaglioRisposta dettaglioRisposta;
-	private Controparte controparte;
+	private DatiPagoPA datiPagoPA;
 
 	private String codDominio;
 	private String iuv;
@@ -237,12 +237,12 @@ public class EventoContext {
 		this.idPendenza = idPendenza;
 	}
 
-	public Controparte getControparte() {
-		return controparte;
+	public DatiPagoPA getDatiPagoPA() {
+		return datiPagoPA;
 	}
 
-	public void setControparte(Controparte controparte) {
-		this.controparte = controparte;
+	public void setDatiPagoPA(DatiPagoPA datiPagoPA) {
+		this.datiPagoPA = datiPagoPA;
 	}
 
 	public Evento toEventoDTO() {
@@ -264,7 +264,7 @@ public class EventoContext {
 		if(this.getComponente() != null)
 			dto.setComponente(this.getComponente().toString());
 		dto.setData(this.getDataRichiesta());
-		dto.setControparte(this.getControparte());
+		dto.setDatiPagoPA(this.getDatiPagoPA());
 		dto.setDettaglioEsito(this.getDescrizioneEsito());
 		if(this.getEsito() != null) {
 			switch(this.getEsito()) {

@@ -78,8 +78,8 @@ public class EventoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "parametri_richiesta", Evento.model().PARAMETRI_RICHIESTA.getFieldType()));
 				setParameter(object, "setParametriRisposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "parametri_risposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType()));
-				setParameter(object, "setDatiControparte", Evento.model().DATI_CONTROPARTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "dati_controparte", Evento.model().DATI_CONTROPARTE.getFieldType()));
+				setParameter(object, "setDatiPagoPA", Evento.model().DATI_PAGO_PA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "dati_pago_pa", Evento.model().DATI_PAGO_PA.getFieldType()));
 				setParameter(object, "setCodVersamentoEnte", Evento.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Evento.model().COD_VERSAMENTO_ENTE.getFieldType()));
 				setParameter(object, "setCodApplicazione", Evento.model().COD_APPLICAZIONE.getFieldType(),
@@ -138,8 +138,8 @@ public class EventoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"parametriRichiesta"));
 				setParameter(object, "setParametriRisposta", Evento.model().PARAMETRI_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"parametriRisposta"));
-				setParameter(object, "setDatiControparte", Evento.model().DATI_CONTROPARTE.getFieldType(),
-					this.getObjectFromMap(map,"datiControparte"));
+				setParameter(object, "setDatiPagoPA", Evento.model().DATI_PAGO_PA.getFieldType(),
+					this.getObjectFromMap(map,"datiPagoPA"));
 				setParameter(object, "setCodVersamentoEnte", Evento.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					this.getObjectFromMap(map,"codVersamentoEnte"));
 				setParameter(object, "setCodApplicazione", Evento.model().COD_APPLICAZIONE.getFieldType(),

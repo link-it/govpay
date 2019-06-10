@@ -59,7 +59,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.Controparte;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -262,14 +262,19 @@ public class RrUtils extends NdpValidationUtils {
 	}
 	
 	private static void popolaEventoCooperazione(NodoClient client, Rpt rpt, Risposta risposta, BasicBD bd) throws ServiceException {
-		Controparte controparte = new Controparte();
-		controparte.setCodCanale(rpt.getCodCanale());
-		controparte.setCodPsp(rpt.getCodPsp());
-		controparte.setCodStazione(rpt.getStazione(bd).getCodStazione());
-		controparte.setErogatore(Evento.NDP);
-		controparte.setFruitore(rpt.getIntermediario(bd).getDenominazione());
-		controparte.setTipoVersamento(rpt.getTipoVersamento());
-		client.getEventoCtx().setControparte(controparte);
+		
+		DatiPagoPA datiPagoPA = new DatiPagoPA();
+		datiPagoPA.setCodCanale(rpt.getCodCanale());
+		datiPagoPA.setCodPsp(rpt.getCodPsp());
+		datiPagoPA.setCodStazione(rpt.getStazione(bd).getCodStazione());
+		datiPagoPA.setErogatore(Evento.NDP);
+		datiPagoPA.setFruitore(rpt.getIntermediario(bd).getCodIntermediario());
+		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
+		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
+		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
+		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
+		datiPagoPA.setCodDominio(rpt.getCodDominio());
+		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 	}
 
 	public static Rr acquisisciEr(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] er, BasicBD bd) throws NdpException, ServiceException, UtilsException {

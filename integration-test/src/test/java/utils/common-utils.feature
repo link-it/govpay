@@ -90,4 +90,14 @@ Scenario:
 		}
     """
     
+    
+	* def decodeBase64 = 
+	"""
+	function(encodedString){ 
+		var Base64 = Java.type('java.util.Base64');
+		var String = Java.type('java.lang.String');
+		return new String(Base64.getDecoder().decode(encodedString));
+	}
+	"""
+    
   

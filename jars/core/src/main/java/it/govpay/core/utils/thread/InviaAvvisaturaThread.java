@@ -29,13 +29,13 @@ import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EsitoAvvisatura;
-import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.Controparte;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
@@ -106,12 +106,6 @@ public class InviaAvvisaturaThread implements Runnable {
 
 			client = new AvvisaturaClient(this.versamento, this.intermediario, this.stazione, this.giornale, operationId, bd);
 			
-			Controparte controparte = new Controparte();
-			controparte.setCodStazione(this.stazione.getCodStazione());
-			controparte.setErogatore(Evento.NDP);
-			controparte.setFruitore(this.intermediario.getDenominazione());
-			
-			client.getEventoCtx().setControparte(controparte);
 			client.getEventoCtx().setIdA2A(this.applicazione.getCodApplicazione());
 			client.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
 
@@ -136,6 +130,7 @@ public class InviaAvvisaturaThread implements Runnable {
 				// emetto un evento ok
 				log.info("Avvisatura Digitale inviata con errore al nodo");
 				ctx.getApplicationLogger().log("versamento.avvisaturaDigitaleKo", fault.getDescription());
+				client.getEventoCtx().setSottotipoEsito(fault.getFaultCode());
 				client.getEventoCtx().setEsito(Esito.KO);
 				client.getEventoCtx().setDescrizioneEsito(fault.getDescription());
 			} else { // ok
@@ -171,6 +166,7 @@ public class InviaAvvisaturaThread implements Runnable {
 		} catch (ClientException e) {
 			log.error("Errore nella spedizione della Avvisatura Digitale", e);
 			if(client != null) {
+				client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				client.getEventoCtx().setEsito(Esito.KO);
 				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
 			}
@@ -184,6 +180,9 @@ public class InviaAvvisaturaThread implements Runnable {
 			if(this.versamento.getAvvisaturaModalita().equals(ModoAvvisatura.SINCRONA.getValue())) {
 				this.versamento.setAvvisaturaModalita(ModoAvvisatura.ASICNRONA.getValue());
 				try {
+					if(versamentiBD == null)
+						versamentiBD = new VersamentiBD(bd);
+					
 					versamentiBD.updateVersamentoModalitaAvvisatura(this.versamento.getId(), ModoAvvisatura.ASICNRONA.getValue());
 				} catch (ServiceException e1) {
 					log.error("Errore aggiornamento modalita avvisatura versaemento", e);
@@ -192,7 +191,12 @@ public class InviaAvvisaturaThread implements Runnable {
 		} catch(Exception e) {
 			log.error("Errore nella spedizione della Avvisatura Digitale", e);
 			if(client != null) {
-				client.getEventoCtx().setEsito(Esito.KO);
+				if(e instanceof GovPayException) {
+					client.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+				} else {
+					client.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+				}
+				client.getEventoCtx().setEsito(Esito.FAIL);
 				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
 			}
 			try {

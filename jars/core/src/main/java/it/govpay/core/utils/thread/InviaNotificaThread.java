@@ -38,14 +38,13 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.Controparte;
 import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
@@ -154,10 +153,11 @@ public class InviaNotificaThread implements Runnable {
 			
 			client = new NotificaClient(this.applicazione, operationId, this.giornale, bd);
 			
-			Controparte controparte = new Controparte();
-			controparte.setErogatore(this.applicazione.getCodApplicazione());
-			controparte.setFruitore(Evento.COMPONENTE_COOPERAZIONE);
-			client.getEventoCtx().setControparte(controparte);
+//			DatiPagoPA datiPagoPA = new DatiPagoPA();
+//			datiPagoPA.setErogatore(this.applicazione.getCodApplicazione());
+//			datiPagoPA.setFruitore(Evento.COMPONENTE_COOPERAZIONE);
+//			datiPagoPA.setCodDominio(this.rpt.getCodDominio());
+//			client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 			// salvataggio id Rpt/ versamento/ pagamento
 			client.getEventoCtx().setCodDominio(this.rpt.getCodDominio());
 			client.getEventoCtx().setIuv(this.rpt.getIuv());
@@ -206,6 +206,14 @@ public class InviaNotificaThread implements Runnable {
 				log.error("Errore nella consegna della notifica", e);
 			
 			if(client != null) {
+				if(e instanceof GovPayException) {
+					client.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+				} else if(e instanceof ClientException) {
+					client.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				} else {
+					client.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+				}
+				
 				client.getEventoCtx().setEsito(Esito.FAIL);
 				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
 			}			

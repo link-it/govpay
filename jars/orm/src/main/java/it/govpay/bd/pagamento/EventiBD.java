@@ -109,7 +109,7 @@ public class EventiBD extends BasicBD {
 			fields.add(it.govpay.orm.Evento.model().CATEGORIA_EVENTO);
 			fields.add(it.govpay.orm.Evento.model().COMPONENTE);
 			fields.add(it.govpay.orm.Evento.model().DATA);
-			fields.add(it.govpay.orm.Evento.model().DATI_CONTROPARTE);
+			fields.add(it.govpay.orm.Evento.model().DATI_PAGO_PA);
 			fields.add(it.govpay.orm.Evento.model().DETTAGLIO_ESITO);
 			fields.add(it.govpay.orm.Evento.model().ESITO);
 			fields.add(it.govpay.orm.Evento.model().INTERVALLO);

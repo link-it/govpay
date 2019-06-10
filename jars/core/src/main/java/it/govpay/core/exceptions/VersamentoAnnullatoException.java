@@ -19,12 +19,12 @@
  */
 package it.govpay.core.exceptions;
 
-public class VersamentoAnnullatoException extends Exception {
+public class VersamentoAnnullatoException extends VersamentoException {
 
 	private static final long serialVersionUID = 1L;
 	
-	public VersamentoAnnullatoException(String message) {
-		super(message);
+	public VersamentoAnnullatoException(String codApplicazione, String codVersamentoEnte, String message) {
+		super(codApplicazione, codVersamentoEnte, message);
 	}
 
 }

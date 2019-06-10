@@ -1217,7 +1217,7 @@ CREATE TABLE eventi
 	dettaglio_esito CLOB,
 	parametri_richiesta BLOB,
 	parametri_risposta BLOB,
-	dati_controparte CLOB,
+	dati_pago_pa CLOB,
 	cod_versamento_ente VARCHAR2(35 CHAR),
 	cod_applicazione VARCHAR2(35 CHAR),
 	iuv VARCHAR2(35 CHAR),

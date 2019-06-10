@@ -23,16 +23,16 @@ import java.util.Date;
 
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
-public class VersamentoScadutoException extends Exception {
+public class VersamentoScadutoException extends VersamentoException {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public VersamentoScadutoException(Date dataScadenza) {
-		super(dataScadenza != null ? "Versamento scaduto in data " + SimpleDateFormatUtils.newSimpleDateFormat("dd/MM/yyyy").format(dataScadenza) : null);
+	public VersamentoScadutoException(String codApplicazione, String codVersamentoEnte, Date dataScadenza) {
+		super(codApplicazione, codVersamentoEnte, dataScadenza != null ? "Versamento scaduto in data " + SimpleDateFormatUtils.newSimpleDateFormat("dd/MM/yyyy").format(dataScadenza) : null);
 	}
 	
-	public VersamentoScadutoException(String message) {
-		super(message);
+	public VersamentoScadutoException(String codApplicazione, String codVersamentoEnte, String message) {
+		super(codApplicazione, codVersamentoEnte, message);
 	}
 
 }

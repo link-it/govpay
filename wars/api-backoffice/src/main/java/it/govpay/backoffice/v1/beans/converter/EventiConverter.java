@@ -7,12 +7,11 @@ import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.backoffice.v1.beans.CategoriaEvento;
 import it.govpay.backoffice.v1.beans.ComponenteEvento;
-import it.govpay.backoffice.v1.beans.Controparte;
+import it.govpay.backoffice.v1.beans.DatiPagoPA;
 import it.govpay.backoffice.v1.beans.EsitoEvento;
 import it.govpay.backoffice.v1.beans.Evento;
 import it.govpay.backoffice.v1.beans.EventoIndex;
 import it.govpay.backoffice.v1.beans.RuoloEvento;
-import it.govpay.rs.v1.ConverterUtils;
 
 public class EventiConverter {
 
@@ -79,7 +78,7 @@ public class EventiConverter {
 		rsModel.setIdPendenza(evento.getCodVersamentoEnte());
 		rsModel.setIdPagamento(evento.getIdSessione());
 		
-		rsModel.setControparte(getControparte(evento));
+		rsModel.setDatiPagoPA(getDatiPagoPA(evento));
 
 
 		return rsModel;
@@ -112,7 +111,7 @@ public class EventiConverter {
 			switch (evento.getRuoloEvento()) {
 			case CLIENT:
 				rsModel.setRuolo(RuoloEvento.CLIENT);
-				break;
+				break; 
 			case SERVER:
 				rsModel.setRuolo(RuoloEvento.SERVER);
 				break;
@@ -148,30 +147,41 @@ public class EventiConverter {
 		rsModel.setIdPendenza(evento.getCodVersamentoEnte());
 		rsModel.setIdPagamento(evento.getIdSessione());
 
-		rsModel.setControparte(getControparte(evento));
+		rsModel.setDatiPagoPA(getDatiPagoPA(evento));
 		
-		if(evento.getDettaglioRichiesta() != null)
-			rsModel.setParametriRichiesta(new RawObject(ConverterUtils.getParametriRichiestaEvento(evento.getDettaglioRichiesta())));
-		if(evento.getDettaglioRisposta() != null)
-			rsModel.setParametriRisposta(new RawObject(ConverterUtils.getParametriRispostaEvento(evento.getDettaglioRisposta())));
+		if(evento.getDettaglioRichiesta() != null) {
+			rsModel.setParametriRichiesta(new RawObject(evento.getDettaglioAsString(evento.getDettaglioRichiesta())));
+//			rsModel.setParametriRichiesta(new RawObject(ConverterUtils.getParametriRichiestaEvento(evento.getDettaglioRichiesta())));
+		}
+		if(evento.getDettaglioRisposta() != null) {
+			rsModel.setParametriRisposta(new RawObject(evento.getDettaglioAsString(evento.getDettaglioRisposta())));
+//			rsModel.setParametriRisposta(new RawObject(ConverterUtils.getParametriRispostaEvento(evento.getDettaglioRisposta())));
+		}
 
 		return rsModel;
 	}
 
-	private static Controparte getControparte(it.govpay.bd.model.Evento evento) {
-		Controparte controparte = null;
-		if(evento.getControparte() != null) {
-			controparte = new Controparte();
-			controparte.setIdentificativoErogatore(evento.getControparte().getErogatore());
-			controparte.setIdentificativoFruitore(evento.getControparte().getFruitore());
-			controparte.setIdCanale(evento.getControparte().getCodCanale());
-			controparte.setIdPsp(evento.getControparte().getCodPsp());
-			controparte.setIdStazione(evento.getControparte().getCodStazione());
-			if(evento.getControparte().getTipoVersamento() != null) {
-				controparte.setTipoVersamento(evento.getControparte().getTipoVersamento().name());
+	private static DatiPagoPA getDatiPagoPA(it.govpay.bd.model.Evento evento) {
+		DatiPagoPA datiPagoPA = null;
+		if(evento.getPagoPA() != null) {
+			datiPagoPA = new DatiPagoPA();
+//			datiPagoPA.setIdentificativoErogatore(evento.getPagoPA().getErogatore());
+//			datiPagoPA.setIdentificativoFruitore(evento.getPagoPA().getFruitore());
+			datiPagoPA.setIdCanale(evento.getPagoPA().getCodCanale());
+			datiPagoPA.setIdPsp(evento.getPagoPA().getCodPsp());
+			datiPagoPA.setIdIntermediarioPsp(evento.getPagoPA().getCodIntermediarioPsp());
+			datiPagoPA.setIdIntermediario(evento.getPagoPA().getCodIntermediario());
+			datiPagoPA.setIdStazione(evento.getPagoPA().getCodStazione());
+			datiPagoPA.setIdDominio(evento.getPagoPA().getCodDominio());
+			if(evento.getPagoPA().getTipoVersamento() != null) {
+				datiPagoPA.setTipoVersamento(evento.getPagoPA().getTipoVersamento().getCodifica());
 			}
+			if(evento.getPagoPA().getModelloPagamento() != null) {
+				datiPagoPA.setModelloPagamento(evento.getPagoPA().getModelloPagamento().getCodifica() +"");
+			}
+			
 		}
-		return controparte;
+		return datiPagoPA;
 	}
 }
 

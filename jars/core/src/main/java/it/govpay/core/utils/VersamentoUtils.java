@@ -49,6 +49,7 @@ import it.govpay.core.business.Iuv;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
+import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
@@ -154,14 +155,15 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, ValidationException {
+	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
+			VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
 			return versamento;
 
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza())) {
-			throw new VersamentoScadutoException(versamento.getDataScadenza());
+			throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDataScadenza());
 		}else {
 			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita())) {
 				IContext ctx = ContextThreadLocal.get();
@@ -181,7 +183,7 @@ public class VersamentoUtils {
 				if(versamento.getApplicazione(bd).getConnettoreIntegrazione() != null) {
 					versamento = acquisisciVersamento(versamento.getApplicazione(bd), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, bd);
 				} else // connettore verifica non definito, versamento non aggiornabile
-					throw new VersamentoScadutoException(versamento.getDataScadenza());
+					throw new VersamentoScadutoException(versamento.getApplicazione(bd).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
 			} else {
 				// versamento valido
 			} 
@@ -190,7 +192,8 @@ public class VersamentoUtils {
 	}
 
 
-	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, ValidationException {
+	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, BasicBD bd) 
+			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
 		String bundlekeyD = bundlekey != null ? bundlekey : "-";
@@ -206,7 +209,7 @@ public class VersamentoUtils {
 		}
 		VerificaClient verificaClient = new VerificaClient(applicazione,bd);
 		// salvataggio id Rpt/ versamento/ pagamento
-		verificaClient.getEventoCtx().setCodDominio(dominio);
+		verificaClient.getEventoCtx().setCodDominio(dominio); 
 		verificaClient.getEventoCtx().setIuv(iuv);
 		verificaClient.getEventoCtx().setIdA2A(applicazione.getCodApplicazione());
 		verificaClient.getEventoCtx().setIdPendenza(codVersamentoEnte);
@@ -219,31 +222,37 @@ public class VersamentoUtils {
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
+				verificaClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
 				verificaClient.getEventoCtx().setEsito(Esito.FAIL);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
 			} catch (VersamentoScadutoException e) {
 				ctx.getApplicationLogger().log("verifica.Scaduto", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza Scaduta");
 				verificaClient.getEventoCtx().setEsito(Esito.KO);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
 			} catch (VersamentoAnnullatoException e) {
 				ctx.getApplicationLogger().log("verifica.Annullato", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza Annullata");
 				verificaClient.getEventoCtx().setEsito(Esito.KO);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
 			} catch (VersamentoDuplicatoException e) {
 				ctx.getApplicationLogger().log("verifica.Duplicato", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza Duplicata");
 				verificaClient.getEventoCtx().setEsito(Esito.KO);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
 			} catch (VersamentoSconosciutoException e) {
 				ctx.getApplicationLogger().log("verifica.Sconosciuto", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza Sconosciuta");
 				verificaClient.getEventoCtx().setEsito(Esito.KO);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;
-			} catch (ValidationException e) {
+			} catch (VersamentoNonValidoException e) {
 				ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza non Valida");
 				verificaClient.getEventoCtx().setEsito(Esito.KO);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;

@@ -19,7 +19,8 @@ Background:
 * def codEntrataBollo = 'BOLLOT' 
 * def codLibero = 'LIBERO' 
 * def codSpontaneo = 'SPONTANEO' 
-* def codDovuto = 'DOVUTO' 
+* def codDovuto = 'DOVUTO'
+* def idOperatoreSpid = 'RSSMRA30A01H501I'  
 
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def gpAdminBasicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
@@ -28,6 +29,17 @@ Background:
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Scenario: configurazione anagrafica base
+
+#### creazione operatore spid
+* def operatoreSpid = read('classpath:configurazione/v1/msg/operatore.json')
+
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers basicAutenticationHeader
+And request operatoreSpid
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 
 #### creazione intermediario
 * def intermediario = read('classpath:configurazione/v1/msg/intermediario.json')

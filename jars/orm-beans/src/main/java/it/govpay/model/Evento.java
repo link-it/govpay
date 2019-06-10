@@ -41,7 +41,7 @@ public class Evento extends BasicModel {
 	private String dettaglioEsito;
 	private byte[] parametriRichiesta;
 	private byte[] parametriRisposta;
-	private String datiControparte;
+	private String datiPagoPA;
 	
 	private String codDominio;
 	private String iuv;
@@ -255,12 +255,12 @@ public class Evento extends BasicModel {
 		this.parametriRisposta = parametriRisposta;
 	}
 
-	public String getDatiControparte() {
-		return datiControparte;
+	public String getDatiPagoPA() {
+		return datiPagoPA;
 	}
 
-	public void setDatiControparte(String datiControparte) {
-		this.datiControparte = datiControparte;
+	public void setDatiPagoPA(String datiPagoPA) {
+		this.datiPagoPA = datiPagoPA;
 	}
 
 	public String getCodDominio() {

@@ -11,7 +11,7 @@ import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
-import it.govpay.bd.model.eventi.Controparte;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -97,7 +97,7 @@ public class Evento extends it.govpay.model.Evento{
 
 	private DettaglioRichiesta dettaglioRichiesta;
 	private DettaglioRisposta dettaglioRisposta;
-	private Controparte controparte;
+	private DatiPagoPA datiPagoPA;
 
 
 	public DettaglioRichiesta getDettaglioRichiesta() {
@@ -130,19 +130,19 @@ public class Evento extends it.govpay.model.Evento{
 		this.dettaglioRisposta = dettaglioRisposta;
 	}
 
-	public Controparte getControparte() {
-		if(this.controparte == null) {
+	public DatiPagoPA getPagoPA() {
+		if(this.datiPagoPA == null) {
 			try {
-				this.controparte = this.getDettaglioObject(this.getDatiControparte(), Controparte.class);
+				this.datiPagoPA = this.getDettaglioObject(this.getDatiPagoPA(), DatiPagoPA.class);
 			}catch (IOException e) {
 			}
 		}
 
-		return controparte;
+		return datiPagoPA;
 	}
 
-	public void setControparte(Controparte controparte) {
-		this.controparte = controparte;
+	public void setDatiPagoPA(DatiPagoPA datiPagoPA) {
+		this.datiPagoPA = datiPagoPA;
 	}
 
 	public <T> T getDettaglioObject(String json, Class<T> tClass) throws IOException {

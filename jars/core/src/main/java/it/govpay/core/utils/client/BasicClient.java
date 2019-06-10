@@ -489,27 +489,28 @@ public abstract class BasicClient {
 					dettaglioRichiesta.setUrl(this.getEventoCtx().getUrl());
 					dettaglioRichiesta.setMethod(httpMethod.toString());
 					dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
-					dettaglioRichiesta.setHeaders(dumpRequest.getHeaders());
+					dettaglioRichiesta.setHeadersFromMap(dumpRequest.getHeaders());
 
 
 					// lettura informazioni dalla response
 					DettaglioRisposta dettaglioRisposta = new DettaglioRisposta();
-					dettaglioRisposta.setHeaders(dumpResponse.getHeaders());
+					dettaglioRisposta.setHeadersFromMap(dumpResponse.getHeaders());
 					dettaglioRisposta.setStatus(responseCode);
 					dettaglioRisposta.setDataOraRisposta(dataUscita);
 
 					this.getEventoCtx().setDataRisposta(dataUscita);
 					this.getEventoCtx().setStatus(responseCode);
-					this.getEventoCtx().setSottotipoEsito(responseCode + "");
+//					this.getEventoCtx().setSottotipoEsito(responseCode + "");
 
 					if(dumpEvento) {
+						Base64 base = new Base64();
 						// dump richiesta
 						if(dumpRequest.getPayload() != null && dumpRequest.getPayload().length > 0)
-							dettaglioRichiesta.setPayload(new String(dumpRequest.getPayload()));
+							dettaglioRichiesta.setPayload(base.encodeToString(dumpRequest.getPayload()));
 
 						// dump risposta
 						if(dumpResponse.getPayload() != null && dumpResponse.getPayload().length > 0)
-							dettaglioRisposta.setPayload(new String(dumpResponse.getPayload()));
+							dettaglioRisposta.setPayload(base.encodeToString(dumpResponse.getPayload()));
 					} 
 
 					this.getEventoCtx().setDettaglioRichiesta(dettaglioRichiesta);

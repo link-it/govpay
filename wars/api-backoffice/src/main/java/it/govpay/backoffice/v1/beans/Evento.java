@@ -26,7 +26,7 @@ import it.govpay.core.beans.JSONSerializable;
 "idA2A",
 "idPendenza",
 "idPagamento",
-"controparte",
+"datiPagoPA",
 "parametriRichiesta",
 "parametriRisposta",
 })
@@ -83,8 +83,8 @@ public class Evento extends JSONSerializable {
   @JsonProperty("idPagamento")
   private String idPagamento = null;
   
-  @JsonProperty("controparte")
-  private Controparte controparte = null;
+  @JsonProperty("datiPagoPA")
+  private DatiPagoPA datiPagoPA = null;
   
   @JsonProperty("parametriRichiesta")
   private Object parametriRichiesta = null;
@@ -359,17 +359,17 @@ public class Evento extends JSONSerializable {
 
   /**
    **/
-  public Evento controparte(Controparte controparte) {
-    this.controparte = controparte;
+  public Evento datiPagoPA(DatiPagoPA datiPagoPA) {
+    this.datiPagoPA = datiPagoPA;
     return this;
   }
 
-  @JsonProperty("controparte")
-  public Controparte getControparte() {
-    return controparte;
+  @JsonProperty("datiPagoPA")
+  public DatiPagoPA getDatiPagoPA() {
+    return datiPagoPA;
   }
-  public void setControparte(Controparte controparte) {
-    this.controparte = controparte;
+  public void setDatiPagoPA(DatiPagoPA datiPagoPA) {
+    this.datiPagoPA = datiPagoPA;
   }
 
   /**
@@ -430,14 +430,14 @@ public class Evento extends JSONSerializable {
         Objects.equals(idA2A, evento.idA2A) &&
         Objects.equals(idPendenza, evento.idPendenza) &&
         Objects.equals(idPagamento, evento.idPagamento) &&
-        Objects.equals(controparte, evento.controparte) &&
+        Objects.equals(datiPagoPA, evento.datiPagoPA) &&
         Objects.equals(parametriRichiesta, evento.parametriRichiesta) &&
         Objects.equals(parametriRisposta, evento.parametriRisposta);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, controparte, parametriRichiesta, parametriRisposta);
+    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, parametriRichiesta, parametriRisposta);
   }
 
   public static Evento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -471,7 +471,7 @@ public class Evento extends JSONSerializable {
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
-    sb.append("    controparte: ").append(toIndentedString(controparte)).append("\n");
+    sb.append("    datiPagoPA: ").append(toIndentedString(datiPagoPA)).append("\n");
     sb.append("    parametriRichiesta: ").append(toIndentedString(parametriRichiesta)).append("\n");
     sb.append("    parametriRisposta: ").append(toIndentedString(parametriRisposta)).append("\n");
     sb.append("}");

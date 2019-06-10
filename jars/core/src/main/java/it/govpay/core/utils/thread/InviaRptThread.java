@@ -43,8 +43,10 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.RptBD;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
@@ -152,6 +154,7 @@ public class InviaRptThread implements Runnable {
 				log.warn("RPT rifiutata dal nodo con fault " + descrizione);
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
 				if(client != null) {
+					client.getEventoCtx().setSottotipoEsito(fb.getFaultCode());
 					client.getEventoCtx().setEsito(Esito.KO);
 					client.getEventoCtx().setDescrizioneEsito(descrizione);
 				}
@@ -176,6 +179,7 @@ public class InviaRptThread implements Runnable {
 		} catch (ClientException e) {
 			log.error("Errore nella spedizione della RPT", e);
 			if(client != null) {
+				client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				client.getEventoCtx().setEsito(Esito.FAIL);
 				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
 			}	
@@ -187,6 +191,11 @@ public class InviaRptThread implements Runnable {
 		} catch (Exception e) {
 			log.error("Errore nella spedizione della RPT", e);
 			if(client != null) {
+				if(e instanceof GovPayException) {
+					client.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+				} else {
+					client.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+				}
 				client.getEventoCtx().setEsito(Esito.FAIL);
 				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
 			}	

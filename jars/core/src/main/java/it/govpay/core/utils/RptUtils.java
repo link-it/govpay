@@ -54,7 +54,7 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.eventi.Controparte;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
@@ -126,35 +126,35 @@ public class RptUtils {
 			return text;
 	}
 
-//	public static it.govpay.core.business.model.Risposta inviaRPT(NodoClient client, Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
-//		if(bd != null) bd.closeConnection();
-//		it.govpay.core.business.model.Risposta risposta = null;
-//		try {
-//			NodoInviaRPT inviaRPT = new NodoInviaRPT();
-//			inviaRPT.setIdentificativoCanale(rpt.getCodCanale());
-//			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCodIntermediarioPsp());
-//			inviaRPT.setIdentificativoPSP(rpt.getCodPsp());
-//			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
-//			inviaRPT.setRpt(rpt.getXmlRpt());
-//
-//			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
-//			inviaRPT.setTipoFirma("");
-//			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
-//			return risposta;
-//		} finally {
-//			// Se mi chiama InviaRptThread, BD e' null
-//			boolean newCon = bd == null;
-//			if(!newCon) 
-//				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-//			else {
-//				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-//			}
-//			popolaEventoCooperazione(client, rpt, rpt.getIntermediario(bd), rpt.getStazione(bd));
-//		}
-//	}
+	//	public static it.govpay.core.business.model.Risposta inviaRPT(NodoClient client, Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
+	//		if(bd != null) bd.closeConnection();
+	//		it.govpay.core.business.model.Risposta risposta = null;
+	//		try {
+	//			NodoInviaRPT inviaRPT = new NodoInviaRPT();
+	//			inviaRPT.setIdentificativoCanale(rpt.getCodCanale());
+	//			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCodIntermediarioPsp());
+	//			inviaRPT.setIdentificativoPSP(rpt.getCodPsp());
+	//			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
+	//			inviaRPT.setRpt(rpt.getXmlRpt());
+	//
+	//			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
+	//			inviaRPT.setTipoFirma("");
+	//			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
+	//			return risposta;
+	//		} finally {
+	//			// Se mi chiama InviaRptThread, BD e' null
+	//			boolean newCon = bd == null;
+	//			if(!newCon) 
+	//				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+	//			else {
+	//				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+	//			}
+	//			popolaEventoCooperazione(client, rpt, rpt.getIntermediario(bd), rpt.getStazione(bd));
+	//		}
+	//	}
 
 	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(NodoClient client, Intermediario intermediario, Stazione stazione, List<Rpt> rpts, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
-//		if(bd != null) bd.closeConnection();
+		//		if(bd != null) bd.closeConnection();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
 			//			NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, bd);
@@ -178,25 +178,29 @@ public class RptUtils {
 			return risposta;
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
-//			boolean newCon = bd == null;
-//			if(!newCon) 
-//				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-//			else {
-//				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-//			}
+			//			boolean newCon = bd == null;
+			//			if(!newCon) 
+			//				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+			//			else {
+			//				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			//			}
 		}
 	}
 
 	public static void popolaEventoCooperazione(NodoClient client, Rpt rpt, Intermediario intermediario, Stazione stazione) throws ServiceException {
 
-		Controparte controparte = new Controparte();
-		controparte.setCodCanale(rpt.getCodCanale());
-		controparte.setCodPsp(rpt.getCodPsp());
-		controparte.setCodStazione(stazione.getCodStazione());
-		controparte.setErogatore(Evento.NDP);
-		controparte.setFruitore(intermediario.getDenominazione());
-		controparte.setTipoVersamento(rpt.getTipoVersamento());
-		client.getEventoCtx().setControparte(controparte);
+		DatiPagoPA datiPagoPA = new DatiPagoPA();
+		datiPagoPA.setCodCanale(rpt.getCodCanale());
+		datiPagoPA.setCodPsp(rpt.getCodPsp());
+		datiPagoPA.setCodStazione(stazione.getCodStazione());
+		datiPagoPA.setCodIntermediario(intermediario.getCodIntermediario());
+		datiPagoPA.setErogatore(Evento.NDP);
+		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
+		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
+		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
+		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
+		datiPagoPA.setCodDominio(rpt.getCodDominio());
+		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 	}
 
 	public static void inviaRPTAsync(Rpt rpt, BasicBD bd, IContext ctx) throws ServiceException {
@@ -300,12 +304,34 @@ public class RptUtils {
 						chiediStatoRptClient.setOperationId(operationId); 
 						risposta = chiediStatoRptClient.nodoChiediStatoRpt(richiesta, rpt.getStazione(bd).getIntermediario(bd).getDenominazione());
 						chiediStatoRptClient.getEventoCtx().setEsito(Esito.OK);
+					} catch (GovPayException e) {
+						if(chiediStatoRptClient != null) {
+							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(e.getCodEsito().toString());
+							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
+							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						}
+						throw e;
+					} catch (ClientException e) {
+						if(chiediStatoRptClient != null) {
+							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
+							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
+							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						}
+						throw e;
+					} catch (ServiceException | UtilsException e) {
+						if(chiediStatoRptClient != null) {
+							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
+							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						}
+						throw e;
 					} finally {
 						bd.setupConnection(ctx.getTransactionId());
 					}
 
 					if(risposta.getFault() != null) {
 						if(chiediStatoRptClient != null) {
+							chiediStatoRptClient.getEventoCtx().setSottotipoEsito(risposta.getFault().getFaultCode());
 							chiediStatoRptClient.getEventoCtx().setEsito(Esito.KO);
 							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(risposta.getFault().getDescription());
 						}
@@ -372,6 +398,27 @@ public class RptUtils {
 									} catch (NotFoundException e) {	}
 									nodoChiediCopiaRTRisposta = chiediCopiaRTClient.nodoChiediCopiaRT(nodoChiediCopiaRT, rpt.getIntermediario(bd).getDenominazione());
 									chiediCopiaRTClient.getEventoCtx().setEsito(Esito.OK);
+								}  catch (GovPayException e) {
+									if(chiediCopiaRTClient != null) {
+										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(e.getCodEsito().toString());
+										chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
+										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+									}
+									throw e;
+								} catch (ClientException e) {
+									if(chiediCopiaRTClient != null) {
+										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
+										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
+										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+									}
+									throw e;
+								} catch (ServiceException | UtilsException e) {
+									if(chiediCopiaRTClient != null) {
+										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
+										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+									}
+									throw e;
 								} finally {
 									bd.setupConnection(ctx.getTransactionId());
 								}
@@ -384,6 +431,7 @@ public class RptUtils {
 									rtByte = output.toByteArray();
 								} catch (IOException e) {
 									if(chiediCopiaRTClient != null) {
+										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.name());
 										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.FAIL);
 										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 									}
@@ -393,6 +441,7 @@ public class RptUtils {
 
 								if(nodoChiediCopiaRTRisposta.getFault() != null) {
 									if(chiediCopiaRTClient != null) {
+										chiediCopiaRTClient.getEventoCtx().setSottotipoEsito(nodoChiediCopiaRTRisposta.getFault().getFaultCode());
 										chiediCopiaRTClient.getEventoCtx().setEsito(Esito.KO);
 										chiediCopiaRTClient.getEventoCtx().setDescrizioneEsito(nodoChiediCopiaRTRisposta.getFault().getDescription());
 									}

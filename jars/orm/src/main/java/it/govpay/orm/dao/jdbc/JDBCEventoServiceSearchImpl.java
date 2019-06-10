@@ -116,7 +116,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			fields.add(Evento.model().CATEGORIA_EVENTO);
 			fields.add(Evento.model().COMPONENTE);
 			fields.add(Evento.model().DATA);
-			fields.add(Evento.model().DATI_CONTROPARTE);
+			fields.add(Evento.model().DATI_PAGO_PA);
 			fields.add(Evento.model().DETTAGLIO_ESITO);
 			fields.add(Evento.model().ESITO);
 			fields.add(Evento.model().INTERVALLO);

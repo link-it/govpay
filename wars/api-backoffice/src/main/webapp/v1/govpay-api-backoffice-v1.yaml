@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/backend/api/backoffice/rs/basic/v1/
+  - url: ${it.govpay.apiurl}/govpay/backend/api/backoffice/rs/v1/
 tags:
   - name: Enti Creditori
     description: Anagrafica degli Enti Creditori  
@@ -2202,7 +2202,6 @@ paths:
     post:
       tags:
         - Pendenze
-      operationId: addPendenza
       description: >-
         Per ciascuna pendenza viene richiesto un identificativo (_idPendenza_)
         valido per il gestionale che ne effettua il caricamento (_idA2A_).
@@ -6077,8 +6076,8 @@ components:
           type: string
           description: Identificativo del pagamento assegnato da GovPay
           example: 'f9866575-e255-4d10-9845-57ba88bec136'
-        controparte:
-          $ref: '#/components/schemas/controparte'
+        datiPagoPA:
+          $ref: '#/components/schemas/datiPagoPA'
     evento:
       allOf:
         - $ref: '#/components/schemas/eventoIndex'
@@ -6093,26 +6092,33 @@ components:
             parametriRisposta:
               type: object
               description: 'Dettaglio del messaggio di risposta'
-    controparte:
+    datiPagoPA:
       type: object
       properties:
         idPsp:
           type: string
           description: Identificativo del PSP
           example: 'ABI12345'
-        tipoVersamento:
-          type: string
-          description: Tipologia di versamento realizzato
-          example: '0'
-        identificativoFruitore:
-          type: string
-          example: 'Soggetto Creditore'
-        identificativoErogatore:
-          type: string
-          example: 'NodoDeiPagamentiSPC'
         idCanale:
           type: string
           example: 'ABI12345_01'
+        idIntermediarioPsp:
+          type: string
+          example: 'ABI12345_01'
+        tipoVersamento:
+          type: string
+          description: Tipologia di versamento realizzato
+          example: 'CP'
+        modelloPagamento:
+          type: string
+          description: Modello di pagamento utilizzato
+          example: '0'
+        idDominio:
+          type: string
+          example: '99999999999'          
+        idIntermediario:
+          type: string
+          example: '99999999999'
         idStazione:
           type: string
           example: '99999999999_01'

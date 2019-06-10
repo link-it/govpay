@@ -151,11 +151,11 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "parametri_risposta";
 			}
 		}
-		if(field.equals(Evento.model().DATI_CONTROPARTE)){
+		if(field.equals(Evento.model().DATI_PAGO_PA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".dati_controparte";
+				return this.toAliasTable(field)+".dati_pago_pa";
 			}else{
-				return "dati_controparte";
+				return "dati_pago_pa";
 			}
 		}
 		if(field.equals(Evento.model().COD_VERSAMENTO_ENTE)){
@@ -249,7 +249,7 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().PARAMETRI_RISPOSTA)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().DATI_CONTROPARTE)){
+		if(field.equals(Evento.model().DATI_PAGO_PA)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().COD_VERSAMENTO_ENTE)){

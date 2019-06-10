@@ -36,7 +36,7 @@ public class EventoConverter {
 		vo.setComponente(dto.getComponente());
 		vo.setData(dto.getData());
 		try {
-			vo.setDatiControparte(dto.getDettaglioAsString(dto.getControparte()));
+			vo.setDatiPagoPA(dto.getDettaglioAsString(dto.getPagoPA()));
 		} catch (IOException e) {
 		}
 		if(dto.getDettaglioEsito() != null)
@@ -74,7 +74,7 @@ public class EventoConverter {
 			dto.setCategoriaEvento(CategoriaEvento.toEnum(vo.getCategoriaEvento()));
 		dto.setComponente(vo.getComponente());
 		dto.setData(vo.getData());
-		dto.setDatiControparte(vo.getDatiControparte());
+		dto.setDatiPagoPA(vo.getDatiPagoPA());
 		dto.setDettaglioEsito(vo.getDettaglioEsito());
 		if(vo.getEsito() != null)
 			dto.setEsitoEvento(EsitoEvento.toEnum(vo.getEsito()));

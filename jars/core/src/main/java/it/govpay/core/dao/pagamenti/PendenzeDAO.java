@@ -81,7 +81,6 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
@@ -329,9 +328,6 @@ public class PendenzeDAO extends BaseDAO{
 	private LeggiPendenzaDTOResponse _leggiPendenzaConInfoIncasso(String idA2A, String idPendenza, LeggiPendenzaDTOResponse response, BasicBD bd)
 			throws NotFoundException, ServiceException {
 		
-		((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(idA2A);
-		((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(idPendenza);
-		
 		VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
 		VersamentoIncasso versamentoIncasso = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, idA2A).getId(), idPendenza);
 		
@@ -407,9 +403,6 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	private LeggiPendenzaDTOResponse _leggiPendenza(String idA2A, String idPendenza, LeggiPendenzaDTOResponse response, BasicBD bd) throws NotFoundException, ServiceException {
-		((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(idA2A);
-		((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(idPendenza);
-		
 		VersamentiBD versamentiBD = new VersamentiBD(bd);
 		Versamento versamento = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, idA2A).getId(), idPendenza);
 		VersamentoIncasso versamentoIncasso = VersamentoIncassoConverter.fromVersamento(versamento); 
@@ -524,8 +517,6 @@ public class PendenzeDAO extends BaseDAO{
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			String idA2A = patchPendenzaDTO.getIdA2a();
 			String idPendenza = patchPendenzaDTO.getIdPendenza();
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(idA2A);
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(idPendenza);
 			it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(bd, idA2A).getId(), idPendenza);
 			
 			// controllo che il dominio e tipo versamento siano autorizzati
@@ -729,9 +720,6 @@ public class PendenzeDAO extends BaseDAO{
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-			
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(putVersamentoDTO.getVersamento().getCodVersamentoEnte());
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(putVersamentoDTO.getVersamento().getCodApplicazione());
 			
 			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
 			
