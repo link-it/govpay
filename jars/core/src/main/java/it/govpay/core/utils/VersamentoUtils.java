@@ -252,7 +252,7 @@ public class VersamentoUtils {
 				throw e;
 			} catch (VersamentoNonValidoException e) {
 				ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
-				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza non Valida");
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza non valida");
 				verificaClient.getEventoCtx().setEsito(Esito.KO);
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				throw e;

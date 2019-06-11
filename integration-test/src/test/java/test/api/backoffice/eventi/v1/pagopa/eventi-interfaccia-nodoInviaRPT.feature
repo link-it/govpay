@@ -41,6 +41,7 @@ And match response.risultati[0] ==
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
+	"idPagamento": "#notnull",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",

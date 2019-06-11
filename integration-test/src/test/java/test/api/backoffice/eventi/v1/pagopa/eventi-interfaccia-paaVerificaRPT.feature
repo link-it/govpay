@@ -20,7 +20,7 @@ Scenario: Eventi verifica pendenza annullata
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
-* call sleep(200)
+* call sleep(500)
 
 Given url backofficeBaseurl
 And path '/eventi'
@@ -48,9 +48,9 @@ And match response.risultati[0] ==
 	"id": "#notnull",
 	"idDominio":"#(idDominio)",
 	"iuv":"#(iuv)",
-	"ccp":"##null",
+	"ccp":"#notnull",
 	"idA2A": "#(idA2A)",
-	"idPendenza": "#(idPendenza)",
+	"idPendenza": "#(''+idPendenza)",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "SERVER",
@@ -58,7 +58,7 @@ And match response.risultati[0] ==
 	"sottotipoEvento": "##null",
 	"esito": "KO",
 	"sottotipoEsito": "PAA_PAGAMENTO_ANNULLATO",
-	"dettaglioEsito": "##null",
+	"dettaglioEsito": "#notnull",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
@@ -81,9 +81,9 @@ And match response.risultati[0] ==
 And match response.risultati[0].datiPagoPA == 
 """
 {
-	"identificativoPsp": "GovPAYPsp1",
-	"identificativoIntermediarioPSP": "GovPAYPsp1",
-	"identificativoCanalePSP": "GovPAYPsp1_PO",
+	"idPsp": "GovPAYPsp1",
+	"idIntermediarioPsp": "##null",
+	"idCanale": "##null",
 	"tipoVersamento":"PO",
 	"modelloPagamento": "4",
 	"idDominio" : "#(''+idDominio)",
@@ -108,7 +108,7 @@ Scenario: Evento verifica pendenza scaduta
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
-* call sleep(200)
+* call sleep(500)
 
 Given url backofficeBaseurl
 And path '/eventi'
@@ -136,9 +136,9 @@ And match response.risultati[0] ==
 	"id": "#notnull",
 	"idDominio":"#(idDominio)",
 	"iuv":"#(iuv)",
-	"ccp":"##null",
+	"ccp":"#notnull",
 	"idA2A": "#(idA2A)",
-	"idPendenza": "#(idPendenza)",
+	"idPendenza": "#(''+idPendenza)",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "SERVER",
@@ -146,7 +146,7 @@ And match response.risultati[0] ==
 	"sottotipoEvento": "##null",
 	"esito": "KO",
 	"sottotipoEsito": "PAA_PAGAMENTO_SCADUTO",
-	"dettaglioEsito": "##null",
+	"dettaglioEsito": "#notnull",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
@@ -169,9 +169,9 @@ And match response.risultati[0] ==
 And match response.risultati[0].datiPagoPA == 
 """
 {
-	"identificativoPsp": "GovPAYPsp1",
-	"identificativoIntermediarioPSP": "GovPAYPsp1",
-	"identificativoCanalePSP": "GovPAYPsp1_PO",
+	"idPsp": "GovPAYPsp1",
+	"idIntermediarioPsp": "##null",
+	"idCanale": "##null",
 	"tipoVersamento":"PO",
 	"modelloPagamento": "4",
 	"idDominio" : "#(''+idDominio)",
@@ -189,7 +189,7 @@ Scenario: Evento verifica pendenza sconosciuta
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
-* call sleep(200)
+* call sleep(500)
 
 Given url backofficeBaseurl
 And path '/eventi'
@@ -217,9 +217,9 @@ And match response.risultati[0] ==
 	"id": "#notnull",
 	"idDominio":"#(idDominio)",
 	"iuv":"#(iuv)",
-	"ccp":"##null",
+	"ccp":"#notnull",
 	"idA2A": "#(idA2A)",
-	"idPendenza": "#(idPendenza)",
+	"idPendenza": "##null",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "SERVER",
@@ -227,7 +227,7 @@ And match response.risultati[0] ==
 	"sottotipoEvento": "##null",
 	"esito": "KO",
 	"sottotipoEsito": "PAA_PAGAMENTO_SCONOSCIUTO",
-	"dettaglioEsito": "##null",
+	"dettaglioEsito": "#notnull",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
@@ -250,9 +250,9 @@ And match response.risultati[0] ==
 And match response.risultati[0].datiPagoPA == 
 """
 {
-	"identificativoPsp": "GovPAYPsp1",
-	"identificativoIntermediarioPSP": "GovPAYPsp1",
-	"identificativoCanalePSP": "GovPAYPsp1_PO",
+	"idPsp": "GovPAYPsp1",
+	"idIntermediarioPsp": "##null",
+	"idCanale": "##null",
 	"tipoVersamento":"PO",
 	"modelloPagamento": "4",
 	"idDominio" : "#(''+idDominio)",
@@ -274,7 +274,7 @@ Scenario: Evento verifica pendenza
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
-* call sleep(200)
+* call sleep(500)
 
 Given url backofficeBaseurl
 And path '/eventi'
@@ -302,16 +302,16 @@ And match response.risultati[0] ==
 	"id": "#notnull",
 	"idDominio":"#(idDominio)",
 	"iuv":"#(iuv)",
-	"ccp":"##null",
+	"ccp":"#notnull",
 	"idA2A": "#(idA2A)",
-	"idPendenza": "#(idPendenza)",
+	"idPendenza": "#(''+idPendenza)",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "SERVER",
 	"tipoEvento": "paaVerificaRPT",
 	"sottotipoEvento": "##null",
 	"esito": "OK",
-	"sottotipoEsito": "##null",
+	"sottotipoEsito": "200",
 	"dettaglioEsito": "##null",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
@@ -335,9 +335,9 @@ And match response.risultati[0] ==
 And match response.risultati[0].datiPagoPA == 
 """
 {
-	"identificativoPsp": "GovPAYPsp1",
-	"identificativoIntermediarioPSP": "GovPAYPsp1",
-	"identificativoCanalePSP": "GovPAYPsp1_PO",
+	"idPsp": "GovPAYPsp1",
+	"idIntermediarioPsp": "##null",
+	"idCanale": "##null",
 	"tipoVersamento":"PO",
 	"modelloPagamento": "4",
 	"idDominio" : "#(''+idDominio)",
@@ -364,9 +364,11 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
-* call sleep(200)
+* call sleep(500)
 
 Given url backofficeBaseurl
 And path '/eventi'
@@ -394,7 +396,7 @@ And match response.risultati[0] ==
 	"id": "#notnull",
 	"idDominio":"#(idDominio)",
 	"iuv":"#(iuv)",
-	"ccp":"##null",
+	"ccp":"#notnull",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "##null",
 	"componente": "API_PAGOPA",
@@ -402,7 +404,7 @@ And match response.risultati[0] ==
 	"ruolo": "SERVER",
 	"tipoEvento": "paaVerificaRPT",
 	"sottotipoEvento": "##null",
-	"esito": "KO",
+	"esito": "FAIL",
 	"sottotipoEsito": "PAA_SYSTEM_ERROR",
 	"dettaglioEsito": "#notnull",
 	"dataEvento": "#notnull",
@@ -427,9 +429,9 @@ And match response.risultati[0] ==
 And match response.risultati[0].datiPagoPA == 
 """
 {
-	"identificativoPsp": "GovPAYPsp1",
-	"identificativoIntermediarioPSP": "GovPAYPsp1",
-	"identificativoCanalePSP": "GovPAYPsp1_PO",
+	"idPsp": "GovPAYPsp1",
+	"idIntermediarioPsp": "##null",
+	"idCanale": "##null",
 	"tipoVersamento":"PO",
 	"modelloPagamento": "4",
 	"idDominio" : "#(''+idDominio)",
@@ -456,9 +458,11 @@ And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
-* call sleep(200)
+* call sleep(500)
 
 Given url backofficeBaseurl
 And path '/eventi'
@@ -486,7 +490,7 @@ And match response.risultati[0] ==
 	"id": "#notnull",
 	"idDominio":"#(idDominio)",
 	"iuv":"#(iuv)",
-	"ccp":"##null",
+	"ccp":"#notnull",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "##null",
 	"componente": "API_PAGOPA",
@@ -494,7 +498,7 @@ And match response.risultati[0] ==
 	"ruolo": "SERVER",
 	"tipoEvento": "paaVerificaRPT",
 	"sottotipoEvento": "##null",
-	"esito": "KO",
+	"esito": "FAIL",
 	"sottotipoEsito": "PAA_SYSTEM_ERROR",
 	"dettaglioEsito": "#notnull",
 	"dataEvento": "#notnull",
@@ -519,9 +523,9 @@ And match response.risultati[0] ==
 And match response.risultati[0].datiPagoPA == 
 """
 {
-	"identificativoPsp": "GovPAYPsp1",
-	"identificativoIntermediarioPSP": "GovPAYPsp1",
-	"identificativoCanalePSP": "GovPAYPsp1_PO",
+	"idPsp": "GovPAYPsp1",
+	"idIntermediarioPsp": "##null",
+	"idCanale": "##null",
 	"tipoVersamento":"PO",
 	"modelloPagamento": "4",
 	"idDominio" : "#(''+idDominio)",
@@ -557,7 +561,7 @@ Then status 200
 
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
-* call sleep(200)
+* call sleep(500)
 
 Given url backofficeBaseurl
 And path '/eventi'
@@ -585,7 +589,7 @@ And match response.risultati[0] ==
 	"id": "#notnull",
 	"idDominio":"#(idDominio)",
 	"iuv":"#(iuv)",
-	"ccp":"##null",
+	"ccp":"#notnull",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "##null",
 	"componente": "API_PAGOPA",
@@ -618,9 +622,9 @@ And match response.risultati[0] ==
 And match response.risultati[0].datiPagoPA == 
 """
 {
-	"identificativoPsp": "GovPAYPsp1",
-	"identificativoIntermediarioPSP": "GovPAYPsp1",
-	"identificativoCanalePSP": "GovPAYPsp1_PO",
+	"idPsp": "GovPAYPsp1",
+	"idIntermediarioPsp": "##null",
+	"idCanale": "##null",
 	"tipoVersamento":"PO",
 	"modelloPagamento": "4",
 	"idDominio" : "#(''+idDominio)",

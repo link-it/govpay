@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.EventoContext.Categoria;
 
@@ -74,8 +75,9 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 			if(context instanceof org.openspcoop2.utils.service.context.Context) {
 				GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 				if (outboundProperty.booleanValue()) {
-					try { 
-						smc.getMessage().setProperty("X-GP-CMDID", MDC.get(MD5Constants.OPERATION_ID));
+					try {
+//						smc.getMessage().setProperty("X-GP-CMDID", MDC.get(MD5Constants.OPERATION_ID));
+						smc.getMessage().setProperty(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, context.getTransactionId());
 					} catch (SOAPException e) {
 						log.warn("Impossibile impostare l'header HTTP X-GP-CMDID nella risposta.");
 					}

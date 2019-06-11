@@ -183,24 +183,26 @@ public abstract class BaseController {
 	}
 	
 	private Response handleBaseException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, BaseExceptionV1 e, String transactionId) {
-		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
-			this.log.info("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
-		} else {
-			this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
-		}
-		
 		FaultBean respKo = new FaultBean();
-		respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
+		respKo.setCategoria(FaultBean.CategoriaEnum.fromValue(e.getCategoria().name()));
 		respKo.setCodice(e.getCode());
 		respKo.setDescrizione(e.getMessage());
 		respKo.setDettaglio(e.getDetails());
+		
+		String sottotipoEsito = respKo.getCodice();
+		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
+			this.log.info("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
+			sottotipoEsito = CategoriaEnum.AUTORIZZAZIONE.name();
+		} else {
+			this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+		}
 
 		String respJson = this.getRespJson(respKo);
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
 		if(e.getTransportErrorCode() > 499)
-			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio());
+			this.handleEventoFail(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio());
 		else 
-			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio());
+			this.handleEventoKo(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio());
 		return handleResponseKo(responseBuilder, transactionId).build(); 
 	}
 

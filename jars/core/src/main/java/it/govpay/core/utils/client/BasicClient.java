@@ -500,7 +500,7 @@ public abstract class BasicClient {
 
 					this.getEventoCtx().setDataRisposta(dataUscita);
 					this.getEventoCtx().setStatus(responseCode);
-//					this.getEventoCtx().setSottotipoEsito(responseCode + "");
+					this.getEventoCtx().setSottotipoEsito(responseCode + "");
 
 					if(dumpEvento) {
 						Base64 base = new Base64();

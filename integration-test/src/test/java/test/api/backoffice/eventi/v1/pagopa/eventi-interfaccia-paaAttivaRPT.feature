@@ -7,7 +7,7 @@ Background:
 
 * def tipoRicevuta = "R01"
 
-Scenario: Eventi verifica pendenza annullata
+Scenario: Eventi attiva pendenza annullata
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -96,7 +96,7 @@ And match response.risultati[0].datiPagoPA ==
 """
 
 
-Scenario: Evento verifica pendenza scaduta
+Scenario: Evento attiva pendenza scaduta
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -185,7 +185,7 @@ And match response.risultati[0].datiPagoPA ==
 }
 """
 
-Scenario: Evento verifica pendenza sconosciuta
+Scenario: Evento attiva pendenza sconosciuta
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
@@ -227,7 +227,7 @@ And match response.risultati[0] ==
 	"iuv":"#(iuv)",
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
-	"idPendenza": "#null",
+	"idPendenza": "##null",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "SERVER",
@@ -269,11 +269,12 @@ And match response.risultati[0].datiPagoPA ==
 }
 """
 
-Scenario: Evento verifica pendenza 
+Scenario: Evento attiva pendenza 
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_riferimento.json')
 
+* def ccp = getCurrentTimeMillis()
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
@@ -314,14 +315,15 @@ And match response.risultati[0] ==
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
 	"idPendenza": "#(''+idPendenza)",
+	"idPagamento" : "#notnull",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "SERVER",
 	"tipoEvento": "paaAttivaRPT",
 	"sottotipoEvento": "##null",
 	"esito": "OK",
-	"sottotipoEsito": "PAA_SYSTEM_ERROR",
-	"dettaglioEsito": "#notnull",
+	"sottotipoEsito": "200",
+	"dettaglioEsito": "##null",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
@@ -355,7 +357,7 @@ And match response.risultati[0].datiPagoPA ==
 }
 """
 
-Scenario: Evento verifica pendenza applicazione non disponibile
+Scenario: Evento attiva pendenza applicazione non disponibile
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -363,7 +365,6 @@ Scenario: Evento verifica pendenza applicazione non disponibile
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* call read('classpath:utils/pa-prepara-avviso.feature')
 
 * set applicazione.servizioIntegrazione.url = 'http://badhost:8888/paServiceImpl/v1' 
 
@@ -373,6 +374,8 @@ And headers basicAutenticationHeader
 And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/psp-attiva-rpt.feature')
@@ -449,7 +452,7 @@ And match response.risultati[0].datiPagoPA ==
 }
 """
 
-Scenario: Evento verifica pendenza applicazione risposta errata
+Scenario: Evento attiva pendenza applicazione risposta errata
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_riferimento.json')
@@ -467,6 +470,8 @@ And headers basicAutenticationHeader
 And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def importo = pendenzaPut.importo
 * call read('classpath:utils/psp-attiva-rpt.feature')
@@ -501,7 +506,7 @@ And match response.risultati[0] ==
 	"iuv":"#(iuv)",
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
-	"idPendenza": "#(''+idPendenza)",
+	"idPendenza": "##null",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "SERVER",
@@ -543,7 +548,7 @@ And match response.risultati[0].datiPagoPA ==
 }
 """
 
-Scenario: Evento verifica pendenza applicazione risposta con errori di sintassi
+Scenario: Evento attiva pendenza applicazione risposta con errori di sintassi
 
 * def idPendenza = getCurrentTimeMillis()
 
@@ -601,7 +606,7 @@ And match response.risultati[0] ==
 	"iuv":"#(iuv)",
 	"ccp":"#(''+ccp)",
 	"idA2A": "#(idA2A)",
-	"idPendenza": "#(''+idPendenza)",
+	"idPendenza": "##null",
 	"componente": "API_PAGOPA",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "SERVER",

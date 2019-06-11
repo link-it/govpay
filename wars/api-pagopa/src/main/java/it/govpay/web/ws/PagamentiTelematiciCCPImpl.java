@@ -64,7 +64,6 @@ import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -234,6 +233,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				if(applicazioneGestisceIuv == null) {
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 				}
+				appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
 			}
 
 			try {
@@ -265,6 +265,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
 						applicazioneGestisceIuv = new Applicazione(bd).getApplicazioneDominio(dominio,iuv); 
+						appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
 					}
 					
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
@@ -568,7 +569,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 //		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paaVerificaRPT.name());
 		datiPagoPA.setCodPsp(psp);
 		datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
-		datiPagoPA.setCodPsp(bodyrichiesta.getIdentificativoPSP());
 		datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP);
 		datiPagoPA.setErogatore(codIntermediario);
 		datiPagoPA.setCodIntermediario(codIntermediario);
@@ -603,7 +603,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 
 			try {
-				Stazione stazione = AnagraficaManager.getStazione(bd, codStazione);
+				AnagraficaManager.getStazione(bd, codStazione);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
@@ -630,6 +630,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					ctx.getApplicationLogger().log("ccp.iuvNonPresenteNoAppGestireIuv");
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 				}
+				appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
 				ctx.getApplicationLogger().log("ccp.iuvNonPresente", applicazioneGestisceIuv.getCodApplicazione());
 			}
 			
@@ -663,6 +664,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
 						applicazioneGestisceIuv = new Applicazione(bd).getApplicazioneDominio(dominio,iuv); 
+						appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
 					}
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
