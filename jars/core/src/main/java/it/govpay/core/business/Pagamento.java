@@ -44,9 +44,11 @@ import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPT;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediListaPendentiRPTRisposta;
 import gov.telematici.pagamenti.ws.rpt.TipoRPTPendente;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
@@ -66,6 +68,7 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
@@ -94,44 +97,41 @@ public class Pagamento extends BasicBD {
 			StazioniBD stazioniBD = new StazioniBD(this);
 			List<Stazione> lstStazioni = stazioniBD.getStazioni();
 			DominiBD dominiBD = new DominiBD(this);
-			
+			Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
+
 			for(Stazione stazione : lstStazioni) {
-			
+
 				DominioFilter filter = dominiBD.newFilter();
 				filter.setCodStazione(stazione.getCodStazione());
 				List<Dominio> lstDomini = dominiBD.findAll(filter);
-				
+
 				Intermediario intermediario = stazione.getIntermediario(this);
 
 				//this.closeConnection();
 				ctx.getApplicationLogger().log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
 				log.debug("Recupero i pendenti [CodStazione: " + stazione.getCodStazione() + "]");
-				
+
 				if(lstDomini.isEmpty()) {
 					log.debug("Recupero i pendenti per la stazione [CodStazione: " + stazione.getCodStazione() + "], non eseguita: la stazione non e' associata ad alcun dominio.");
 					continue;
 				}
-				
+
 				// Costruisco una mappa di tutti i pagamenti pendenti sul nodo
 				// La chiave di lettura e' iuv@ccp
-				
-
-				NodoClient client = new NodoClient(intermediario, null, this);
-
 				// Le pendenze per specifica durano 60 giorni.
 				int finestra = 60;
 				Calendar fineFinestra = Calendar.getInstance();
 				Calendar inizioFinestra = (Calendar) fineFinestra.clone();
 				inizioFinestra.add(Calendar.DATE, -finestra);
 
-				Map<String, String> statiRptPendenti = this.acquisisciPendenti(client,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
-				
+				Map<String, String> statiRptPendenti = this.acquisisciPendenti(giornale,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
+
 				log.info("Identificate sul NodoSPC " + statiRptPendenti.size() + " RPT pendenti");
 				ctx.getApplicationLogger().log("pendenti.listaPendentiOk", stazione.getCodStazione(), statiRptPendenti.size() + "");
 
 				// Ho acquisito tutti gli stati pendenti. 
 				// Tutte quelle in stato terminale, 
-			//	this.setupConnection(ContextThreadLocal.get().getTransactionId());
+				//	this.setupConnection(ContextThreadLocal.get().getTransactionId());
 
 				RptBD rptBD = new RptBD(this);
 
@@ -145,24 +145,24 @@ public class Pagamento extends BasicBD {
 				ctx.getApplicationLogger().log("pendenti.listaPendentiGovPayOk", rpts.size() + "");
 
 				// Scorro le transazioni. Se non risulta pendente sul nodo (quindi non e' pendente) la mando in aggiornamento.
-				
+
 				Integer minutiDallaCreazioneRPT = GovpayConfig.getInstance().getIntervalloControlloRptPendenti();
 				Date dataCreazioneRPT = new Date(new Date().getTime() - (minutiDallaCreazioneRPT * 60 * 1000));
-				
+
 				for(Rpt rpt : rpts) {
-					
+
 					// WORKAROUND CONCORRENZA CON INVIO RT DAL NODO SKIPPO LE RPT PENDENTI CREATE DA MENO DI X MINUTI (INDICATI NELLE PROPERTIES)
-					
+
 					if(rpt.getDataMsgRichiesta().after(dataCreazioneRPT)) {
 						log.info("Rpt recente [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] aggiornamento non necessario");
 						continue;
 					} else {
 						log.info("Rpt pendente su GovPay [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + rpt.getStato().name());
 					}
-					
+
 					// Aggiorno il batch
 					BatchManager.aggiornaEsecuzione(this, Operazioni.PND);
-					
+
 					String stato = statiRptPendenti.get(rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp());
 					if(stato != null && !stato.equals(StatoRpt.RPT_ANNULLATA.name())) {
 						log.info("Rpt confermata pendente dal nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
@@ -178,7 +178,7 @@ public class Pagamento extends BasicBD {
 						// Accedo alle entita che serviranno in seguito prima di chiudere la connessione;
 						rpt.getStazione(this).getIntermediario(this);
 						try {
-							RptUtils.aggiornaRptDaNpD(client, rpt, this);
+							RptUtils.aggiornaRptDaNpD(intermediario, rpt, this);
 						} catch (NdpException e) {
 							ctx.getApplicationLogger().log("pendenti.rptAggiornataKo", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getFaultString());
 							log.warn("Errore durante l'aggiornamento della RPT: " + e.getFaultString());
@@ -212,7 +212,7 @@ public class Pagamento extends BasicBD {
 		}
 
 	}
-	
+
 	/**
 	 * La logica prevede di cercare i pendenti per stazione nell'intervallo da >> a.
 	 * Se nella risposta ci sono 500+ pendenti si dimezza l'intervallo.
@@ -229,15 +229,16 @@ public class Pagamento extends BasicBD {
 	 * @param a
 	 * @return
 	 * @throws UtilsException 
+	 * @throws ServiceException 
 	 */
-	private Map<String, String> acquisisciPendenti(NodoClient client, Intermediario intermediario, Stazione stazione, List<Dominio> lstDomini, boolean perDominio, Calendar da, Calendar a, long soglia) throws UtilsException {
+	private Map<String, String> acquisisciPendenti(Giornale giornale, Intermediario intermediario, Stazione stazione, List<Dominio> lstDomini, boolean perDominio, Calendar da, Calendar a, long soglia) throws UtilsException, ServiceException {
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		Map<String, String> statiRptPendenti = new HashMap<>();
-		
+
 		// Ciclo sui domini, ma ciclo veramente solo se perDominio == true,
 		// Altrimenti ci giro una sola volta 
-		
+
 		for(Dominio dominio : lstDomini) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			NodoChiediListaPendentiRPT richiesta = new NodoChiediListaPendentiRPT();
@@ -247,7 +248,7 @@ public class Pagamento extends BasicBD {
 			richiesta.setDimensioneLista(BigInteger.valueOf(soglia));
 			richiesta.setRangeA(a.getTime());
 			richiesta.setRangeDa(da.getTime());
-	
+
 			if(perDominio) {
 				richiesta.setIdentificativoDominio(dominio.getCodDominio());
 				log.debug("Richiedo la lista delle RPT pendenti (Dominio " + dominio.getCodDominio() + " dal " + dateFormat.format(da.getTime()) + " al " + dateFormat.format(a.getTime()) + ")");
@@ -256,89 +257,118 @@ public class Pagamento extends BasicBD {
 				log.debug("Richiedo la lista delle RPT pendenti (Stazione " + stazione.getCodStazione() + " dal " + dateFormat.format(da.getTime()) + " al " + dateFormat.format(a.getTime()) + ")");
 				ctx.getApplicationLogger().log("pendenti.listaPendenti", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));
 			}
-	
+
 			NodoChiediListaPendentiRPTRisposta risposta = null;
+			NodoClient chiediListaPendentiClient = null;
 			try {
-				appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediListaPendentiRPT);
-				risposta = client.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
-			} catch (Exception e) {
-				log.warn("Errore durante la richiesta di lista pendenti", e);
-				// Esco da ciclo while e procedo con il prossimo dominio.
-				if(perDominio) {
-					ctx.getApplicationLogger().log("pendenti.listaPendentiDominioFail", dominio.getCodDominio(), e.getMessage());
-					continue;
-				} else {
-					ctx.getApplicationLogger().log("pendenti.listaPendentiFail", stazione.getCodStazione(), e.getMessage());
-					break;
-				}
-			}  
-			
-			if(risposta != null) {
-				if(risposta.getFault() != null) {
-					log.warn("Ricevuto errore durante la richiesta di lista pendenti: " + risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString());
-					
-					String fc = risposta.getFault().getFaultCode() != null ? risposta.getFault().getFaultCode() : "-";
-					String fs = risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "-";
-					String fd = risposta.getFault().getDescription() != null ? risposta.getFault().getDescription() : "-";
-					if(perDominio) {
-						ctx.getApplicationLogger().log("pendenti.listaPendentiDominioKo", dominio.getCodDominio(), fc, fs, fd);
-						continue;
-					} else {
-						ctx.getApplicationLogger().log("pendenti.listaPendentiKo", stazione.getCodStazione(), fc, fs, fd);
-						break;
-					}
-				}
-		
-				if(risposta.getListaRPTPendenti() == null || risposta.getListaRPTPendenti().getRptPendente().isEmpty()) {
-					log.debug("Lista pendenti vuota.");
-					if(perDominio) {
-						ctx.getApplicationLogger().log("pendenti.listaPendentiDominioVuota", dominio.getCodDominio());
-						continue;
-					} else {
-						ctx.getApplicationLogger().log("pendenti.listaPendentiVuota", stazione.getCodStazione());					
-						break;
-					}
-				}
-				
-				
-				
-				if(risposta.getListaRPTPendenti().getTotRestituiti() >= soglia) {
-					
-					// Vedo quanto e' ampia la finestra per capire se dimezzarla o ciclare sui domini
-					int finestra = (int) TimeUnit.DAYS.convert((a.getTimeInMillis() - da.getTimeInMillis()), TimeUnit.MILLISECONDS);
-					
-					if(finestra > 1) {
-						ctx.getApplicationLogger().log("pendenti.listaPendentiPiena", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));	
-						finestra = finestra/2;
-						Calendar mezzo = (Calendar) a.clone();
-						mezzo.add(Calendar.DATE, -finestra);
-						log.debug("Lista pendenti con troppi elementi. Ricalcolo la finestra: (dal " + dateFormat.format(da.getTime()) + " a " + dateFormat.format(a.getTime()) + ")");
-						statiRptPendenti.putAll(this.acquisisciPendenti(client, intermediario, stazione, lstDomini, false, da, mezzo, soglia));
-						mezzo.add(Calendar.DATE, 1);
-						statiRptPendenti.putAll(this.acquisisciPendenti(client, intermediario, stazione, lstDomini, false, mezzo, a, soglia));
-						return statiRptPendenti;
-					} else {
-						if(perDominio) {
-							ctx.getApplicationLogger().log("pendenti.listaPendentiDominioDailyPiena", dominio.getCodDominio(), dateFormat.format(a.getTime()));
-							log.debug("Lista pendenti con troppi elementi, ma impossibile diminuire ulteriormente la finesta. Elenco accettato.");
+				try {
+					appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediListaPendentiRPT);
+					chiediListaPendentiClient = new NodoClient(intermediario, null, giornale, this);
+					this.closeConnection();
+					risposta = chiediListaPendentiClient.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
+					chiediListaPendentiClient.getEventoCtx().setEsito(Esito.OK);
+				} catch (Exception e) {
+					log.warn("Errore durante la richiesta di lista pendenti", e);
+					if(chiediListaPendentiClient != null) {
+						if(e instanceof GovPayException) {
+							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+						} else if(e instanceof ClientException) {
+							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
 						} else {
-							ctx.getApplicationLogger().log("pendenti.listaPendentiDailyPiena", stazione.getCodStazione(), dateFormat.format(a.getTime()));
-							log.debug("Lista pendenti con troppi elementi, scalo a dominio.");
-							return this.acquisisciPendenti(client, intermediario, stazione, lstDomini, true, da, a, soglia);
+							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+						}
+						chiediListaPendentiClient.getEventoCtx().setEsito(Esito.FAIL);
+						chiediListaPendentiClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					}
+					// Esco da ciclo while e procedo con il prossimo dominio.
+					if(perDominio) {
+						ctx.getApplicationLogger().log("pendenti.listaPendentiDominioFail", dominio.getCodDominio(), e.getMessage());
+						continue;
+					} else {
+						ctx.getApplicationLogger().log("pendenti.listaPendentiFail", stazione.getCodStazione(), e.getMessage());
+						break;
+					}
+				} finally {
+					this.setupConnection(ctx.getTransactionId()); 
+				}
+
+				if(risposta != null) {
+					if(risposta.getFault() != null) {
+						log.warn("Ricevuto errore durante la richiesta di lista pendenti: " + risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString());
+
+						String fc = risposta.getFault().getFaultCode() != null ? risposta.getFault().getFaultCode() : "-";
+						String fs = risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "-";
+						String fd = risposta.getFault().getDescription() != null ? risposta.getFault().getDescription() : "-";
+						if(chiediListaPendentiClient != null) {
+							chiediListaPendentiClient.getEventoCtx().setSottotipoEsito(fc);
+							chiediListaPendentiClient.getEventoCtx().setEsito(Esito.KO);
+							chiediListaPendentiClient.getEventoCtx().setDescrizioneEsito(fd);
+						}
+						if(perDominio) {
+							ctx.getApplicationLogger().log("pendenti.listaPendentiDominioKo", dominio.getCodDominio(), fc, fs, fd);
+							continue;
+						} else {
+							ctx.getApplicationLogger().log("pendenti.listaPendentiKo", stazione.getCodStazione(), fc, fs, fd);
+							break;
 						}
 					}
+
+					if(risposta.getListaRPTPendenti() == null || risposta.getListaRPTPendenti().getRptPendente().isEmpty()) {
+						log.debug("Lista pendenti vuota.");
+						if(perDominio) {
+							ctx.getApplicationLogger().log("pendenti.listaPendentiDominioVuota", dominio.getCodDominio());
+							continue;
+						} else {
+							ctx.getApplicationLogger().log("pendenti.listaPendentiVuota", stazione.getCodStazione());					
+							break;
+						}
+					}
+
+
+
+					if(risposta.getListaRPTPendenti().getTotRestituiti() >= soglia) {
+
+						// Vedo quanto e' ampia la finestra per capire se dimezzarla o ciclare sui domini
+						int finestra = (int) TimeUnit.DAYS.convert((a.getTimeInMillis() - da.getTimeInMillis()), TimeUnit.MILLISECONDS);
+
+						if(finestra > 1) {
+							ctx.getApplicationLogger().log("pendenti.listaPendentiPiena", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));	
+							finestra = finestra/2;
+							Calendar mezzo = (Calendar) a.clone();
+							mezzo.add(Calendar.DATE, -finestra);
+							log.debug("Lista pendenti con troppi elementi. Ricalcolo la finestra: (dal " + dateFormat.format(da.getTime()) + " a " + dateFormat.format(a.getTime()) + ")");
+							statiRptPendenti.putAll(this.acquisisciPendenti(giornale, intermediario, stazione, lstDomini, false, da, mezzo, soglia));
+							mezzo.add(Calendar.DATE, 1);
+							statiRptPendenti.putAll(this.acquisisciPendenti(giornale, intermediario, stazione, lstDomini, false, mezzo, a, soglia));
+							return statiRptPendenti;
+						} else {
+							if(perDominio) {
+								ctx.getApplicationLogger().log("pendenti.listaPendentiDominioDailyPiena", dominio.getCodDominio(), dateFormat.format(a.getTime()));
+								log.debug("Lista pendenti con troppi elementi, ma impossibile diminuire ulteriormente la finesta. Elenco accettato.");
+							} else {
+								ctx.getApplicationLogger().log("pendenti.listaPendentiDailyPiena", stazione.getCodStazione(), dateFormat.format(a.getTime()));
+								log.debug("Lista pendenti con troppi elementi, scalo a dominio.");
+								return this.acquisisciPendenti(giornale, intermediario, stazione, lstDomini, true, da, a, soglia);
+							}
+						}
+					}
+
+					// Qui ci arrivo o se ho meno di 500 risultati oppure se sono in *giornaliero per dominio*
+					for(TipoRPTPendente rptPendente : risposta.getListaRPTPendenti().getRptPendente()) {
+						String rptKey = rptPendente.getIdentificativoDominio() + "@" + rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
+						statiRptPendenti.put(rptKey, rptPendente.getStato());
+					}
 				}
-			
-			// Qui ci arrivo o se ho meno di 500 risultati oppure se sono in *giornaliero per dominio*
-			for(TipoRPTPendente rptPendente : risposta.getListaRPTPendenti().getRptPendente()) {
-				String rptKey = rptPendente.getIdentificativoDominio() + "@" + rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
-				statiRptPendenti.put(rptKey, rptPendente.getStato());
+
+				// Se sto ricercando per stazione, esco.
+				if(!perDominio) {
+					return statiRptPendenti;
 				}
-			}
-			
-			// Se sto ricercando per stazione, esco.
-			if(!perDominio) {
-				return statiRptPendenti;
+			} finally {
+				if(chiediListaPendentiClient != null && chiediListaPendentiClient.getEventoCtx().isRegistraEvento()) {
+					GiornaleEventi giornaleEventi = new GiornaleEventi(this);
+					giornaleEventi.registraEvento(chiediListaPendentiClient.getEventoCtx().toEventoDTO());
+				}
 			}
 		}
 		return statiRptPendenti;
@@ -349,6 +379,7 @@ public class Pagamento extends BasicBD {
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<>(); 
 		Rpt rpt = null;
+		Giornale giornale = AnagraficaManager.getConfigurazione(this).getGiornale();
 		try {
 			RptBD rptBD = new RptBD(this);
 			rpt = rptBD.getRpt(dto.getCodDominio(), dto.getIuv(), dto.getCcp());
@@ -406,13 +437,27 @@ public class Pagamento extends BasicBD {
 		AvviaRichiestaStornoDTOResponse response = new AvviaRichiestaStornoDTOResponse();
 		response.setCodRichiestaStorno(rr.getCodMsgRevoca());
 
+		NodoClient nodoInviaRRClient = null;
 		try {
 
 			String operationId = appContext.setupNodoClient(rpt.getStazione(this).getCodStazione(), rr.getCodDominio(), Azione.nodoInviaRichiestaStorno);
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
 			ctx.getApplicationLogger().log("rr.invioRr");
 
-			Risposta risposta = RrUtils.inviaRr(rr, rpt, operationId, this);
+			nodoInviaRRClient = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(this), operationId, giornale, this);
+			// salvataggio id Rpt/ versamento/ pagamento
+			nodoInviaRRClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
+			nodoInviaRRClient.getEventoCtx().setIuv(rpt.getIuv());
+			nodoInviaRRClient.getEventoCtx().setCcp(rpt.getCcp());
+			nodoInviaRRClient.getEventoCtx().setIdA2A(rpt.getVersamento(this).getApplicazione(this).getCodApplicazione());
+			nodoInviaRRClient.getEventoCtx().setIdPendenza(rpt.getVersamento(this).getCodVersamentoEnte());
+			try {
+				if(rpt.getPagamentoPortale(this) != null)
+					nodoInviaRRClient.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(this).getIdSessione());
+			} catch (NotFoundException e) {	}
+			
+			Risposta risposta = RrUtils.inviaRr(nodoInviaRRClient, rr, rpt, operationId, this);
+			nodoInviaRRClient.getEventoCtx().setEsito(Esito.OK);
 
 			if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 
@@ -426,6 +471,12 @@ public class Pagamento extends BasicBD {
 				if(fb != null)
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
 
+				if(nodoInviaRRClient != null) {
+					nodoInviaRRClient.getEventoCtx().setSottotipoEsito(fb.getFaultCode());
+					nodoInviaRRClient.getEventoCtx().setEsito(Esito.KO);
+					nodoInviaRRClient.getEventoCtx().setDescrizioneEsito(descrizione);
+				}
+
 				rrBD.updateRr(rr.getId(), StatoRr.RR_RIFIUTATA_NODO, descrizione);
 
 				log.warn(risposta.getLog());
@@ -438,10 +489,20 @@ public class Pagamento extends BasicBD {
 				return response;
 			}
 		} catch (ClientException e) {
+			if(nodoInviaRRClient != null) {
+				nodoInviaRRClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				nodoInviaRRClient.getEventoCtx().setEsito(Esito.FAIL);
+				nodoInviaRRClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			}	
 			ctx.getApplicationLogger().log("rr.invioRrKo");
 			rrBD.updateRr(rr.getId(), StatoRr.RR_ERRORE_INVIO_A_NODO, e.getMessage());
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
-		}  
+		} finally {
+			if(nodoInviaRRClient != null && nodoInviaRRClient.getEventoCtx().isRegistraEvento()) {
+				GiornaleEventi giornaleEventi = new GiornaleEventi(this);
+				giornaleEventi.registraEvento(nodoInviaRRClient.getEventoCtx().toEventoDTO());
+			}
+		}
 	}
 
 	public Rr chiediStorno(Applicazione applicazioneAutenticata, String codRichiestaStorno) throws ServiceException, GovPayException {

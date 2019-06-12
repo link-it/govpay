@@ -146,6 +146,7 @@ paths:
   '/riconciliazioni/{idDominio}/{idIncasso}':
     get:
       summary: Dettaglio di un movimento di cassa riconciliato
+      operationId: getRiconciliazione
       tags:
         - Riconciliazioni
       parameters:
@@ -179,6 +180,7 @@ paths:
   '/riscossioni':
     get:
       summary: Elenco degli importi riscossi o stornati
+      operationId: findRiscossioni
       tags:
         - Riscossioni
       parameters:
@@ -208,6 +210,7 @@ paths:
   '/riscossioni/{idDominio}/{iuv}/{iur}/{indice}':
     get:
       summary: Dettaglio di una riscossione
+      operationId: getRiscossione
       tags:
         - Riscossioni
       parameters:

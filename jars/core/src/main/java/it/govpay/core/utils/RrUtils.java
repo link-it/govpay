@@ -52,18 +52,17 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.RR;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivoco;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivocoPersFG;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.EventoCooperazione;
-import it.govpay.bd.model.eventi.EventoCooperazione.TipoEvento;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -73,7 +72,6 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -235,16 +233,14 @@ public class RrUtils extends NdpValidationUtils {
 		return datiRevoca;
 	}
 	
-	public static it.govpay.core.business.model.Risposta inviaRr(Rr rr, Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
+	public static it.govpay.core.business.model.Risposta inviaRr(NodoClient client, Rr rr, Rpt rpt, String operationId, BasicBD bd) throws GovPayException, ClientException, ServiceException, UtilsException {
 		// Chiamate per acquisire dati prima di chiudere la connessione
 		rpt.getIntermediario(bd);
 		rpt.getStazione(bd);
 		
 		if(bd != null) bd.closeConnection();
-		EventoCooperazione evento = new EventoCooperazione();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), operationId, bd);
 			NodoInviaRichiestaStorno inviaRR = new NodoInviaRichiestaStorno();
 			inviaRR.setCodiceContestoPagamento(rr.getCcp());
 			inviaRR.setIdentificativoDominio(rr.getCodDominio());
@@ -261,45 +257,24 @@ public class RrUtils extends NdpValidationUtils {
 				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
 			else
 				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-
-			GiornaleEventi giornale = new GiornaleEventi(bd);
-			buildEventoCooperazione(evento, rpt, risposta, TipoEvento.nodoInviaRichiestaStorno, bd);
-			giornale.registraEventoCooperazione(evento);
+			popolaEventoCooperazione(client, rpt, risposta, bd);
 		}
 	}
 	
-	private static void buildEventoCooperazione(EventoCooperazione evento, Rpt rpt, Risposta risposta, TipoEvento tipoEvento, BasicBD bd) throws ServiceException {
-		evento.setAltriParametriRichiesta(null);
-		evento.setAltriParametriRisposta(null);
-		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
-		evento.setCcp(rpt.getCcp());
-		evento.setCodCanale(rpt.getCodCanale());
-		evento.setCodDominio(rpt.getCodDominio());
-		evento.setCodPsp(rpt.getCodPsp());
-		evento.setCodStazione(rpt.getStazione(bd).getCodStazione());
-		evento.setComponente(EventoCooperazione.COMPONENTE);
-		evento.setDataRisposta(new Date());
-		evento.setErogatore(EventoCooperazione.NDP);
-		if(risposta != null)
-			evento.setEsito(risposta.getEsito());
-		else
-			evento.setEsito("Errore di trasmissione al Nodo");
-		evento.setFruitore(rpt.getIntermediario(bd).getDenominazione());
-		evento.setIuv(rpt.getIuv());
-		evento.setSottotipoEvento(null);
-		evento.setTipoEvento(tipoEvento);
-		evento.setTipoVersamento(rpt.getTipoVersamento());
+	private static void popolaEventoCooperazione(NodoClient client, Rpt rpt, Risposta risposta, BasicBD bd) throws ServiceException {
 		
-		if(rpt.getVersamento(bd) != null) {
-			evento.setIdVersamento(rpt.getVersamento(bd).getId());
-		}
-		
-		try {
-			if(rpt.getPagamentoPortale(bd) != null) {
-				evento.setIdPagamentoPortale(rpt.getPagamentoPortale(bd).getId());
-			}
-		} catch (NotFoundException e) {
-		}
+		DatiPagoPA datiPagoPA = new DatiPagoPA();
+		datiPagoPA.setCodCanale(rpt.getCodCanale());
+		datiPagoPA.setCodPsp(rpt.getCodPsp());
+		datiPagoPA.setCodStazione(rpt.getStazione(bd).getCodStazione());
+		datiPagoPA.setErogatore(Evento.NDP);
+		datiPagoPA.setFruitore(rpt.getIntermediario(bd).getCodIntermediario());
+		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
+		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
+		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
+		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
+		datiPagoPA.setCodDominio(rpt.getCodDominio());
+		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 	}
 
 	public static Rr acquisisciEr(String identificativoDominio, String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] er, BasicBD bd) throws NdpException, ServiceException, UtilsException {

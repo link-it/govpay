@@ -16,6 +16,7 @@ import it.govpay.backoffice.v1.beans.converter.ProfiloConverter;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
+import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.rs.v1.exception.CodiceEccezione;
 
@@ -30,7 +31,7 @@ public class GovPayAuthenticationSuccessHandler extends org.openspcoop2.utils.se
 			if(ctx == null) {
 				GpContextFactory factory  = new GpContextFactory();
 				String user = authentication != null ? authentication.getName() : null;
-				ctx = factory.newContext(request.getRequestURI(), "profilo", "profiloGET", request.getMethod(), 1, user);
+				ctx = factory.newContext(request.getRequestURI(), "profilo", "getProfilo", request.getMethod(), 1, user, Componente.API_BACKOFFICE);
 				ContextThreadLocal.set(ctx);
 			}
 			UtentiDAO utentiDAO = new UtentiDAO();

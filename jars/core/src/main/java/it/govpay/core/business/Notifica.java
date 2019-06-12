@@ -13,8 +13,6 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.model.Notifica.TipoNotifica;
 
@@ -43,7 +41,6 @@ public class Notifica  extends BasicBD{
 	
 	public List<it.govpay.bd.model.Notifica> findNotificheDaSpedire() throws ServiceException{
 		NotificheBD notificheBD = new NotificheBD(this);
-		GiornaleEventi giornaleEventi = new GiornaleEventi(this);						
 		List<it.govpay.bd.model.Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
 		
 		if(notifiche.size() == 0) {
@@ -98,48 +95,18 @@ public class Notifica  extends BasicBD{
 			if(notifichePerChiave.size() > 1) {
 				blackListChiaviRptAttivazione.add(key);
 				
-				EventoNota eventoNota = null;
 				for(it.govpay.bd.model.Notifica notifica: notifichePerChiave) {
 					Date prossima = new GregorianCalendar(9999,1,1).getTime();
 					TipoNotifica tipoNotifica = notifica.getTipo();
-					Rpt rpt = notifica.getRpt(this);
 					long tentativi = notifica.getTentativiSpedizione() + 1;
 					
 					switch (tipoNotifica) {
 					case ATTIVAZIONE:
 						notificheBD.updateAnnullata(notifica.getId(), "Trovata una notifica di annullamento/fallimento per la stessa RPT ["+key+"] schedulata per l'invio, spedizione annullata", tentativi, prossima);
-						
-						eventoNota = new EventoNota();
-						eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-						eventoNota.setOggetto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata.");
-						eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata: trovata una notifica di annullamento/fallimento per la stessa RPT ["+key+"] schedulata per l'invio.");
-						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
-						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal);
-						eventoNota.setCodDominio(rpt.getCodDominio());
-						eventoNota.setIuv(rpt.getIuv());
-						eventoNota.setCcp(rpt.getCcp());
-						eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-						eventoNota.setIdVersamento(rpt.getIdVersamento());					
-						giornaleEventi.registraEventoNota(eventoNota);
 						break;
 					case ANNULLAMENTO:
 					case FALLIMENTO:
 						notificheBD.updateAnnullata(notifica.getId(), "Trovata una notifica di attivazione per la stessa RPT ["+key+"] schedulata per l'invio, spedizione annullata", tentativi, prossima);
-						
-						eventoNota = new EventoNota();
-						eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-						eventoNota.setOggetto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata.");
-						eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase() + " pagamento annullata: trovata una notifica di attivazione per la stessa RPT ["+key+"] schedulata per l'invio.");
-						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
-						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal);
-						eventoNota.setCodDominio(rpt.getCodDominio());
-						eventoNota.setIuv(rpt.getIuv());
-						eventoNota.setCcp(rpt.getCcp());
-						eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-						eventoNota.setIdVersamento(rpt.getIdVersamento());					
-						giornaleEventi.registraEventoNota(eventoNota);
 						break;
 					case RICEVUTA:
 						break;

@@ -19,8 +19,15 @@
  */
 package it.govpay.core.exceptions;
 
-public class VersamentoSconosciutoException extends Exception {
+public class VersamentoSconosciutoException extends VersamentoException {
 
 	private static final long serialVersionUID = 1L;
 
+	public VersamentoSconosciutoException() {
+		super();
+	}
+	
+	public VersamentoSconosciutoException(String codApplicazione, String codVersamentoEnte, String message) {
+		super(codApplicazione, codVersamentoEnte, message);
+	}
 }

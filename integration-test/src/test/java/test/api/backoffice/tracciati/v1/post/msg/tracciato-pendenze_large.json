@@ -1,0 +1,3757 @@
+{
+	"idTracciato": "#(idPendenza)",
+	"idDominio": "#(idDominio)",
+	"inserimenti": [
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-0')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-1')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-2')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-3')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-4')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-5')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-6')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-7')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-8')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-9')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-10')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-11')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-12')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-13')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-14')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-15')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-16')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-17')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-18')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-19')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-20')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-21')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-22')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-23')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-24')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-25')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-26')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-27')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-28')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-29')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-30')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-31')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-32')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-33')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-34')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-35')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-36')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-37')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-38')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-39')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-40')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-41')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-42')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-43')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-44')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-45')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-46')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-47')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-48')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-49')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-50')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-51')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-52')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-53')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-54')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-55')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-56')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-57')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-58')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-59')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-60')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-61')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-62')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-63')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-64')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-65')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-66')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-67')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-68')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-69')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-70')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-71')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-72')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-73')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-74')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-75')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-76')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-77')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-78')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-79')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-80')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-81')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-82')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-83')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-84')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-85')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-86')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-87')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-88')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-89')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-90')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-91')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-92')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-93')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-94')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-95')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-96')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-97')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-98')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-99')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-100')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-101')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-102')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-103')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-104')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-105')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-106')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-107')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-108')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-109')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-110')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-111')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-112')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-113')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-114')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-115')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-116')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-117')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-118')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-119')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-120')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-121')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-122')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-123')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-124')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-125')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-126')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-127')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-128')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-129')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-130')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-131')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-132')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-133')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-134')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-135')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-136')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-137')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-138')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-139')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-140')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-141')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-142')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-143')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-144')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-145')"
+		},
+		{
+			"causale": "Tassa Passo Carrabile n. abc00000",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 61.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 61.25,
+					"descrizione": "Tassa Passo Carrabile n. abc00000",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-146')"
+		},
+		{
+			"causale": "Asilo Nido (Ottobre A.A. 2018/2019)",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 311.25,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 311.25,
+					"descrizione": "Asilo Nido (Ottobre A.A. 2018/2019)",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-147')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-148')"
+		},
+		{
+			"causale": "Servizi cimiteriali - luci votive",
+			"soggettoPagatore": {
+				"tipo": "F",
+				"identificativo": "DRCGNN12A46A326K",
+				"anagrafica": "Giovanna D'Arco",
+				"email": "laPulzelladOrleans@yahoo.fr"
+			},
+			"importo": 21.75,
+			"dataValidita": "2019-12-30T00:00",
+			"dataScadenza": "2020-12-30T00:00",
+			"tassonomiaAvviso": "Servizi erogati da altri enti",
+			"voci": [
+				{
+					"idVocePendenza": "1",
+					"importo": 21.75,
+					"descrizione": "Canone luci votive 2019",
+					"ibanAccredito": "#(ibanAccredito)",
+					"tipoContabilita": "ALTRO",
+					"codiceContabilita": "CodiceContabilita"
+				}
+			],
+			"idA2A": "#(idA2A)",
+			"idPendenza": "#(idPendenza + '-149')"
+		}
+	],
+	"annullamenti": []
+}

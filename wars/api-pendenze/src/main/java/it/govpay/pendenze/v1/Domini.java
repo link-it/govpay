@@ -32,7 +32,7 @@ public class Domini extends BaseRsServiceV1{
     @Path("/{idDominio}/logo")
     
     @Produces({ "application/json" })
-    public Response dominiIdDominioLogoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
+    public Response getLogo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
         this.controller.setContext(this.getContext());
         return this.controller.dominiIdDominioLogoGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
     }

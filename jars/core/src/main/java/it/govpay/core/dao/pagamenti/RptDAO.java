@@ -2,7 +2,6 @@ package it.govpay.core.dao.pagamenti;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -13,15 +12,10 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.eventi.EventoNota;
-import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.autorizzazione.AuthorizationManager;
-import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
@@ -37,6 +31,7 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.dao.pagamenti.exception.RicevutaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.GpContext;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 
@@ -60,9 +55,13 @@ public class RptDAO extends BaseDAO{
 			String iuv = leggiRptDTO.getIuv();
 			String ccp = leggiRptDTO.getCcp();
 			
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(iuv);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCcp(ccp);
+			
 			RptBD rptBD = new RptBD(bd);
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp);
-
+			
 			response.setRpt(rpt);
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
 			VersamentoIncasso versamento = rpt.getVersamento(bd);
@@ -94,6 +93,10 @@ public class RptDAO extends BaseDAO{
 
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(leggiRicevutaDTO.getIdDominio());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(leggiRicevutaDTO.getIuv());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCcp(leggiRicevutaDTO.getCcp());
 			
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
@@ -182,16 +185,17 @@ public class RptDAO extends BaseDAO{
 
 		try {
 			// patch
-			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(patchRptDTO.getUser());
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			String idDominio = patchRptDTO.getIdDominio();
 			String iuv = patchRptDTO.getIuv();
 			String ccp = patchRptDTO.getCcp();
-			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(iuv);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCcp(ccp);
+			
 			RptBD rptBD = new RptBD(bd);
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp);
-			EventoNota eventoNota = null;
 			
 			// controllo che il dominio sia autorizzato
 			if(!AuthorizationManager.isDominioAuthorized(patchRptDTO.getUser(), patchRptDTO.getIdDominio())) {
@@ -205,24 +209,9 @@ public class RptDAO extends BaseDAO{
 					}
 
 					Boolean sbloccoRPT = (Boolean) op.getValue();
-					rptBD.sbloccaRpt(rpt.getId(), sbloccoRPT);
-					
 					String azione = sbloccoRPT ? "reso bloccante" : "sbloccato";
-					
-					// emissione evento
-					eventoNota = new EventoNota();
-					eventoNota.setAutore(userDetails.getUtenza().getIdentificativo());
-					eventoNota.setOggetto("Tentativo di pagamento "+azione);
-					eventoNota.setTesto("Tentativo di pagamento [idDominio:"+idDominio+", IUV:"+iuv+", CCP:"+ccp+"] "+azione+" via API.");
-					eventoNota.setPrincipal(userDetails.getUtenza().getPrincipal());
-					eventoNota.setData(new Date());
-					eventoNota.setTipoEvento(TipoNota.SistemaInfo);
-					eventoNota.setCodDominio(idDominio);
-					eventoNota.setIdVersamento(rpt.getIdVersamento());
-					eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-					eventoNota.setIuv(iuv);
-					eventoNota.setCcp(ccp);
-					giornaleEventi.registraEventoNota(eventoNota);
+					String descrizioneStato = "Tentativo di pagamento [idDominio:"+idDominio+", IUV:"+iuv+", CCP:"+ccp+"] "+azione+" via API.";
+					rptBD.sbloccaRpt(rpt.getId(), sbloccoRPT, descrizioneStato);
 				}
 			}
 

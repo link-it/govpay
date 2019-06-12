@@ -41,6 +41,14 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import it.govpay.core.utils.EventoContext.Categoria;
+import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.UtenzaApplicazione;
+import it.govpay.bd.model.UtenzaOperatore;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.utils.GpContext;
+
 
 public abstract class BaseRsService {
 	
@@ -116,20 +124,37 @@ public abstract class BaseRsService {
 		if(context instanceof org.openspcoop2.utils.service.context.Context) {
 			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
 			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
-//			
-//			
-//			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
-//			
-//			HttpRequestMethod requestMethod = HttpRequestMethod.valueOf(request.getMethod()); 
-//			
-//			String baseUri = uriInfo.getBaseUri().toString();
-//			String requestUri = uriInfo.getRequestUri().toString();
-//			int idxOfBaseUri = requestUri.indexOf(baseUri);
-//			
+			
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
+			ctx.getEventoCtx().setMethod(this.request.getMethod());
+			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
+			ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
+			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication());
+			if(authenticationDetails != null) {
+				Utenza utenza = authenticationDetails.getUtenza();
+				switch(utenza.getTipoUtenza()) {
+				case CITTADINO:
+				case ANONIMO:
+					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
+					break;
+				case APPLICAZIONE:
+					ctx.getEventoCtx().setUtente(((UtenzaApplicazione)utenza).getCodApplicazione());
+					break;
+				case OPERATORE:
+					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
+					break;
+				}
+			}
+			
+			
+			String baseUri = request.getRequestURI(); // uriInfo.getBaseUri().toString();
+			String requestUri = uriInfo.getRequestUri().toString();
+			int idxOfBaseUri = requestUri.indexOf(baseUri);
+			
 //			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
-//			
-//			ctx.getRequest().addGenericProperty(new Property("HTTP-Method", requestMethod.toString()));
-//			ctx.getRequest().addGenericProperty(new Property("RequestPath", servicePathwithParameters));
+			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
+			ctx.getEventoCtx().setUrl(servicePathwithParameters);
 		}
 		return context;
 	}

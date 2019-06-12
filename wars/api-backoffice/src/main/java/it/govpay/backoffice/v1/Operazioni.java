@@ -36,7 +36,7 @@ public class Operazioni extends BaseRsServiceV1{
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response operazioniGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
+    public Response findOperazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
         this.controller.setContext(this.getContext());
         return this.controller.operazioniGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, null, null);
     }
@@ -45,7 +45,7 @@ public class Operazioni extends BaseRsServiceV1{
     @Path("/stato/{id}")
     
     @Produces({ "application/json" })
-    public Response operazioniStatoIdGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
+    public Response getStatoOperazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
         this.controller.setContext(this.getContext());
         return this.controller.operazioniStatoIdGET(this.getUser(), uriInfo, httpHeaders,  id);
     }
@@ -54,7 +54,7 @@ public class Operazioni extends BaseRsServiceV1{
     @Path("/{idOperazione}")
     
     @Produces({ "application/json" })
-    public Response operazioniIdGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idOperazione") String idOperazione){
+    public Response getOperazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idOperazione") String idOperazione){
         this.controller.setContext(this.getContext());
         return this.controller.operazioniIdGET(this.getUser(), uriInfo, httpHeaders,  idOperazione);
     }

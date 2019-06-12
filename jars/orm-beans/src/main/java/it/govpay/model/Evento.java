@@ -29,21 +29,32 @@ public class Evento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-	private Long idVersamento;
-	private Long idPagamentoPortale;
-	private String codDominio;
-	private String iuv;
-	private String ccp;
+	private String componente;
 	private CategoriaEvento categoriaEvento;
+	private RuoloEvento ruoloEvento;
 	private String tipoEvento;
 	private String sottotipoEvento;
 	private Long intervallo;
 	private Date data;
-	private String dettaglio;
-	private String classnameDettaglio;
+	private EsitoEvento esitoEvento;
+	private String sottotipoEsito;
+	private String dettaglioEsito;
+	private byte[] parametriRichiesta;
+	private byte[] parametriRisposta;
+	private String datiPagoPA;
+	
+	private String codDominio;
+	private String iuv;
+	private String ccp;
+	
+	private String codVersamentoEnte;
+	private String codApplicazione;
+	
+	private String idSessione;
+	
 	
 	public enum CategoriaEvento {
-		INTERNO ("B"), INTERFACCIA_COOPERAZIONE ("C"), INTERFACCIA_INTEGRAZIONE ("I"), UTENTE ("U");
+		INTERNO ("B"), INTERFACCIA ("I"), UTENTE ("U");
 		
 		private String codifica;
 
@@ -70,8 +81,65 @@ public class Evento extends BasicModel {
 		}
 	}
 	
+	public enum RuoloEvento {
+		CLIENT ("C"), SERVER ("S");
+		
+		private String codifica;
+
+		RuoloEvento(String codifica) {
+			this.codifica = codifica;
+		}
+		public String getCodifica() {
+			return this.codifica;
+		}
+		
+		public static RuoloEvento toEnum(String codifica) throws ServiceException {
+			
+			for(RuoloEvento p : RuoloEvento.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			
+			throw new ServiceException("Codifica inesistente per RuoloEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(RuoloEvento.values()));
+		}
+		
+		@Override
+		public String toString() {
+			return String.valueOf(this.codifica);
+		}
+	}
+	
+	public enum EsitoEvento {
+		OK ("OK"), KO("KO"), FAIL("FAIL");
+		
+		private String codifica;
+
+		EsitoEvento(String codifica) {
+			this.codifica = codifica;
+		}
+		public String getCodifica() {
+			return this.codifica;
+		}
+		
+		public static EsitoEvento toEnum(String codifica) throws ServiceException {
+			
+			for(EsitoEvento p : EsitoEvento.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			
+			throw new ServiceException("Codifica inesistente per EsitoEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoEvento.values()));
+		}
+		
+		@Override
+		public String toString() {
+			return String.valueOf(this.codifica);
+		}
+	}
+	
 	public Evento() {
-		this.categoriaEvento = CategoriaEvento.INTERFACCIA_COOPERAZIONE;
+		this.categoriaEvento = CategoriaEvento.INTERFACCIA;
+		this.ruoloEvento = RuoloEvento.SERVER;
 		this.data  = new Date();
 	}
 	
@@ -81,24 +149,6 @@ public class Evento extends BasicModel {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public String getCodDominio() {
-		return this.codDominio;
-	}
-	public void setCodDominio(String codDominio) {
-		this.codDominio = codDominio;
-	}
-	public String getIuv() {
-		return this.iuv;
-	}
-	public void setIuv(String iuv) {
-		this.iuv = iuv;
-	}
-	public String getCcp() {
-		return this.ccp;
-	}
-	public void setCcp(String ccp) {
-		this.ccp = ccp;
 	}
 	public CategoriaEvento getCategoriaEvento() {
 		return this.categoriaEvento;
@@ -111,22 +161,6 @@ public class Evento extends BasicModel {
 	}
 	public void setSottotipoEvento(String sottotipoEvento) {
 		this.sottotipoEvento = sottotipoEvento;
-	}
-
-	public Long getIdVersamento() {
-		return idVersamento;
-	}
-
-	public void setIdVersamento(Long idVersamento) {
-		this.idVersamento = idVersamento;
-	}
-
-	public Long getIdPagamentoPortale() {
-		return idPagamentoPortale;
-	}
-
-	public void setIdPagamentoPortale(Long idPagamentoPortale) {
-		this.idPagamentoPortale = idPagamentoPortale;
 	}
 
 	public String getTipoEvento() {
@@ -152,20 +186,128 @@ public class Evento extends BasicModel {
 	public void setData(Date data) {
 		this.data = data;
 	}
-
-	public String getDettaglio() {
-		return dettaglio;
+	
+	public void setIntervalloFromData(Date data) {
+		if(data != null) {
+			if(this.getData() != null) {
+				this.setIntervallo(data.getTime() - this.getData().getTime());
+			} else {
+				this.setIntervallo(0l);
+			}
+		} else {
+			this.setIntervallo(0l);
+		}
 	}
 
-	public void setDettaglio(String dettaglio) {
-		this.dettaglio = dettaglio;
+	public String getComponente() {
+		return componente;
 	}
 
-	public String getClassnameDettaglio() {
-		return classnameDettaglio;
+	public void setComponente(String componente) {
+		this.componente = componente;
 	}
 
-	public void setClassnameDettaglio(String classnameDettaglio) {
-		this.classnameDettaglio = classnameDettaglio;
+	public RuoloEvento getRuoloEvento() {
+		return ruoloEvento;
+	}
+
+	public void setRuoloEvento(RuoloEvento ruoloEvento) {
+		this.ruoloEvento = ruoloEvento;
+	}
+
+	public EsitoEvento getEsitoEvento() {
+		return esitoEvento;
+	}
+
+	public void setEsitoEvento(EsitoEvento esitoEvento) {
+		this.esitoEvento = esitoEvento;
+	}
+
+	public String getSottotipoEsito() {
+		return sottotipoEsito;
+	}
+
+	public void setSottotipoEsito(String sottotipoEsito) {
+		this.sottotipoEsito = sottotipoEsito;
+	}
+
+	public String getDettaglioEsito() {
+		return dettaglioEsito;
+	}
+
+	public void setDettaglioEsito(String dettaglioEsito) {
+		this.dettaglioEsito = dettaglioEsito;
+	}
+
+	public byte[] getParametriRichiesta() {
+		return parametriRichiesta;
+	}
+
+	public void setParametriRichiesta(byte[] parametriRichiesta) {
+		this.parametriRichiesta = parametriRichiesta;
+	}
+
+	public byte[] getParametriRisposta() {
+		return parametriRisposta;
+	}
+
+	public void setParametriRisposta(byte[] parametriRisposta) {
+		this.parametriRisposta = parametriRisposta;
+	}
+
+	public String getDatiPagoPA() {
+		return datiPagoPA;
+	}
+
+	public void setDatiPagoPA(String datiPagoPA) {
+		this.datiPagoPA = datiPagoPA;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+
+	public String getCcp() {
+		return ccp;
+	}
+
+	public void setCcp(String ccp) {
+		this.ccp = ccp;
+	}
+
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public String getIdSessione() {
+		return idSessione;
+	}
+
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
 	}
 }

@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/backend/api/backoffice/rs/basic/v1/
+  - url: ${it.govpay.apiurl}/govpay/backend/api/backoffice/rs/v1/
 tags:
   - name: Enti Creditori
     description: Anagrafica degli Enti Creditori  
@@ -753,7 +753,7 @@ paths:
             format: csv
         - name: abilitato
           in: query
-          description: Restrizione ai soli canali abilitati o disabilitati
+          description: Restrizione ai soli domini abilitati o disabilitati
           required: false
           schema:
             type: boolean
@@ -773,6 +773,12 @@ paths:
           required: false
           schema:
             type: string
+        - name: associati
+          in: query
+          description: Restrizione ai soli domini associati all'utenza chiamante
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1464,6 +1470,12 @@ paths:
               - spontanea
               - dovuta
             example: spontanea
+        - name: associati
+          in: query
+          description: Restrizione ai soli tipi pendenza associati all'utenza chiamante
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -2190,7 +2202,6 @@ paths:
     post:
       tags:
         - Pendenze
-      operationId: addPendenza
       description: >-
         Per ciascuna pendenza viene richiesto un identificativo (_idPendenza_)
         valido per il gestionale che ne effettua il caricamento (_idA2A_).
@@ -3362,7 +3373,63 @@ paths:
           description: filtro per identificativo pendenza
           required: false
           schema:
-            type: string            
+            type: string
+        - name: idPagamento
+          in: query
+          description: filtro per identificativo pagamento
+          required: false
+          schema:
+            type: string
+        - name: esito
+          in: query
+          description: filtro per esito evento
+          required: false
+          schema:
+            $ref: '#/components/schemas/esitoEvento'
+        - in: query
+          name: dataDa
+          description: Filtro sulla data evento
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data evento
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: categoriaEvento
+          in: query
+          description: filtro per categoria evento
+          required: false
+          schema:
+            $ref: '#/components/schemas/categoriaEvento'
+        - name: tipoEvento
+          in: query
+          description: filtro per tipologia evento
+          required: false
+          schema:
+            type: string
+        - name: componente
+          in: query
+          description: filtro per componente evento
+          required: false
+          schema:
+            $ref: '#/components/schemas/componenteEvento'
+        - name: ruolo
+          in: query
+          description: filtro per ruolo evento
+          required: false
+          schema:
+            $ref: '#/components/schemas/ruoloEvento'
+        - name: messaggi
+          in: query
+          description: Include nella risposta le informazioni sui messaggi scambiati
+          required: false
+          schema:
+            type: boolean
       responses:
         '201':
           description: Elenco degli eventi
@@ -3383,6 +3450,33 @@ paths:
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  '/eventi/{id}':
+    get:
+      summary: Dettaglio di un evento
+      tags:
+        - Giornale degli Eventi
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo Evento
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Dettaglio di un evento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/evento'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
   '/operazioni':
@@ -3748,6 +3842,7 @@ components:
         - apiRagioneria
         - apiBackoffice
         - apiPagoPA
+        - apiPendenze
       properties:
         apiEnte:
           $ref: '#/components/schemas/gdeInterfaccia'
@@ -3758,6 +3853,8 @@ components:
         apiBackoffice:
           $ref: '#/components/schemas/gdeInterfaccia'
         apiPagoPA:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiPendenze:
           $ref: '#/components/schemas/gdeInterfaccia'
     gdeInterfaccia:
       type: object
@@ -4715,10 +4812,6 @@ components:
         verificato:
           type: boolean
           description: indicazione se eventuali anomalie sono state verificate da un operatore
-        note:
-          type: array
-          items:
-            $ref: '#/components/schemas/nota'
     pagamento:
       type: object
       required:
@@ -4814,10 +4907,6 @@ components:
         verificato:
           type: boolean
           description: indicazione se eventuali anomalie sono state verificate da un operatore
-        note:
-          type: array
-          items:
-            $ref: '#/components/schemas/nota'
     contoAddebito:
       type: object
       description: >-
@@ -4961,10 +5050,6 @@ components:
               $ref: '#/components/schemas/unitaOperativa'
             stato:
               $ref: '#/components/schemas/statoPendenza'
-            segnalazioni:
-              type: array
-              items: 
-                $ref: '#/components/schemas/segnalazione'
             iuvAvviso:
               type: string
               description: Iuv avviso, assegnato se pagabile da psp
@@ -4997,10 +5082,6 @@ components:
             verificato:
               type: boolean
               description: indicazione se eventuali anomalie sono state verificate da un operatore
-            note:
-              type: array
-              items:
-                $ref: '#/components/schemas/nota'
         - $ref: '#/components/schemas/pendenzaBase'   
         - type: object
           required:
@@ -5047,10 +5128,6 @@ components:
               type: string
               description: Descrizione estesa dello stato di elaborazione della pendenza
               example: 'Pendenza in stato...'
-            segnalazioni:
-              type: array
-              items: 
-                $ref: '#/components/schemas/segnalazione'
             iuvAvviso:
               type: string
               description: Iuv avviso, assegnato se pagabile da psp
@@ -5083,10 +5160,6 @@ components:
             verificato:
               type: boolean
               description: indicazione se eventuali anomalie sono state verificate da un operatore
-            note:
-              type: array
-              items:
-                $ref: '#/components/schemas/nota'
         - $ref: '#/components/schemas/pendenzaBase'   
         - type: object
           required:
@@ -5248,10 +5321,6 @@ components:
           description: Indica se la richiesta di pagamento deve essere bloccata quando viene inviata mentre e' ancora in corso il tentativo precedente
           type: boolean
           default: true
-        segnalazioni:
-          type: array
-          items: 
-            $ref: '#/components/schemas/segnalazione'
         rpt:
           type: object
           description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
@@ -5935,66 +6004,54 @@ components:
             Nome del file di esito del tracciato
           example:
             80002870923_02315520920_20180710_00_AV_ACK.zip
-    tipoNota:
-      description: > 
-        Tipologia della Nota
-         * NOTA_UTENTE: Nota utente
-         * SISTEMA_INFO: Nota di info
-         * SISTEMA_WARN: Nota di warning
-         * SISTEMA_FATAL: Nota di errore
-         * ANOMALIA: Registrazione di una anomalia
-      type: string
-      enum:
-        - NOTA_UTENTE
-        - SISTEMA_INFO
-        - SISTEMA_WARN
-        - SISTEMA_FATAL
-        - ANOMALIA
-    nota:
+    eventoIndex:
       type: object
       required:
-        - principal
-        - autore
-        - data
-        - testo
-        - oggetto
-        - tipo
+        - id
+        - componente
+        - categoriaEvento
+        - ruolo
+        - tipoEvento
+        - esito
+        - dataEvento
+        - durataEvento
       properties:
-        principal:
+        id:
+          type: integer
+          format: int64
+          description: Identificativo evento
+          example: 1201122131
+        componente:
+          $ref: '#/components/schemas/componenteEvento'
+        categoriaEvento:
+          $ref: '#/components/schemas/categoriaEvento'
+        ruolo:
+          $ref: '#/components/schemas/ruoloEvento'
+        tipoEvento:
           type: string
-          description: 
-            Username dell'operatore che ha inserito la nota
-          example:
-            user1234
-        autore:
-          type: string
-          description: 
-            Denominazione dell'operatore che ha inserito la nota
-          example:
-            Mario Rossi
-        data:
+          example: 'nodoInviaRPT'
+        esito:
+          $ref: '#/components/schemas/esitoEvento'
+        dataEvento:
           type: string
           format: date-time
-          description: Data emissione della nota
+          description: Data emissione evento
           example: '2017-07-21T17:32:28Z'
-        testo:
+        durataEvento:
+          type: integer
+          format: int64
+          description: Durata evento (in millisecondi)
+          example: 120
+        sottotipoEvento:
           type: string
-          description: Testo della nota
-          example: 'Verifica pagamento'
-        oggetto:
+          example: 'richiesta verso il nodo'
+        sottotipoEsito:
           type: string
-          description: Oggetto della nota
-          example: 'Verifica pagamento'
-        tipo:
-          $ref: '#/components/schemas/tipoNota'
-    evento:
-      type: object
-      required:
-        - idDominio
-        - iuv
-        - ccp
-        - tipoEvento
-      properties:
+          description: Descrizione dell'esito
+          example: '200'
+        dettaglioEsito:
+          type: string
+          example: 'Operazione completata con successo'
         idDominio:
           type: string
           description: Identificativo ente creditore
@@ -6007,64 +6064,95 @@ components:
           type: string
           description: Codice contesto di pagamento
           example: '1234acdc'
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: 'A2A-12345'
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: 'abcdef12345'
+        idPagamento:
+          type: string
+          description: Identificativo del pagamento assegnato da GovPay
+          example: 'f9866575-e255-4d10-9845-57ba88bec136'
+        datiPagoPA:
+          $ref: '#/components/schemas/datiPagoPA'
+    evento:
+      allOf:
+        - $ref: '#/components/schemas/eventoIndex'
+        - type: object
+          required:
+            - parametriRichiesta
+            - parametriRisposta
+          properties:
+            parametriRichiesta:
+              type: object
+              description: 'Dettaglio del messaggio di richiesta'
+            parametriRisposta:
+              type: object
+              description: 'Dettaglio del messaggio di risposta'
+    datiPagoPA:
+      type: object
+      properties:
         idPsp:
           type: string
           description: Identificativo del PSP
           example: 'ABI12345'
-        tipoVersamento:
-          type: string
-          description: Tipologia di versamento realizzato
-          example: '0'          
-        componente:
-          type: string
-          description: Modulo interno che ha emesso l'evento
-          example: 'FESP'
-        categoriaEvento:
-          type: string
-          enum:
-            - INTERNO
-            - INTERFACCIA
-          example: 'INTERFACCIA'
-        tipoEvento:
-          type: string
-          example: 'nodoInviaRPT'
-        sottotipoEvento:
-          type: string
-          example: 'richiesta verso il nodo'
-        identificativoFruitore:
-          type: string
-          example: 'Soggetto Creditore'
-        identificativoErogatore:
-          type: string
-          example: 'NodoDeiPagamentiSPC'
         idCanale:
           type: string
           example: 'ABI12345_01'
+        idIntermediarioPsp:
+          type: string
+          example: 'ABI12345_01'
+        tipoVersamento:
+          type: string
+          description: Tipologia di versamento realizzato
+          example: 'CP'
+        modelloPagamento:
+          type: string
+          description: Modello di pagamento utilizzato
+          example: '0'
+        idDominio:
+          type: string
+          example: '99999999999'          
+        idIntermediario:
+          type: string
+          example: '99999999999'
         idStazione:
           type: string
           example: '99999999999_01'
-        parametriRichiesta:
-          type: string
-          example: ''
-        parametriRisposta:
-          type: string
-          example: ''
-        dataOraRichiesta:
-          type: string
-          format: date-time
-          description: Data emissione del messaggio di richiesta
-          example: '2017-07-21T17:32:28Z'
-        dataOraRisposta:          
-          type: string
-          format: date-time
-          description: Data emissione del messaggio di risposta
-          example: '2017-07-21T17:32:28Z'
-        esito:
-          type: string
-          example: 'OK'
-        descrizioneEsito:
-          type: string
-          example: 'Operazione completata con successo'
+    esitoEvento:
+      type: string
+      enum:
+        - OK
+        - KO
+        - FAIL
+      example: 'OK'
+    componenteEvento:
+      type: string
+      description: Modulo interno che ha emesso l'evento
+      enum:
+        - API_BACKOFFICE
+        - API_ENTE
+        - API_PAGOPA
+        - API_PAGAMENTO
+        - API_PENDENZE
+        - API_RAGIONERIA
+      example: 'API_PAGOPA'
+    categoriaEvento:
+      type: string
+      enum:
+        - INTERNO
+        - INTERFACCIA
+        - UTENTE
+      example: 'INTERFACCIA'
+    ruoloEvento:
+      type: string
+      enum:
+        - CLIENT
+        - SERVER
+      example: 'SERVER'
     avviso:
       type: object
       required:

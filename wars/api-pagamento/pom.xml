@@ -41,13 +41,6 @@
 			<artifactId>spring-security-core</artifactId>
 		</dependency>
 
-		<!-- Aggiunto per customizzazione del loggin -->
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-features-logging</artifactId>
-			 <version>${cxf.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.jboss.spec.javax.ws.rs</groupId>
 			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>

@@ -68,7 +68,6 @@ import it.govpay.bd.model.EsitoAvvisatura;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Tracciato;
-import it.govpay.bd.model.eventi.EventoCooperazione;
 import it.govpay.bd.pagamento.EsitiAvvisaturaBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -81,12 +80,10 @@ import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.core.utils.client.AvvisaturaClient;
 import it.govpay.core.utils.thread.InviaAvvisaturaThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.ConnettoreSftp;
-import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
@@ -956,7 +953,6 @@ public class Operazioni{
 			if(BatchManager.startEsecuzione(bd, BATCH_AVVISATURA_DIGITALE_SINCRONA)) {
 				log.trace("Spedizione Avvisatura Digitale modalita' sincrona");
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
-				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
 
 				VersamentoFilter versamentiFilter = versamentiBD.newFilter();
 				versamentiFilter.setAvvisaturaDainviare(true);
@@ -981,25 +977,6 @@ public class Operazioni{
 					} else {
 						log.warn("Spedizione avvisatura Versamento [Dominio: "+versamento.getDominio(bd).getCodDominio()+", NumeroAvviso: "+versamento.getNumeroAvviso()+"] in modalita' sincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP valido.");
 						versamentiBD.updateVersamentoModalitaAvvisatura(versamento.getId(), ModoAvvisatura.ASICNRONA.getValue());
-						EventoCooperazione evento = new EventoCooperazione();
-						evento.setData(new Date());
-						evento.setDataRichiesta(new Date());
-						evento.setAltriParametriRichiesta(null);
-						evento.setAltriParametriRisposta(null);
-						evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_COOPERAZIONE);
-						evento.setCodDominio(versamento.getDominio(bd).getCodDominio());
-						evento.setCodStazione(versamento.getDominio(bd).getStazione().getCodStazione());
-						evento.setComponente(EventoCooperazione.COMPONENTE);
-						evento.setDataRisposta(new Date());
-						evento.setErogatore(EventoCooperazione.NDP);
-						evento.setIuv(versamento.getIuvVersamento());
-						evento.setSottotipoEvento(versamento.getAvvisaturaOperazione());
-						evento.setTipoEvento(AvvisaturaClient.Azione.nodoInviaAvvisoDigitale.name());
-						evento.setIdVersamento(versamento.getId());
-						evento.setFruitore(intermediario.getDenominazione());
-						evento.setEsito("WARN");
-						evento.setDescrizioneEsito("Spedizione avvisatura Versamento [Dominio: "+versamento.getDominio(bd).getCodDominio()+", NumeroAvviso: "+versamento.getNumeroAvviso()+"] in modalita' sincrona non avviata: l'intermediario associato al dominio non dispone di un connettore SOAP valido.");
-						giornaleEventi.registraEventoCooperazione(evento);
 					}
 				}
 				log.info("Processi di spedizione avvisatura versamento in modalita' sincrona avviati.");

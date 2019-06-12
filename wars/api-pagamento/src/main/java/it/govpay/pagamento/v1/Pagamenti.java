@@ -39,7 +39,7 @@ public class Pagamenti extends BaseRsServiceV1{
     @Path("/")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response pagamentiPOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("avvisaturaDigitale") @DefaultValue(value="false") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") @DefaultValue(value="ASINCRONA") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
+    public Response addPagamento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("avvisaturaDigitale") @DefaultValue(value="false") Boolean avvisaturaDigitale, @QueryParam("modalitaAvvisaturaDigitale") @DefaultValue(value="ASINCRONA") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale){
         this.controller.setContext(this.getContext());
         return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale, avvisaturaDigitale, modalitaAvvisaturaDigitale);
     }
@@ -47,7 +47,7 @@ public class Pagamenti extends BaseRsServiceV1{
     @GET
     @Path("/")
     @Produces({ "application/json" })
-    public Response pagamentiGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, 
+    public Response findPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, 
     		@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento,
     		@QueryParam("campi") String campi, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA,
     		@QueryParam("stato") String stato, @QueryParam("versante") String versante, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("idSessione") String idSessionePsp){
@@ -58,7 +58,7 @@ public class Pagamenti extends BaseRsServiceV1{
     @GET
     @Path("/byIdSession/{idSession}")
     @Produces({ "application/json" })
-    public Response pagamentiIdSessionGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idSession") String idSession){
+    public Response getPagamentoByIdSession(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idSession") String idSession){
         this.controller.setContext(this.getContext());
         return this.controller.pagamentiIdSessionGET(this.getUser(), uriInfo, httpHeaders,  idSession);
     }
@@ -66,7 +66,7 @@ public class Pagamenti extends BaseRsServiceV1{
     @GET
     @Path("/{id}")
     @Produces({ "application/json" })
-    public Response pagamentiIdGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
+    public Response getPagamento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
         this.controller.setContext(this.getContext());
         return this.controller.pagamentiIdGET(this.getUser(), uriInfo, httpHeaders,  id);
     }

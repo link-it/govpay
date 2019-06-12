@@ -1,6 +1,6 @@
 -- Censimento dell'utenza amministratore
 
-INSERT INTO utenze (principal,principal_originale) VALUES ('@PRINCIPAL@','@PRINCIPAL@');
+INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_star) VALUES ('@PRINCIPAL@','@PRINCIPAL@',@BOOLEAN@, @BOOLEAN@);
 INSERT INTO operatori (nome, id_utenza) VALUES ('@RAGIONE_SOCIALE@', (select id from utenze where principal = '@PRINCIPAL@'));
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Applicazioni','RW');
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Creditore','RW');
@@ -55,4 +55,4 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracci
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale-immediata', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
 -- Configurazione Generale 
-INSERT INTO configurazione (giornale_eventi) values ('{"apiEnte":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}}}');
+INSERT INTO configurazione (giornale_eventi) values ('{"apiEnte":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}}}');

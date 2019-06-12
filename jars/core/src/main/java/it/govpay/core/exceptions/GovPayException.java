@@ -25,11 +25,11 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
-import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.model.Evento.EsitoEvento;
 
 public class GovPayException extends Exception {
 
@@ -479,10 +479,10 @@ public class GovPayException extends Exception {
 		}
 	}
 	
-	public TipoNota getTipoNota() {
+	public EsitoEvento getTipoNota() {
 		switch (this.codEsito) {
-		case OK: return TipoNota.SistemaInfo;
-		default: return TipoNota.SistemaFatal;
+		case OK: return EsitoEvento.OK;
+		default: return EsitoEvento.FAIL;
 		}
 	}
 	

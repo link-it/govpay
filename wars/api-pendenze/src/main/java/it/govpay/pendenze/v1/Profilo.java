@@ -32,7 +32,7 @@ public class Profilo extends BaseRsServiceV1{
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response profiloGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+    public Response getProfilo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setContext(this.getContext());
         return this.controller.profiloGET(this.getUser(), uriInfo, httpHeaders);
     }

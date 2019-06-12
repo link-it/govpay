@@ -6,8 +6,8 @@ Background:
 * call read('classpath:configurazione/v1/anagrafica.feature')
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_riferimento.json')
-* def esitoAttivaRPT = read('msg/attiva-response-ok.json')
-* def esitoVerificaRPT = read('msg/verifica-response-ok.json')
+* def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
+* def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
 * configure followRedirects = false
 
 Scenario: Pagamento eseguito dovuto precaricato senza verifica
@@ -27,12 +27,12 @@ Scenario: Pagamento eseguito dovuto precaricato senza verifica
 # Verifico la notifica di attivazione
  
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-* match response == read('msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-terminazione-eseguito.json')
 
 # Verifico lo stato della pendenza
 
@@ -66,12 +66,12 @@ Scenario: Pagamento eseguito dovuto precaricato con verifica
 # Verifico la notifica di attivazione
  
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-* match response == read('msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-terminazione-eseguito.json')
 
 # Verifico lo stato della pendenza
 
@@ -100,12 +100,12 @@ Scenario: Pagamento eseguito dovuto non precaricato senza verifica
 # Verifico la notifica di attivazione
  
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-* match response == read('msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-terminazione-eseguito.json')
 
 # Verifico lo stato della pendenza
 
@@ -139,12 +139,12 @@ Scenario: Pagamento eseguito dovuto non precaricato con verifica
 # Verifico la notifica di attivazione
  
 * call read('classpath:utils/pa-notifica-attivazione.feature')
-* match response == read('msg/notifica-attivazione.json')
+* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-attivazione.json')
 
 # Verifico la notifica di terminazione
 
 * call read('classpath:utils/pa-notifica-terminazione.feature')
-* match response == read('msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modello3/v1/msg/notifica-terminazione-eseguito.json')
 
 # Verifico lo stato della pendenza
 

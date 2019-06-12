@@ -20,7 +20,7 @@ Scenario: Verifica pagamento sconosciuto
 		"faultCode":"PAA_PAGAMENTO_SCONOSCIUTO",
 		"faultString":"Pagamento in attesa risulta sconosciuto all’Ente Creditore.",
 		"id":"#(idDominio)",
-		"description":null,
+		"description": #notnull,
 		"serial":null
 	}
 """
@@ -39,7 +39,7 @@ Scenario: Attiva pagamento sconosciuto
 		"faultCode":"PAA_PAGAMENTO_SCONOSCIUTO",
 		"faultString":"Pagamento in attesa risulta sconosciuto all’Ente Creditore.",
 		"id":"#(idDominio)",
-		"description":null,
+		"description": #notnull,
 		"serial":null
 	}
 """

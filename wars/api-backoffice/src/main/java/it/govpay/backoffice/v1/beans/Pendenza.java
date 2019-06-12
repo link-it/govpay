@@ -31,7 +31,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "unitaOperativa",
 "stato",
 "descrizioneStato",
-"segnalazioni",
 "iuvAvviso",
 "dataUltimoAggiornamento",
 "dataPagamento",
@@ -40,7 +39,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "iuvPagamento",
 "anomalo",
 "verificato",
-"note",
 "voci",
 "rpp",
 "pagamenti",
@@ -107,9 +105,6 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
   
-  @JsonProperty("segnalazioni")
-  private List<Segnalazione> segnalazioni = null;
-  
   @JsonProperty("iuvAvviso")
   private String iuvAvviso = null;
   
@@ -133,9 +128,6 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("verificato")
   private Boolean verificato = null;
-  
-  @JsonProperty("note")
-  private List<Nota> note = null;
   
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
@@ -473,21 +465,6 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   **/
-  public Pendenza segnalazioni(List<Segnalazione> segnalazioni) {
-    this.segnalazioni = segnalazioni;
-    return this;
-  }
-
-  @JsonProperty("segnalazioni")
-  public List<Segnalazione> getSegnalazioni() {
-    return this.segnalazioni;
-  }
-  public void setSegnalazioni(List<Segnalazione> segnalazioni) {
-    this.segnalazioni = segnalazioni;
-  }
-
-  /**
    * Iuv avviso, assegnato se pagabile da psp
    **/
   public Pendenza iuvAvviso(String iuvAvviso) {
@@ -617,21 +594,6 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
 
   /**
    **/
-  public Pendenza note(List<Nota> note) {
-    this.note = note;
-    return this;
-  }
-
-  @JsonProperty("note")
-  public List<Nota> getNote() {
-    return note;
-  }
-  public void setNote(List<Nota> note) {
-    this.note = note;
-  }
-
-  /**
-   **/
   public Pendenza voci(List<VocePendenza> voci) {
     this.voci = voci;
     return this;
@@ -684,44 +646,42 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
       return false;
     }
     Pendenza pendenza = (Pendenza) o;
-    return Objects.equals(this.nome, pendenza.nome) &&
-        Objects.equals(this.causale, pendenza.causale) &&
-        Objects.equals(this.soggettoPagatore, pendenza.soggettoPagatore) &&
-        Objects.equals(this.importo, pendenza.importo) &&
-        Objects.equals(this.numeroAvviso, pendenza.numeroAvviso) &&
-        Objects.equals(this.dataCaricamento, pendenza.dataCaricamento) &&
-        Objects.equals(this.dataValidita, pendenza.dataValidita) &&
-        Objects.equals(this.dataScadenza, pendenza.dataScadenza) &&
-        Objects.equals(this.annoRiferimento, pendenza.annoRiferimento) &&
-        Objects.equals(this.cartellaPagamento, pendenza.cartellaPagamento) &&
-        Objects.equals(this.datiAllegati, pendenza.datiAllegati) &&
-        Objects.equals(this.tassonomia, pendenza.tassonomia) &&
-        Objects.equals(this.tassonomiaAvviso, pendenza.tassonomiaAvviso) &&
-        Objects.equals(this.idA2A, pendenza.idA2A) &&
-        Objects.equals(this.idPendenza, pendenza.idPendenza) &&
+    return Objects.equals(nome, pendenza.nome) &&
+        Objects.equals(causale, pendenza.causale) &&
+        Objects.equals(soggettoPagatore, pendenza.soggettoPagatore) &&
+        Objects.equals(importo, pendenza.importo) &&
+        Objects.equals(numeroAvviso, pendenza.numeroAvviso) &&
+        Objects.equals(dataCaricamento, pendenza.dataCaricamento) &&
+        Objects.equals(dataValidita, pendenza.dataValidita) &&
+        Objects.equals(dataScadenza, pendenza.dataScadenza) &&
+        Objects.equals(annoRiferimento, pendenza.annoRiferimento) &&
+        Objects.equals(cartellaPagamento, pendenza.cartellaPagamento) &&
+        Objects.equals(datiAllegati, pendenza.datiAllegati) &&
+        Objects.equals(tassonomia, pendenza.tassonomia) &&
+        Objects.equals(tassonomiaAvviso, pendenza.tassonomiaAvviso) &&
+        Objects.equals(idA2A, pendenza.idA2A) &&
+        Objects.equals(idPendenza, pendenza.idPendenza) &&
         Objects.equals(tipoPendenza, pendenza.tipoPendenza) &&
-        Objects.equals(this.dominio, pendenza.dominio) &&
-        Objects.equals(this.unitaOperativa, pendenza.unitaOperativa) &&
-        Objects.equals(this.stato, pendenza.stato) &&
-        Objects.equals(this.descrizioneStato, pendenza.descrizioneStato) &&
-        Objects.equals(this.segnalazioni, pendenza.segnalazioni) &&
+        Objects.equals(dominio, pendenza.dominio) &&
+        Objects.equals(unitaOperativa, pendenza.unitaOperativa) &&
+        Objects.equals(stato, pendenza.stato) &&
+        Objects.equals(descrizioneStato, pendenza.descrizioneStato) &&
         Objects.equals(iuvAvviso, pendenza.iuvAvviso) &&
-        Objects.equals(this.dataUltimoAggiornamento, pendenza.dataUltimoAggiornamento) &&
-        Objects.equals(this.dataPagamento, pendenza.dataPagamento) &&
-        Objects.equals(this.importoPagato, pendenza.importoPagato) &&
-        Objects.equals(this.importoIncassato, pendenza.importoIncassato) &&
+        Objects.equals(dataUltimoAggiornamento, pendenza.dataUltimoAggiornamento) &&
+        Objects.equals(dataPagamento, pendenza.dataPagamento) &&
+        Objects.equals(importoPagato, pendenza.importoPagato) &&
+        Objects.equals(importoIncassato, pendenza.importoIncassato) &&
         Objects.equals(iuvPagamento, pendenza.iuvPagamento) &&
-        Objects.equals(this.anomalo, pendenza.anomalo) &&
-        Objects.equals(this.verificato, pendenza.verificato) &&
-        Objects.equals(this.note, pendenza.note) &&
-        Objects.equals(this.voci, pendenza.voci) &&
-        Objects.equals(this.rpp, pendenza.rpp) &&
-        Objects.equals(this.pagamenti, pendenza.pagamenti);
+        Objects.equals(anomalo, pendenza.anomalo) &&
+        Objects.equals(verificato, pendenza.verificato) &&
+        Objects.equals(voci, pendenza.voci) &&
+        Objects.equals(rpp, pendenza.rpp) &&
+        Objects.equals(pagamenti, pendenza.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, note, voci, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, voci, rpp, pagamenti);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -738,39 +698,37 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Pendenza {\n");
     
-    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
-    sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
-    sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
-    sb.append("    dataCaricamento: ").append(this.toIndentedString(this.dataCaricamento)).append("\n");
-    sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
-    sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
-    sb.append("    annoRiferimento: ").append(this.toIndentedString(this.annoRiferimento)).append("\n");
-    sb.append("    cartellaPagamento: ").append(this.toIndentedString(this.cartellaPagamento)).append("\n");
-    sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
-    sb.append("    tassonomia: ").append(this.toIndentedString(this.tassonomia)).append("\n");
-    sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
-    sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
-    sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
+    sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
+    sb.append("    dataCaricamento: ").append(toIndentedString(dataCaricamento)).append("\n");
+    sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
+    sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
+    sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
+    sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
+    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
+    sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
+    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
+    sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    tipoPendenza: ").append(toIndentedString(tipoPendenza)).append("\n");
-    sb.append("    dominio: ").append(this.toIndentedString(this.dominio)).append("\n");
-    sb.append("    unitaOperativa: ").append(this.toIndentedString(this.unitaOperativa)).append("\n");
-    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
-    sb.append("    descrizioneStato: ").append(this.toIndentedString(this.descrizioneStato)).append("\n");
-    sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
+    sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("    iuvAvviso: ").append(toIndentedString(iuvAvviso)).append("\n");
-    sb.append("    dataUltimoAggiornamento: ").append(this.toIndentedString(this.dataUltimoAggiornamento)).append("\n");
-    sb.append("    dataPagamento: ").append(this.toIndentedString(this.dataPagamento)).append("\n");
-    sb.append("    importoPagato: ").append(this.toIndentedString(this.importoPagato)).append("\n");
-    sb.append("    importoIncassato: ").append(this.toIndentedString(this.importoIncassato)).append("\n");
+    sb.append("    dataUltimoAggiornamento: ").append(toIndentedString(dataUltimoAggiornamento)).append("\n");
+    sb.append("    dataPagamento: ").append(toIndentedString(dataPagamento)).append("\n");
+    sb.append("    importoPagato: ").append(toIndentedString(importoPagato)).append("\n");
+    sb.append("    importoIncassato: ").append(toIndentedString(importoIncassato)).append("\n");
     sb.append("    iuvPagamento: ").append(toIndentedString(iuvPagamento)).append("\n");
     sb.append("    anomalo: ").append(toIndentedString(anomalo)).append("\n");
     sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
-    sb.append("    note: ").append(toIndentedString(note)).append("\n");
-    sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
-    sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
-    sb.append("    pagamenti: ").append(this.toIndentedString(this.pagamenti)).append("\n");
+    sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
+    sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");
     sb.append("}");
     return sb.toString();
   }

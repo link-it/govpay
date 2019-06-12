@@ -6,6 +6,7 @@
 	<deployment>
 		 <exclude-subsystems>
                 <subsystem name="jaxrs" />
+                <subsystem name="webservices" />
         </exclude-subsystems>
 		<exclusions>
 			<module name="org.apache.cxf" />
@@ -26,13 +27,18 @@
 			<module name="org.apache.commons.logging" />
 			<module name="org.log4j" />
 			<module name="org.jboss.logging" />
-		</exclusions>
-		<dependencies>
 			<module name="org.apache.cxf" />
+			<module name="org.springframework.spring" />
 			<module name="org.codehaus.jackson.jackson-xc" />
 			<module name="org.codehaus.jackson.jackson-core-asl" />
 			<module name="org.codehaus.jackson.jackson-mapper-asl" />
-		</dependencies>
+		</exclusions>
+<!-- 		<dependencies> -->
+<!-- 			<module name="org.apache.cxf" /> -->
+<!-- 			<module name="org.codehaus.jackson.jackson-xc" /> -->
+<!-- 			<module name="org.codehaus.jackson.jackson-core-asl" /> -->
+<!-- 			<module name="org.codehaus.jackson.jackson-mapper-asl" /> -->
+<!-- 		</dependencies> -->
 	</sub-deployment>
 	<sub-deployment name="web-connector-${project.version}.war">
 		<exclusions>

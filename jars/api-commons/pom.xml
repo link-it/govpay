@@ -127,6 +127,16 @@
 		    <groupId>javax.mail</groupId>
 		    <artifactId>mail</artifactId>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+        </dependency>
+        
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-features-logging</artifactId>
+		</dependency>
 
 	</dependencies>
 

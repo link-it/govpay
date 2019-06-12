@@ -33,7 +33,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
@@ -44,6 +43,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
+import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.AvvisaturaUtils;
@@ -276,68 +276,6 @@ public class Versamento extends BasicBD {
 		}
 	}
 	
-	public void notificaPagamento(Applicazione applicazione, String codApplicazione, String codVersamentoEnte) throws GovPayException {
-		try {
-			VersamentiBD versamentiBD = new VersamentiBD(this);
-			GiornaleEventi giornaleEventi = new GiornaleEventi(this);
-			
-			this.setAutoCommit(false);
-			this.enableSelectForUpdate();
-			
-			try {
-				
-				
-				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
-				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE)) {
-					log.info("Notifica di pagamento extra pagoPA [" + applicazione.getCodApplicazione() + " " + versamentoLetto.getCodVersamentoEnte() + "] duplicata.");
-					return;
-				}
-
-				EventoNota eventoNota = new EventoNota();
-				eventoNota.setAutore(applicazione.getCodApplicazione());
-				eventoNota.setCodDominio(versamentoLetto.getUo(this).getDominio(this).getCodDominio());
-				eventoNota.setIdVersamento(versamentoLetto.getId());
-				eventoNota.setIuv(versamentoLetto.getIuvVersamento());
-				eventoNota.setOggetto("Pagamento eseguito extra-pagoPA");
-				eventoNota.setPrincipal(applicazione.getPrincipal());
-				eventoNota.setTesto("Notificato esecuzione del pagamento fuori dal circuito pagoPA");
-				eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
-				giornaleEventi.registraEventoNota(eventoNota );
-				
-				// Se è già ESEGUITO segnalo che e' un pagamento duplicato
-				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ESEGUITO)) {
-					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") gia' pagato senza rpt. Aggiornamento non necessario.");
-					versamentoLetto.setAnomalo(true);
-					versamentoLetto.setDescrizioneStato("Pagamento duplicato");
-					return;
-				}
-				
-				// Se è in stato NON_ESEGUITO lo eseguo senza RPT
-				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) || versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
-					versamentoLetto.setStatoVersamento(StatoVersamento.ESEGUITO_ALTRO_CANALE);
-					versamentiBD.updateVersamento(versamentoLetto);
-					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + applicazione.getCodApplicazione() + ") pagato senza rpt.");
-					return;
-				}
-				
-				// Se non è ne ANNULLATO ne NON_ESEGUITO non lo posso annullare
-				throw new GovPayException(EsitoOperazione.VER_016, codApplicazione, codVersamentoEnte, versamentoLetto.getStatoVersamento().toString());
-				
-			} catch (NotFoundException e) {
-				// Versamento inesistente
-				throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
-			} finally {
-				this.commit();
-			}
-		} catch (Exception e) {
-			this.rollback();
-			if(e instanceof GovPayException)
-				throw (GovPayException) e;
-			else 
-				throw new GovPayException(e);
-		}
-	}
-
 	public it.govpay.bd.model.Versamento chiediVersamento(RefVersamentoAvviso ref, Dominio dominio) throws ServiceException, GovPayException, UtilsException {
 		// conversione numeroAvviso in iuv
 		String iuv = VersamentoUtils.getIuvFromNumeroAvviso(ref.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),dominio.getStazione().getApplicationCode(),dominio.getSegregationCode());
@@ -446,7 +384,7 @@ public class Versamento extends BasicBD {
 				throw new GovPayException("La verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_SCONOSCIUTO", EsitoOperazione.VER_011);
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.INTERNAL, "Il versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] e' gestito da un'applicazione non censita [Applicazione:" + codApplicazione + "]");
-			} catch (ValidationException e) { 
+			} catch (VersamentoNonValidoException e) { 
 				throw new GovPayException("verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage(), EsitoOperazione.INTERNAL);
 			}
 		}

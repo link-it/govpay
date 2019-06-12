@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -34,6 +35,7 @@ import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
@@ -67,6 +69,9 @@ public class PendenzeController extends BaseController {
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(idPendenza);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(idA2A);
+			
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 
@@ -77,7 +82,6 @@ public class PendenzeController extends BaseController {
 			// filtro sull'applicazione			
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(idA2A)) {
 				throw AuthorizationManager.toNotAuthorizedException(user);
-//				throw new GovPayException(EsitoOperazione.APP_002, AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione(), idA2A);
 			}
 
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
@@ -88,13 +92,6 @@ public class PendenzeController extends BaseController {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
-
-//			Dominio dominio = leggiPendenzaDTOResponse.getDominio();
-//			TipoVersamento tipoVersamento = leggiPendenzaDTOResponse.getTipoVersamento();
-//			// controllo che il dominio e tipo versamento siano autorizzati
-//			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
-//				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
-//			}
 
 			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamentoIncasso(), leggiPendenzaDTOResponse.getRpts());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
@@ -203,6 +200,9 @@ public class PendenzeController extends BaseController {
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(idPendenza);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(idA2A);
+			
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
 
@@ -250,14 +250,7 @@ public class PendenzeController extends BaseController {
 
 			patchPendenzaDTO.setOp(PatchOpConverter.toModel(lstOp));
 
-			pendenzeDAO.patch(patchPendenzaDTO);
-
-			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
-
-			leggiPendenzaDTO.setCodA2A(idA2A);
-			leggiPendenzaDTO.setCodPendenza(idPendenza);
-
-			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
+			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.patch(patchPendenzaDTO);
 
 			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamentoIncasso(), leggiPendenzaDTOResponse.getRpts());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
@@ -283,6 +276,9 @@ public class PendenzeController extends BaseController {
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(idPendenza);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(idA2A);
+			
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
 
@@ -324,7 +320,7 @@ public class PendenzeController extends BaseController {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
-
+			
 			PendenzaCreata pc = new PendenzaCreata();
 			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());

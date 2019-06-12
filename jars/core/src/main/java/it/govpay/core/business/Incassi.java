@@ -36,11 +36,10 @@ import org.slf4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.eventi.EventoNota;
-import it.govpay.bd.model.eventi.EventoNota.TipoNota;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -57,6 +56,9 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IncassoUtils;
+import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.EsitoEvento;
+import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
@@ -329,15 +331,15 @@ public class Incassi extends BasicBD {
 								
 								versamentiBD.updateVersamento(versamento);
 								
-								EventoNota eventoNota = new EventoNota();
-								eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-								eventoNota.setCodDominio(versamento.getUo(this).getDominio(this).getCodDominio());
-								eventoNota.setIdVersamento(versamento.getId());
-								eventoNota.setIuv(versamento.getIuvVersamento());
-								eventoNota.setOggetto("Pagamento eseguito senza RPT");
-								eventoNota.setTesto("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
-								eventoNota.setTipoEvento(TipoNota.SistemaInfo);
-								giornaleEventi.registraEventoNota(eventoNota);
+								Evento eventoNota = new Evento();
+								eventoNota.setCategoriaEvento(CategoriaEvento.INTERNO);
+								eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
+								eventoNota.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
+								eventoNota.setCodApplicazione(versamento.getApplicazione(this).getCodApplicazione());
+								eventoNota.setEsitoEvento(EsitoEvento.OK);
+								eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
+								eventoNota.setTipoEvento("Pagamento eseguito senza RPT");
+								giornaleEventi.registraEvento(eventoNota);
 							} catch (MultipleResultException e) {
 								ctx.getApplicationLogger().log("incasso.frAnomala", idf);
 								throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");

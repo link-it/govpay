@@ -1,28 +1,32 @@
 package it.govpay.backoffice.v1.beans;
 
-/**
- * Tipologia della Nota  * NOTA_UTENTE: Nota utente 
- **/
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 
 /**
- * Tipologia della Nota  * NOTA_UTENTE: Nota utente 
+ * Gets or Sets categoriaEvento
  */
-public enum TipoNota {
+public enum CategoriaEvento {
   
   
   
   
-  UTENTE("NOTA_UTENTE");
+  INTERNO("INTERNO"),
+  
+  
+  INTERFACCIA("INTERFACCIA"),
+  
+  
+  UTENTE("UTENTE");
   
   
   
 
   private String value;
 
-  TipoNota(String value) {
+  CategoriaEvento(String value) {
     this.value = value;
   }
 
@@ -33,8 +37,8 @@ public enum TipoNota {
   }
 
   @JsonCreator
-  public static TipoNota fromValue(String text) {
-    for (TipoNota b : TipoNota.values()) {
+  public static CategoriaEvento fromValue(String text) {
+    for (CategoriaEvento b : CategoriaEvento.values()) {
       if (String.valueOf(b.value).equals(text)) {
         return b;
       }

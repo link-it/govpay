@@ -11,6 +11,8 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.eventi.DettaglioRichiesta;
+import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.utils.JaxbUtils;
 
 public class ConverterUtils {
@@ -70,4 +72,27 @@ public class ConverterUtils {
 			throw new ServiceException(e);
 		}
 	}
+	
+	public static String getParametriRichiestaEvento(DettaglioRichiesta dettaglioRichiesta) throws ServiceException {
+		if(dettaglioRichiesta == null)
+			return null;
+
+		try {
+			return mapper.writeValueAsString(dettaglioRichiesta);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public static String getParametriRispostaEvento(DettaglioRisposta dettaglioRisposta) throws ServiceException {
+		if(dettaglioRisposta == null)
+			return null;
+
+		try {
+			return mapper.writeValueAsString(dettaglioRisposta);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 }

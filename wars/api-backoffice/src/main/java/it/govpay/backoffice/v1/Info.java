@@ -33,7 +33,7 @@ public class Info extends BaseRsServiceV1{
     @GET
     @Path("/")
     @Produces({ "application/json" })
-    public Response infoGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+    public Response getInfo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setContext(this.getContext());
         return this.controller.infoGET(this.getUser(), uriInfo, httpHeaders);
     }

@@ -23,37 +23,42 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
+import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.EventoCooperazione;
-import it.govpay.bd.model.eventi.EventoIntegrazione;
-import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NotificaClient;
 import it.govpay.model.Connettore;
-import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Versionabile.Versione;
 
 public class InviaNotificaThread implements Runnable {
 
+	public static final String CONNETTORE_NOTIFICA_DISABILITATO = "Connettore Notifica non configurato";
 	public static final String PA_NOTIFICA_TRANSAZIONE = "paNotificaTransazione";
 	private static Logger log = LoggerWrapperFactory.getLogger(InviaNotificaThread.class);
 	private Notifica notifica;
@@ -64,6 +69,10 @@ public class InviaNotificaThread implements Runnable {
 	private Applicazione applicazione = null;
 	private Connettore connettoreNotifica = null;
 	private IContext ctx = null;
+	private Giornale giornale = null;
+	private String rptKey = null;
+	private List<Pagamento> pagamenti  = null;
+	private PagamentoPortale pagamentoPortale = null;
 
 	public InviaNotificaThread(Notifica notifica, BasicBD bd, IContext ctx) throws ServiceException {
 		// Verifico che tutti i campi siano valorizzati
@@ -74,13 +83,18 @@ public class InviaNotificaThread implements Runnable {
 		this.rpt = this.notifica.getRpt(bd);
 		this.applicazione = this.notifica.getApplicazione(bd);
 		this.connettoreNotifica = this.applicazione.getConnettoreIntegrazione();
-		List<Pagamento> pagamenti = this.rpt.getPagamenti(bd);
+		this.pagamenti = this.rpt.getPagamenti(bd);
 		if(pagamenti != null) {
 			for(Pagamento pagamento : pagamenti)
 				pagamento.getSingoloVersamento(bd);
 		}
 		this.ctx = ctx;
-		
+		this.giornale = AnagraficaManager.getConfigurazione(bd).getGiornale();
+		this.rptKey = this.notifica.getRptKey(bd);
+		try {
+			this.pagamentoPortale = this.rpt.getPagamentoPortale(bd);
+		} catch (NotFoundException e) {
+		}
 	}
 
 	@Override
@@ -89,12 +103,10 @@ public class InviaNotificaThread implements Runnable {
 		
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		BasicBD bd = null;
 		TipoNotifica tipoNotifica = this.notifica.getTipo();
-		GiornaleEventi giornaleEventi = null;
-		EventoIntegrazione evento = new EventoIntegrazione();
-		String messaggioRichiesta = null;
-		String messaggioRisposta = null;
+		NotificaClient client = null;
 		try {
 			
 			String url = this.connettoreNotifica!= null ? this.connettoreNotifica.getUrl() : GpContext.NOT_SET;
@@ -104,9 +116,9 @@ public class InviaNotificaThread implements Runnable {
 			if(this.rpt.getCodCarrello() != null) {
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", rpt.getCodCarrello()));
 			} 
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.notifica.getRpt(null).getCodDominio()));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.notifica.getRpt(null).getIuv()));
-			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", this.notifica.getRpt(null).getCcp()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.rpt.getIuv()));
+			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("ccp", this.rpt.getCcp()));
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoNotifica", tipoNotifica.name().toLowerCase()));
 			
 			switch (tipoNotifica) {
@@ -123,52 +135,40 @@ public class InviaNotificaThread implements Runnable {
 				ctx.getApplicationLogger().log("notifica.rt");
 				break;
 			}
-			
-			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			giornaleEventi = new GiornaleEventi(bd);
-			
-//			MDC.put(MD5Constants.OPERATION_ID, "InviaNotificaThread");
-//			MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
-			
-			log.info("Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.notifica.getRptKey(bd) +"] all'applicazione [CodApplicazione: " + this.notifica.getApplicazione(null).getCodApplicazione() + "]");
+			 
+			log.info("Spedizione della notifica di "+tipoNotifica.name().toLowerCase()+" pagamento della transazione [" + this.rptKey +"] all'applicazione [CodApplicazione: " + this.applicazione.getCodApplicazione() + "]");
 			if(connettoreNotifica == null || connettoreNotifica.getUrl() == null) {
-				
-				
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+
 				ctx.getApplicationLogger().log("notifica.annullata");
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + applicazione.getCodApplicazione() + "]. Spedizione inibita.");
 				NotificheBD notificheBD = new NotificheBD(bd);
 				long tentativi = this.notifica.getTentativiSpedizione() + 1;
 				Date prossima = new GregorianCalendar(9999,1,1).getTime();
 				notificheBD.updateAnnullata(this.notifica.getId(), "Connettore Notifica non configurato, notifica annullata.", tentativi, prossima);
-				
-				EventoNota eventoNota = new EventoNota();
-				eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-				eventoNota.setOggetto("Notifica " +tipoNotifica.name().toLowerCase()
-						+ " pagamento annullata: connettore non configurato.");
-				eventoNota.setTesto("Notifica " +tipoNotifica.name().toLowerCase()
-						+ " pagamento annullata: connettore di notifica dell'applicazione "+this.applicazione.getCodApplicazione()+" non configurato.");
-				eventoNota.setPrincipal(null);
-				eventoNota.setData(new Date());
-				eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaInfo);
-				eventoNota.setCodDominio(this.rpt.getCodDominio());
-				eventoNota.setIuv(this.rpt.getIuv());
-				eventoNota.setCcp(this.rpt.getCcp());
-				eventoNota.setIdPagamentoPortale(this.rpt.getIdPagamentoPortale());
-				eventoNota.setIdVersamento(this.rpt.getIdVersamento());					
-				giornaleEventi.registraEventoNota(eventoNota);
-				
 				return;
 			}
 			
 			ctx.getApplicationLogger().log("notifica.spedizione");
 			
-			NotificaClient client = new NotificaClient(applicazione, operationId);
+			client = new NotificaClient(this.applicazione, operationId, this.giornale, bd);
 			
-			messaggioRichiesta = client.getMessaggioRichiesta(this.notifica, bd);
+//			DatiPagoPA datiPagoPA = new DatiPagoPA();
+//			datiPagoPA.setErogatore(this.applicazione.getCodApplicazione());
+//			datiPagoPA.setFruitore(Evento.COMPONENTE_COOPERAZIONE);
+//			datiPagoPA.setCodDominio(this.rpt.getCodDominio());
+//			client.getEventoCtx().setDatiPagoPA(datiPagoPA);
+			// salvataggio id Rpt/ versamento/ pagamento
+			client.getEventoCtx().setCodDominio(this.rpt.getCodDominio());
+			client.getEventoCtx().setIuv(this.rpt.getIuv());
+			client.getEventoCtx().setCcp(this.rpt.getCcp());
+			client.getEventoCtx().setIdA2A(this.applicazione.getCodApplicazione());
+			client.getEventoCtx().setIdPendenza(this.versamento.getCodVersamentoEnte());
+			if(this.pagamentoPortale != null)
+				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
 			
-			byte[] byteResponse = client.invoke(this.notifica,bd);
 			
-			messaggioRisposta = byteResponse != null ? new String(byteResponse) : "";
+			client.invoke(this.notifica, this.rpt, this.applicazione, this.versamento, this.pagamenti, this.pagamentoPortale, bd);
 			
 			this.notifica.setStato(StatoSpedizione.SPEDITO);
 			this.notifica.setDescrizioneStato(null);
@@ -196,16 +196,27 @@ public class InviaNotificaThread implements Runnable {
 				ctx.getApplicationLogger().log("notifica.rtok");
 				break;
 			}
-			
-			buildEventoIntegrazione(evento, ctx.getTransactionId(), applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, tipoNotifica.name(), "OK", null, messaggioRichiesta, messaggioRisposta, bd);
-			giornaleEventi.registraEventointegrazione(evento);
 			 
+			client.getEventoCtx().setEsito(Esito.OK);
 			log.info("Notifica consegnata con successo");
 		} catch(Exception e) {
 			if(e instanceof GovPayException || e instanceof ClientException)
 				log.warn("Errore nella consegna della notifica: " + e.getMessage());
 			else
 				log.error("Errore nella consegna della notifica", e);
+			
+			if(client != null) {
+				if(e instanceof GovPayException) {
+					client.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+				} else if(e instanceof ClientException) {
+					client.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				} else {
+					client.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+				}
+				
+				client.getEventoCtx().setEsito(Esito.FAIL);
+				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			}			
 			try {
 				if(bd == null)
 					bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
@@ -264,28 +275,17 @@ public class InviaNotificaThread implements Runnable {
 				
 				notificheBD.updateDaSpedire(this.notifica.getId(), e.getMessage(), tentativi, prossima);
 				
-				if(giornaleEventi != null) {
-					if(e instanceof ClientException) {
-						byte[] byteResponse = ((ClientException) e).getResponseContent();
-						messaggioRisposta = byteResponse != null ? new String(byteResponse) : "";
-					}
-					
-					buildEventoIntegrazione(evento, ctx.getTransactionId(), applicazione.getCodApplicazione(), PA_NOTIFICA_TRANSAZIONE, tipoNotifica.name(), "KO", e.getMessage(), messaggioRichiesta, messaggioRisposta, bd);
-					giornaleEventi.registraEventointegrazione(evento);
-				}
-				
 			} catch (Exception ee) {
 				// Andato male l'aggiornamento. Non importa, verra' rispedito.
 			}
 		} finally {
+			if(client != null && client.getEventoCtx().isRegistraEvento()) {
+				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
+				giornaleEventi.registraEvento(client.getEventoCtx().toEventoDTO());
+			}
+			
 			this.completed = true;
 			if(bd != null) bd.closeConnection(); 
-//			if(ctx != null)
-//				try {
-//					ctx.getApplicationLogger().log();
-//				} catch (UtilsException e) {
-//					log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
-//				}
 			ContextThreadLocal.unset();
 		}
 	}
@@ -294,27 +294,4 @@ public class InviaNotificaThread implements Runnable {
 		return this.completed;
 	}
 	
-	private void buildEventoIntegrazione(EventoIntegrazione evento, String idTransazione, 
-			String codApplicazione, String tipoEvento, 
-			String sottotipoEvento, String esito, String descrizioneEsito,  
-			String messaggioRichiesta, String messaggioRisposta, BasicBD bd) {
-		evento.setAltriParametriRichiesta(null);
-		evento.setAltriParametriRisposta(null);
-		evento.setCategoriaEvento(CategoriaEvento.INTERFACCIA_INTEGRAZIONE);
-		evento.setCodDominio(this.dominio.getCodDominio());
-		evento.setComponente(EventoCooperazione.COMPONENTE);
-		evento.setDataRisposta(new Date());
-		evento.setErogatore(codApplicazione);
-		evento.setEsito(esito);
-		evento.setDescrizioneEsito(descrizioneEsito);
-		evento.setFruitore(EventoCooperazione.COMPONENTE);
-		evento.setIuv(this.rpt.getIuv());
-		evento.setCcp(this.rpt.getCcp());
-		evento.setSottotipoEvento(sottotipoEvento);
-		evento.setTipoEvento(tipoEvento);
-		evento.setAltriParametriRichiesta(messaggioRichiesta);
-		evento.setAltriParametriRisposta(messaggioRisposta);
-		evento.setIdVersamento(this.versamento.getId());
-		evento.setIdTransazione(idTransazione);
-	}
 }

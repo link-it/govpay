@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -25,18 +26,14 @@ import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.EventoNota;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
-import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse;
-import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse.RifTransazione;
 import it.govpay.core.beans.Mittente;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.eventi.EventiDAO;
@@ -82,13 +79,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		BasicBD bd = null;
-
+		((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPagamento(pagamentiPortaleDTO.getIdSessione());
 		try {
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(pagamentiPortaleDTO.getUser());
 			bd = BasicBD.newInstance(ctx.getTransactionId());
 			DominiBD dominiBD = new DominiBD(bd);
-			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			List<Versamento> versamenti = new ArrayList<>();
 
 			// Aggiungo il codSessionePortale al PaymentContext
@@ -267,7 +262,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentoPortale.setTipo(1); //Pagamento iniziativa ente
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			pagamentiPortaleBD.insertPagamento(pagamentoPortale);
-
+			
 			// procedo al pagamento
 			it.govpay.core.business.Rpt rptBD = new it.govpay.core.business.Rpt(bd);
 			List<Rpt> rpts = null;
@@ -322,60 +317,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					}
 				}
 
-				List<EventoNota> listaEventoNota = new ArrayList<>();
-
 				pagamentoPortale.setIdVersamento(idVersamento); 
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentoPortale.setAck(false);
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true);
-
-				if(!transazioneResponse.getRifTransazione().isEmpty()) {
-					for(RifTransazione rifTransazione: transazioneResponse.getRifTransazione()) {
-						EventoNota eventoNota = new EventoNota();
-						eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-						eventoNota.setOggetto(e.getDescrizioneEsito());
-						eventoNota.setTesto(e.getMessageNota());
-						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
-						eventoNota.setTipoEvento(e.getTipoNota()); 
-						eventoNota.setCodDominio(rifTransazione.getCodDominio());
-						eventoNota.setIuv(rifTransazione.getIuv());
-						eventoNota.setCcp(rifTransazione.getCcp());
-						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
-
-						for(Versamento versamentoModel: versamenti) {
-							if(rifTransazione.getCodApplicazione().equals(versamentoModel.getApplicazione(bd).getCodApplicazione()) 
-									&& rifTransazione.getCodVersamentoEnte().equals(versamentoModel.getCodVersamentoEnte()))  {
-								try {
-									eventoNota.setIdVersamento(versamentiBD.getVersamento(versamentoModel.getApplicazione(bd).getId(), versamentoModel.getCodVersamentoEnte()).getId());
-									break;
-								}catch(NotFoundException e2) {	}
-							}
-						}
-						listaEventoNota.add(eventoNota);
-					}
-				} else {
-					for(Versamento versamentoModel: versamenti) {
-						EventoNota eventoNota = new EventoNota();
-						eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-						eventoNota.setOggetto(e.getDescrizioneEsito());
-						eventoNota.setTesto(e.getMessageNota());
-						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
-						eventoNota.setTipoEvento(e.getTipoNota());
-						eventoNota.setCodDominio(versamentoModel.getUo(bd).getDominio(bd).getCodDominio());
-						eventoNota.setIuv(versamentoModel.getIuvVersamento());
-						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
-						eventoNota.setIdVersamento(versamentoModel.getId());					
-						listaEventoNota.add(eventoNota);
-					}
-				}
-
-				for (EventoNota eventoNota : listaEventoNota) {
-					giornaleEventi.registraEventoNota(eventoNota);	
-				}
 
 
 				e.setParam(pagamentoPortale);
@@ -396,53 +343,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentoPortale.setAck(false);
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true);
-
-				List<EventoNota> listaEventoNota = new ArrayList<>();
-
-				if(!transazioneResponse.getRifTransazione().isEmpty()) {
-					for(RifTransazione rifTransazione: transazioneResponse.getRifTransazione()) {
-						EventoNota eventoNota = new EventoNota();
-						eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-						eventoNota.setOggetto(transazioneResponse.getDescrizioneEsito());
-						eventoNota.setTesto(transazioneResponse.getDettaglioEsito());
-						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
-						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal); 
-						eventoNota.setCodDominio(rifTransazione.getCodDominio());
-						eventoNota.setIuv(rifTransazione.getIuv());
-						eventoNota.setCcp(rifTransazione.getCcp());
-						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
-
-						for(Versamento versamentoModel: versamenti) {
-							if(rifTransazione.getCodApplicazione().equals(versamentoModel.getApplicazione(bd).getCodApplicazione()) 
-									&& rifTransazione.getCodVersamentoEnte().equals(versamentoModel.getCodVersamentoEnte()))  {
-								eventoNota.setIdVersamento(versamentoModel.getId());
-								break;
-							}
-						}
-						listaEventoNota.add(eventoNota);
-					}
-				} else {
-					for(Versamento versamentoModel: versamenti) {
-						EventoNota eventoNota = new EventoNota();
-						eventoNota.setAutore(EventoNota.UTENTE_SISTEMA);
-						eventoNota.setOggetto(transazioneResponse.getDescrizioneEsito());
-						eventoNota.setTesto(transazioneResponse.getDettaglioEsito());
-						eventoNota.setPrincipal(null);
-						eventoNota.setData(new Date());
-						eventoNota.setTipoEvento(it.govpay.bd.model.eventi.EventoNota.TipoNota.SistemaFatal); 
-						eventoNota.setCodDominio(versamentoModel.getUo(bd).getDominio(bd).getCodDominio());
-						eventoNota.setIuv(versamentoModel.getIuvVersamento());
-						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
-						eventoNota.setIdVersamento(versamentoModel.getId());					
-						listaEventoNota.add(eventoNota);
-					}
-				}
-
-				for (EventoNota eventoNota : listaEventoNota) {
-					giornaleEventi.registraEventoNota(eventoNota);	
-				}
-
 				throw e;
 			}
 
@@ -488,10 +388,14 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = null;
 			if(leggiPagamentoPortaleDTO.getId() != null) { 
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPagamento(leggiPagamentoPortaleDTO.getId());
 				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(leggiPagamentoPortaleDTO.getId());
 			}else {
 				pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessionePsp(leggiPagamentoPortaleDTO.getIdSessionePsp());
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPagamento(pagamentoPortale.getIdSessione());
 			}
+			
+			
 			
 			pagamentoPortale.getApplicazione(bd);
 			
@@ -585,52 +489,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}
 	}
 
-	//	public LeggiPagamentoPortaleDTOResponse inserisciNota(VerificaPagamentoPortaleDTO verificaPagamentoDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
-	//		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
-	//		
-	//		BasicBD bd = null;
-	//
-	//		try {
-	//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-	//			this.autorizzaRichiesta(verificaPagamentoDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA,bd);
-	//
-	//			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
-	//			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(verificaPagamentoDTO.getIdSessione());
-	//
-	//			for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
-	//				versamento.getDominio(bd);
-	//				versamento.getSingoliVersamenti(bd);
-	//			}
-	//			if(pagamentoPortale.getMultiBeneficiario() != null) {
-	//				// controllo che il dominio sia autorizzato
-	//				this.autorizzaRichiesta(verificaPagamentoDTO.getUser(), Servizio.PAGAMENTI, Diritti.LETTURA, pagamentoPortale.getMultiBeneficiario(), null, bd);
-	//			}
-	//			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
-	//
-	//			PendenzeDAO pendenzeDao = new PendenzeDAO();
-	//			ListaPendenzeDTO listaPendenzaDTO = new ListaPendenzeDTO(verificaPagamentoDTO.getUser());
-	//			listaPendenzaDTO.setIdPagamento(verificaPagamentoDTO.getIdSessione());
-	//			ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, bd);
-	//			leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
-	//
-	//			RptDAO rptDao = new RptDAO(); 
-	//			ListaRptDTO listaRptDTO = new ListaRptDTO(verificaPagamentoDTO.getUser());
-	//			listaRptDTO.setIdPagamento(pagamentoPortale.getIdSessione());
-	//			ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
-	//			leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
-	//
-	//			
-	//			
-	//			
-	//			return leggiPagamentoPortaleDTOResponse;
-	//		}catch(NotFoundException e) {
-	//			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+verificaPagamentoDTO.getIdSessione()+"]");
-	//		}finally {
-	//			if(bd != null)
-	//				bd.closeConnection();
-	//		}
-	//	}
-
 	public LeggiPagamentoPortaleDTOResponse patch(PagamentoPatchDTO patchDTO) 
 			throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException,ValidationException{
 		LeggiPagamentoPortaleDTOResponse leggiPagamentoPortaleDTOResponse = new LeggiPagamentoPortaleDTOResponse();
@@ -638,11 +496,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		BasicBD bd = null;
 
 		try {
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPagamento(patchDTO.getIdSessione());
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamentoFromCodSessione(patchDTO.getIdSessione());
-
+			
 			for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
 				versamento.getDominio(bd);
 				versamento.getSingoliVersamenti(bd);
@@ -661,16 +520,21 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			ListaRptDTOResponse listaRpt = rptDao.listaRpt(listaRptDTO, bd);
 			leggiPagamentoPortaleDTOResponse.setListaRpp(listaRpt.getResults());
 
-			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
-			List<EventoNota> listaNote = new ArrayList<>();
+//			GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
+//			List<Evento> listaEventiUtente = new ArrayList<>();
 			for(PatchOp op: patchDTO.getOp()) {
 
 				if(PATH_NOTA.equals(op.getPath())) {
 					switch(op.getOp()) {
 					case ADD: 
-						EventoNota eventoNota = UtenzaPatchUtils.getNotaFromPatch(patchDTO.getUser(), op, bd); 
-						eventoNota.setIdPagamentoPortale(pagamentoPortale.getId());
-						listaNote.add(eventoNota);
+						
+						LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) op.getValue();
+						pagamentoPortale.setDescrizioneStato((String)map.get(UtenzaPatchUtils.OGGETTO_NOTA_KEY));
+//						
+//						Evento eventoUtente = UtenzaPatchUtils.getNotaFromPatch(patchDTO.getUser(), op, bd); 
+//						eventoUtente.setIdPagamentoPortale(pagamentoPortale.getId());
+//						eventoUtente.setTipoEvento("patchPagamento");
+//						listaEventiUtente.add(eventoUtente);
 						break;
 					default: throw new ServiceException("Op '"+op.getOp()+"' non valida per il path '"+op.getPath()+"'");
 					}
@@ -688,15 +552,17 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			}
 
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false);
-
-			for (EventoNota eventoNota : listaNote) {
-				giornaleEventi.registraEventoNota(eventoNota);
-			}
+//
+//			for (Evento eventoNota : listaEventiUtente) {
+//				giornaleEventi.registraEvento(eventoNota);
+//			}
 
 
 			return leggiPagamentoPortaleDTOResponse;
 		}catch(NotFoundException e) {
 			throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID ["+patchDTO.getIdSessione()+"]");
+//		}catch (IOException e) {
+//			throw new ServiceException(e);
 		}finally {
 			if(bd != null)
 				bd.closeConnection();

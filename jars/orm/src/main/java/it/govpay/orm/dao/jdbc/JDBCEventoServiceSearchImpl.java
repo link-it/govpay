@@ -48,7 +48,6 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
 import it.govpay.orm.Evento;
-import it.govpay.orm.SingoloVersamento;
 import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.EventoFetch;
 
@@ -114,54 +113,30 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 		try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getEventoFieldConverter().toTable(Evento.model())));
-			fields.add(Evento.model().COD_DOMINIO);
+			fields.add(Evento.model().CATEGORIA_EVENTO);
+			fields.add(Evento.model().COMPONENTE);
+			fields.add(Evento.model().DATA);
+			fields.add(Evento.model().DATI_PAGO_PA);
+			fields.add(Evento.model().DETTAGLIO_ESITO);
+			fields.add(Evento.model().ESITO);
+			fields.add(Evento.model().INTERVALLO);
+			fields.add(Evento.model().PARAMETRI_RICHIESTA);
+			fields.add(Evento.model().PARAMETRI_RISPOSTA);
+			fields.add(Evento.model().RUOLO);
+			fields.add(Evento.model().SOTTOTIPO_ESITO);
+			fields.add(Evento.model().SOTTOTIPO_EVENTO);
+			fields.add(Evento.model().TIPO_EVENTO);
+			fields.add(Evento.model().COD_VERSAMENTO_ENTE);
+			fields.add(Evento.model().COD_APPLICAZIONE);
 			fields.add(Evento.model().IUV);
 			fields.add(Evento.model().CCP);
-			fields.add(Evento.model().CATEGORIA_EVENTO);
-			fields.add(Evento.model().TIPO_EVENTO);
-			fields.add(Evento.model().SOTTOTIPO_EVENTO);
-			fields.add(Evento.model().INTERVALLO);
-			fields.add(Evento.model().DATA);
-			fields.add(Evento.model().CLASSNAME_DETTAGLIO);
-			fields.add(Evento.model().DETTAGLIO);
-			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getFieldConverter().toTable(Evento.model())));
-			fields.add(new CustomField("id_pagamento_portale", Long.class, "id_pagamento_portale", this.getFieldConverter().toTable(Evento.model())));
+			fields.add(Evento.model().COD_DOMINIO);
+			fields.add(Evento.model().ID_SESSIONE);
 		
-
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				
-				Object idVersamentoObj = map.remove("id_versamento");
-				Object idPagamentoPortaleObj = map.remove("id_pagamento_portale");
-
 				Evento evento = (Evento)this.getEventoFetch().fetch(jdbcProperties.getDatabase(), Evento.model(), map);
-				
-				if(idVersamentoObj instanceof Long) {
-					Long idVersamento = (Long) idVersamentoObj;
-					it.govpay.orm.IdVersamento id_versamento_ente = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_ente = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
-					}else{
-						id_versamento_ente = new it.govpay.orm.IdVersamento();
-					}
-					id_versamento_ente.setId(idVersamento);
-					evento.setIdVersamento(id_versamento_ente);
-				}
-	
-				if(idPagamentoPortaleObj instanceof Long) {
-					Long idPagamentoPortale = (Long) idPagamentoPortaleObj;
-					it.govpay.orm.IdPagamentoPortale id_pagamento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_pagamento = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findId(idPagamentoPortale, false);
-					}else{
-						id_pagamento = new it.govpay.orm.IdPagamentoPortale();
-					}
-					id_pagamento.setId(idPagamentoPortale);
-					evento.setIdPagamentoPortale(id_pagamento);
-				}
-				
-				
 				list.add(evento);
 			}
 		} catch(NotFoundException e) {}
@@ -463,7 +438,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getEventoFieldConverter().toTable(Evento.model()));
-		sqlQueryObject.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,true));
+		sqlQueryObject.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COMPONENTE,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
@@ -477,34 +452,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-		
-		if(expression.inUseModel(Evento.model().ID_VERSAMENTO,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(Evento.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
-		}
-		
-		
-		if(expression.inUseModel(Evento.model().ID_PAGAMENTO_PORTALE,false)){
-			String tableName1 = this.getFieldConverter().toAliasTable(Evento.model());
-			String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_PAGAMENTO_PORTALE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_pagamento_portale="+tableName2+".id");
-		}
-		
-		if(expression.inUseModel(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE,false)){
-			
-			if(!expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO,false)){
-				String tableName1 = this.getFieldConverter().toAliasTable(Evento.model());
-				String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO);
-				sqlQueryObject.addFromTable(tableName2);
-				sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
-			}
-			
-			String tableName1 = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO);
-			String tableName2 = this.getFieldConverter().toAliasTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
-		}
-	
+
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Evento evento) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -528,7 +476,6 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Evento.model()))
 			));
-        
         return mapTableToPKColumn;		
 	}
 	

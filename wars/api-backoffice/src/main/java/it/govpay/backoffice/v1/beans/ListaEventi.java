@@ -11,7 +11,7 @@ public class ListaEventi extends Lista<Evento> {
 		super();
 	}
 	
-	public ListaEventi(List<Evento> flussiRendicontazione, URI requestUri, long count, long pagina, long limit) {
-		super(flussiRendicontazione, requestUri, count, pagina, limit);
+	public ListaEventi(List<Evento> eventi, URI requestUri, long count, long pagina, long limit) {
+		super(eventi, requestUri, count, pagina, limit);
 	}
 }

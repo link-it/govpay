@@ -67,25 +67,18 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(Evento.model().COD_DOMINIO)){
+		if(field.equals(Evento.model().COMPONENTE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_dominio";
+				return this.toAliasTable(field)+".componente";
 			}else{
-				return "cod_dominio";
+				return "componente";
 			}
 		}
-		if(field.equals(Evento.model().IUV)){
+		if(field.equals(Evento.model().RUOLO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iuv";
+				return this.toAliasTable(field)+".ruolo";
 			}else{
-				return "iuv";
-			}
-		}
-		if(field.equals(Evento.model().CCP)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ccp";
-			}else{
-				return "ccp";
+				return "ruolo";
 			}
 		}
 		if(field.equals(Evento.model().CATEGORIA_EVENTO)){
@@ -123,102 +116,88 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "intervallo";
 			}
 		}
-		if(field.equals(Evento.model().CLASSNAME_DETTAGLIO)){
+		if(field.equals(Evento.model().ESITO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".classname_dettaglio";
+				return this.toAliasTable(field)+".esito";
 			}else{
-				return "classname_dettaglio";
+				return "esito";
 			}
 		}
-		if(field.equals(Evento.model().DETTAGLIO)){
+		if(field.equals(Evento.model().SOTTOTIPO_ESITO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".dettaglio";
+				return this.toAliasTable(field)+".sottotipo_esito";
 			}else{
-				return "dettaglio";
+				return "sottotipo_esito";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+		if(field.equals(Evento.model().DETTAGLIO_ESITO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dettaglio_esito";
+			}else{
+				return "dettaglio_esito";
+			}
+		}
+		if(field.equals(Evento.model().PARAMETRI_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".parametri_richiesta";
+			}else{
+				return "parametri_richiesta";
+			}
+		}
+		if(field.equals(Evento.model().PARAMETRI_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".parametri_risposta";
+			}else{
+				return "parametri_risposta";
+			}
+		}
+		if(field.equals(Evento.model().DATI_PAGO_PA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".dati_pago_pa";
+			}else{
+				return "dati_pago_pa";
+			}
+		}
+		if(field.equals(Evento.model().COD_VERSAMENTO_ENTE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_versamento_ente";
 			}else{
 				return "cod_versamento_ente";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+		if(field.equals(Evento.model().COD_APPLICAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_applicazione";
 			}else{
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+		if(field.equals(Evento.model().IUV)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".debitore_identificativo";
+				return this.toAliasTable(field)+".iuv";
 			}else{
-				return "debitore_identificativo";
+				return "iuv";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+		if(field.equals(Evento.model().CCP)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".debitore_anagrafica";
+				return this.toAliasTable(field)+".ccp";
 			}else{
-				return "debitore_anagrafica";
+				return "ccp";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+		if(field.equals(Evento.model().COD_DOMINIO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_versamento_lotto";
+				return this.toAliasTable(field)+".cod_dominio";
 			}else{
-				return "cod_versamento_lotto";
+				return "cod_dominio";
 			}
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_anno_tributario";
-			}else{
-				return "cod_anno_tributario";
-			}
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".importo_totale";
-			}else{
-				return "importo_totale";
-			}
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".causale_versamento";
-			}else{
-				return "causale_versamento";
-			}
-		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".stato_versamento";
-			}else{
-				return "stato_versamento";
-			}
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
+		if(field.equals(Evento.model().ID_SESSIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".id_sessione";
 			}else{
 				return "id_sessione";
-			}
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
-			}
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".versante_identificativo";
-			}else{
-				return "versante_identificativo";
 			}
 		}
 
@@ -234,13 +213,10 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(Evento.model().COD_DOMINIO)){
+		if(field.equals(Evento.model().COMPONENTE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().IUV)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().CCP)){
+		if(field.equals(Evento.model().RUOLO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().CATEGORIA_EVENTO)){
@@ -258,47 +234,41 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().INTERVALLO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().CLASSNAME_DETTAGLIO)){
+		if(field.equals(Evento.model().ESITO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().DETTAGLIO)){
+		if(field.equals(Evento.model().SOTTOTIPO_ESITO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().DETTAGLIO_ESITO)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
+		if(field.equals(Evento.model().PARAMETRI_RICHIESTA)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().PARAMETRI_RISPOSTA)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().DATI_PAGO_PA)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().COD_VERSAMENTO_ENTE)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().COD_APPLICAZIONE)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().IUV)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().CCP)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
-			return this.toTable(Evento.model().ID_VERSAMENTO, returnAlias);
+		if(field.equals(Evento.model().COD_DOMINIO)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_SESSIONE)){
-			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
-		}
-		if(field.equals(Evento.model().ID_PAGAMENTO_PORTALE.VERSANTE_IDENTIFICATIVO)){
-			return this.toTable(Evento.model().ID_PAGAMENTO_PORTALE, returnAlias);
+		if(field.equals(Evento.model().ID_SESSIONE)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
 
 
@@ -315,18 +285,6 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Evento.model())){
 			return "eventi";
-		}
-		if(model.equals(Evento.model().ID_VERSAMENTO)){
-			return "versamenti";
-		}
-		if(model.equals(Evento.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
-			return "applicazioni";
-		}
-		if(model.equals(Evento.model().ID_PAGAMENTO_PORTALE)){
-			return "pagamenti_portale";
-		}
-		if(model.equals(Evento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE)){
-			return "applicazioni";
 		}
 
 

@@ -22,6 +22,7 @@ package it.govpay.core.dao.anagrafica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -181,45 +182,57 @@ public class DominiDAO extends BaseDAO{
 				uo.setAnagrafica(putDominioDTO.getDominio().getAnagrafica());
 				uo.setCodUo(it.govpay.model.Dominio.EC);
 				putDominioDTO.getDominio().getAnagrafica().setCodUnivoco(uo.getCodUo());
-				bd.setAutoCommit(false);
-				dominiBD.insertDominio(putDominioDTO.getDominio());
-				
-				// UO EC
-				uo.setIdDominio(putDominioDTO.getDominio().getId());
-				uoBd.insertUnitaOperativa(uo);
-				
-				// MBT
-				tributo.setIdDominio(putDominioDTO.getDominio().getId());
-				tributiBD.insertTributo(tributo);
-				
-				// LIBERO
-				tvd.setIdDominio(putDominioDTO.getDominio().getId());
-				tvdBD.insertTipoVersamentoDominio(tvd);
-				
-				// NON CENSITE
-				if(tvdNonCensite != null) {
-					tvdNonCensite.setIdDominio(putDominioDTO.getDominio().getId());
-					tvdBD.insertTipoVersamentoDominio(tvdNonCensite);
+				try {
+					bd.setAutoCommit(false);
+					dominiBD.insertDominio(putDominioDTO.getDominio());
+					
+					// UO EC
+					uo.setIdDominio(putDominioDTO.getDominio().getId());
+					uoBd.insertUnitaOperativa(uo);
+					
+					// MBT
+					tributo.setIdDominio(putDominioDTO.getDominio().getId());
+					tributiBD.insertTributo(tributo);
+					
+					// LIBERO
+					tvd.setIdDominio(putDominioDTO.getDominio().getId());
+					tvdBD.insertTipoVersamentoDominio(tvd);
+					
+					// NON CENSITE
+					if(tvdNonCensite != null) {
+						tvdNonCensite.setIdDominio(putDominioDTO.getDominio().getId());
+						tvdBD.insertTipoVersamentoDominio(tvdNonCensite);
+					}
+					
+					// TV MBT
+					tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
+					tvdBD.insertTipoVersamentoDominio(tvdBollo);
+					
+					bd.commit();
+				} catch (ServiceException e) {
+					bd.rollback(); 
+					throw e;
+				} finally {
+					// ripristino l'autocommit
+					bd.setAutoCommit(true);	
 				}
-				
-				// TV MBT
-				tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
-				tvdBD.insertTipoVersamentoDominio(tvdBollo);
-				
-				bd.commit();
-
-				// ripristino l'autocommit.
-				bd.setAutoCommit(true); 
 			} else {
-				bd.setAutoCommit(false);
-				dominiBD.updateDominio(putDominioDTO.getDominio());
-				UnitaOperativa uo = new UnitaOperativa();
-				uo.setAbilitato(true);
-				uo.setAnagrafica(putDominioDTO.getDominio().getAnagrafica());
-				uo.setCodUo(it.govpay.model.Dominio.EC);
-				uo.setIdDominio(putDominioDTO.getDominio().getId());
-				uoBd.updateUnitaOperativa(uo);
-				bd.setAutoCommit(true); 
+				try {
+					bd.setAutoCommit(false);
+					dominiBD.updateDominio(putDominioDTO.getDominio());
+					UnitaOperativa uo = new UnitaOperativa();
+					uo.setAbilitato(true);
+					uo.setAnagrafica(putDominioDTO.getDominio().getAnagrafica());
+					uo.setCodUo(it.govpay.model.Dominio.EC);
+					uo.setIdDominio(putDominioDTO.getDominio().getId());
+					uoBd.updateUnitaOperativa(uo);
+					bd.commit();
+				} catch (NotFoundException | ServiceException e) {
+					bd.rollback(); 
+					throw e;
+				} finally {
+					bd.setAutoCommit(true);	
+				}
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new DominioNonTrovatoException(e.getMessage());
@@ -248,6 +261,7 @@ public class DominiDAO extends BaseDAO{
 				filter.setRagioneSociale(listaDominiDTO.getRagioneSociale());
 				filter.setAbilitato(listaDominiDTO.getAbilitato());
 			}
+			filter.setIdDomini(listaDominiDTO.getIdDomini());
 			filter.setOffset(listaDominiDTO.getOffset());
 			filter.setLimit(listaDominiDTO.getLimit());
 			filter.getFilterSortList().addAll(listaDominiDTO.getFieldSortList());

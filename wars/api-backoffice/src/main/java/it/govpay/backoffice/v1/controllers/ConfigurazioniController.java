@@ -78,7 +78,7 @@ public class ConfigurazioniController extends BaseController {
 
 			ConfigurazioneDAO configurazioneDAO = new ConfigurazioneDAO(false);
 
-			PutConfigurazioneDTOResponse putConfigurazioneDTOResponse = configurazioneDAO.createOrUpdate(putConfigurazioneDTO);
+			PutConfigurazioneDTOResponse putConfigurazioneDTOResponse = configurazioneDAO.salvaConfigurazioneGiornaleEventi(putConfigurazioneDTO);
 			Status responseStatus = putConfigurazioneDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 

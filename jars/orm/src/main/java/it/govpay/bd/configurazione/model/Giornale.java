@@ -11,6 +11,7 @@ public class Giornale implements Serializable{
 	private GdeInterfaccia apiRagioneria;
 	private GdeInterfaccia apiBackoffice;
 	private GdeInterfaccia apiPagoPA;
+	private GdeInterfaccia apiPendenze;
 	
 	public GdeInterfaccia getApiEnte() {
 		return apiEnte;
@@ -41,6 +42,12 @@ public class Giornale implements Serializable{
 	}
 	public void setApiPagoPA(GdeInterfaccia apiPagoPA) {
 		this.apiPagoPA = apiPagoPA;
+	}
+	public GdeInterfaccia getApiPendenze() {
+		return apiPendenze;
+	}
+	public void setApiPendenze(GdeInterfaccia apiPendenze) {
+		this.apiPendenze = apiPendenze;
 	}
 
 }

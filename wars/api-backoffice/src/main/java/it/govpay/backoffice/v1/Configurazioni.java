@@ -33,7 +33,7 @@ public class Configurazioni extends BaseRsServiceV1{
 	@Path("/giornale")
 
 	@Produces({ "application/json" })
-	public Response configurazioniGiornaleGET(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+	public Response getConfigurazioniGiornale(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
 		this.controller.setContext(this.getContext());
 		return this.controller.configurazioniGiornaleGET(this.getUser(), uriInfo, httpHeaders);
 	}
@@ -42,7 +42,7 @@ public class Configurazioni extends BaseRsServiceV1{
 	@Path("/giornale")
 	@Consumes({ "application/json" })
 	@Produces({ "application/json" })
-	public Response configurazioniGiornalePOST(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
+	public Response addConfigurazioniGiornale(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
 		this.controller.setContext(this.getContext());
 		return this.controller.configurazioniGiornalePOST(this.getUser(), uriInfo, httpHeaders, is);
 	}

@@ -31,8 +31,10 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import org.xml.sax.SAXException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.Allegato;
@@ -45,10 +47,11 @@ import it.govpay.ec.v1.beans.TipoRiscossione;
 
 public class NotificaConverter {
 	
-	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, BasicBD bd) throws ServiceException, JAXBException, SAXException {
+	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException, JAXBException, SAXException {
 		Notifica notificaRsModel = new Notifica();
-		notificaRsModel.setIdA2A(notifica.getApplicazione(bd).getCodApplicazione());
-		notificaRsModel.setIdPendenza(rpt.getVersamento(bd).getCodVersamentoEnte());
+		notificaRsModel.setIdA2A(applicazione.getCodApplicazione());
+		
+		notificaRsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		// rpt
 		notificaRsModel.setRpt(new RawObject(ConverterUtils.getRptJson(rpt))); 
 		// rt
@@ -56,12 +59,12 @@ public class NotificaConverter {
 			notificaRsModel.setRt(new RawObject(ConverterUtils.getRtJson(rpt)));
 		}
 		// elenco pagamenti
-		if(rpt.getPagamenti(bd) != null && rpt.getPagamenti(bd).size() > 0) {
+		if(pagamenti != null && pagamenti.size() > 0) {
 			List<Riscossione> riscossioni = new ArrayList<>();
 			int indice = 1;
-			String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(notifica.getApplicazione(bd).getCodApplicazione(), rpt.getVersamento(bd).getCodVersamentoEnte());
+			String urlPendenza = UriBuilderUtils.getPendenzaByIdA2AIdPendenza(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 			String urlRpt = UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
-			for(Pagamento pagamento : rpt.getPagamenti(bd)) {
+			for(Pagamento pagamento : pagamenti) {
 				riscossioni.add(toRiscossione(pagamento, bd, indice, urlPendenza, urlRpt));
 				indice ++;
 			}
@@ -98,7 +101,7 @@ public class NotificaConverter {
 	}
 	
 	
-	public NotificaAnnullamento toNotificaCancellazioneRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, BasicBD bd) throws ServiceException, JAXBException, SAXException {
+	public NotificaAnnullamento toNotificaCancellazioneRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt) throws ServiceException, JAXBException, SAXException {
 		NotificaAnnullamento rsModel = new NotificaAnnullamento();
 		
 		String motivazione = rpt.getDescrizioneStato() + ": " + rpt.getStato().name();

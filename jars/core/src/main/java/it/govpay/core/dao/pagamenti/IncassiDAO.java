@@ -1,6 +1,5 @@
 package it.govpay.core.dao.pagamenti;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -31,7 +30,6 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.model.Acl.Diritti;
 
 public class IncassiDAO extends BaseDAO{
 
@@ -103,9 +101,6 @@ public class IncassiDAO extends BaseDAO{
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			IncassiBD incassiBD = new IncassiBD(bd);
-			List<Diritti> diritti = new ArrayList<>();
-			diritti.add(Diritti.LETTURA);
-
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
 
 			response.setIncasso(incasso);

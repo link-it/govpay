@@ -1,34 +1,69 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.util.Date;
 import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import java.util.Date;
+
+import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"id",
+"componente",
+"categoriaEvento",
+"ruolo",
+"tipoEvento",
+"esito",
+"dataEvento",
+"durataEvento",
+"sottotipoEvento",
+"sottotipoEsito",
+"dettaglioEsito",
 "idDominio",
 "iuv",
 "ccp",
-"idPsp",
-"tipoVersamento",
-"componente",
-"categoriaEvento",
-"tipoEvento",
-"sottotipoEvento",
-"identificativoFruitore",
-"identificativoErogatore",
-"idCanale",
-"idStazione",
+"idA2A",
+"idPendenza",
+"idPagamento",
+"datiPagoPA",
 "parametriRichiesta",
 "parametriRisposta",
-"dataOraRichiesta",
-"dataOraRisposta",
-"esito",
-"descrizioneEsito",
 })
-public class Evento extends it.govpay.core.beans.JSONSerializable {
+public class Evento extends JSONSerializable {
+  
+  @JsonProperty("id")
+  private Long id = null;
+  
+  @JsonProperty("componente")
+  private ComponenteEvento componente = null;
+  
+  @JsonProperty("categoriaEvento")
+  private CategoriaEvento categoriaEvento = null;
+  
+  @JsonProperty("ruolo")
+  private RuoloEvento ruolo = null;
+  
+  @JsonProperty("tipoEvento")
+  private String tipoEvento = null;
+  
+  @JsonProperty("esito")
+  private EsitoEvento esito = null;
+  
+  @JsonProperty("dataEvento")
+  private Date dataEvento = null;
+  
+  @JsonProperty("durataEvento")
+  private Long durataEvento = null;
+  
+  @JsonProperty("sottotipoEvento")
+  private String sottotipoEvento = null;
+  
+  @JsonProperty("sottotipoEsito")
+  private String sottotipoEsito = null;
+  
+  @JsonProperty("dettaglioEsito")
+  private String dettaglioEsito = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -39,204 +74,83 @@ public class Evento extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("ccp")
   private String ccp = null;
   
-  @JsonProperty("idPsp")
-  private String idPsp = null;
+  @JsonProperty("idA2A")
+  private String idA2A = null;
   
-  @JsonProperty("tipoVersamento")
-  private String tipoVersamento = null;
+  @JsonProperty("idPendenza")
+  private String idPendenza = null;
   
-  @JsonProperty("componente")
-  private String componente = null;
+  @JsonProperty("idPagamento")
+  private String idPagamento = null;
   
-    
-  /**
-   * Gets or Sets categoriaEvento
-   */
-  public enum CategoriaEventoEnum {
-    
-    
-        
-            
-    INTERNO("INTERNO"),
-    
-            
-    INTERFACCIA("INTERFACCIA");
-            
-        
-    
-
-    private String value;
-
-    CategoriaEventoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(this.value);
-    }
-
-    public static CategoriaEventoEnum fromValue(String text) {
-      for (CategoriaEventoEnum b : CategoriaEventoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  @JsonProperty("categoriaEvento")
-  private CategoriaEventoEnum categoriaEvento = null;
-  
-  @JsonProperty("tipoEvento")
-  private String tipoEvento = null;
-  
-  @JsonProperty("sottotipoEvento")
-  private String sottotipoEvento = null;
-  
-  @JsonProperty("identificativoFruitore")
-  private String identificativoFruitore = null;
-  
-  @JsonProperty("identificativoErogatore")
-  private String identificativoErogatore = null;
-  
-  @JsonProperty("idCanale")
-  private String idCanale = null;
-  
-  @JsonProperty("idStazione")
-  private String idStazione = null;
+  @JsonProperty("datiPagoPA")
+  private DatiPagoPA datiPagoPA = null;
   
   @JsonProperty("parametriRichiesta")
-  private String parametriRichiesta = null;
+  private Object parametriRichiesta = null;
   
   @JsonProperty("parametriRisposta")
-  private String parametriRisposta = null;
-  
-  @JsonProperty("dataOraRichiesta")
-  private Date dataOraRichiesta = null;
-  
-  @JsonProperty("dataOraRisposta")
-  private Date dataOraRisposta = null;
-  
-  @JsonProperty("esito")
-  private String esito = null;
-  
-  @JsonProperty("descrizioneEsito")
-  private String descrizioneEsito = null;
+  private Object parametriRisposta = null;
   
   /**
-   * Identificativo ente creditore
+   * Identificativo evento
    **/
-  public Evento idDominio(String idDominio) {
-    this.idDominio = idDominio;
+  public Evento id(Long id) {
+    this.id = id;
     return this;
   }
 
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return this.idDominio;
+  @JsonProperty("id")
+  public Long getId() {
+    return id;
   }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
-  }
-
-  /**
-   * Identificativo univoco di versamento
-   **/
-  public Evento iuv(String iuv) {
-    this.iuv = iuv;
-    return this;
-  }
-
-  @JsonProperty("iuv")
-  public String getIuv() {
-    return this.iuv;
-  }
-  public void setIuv(String iuv) {
-    this.iuv = iuv;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   /**
-   * Codice contesto di pagamento
    **/
-  public Evento ccp(String ccp) {
-    this.ccp = ccp;
-    return this;
-  }
-
-  @JsonProperty("ccp")
-  public String getCcp() {
-    return this.ccp;
-  }
-  public void setCcp(String ccp) {
-    this.ccp = ccp;
-  }
-
-  /**
-   * Identificativo del PSP
-   **/
-  public Evento idPsp(String idPsp) {
-    this.idPsp = idPsp;
-    return this;
-  }
-
-  @JsonProperty("idPsp")
-  public String getIdPsp() {
-    return this.idPsp;
-  }
-  public void setIdPsp(String idPsp) {
-    this.idPsp = idPsp;
-  }
-
-  /**
-   * Tipologia di versamento realizzato
-   **/
-  public Evento tipoVersamento(String tipoVersamento) {
-    this.tipoVersamento = tipoVersamento;
-    return this;
-  }
-
-  @JsonProperty("tipoVersamento")
-  public String getTipoVersamento() {
-    return this.tipoVersamento;
-  }
-  public void setTipoVersamento(String tipoVersamento) {
-    this.tipoVersamento = tipoVersamento;
-  }
-
-  /**
-   * Modulo interno che ha emesso l'evento
-   **/
-  public Evento componente(String componente) {
+  public Evento componente(ComponenteEvento componente) {
     this.componente = componente;
     return this;
   }
 
   @JsonProperty("componente")
-  public String getComponente() {
-    return this.componente;
+  public ComponenteEvento getComponente() {
+    return componente;
   }
-  public void setComponente(String componente) {
+  public void setComponente(ComponenteEvento componente) {
     this.componente = componente;
   }
 
   /**
    **/
-  public Evento categoriaEvento(CategoriaEventoEnum categoriaEvento) {
+  public Evento categoriaEvento(CategoriaEvento categoriaEvento) {
     this.categoriaEvento = categoriaEvento;
     return this;
   }
 
   @JsonProperty("categoriaEvento")
-  public CategoriaEventoEnum getCategoriaEvento() {
-    return this.categoriaEvento;
+  public CategoriaEvento getCategoriaEvento() {
+    return categoriaEvento;
   }
-  public void setCategoriaEvento(CategoriaEventoEnum categoriaEvento) {
+  public void setCategoriaEvento(CategoriaEvento categoriaEvento) {
     this.categoriaEvento = categoriaEvento;
+  }
+
+  /**
+   **/
+  public Evento ruolo(RuoloEvento ruolo) {
+    this.ruolo = ruolo;
+    return this;
+  }
+
+  @JsonProperty("ruolo")
+  public RuoloEvento getRuolo() {
+    return ruolo;
+  }
+  public void setRuolo(RuoloEvento ruolo) {
+    this.ruolo = ruolo;
   }
 
   /**
@@ -248,10 +162,57 @@ public class Evento extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("tipoEvento")
   public String getTipoEvento() {
-    return this.tipoEvento;
+    return tipoEvento;
   }
   public void setTipoEvento(String tipoEvento) {
     this.tipoEvento = tipoEvento;
+  }
+
+  /**
+   **/
+  public Evento esito(EsitoEvento esito) {
+    this.esito = esito;
+    return this;
+  }
+
+  @JsonProperty("esito")
+  public EsitoEvento getEsito() {
+    return esito;
+  }
+  public void setEsito(EsitoEvento esito) {
+    this.esito = esito;
+  }
+
+  /**
+   * Data emissione evento
+   **/
+  public Evento dataEvento(Date dataEvento) {
+    this.dataEvento = dataEvento;
+    return this;
+  }
+
+  @JsonProperty("dataEvento")
+  public Date getDataEvento() {
+    return dataEvento;
+  }
+  public void setDataEvento(Date dataEvento) {
+    this.dataEvento = dataEvento;
+  }
+
+  /**
+   * Durata evento (in millisecondi)
+   **/
+  public Evento durataEvento(Long durataEvento) {
+    this.durataEvento = durataEvento;
+    return this;
+  }
+
+  @JsonProperty("durataEvento")
+  public Long getDurataEvento() {
+    return durataEvento;
+  }
+  public void setDurataEvento(Long durataEvento) {
+    this.durataEvento = durataEvento;
   }
 
   /**
@@ -270,155 +231,177 @@ public class Evento extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * Descrizione dell'esito
    **/
-  public Evento identificativoFruitore(String identificativoFruitore) {
-    this.identificativoFruitore = identificativoFruitore;
+  public Evento sottotipoEsito(String sottotipoEsito) {
+    this.sottotipoEsito = sottotipoEsito;
     return this;
   }
 
-  @JsonProperty("identificativoFruitore")
-  public String getIdentificativoFruitore() {
-    return this.identificativoFruitore;
+  @JsonProperty("sottotipoEsito")
+  public String getSottotipoEsito() {
+    return sottotipoEsito;
   }
-  public void setIdentificativoFruitore(String identificativoFruitore) {
-    this.identificativoFruitore = identificativoFruitore;
+  public void setSottotipoEsito(String sottotipoEsito) {
+    this.sottotipoEsito = sottotipoEsito;
   }
 
   /**
    **/
-  public Evento identificativoErogatore(String identificativoErogatore) {
-    this.identificativoErogatore = identificativoErogatore;
+  public Evento dettaglioEsito(String dettaglioEsito) {
+    this.dettaglioEsito = dettaglioEsito;
     return this;
   }
 
-  @JsonProperty("identificativoErogatore")
-  public String getIdentificativoErogatore() {
-    return this.identificativoErogatore;
+  @JsonProperty("dettaglioEsito")
+  public String getDettaglioEsito() {
+    return dettaglioEsito;
   }
-  public void setIdentificativoErogatore(String identificativoErogatore) {
-    this.identificativoErogatore = identificativoErogatore;
+  public void setDettaglioEsito(String dettaglioEsito) {
+    this.dettaglioEsito = dettaglioEsito;
+  }
+
+  /**
+   * Identificativo ente creditore
+   **/
+  public Evento idDominio(String idDominio) {
+    this.idDominio = idDominio;
+    return this;
+  }
+
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
+  }
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
+  }
+
+  /**
+   * Identificativo univoco di versamento
+   **/
+  public Evento iuv(String iuv) {
+    this.iuv = iuv;
+    return this;
+  }
+
+  @JsonProperty("iuv")
+  public String getIuv() {
+    return iuv;
+  }
+  public void setIuv(String iuv) {
+    this.iuv = iuv;
+  }
+
+  /**
+   * Codice contesto di pagamento
+   **/
+  public Evento ccp(String ccp) {
+    this.ccp = ccp;
+    return this;
+  }
+
+  @JsonProperty("ccp")
+  public String getCcp() {
+    return ccp;
+  }
+  public void setCcp(String ccp) {
+    this.ccp = ccp;
+  }
+
+  /**
+   * Identificativo del gestionale responsabile della pendenza
+   **/
+  public Evento idA2A(String idA2A) {
+    this.idA2A = idA2A;
+    return this;
+  }
+
+  @JsonProperty("idA2A")
+  public String getIdA2A() {
+    return idA2A;
+  }
+  public void setIdA2A(String idA2A) {
+    this.idA2A = idA2A;
+  }
+
+  /**
+   * Identificativo della pendenza nel gestionale responsabile
+   **/
+  public Evento idPendenza(String idPendenza) {
+    this.idPendenza = idPendenza;
+    return this;
+  }
+
+  @JsonProperty("idPendenza")
+  public String getIdPendenza() {
+    return idPendenza;
+  }
+  public void setIdPendenza(String idPendenza) {
+    this.idPendenza = idPendenza;
+  }
+
+  /**
+   * Identificativo del pagamento assegnato da GovPay
+   **/
+  public Evento idPagamento(String idPagamento) {
+    this.idPagamento = idPagamento;
+    return this;
+  }
+
+  @JsonProperty("idPagamento")
+  public String getIdPagamento() {
+    return idPagamento;
+  }
+  public void setIdPagamento(String idPagamento) {
+    this.idPagamento = idPagamento;
   }
 
   /**
    **/
-  public Evento idCanale(String idCanale) {
-    this.idCanale = idCanale;
+  public Evento datiPagoPA(DatiPagoPA datiPagoPA) {
+    this.datiPagoPA = datiPagoPA;
     return this;
   }
 
-  @JsonProperty("idCanale")
-  public String getIdCanale() {
-    return this.idCanale;
+  @JsonProperty("datiPagoPA")
+  public DatiPagoPA getDatiPagoPA() {
+    return datiPagoPA;
   }
-  public void setIdCanale(String idCanale) {
-    this.idCanale = idCanale;
-  }
-
-  /**
-   **/
-  public Evento idStazione(String idStazione) {
-    this.idStazione = idStazione;
-    return this;
-  }
-
-  @JsonProperty("idStazione")
-  public String getIdStazione() {
-    return this.idStazione;
-  }
-  public void setIdStazione(String idStazione) {
-    this.idStazione = idStazione;
+  public void setDatiPagoPA(DatiPagoPA datiPagoPA) {
+    this.datiPagoPA = datiPagoPA;
   }
 
   /**
+   * Dettaglio del messaggio di richiesta
    **/
-  public Evento parametriRichiesta(String parametriRichiesta) {
+  public Evento parametriRichiesta(Object parametriRichiesta) {
     this.parametriRichiesta = parametriRichiesta;
     return this;
   }
 
   @JsonProperty("parametriRichiesta")
-  public String getParametriRichiesta() {
-    return this.parametriRichiesta;
+  public Object getParametriRichiesta() {
+    return parametriRichiesta;
   }
-  public void setParametriRichiesta(String parametriRichiesta) {
+  public void setParametriRichiesta(Object parametriRichiesta) {
     this.parametriRichiesta = parametriRichiesta;
   }
 
   /**
+   * Dettaglio del messaggio di risposta
    **/
-  public Evento parametriRisposta(String parametriRisposta) {
+  public Evento parametriRisposta(Object parametriRisposta) {
     this.parametriRisposta = parametriRisposta;
     return this;
   }
 
   @JsonProperty("parametriRisposta")
-  public String getParametriRisposta() {
-    return this.parametriRisposta;
+  public Object getParametriRisposta() {
+    return parametriRisposta;
   }
-  public void setParametriRisposta(String parametriRisposta) {
+  public void setParametriRisposta(Object parametriRisposta) {
     this.parametriRisposta = parametriRisposta;
-  }
-
-  /**
-   * Data emissione del messaggio di richiesta
-   **/
-  public Evento dataOraRichiesta(Date dataOraRichiesta) {
-    this.dataOraRichiesta = dataOraRichiesta;
-    return this;
-  }
-
-  @JsonProperty("dataOraRichiesta")
-  public Date getDataOraRichiesta() {
-    return this.dataOraRichiesta;
-  }
-  public void setDataOraRichiesta(Date dataOraRichiesta) {
-    this.dataOraRichiesta = dataOraRichiesta;
-  }
-
-  /**
-   * Data emissione del messaggio di risposta
-   **/
-  public Evento dataOraRisposta(Date dataOraRisposta) {
-    this.dataOraRisposta = dataOraRisposta;
-    return this;
-  }
-
-  @JsonProperty("dataOraRisposta")
-  public Date getDataOraRisposta() {
-    return this.dataOraRisposta;
-  }
-  public void setDataOraRisposta(Date dataOraRisposta) {
-    this.dataOraRisposta = dataOraRisposta;
-  }
-
-  /**
-   **/
-  public Evento esito(String esito) {
-    this.esito = esito;
-    return this;
-  }
-
-  @JsonProperty("esito")
-  public String getEsito() {
-    return this.esito;
-  }
-  public void setEsito(String esito) {
-    this.esito = esito;
-  }
-
-  /**
-   **/
-  public Evento descrizioneEsito(String descrizioneEsito) {
-    this.descrizioneEsito = descrizioneEsito;
-    return this;
-  }
-
-  @JsonProperty("descrizioneEsito")
-  public String getDescrizioneEsito() {
-    return descrizioneEsito;
-  }
-  public void setDescrizioneEsito(String descrizioneEsito) {
-    this.descrizioneEsito = descrizioneEsito;
   }
 
   @Override
@@ -426,34 +409,35 @@ public class Evento extends it.govpay.core.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Evento evento = (Evento) o;
-    return Objects.equals(this.idDominio, evento.idDominio) &&
-        Objects.equals(this.iuv, evento.iuv) &&
-        Objects.equals(this.ccp, evento.ccp) &&
-        Objects.equals(this.idPsp, evento.idPsp) &&
-        Objects.equals(this.tipoVersamento, evento.tipoVersamento) &&
-        Objects.equals(this.componente, evento.componente) &&
-        Objects.equals(this.categoriaEvento, evento.categoriaEvento) &&
-        Objects.equals(this.tipoEvento, evento.tipoEvento) &&
-        Objects.equals(this.sottotipoEvento, evento.sottotipoEvento) &&
-        Objects.equals(this.identificativoFruitore, evento.identificativoFruitore) &&
-        Objects.equals(this.identificativoErogatore, evento.identificativoErogatore) &&
-        Objects.equals(this.idCanale, evento.idCanale) &&
-        Objects.equals(this.idStazione, evento.idStazione) &&
-        Objects.equals(this.parametriRichiesta, evento.parametriRichiesta) &&
-        Objects.equals(this.parametriRisposta, evento.parametriRisposta) &&
-        Objects.equals(this.dataOraRichiesta, evento.dataOraRichiesta) &&
-        Objects.equals(this.dataOraRisposta, evento.dataOraRisposta) &&
-        Objects.equals(this.esito, evento.esito) &&
-        Objects.equals(descrizioneEsito, evento.descrizioneEsito);
+    return Objects.equals(id, evento.id) &&
+        Objects.equals(componente, evento.componente) &&
+        Objects.equals(categoriaEvento, evento.categoriaEvento) &&
+        Objects.equals(ruolo, evento.ruolo) &&
+        Objects.equals(tipoEvento, evento.tipoEvento) &&
+        Objects.equals(esito, evento.esito) &&
+        Objects.equals(dataEvento, evento.dataEvento) &&
+        Objects.equals(durataEvento, evento.durataEvento) &&
+        Objects.equals(sottotipoEvento, evento.sottotipoEvento) &&
+        Objects.equals(sottotipoEsito, evento.sottotipoEsito) &&
+        Objects.equals(dettaglioEsito, evento.dettaglioEsito) &&
+        Objects.equals(idDominio, evento.idDominio) &&
+        Objects.equals(iuv, evento.iuv) &&
+        Objects.equals(ccp, evento.ccp) &&
+        Objects.equals(idA2A, evento.idA2A) &&
+        Objects.equals(idPendenza, evento.idPendenza) &&
+        Objects.equals(idPagamento, evento.idPagamento) &&
+        Objects.equals(datiPagoPA, evento.datiPagoPA) &&
+        Objects.equals(parametriRichiesta, evento.parametriRichiesta) &&
+        Objects.equals(parametriRisposta, evento.parametriRisposta);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idDominio, this.iuv, this.ccp, this.idPsp, this.tipoVersamento, this.componente, this.categoriaEvento, this.tipoEvento, this.sottotipoEvento, this.identificativoFruitore, this.identificativoErogatore, this.idCanale, this.idStazione, this.parametriRichiesta, this.parametriRisposta, this.dataOraRichiesta, this.dataOraRisposta, this.esito, this.descrizioneEsito);
+    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, parametriRichiesta, parametriRisposta);
   }
 
   public static Evento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -469,26 +453,27 @@ public class Evento extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Evento {\n");
-    
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
-    sb.append("    ccp: ").append(this.toIndentedString(this.ccp)).append("\n");
-    sb.append("    idPsp: ").append(this.toIndentedString(this.idPsp)).append("\n");
-    sb.append("    tipoVersamento: ").append(this.toIndentedString(this.tipoVersamento)).append("\n");
-    sb.append("    componente: ").append(this.toIndentedString(this.componente)).append("\n");
-    sb.append("    categoriaEvento: ").append(this.toIndentedString(this.categoriaEvento)).append("\n");
-    sb.append("    tipoEvento: ").append(this.toIndentedString(this.tipoEvento)).append("\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    componente: ").append(toIndentedString(componente)).append("\n");
+    sb.append("    categoriaEvento: ").append(toIndentedString(categoriaEvento)).append("\n");
+    sb.append("    ruolo: ").append(toIndentedString(ruolo)).append("\n");
+    sb.append("    tipoEvento: ").append(toIndentedString(tipoEvento)).append("\n");
+    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
+    sb.append("    dataEvento: ").append(toIndentedString(dataEvento)).append("\n");
+    sb.append("    durataEvento: ").append(toIndentedString(durataEvento)).append("\n");
     sb.append("    sottotipoEvento: ").append(toIndentedString(sottotipoEvento)).append("\n");
-    sb.append("    identificativoFruitore: ").append(this.toIndentedString(this.identificativoFruitore)).append("\n");
-    sb.append("    identificativoErogatore: ").append(this.toIndentedString(this.identificativoErogatore)).append("\n");
-    sb.append("    idCanale: ").append(this.toIndentedString(this.idCanale)).append("\n");
-    sb.append("    idStazione: ").append(this.toIndentedString(this.idStazione)).append("\n");
-    sb.append("    parametriRichiesta: ").append(this.toIndentedString(this.parametriRichiesta)).append("\n");
-    sb.append("    parametriRisposta: ").append(this.toIndentedString(this.parametriRisposta)).append("\n");
-    sb.append("    dataOraRichiesta: ").append(this.toIndentedString(this.dataOraRichiesta)).append("\n");
-    sb.append("    dataOraRisposta: ").append(this.toIndentedString(this.dataOraRisposta)).append("\n");
-    sb.append("    esito: ").append(this.toIndentedString(this.esito)).append("\n");
-    sb.append("    descrizioneEsito: ").append(toIndentedString(descrizioneEsito)).append("\n");
+    sb.append("    sottotipoEsito: ").append(toIndentedString(sottotipoEsito)).append("\n");
+    sb.append("    dettaglioEsito: ").append(toIndentedString(dettaglioEsito)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
+    sb.append("    ccp: ").append(toIndentedString(ccp)).append("\n");
+    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
+    sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
+    sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
+    sb.append("    datiPagoPA: ").append(toIndentedString(datiPagoPA)).append("\n");
+    sb.append("    parametriRichiesta: ").append(toIndentedString(parametriRichiesta)).append("\n");
+    sb.append("    parametriRisposta: ").append(toIndentedString(parametriRisposta)).append("\n");
     sb.append("}");
     return sb.toString();
   }

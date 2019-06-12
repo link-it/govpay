@@ -31,7 +31,6 @@ import it.govpay.core.beans.JSONSerializable;
 "lingua",
 "rpp",
 "verificato",
-"note",
 })
 public class PagamentoIndex extends JSONSerializable {
   
@@ -230,9 +229,6 @@ public class PagamentoIndex extends JSONSerializable {
   
   @JsonProperty("verificato")
   private Boolean verificato = null;
-  
-  @JsonProperty("note")
-  private List<Nota> note = null;
   
   /**
    * Identificativo del pagamento assegnato da GovPay
@@ -535,21 +531,6 @@ public class PagamentoIndex extends JSONSerializable {
     this.verificato = verificato;
   }
 
-  /**
-   **/
-  public PagamentoIndex note(List<Nota> note) {
-    this.note = note;
-    return this;
-  }
-
-  @JsonProperty("note")
-  public List<Nota> getNote() {
-    return this.note;
-  }
-  public void setNote(List<Nota> note) {
-    this.note = note;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -559,31 +540,30 @@ public class PagamentoIndex extends JSONSerializable {
       return false;
     }
     PagamentoIndex pagamentoIndex = (PagamentoIndex) o;
-    return Objects.equals(this.id, pagamentoIndex.id) &&
-        Objects.equals(this.nome, pagamentoIndex.nome) &&
-        Objects.equals(this.dataRichiestaPagamento, pagamentoIndex.dataRichiestaPagamento) &&
-        Objects.equals(this.idSessionePortale, pagamentoIndex.idSessionePortale) &&
-        Objects.equals(this.idSessionePsp, pagamentoIndex.idSessionePsp) &&
-        Objects.equals(this.importo, pagamentoIndex.importo) &&
-        Objects.equals(this.stato, pagamentoIndex.stato) &&
-	Objects.equals(descrizioneStato, pagamentoIndex.descrizioneStato) &&
-        Objects.equals(this.modello, pagamentoIndex.modello) &&
-        Objects.equals(this.pspRedirectUrl, pagamentoIndex.pspRedirectUrl) &&
-        Objects.equals(this.urlRitorno, pagamentoIndex.urlRitorno) &&
-        Objects.equals(this.contoAddebito, pagamentoIndex.contoAddebito) &&
-        Objects.equals(this.dataEsecuzionePagamento, pagamentoIndex.dataEsecuzionePagamento) &&
-        Objects.equals(this.credenzialiPagatore, pagamentoIndex.credenzialiPagatore) &&
-        Objects.equals(this.soggettoVersante, pagamentoIndex.soggettoVersante) &&
-        Objects.equals(this.autenticazioneSoggetto, pagamentoIndex.autenticazioneSoggetto) &&
-        Objects.equals(this.lingua, pagamentoIndex.lingua) &&
-        Objects.equals(this.rpp, pagamentoIndex.rpp) &&
-        Objects.equals(this.verificato, pagamentoIndex.verificato) &&
-        Objects.equals(this.note, pagamentoIndex.note);
+    return Objects.equals(id, pagamentoIndex.id) &&
+        Objects.equals(nome, pagamentoIndex.nome) &&
+        Objects.equals(dataRichiestaPagamento, pagamentoIndex.dataRichiestaPagamento) &&
+        Objects.equals(idSessionePortale, pagamentoIndex.idSessionePortale) &&
+        Objects.equals(idSessionePsp, pagamentoIndex.idSessionePsp) &&
+        Objects.equals(importo, pagamentoIndex.importo) &&
+        Objects.equals(stato, pagamentoIndex.stato) &&
+        Objects.equals(descrizioneStato, pagamentoIndex.descrizioneStato) &&
+        Objects.equals(modello, pagamentoIndex.modello) &&
+        Objects.equals(pspRedirectUrl, pagamentoIndex.pspRedirectUrl) &&
+        Objects.equals(urlRitorno, pagamentoIndex.urlRitorno) &&
+        Objects.equals(contoAddebito, pagamentoIndex.contoAddebito) &&
+        Objects.equals(dataEsecuzionePagamento, pagamentoIndex.dataEsecuzionePagamento) &&
+        Objects.equals(credenzialiPagatore, pagamentoIndex.credenzialiPagatore) &&
+        Objects.equals(soggettoVersante, pagamentoIndex.soggettoVersante) &&
+        Objects.equals(autenticazioneSoggetto, pagamentoIndex.autenticazioneSoggetto) &&
+        Objects.equals(lingua, pagamentoIndex.lingua) &&
+        Objects.equals(rpp, pagamentoIndex.rpp) &&
+        Objects.equals(verificato, pagamentoIndex.verificato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.nome, this.dataRichiestaPagamento, this.idSessionePortale, this.idSessionePsp, this.importo, this.stato, this,descrizioneStato, this.modello, this.pspRedirectUrl, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua, this.rpp, this.verificato, this.note);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, descrizioneStato, modello, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato);
   }
 
   public static PagamentoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -600,26 +580,25 @@ public class PagamentoIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class PagamentoIndex {\n");
     
-    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
-    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
-    sb.append("    dataRichiestaPagamento: ").append(this.toIndentedString(this.dataRichiestaPagamento)).append("\n");
-    sb.append("    idSessionePortale: ").append(this.toIndentedString(this.idSessionePortale)).append("\n");
-    sb.append("    idSessionePsp: ").append(this.toIndentedString(this.idSessionePsp)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");
+    sb.append("    idSessionePortale: ").append(toIndentedString(idSessionePortale)).append("\n");
+    sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
-    sb.append("    modello: ").append(this.toIndentedString(this.modello)).append("\n");
-    sb.append("    pspRedirectUrl: ").append(this.toIndentedString(this.pspRedirectUrl)).append("\n");
-    sb.append("    urlRitorno: ").append(this.toIndentedString(this.urlRitorno)).append("\n");
-    sb.append("    contoAddebito: ").append(this.toIndentedString(this.contoAddebito)).append("\n");
-    sb.append("    dataEsecuzionePagamento: ").append(this.toIndentedString(this.dataEsecuzionePagamento)).append("\n");
-    sb.append("    credenzialiPagatore: ").append(this.toIndentedString(this.credenzialiPagatore)).append("\n");
-    sb.append("    soggettoVersante: ").append(this.toIndentedString(this.soggettoVersante)).append("\n");
-    sb.append("    autenticazioneSoggetto: ").append(this.toIndentedString(this.autenticazioneSoggetto)).append("\n");
-    sb.append("    lingua: ").append(this.toIndentedString(this.lingua)).append("\n");
-    sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
-    sb.append("    verificato: ").append(this.toIndentedString(this.verificato)).append("\n");
-    sb.append("    note: ").append(this.toIndentedString(this.note)).append("\n");
+    sb.append("    modello: ").append(toIndentedString(modello)).append("\n");
+    sb.append("    pspRedirectUrl: ").append(toIndentedString(pspRedirectUrl)).append("\n");
+    sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
+    sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
+    sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");
+    sb.append("    credenzialiPagatore: ").append(toIndentedString(credenzialiPagatore)).append("\n");
+    sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");
+    sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
+    sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
+    sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
+    sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

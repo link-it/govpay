@@ -49,10 +49,22 @@
 		</b:property>
 	</b:bean>
 	
+	<!-- Giornale Eventi -->
+	<b:bean id="giornaleEventiConfigV2" class="it.govpay.rs.eventi.GiornaleEventiConfig">
+		<b:property name="apiName" value="API_PAGAMENTO" />
+	</b:bean>
+	<b:bean id="giornaleEventiV2" class="it.govpay.rs.eventi.GiornaleEventiFeature">
+		<b:property name="giornaleEventiConfig" >
+			<b:ref bean="giornaleEventiConfigV1"/>
+		</b:property>
+	</b:bean>
+	
 	<!-- Context -->
 	<b:bean id="contextConfigV2" class="it.govpay.rs.v2.service.context.ContextConfig">
 	</b:bean>
-	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory"/>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory">
+		<b:property name="apiName" value="API_PAGAMENTO" />
+	</b:bean>
 	<b:bean id="contextV2" class="org.openspcoop2.utils.service.context.ContextFeature">
 		<b:property name="contextFactory" >
 			<b:ref bean="customContextFactory"/>
@@ -96,6 +108,7 @@
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
+			<ref bean="giornaleEventiV2" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV2" />
 			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
@@ -125,7 +138,9 @@
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
+			<ref bean="giornaleEventiV2" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV2" />
+			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
 	</jaxrs:server>
  	<!-- SSL_END -->
@@ -153,7 +168,9 @@
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
+			<ref bean="giornaleEventiV2" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV2" />
+			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
 	</jaxrs:server>
 	<!-- SPID_END -->
@@ -181,7 +198,9 @@
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
+			<ref bean="giornaleEventiV2" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV2" />
+			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
 	</jaxrs:server>
 	<!-- PUBLIC_END -->
@@ -209,7 +228,9 @@
 		</jaxrs:providers>
 		<jaxrs:features>
 			<ref bean="openApiFeatureV2" />
+			<ref bean="giornaleEventiV2" /> <!-- Inserire prima della contextFeature -->
 			<ref bean="contextV2" />
+			<ref bean="commonValidationFeatureV2" />
 		</jaxrs:features>
 	</jaxrs:server>
  <!-- HEADER_END -->

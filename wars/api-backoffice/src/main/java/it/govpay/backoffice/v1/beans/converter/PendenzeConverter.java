@@ -153,7 +153,7 @@ public class PendenzeConverter {
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 
-		rsModel.setSegnalazioni(unmarshall(versamento.getAnomalie()));
+//		rsModel.setSegnalazioni(unmarshall(versamento.getAnomalie())); TODO togliere
 		
 		if(unitaOperativa != null && !unitaOperativa.getCodUo().equals(it.govpay.model.Dominio.EC))
 			rsModel.setUnitaOperativa(DominiConverter.toUnitaOperativaRsModel(unitaOperativa));

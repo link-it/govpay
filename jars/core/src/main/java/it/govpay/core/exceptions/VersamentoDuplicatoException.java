@@ -19,12 +19,12 @@
  */
 package it.govpay.core.exceptions;
 
-public class VersamentoDuplicatoException extends Exception {
+public class VersamentoDuplicatoException extends VersamentoException {
 
 	private static final long serialVersionUID = 1L;
 	
-	public VersamentoDuplicatoException(String message) {
-		super(message);
+	public VersamentoDuplicatoException(String codApplicazione, String codVersamentoEnte, String message) {
+		super(codApplicazione, codVersamentoEnte, message);
 	}
 
 
