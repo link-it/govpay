@@ -162,7 +162,6 @@ public class IncassiDAO extends BaseDAO{
 			richiestaIncassoDTO.setOperatore(operatore);
 
 			richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
-			richiestaIncassoDTOResponse.setCreated(true);
 			List<Pagamento> pagamenti = richiestaIncassoDTOResponse.getIncasso().getPagamenti(bd);
 
 			if(pagamenti != null) {

@@ -539,8 +539,8 @@ public class PendenzeDAO extends BaseDAO{
 						if(PATH_DESCRIZIONE_STATO.equals(op2.getPath())) {
 							try { motivazione = (String) op2.getValue(); } catch (Exception e) {}
 						}
-					
-						this.patchStato(patchPendenzaDTO.getUser(), versamentoLetto, op, motivazione, bd);}
+					}
+						this.patchStato(patchPendenzaDTO.getUser(), versamentoLetto, op, motivazione, bd);
 				}
 				
 				if(PATH_DESCRIZIONE_STATO.equals(op.getPath())) {
