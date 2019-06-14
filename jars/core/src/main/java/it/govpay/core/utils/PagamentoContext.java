@@ -13,7 +13,7 @@ import it.govpay.bd.model.Applicazione;
 
 public class PagamentoContext {
 	
-	public static final String codUoBeneficiariaKey="uo";
+	public static final String codUoBeneficiariaKey="u";
 	public static final String codificaIuvKey="t";
 	public static final String codApplicazioneIuvKey="a";
 	public static final String anno4="Y";

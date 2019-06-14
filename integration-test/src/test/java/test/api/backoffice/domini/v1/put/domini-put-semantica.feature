@@ -25,9 +25,9 @@ And path 'domini', idDominio
 And headers basicAutenticationHeader
 And request dominio
 When method put
-Then status 400
+Then status 422
 
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 * match response.dettaglio contains 'segregationCode'
 
 Scenario Outline: Prefissi IUV non validi
@@ -39,12 +39,10 @@ And path 'domini', idDominio
 And headers basicAutenticationHeader
 And request dominio
 When method put
-Then status 400
+Then status 422
 
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 
 Examples:
 | prefix |
-| '%(xx)' |
-| 'aaa' |
 | '%(Y)%(y)%(t)12345678901234567890' |

@@ -36,10 +36,13 @@ public class DominioValidator implements IValidable {
 			Map<String,String> props = new HashMap<>();
 			
 			// Applicazione inserisco la dimensione massima 4 caratteri
-			props.put(PagamentoContext.codApplicazioneIuvKey, "1234");
+			props.put(PagamentoContext.codApplicazioneIuvKey, "1111");
+			
+			// UO inserisco la dimensione massima 4 caratteri
+			props.put(PagamentoContext.codUoBeneficiariaKey, "2222");
 			
 			// Tributo inserisco la dimensione massima 4 caratter
-			props.put(PagamentoContext.codificaIuvKey, "1234");
+			props.put(PagamentoContext.codificaIuvKey, "3333");
 							
 			Calendar now = Calendar.getInstance(); 
 			int year = now.get(Calendar.YEAR);  
@@ -51,7 +54,11 @@ public class DominioValidator implements IValidable {
 			
 			// check del risultato:
 			// deve essere solo numerico e non lungo piu' di 18 caratteri
-			vf.getValidator("iuvPrefix", prefix).maxLength(18).pattern("(^([0-9]){1,18}$)");
+			try {
+				vf.getValidator("iuvPrefix", prefix).maxLength(18).pattern("(^([0-9]){1,13}$)");
+			} catch (ValidationException ve) {
+				throw new ValidationException("Il pattern indicato realizza prefissi troppo lunghi: " + prefix);
+			}
 		}
 	}
 }
