@@ -96,3 +96,5 @@ And path '/pagamenti'
 And request pagamentoPost
 When method post
 Then status 400
+
+
