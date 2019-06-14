@@ -1,6 +1,10 @@
-VERSION=3.1.0-SNAPSHOT
+VERSION=3.1.0-RC2-SNAPSHOT
 
-#mvn -f ../../../../pom.xml -Denv=installer_template clean package 
+# Non e' piu' possibile eseguire la compilazione da qua poiche' 
+# il plugin di maven per la generazione dei bean da xsd non risolve
+# correttamente i path relativi.
+
+# mvn -f ../../../../pom.xml -Denv=installer_template clean package 
 
 # Directory
 COPYING_FILE=../../../../COPYING
