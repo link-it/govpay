@@ -12,11 +12,11 @@ servers:
   - url: ${it.govpay.apiurl}/govpay/backend/api/backoffice/rs/v1/
 tags:
   - name: Enti Creditori
-    description: Anagrafica degli Enti Creditori  
+    description: Anagrafica degli Enti Creditori
   - name: Applicazioni
     description: Anagrafica delle applicazioni integrate
   - name: Operatori
-    description: Anagrafica degli Operatori    
+    description: Anagrafica degli Operatori
   - name: Ruoli
     description: Ruoli autorizzativi previsti in GovPay
   - name: Pagamenti
@@ -30,7 +30,7 @@ tags:
   - name: Riscossioni
     description: Importi riscossi o stornati dagli istituti di pagamento
   - name: Giornale degli Eventi
-    description: Consultazione del Giornale degli Eventi    
+    description: Consultazione del Giornale degli Eventi
   - name: Operazioni
     description: Operazioni per l'esecuzioni di servizi batch
   - name: Enumerazioni
@@ -44,9 +44,9 @@ tags:
   - name: Reportistica
     description: Reportistica sulle operazioni di pagamento effettuate con GovPay
   - name: Configurazioni
-    description: Servizi di configurazione della piattafomra    
+    description: Servizi di configurazione della piattafomra
 security:
-  - basicAuth: []    
+  - basicAuth: []
 paths:
   '/reportistiche/entrate-previste':
     get:
@@ -115,7 +115,7 @@ paths:
         '422':
           $ref: '#/components/responses/422'
         '500':
-          $ref: '#/components/responses/500' 
+          $ref: '#/components/responses/500'
   '/pendenze/tracciati':
     post:
       tags:
@@ -147,7 +147,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '415':
           $ref: '#/components/responses/415'
         '500':
@@ -203,9 +203,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/pendenze/tracciati/{id}':
     get:
       tags:
@@ -228,9 +228,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   '/pendenze/tracciati/{id}/esito':
@@ -255,9 +255,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   '/pendenze/tracciati/{id}/stampe':
@@ -282,9 +282,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   '/pendenze/tracciati/{id}/operazioni':
@@ -333,7 +333,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/tracciati':
@@ -376,9 +376,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/tracciati/{id}':
     get:
       tags:
@@ -401,11 +401,11 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/tracciati/{id}/richiesta':
     get:
       tags:
@@ -428,11 +428,11 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/tracciati/{id}/risposta':
     get:
       tags:
@@ -455,11 +455,11 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/intermediari':
     get:
       tags:
@@ -524,9 +524,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/intermediari/{idIntermediario}':
     put:
       tags:
@@ -553,9 +553,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
     get:
       tags:
         - Enti Creditori
@@ -578,9 +578,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/intermediari/{idIntermediario}/stazioni':
     get:
       tags:
@@ -592,7 +592,7 @@ paths:
           description: Identificativo dell'intermediario
           required: true
           schema:
-            type: string      
+            type: string
         - in: query
           name: pagina
           description: Numero di pagina dei risultati
@@ -651,9 +651,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/intermediari/{idIntermediario}/stazioni/{idStazione}':
     put:
       tags:
@@ -687,9 +687,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
     get:
       tags:
         - Enti Creditori
@@ -719,9 +719,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/domini':
     get:
       tags:
@@ -794,7 +794,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/dominioIndex' 
+                          $ref: '#/components/schemas/dominioIndex'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -825,7 +825,7 @@ paths:
         '403':
           $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
     put:
@@ -852,7 +852,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/domini/{idDominio}/unitaOperative':
@@ -925,7 +925,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/domini/{idDominio}/unitaOperative/{idUnitaOperativa}':
@@ -956,7 +956,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     put:
@@ -989,7 +989,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/domini/{idDominio}/contiAccredito':
@@ -1003,7 +1003,7 @@ paths:
           description: Identificativo del dominio
           required: true
           schema:
-            type: string      
+            type: string
         - in: query
           name: pagina
           description: Numero di pagina dei risultati
@@ -1062,7 +1062,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/domini/{idDominio}/contiAccredito/{ibanAccredito}':
@@ -1093,7 +1093,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     put:
@@ -1126,7 +1126,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/domini/{idDominio}/entrate':
@@ -1140,7 +1140,7 @@ paths:
           description: Identificativo del dominio
           required: true
           schema:
-            type: string      
+            type: string
         - in: query
           name: pagina
           description: Numero di pagina dei risultati
@@ -1199,7 +1199,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/domini/{idDominio}/entrate/{idEntrata}':
@@ -1230,7 +1230,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     put:
@@ -1263,7 +1263,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/domini/{idDominio}/tipiPendenza':
@@ -1277,7 +1277,7 @@ paths:
           description: Identificativo del dominio
           required: true
           schema:
-            type: string      
+            type: string
         - in: query
           name: pagina
           description: Numero di pagina dei risultati
@@ -1347,7 +1347,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/domini/{idDominio}/tipiPendenza/{idTipoPendenza}':
@@ -1378,7 +1378,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     put:
@@ -1411,9 +1411,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'          
+          $ref: '#/components/responses/500'
   '/tipiPendenza':
     get:
       tags:
@@ -1495,7 +1495,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/tipiPendenza/{idTipoPendenza}':
@@ -1520,7 +1520,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     put:
@@ -1547,9 +1547,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'          
+          $ref: '#/components/responses/500'
   '/entrate':
     get:
       tags:
@@ -1608,7 +1608,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/entrate/{idEntrata}':
@@ -1633,7 +1633,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     put:
@@ -1660,9 +1660,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'                 
+          $ref: '#/components/responses/500'
   '/applicazioni':
     get:
       tags:
@@ -1727,7 +1727,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/applicazioni/{idA2A}':
@@ -1752,7 +1752,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     put:
@@ -1779,7 +1779,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     patch:
@@ -1882,7 +1882,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
   '/operatori/{principal}':
@@ -1907,7 +1907,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     put:
@@ -1936,7 +1936,7 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
     delete:
@@ -1956,9 +1956,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'    
+          $ref: '#/components/responses/500'
     patch:
       summary: Aggiorna selettivamente campi di un Operatore
       tags:
@@ -2284,7 +2284,7 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '422':
-          $ref: '#/components/responses/400'          
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -2403,6 +2403,103 @@ paths:
           $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
+  '/pendenze/{idDominio}/{idTipoPendenza}':
+    post:
+      tags:
+        - Pendenze
+      description: Operazione di caricamento della pendenza in formato custom
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo dente creditore
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: idTipoPendenza
+          description: Identificativo della tipologia pendenza
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: stampaAvviso
+          description: Indica se nella risposta deve essere inclusa la stampa dell'avviso in standard AgID
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: avvisaturaDigitale
+          description: Indica se la pendenza deve essere avvisata digitalmente
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: modalitaAvvisaturaDigitale
+          description: Modalita' di avvisatura scelta per le pendenza
+          required: false
+          schema:
+            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
+      requestBody:
+        description: Pendenza di tipo custom
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Pendenza aggiornata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - idDominio
+                properties:
+                  idDominio:
+                    type: string
+                    description: Identificativo del creditore dell'avviso
+                    example: 01234567890
+                  numeroAvviso:
+                    type: string
+                    description: Numero identificativo dell'avviso di pagamento
+                    example: 00100000000000012
+                  pdf:
+                    type: string
+                    format: base64
+                    description: Stampa pdf dell'avviso
+        '201':
+          description: Pendenza creata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - idDominio
+                properties:
+                  idDominio:
+                    type: string
+                    description: Identificativo del creditore dell'avviso
+                    example: 01234567890
+                  numeroAvviso:
+                    type: string
+                    description: Numero identificativo dell'avviso di pagamento
+                    example: 00100000000000012
+                  pdf:
+                    type: string
+                    format: base64
+                    description: Stampa pdf dell'avviso
+        '400':
+          $ref: '#/components/responses/400'
+        '422':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
   '/pendenze/{idA2A}/{idPendenza}':
     put:
       tags:
@@ -2501,7 +2598,7 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '422':
-          $ref: '#/components/responses/400'          
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -2546,7 +2643,7 @@ paths:
     patch:
       description: >-
         L'aggiornamento dello stato di una pendenza in `Annullata` può essere completato solo se la pendenza si trova in stato `Da pagare`. Viceversa il ripristino dello stato `Da pagare` può essere disposto solo in caso di pendenza `Annullata`.
-        L'aggiornamento è consentito solo se di dispone di ACL per il servizio Pendenze di tipo scrittura. 
+        L'aggiornamento è consentito solo se di dispone di ACL per il servizio Pendenze di tipo scrittura.
       tags:
         - Pendenze
       summary: Annullamento o ripristino di una pendenza
@@ -2681,7 +2778,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/rppIndex'            
+                          $ref: '#/components/schemas/rppIndex'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -2817,7 +2914,7 @@ paths:
         '404':
           $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'            
+          $ref: '#/components/responses/500'
   '/rpp/{idDominio}/{iuv}/{ccp}/rt':
     get:
       summary: Acquisizione della ricevuta di pagamento
@@ -2871,7 +2968,7 @@ paths:
         '404':
           $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'      
+          $ref: '#/components/responses/500'
   '/avvisi/{idDominio}/{iuv}':
     get:
       summary: Avviso di pagamento
@@ -3017,13 +3114,13 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/riscossione'   
+                          $ref: '#/components/schemas/riscossione'
         '401':
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'        
+          $ref: '#/components/responses/500'
   '/riscossioni/{idDominio}/{iuv}/{iur}/{indice}':
     get:
       summary: Dettaglio di una riscossione
@@ -3101,7 +3198,7 @@ paths:
           schema:
             type: string
             format: csv
-            default: +data            
+            default: +data
         - in: query
           name: dataDa
           description: Filtro sulla data di riscossione
@@ -3115,7 +3212,7 @@ paths:
           required: false
           schema:
             type: string
-            format: date            
+            format: date
         - name: idDominio
           in: query
           description: filtro per dominio creditore
@@ -3155,7 +3252,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/flussoRendicontazioneIndex'     
+                          $ref: '#/components/schemas/flussoRendicontazioneIndex'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -3235,7 +3332,7 @@ paths:
           required: false
           schema:
             type: string
-            format: date            
+            format: date
         - name: idDominio
           in: query
           description: filtro per dominio creditore
@@ -3257,7 +3354,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/incassoIndex'   
+                          $ref: '#/components/schemas/incassoIndex'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -3275,7 +3372,7 @@ paths:
           description: Identificativo del creditore
           required: true
           schema:
-            type: string           
+            type: string
       requestBody:
         content:
           application/json:
@@ -3307,7 +3404,7 @@ paths:
           description: Identificativo del creditore
           required: true
           schema:
-            type: string      
+            type: string
         - in: path
           name: idIncasso
           description: Identificativo dell'idFlusso o iuv, a seconda della modalita di riversamento
@@ -3445,7 +3542,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/evento'   
+                          $ref: '#/components/schemas/evento'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -3515,7 +3612,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/operazioneIndex'   
+                          $ref: '#/components/schemas/operazioneIndex'
   '/operazioni/{idOperazione}':
     get:
       summary: Esecuzione di una operazione interne
@@ -3527,22 +3624,22 @@ paths:
           description: Identificativo dell'operazione da eseguire
           required: true
           schema:
-            type: string          
+            type: string
       responses:
         '201':
           description: Esito dell'esecuzione
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/operazione' 
+                $ref: '#/components/schemas/operazione'
         '401':
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'   
+          $ref: '#/components/responses/500'
   '/operazioni/stato/{id}':
     get:
       summary: Stato di elaborazione di una operazione
@@ -3554,22 +3651,22 @@ paths:
           description: Identificativo dell'istanza di operazione eseguita
           required: true
           schema:
-            type: string          
+            type: string
       responses:
         '201':
           description: Stato di esecuzione
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/esitoOperazione' 
+                $ref: '#/components/schemas/esitoOperazione'
         '401':
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'              
+          $ref: '#/components/responses/500'
   '/ruoli':
     get:
       summary: Lista dei ruoli disponibili
@@ -3606,7 +3703,7 @@ paths:
                       risultati:
                         type: array
                         items:
-                          $ref: '#/components/schemas/ruoloIndex'   
+                          $ref: '#/components/schemas/ruoloIndex'
   '/ruoli/{idRuolo}':
     put:
       tags:
@@ -3618,7 +3715,7 @@ paths:
           description: Identificativo di un ruolo
           required: true
           schema:
-            type: string  
+            type: string
       requestBody:
         content:
           application/json:
@@ -3634,9 +3731,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403' 
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
     get:
       summary: Legge le ACL di un ruolo
       tags:
@@ -3647,22 +3744,22 @@ paths:
           description: Identificativo di un ruolo
           required: true
           schema:
-            type: string          
+            type: string
       responses:
         '200':
           description: Dettaglio di un ruolo
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ruolo' 
+                $ref: '#/components/schemas/ruolo'
         '401':
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/404'          
+          $ref: '#/components/responses/404'
         '500':
-          $ref: '#/components/responses/500'        
+          $ref: '#/components/responses/500'
     patch:
       summary: Aggiorna selettivamente campi di un Ruolo
       tags:
@@ -3711,9 +3808,9 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string   
+                  type: string
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/enumerazioni/serviziACL':
     get:
       tags:
@@ -3727,9 +3824,9 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string   
+                  type: string
         '500':
-          $ref: '#/components/responses/500'  
+          $ref: '#/components/responses/500'
   '/configurazioni/giornale':
     get:
       tags:
@@ -3745,9 +3842,9 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403'                
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'    
+          $ref: '#/components/responses/500'
     post:
       tags:
         - Configurazioni
@@ -3768,10 +3865,10 @@ paths:
         '401':
           $ref: '#/components/responses/401'
         '403':
-          $ref: '#/components/responses/403'                
+          $ref: '#/components/responses/403'
         '500':
-          $ref: '#/components/responses/500'    
-                               
+          $ref: '#/components/responses/500'
+
 components:
   responses:
     '400':
@@ -3865,7 +3962,7 @@ components:
           $ref: '#/components/schemas/gdeEvento'
     gdeEvento:
       type: object
-      required: 
+      required:
         - log
         - dump
       properties:
@@ -3932,7 +4029,7 @@ components:
           example: Intermediario PagoPA
         abilitato:
           type: boolean
-          description: Indica lo stato di abilitazione        
+          description: Indica lo stato di abilitazione
     intermediarioPost:
       type: object
       required:
@@ -3948,26 +4045,26 @@ components:
           type: string
           description: Principal autenticato le richieste ricevute da PagoPA
         servizioPagoPa:
-          $ref: '#/components/schemas/connettorePagopa'   
+          $ref: '#/components/schemas/connettorePagopa'
         servizioFtp:
-          $ref: '#/components/schemas/servizioFtp'   
+          $ref: '#/components/schemas/servizioFtp'
         abilitato:
           type: boolean
           description: Indica lo stato di abilitazione
           example: true
     servizioFtp:
       type: object
-      required: 
+      required:
         - ftp_lettura
         - ftp_scrittura
       properties:
         ftp_lettura:
-          $ref: '#/components/schemas/connettoreFtp'   
+          $ref: '#/components/schemas/connettoreFtp'
         ftp_scrittura:
-          $ref: '#/components/schemas/connettoreFtp'   
+          $ref: '#/components/schemas/connettoreFtp'
     connettoreFtp:
       type: object
-      required: 
+      required:
         - host
         - porta
         - username
@@ -4000,7 +4097,7 @@ components:
               type: string
               description: Identificativo dell'intermediario
               example: 9999999999
-        - $ref: '#/components/schemas/intermediarioPost'  
+        - $ref: '#/components/schemas/intermediarioPost'
         - type: object
           required:
             - stazioni
@@ -4008,7 +4105,7 @@ components:
             stazioni:
               type: array
               items:
-                $ref: '#/components/schemas/stazioneIndex'  
+                $ref: '#/components/schemas/stazioneIndex'
     stazionePost:
       type: object
       required:
@@ -4033,7 +4130,7 @@ components:
               type: string
               description: Identificativo della stazione
               example: '9999999999_01'
-        - $ref: '#/components/schemas/stazionePost'  
+        - $ref: '#/components/schemas/stazionePost'
         - type: object
           required:
             - domini
@@ -4053,7 +4150,7 @@ components:
               type: string
               description: Identificativo della stazione
               example: '9999999999_01'
-        - $ref: '#/components/schemas/stazionePost'  
+        - $ref: '#/components/schemas/stazionePost'
         - type: object
           required:
             - domini
@@ -4061,7 +4158,7 @@ components:
             domini:
               type: array
               items:
-                $ref: '#/components/schemas/dominioIndex'  
+                $ref: '#/components/schemas/dominioIndex'
     dominioPost:
       type: object
       required:
@@ -4101,19 +4198,19 @@ components:
         email:
           type: string
           description: Posta elettronica ordinaria del beneficiario
-          example: peo@creditore.it  
+          example: peo@creditore.it
         pec:
           type: string
           description: Posta elettronica certificata del beneficiario
-          example: pec@creditore.it  
+          example: pec@creditore.it
         tel:
           type: string
           description: Numero di telefono dell'help desk del beneficiario
-          example: 021234567890  
+          example: 021234567890
         fax:
           type: string
           description: Numero di fax dell'help desk del beneficiario
-          example: 021234567890  
+          example: 021234567890
         web:
           type: string
           description: Url del sito web
@@ -4157,7 +4254,7 @@ components:
         area:
           type: string
           description: Nome dell'area di competenza del dominio
-          example: Affari generali e istituzionali 
+          example: Affari generali e istituzionali
     dominioIndex:
       type: object
       allOf:
@@ -4188,11 +4285,11 @@ components:
             entrate:
               type: string
               description: Tipologie di entrata censite per il dominio beneficiario
-              example: /domini/01234567890/entrate        
+              example: /domini/01234567890/entrate
             tipiPendenza:
               type: string
               description: Tipologie di pendenza censite per il dominio beneficiario
-              example: /domini/01234567890/tipiPendenza         
+              example: /domini/01234567890/tipiPendenza
     dominio:
       type: object
       allOf:
@@ -4238,7 +4335,7 @@ components:
         generazioneIuvInterna:
           type: boolean
           description: Indicazione se l'applicazione genera in autonomia gli iuv
-          example: true 
+          example: true
     applicazionePost:
       type: object
       required:
@@ -4253,7 +4350,7 @@ components:
         domini:
           type: array
           description: domini su cui e' abilitato ad operare
-          items: 
+          items:
             type: string
             example:
               - 01234567890
@@ -4262,7 +4359,7 @@ components:
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
-          items: 
+          items:
             type: string
             example:
               - IMU
@@ -4289,7 +4386,7 @@ components:
           items:
             $ref: '#/components/schemas/aclPost'
         servizioIntegrazione:
-          $ref: '#/components/schemas/connector'   
+          $ref: '#/components/schemas/connector'
         abilitato:
           type: boolean
           description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
@@ -4313,8 +4410,8 @@ components:
         abilitato:
           type: boolean
           description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
-          example: true        
-          default: true                    
+          example: true
+          default: true
     applicazione:
       type: object
       required:
@@ -4335,12 +4432,12 @@ components:
         domini:
           type: array
           description: domini su cui e' abilitato ad operare
-          items: 
+          items:
             $ref: '#/components/schemas/dominioIndex'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
-          items: 
+          items:
             $ref: '#/components/schemas/tipoPendenza'
         apiPagamenti:
           type: boolean
@@ -4361,14 +4458,14 @@ components:
           type: array
           description: lista delle acl attive sull'applicazione
           items:
-            $ref: '#/components/schemas/aclPost'            
+            $ref: '#/components/schemas/aclPost'
         servizioIntegrazione:
-          $ref: '#/components/schemas/connector'   
+          $ref: '#/components/schemas/connector'
         abilitato:
           type: boolean
           description: Indicazione se il creditore è abilitato ad operare sulla piattaforma
-          example: true        
-          default: true          
+          example: true
+          default: true
     operatorePost:
       type: object
       properties:
@@ -4379,7 +4476,7 @@ components:
         domini:
           type: array
           description: domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutti i domini
-          items: 
+          items:
             type: string
             example:
               - 01234567890
@@ -4388,7 +4485,7 @@ components:
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutte le entrate
-          items: 
+          items:
             type: string
             example:
               - IMU
@@ -4406,14 +4503,14 @@ components:
     operatoreIndex:
       type: object
       required:
-        - principal   
+        - principal
         - ragioneSociale
         - abilitato
       properties:
         principal:
           type: string
           description: Username dell'operatore
-          example: operatore001      
+          example: operatore001
         ragioneSociale:
           type: string
           description: Nome e cognome dell'operatore
@@ -4421,11 +4518,11 @@ components:
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
-          example: 'true'          
+          example: 'true'
     operatore:
       type: object
       required:
-        - principal   
+        - principal
         - ragioneSociale
         - domini
         - tipiPendenza
@@ -4433,7 +4530,7 @@ components:
         principal:
           type: string
           description: Username dell'operatore
-          example: operatore001      
+          example: operatore001
         ragioneSociale:
           type: string
           description: Nome e cognome dell'operatore
@@ -4441,25 +4538,25 @@ components:
         domini:
           type: array
           description: domini su cui e' abilitato ad operare
-          items: 
+          items:
             $ref: '#/components/schemas/dominioIndex'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
-          items: 
+          items:
             $ref: '#/components/schemas/tipoPendenza'
         acl:
           type: array
           description: lista delle acl attive sull'applicazione
           items:
-            $ref: '#/components/schemas/aclPost' 
+            $ref: '#/components/schemas/aclPost'
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
           example: 'true'
     unitaOperativaPost:
       type: object
-      required: 
+      required:
         - ragioneSociale
       properties:
         ragioneSociale:
@@ -4493,19 +4590,19 @@ components:
         email:
           type: string
           description: Posta elettronica ordinaria del beneficiario
-          example: peo@creditore.it  
+          example: peo@creditore.it
         pec:
           type: string
           description: Posta elettronica certificata del beneficiario
-          example: pec@creditore.it  
+          example: pec@creditore.it
         tel:
           type: string
           description: Numero di telefono dell'help desk del beneficiario
-          example: 021234567890  
+          example: 021234567890
         fax:
           type: string
           description: Numero di fax dell'help desk del beneficiario
-          example: 021234567890           
+          example: 021234567890
         web:
           type: string
           description: Url del sito web
@@ -4513,7 +4610,7 @@ components:
         area:
           type: string
           description: Nome dell'area di competenza dell'unita' operativa
-          example: Affari generali e istituzionali  
+          example: Affari generali e istituzionali
         abilitato:
           type: boolean
           description: Indica lo stato di abilitazione
@@ -4564,7 +4661,7 @@ components:
         - $ref: '#/components/schemas/contiAccreditoPost'
     tipoEntrataPost:
       type: object
-      required: 
+      required:
         - descrizione
         - tipoContabilita
         - codiceContabilita
@@ -4591,7 +4688,7 @@ components:
         - $ref: '#/components/schemas/tipoEntrataPost'
     entrataPost:
       type: object
-      required: 
+      required:
         - ibanAccredito
       properties:
         ibanAccredito:
@@ -4629,9 +4726,24 @@ components:
           properties:
             tipoEntrata:
               $ref: '#/components/schemas/tipoEntrata'
+    tipoPendenzaIndex:
+      type: object
+      required:
+        - idTipoPendenza
+        - descrizione
+        - tipo
+      properties:
+        idTipoPendenza:
+          type: string
+          example: IMU
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
+        tipo:
+          $ref: '#/components/schemas/tipoPendenzaTipologia'
     tipoPendenzaPost:
       type: object
-      required: 
+      required:
         - descrizione
         - tipo
       properties:
@@ -4639,11 +4751,7 @@ components:
           type: string
           example: Imposta municipale urbana
         tipo:
-          type: string
-          enum:
-            - spontanea
-            - dovuta
-          example: spontanea
+          $ref: '#/components/schemas/tipoPendenzaTipologia'
         codificaIUV:
           type: string
           description: Cifra identificativa negli IUV
@@ -4653,18 +4761,18 @@ components:
           type: boolean
           description: Indica se la pendenza e' pagabile da soggetti terzi
           example: true
-          default: false   
+          default: false
         abilitato:
           type: boolean
           description: Indicazione la tipologia pendenza e' abilitata
           example: true
           default: true
-        schema:
-          type: object
-          description: JSON Schema che descrive la struttura della tipologia di pendenza
-        datiAllegati:
-          type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario per la gestione della tipologia della pendenza.
+        form:
+          $ref: '#/components/schemas/tipoPendenzaForm'
+        runtime:
+          $ref: '#/components/schemas/tipoPendenzaRuntime'
+        promemoria:
+          $ref: '#/components/schemas/tipoPendenzaPromemoria'
     tipoPendenza:
       type: object
       allOf:
@@ -4676,6 +4784,71 @@ components:
               type: string
               example: IMU
         - $ref: '#/components/schemas/tipoPendenzaPost'
+    tipoPendenzaForm:
+      type: object
+      required:
+        - tipo
+        - definizione
+      properties:
+        tipo:
+          type: string
+          description: Indica il linguaggio da utilizzare per il disegno della form di inserimento della pendenza
+          example: 'AngularJS v6'
+        definizione:
+          type: object
+          description: Definizione della form nel linguaggio indicato nel field tipo
+    tipoPendenzaRuntime:
+      type: object
+      properties:
+        validazione:
+          type: object
+          description: JSON Schema da utilizzare per la validazione dell'input
+        trasformazione:
+          $ref: '#/components/schemas/tipoPendenzaValidazione'
+        inoltro:
+          type: string
+          description: Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
+          example: 'IDA2A01'
+    tipoPendenzaValidazione:
+      type: object
+      required:
+        - tipo
+        - definizione
+      properties:
+        tipo:
+          type: string
+          enum:
+            - template
+            - velocity
+            - freemarker
+          example: freemarker
+          description: Indica la tipologia di trasformazione da applicare all'input ricevuto dal servizio pendenze per ottenera una pendenza nel formato GovPay
+        definizione:
+          type: object
+          description: Template di trasformazione da applicare per trasformare l'input in una pendenza nel formato GovPay
+    tipoPendenzaPromemoria:
+      type: object
+      required:
+        - oggetto
+        - messaggio
+      properties:
+        oggetto:
+          type: string
+          description: Oggetto da inserire nella email
+          example: 'Avviso Pagamento n 1234abc'
+        messaggio:
+          type: string
+          description: Definisce il template del body da inserire nella email
+        allegaAvviso:
+          type: boolean
+          description: Indica se allegare alla email il pdf contenente l'avviso di pagamento
+          default: true
+    tipoPendenzaTipologia:
+      type: string
+      enum:
+        - spontanea
+        - dovuta
+      example: spontanea
     tipoPendenzaDominioPost:
       type: object
       properties:
@@ -4694,12 +4867,12 @@ components:
           description: Indicazione la tipologia pendenza e' abilitata
           example: true
           default: true
-        schema:
-          type: object
-          description: JSON Schema che descrive la struttura della tipologia di pendenza
-        datiAllegati:
-          type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario per la gestione della tipologia della pendenza.
+        form:
+          $ref: '#/components/schemas/tipoPendenzaForm'
+        runtime:
+          $ref: '#/components/schemas/tipoPendenzaRuntime'
+        promemoria:
+          $ref: '#/components/schemas/tipoPendenzaPromemoria'
     tipoPendenzaDominio:
       type: object
       allOf:
@@ -4804,7 +4977,7 @@ components:
             - DE
             - SL
           default: IT
-          example: IT                
+          example: IT
         rpp:
           type: string
           description: Url per le richieste di pagamento oggetto del Pagamento
@@ -4899,10 +5072,10 @@ components:
             - DE
             - SL
           default: IT
-          example: IT                
+          example: IT
         rpp:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/rpp'
         verificato:
           type: boolean
@@ -4922,7 +5095,7 @@ components:
         bic:
           type: string
           description: Bic della banca di addebito del pagatore.
-          example: MYBICODE            
+          example: MYBICODE
     pendenzaBase:
       type: object
       required:
@@ -4973,7 +5146,7 @@ components:
           example: ABC00000001
         datiAllegati:
           type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.  
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
         tassonomia:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
@@ -4995,11 +5168,15 @@ components:
               type: string
               description: Identificativo dell'unita' operativa
               example: UO33132
-        - $ref: '#/components/schemas/pendenzaBase'    
+            idTipoPendenza:
+              type: string
+              description: Identificativo della tipologia pendenza
+              example: IMU
+        - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
             - voci
-          properties:   
+          properties:
             voci:
               type: array
               minItems: 1
@@ -5021,7 +5198,7 @@ components:
               type: string
               description: Identificativo della pendenza nel gestionale responsabile
               example: abcdef12345
-        - $ref: '#/components/schemas/pendenzaPut'        
+        - $ref: '#/components/schemas/pendenzaPut'
     pendenzaIndex:
       type: object
       allOf:
@@ -5041,9 +5218,7 @@ components:
               description: Identificativo della pendenza nel gestionale responsabile
               example: abcdef12345
             tipoPendenza:
-              type: string
-              description: Tipologia di pendenza
-              example: Corso di formazione
+              $ref: '#/components/schemas/tipoPendenzaIndex'
             dominio:
               $ref: '#/components/schemas/dominioIndex'
             unitaOperativa:
@@ -5074,7 +5249,7 @@ components:
               example: 10.01
             iuvPagamento:
               type: string
-              description: Iuv dell'ultimo pagamento eseguito con successo 
+              description: Iuv dell'ultimo pagamento eseguito con successo
               example: 000000000012345
             anomalo:
               type: boolean
@@ -5082,7 +5257,7 @@ components:
             verificato:
               type: boolean
               description: indicazione se eventuali anomalie sono state verificate da un operatore
-        - $ref: '#/components/schemas/pendenzaBase'   
+        - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
             - rpp
@@ -5095,7 +5270,7 @@ components:
             pagamenti:
               type: string
               description: Url per l'elenco dei pagamenti da portale comprensivi della pendenza
-              example: '/pagamenti?idA2A=A2A-12345&idPendenza=abcdef12345'  
+              example: '/pagamenti?idA2A=A2A-12345&idPendenza=abcdef12345'
     pendenza:
       type: object
       allOf:
@@ -5115,9 +5290,7 @@ components:
               description: Identificativo della pendenza nel gestionale responsabile
               example: abcdef12345
             tipoPendenza:
-              type: string
-              description: Tipologia di pendenza
-              example: Corso di formazione              
+              $ref: '#/components/schemas/tipoPendenzaIndex'
             dominio:
               $ref: '#/components/schemas/dominioIndex'
             unitaOperativa:
@@ -5152,7 +5325,7 @@ components:
               example: 10.01
             iuvPagamento:
               type: string
-              description: Iuv dell'ultimo pagamento eseguito con successo 
+              description: Iuv dell'ultimo pagamento eseguito con successo
               example: 000000000012345
             anomalo:
               type: boolean
@@ -5160,7 +5333,7 @@ components:
             verificato:
               type: boolean
               description: indicazione se eventuali anomalie sono state verificate da un operatore
-        - $ref: '#/components/schemas/pendenzaBase'   
+        - $ref: '#/components/schemas/pendenzaBase'
         - type: object
           required:
             - voci
@@ -5180,7 +5353,7 @@ components:
             pagamenti:
               type: array
               items:
-                $ref: '#/components/schemas/pagamento'      
+                $ref: '#/components/schemas/pagamento'
     vocePendenza:
       allOf:
         - type: object
@@ -5210,7 +5383,7 @@ components:
               type: string
               description: Stato della voce di pagamento
               enum:
-                - Eseguito 
+                - Eseguito
                 - Non eseguito
                 - Anomalo
             datiAllegati:
@@ -5218,11 +5391,11 @@ components:
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
             riscossioni:
               type: array
-              items: 
+              items:
                 $ref: '#/components/schemas/riscossione'
             rendicontazioni:
               type: array
-              items: 
+              items:
                 $ref: '#/components/schemas/rendicontazione'
         - oneOf:
             - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
@@ -5271,7 +5444,7 @@ components:
                   type: string
     rppIndex:
       type: object
-      required: 
+      required:
         - stato
         - rpt
       properties:
@@ -5290,21 +5463,21 @@ components:
           default: true
         segnalazioni:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/segnalazione'
         rpt:
           type: object
           description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
         rt:
           type: object
-          description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"  
+          description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"
         pendenza:
           type: string
           description: Url al dettaglio della pendenza
           example: '/pendenze/A2A-12345/abcdef12345'
     rpp:
       type: object
-      required: 
+      required:
         - stato
         - rpt
       properties:
@@ -5326,9 +5499,9 @@ components:
           description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
         rt:
           type: object
-          description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"  
+          description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"
         pendenza:
-          $ref: '#/components/schemas/pendenzaIndex'   
+          $ref: '#/components/schemas/pendenzaIndex'
     riscossione:
       type: object
       required:
@@ -5380,7 +5553,7 @@ components:
         importo:
           type: number
           description: >-
-            Importo riscosso. 
+            Importo riscosso.
           example: 10.01
         data:
           type: string
@@ -5414,8 +5587,8 @@ components:
         - Tassa automobilistica
         - Ticket e prestazioni sanitarie
         - Trasporti, mobilità e parcheggi
-      example: 
-        Ticket e prestazioni sanitarie     
+      example:
+        Ticket e prestazioni sanitarie
     tipoContabilita:
       description: Tipologia di codifica del capitolo di bilancio
       type: string
@@ -5424,7 +5597,7 @@ components:
         - SPECIALE
         - SIOPE
         - ALTRO
-      example: SIOPE 
+      example: SIOPE
     allegato:
       type: object
       required:
@@ -5480,27 +5653,27 @@ components:
           type: string
           format: date
           description: Data dell'operazione di riversamento fondi
-          example: '2020-12-31'        
+          example: '2020-12-31'
         idPsp:
           type: string
           description: Identificativo del psp che ha emesso la rendicontazione
-          example: 'ABI-12345' 
+          example: 'ABI-12345'
         ragioneSocialePsp:
           type: string
           description: Nome del PSP che ha emesso il flusso
-          example: 'Banco di Ponzi' 
+          example: 'Banco di Ponzi'
         bicRiversamento:
           type: string
           description: Codice Bic della banca che ha generato il riversamento
-          example: 'BIC-12345' 
+          example: 'BIC-12345'
         idDominio:
           type: string
           description: Identificativo del dominio creditore del riversamento
-          example: 'BIC-12345' 
+          example: 'BIC-12345'
         ragioneSocialeDominio:
           type: string
           description: Nome del Dominio destinatario del flusso
-          example: 'Ente Creditore'           
+          example: 'Ente Creditore'
         numeroPagamenti:
           type: number
           description: numero di pagamenti oggetto della rendicontazione
@@ -5550,10 +5723,10 @@ components:
         indice:
           type: number
           description: Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.
-          example: 1          
+          example: 1
         importo:
           type: number
-          description: Importo rendicontato. 
+          description: Importo rendicontato.
           example: 10.01
         esito:
           type: number
@@ -5588,11 +5761,11 @@ components:
           type: string
           example: '0013'
         descrizione:
-          type: string   
+          type: string
           example: 'Pagamento rendicontato senza RPT'
         dettaglio:
           type: string
-          example: 'Acquisita rendicontazione senza RPT nel flusso ABC-1234-DEFG'  
+          example: 'Acquisita rendicontazione senza RPT nel flusso ABC-1234-DEFG'
     incassoPost:
       allOf:
       - type: object
@@ -5695,7 +5868,7 @@ components:
           properties:
             riscossioni:
               type: array
-              items: 
+              items:
                 $ref: '#/components/schemas/riscossione'
     tipoAutenticazioneBasic:
       type: object
@@ -5718,7 +5891,7 @@ components:
       properties:
         tipo:
           type: string
-          enum: 
+          enum:
             - Client
             - Server
         ksLocation:
@@ -5732,17 +5905,17 @@ components:
           description: Location del truststore
         tsPassword:
           type: string
-          description: Password del truststore    
+          description: Password del truststore
     tipoAutenticazione:
       oneOf:
         - $ref: '#/components/schemas/tipoAutenticazioneBasic'
         - $ref: '#/components/schemas/tipoAutenticazioneSSL'
     connector:
       type: object
-      required: 
+      required:
         - url
       properties:
-        url: 
+        url:
           type: string
           description: Dati di integrazione ad un servizio web
         versioneApi:
@@ -5754,14 +5927,14 @@ components:
           $ref: '#/components/schemas/tipoAutenticazione'
     connettorePagopa:
       type: object
-      required: 
+      required:
         - urlRPT
       properties:
-        urlRPT: 
+        urlRPT:
           type: string
           description: Dati di integrazione al servizio web RPT
           example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
-        urlAvvisatura: 
+        urlAvvisatura:
           type: string
           description: Dati di integrazione al servizio web di Avvisatura Digitale
           example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
@@ -5826,7 +5999,7 @@ components:
         - ESEGUITO_PARZIALE
         - DECORRENZA
         - DECORENNZA_PARZIALE
-      description: > 
+      description: >
         Esito della richiesta di pagamento:
          * IN_CORSO: Pagamento in corso
          * RIFIUTATO: Pagamento rifiutato
@@ -5846,7 +6019,7 @@ components:
         - SCADUTA
         - INCASSATA
       description: >-
-        Stato della pendenza: 
+        Stato della pendenza:
          * ESEGUITA: Pagata
          * NON_ESEGUITA: Da pagare
          * ESEGUITA_PARZIALE: Pagata parzialmente
@@ -5863,7 +6036,7 @@ components:
         - ESEGUITO_PARZIALE
         - ANNULLATO
         - FALLITO
-      description: > 
+      description: >
         Stato del pagamento
          * IN_CORSO: Pagamento in corso
          * ANNULLATO: Pagamento annullato dall'utente o scaduto per timeout
@@ -5879,7 +6052,7 @@ components:
         - RISCOSSA
         - INCASSATA
     tipoRiscossione:
-      description: > 
+      description: >
         Tipologia della voce riscossa
          * ENTRATA: Entrata in tesoreria
          * MBT: Marca da bollo telematica
@@ -5928,7 +6101,7 @@ components:
             - "Rendicontazioni e Incassi"
             - "Giornale degli Eventi"
             - "Configurazione e manutenzione"
-          description: 
+          description:
             Servizio oggetto dell'autorizzazione.
         autorizzazioni:
           type: array
@@ -5951,31 +6124,31 @@ components:
       properties:
         id:
           type: number
-          description: 
+          description:
             Identificativo numerico del tracciato
           example:
             123456
         codDominio:
           type: string
-          description: 
+          description:
             Dominio creatore al tracciato
           example:
             AV
         tipo:
           type: string
-          description: 
+          description:
             Tipo di tracciato
           example:
             AV
         stato:
           type: string
-          description: 
+          description:
             Stato del tracciato
           example:
             ELABORAZIONE
         descrizioneStato:
           type: string
-          description: 
+          description:
             Descrizione dello stato del tracciato
           example:
             Errore di connessione al server SFTP
@@ -5994,13 +6167,13 @@ components:
           description: Dati applicativi del tracciato
         filenameRichiesta:
           type: string
-          description: 
+          description:
             Nome del file di richiesta del tracciato
           example:
             80002870923_02315520920_20180710_00_AV.zip
         filenameEsito:
           type: string
-          description: 
+          description:
             Nome del file di esito del tracciato
           example:
             80002870923_02315520920_20180710_00_AV_ACK.zip
@@ -6115,7 +6288,7 @@ components:
           example: '0'
         idDominio:
           type: string
-          example: '99999999999'          
+          example: '99999999999'
         idIntermediario:
           type: string
           example: '99999999999'
@@ -6211,7 +6384,7 @@ components:
           description: Testo da codificare nel bar-code dell'avviso
     operazioneIndex:
       type: object
-      required: 
+      required:
         - idOperazione
         - descrizione
         - location
@@ -6228,9 +6401,9 @@ components:
     operazione:
       type: object
       allOf:
-        - $ref: '#/components/schemas/operazioneIndex'          
+        - $ref: '#/components/schemas/operazioneIndex'
         - type: object
-          required: 
+          required:
             - stato
             - esito
           properties:
@@ -6256,10 +6429,10 @@ components:
         acl:
           type: array
           items:
-            $ref: '#/components/schemas/aclPost'   
+            $ref: '#/components/schemas/aclPost'
     ruoloIndex:
       type: object
-      allOf: 
+      allOf:
         - type: object
           required:
             - id
@@ -6270,7 +6443,7 @@ components:
               example: Amministratore
     ruolo:
       type: object
-      allOf: 
+      allOf:
         - type: object
           required:
             - id
@@ -6282,7 +6455,7 @@ components:
         - $ref: '#/components/schemas/ruoloPost'
     profilo:
       type: object
-      required: 
+      required:
         - nome
         - domini
         - tipiPendenza
@@ -6294,20 +6467,20 @@ components:
         domini:
           type: array
           description: domini su cui e' abilitato ad operare
-          items: 
+          items:
             $ref: '#/components/schemas/dominioIndex'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
-          items: 
+          items:
             $ref: '#/components/schemas/tipoPendenza'
         acl:
           type: array
           items:
-            $ref: '#/components/schemas/aclPost'        
+            $ref: '#/components/schemas/aclPost'
     esitoOperazione:
       type: object
-      required: 
+      required:
         - percentuale
         - descrizione
       properties:
@@ -6317,14 +6490,14 @@ components:
         descrizione:
           type: string
           description: testo descrittivo
-          items: 
+          items:
             $ref: '#/components/schemas/dominioIndex'
         stato:
           type: string
           description: stato dell'operazione (OK/KO/WARN)
     patchOp:
       type: object
-      required: 
+      required:
         - op
         - path
         - value
@@ -6384,7 +6557,7 @@ components:
       properties:
         id:
           type: number
-          description: 
+          description:
             Identificativo numerico del tracciato
           example:
             123456
