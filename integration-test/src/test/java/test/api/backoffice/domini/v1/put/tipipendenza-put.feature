@@ -12,8 +12,11 @@ Background:
 	"codificaIUV": "999",  
 	"pagaTerzi": false,
 	"abilitato": true,
-	"schema": { },
-	"datiAllegati": {	}
+	"form": null
+	"validazione": null,
+	"trasformazione": null,
+	"inoltro": null,
+	"promemoria": null
 }
 """
 
@@ -52,11 +55,9 @@ Examples:
 | pagaTerzi | true |
 | pagaTerzi | false |
 | pagaTerzi | null |
-| schema | '{ "schema" : "aaaa"}' |
-| schema | null |
-| datiAllegati | '{ "datiAllegati : "aaaa"}' |
-| datiAllegati | 'aaaa' |
-| datiAllegati | '[ "a", "b" ]' |
-| datiAllegati | 1 |
-| datiAllegati | '[ 1, 2 ]' |
-| datiAllegati | null |
+| validazione | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| trasformazione | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| inoltro | idA2A |
+| promemoria | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaAvviso": true } |
+| promemoria | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaAvviso": false } |
+

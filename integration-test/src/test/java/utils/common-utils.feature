@@ -99,5 +99,14 @@ Scenario:
 		return new String(Base64.getDecoder().decode(encodedString));
 	}
 	"""
+	
+	* def encodeBase64 = 
+	"""
+	function(string){ 
+		var Base64 = Java.type('java.util.Base64');
+		var String = Java.type('java.lang.String');
+		return Base64.getEncoder().encodeToString(new String(string).getBytes());
+	}
+	"""
     
   

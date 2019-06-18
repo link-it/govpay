@@ -17,6 +17,7 @@ Background:
 * def codEntrataSegreteria = 'SEGRETERIA'
 * def codEntrataSenzaAppoggio = 'SEGRETERIA-no-appoggio'
 * def codEntrataBollo = 'BOLLOT' 
+* def tipoPendenzaRinnovo = 'RINNOVO' 
 * def codLibero = 'LIBERO' 
 * def codSpontaneo = 'SPONTANEO' 
 * def codDovuto = 'DOVUTO'
@@ -155,7 +156,6 @@ And headers basicAutenticationHeader
 And request { ibanAccredito: '#(ibanAccredito)', ibanAppoggio: null, abilitato: true }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
-
 
 Given url backofficeBaseurl
 And path 'entrate', codDovuto

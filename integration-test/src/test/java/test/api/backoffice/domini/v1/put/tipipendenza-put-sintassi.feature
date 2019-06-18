@@ -12,8 +12,11 @@ Background:
 	"codificaIUV": "999",  
 	"pagaTerzi": false,
 	"abilitato": true,
-	"schema": { },
-	"datiAllegati": {	}
+	"form": null
+	"validazione": null,
+	"trasformazione": null,
+	"inoltro": null,
+	"promemoria": null
 }
 """
 
@@ -37,5 +40,13 @@ Examples:
 | codificaIUV | '00000' | 'codificaIUV' |
 | pagaTerzi |  '' | 'pagaTerzi' |
 | pagaTerzi |  'si' | 'pagaTerzi' |
-
-
+| form | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| form | { "tipo": null, "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| form | { "tipo": "angular2-json-schema-form", "definizione": null } |
+| trasformazione | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| trasformazione | { "tipo": "booo", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| trasformazione | { "tipo": "freemarker", "definizione": null } |
+| promemoria | { "oggetto": null, "messaggio": "Devi pagare", "allegaAvviso": null } |
+| promemoria | { "oggetto": "Promemoria pagamento", "messaggio": null, "allegaAvviso": null } |
+| promemoria | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaAvviso": "aaaaa" } |
+| validazione | { "type": "object" } |
