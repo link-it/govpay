@@ -32,3 +32,29 @@ CREATE TABLE eventi
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
+
+-- 18/06/2019 Configurazione avanzata dei tipi pendenza
+ALTER TABLE tipi_versamento DROP COLUMN json_schema;
+ALTER TABLE tipi_versamento DROP COLUMN dati_allegati;
+ALTER TABLE tipi_versamento ADD COLUMN form_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN form_definizione LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN validazione_definizione LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN trasformazione_tipo VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN trasformazione_definizione LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN cod_applicazione VARCHAR(35);
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_oggetto VARCHAR(512);
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_messaggio LONGTEXT;
+
+ALTER TABLE tipi_vers_domini DROP COLUMN json_schema;
+ALTER TABLE tipi_vers_domini DROP COLUMN dati_allegati;
+ALTER TABLE tipi_vers_domini ADD COLUMN form_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN form_definizione LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN validazione_definizione LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_tipo VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_definizione LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN cod_applicazione VARCHAR(35);
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto VARCHAR(512);
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_messaggio LONGTEXT;
+

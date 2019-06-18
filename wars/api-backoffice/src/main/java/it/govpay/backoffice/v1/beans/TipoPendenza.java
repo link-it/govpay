@@ -8,7 +8,6 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import it.govpay.core.beans.JSONSerializable;
 @JsonPropertyOrder({
@@ -17,8 +16,11 @@ import it.govpay.core.beans.JSONSerializable;
 "codificaIUV",
 "pagaTerzi",
 "abilitato",
-"schema",
-"datiAllegati",
+"form",
+"validazione",
+"trasformazione",
+"inoltro",
+"promemoria",
 "idTipoPendenza",
 })
 public class TipoPendenza extends JSONSerializable {
@@ -26,49 +28,8 @@ public class TipoPendenza extends JSONSerializable {
   @JsonProperty("descrizione")
   private String descrizione = null;
   
-    
-  /**
-   * Gets or Sets tipo
-   */
-  public enum TipoEnum {
-    
-    
-        
-            
-    SPONTANEA("spontanea"),
-    
-            
-    DOVUTA("dovuta");
-            
-        
-    
-
-    private String value;
-
-    TipoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoEnum fromValue(String text) {
-      for (TipoEnum b : TipoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("tipo")
-  private TipoEnum tipo = null;
+  private TipoPendenzaTipologia tipo = null;
   
   @JsonProperty("codificaIUV")
   private String codificaIUV = null;
@@ -79,11 +40,20 @@ public class TipoPendenza extends JSONSerializable {
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
   
-  @JsonProperty("schema")
-  private Object schema = null;
+  @JsonProperty("form")
+  private TipoPendenzaForm form = null;
   
-  @JsonProperty("datiAllegati")
-  private Object datiAllegati = null;
+  @JsonProperty("validazione")
+  private Object validazione = null;
+  
+  @JsonProperty("trasformazione")
+  private TipoPendenzaTrasformazione trasformazione = null;
+  
+  @JsonProperty("inoltro")
+  private String inoltro = null;
+  
+  @JsonProperty("promemoria")
+  private TipoPendenzaPromemoria promemoria = null;
   
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
@@ -105,16 +75,16 @@ public class TipoPendenza extends JSONSerializable {
 
   /**
    **/
-  public TipoPendenza tipo(TipoEnum tipo) {
+  public TipoPendenza tipo(TipoPendenzaTipologia tipo) {
     this.tipo = tipo;
     return this;
   }
 
   @JsonProperty("tipo")
-  public TipoEnum getTipo() {
+  public TipoPendenzaTipologia getTipo() {
     return tipo;
   }
-  public void setTipo(TipoEnum tipo) {
+  public void setTipo(TipoPendenzaTipologia tipo) {
     this.tipo = tipo;
   }
 
@@ -167,35 +137,80 @@ public class TipoPendenza extends JSONSerializable {
   }
 
   /**
-   * JSON Schema che descrive la struttura della tipologia di pendenza
    **/
-  public TipoPendenza schema(Object schema) {
-    this.schema = schema;
+  public TipoPendenza form(TipoPendenzaForm form) {
+    this.form = form;
     return this;
   }
 
-  @JsonProperty("schema")
-  public Object getSchema() {
-    return schema;
+  @JsonProperty("form")
+  public TipoPendenzaForm getForm() {
+    return form;
   }
-  public void setSchema(Object schema) {
-    this.schema = schema;
+  public void setForm(TipoPendenzaForm form) {
+    this.form = form;
   }
 
   /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario per la gestione della tipologia della pendenza.
+   * JSON Schema da utilizzare per la validazione dell'input
    **/
-  public TipoPendenza datiAllegati(Object datiAllegati) {
-    this.datiAllegati = datiAllegati;
+  public TipoPendenza validazione(Object validazione) {
+    this.validazione = validazione;
     return this;
   }
 
-  @JsonProperty("datiAllegati")
-  public Object getDatiAllegati() {
-    return datiAllegati;
+  @JsonProperty("validazione")
+  public Object getValidazione() {
+    return validazione;
   }
-  public void setDatiAllegati(Object datiAllegati) {
-    this.datiAllegati = datiAllegati;
+  public void setValidazione(Object validazione) {
+    this.validazione = validazione;
+  }
+
+  /**
+   **/
+  public TipoPendenza trasformazione(TipoPendenzaTrasformazione trasformazione) {
+    this.trasformazione = trasformazione;
+    return this;
+  }
+
+  @JsonProperty("trasformazione")
+  public TipoPendenzaTrasformazione getTrasformazione() {
+    return trasformazione;
+  }
+  public void setTrasformazione(TipoPendenzaTrasformazione trasformazione) {
+    this.trasformazione = trasformazione;
+  }
+
+  /**
+   * Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
+   **/
+  public TipoPendenza inoltro(String inoltro) {
+    this.inoltro = inoltro;
+    return this;
+  }
+
+  @JsonProperty("inoltro")
+  public String getInoltro() {
+    return inoltro;
+  }
+  public void setInoltro(String inoltro) {
+    this.inoltro = inoltro;
+  }
+
+  /**
+   **/
+  public TipoPendenza promemoria(TipoPendenzaPromemoria promemoria) {
+    this.promemoria = promemoria;
+    return this;
+  }
+
+  @JsonProperty("promemoria")
+  public TipoPendenzaPromemoria getPromemoria() {
+    return promemoria;
+  }
+  public void setPromemoria(TipoPendenzaPromemoria promemoria) {
+    this.promemoria = promemoria;
   }
 
   /**
@@ -227,14 +242,17 @@ public class TipoPendenza extends JSONSerializable {
         Objects.equals(codificaIUV, tipoPendenza.codificaIUV) &&
         Objects.equals(pagaTerzi, tipoPendenza.pagaTerzi) &&
         Objects.equals(abilitato, tipoPendenza.abilitato) &&
-        Objects.equals(schema, tipoPendenza.schema) &&
-        Objects.equals(datiAllegati, tipoPendenza.datiAllegati) &&
+        Objects.equals(form, tipoPendenza.form) &&
+        Objects.equals(validazione, tipoPendenza.validazione) &&
+        Objects.equals(trasformazione, tipoPendenza.trasformazione) &&
+        Objects.equals(inoltro, tipoPendenza.inoltro) &&
+        Objects.equals(promemoria, tipoPendenza.promemoria) &&
         Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, schema, datiAllegati, idTipoPendenza);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoria, idTipoPendenza);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -256,8 +274,11 @@ public class TipoPendenza extends JSONSerializable {
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    schema: ").append(toIndentedString(schema)).append("\n");
-    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    form: ").append(toIndentedString(form)).append("\n");
+    sb.append("    validazione: ").append(toIndentedString(validazione)).append("\n");
+    sb.append("    trasformazione: ").append(toIndentedString(trasformazione)).append("\n");
+    sb.append("    inoltro: ").append(toIndentedString(inoltro)).append("\n");
+    sb.append("    promemoria: ").append(toIndentedString(promemoria)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("}");
     return sb.toString();

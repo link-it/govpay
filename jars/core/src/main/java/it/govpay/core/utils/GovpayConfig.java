@@ -172,7 +172,7 @@ public class GovpayConfig {
 		
 		this.scritturaDiagnosticiFileEnabled = false;
 		this.scritturaDumpFileEnabled = false;
-		this.giornaleEventiEnabled = false;
+		this.giornaleEventiEnabled = true;
 		
 		this.corsProperties = new Properties();
 		try {

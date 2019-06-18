@@ -5,11 +5,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class TipoVersamento extends BasicModel {
 	private static final long serialVersionUID = 1L;
-	
+
 	public enum Tipo {
-	    SPONTANEO("SPONTANEO"),
-	    DOVUTO("DOVUTO");
-	    
+		SPONTANEO("SPONTANEO"),
+		DOVUTO("DOVUTO");
+
 		private String codifica;
 
 		Tipo(String codifica) {
@@ -18,7 +18,7 @@ public class TipoVersamento extends BasicModel {
 		public String getCodifica() {
 			return this.codifica;
 		}
-		
+
 		public static Tipo toEnum(String codifica) throws ServiceException {
 			for(Tipo p : Tipo.values()){
 				if(p.getCodifica().equals(codifica))
@@ -27,9 +27,9 @@ public class TipoVersamento extends BasicModel {
 			throw new ServiceException("Codifica inesistente per Tipo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Tipo.values()));
 		}
 	}
-	
-	
-	
+
+
+
 	private Long id; 
 	private String codTipoVersamento;
 	private String descrizione;
@@ -37,9 +37,16 @@ public class TipoVersamento extends BasicModel {
 	private Tipo tipoDefault;
 	private boolean pagaTerziDefault;
 	private boolean abilitatoDefault;
-	private String jsonSchemaDefault;
-	private String datiAllegatiDefault;
-	
+	private String formTipoDefault;
+	private String formDefinizioneDefault;
+	private String validazioneDefinizioneDefault;
+	private String trasformazioneTipoDefault;
+	private String trasformazioneDefinizioneDefault;
+	private String codApplicazioneDefault;
+	private boolean promemoriaAvvisoDefault;
+	private String promemoriaOggettoDefault;
+	private String promemoriaMessaggioDefault;
+
 	public String getCodificaIuvDefault() {
 		return codificaIuvDefault;
 	}
@@ -83,16 +90,58 @@ public class TipoVersamento extends BasicModel {
 	public void setAbilitatoDefault(boolean abilitatoDefault) {
 		this.abilitatoDefault = abilitatoDefault;
 	}
-	public String getJsonSchemaDefault() {
-		return jsonSchemaDefault;
+	public String getFormTipoDefault() {
+		return formTipoDefault;
 	}
-	public void setJsonSchemaDefault(String jsonSchemaDefault) {
-		this.jsonSchemaDefault = jsonSchemaDefault;
+	public void setFormTipoDefault(String formTipoDefault) {
+		this.formTipoDefault = formTipoDefault;
 	}
-	public String getDatiAllegatiDefault() {
-		return datiAllegatiDefault;
+	public String getFormDefinizioneDefault() {
+		return formDefinizioneDefault;
 	}
-	public void setDatiAllegatiDefault(String datiAllegatiDefault) {
-		this.datiAllegatiDefault = datiAllegatiDefault;
+	public void setFormDefinizioneDefault(String formDefinizioneDefault) {
+		this.formDefinizioneDefault = formDefinizioneDefault;
+	}
+	public String getValidazioneDefinizioneDefault() {
+		return validazioneDefinizioneDefault;
+	}
+	public void setValidazioneDefinizioneDefault(String validazioneDefinizioneDefault) {
+		this.validazioneDefinizioneDefault = validazioneDefinizioneDefault;
+	}
+	public String getTrasformazioneTipoDefault() {
+		return trasformazioneTipoDefault;
+	}
+	public void setTrasformazioneTipoDefault(String trasformazioneTipoDefault) {
+		this.trasformazioneTipoDefault = trasformazioneTipoDefault;
+	}
+	public String getTrasformazioneDefinizioneDefault() {
+		return trasformazioneDefinizioneDefault;
+	}
+	public void setTrasformazioneDefinizioneDefault(String trasformazioneDefinizioneDefault) {
+		this.trasformazioneDefinizioneDefault = trasformazioneDefinizioneDefault;
+	}
+	public String getCodApplicazioneDefault() {
+		return codApplicazioneDefault;
+	}
+	public void setCodApplicazioneDefault(String codApplicazioneDefault) {
+		this.codApplicazioneDefault = codApplicazioneDefault;
+	}
+	public boolean getPromemoriaAvvisoDefault() {
+		return promemoriaAvvisoDefault;
+	}
+	public void setPromemoriaAvvisoDefault(boolean promemoriaAvvisoDefault) {
+		this.promemoriaAvvisoDefault = promemoriaAvvisoDefault;
+	}
+	public String getPromemoriaOggettoDefault() {
+		return promemoriaOggettoDefault;
+	}
+	public void setPromemoriaOggettoDefault(String promemoriaOggettoDefault) {
+		this.promemoriaOggettoDefault = promemoriaOggettoDefault;
+	}
+	public String getPromemoriaMessaggioDefault() {
+		return promemoriaMessaggioDefault;
+	}
+	public void setPromemoriaMessaggioDefault(String promemoriaMessaggioDefault) {
+		this.promemoriaMessaggioDefault = promemoriaMessaggioDefault;
 	}
 }

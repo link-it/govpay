@@ -1193,7 +1193,8 @@
 			<xsd:element name="tipo" type="String35" />
 			<xsd:element name="pagaTerzi" type="xsd:boolean" default="false" />
 			<xsd:element name="abilitato" type="xsd:boolean"/>
-			<xsd:element name="jsonSchema" type="xsd:string" minOccurs="0">
+			<xsd:element name="formTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="formDefinizione" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1202,7 +1203,29 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="datiAllegati" type="xsd:string" minOccurs="0">
+			<xsd:element name="validazioneDefinizione" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="trasformazioneTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="trasformazioneDefinizione" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="codApplicazione" type="String35" minOccurs="0"/>
+			<xsd:element name="promemoriaAvviso" type="xsd:boolean" default="false"/>
+			<xsd:element name="promemoriaOggetto" type="String512" minOccurs="0"/>
+			<xsd:element name="promemoriaMessaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1270,7 +1293,9 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
-			<xsd:element name="jsonSchema" type="xsd:string" minOccurs="0">
+			
+			<xsd:element name="formTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="formDefinizione" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1279,7 +1304,35 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="datiAllegati" type="xsd:string" minOccurs="0">
+			<xsd:element name="validazioneDefinizione" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="trasformazioneTipo" type="String35" minOccurs="0"/>
+			<xsd:element name="trasformazioneDefinizione" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="codApplicazione" type="String35" minOccurs="0"/>
+			<xsd:element name="promemoriaAvviso" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="promemoriaOggetto" type="String512" minOccurs="0"/>
+			<xsd:element name="promemoriaMessaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">

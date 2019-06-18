@@ -43,5 +43,31 @@ begin
 end;
 /
 
+-- 18/06/2019 Configurazione avanzata dei tipi pendenza
+ALTER TABLE tipi_versamento DROP COLUMN json_schema;
+ALTER TABLE tipi_versamento DROP COLUMN dati_allegati;
+ALTER TABLE tipi_versamento ADD COLUMN form_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_versamento ADD COLUMN form_definizione CLOB;
+ALTER TABLE tipi_versamento ADD COLUMN validazione_definizione CLOB;
+ALTER TABLE tipi_versamento ADD COLUMN trasformazione_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_versamento ADD COLUMN trasformazione_definizione CLOB;
+ALTER TABLE tipi_versamento ADD COLUMN cod_applicazione VARCHAR2(35 CHAR);
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso NUMBER NOT NULL;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_oggetto VARCHAR2(512 CHAR);
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_messaggio CLOB;
+ALTER TABLE tipi_versamento MODIFY promemoria_avviso DEFAULT 0;
+
+ALTER TABLE tipi_vers_domini DROP COLUMN json_schema;
+ALTER TABLE tipi_vers_domini DROP COLUMN dati_allegati;
+ALTER TABLE tipi_vers_domini ADD COLUMN form_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_vers_domini ADD COLUMN form_definizione CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN validazione_definizione CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_tipo VARCHAR2(35 CHAR);
+ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_definizione CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN cod_applicazione VARCHAR2(35 CHAR);
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso NUMBER;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto VARCHAR2(512 CHAR);
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_messaggio CLOB;
+
 
 

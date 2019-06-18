@@ -47,8 +47,15 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.TIPO = new Field("tipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAGA_TERZI = new Field("pagaTerzi",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.ABILITATO = new Field("abilitato",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
-		this.JSON_SCHEMA = new Field("jsonSchema",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
-		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.FORM_TIPO = new Field("formTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.FORM_DEFINIZIONE = new Field("formDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.VALIDAZIONE_DEFINIZIONE = new Field("validazioneDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRASFORMAZIONE_TIPO = new Field("trasformazioneTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRASFORMAZIONE_DEFINIZIONE = new Field("trasformazioneDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_AVVISO = new Field("promemoriaAvviso",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_OGGETTO = new Field("promemoriaOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_MESSAGGIO = new Field("promemoriaMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 	
 	}
 	
@@ -62,8 +69,15 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PAGA_TERZI = new ComplexField(father,"pagaTerzi",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
-		this.JSON_SCHEMA = new ComplexField(father,"jsonSchema",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
-		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.FORM_TIPO = new ComplexField(father,"formTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.FORM_DEFINIZIONE = new ComplexField(father,"formDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.VALIDAZIONE_DEFINIZIONE = new ComplexField(father,"validazioneDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRASFORMAZIONE_TIPO = new ComplexField(father,"trasformazioneTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRASFORMAZIONE_DEFINIZIONE = new ComplexField(father,"trasformazioneDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_AVVISO = new ComplexField(father,"promemoriaAvviso",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_OGGETTO = new ComplexField(father,"promemoriaOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_MESSAGGIO = new ComplexField(father,"promemoriaMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 	
 	}
 	
@@ -81,9 +95,23 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 	 
 	public IField ABILITATO = null;
 	 
-	public IField JSON_SCHEMA = null;
+	public IField FORM_TIPO = null;
 	 
-	public IField DATI_ALLEGATI = null;
+	public IField FORM_DEFINIZIONE = null;
+	 
+	public IField VALIDAZIONE_DEFINIZIONE = null;
+	 
+	public IField TRASFORMAZIONE_TIPO = null;
+	 
+	public IField TRASFORMAZIONE_DEFINIZIONE = null;
+	 
+	public IField COD_APPLICAZIONE = null;
+	 
+	public IField PROMEMORIA_AVVISO = null;
+	 
+	public IField PROMEMORIA_OGGETTO = null;
+	 
+	public IField PROMEMORIA_MESSAGGIO = null;
 	 
 
 	@Override

@@ -62,17 +62,66 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		return this.dominio;
 	}
 	
-	public String getJsonSchema() {
-		if(this.getJsonSchemaCustom() != null)
-			return this.getJsonSchemaCustom();
+	public Boolean getPromemoriaAvviso() {
+		if(this.getPromemoriaAvvisoCustom() != null)
+			return this.getPromemoriaAvvisoCustom();
 		else 
-			return this.getJsonSchemaDefault();
+			return this.getPromemoriaAvvisoDefault();
+	} 
+	
+	public String getPromemoriaOggetto() {
+		if(this.getPromemoriaOggettoCustom() != null)
+			return this.getPromemoriaOggettoCustom();
+		else 
+			return this.getPromemoriaOggettoDefault();
 	}
 	
-	public String getDatiAllegati() {
-		if(this.getDatiAllegatiCustom() != null)
-			return this.getDatiAllegatiCustom();
+	public String getPromemoriaMessaggio() {
+		if(this.getPromemoriaMessaggioCustom() != null)
+			return this.getPromemoriaMessaggioCustom();
 		else 
-			return this.getDatiAllegatiDefault();
+			return this.getPromemoriaMessaggioDefault();
+	}
+	
+	public String getFormDefinizione() {
+		if(this.getFormDefinizioneCustom() != null)
+			return this.getFormDefinizioneCustom();
+		else 
+			return this.getFormDefinizioneDefault();
+	}
+	
+	public String getFormTipo() {
+		if(this.getFormTipoCustom() != null)
+			return this.getFormTipoCustom();
+		else 
+			return this.getFormTipoDefault();
+	}
+	
+	public String getValidazioneDefinizione() {
+		if(this.getValidazioneDefinizioneCustom() != null)
+			return this.getValidazioneDefinizioneCustom();
+		else 
+			return this.getValidazioneDefinizioneDefault();
+	}
+	
+	public String getCodApplicazione() {
+		if(this.getCodApplicazioneCustom() != null)
+			return this.getCodApplicazioneCustom();
+		else 
+			return this.getCodApplicazioneDefault();
+	}
+	
+	public String getTrasformazioneDefinizione() {
+		if(this.getTrasformazioneDefinizioneCustom() != null)
+			return this.getTrasformazioneDefinizioneCustom();
+		else 
+			return this.getTrasformazioneDefinizioneDefault();
+	}
+	
+	public String getTrasformazioneTipo() {
+		if(this.getTrasformazioneTipoCustom() != null)
+			return this.getTrasformazioneTipoCustom();
+		else 
+			return this.getTrasformazioneTipoDefault();
 	}
 }

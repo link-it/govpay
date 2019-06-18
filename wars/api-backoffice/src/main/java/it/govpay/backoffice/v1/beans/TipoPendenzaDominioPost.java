@@ -12,12 +12,16 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @JsonPropertyOrder({
 "codificaIUV",
 "pagaTerzi",
 "abilitato",
-"schema",
-"datiAllegati",
+"form",
+"validazione",
+"trasformazione",
+"inoltro",
+"promemoria",
 })
 public class TipoPendenzaDominioPost extends JSONSerializable  implements IValidable {
   
@@ -30,11 +34,20 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
   
-  @JsonProperty("schema")
-  private Object schema = null;
+  @JsonProperty("form")
+  private TipoPendenzaForm form = null;
   
-  @JsonProperty("datiAllegati")
-  private Object datiAllegati = null;
+  @JsonProperty("validazione")
+  private Object validazione = null;
+  
+  @JsonProperty("trasformazione")
+  private TipoPendenzaTrasformazione trasformazione = null;
+  
+  @JsonProperty("inoltro")
+  private String inoltro = null;
+  
+  @JsonProperty("promemoria")
+  private TipoPendenzaPromemoria promemoria = null;
   
   /**
    * Cifra identificativa negli IUV
@@ -86,35 +99,80 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   }
 
   /**
-   * JSON Schema che descrive la struttura della tipologia di pendenza
    **/
-  public TipoPendenzaDominioPost schema(Object schema) {
-    this.schema = schema;
+  public TipoPendenzaDominioPost form(TipoPendenzaForm form) {
+    this.form = form;
     return this;
   }
 
-  @JsonProperty("schema")
-  public Object getSchema() {
-    return schema;
+  @JsonProperty("form")
+  public TipoPendenzaForm getForm() {
+    return form;
   }
-  public void setSchema(Object schema) {
-    this.schema = schema;
+  public void setForm(TipoPendenzaForm form) {
+    this.form = form;
   }
 
   /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario per la gestione della tipologia della pendenza.
+   * JSON Schema da utilizzare per la validazione dell'input
    **/
-  public TipoPendenzaDominioPost datiAllegati(Object datiAllegati) {
-    this.datiAllegati = datiAllegati;
+  public TipoPendenzaDominioPost validazione(Object validazione) {
+    this.validazione = validazione;
     return this;
   }
 
-  @JsonProperty("datiAllegati")
-  public Object getDatiAllegati() {
-    return datiAllegati;
+  @JsonProperty("validazione")
+  public Object getValidazione() {
+    return validazione;
   }
-  public void setDatiAllegati(Object datiAllegati) {
-    this.datiAllegati = datiAllegati;
+  public void setValidazione(Object validazione) {
+    this.validazione = validazione;
+  }
+
+  /**
+   **/
+  public TipoPendenzaDominioPost trasformazione(TipoPendenzaTrasformazione trasformazione) {
+    this.trasformazione = trasformazione;
+    return this;
+  }
+
+  @JsonProperty("trasformazione")
+  public TipoPendenzaTrasformazione getTrasformazione() {
+    return trasformazione;
+  }
+  public void setTrasformazione(TipoPendenzaTrasformazione trasformazione) {
+    this.trasformazione = trasformazione;
+  }
+
+  /**
+   * Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
+   **/
+  public TipoPendenzaDominioPost inoltro(String inoltro) {
+    this.inoltro = inoltro;
+    return this;
+  }
+
+  @JsonProperty("inoltro")
+  public String getInoltro() {
+    return inoltro;
+  }
+  public void setInoltro(String inoltro) {
+    this.inoltro = inoltro;
+  }
+
+  /**
+   **/
+  public TipoPendenzaDominioPost promemoria(TipoPendenzaPromemoria promemoria) {
+    this.promemoria = promemoria;
+    return this;
+  }
+
+  @JsonProperty("promemoria")
+  public TipoPendenzaPromemoria getPromemoria() {
+    return promemoria;
+  }
+  public void setPromemoria(TipoPendenzaPromemoria promemoria) {
+    this.promemoria = promemoria;
   }
 
   @Override
@@ -129,13 +187,16 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
     return Objects.equals(codificaIUV, tipoPendenzaDominioPost.codificaIUV) &&
         Objects.equals(pagaTerzi, tipoPendenzaDominioPost.pagaTerzi) &&
         Objects.equals(abilitato, tipoPendenzaDominioPost.abilitato) &&
-        Objects.equals(schema, tipoPendenzaDominioPost.schema) &&
-        Objects.equals(datiAllegati, tipoPendenzaDominioPost.datiAllegati);
+        Objects.equals(form, tipoPendenzaDominioPost.form) &&
+        Objects.equals(validazione, tipoPendenzaDominioPost.validazione) &&
+        Objects.equals(trasformazione, tipoPendenzaDominioPost.trasformazione) &&
+        Objects.equals(inoltro, tipoPendenzaDominioPost.inoltro) &&
+        Objects.equals(promemoria, tipoPendenzaDominioPost.promemoria);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(codificaIUV, pagaTerzi, abilitato, schema, datiAllegati);
+    return Objects.hash(codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoria);
   }
 
   public static TipoPendenzaDominioPost parse(String json) throws ServiceException, ValidationException{
@@ -155,8 +216,11 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
-    sb.append("    schema: ").append(toIndentedString(schema)).append("\n");
-    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    form: ").append(toIndentedString(form)).append("\n");
+    sb.append("    validazione: ").append(toIndentedString(validazione)).append("\n");
+    sb.append("    trasformazione: ").append(toIndentedString(trasformazione)).append("\n");
+    sb.append("    inoltro: ").append(toIndentedString(inoltro)).append("\n");
+    sb.append("    promemoria: ").append(toIndentedString(promemoria)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -176,8 +240,14 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
-//	vf.getValidator("pagaTerzi", this.pagaTerzi).notNull();
-//	vf.getValidator("abilitato", this.abilitato).notNull();
+	vf.getValidator("form", this.form).validateFields();
+	vf.getValidator("trasformazione", this.trasformazione).validateFields();
+	vf.getValidator("promemoria", this.promemoria).validateFields();
+	
+	ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+	
+	if(this.inoltro != null)
+		validatoreId.validaIdApplicazione("inoltro", this.inoltro);
   }
 }
 

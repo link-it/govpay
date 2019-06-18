@@ -2,7 +2,6 @@ package it.govpay.backoffice.v1.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
@@ -90,7 +89,7 @@ public class PendenzaIndex extends JSONSerializable {
   private String idPendenza = null;
   
   @JsonProperty("tipoPendenza")
-  private String tipoPendenza = null;
+  private TipoPendenzaIndex tipoPendenza = null;
   
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
@@ -381,18 +380,17 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
-   * Tipologia di pendenza
    **/
-  public PendenzaIndex tipoPendenza(String tipoPendenza) {
+  public PendenzaIndex tipoPendenza(TipoPendenzaIndex tipoPendenza) {
     this.tipoPendenza = tipoPendenza;
     return this;
   }
 
   @JsonProperty("tipoPendenza")
-  public String getTipoPendenza() {
+  public TipoPendenzaIndex getTipoPendenza() {
     return tipoPendenza;
   }
-  public void setTipoPendenza(String tipoPendenza) {
+  public void setTipoPendenza(TipoPendenzaIndex tipoPendenza) {
     this.tipoPendenza = tipoPendenza;
   }
 

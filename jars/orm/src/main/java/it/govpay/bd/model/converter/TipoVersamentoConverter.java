@@ -49,8 +49,15 @@ public class TipoVersamentoConverter {
 			dto.setTipoDefault(Tipo.toEnum(vo.getTipo()));
 		dto.setPagaTerziDefault(vo.isPagaTerzi());
 		dto.setAbilitatoDefault(vo.getAbilitato());
-		dto.setJsonSchemaDefault(vo.getJsonSchema());
-		dto.setDatiAllegatiDefault(vo.getDatiAllegati());
+		dto.setFormDefinizioneDefault(vo.getFormDefinizione());
+		dto.setFormTipoDefault(vo.getFormTipo());
+		dto.setValidazioneDefinizioneDefault(vo.getValidazioneDefinizione());
+		dto.setTrasformazioneDefinizioneDefault(vo.getTrasformazioneDefinizione());
+		dto.setTrasformazioneTipoDefault(vo.getTrasformazioneTipo());
+		dto.setCodApplicazioneDefault(vo.getCodApplicazione());
+		dto.setPromemoriaAvvisoDefault(vo.getPromemoriaAvviso());
+		dto.setPromemoriaMessaggioDefault(vo.getPromemoriaMessaggio());
+		dto.setPromemoriaOggettoDefault(vo.getPromemoriaOggetto());
 		
 		return dto;
 	}
@@ -65,8 +72,15 @@ public class TipoVersamentoConverter {
 			vo.setTipo(dto.getTipoDefault().getCodifica());
 		vo.setPagaTerzi(dto.getPagaTerziDefault());
 		vo.setAbilitato(dto.isAbilitatoDefault());
-		vo.setJsonSchema(dto.getJsonSchemaDefault());
-		vo.setDatiAllegati(dto.getDatiAllegatiDefault());
+		vo.setFormDefinizione(dto.getFormDefinizioneDefault());
+		vo.setFormTipo(dto.getFormTipoDefault());
+		vo.setValidazioneDefinizione(dto.getValidazioneDefinizioneDefault());
+		vo.setTrasformazioneDefinizione(dto.getTrasformazioneDefinizioneDefault());
+		vo.setTrasformazioneTipo(dto.getTrasformazioneTipoDefault());
+		vo.setCodApplicazione(dto.getCodApplicazioneDefault());
+		vo.setPromemoriaAvviso(dto.getPromemoriaAvvisoDefault());
+		vo.setPromemoriaMessaggio(dto.getPromemoriaMessaggioDefault());
+		vo.setPromemoriaOggetto(dto.getPromemoriaOggettoDefault());
 		return vo;
 	}
 

@@ -51,8 +51,15 @@ public class TipoVersamentoDominioConverter {
 		if(vo.getTipo() != null)
 			dto.setTipoCustom(Tipo.toEnum(vo.getTipo()));
 		dto.setPagaTerziCustom(vo.getPagaTerzi());
-		dto.setJsonSchemaCustom(vo.getJsonSchema());
-		dto.setDatiAllegatiCustom(vo.getDatiAllegati());
+		dto.setFormDefinizioneCustom(vo.getFormDefinizione());
+		dto.setFormTipoCustom(vo.getFormTipo());
+		dto.setValidazioneDefinizioneCustom(vo.getValidazioneDefinizione());
+		dto.setTrasformazioneDefinizioneCustom(vo.getTrasformazioneDefinizione());
+		dto.setTrasformazioneTipoCustom(vo.getTrasformazioneTipo());
+		dto.setCodApplicazioneCustom(vo.getCodApplicazione());
+		dto.setPromemoriaAvvisoCustom(vo.getPromemoriaAvviso());
+		dto.setPromemoriaMessaggioCustom(vo.getPromemoriaMessaggio());
+		dto.setPromemoriaOggettoCustom(vo.getPromemoriaOggetto());
 		
 		dto.setCodTipoVersamento(vo.getTipoVersamento().getCodTipoVersamento());
 		dto.setDescrizione(vo.getTipoVersamento().getDescrizione());
@@ -61,8 +68,15 @@ public class TipoVersamentoDominioConverter {
 			dto.setTipoDefault(Tipo.toEnum(vo.getTipoVersamento().getTipo()));
 		dto.setPagaTerziDefault(vo.getTipoVersamento().isPagaTerzi());
 		dto.setAbilitatoDefault(vo.getTipoVersamento().isAbilitato());
-		dto.setJsonSchemaDefault(vo.getTipoVersamento().getJsonSchema());
-		dto.setDatiAllegatiDefault(vo.getTipoVersamento().getDatiAllegati());
+		dto.setFormDefinizioneDefault(vo.getTipoVersamento().getFormDefinizione());
+		dto.setFormTipoDefault(vo.getTipoVersamento().getFormTipo());
+		dto.setValidazioneDefinizioneDefault(vo.getTipoVersamento().getValidazioneDefinizione());
+		dto.setTrasformazioneDefinizioneDefault(vo.getTipoVersamento().getTrasformazioneDefinizione());
+		dto.setTrasformazioneTipoDefault(vo.getTipoVersamento().getTrasformazioneTipo());
+		dto.setCodApplicazioneDefault(vo.getTipoVersamento().getCodApplicazione());
+		dto.setPromemoriaAvvisoDefault(vo.getTipoVersamento().getPromemoriaAvviso());
+		dto.setPromemoriaMessaggioDefault(vo.getTipoVersamento().getPromemoriaMessaggio());
+		dto.setPromemoriaOggettoDefault(vo.getTipoVersamento().getPromemoriaOggetto());
 		
 		return dto;
 	}
@@ -80,8 +94,15 @@ public class TipoVersamentoDominioConverter {
 			tipoVersamento.setTipo(dto.getTipoDefault().getCodifica());
 		tipoVersamento.setPagaTerzi(dto.getPagaTerziDefault());
 		tipoVersamento.setAbilitato(dto.isAbilitatoDefault());
-		tipoVersamento.setJsonSchema(dto.getJsonSchemaDefault());
-		tipoVersamento.setDatiAllegati(dto.getDatiAllegatiDefault());
+		tipoVersamento.setFormDefinizione(dto.getFormDefinizioneDefault());
+		tipoVersamento.setFormTipo(dto.getFormTipoDefault());
+		tipoVersamento.setValidazioneDefinizione(dto.getValidazioneDefinizioneDefault());
+		tipoVersamento.setTrasformazioneDefinizione(dto.getTrasformazioneDefinizioneDefault());
+		tipoVersamento.setTrasformazioneTipo(dto.getTrasformazioneTipoDefault());
+		tipoVersamento.setCodApplicazione(dto.getCodApplicazioneDefault());
+		tipoVersamento.setPromemoriaAvviso(dto.getPromemoriaAvvisoDefault());
+		tipoVersamento.setPromemoriaMessaggio(dto.getPromemoriaMessaggioDefault());
+		tipoVersamento.setPromemoriaOggetto(dto.getPromemoriaOggettoDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
 		if(dto.getTipoCustom() != null)
@@ -89,8 +110,15 @@ public class TipoVersamentoDominioConverter {
 		vo.setPagaTerzi(dto.getPagaTerziCustom());
 		vo.setTipoVersamento(tipoVersamento);
 		vo.setAbilitato(dto.getAbilitatoCustom());
-		vo.setJsonSchema(dto.getJsonSchemaCustom());
-		vo.setDatiAllegati(dto.getDatiAllegatiCustom());
+		vo.setFormDefinizione(dto.getFormDefinizioneCustom());
+		vo.setFormTipo(dto.getFormTipoCustom());
+		vo.setValidazioneDefinizione(dto.getValidazioneDefinizioneCustom());
+		vo.setTrasformazioneDefinizione(dto.getTrasformazioneDefinizioneCustom());
+		vo.setTrasformazioneTipo(dto.getTrasformazioneTipoCustom());
+		vo.setCodApplicazione(dto.getCodApplicazioneCustom());
+		vo.setPromemoriaAvviso(dto.getPromemoriaAvvisoCustom());
+		vo.setPromemoriaMessaggio(dto.getPromemoriaMessaggioCustom());
+		vo.setPromemoriaOggetto(dto.getPromemoriaOggettoCustom());
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());
