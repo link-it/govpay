@@ -410,6 +410,61 @@ public class PendenzeController extends BaseController {
 			this.log(this.context);
 		}
     }
+	
+    public Response pendenzeIdDominioIdTipoPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+    	String methodName = "pendenzeIdDominioIdTipoPendenzaPOST";  
+		String transactionId = this.context.getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+    	
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+			
+			// controllo che il dominio e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
+				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idTipoPendenza);
+			}
+			
+			// salvo il json ricevuto
+			IOUtils.copy(is, baos);	
+			String jsonRequest = baos.toString();
+			
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+			
+			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
+			putVersamentoDTO.setStampaAvviso(stampaAvviso);
+			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
+			ModoAvvisatura avvisaturaModalita = null;
+			if(modalitaAvvisaturaDigitale != null) {
+				avvisaturaModalita = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
+			}
+			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
+			putVersamentoDTO.setCustomReq(jsonRequest);
+			putVersamentoDTO.setCodDominio(idDominio);
+			putVersamentoDTO.setCodTipoVersamento(idTipoPendenza);
+			
+			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdateCustom(putVersamentoDTO);
+			
+			PendenzaCreata pc = new PendenzaCreata();
+			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
+			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
+			pc.pdf(createOrUpdate.getPdf());
+			pc.setIdA2A(createOrUpdate.getVersamento().getApplicazione(null).getCodApplicazione());
+			pc.setIdPendenza(createOrUpdate.getVersamento().getCodVersamentoEnte());
+			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
+			
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(this.context);
+		}
+    }
 
 
 	public Response pendenzeTracciatiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "idUnitaOperativa",
+"idTipoPendenza",
 "nome",
 "causale",
 "soggettoPagatore",
@@ -38,6 +39,9 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("idUnitaOperativa")
   private String idUnitaOperativa = null;
+  
+  @JsonProperty("idTipoPendenza")
+  private String idTipoPendenza = null;
   
   @JsonProperty("nome")
   private String nome = null;
@@ -117,6 +121,22 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
   }
   public void setIdUnitaOperativa(String idUnitaOperativa) {
     this.idUnitaOperativa = idUnitaOperativa;
+  }
+  
+  /**
+   * Identificativo della tipologia pendenza
+   **/
+  public PendenzaPost idTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+    return this;
+  }
+
+  @JsonProperty("idTipoPendenza")
+  public String getIdTipoPendenza() {
+    return idTipoPendenza;
+  }
+  public void setIdTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
   }
 
   /**
@@ -395,6 +415,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
     PendenzaPost pendenzaPost = (PendenzaPost) o;
     return Objects.equals(this.idDominio, pendenzaPost.idDominio) &&
         Objects.equals(this.idUnitaOperativa, pendenzaPost.idUnitaOperativa) &&
+        Objects.equals(idTipoPendenza, pendenzaPost.idTipoPendenza) &&
         Objects.equals(this.nome, pendenzaPost.nome) &&
         Objects.equals(this.causale, pendenzaPost.causale) &&
         Objects.equals(this.soggettoPagatore, pendenzaPost.soggettoPagatore) &&
@@ -415,7 +436,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idDominio, this.idUnitaOperativa, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.voci, this.idA2A, this.idPendenza);
+    return Objects.hash(this.idDominio, this.idUnitaOperativa, this.idTipoPendenza, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.voci, this.idA2A, this.idPendenza);
   }
 
   public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -434,6 +455,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
     
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
     sb.append("    idUnitaOperativa: ").append(this.toIndentedString(this.idUnitaOperativa)).append("\n");
+    sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
     sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
     sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");

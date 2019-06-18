@@ -523,8 +523,15 @@ CREATE TABLE tipi_versamento
 	tipo VARCHAR(35) NOT NULL,
 	paga_terzi NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
-	json_schema CLOB,
-	dati_allegati CLOB,
+	form_tipo VARCHAR2(35 CHAR),
+	form_definizione CLOB,
+	validazione_definizione CLOB,
+	trasformazione_tipo VARCHAR2(35 CHAR),
+	trasformazione_definizione CLOB,
+	cod_applicazione VARCHAR2(35 CHAR),
+	promemoria_avviso NUMBER NOT NULL,
+	promemoria_oggetto VARCHAR2(512 CHAR),
+	promemoria_messaggio CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -535,6 +542,7 @@ CREATE TABLE tipi_versamento
 
 
 ALTER TABLE tipi_versamento MODIFY paga_terzi DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY promemoria_avviso DEFAULT 0;
 
 CREATE TRIGGER trg_tipi_versamento
 BEFORE
@@ -558,8 +566,15 @@ CREATE TABLE tipi_vers_domini
 	tipo VARCHAR2(35 CHAR),
 	paga_terzi NUMBER,
 	abilitato NUMBER,
-	json_schema CLOB,
-	dati_allegati CLOB,
+	form_tipo VARCHAR2(35 CHAR),
+	form_definizione CLOB,
+	validazione_definizione CLOB,
+	trasformazione_tipo VARCHAR2(35 CHAR),
+	trasformazione_definizione CLOB,
+	cod_applicazione VARCHAR2(35 CHAR),
+	promemoria_avviso NUMBER,
+	promemoria_oggetto VARCHAR2(512 CHAR),
+	promemoria_messaggio CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento NUMBER NOT NULL,

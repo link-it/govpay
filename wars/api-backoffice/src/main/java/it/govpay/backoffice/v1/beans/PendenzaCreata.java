@@ -8,13 +8,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"idA2A",
+"idPendenza",
 "idDominio",
 "numeroAvviso",
 "pdf"
 })
 public class PendenzaCreata extends JSONSerializable {
   
-    
+  @JsonProperty("idA2A")
+  private String idA2A = null;
+  
+  @JsonProperty("idPendenza")
+  private String idPendenza = null;
+	
   @JsonProperty("idDominio")
   private String idDominio = null;
   
@@ -23,6 +30,38 @@ public class PendenzaCreata extends JSONSerializable {
   
   @JsonProperty("pdf")
   private String pdf = null;
+  
+  /**
+   * Identificativo del gestionale responsabile della pendenza
+   **/
+  public PendenzaCreata idA2A(String idA2A) {
+    this.idA2A = idA2A;
+    return this;
+  }
+
+  @JsonProperty("idA2A")
+  public String getIdA2A() {
+    return this.idA2A;
+  }
+  public void setIdA2A(String idA2A) {
+    this.idA2A = idA2A;
+  }
+
+  /**
+   * Identificativo della pendenza nel gestionale responsabile
+   **/
+  public PendenzaCreata idPendenza(String idPendenza) {
+    this.idPendenza = idPendenza;
+    return this;
+  }
+
+  @JsonProperty("idPendenza")
+  public String getIdPendenza() {
+    return this.idPendenza;
+  }
+  public void setIdPendenza(String idPendenza) {
+    this.idPendenza = idPendenza;
+  }
 
   /**
    * Identificativo del creditore dell'avviso
@@ -82,6 +121,8 @@ public class PendenzaCreata extends JSONSerializable {
     }
     PendenzaCreata avviso = (PendenzaCreata) o;
     return 
+		Objects.equals(this.idA2A, avviso.idA2A) &&
+    	Objects.equals(this.idPendenza, avviso.idPendenza) && 
         Objects.equals(this.idDominio, avviso.idDominio) &&
         Objects.equals(this.numeroAvviso, avviso.numeroAvviso) &&
         Objects.equals(this.pdf, avviso.pdf);
@@ -89,7 +130,7 @@ public class PendenzaCreata extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idDominio, this.numeroAvviso, this.pdf);  }
+    return Objects.hash(this.idA2A, this.idPendenza, this.idDominio, this.numeroAvviso, this.pdf);  }
 
   public static PendenzaCreata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return parse(json, PendenzaCreata.class);
@@ -104,6 +145,8 @@ public class PendenzaCreata extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Avviso {\n");
+    sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
+    sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
     sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
     sb.append("    pdf: ").append(this.toIndentedString(this.pdf)).append("\n");

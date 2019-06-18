@@ -8,6 +8,10 @@ import it.govpay.model.Versamento.ModoAvvisatura;
 
 public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	
+	private String customReq;
+	private String codDominio;
+	private String codTipoVersamento;
+	
 	private Versamento versamento;
 	private Boolean stampaAvviso;
 	private Boolean avvisaturaDigitale;
@@ -48,4 +52,27 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 		this.avvisaturaModalita = avvisaturaModalita;
 	}
 
+	public String getCustomReq() {
+		return customReq;
+	}
+
+	public void setCustomReq(String customReq) {
+		this.customReq = customReq;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
 }

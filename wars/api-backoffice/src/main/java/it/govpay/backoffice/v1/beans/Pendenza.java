@@ -91,7 +91,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   private String idPendenza = null;
   
   @JsonProperty("tipoPendenza")
-  private String tipoPendenza = null;
+  private TipoPendenzaIndex tipoPendenza = null;
   
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
@@ -388,18 +388,17 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * Tipologia di pendenza
    **/
-  public Pendenza tipoPendenza(String tipoPendenza) {
+  public Pendenza tipoPendenza(TipoPendenzaIndex tipoPendenza) {
     this.tipoPendenza = tipoPendenza;
     return this;
   }
 
   @JsonProperty("tipoPendenza")
-  public String getTipoPendenza() {
+  public TipoPendenzaIndex getTipoPendenza() {
     return tipoPendenza;
   }
-  public void setTipoPendenza(String tipoPendenza) {
+  public void setTipoPendenza(TipoPendenzaIndex tipoPendenza) {
     this.tipoPendenza = tipoPendenza;
   }
 

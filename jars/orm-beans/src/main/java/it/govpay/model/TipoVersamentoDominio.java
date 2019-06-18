@@ -9,20 +9,69 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	private Tipo tipoCustom;
 	private Boolean pagaTerziCustom;
 	private Boolean abilitatoCustom;
-	private String jsonSchemaCustom;
-	private String datiAllegatiCustom;
+	private String formTipoCustom;
+	private String formDefinizioneCustom;
+	private String validazioneDefinizioneCustom;
+	private String trasformazioneTipoCustom;
+	private String trasformazioneDefinizioneCustom;
+	private String codApplicazioneCustom;
+	private Boolean promemoriaAvvisoCustom;
+	private String promemoriaOggettoCustom;
+	private String promemoriaMessaggioCustom;
 	
-	public String getJsonSchemaCustom() {
-		return jsonSchemaCustom;
+	public String getFormTipoCustom() {
+		return formTipoCustom;
 	}
-	public void setJsonSchemaCustom(String jsonSchemaCustom) {
-		this.jsonSchemaCustom = jsonSchemaCustom;
+	public void setFormTipoCustom(String formTipoCustom) {
+		this.formTipoCustom = formTipoCustom;
 	}
-	public String getDatiAllegatiCustom() {
-		return datiAllegatiCustom;
+	public String getFormDefinizioneCustom() {
+		return formDefinizioneCustom;
 	}
-	public void setDatiAllegatiCustom(String datiAllegatiCustom) {
-		this.datiAllegatiCustom = datiAllegatiCustom;
+	public void setFormDefinizioneCustom(String formDefinizioneCustom) {
+		this.formDefinizioneCustom = formDefinizioneCustom;
+	}
+	public String getValidazioneDefinizioneCustom() {
+		return validazioneDefinizioneCustom;
+	}
+	public void setValidazioneDefinizioneCustom(String validazioneDefinizioneCustom) {
+		this.validazioneDefinizioneCustom = validazioneDefinizioneCustom;
+	}
+	public String getTrasformazioneTipoCustom() {
+		return trasformazioneTipoCustom;
+	}
+	public void setTrasformazioneTipoCustom(String trasformazioneTipoCustom) {
+		this.trasformazioneTipoCustom = trasformazioneTipoCustom;
+	}
+	public String getTrasformazioneDefinizioneCustom() {
+		return trasformazioneDefinizioneCustom;
+	}
+	public void setTrasformazioneDefinizioneCustom(String trasformazioneDefinizioneCustom) {
+		this.trasformazioneDefinizioneCustom = trasformazioneDefinizioneCustom;
+	}
+	public String getCodApplicazioneCustom() {
+		return codApplicazioneCustom;
+	}
+	public void setCodApplicazioneCustom(String codApplicazioneCustom) {
+		this.codApplicazioneCustom = codApplicazioneCustom;
+	}
+	public Boolean getPromemoriaAvvisoCustom() {
+		return promemoriaAvvisoCustom;
+	}
+	public void setPromemoriaAvvisoCustom(Boolean promemoriaAvvisoCustom) {
+		this.promemoriaAvvisoCustom = promemoriaAvvisoCustom;
+	}
+	public String getPromemoriaOggettoCustom() {
+		return promemoriaOggettoCustom;
+	}
+	public void setPromemoriaOggettoCustom(String promemoriaOggettoCustom) {
+		this.promemoriaOggettoCustom = promemoriaOggettoCustom;
+	}
+	public String getPromemoriaMessaggioCustom() {
+		return promemoriaMessaggioCustom;
+	}
+	public void setPromemoriaMessaggioCustom(String promemoriaMessaggioCustom) {
+		this.promemoriaMessaggioCustom = promemoriaMessaggioCustom;
 	}
 	public long getIdTipoVersamento() {
 		return idTipoVersamento;

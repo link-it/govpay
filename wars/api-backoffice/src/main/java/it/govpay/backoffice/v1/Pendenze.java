@@ -119,6 +119,15 @@ public class Pendenze extends BaseRsServiceV1{
         return this.controller.pendenzeTracciatiIdStampeGET(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
+    @POST
+    @Path("/{idDominio}/{idTipoPendenza}")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json", "application/json" })
+    public Response addPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idTipoPendenza") String idTipoPendenza, java.io.InputStream is, @QueryParam("modalitaAvvisaturaDigitale") ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, @QueryParam("stampaAvviso") Boolean stampaAvviso, @QueryParam("avvisaturaDigitale") Boolean avvisaturaDigitale){
+        this.controller.setContext(this.getContext());
+        return this.controller.pendenzeIdDominioIdTipoPendenzaPOST(this.getUser(), uriInfo, httpHeaders,  idDominio,  idTipoPendenza, is, stampaAvviso, avvisaturaDigitale, modalitaAvvisaturaDigitale);
+    }
+
     @GET
     @Path("/tracciati/{id}/operazioni")
     @Produces({ "application/json" })

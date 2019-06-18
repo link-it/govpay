@@ -7,8 +7,12 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.TipoPendenza;
+import it.govpay.backoffice.v1.beans.TipoPendenzaForm;
+import it.govpay.backoffice.v1.beans.TipoPendenzaIndex;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
-import it.govpay.backoffice.v1.beans.TipoPendenzaPost.TipoEnum;
+import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
+import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
+import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
@@ -26,11 +30,11 @@ public class TipiPendenzaConverter {
 		if(entrataPost.getTipo() != null) {
 			
 			// valore tipo contabilita non valido
-			if(TipoEnum.fromValue(entrataPost.getTipo()) == null) {
-				throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + entrataPost.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+			if(TipoPendenzaTipologia.fromValue(entrataPost.getTipo()) == null) {
+				throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + entrataPost.getTipo() + "] valori possibili " + ArrayUtils.toString(TipoPendenzaTipologia.values()));
 			}
 			
-			entrataPost.setTipoEnum(TipoEnum.fromValue(entrataPost.getTipo()));
+			entrataPost.setTipoEnum(TipoPendenzaTipologia.fromValue(entrataPost.getTipo()));
 
 			switch (entrataPost.getTipoEnum()) {
 			case DOVUTA:
@@ -47,10 +51,27 @@ public class TipiPendenzaConverter {
 		
 		tipoVersamento.setPagaTerziDefault(entrataPost.PagaTerzi());
 		tipoVersamento.setAbilitatoDefault(entrataPost.Abilitato());
-		if(entrataPost.getSchema() != null)
-			tipoVersamento.setJsonSchemaDefault(ConverterUtils.toJSON(entrataPost.getSchema(),null));
-		if(entrataPost.getDatiAllegati() != null)
-			tipoVersamento.setDatiAllegatiDefault(ConverterUtils.toJSON(entrataPost.getDatiAllegati(),null));
+		
+		if(entrataPost.getForm() != null) {
+			tipoVersamento.setFormDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getForm().getDefinizione(),null));
+			tipoVersamento.setFormTipoDefault(entrataPost.getForm().getTipo());
+		}
+		
+		if(entrataPost.getPromemoria() != null) {
+			tipoVersamento.setPromemoriaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getPromemoria().getMessaggio(),null));
+			tipoVersamento.setPromemoriaOggettoDefault(entrataPost.getPromemoria().getOggetto());
+			tipoVersamento.setPromemoriaAvvisoDefault(entrataPost.getPromemoria().AllegaAvviso());
+		}
+		
+		if(entrataPost.getTrasformazione() != null) {
+			tipoVersamento.setTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getTrasformazione().getDefinizione(),null));
+			tipoVersamento.setTrasformazioneTipoDefault(entrataPost.getTrasformazione().getTipo());
+		}
+		if(entrataPost.getValidazione() != null)
+			tipoVersamento.setValidazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getValidazione(),null));
+		
+		if(entrataPost.getInoltro() != null)
+			tipoVersamento.setCodApplicazioneDefault(entrataPost.getInoltro());
 		
 		return entrataDTO;		
 	}
@@ -65,20 +86,61 @@ public class TipiPendenzaConverter {
 		if(tipoVersamento.getTipoDefault() != null) {
 			switch (tipoVersamento.getTipoDefault()) {
 			case DOVUTO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenza.TipoEnum.DOVUTA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTA);
 				break;
 			case SPONTANEO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenza.TipoEnum.SPONTANEA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEA);
 				break;
 			}
 		}
 		
 		rsModel.setPagaTerzi(tipoVersamento.getPagaTerziDefault());
-		if(tipoVersamento.getJsonSchemaDefault() != null)
-			rsModel.setSchema(new RawObject(tipoVersamento.getJsonSchemaDefault()));
-		if(tipoVersamento.getDatiAllegatiDefault() != null)
-			rsModel.setDatiAllegati(new RawObject(tipoVersamento.getDatiAllegatiDefault()));
 		
+		if(tipoVersamento.getFormDefinizioneDefault() != null && tipoVersamento.getFormTipoDefault() != null) {
+			TipoPendenzaForm form = new TipoPendenzaForm();
+			form.setTipo(tipoVersamento.getFormTipoDefault());
+			form.setDefinizione(new RawObject(tipoVersamento.getFormDefinizioneDefault())); 
+			rsModel.setForm(form);
+		}
+		
+		if(tipoVersamento.getPromemoriaMessaggioDefault() != null && tipoVersamento.getPromemoriaOggettoDefault() != null) {
+			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
+			promemoria.setOggetto(tipoVersamento.getPromemoriaOggettoDefault());
+			promemoria.setMessaggio(tipoVersamento.getPromemoriaMessaggioDefault());
+			promemoria.setAllegaAvviso(tipoVersamento.getPromemoriaAvvisoDefault());
+			rsModel.setPromemoria(promemoria);
+		}
+		
+		if(tipoVersamento.getTrasformazioneTipoDefault() != null && tipoVersamento.getTrasformazioneDefinizioneDefault() != null) {
+			TipoPendenzaTrasformazione trasformazione  = new TipoPendenzaTrasformazione();
+			trasformazione.setTipo(tipoVersamento.getTrasformazioneTipoDefault());
+			trasformazione.setDefinizione(new RawObject(tipoVersamento.getTrasformazioneDefinizioneDefault())); 
+			rsModel.setTrasformazione(trasformazione);
+		}
+		if(tipoVersamento.getValidazioneDefinizioneDefault() != null)
+			rsModel.setValidazione(new RawObject(tipoVersamento.getValidazioneDefinizioneDefault()));
+		
+		rsModel.setInoltro(tipoVersamento.getCodApplicazioneDefault());
+		
+		return rsModel;
+	}
+	
+	public static TipoPendenzaIndex toTipoPendenzaRsModelIndex(it.govpay.model.TipoVersamento tipoVersamento) {
+		TipoPendenzaIndex rsModel = new TipoPendenzaIndex();
+		
+		rsModel.descrizione(tipoVersamento.getDescrizione())
+		.idTipoPendenza(tipoVersamento.getCodTipoVersamento());
+		
+		if(tipoVersamento.getTipoDefault() != null) {
+			switch (tipoVersamento.getTipoDefault()) {
+			case DOVUTO:
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTA);
+				break;
+			case SPONTANEO:
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEA);
+				break;
+			}
+		}
 		
 		return rsModel;
 	}
