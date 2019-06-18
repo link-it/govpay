@@ -9,12 +9,18 @@ Background:
 * def tipoPendenza = 
 """
 {
-  "descrizione": "Sanzione codice della strada",
-  "tipo": "dovuta",
-  "codificaIUV": "030",
-  "pagaTerzi": true
+  descrizione: "Sanzione codice della strada",
+  tipo: "dovuta",
+  codificaIUV: "030",
+  pagaTerzi: true,
+  form: null,
+  trasformazione: null,
+  validazione: null  
 }
 """          
+* set tipoPendenza.form = encodeBase64(read('msg/tipoPendenza-dovuta-form.json'))
+* set tipoPendenza.trasformazione = encodeBase64(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
+* set tipoPendenza.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
 
 Scenario: Aggiunta di un tipoPendenza
 
@@ -53,11 +59,13 @@ Examples:
 | codificaIUV | '090' |
 | pagaTerzi | true |
 | pagaTerzi | false |
-| schema | { schema : 'aaaa'} |
-| schema | null |
-| datiAllegati | { datiAllegati : 'aaaa'} |
-| datiAllegati | 'aaaa' |
-| datiAllegati | [ 'a', 'b' ] |
-| datiAllegati | 1 |
-| datiAllegati | [ 1, 2 ] |
-| datiAllegati | null |
+| validazione | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| validazione | null |
+| trasformazione | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| trasformazione | null |
+| inoltro | idA2A |
+| inoltro | null |
+| promemoria | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaAvviso": true } |
+| promemoria | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaAvviso": false } |
+| promemoria | null |
+
