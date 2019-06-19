@@ -33,7 +33,7 @@ When method put
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains <field>
+* match response.dettaglio contains '<field>'
 
 Examples:
 | field | value 
@@ -53,7 +53,6 @@ Examples:
 | promemoria | { "oggetto": null, "messaggio": "Devi pagare", "allegaAvviso": true } |
 | promemoria | { "oggetto": "Promemoria pagamento", "messaggio": null, "allegaAvviso": true } |
 | promemoria | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaAvviso": "aaaaa" } |
-| validazione | { "type": "object" } |
 
 
 Scenario: Sintassi errata nel campo (idTipoEntrata)

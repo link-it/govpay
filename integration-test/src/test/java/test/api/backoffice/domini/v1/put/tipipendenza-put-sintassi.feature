@@ -46,4 +46,3 @@ Examples:
 | trasformazione | { "tipo": "freemarker", "definizione": null } |
 | promemoria | { "oggetto": "Promemoria pagamento", "messaggio": null, "allegaAvviso": true } |
 | promemoria | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaAvviso": "aaaaa" } |
-| validazione | { "type": "object" } |

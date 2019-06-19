@@ -471,7 +471,7 @@ public class DominiConverter {
 		}
 		
 		if(tipoPendenzaRequest.getPromemoria() != null) {
-			tipoVersamentoDominio.setPromemoriaMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoria().getMessaggio(),null));
+			tipoVersamentoDominio.setPromemoriaMessaggioCustom(tipoPendenzaRequest.getPromemoria().getMessaggio());
 			tipoVersamentoDominio.setPromemoriaOggettoCustom(tipoPendenzaRequest.getPromemoria().getOggetto());
 			tipoVersamentoDominio.setPromemoriaAvvisoCustom(tipoPendenzaRequest.getPromemoria().AllegaAvviso());
 		}

@@ -9,6 +9,7 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Dominio;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.PagamentoContext;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -23,12 +24,14 @@ public class DominioValidator implements IValidable {
 	
 	@Override
 	public void validate() throws ValidationException {
-		
+	}
+	
+	public void validazioneSemantica() throws UnprocessableEntityException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 
 		// Dominio pluri-intermediato deve avere codice segregazione
 		if(this.dominio.getAuxDigit() == 3 && this.dominio.getSegregationCode() == null) {
-			throw new ValidationException("Il campo segregationCode non deve essere vuoto.");
+			throw new UnprocessableEntityException("Il campo segregationCode non deve essere vuoto.");
 		}
 		
 		// validazione semantica della string iuv prefix
@@ -57,7 +60,7 @@ public class DominioValidator implements IValidable {
 			try {
 				vf.getValidator("iuvPrefix", prefix).maxLength(18).pattern("(^([0-9]){1,13}$)");
 			} catch (ValidationException ve) {
-				throw new ValidationException("Il pattern indicato realizza prefissi troppo lunghi: " + prefix);
+				throw new UnprocessableEntityException("Il pattern indicato realizza prefissi troppo lunghi: " + prefix);
 			}
 		}
 	}
