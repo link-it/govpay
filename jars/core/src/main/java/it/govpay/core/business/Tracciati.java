@@ -30,6 +30,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
@@ -91,15 +92,16 @@ public class Tracciati extends BasicBD {
 		String codDominio = tracciato.getCodDominio(); 
 
 		log.info("Avvio elaborazione tracciato [" + tracciato.getId() +"] per il Dominio ["+codDominio+"]");
-
+		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = null;
+		ISerializer serializer = null;
 		try {
 			SerializationConfig config = new SerializationConfig();
 			config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 			config.setIgnoreNullValues(true);
 			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
-			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
+			serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 
-			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = (it.govpay.core.beans.tracciati.TracciatoPendenza) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoPendenza.class);
+			beanDati = (it.govpay.core.beans.tracciati.TracciatoPendenza) deserializer.getObject(tracciato.getBeanDati(), it.govpay.core.beans.tracciati.TracciatoPendenza.class);
 
 			TracciatoPendenzePost tracciatoPendenzeRequest = JSONSerializable.parse(new String(tracciato.getRawRichiesta()), TracciatoPendenzePost.class);
 
@@ -114,11 +116,11 @@ public class Tracciati extends BasicBD {
 				beanDati.setNumAddTotali(inserimenti != null ? inserimenti.size() : 0);
 				beanDati.setNumDelTotali(annullamenti != null ? annullamenti.size() : 0);
 				beanDati.setAvvisaturaAbilitata(tracciatoPendenzeRequest.AvvisaturaDigitale());
-				
+
 				ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale();
 				String modo = (modalitaAvvisaturaDigitale != null && modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.SINCRONA)) ? "S" : "A";
 				beanDati.setAvvisaturaModalita(modo);
-				
+
 				tracciato.setBeanDati(serializer.getObject(beanDati));
 				tracciatiBD.update(tracciato);
 				this.commit();
@@ -231,7 +233,7 @@ public class Tracciati extends BasicBD {
 			this.setStatoTracciato(tracciato, beanDati);
 			tracciato.setDataCompletamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
-//			tracciatiBD.update(tracciato);
+			//			tracciatiBD.update(tracciato);
 			tracciatiBD.updateFineElaborazione(tracciato);
 
 			if(!this.isAutoCommit()) this.commit();
@@ -239,6 +241,25 @@ public class Tracciati extends BasicBD {
 		} catch(Throwable e) {
 			log.error("Errore durante l'elaborazione del tracciato ["+tracciato.getId()+"]: " + e.getMessage(), e);
 			if(!this.isAutoCommit()) this.rollback();
+
+			// aggiorno lo stato in errore altrimenti continua a ciclare
+			tracciato.setStato(STATO_ELABORAZIONE.SCARTATO);
+			String descrizioneStato = "Errore durante l'elaborazione del tracciato: " + e.getMessage();
+			tracciato.setDescrizioneStato(descrizioneStato.length() > 256 ? descrizioneStato.substring(0, 255): descrizioneStato);
+			tracciato.setDataCompletamento(new Date());
+			if(beanDati != null) {
+				beanDati.setStepElaborazione(StatoTracciatoType.ANNULLATO.getValue());
+				beanDati.setLineaElaborazioneAdd(0);
+				beanDati.setLineaElaborazioneDel(0);
+				beanDati.setNumAddTotali(0);
+				beanDati.setNumDelTotali(0);
+				beanDati.setDescrizioneStepElaborazione(descrizioneStato);
+				try {
+					tracciato.setBeanDati(serializer.getObject(beanDati));
+				} catch (IOException e1) {}
+			}	
+			tracciatiBD.updateFineElaborazione(tracciato);
+			if(!this.isAutoCommit()) this.commit();	
 		} finally {
 			this.setAutoCommit(wasAutocommit);
 		}

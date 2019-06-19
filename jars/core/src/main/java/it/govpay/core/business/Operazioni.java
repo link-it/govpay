@@ -269,6 +269,7 @@ public class Operazioni{
 				wasConnected = false;
 				bd.setupConnection(ctx.getTransactionId());
 			}
+			bd.enableSelectForUpdate();
 			Connection con = bd.getConnection();
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
@@ -280,6 +281,12 @@ public class Operazioni{
 			log.warn("Errore nell'aggiornamento della sonda OK: "+ t.getMessage());
 		}
 		finally {
+			if(bd != null)
+				try {
+					bd.disableSelectForUpdate();
+				} catch (ServiceException e) {
+					log.error("Errore " +e.getMessage() , e);
+				}
 			if(bd != null && !wasConnected) bd.closeConnection();
 		}
 	}
@@ -292,6 +299,7 @@ public class Operazioni{
 				wasConnected = false;
 				bd.setupConnection(ctx.getTransactionId());
 			}
+			bd.enableSelectForUpdate();
 			Connection con = bd.getConnection();
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
@@ -301,6 +309,12 @@ public class Operazioni{
 		} catch (Throwable t) {
 			log.warn("Errore nell'aggiornamento della sonda KO: "+ t.getMessage());
 		} finally {
+			if(bd != null)
+				try {
+					bd.disableSelectForUpdate();
+				} catch (ServiceException e1) {
+					log.error("Errore " +e1.getMessage() , e1);
+				}
 			if(bd != null && !wasConnected) bd.closeConnection();
 		}
 	}
@@ -610,7 +624,7 @@ public class Operazioni{
 					bd.rollback();
 				aggiornaSondaKO(BATCH_ESITO_AVVISATURA_DIGITALE, e, bd,ctx);
 			} catch (ServiceException e1) {
-				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Esito Avvisatura Digitale#" + e.getMessage();
 		} finally {
