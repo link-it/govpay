@@ -31,6 +31,7 @@ import it.govpay.backoffice.v1.beans.ListaTipiPendenzaDominio;
 import it.govpay.backoffice.v1.beans.ListaUnitaOperative;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominio;
 import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
+import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.converter.DominiConverter;
@@ -73,6 +74,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -501,7 +503,21 @@ public class DominiController extends BaseController {
 			findTipiPendenzaDominioDTO.setOrderBy(ordinamento);
 			findTipiPendenzaDominioDTO.setCodDominio(idDominio);
 			findTipiPendenzaDominioDTO.setAbilitato(abilitato);
-			findTipiPendenzaDominioDTO.setTipo(tipo);
+			
+			if(tipo != null) {
+				TipoPendenzaTipologia tipologia = TipoPendenzaTipologia.fromValue(tipo);
+				if(tipologia != null) {
+					switch (tipologia) {
+					case DOVUTO:
+						findTipiPendenzaDominioDTO.setTipo(TipoVersamento.Tipo.DOVUTO);
+						break;
+					case SPONTANEO:
+						findTipiPendenzaDominioDTO.setTipo(TipoVersamento.Tipo.SPONTANEO); 
+						break;
+					}
+				}
+			}
+			
 			findTipiPendenzaDominioDTO.setForm(form); 
 			
 			if(associati != null && associati) {

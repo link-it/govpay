@@ -23,6 +23,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.model.TipoVersamento;
+
 public class FindTipiPendenzaDominioDTO extends BasicFindRequestDTO {
 	
 	
@@ -30,7 +32,7 @@ public class FindTipiPendenzaDominioDTO extends BasicFindRequestDTO {
 	private String codTipoVersamento;
 	private String descrizione;
 	private Boolean abilitato;
-	private String tipo;
+	private TipoVersamento.Tipo tipo;
 	private Boolean form;
 	
 	public FindTipiPendenzaDominioDTO(Authentication user) throws ServiceException {
@@ -72,11 +74,11 @@ public class FindTipiPendenzaDominioDTO extends BasicFindRequestDTO {
 		this.abilitato = abilitato;
 	}
 
-	public String getTipo() {
+	public TipoVersamento.Tipo getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(TipoVersamento.Tipo tipo) {
 		this.tipo = tipo;
 	}
 

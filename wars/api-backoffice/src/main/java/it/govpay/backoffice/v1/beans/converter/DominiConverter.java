@@ -384,10 +384,10 @@ public class DominiConverter {
 		if(tipoVersamentoDominio.getTipoDefault() != null) {
 			switch (tipoVersamentoDominio.getTipoDefault()) {
 			case DOVUTO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
 				break;
 			case SPONTANEO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEO);
 				break;
 			}
 		}

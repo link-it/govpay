@@ -1026,9 +1026,10 @@ components:
         - importo
         - causale
       properties:
-        tipoPendenza:
+        idTipoPendenza:
           type: string
-          description: Tipologia di pendenza tra quelle censite in anagrafica      
+          description: Identificativo della tipologia pendenza
+          example: IMU    
         nome:
           type: string
           description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.

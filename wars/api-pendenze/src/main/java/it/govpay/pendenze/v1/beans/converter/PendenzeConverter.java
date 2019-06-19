@@ -49,7 +49,7 @@ public class PendenzeConverter {
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
-
+		rsModel.setIdTipoPendenza(versamento.getTipoVersamentoDominio(null).getCodTipoVersamento());
 		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
@@ -109,18 +109,18 @@ public class PendenzeConverter {
 			} 
 		}
 		rsModel.setRpp(rpps); 
-		
+
 		rsModel.setDescrizioneStato(versamento.getDescrizioneStato());
 		rsModel.setSegnalazioni(unmarshall(versamento.getAnomalie()));
 
 		return rsModel;
 	}
-	
+
 	private static List<Segnalazione> unmarshall(String anomalie) {
 		List<Segnalazione> list = new ArrayList<>();
-		
+
 		if(anomalie == null || anomalie.isEmpty()) return null;
-		
+
 		String[] split = anomalie.split("\\|");
 		for(String s : split){
 			String[] split2 = s.split("#");
@@ -131,7 +131,7 @@ public class PendenzeConverter {
 		}
 		return list;
 	}
-	
+
 	public static PendenzaIndex toRsIndexModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
 		PendenzaIndex rsModel = new PendenzaIndex();
 
@@ -149,7 +149,7 @@ public class PendenzeConverter {
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
-
+		rsModel.setIdTipoPendenza(versamento.getTipoVersamentoDominio(null).getCodTipoVersamento());
 		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
@@ -192,7 +192,7 @@ public class PendenzeConverter {
 
 	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, int indice) throws ServiceException {
 		VocePendenza rsModel = new VocePendenza();
-		
+
 		if(singoloVersamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
@@ -308,18 +308,23 @@ public class PendenzeConverter {
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
-		
+
 		// tipo Pendenza
-		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-			if(sv.getBolloTelematico() != null) {
-				versamento.setCodTipoVersamento(Tributo.BOLLOT);
-			} else if(sv.getCodTributo() != null) {
-				versamento.setCodTipoVersamento(sv.getCodTributo());
-			} else {
-				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+		if(pendenza.getIdTipoPendenza() == null) {
+			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
+				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+				if(sv.getBolloTelematico() != null) {
+					versamento.setCodTipoVersamento(Tributo.BOLLOT);
+				} else if(sv.getCodTributo() != null) {
+					versamento.setCodTipoVersamento(sv.getCodTributo());
+				} else {
+					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+				}
 			}
+		}else {
+			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
 		}
+
 
 		return versamento;
 	}

@@ -12,10 +12,10 @@ public enum TipoPendenzaTipologia {
   
   
   
-  SPONTANEA("spontanea"),
+  SPONTANEO("spontaneo"),
   
   
-  DOVUTA("dovuta");
+  DOVUTO("dovuto");
   
   
   

@@ -38,10 +38,10 @@ public class TipiPendenzaConverter {
 			entrataPost.setTipoEnum(TipoPendenzaTipologia.fromValue(entrataPost.getTipo()));
 
 			switch (entrataPost.getTipoEnum()) {
-			case DOVUTA:
+			case DOVUTO:
 				tipoVersamento.setTipoDefault(it.govpay.model.TipoVersamento.Tipo.DOVUTO);
 				break;
-			case SPONTANEA:
+			case SPONTANEO:
 				tipoVersamento.setTipoDefault(it.govpay.model.TipoVersamento.Tipo.SPONTANEO);
 				break;
 			}
@@ -94,10 +94,10 @@ public class TipiPendenzaConverter {
 		if(tipoVersamento.getTipoDefault() != null) {
 			switch (tipoVersamento.getTipoDefault()) {
 			case DOVUTO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
 				break;
 			case SPONTANEO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEO);
 				break;
 			}
 		}
@@ -142,10 +142,10 @@ public class TipiPendenzaConverter {
 		if(tipoVersamento.getTipoDefault() != null) {
 			switch (tipoVersamento.getTipoDefault()) {
 			case DOVUTO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
 				break;
 			case SPONTANEO:
-				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEA);
+				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.SPONTANEO);
 				break;
 			}
 		}

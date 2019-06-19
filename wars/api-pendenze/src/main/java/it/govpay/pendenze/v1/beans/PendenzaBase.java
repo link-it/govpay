@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"idTipoPendenza",
 "nome",
 "causale",
 "soggettoPagatore",
@@ -25,6 +26,9 @@ import it.govpay.core.beans.JSONSerializable;
 "tassonomiaAvviso",
 })
 public class PendenzaBase extends JSONSerializable {
+  
+  @JsonProperty("idTipoPendenza")
+  private String idTipoPendenza = null;
   
   @JsonProperty("nome")
   private String nome = null;
@@ -65,6 +69,22 @@ public class PendenzaBase extends JSONSerializable {
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
   
+  /**
+   * Identificativo della tipologia pendenza
+   **/
+  public PendenzaBase idTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+    return this;
+  }
+
+  @JsonProperty("idTipoPendenza")
+  public String getIdTipoPendenza() {
+    return idTipoPendenza;
+  }
+  public void setIdTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+  }
+
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
    **/
@@ -280,24 +300,25 @@ public class PendenzaBase extends JSONSerializable {
       return false;
     }
     PendenzaBase pendenzaBase = (PendenzaBase) o;
-    return Objects.equals(this.nome, pendenzaBase.nome) &&
-        Objects.equals(this.causale, pendenzaBase.causale) &&
-        Objects.equals(this.soggettoPagatore, pendenzaBase.soggettoPagatore) &&
-        Objects.equals(this.importo, pendenzaBase.importo) &&
-        Objects.equals(this.numeroAvviso, pendenzaBase.numeroAvviso) &&
-        Objects.equals(this.dataCaricamento, pendenzaBase.dataCaricamento) &&
-        Objects.equals(this.dataValidita, pendenzaBase.dataValidita) &&
-        Objects.equals(this.dataScadenza, pendenzaBase.dataScadenza) &&
-        Objects.equals(this.annoRiferimento, pendenzaBase.annoRiferimento) &&
-        Objects.equals(this.cartellaPagamento, pendenzaBase.cartellaPagamento) &&
-        Objects.equals(this.datiAllegati, pendenzaBase.datiAllegati) &&
-        Objects.equals(this.tassonomia, pendenzaBase.tassonomia) &&
-        Objects.equals(this.tassonomiaAvviso, pendenzaBase.tassonomiaAvviso);
+    return Objects.equals(idTipoPendenza, pendenzaBase.idTipoPendenza) &&
+        Objects.equals(nome, pendenzaBase.nome) &&
+        Objects.equals(causale, pendenzaBase.causale) &&
+        Objects.equals(soggettoPagatore, pendenzaBase.soggettoPagatore) &&
+        Objects.equals(importo, pendenzaBase.importo) &&
+        Objects.equals(numeroAvviso, pendenzaBase.numeroAvviso) &&
+        Objects.equals(dataCaricamento, pendenzaBase.dataCaricamento) &&
+        Objects.equals(dataValidita, pendenzaBase.dataValidita) &&
+        Objects.equals(dataScadenza, pendenzaBase.dataScadenza) &&
+        Objects.equals(annoRiferimento, pendenzaBase.annoRiferimento) &&
+        Objects.equals(cartellaPagamento, pendenzaBase.cartellaPagamento) &&
+        Objects.equals(datiAllegati, pendenzaBase.datiAllegati) &&
+        Objects.equals(tassonomia, pendenzaBase.tassonomia) &&
+        Objects.equals(tassonomiaAvviso, pendenzaBase.tassonomiaAvviso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso);
+    return Objects.hash(idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso);
   }
 
   public static PendenzaBase parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -314,19 +335,20 @@ public class PendenzaBase extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class PendenzaBase {\n");
     
-    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
-    sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
-    sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
-    sb.append("    dataCaricamento: ").append(this.toIndentedString(this.dataCaricamento)).append("\n");
-    sb.append("    dataValidita: ").append(this.toIndentedString(this.dataValidita)).append("\n");
-    sb.append("    dataScadenza: ").append(this.toIndentedString(this.dataScadenza)).append("\n");
-    sb.append("    annoRiferimento: ").append(this.toIndentedString(this.annoRiferimento)).append("\n");
-    sb.append("    cartellaPagamento: ").append(this.toIndentedString(this.cartellaPagamento)).append("\n");
-    sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
-    sb.append("    tassonomia: ").append(this.toIndentedString(this.tassonomia)).append("\n");
-    sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
+    sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
+    sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
+    sb.append("    dataCaricamento: ").append(toIndentedString(dataCaricamento)).append("\n");
+    sb.append("    dataValidita: ").append(toIndentedString(dataValidita)).append("\n");
+    sb.append("    dataScadenza: ").append(toIndentedString(dataScadenza)).append("\n");
+    sb.append("    annoRiferimento: ").append(toIndentedString(annoRiferimento)).append("\n");
+    sb.append("    cartellaPagamento: ").append(toIndentedString(cartellaPagamento)).append("\n");
+    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
+    sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -9,7 +9,7 @@ Background:
 Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuta', pagaTerzi: true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -46,7 +46,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 {
   ragioneSociale: 'Mario Rossi',
   domini: ['#(idDominio)'],
-  tipiPendenza: ['#(codLibero)', '#(tipoPendenzaRinnovo)'],
+  tipiPendenza: ['#(codLibero)', '#(tipoPendenzaRinnovo)', '#(codSpontaneo)'],
   acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] } ],
   abilitato: true
 }
@@ -169,11 +169,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeSpidBaseurl
 And path 'domini', idDominio, 'tipiPendenza'
 And headers operatoreSpidAutenticationHeader
-And param form = true
 And param abilitato = true
 When method get
 Then status 200
-And match response.numRisultati == 2
+And match response.numRisultati == 3
 
 Scenario: Verifica filtro tipo
 
@@ -193,9 +192,23 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeSpidBaseurl
 And path 'domini', idDominio, 'tipiPendenza'
 And headers operatoreSpidAutenticationHeader
-And param form = true
 And param abilitato = true
 And param tipo = 'spontaneo'
+When method get
+Then status 200
+And match response.numRisultati == 1
+And match response.risultati[0].idTipoPendenza == codSpontaneo
+
+Scenario: Verifica filtro form
+
+* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominio, 'tipiPendenza'
+And headers operatoreSpidAutenticationHeader
+And param form = false
+And param abilitato = true
+And param tipo = 'dovuto'
 When method get
 Then status 200
 And match response.numRisultati == 1

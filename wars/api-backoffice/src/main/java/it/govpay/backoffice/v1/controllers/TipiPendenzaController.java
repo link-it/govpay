@@ -16,9 +16,11 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.backoffice.v1.beans.EsitoEvento;
 import it.govpay.backoffice.v1.beans.ListaTipiPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
+import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
 import it.govpay.backoffice.v1.beans.converter.TipiPendenzaConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.JSONSerializable;
@@ -31,6 +33,7 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -63,7 +66,21 @@ public class TipiPendenzaController extends BaseController {
 			findTipiPendenzaDTO.setPagina(pagina);
 			findTipiPendenzaDTO.setOrderBy(ordinamento);
 			findTipiPendenzaDTO.setAbilitato(abilitato);
-			findTipiPendenzaDTO.setTipo(tipo);
+			
+			if(tipo != null) {
+				TipoPendenzaTipologia tipologia = TipoPendenzaTipologia.fromValue(tipo);
+				if(tipologia != null) {
+					switch (tipologia) {
+					case DOVUTO:
+						findTipiPendenzaDTO.setTipo(TipoVersamento.Tipo.DOVUTO);
+						break;
+					case SPONTANEO:
+						findTipiPendenzaDTO.setTipo(TipoVersamento.Tipo.SPONTANEO);
+						break;
+					}
+				}
+			}
+			
 			findTipiPendenzaDTO.setForm(form);
 			
 			if(associati != null && associati) {

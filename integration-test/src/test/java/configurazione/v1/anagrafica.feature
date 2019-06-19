@@ -177,7 +177,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codEntrataSegreteria
 And headers basicAutenticationHeader
-And request {  descrizione: 'Diritti e segreteria' ,  codificaIUV: null,  tipo: 'spontanea',  pagaTerzi: true, abilitato: true }
+And request {  descrizione: 'Diritti e segreteria' ,  codificaIUV: null,  tipo: 'spontaneo',  pagaTerzi: true, abilitato: true }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -191,7 +191,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codEntrataSenzaAppoggio
 And headers basicAutenticationHeader
-And request {  descrizione: 'Diritti e segreteria senza ibanAppoggio',  codificaIUV: null,  tipo: 'spontanea',  pagaTerzi: true, abilitato: true }
+And request {  descrizione: 'Diritti e segreteria senza ibanAppoggio',  codificaIUV: null,  tipo: 'spontaneo',  pagaTerzi: true, abilitato: true }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -205,7 +205,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codEntrataBollo
 And headers basicAutenticationHeader
-And request { descrizione: 'Marca da bollo telematica', codificaIUV: null, tipo: 'spontanea', pagaTerzi: true, abilitato: true }
+And request { descrizione: 'Marca da bollo telematica', codificaIUV: null, tipo: 'spontaneo', pagaTerzi: true, abilitato: true }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -219,7 +219,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codLibero
 And headers basicAutenticationHeader
-And request { descrizione: 'Pendenza libera' , codificaIUV: null, tipo: 'dovuta', pagaTerzi: false, abilitato: true}
+And request { descrizione: 'Pendenza libera' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: false, abilitato: true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -233,7 +233,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codSpontaneo
 And headers basicAutenticationHeader
-And request { descrizione: 'Pendenza spontanea' , codificaIUV: null, tipo: 'spontanea', pagaTerzi: false}
+And request { descrizione: 'Pendenza spontaneo' , codificaIUV: null, tipo: 'spontaneo', pagaTerzi: false}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
@@ -247,7 +247,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codDovuto
 And headers basicAutenticationHeader
-And request { descrizione: 'Pendenza dovuta' , codificaIUV: null, tipo: 'dovuta', pagaTerzi: false}
+And request { descrizione: 'Pendenza dovuta' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: false}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 

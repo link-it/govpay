@@ -76,7 +76,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path 'tipiPendenza', codEntrataSiope
 And headers basicAutenticationHeader
-And request {  descrizione: 'Imposta municipale aggiunta', codificaIUV: '012',  tipo: 'spontanea',  pagaTerzi: true }
+And request {  descrizione: 'Imposta municipale aggiunta', codificaIUV: '012',  tipo: 'spontaneo',  pagaTerzi: true }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 

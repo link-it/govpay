@@ -27,7 +27,7 @@ Scenario: Pagamento spontaneo spid con entrata riferita non consentita su sponta
 Given url backofficeBaseurl
 And path 'tipiPendenza', codEntrataSegreteria
 And headers basicAutenticationHeader
-And request { descrizione: 'Diritti e segreteria' ,  codificaIUV: null,  tipo: 'dovuta',  pagaTerzi: true, abilitato: true }
+And request { descrizione: 'Diritti e segreteria' ,  codificaIUV: null,  tipo: 'dovuto',  pagaTerzi: true, abilitato: true }
 When method put
 Then status 200
 

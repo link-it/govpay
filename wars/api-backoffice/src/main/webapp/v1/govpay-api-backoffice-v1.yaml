@@ -1323,11 +1323,7 @@ paths:
             filtro sul tipo di tipologia pendenza
           required: false
           schema:
-            type: string
-            enum:
-              - spontanea
-              - dovuta
-            example: spontanea
+            $ref: '#/components/schemas/tipoPendenzaTipologia'
         - name: associati
           in: query
           description: Restrizione ai soli tipi pendenza associati all'utenza chiamante
@@ -1478,11 +1474,7 @@ paths:
             filtro sul tipo di tipologia pendenza
           required: false
           schema:
-            type: string
-            enum:
-              - spontanea
-              - dovuta
-            example: spontanea
+            $ref: '#/components/schemas/tipoPendenzaTipologia'
         - name: associati
           in: query
           description: Restrizione ai soli tipi pendenza associati all'utenza chiamante
@@ -4869,9 +4861,9 @@ components:
     tipoPendenzaTipologia:
       type: string
       enum:
-        - spontanea
-        - dovuta
-      example: spontanea
+        - spontaneo
+        - dovuto
+      example: spontaneo
     tipoPendenzaDominioPost:
       type: object
       properties:
