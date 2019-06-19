@@ -26,7 +26,8 @@ Then assert responseStatus == 200 || responseStatus == 201
   	tipo: "freemarker",
   	definizione: null
   },
-  validazione: null;
+  validazione: null,
+  abilitato: true
 }
 """          
 * set tipoPendenzaDominio.form.definizione = encodeBase64(read('msg/tipoPendenza-dovuta-form.json'))
@@ -40,9 +41,6 @@ And request tipoPendenzaDominio
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-
-Scenario: Aggiunta di un tipoPendenza
-
 * def operatore = 
 """
 {
@@ -54,6 +52,17 @@ Scenario: Aggiunta di un tipoPendenza
 }
 """
 
+Given url backofficeBaseurl
+And path 'operatori', idOperatoreSpid
+And headers gpAdminBasicAutenticationHeader
+And request operatore
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+Scenario: Filtro per tipo, abilitazione e form
+
 * def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 
 Given url backofficeSpidBaseurl
@@ -64,5 +73,130 @@ And param abilitato = true
 And param tipo = 'dovuto'
 When method get
 Then status 200
- 
+And match response.numRisultati == 1
+And match response.risultati[0].idTipoPendenza == tipoPendenzaRinnovo
 
+Scenario: Verifica filtro abilitato
+
+* set tipoPendenzaDominio.abilitato = false
+
+Given url backofficeBasicBaseurl
+And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
+And headers gpAdminBasicAutenticationHeader
+And request tipoPendenzaDominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominio, 'tipiPendenza'
+And headers operatoreSpidAutenticationHeader
+And param form = true
+And param abilitato = true
+And param tipo = 'dovuto'
+When method get
+Then status 200
+And match response.numRisultati == 0
+
+Scenario: Verifica filtro form
+
+* set tipoPendenzaDominio.form = null
+
+Given url backofficeBasicBaseurl
+And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
+And headers gpAdminBasicAutenticationHeader
+And request tipoPendenzaDominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominio, 'tipiPendenza'
+And headers operatoreSpidAutenticationHeader
+And param form = true
+And param abilitato = true
+And param tipo = 'dovuto'
+When method get
+Then status 200
+And match response.numRisultati == 0
+
+Scenario: Verifica filtro autorizzazione
+
+* set tipoPendenzaDominio.form = null
+
+Given url backofficeBasicBaseurl
+And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
+And headers gpAdminBasicAutenticationHeader
+And request tipoPendenzaDominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominio, 'tipiPendenza'
+And headers operatoreSpidAutenticationHeader
+And param form = true
+And param abilitato = true
+And param tipo = 'dovuto'
+When method get
+Then status 200
+And match response.numRisultati == 0
+
+Scenario: Verifica filtro tipo
+
+* set tipoPendenzaDominio.form = null
+
+Given url backofficeBasicBaseurl
+And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
+And headers gpAdminBasicAutenticationHeader
+And request tipoPendenzaDominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominio, 'tipiPendenza'
+And headers operatoreSpidAutenticationHeader
+And param form = true
+And param abilitato = true
+When method get
+Then status 200
+And match response.numRisultati == 2
+
+Scenario: Verifica filtro tipo
+
+* set tipoPendenzaDominio.form = null
+
+Given url backofficeBasicBaseurl
+And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
+And headers gpAdminBasicAutenticationHeader
+And request tipoPendenzaDominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominio, 'tipiPendenza'
+And headers operatoreSpidAutenticationHeader
+And param form = true
+And param abilitato = true
+And param tipo = 'spontaneo'
+When method get
+Then status 200
+And match response.numRisultati == 1
+And match response.risultati[0].idTipoPendenza == codLibero
