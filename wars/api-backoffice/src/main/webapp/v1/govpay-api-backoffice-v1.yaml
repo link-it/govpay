@@ -3586,6 +3586,33 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+  '/eventi/{id}':
+    get:
+      summary: Dettaglio di un evento
+      tags:
+        - Giornale degli Eventi
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo Evento
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Dettaglio di un evento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/evento'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/operazioni':
     get:
       summary: Lista delle operazioni disponibili
@@ -5267,7 +5294,7 @@ components:
             verificato:
               type: boolean
               description: indicazione se eventuali anomalie sono state verificate da un operatore
-        - $ref: '#/components/schemas/pendenzaBase'
+        - $ref: '#/components/schemas/pendenzaBase'   
         - type: object
           required:
             - rpp
@@ -5343,7 +5370,7 @@ components:
             verificato:
               type: boolean
               description: indicazione se eventuali anomalie sono state verificate da un operatore
-        - $ref: '#/components/schemas/pendenzaBase'
+        - $ref: '#/components/schemas/pendenzaBase'   
         - type: object
           required:
             - voci
@@ -6298,7 +6325,7 @@ components:
           example: '0'
         idDominio:
           type: string
-          example: '99999999999'
+          example: '99999999999'          
         idIntermediario:
           type: string
           example: '99999999999'

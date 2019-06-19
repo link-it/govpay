@@ -70,4 +70,3 @@ ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto VARCHAR2(512 CHAR);
 ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_messaggio CLOB;
 
 
-

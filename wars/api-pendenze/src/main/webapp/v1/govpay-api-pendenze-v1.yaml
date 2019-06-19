@@ -1026,6 +1026,9 @@ components:
         - importo
         - causale
       properties:
+        tipoPendenza:
+          type: string
+          description: Tipologia di pendenza tra quelle censite in anagrafica      
         nome:
           type: string
           description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
