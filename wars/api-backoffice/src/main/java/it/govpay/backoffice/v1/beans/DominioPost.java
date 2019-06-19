@@ -553,7 +553,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("segregationCode", this.segregationCode).length(2).pattern("(^[0-4][0-9]$)");
 			vf.getValidator("cbill", this.cbill).length(5).pattern("(^([0-9]){5}$)");
 			vf.getValidator("autStampaPosteItaliane", this.autStampaPosteItaliane).maxLength(255);
-			vf.getValidator("iuvPrefix", this.iuvPrefix).maxLength(255);
+			vf.getValidator("iuvPrefix", this.iuvPrefix).pattern("(\\d*(%\\([yYatu]\\))?)+");
 			vf.getValidator("abilitato", this.abilitato).notNull();
 			
 			// uo associata al dominio

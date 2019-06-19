@@ -4263,7 +4263,8 @@ components:
         iuvPrefix:
           type: string
           description: Prefisso negli IUV generati da GovPay
-          example: '%(yyyy)%(a)'
+          example: '%(t)%(Y)'
+          pattern: '(\d*(%\([autyY]\))?)+'
         stazione:
           type: string
           description: Codice stazione PagoPA che intermedia il beneficiario

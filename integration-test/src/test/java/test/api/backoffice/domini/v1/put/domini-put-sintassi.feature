@@ -51,6 +51,7 @@ Examples:
 | cbill | dominio.cbill | 'abc456' | 'cbill' |
 | cbill | dominio.cbill | 'abc' | 'cbill' |
 | iuvPrefix | dominio.iuvPrefix | loremIpsum | 'iuvPrefix' |
+| iuvPrefix | dominio.iuvPrefix | loremIpsum | '%(x)' |
 | stazione | dominio.stazione | null | 'stazione' |
 | auxDigit | dominio.auxDigit | 'a' | 'auxDigit' |
 | auxDigit | dominio.auxDigit | '9' | 'auxDigit' |
