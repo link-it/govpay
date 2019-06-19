@@ -13,13 +13,19 @@ Background:
   tipo: "dovuta",
   codificaIUV: "030",
   pagaTerzi: true,
-  form: null,
-  trasformazione: null,
-  validazione: null  
+  form: { 
+  	tipo: "angular2-json-schema-form",
+  	definizione: null
+  },
+  trasformazione: {
+  	tipo: "freemarker",
+  	definizione: null
+  },
+  validazione: null;
 }
 """          
-* set tipoPendenza.form = encodeBase64(read('msg/tipoPendenza-dovuta-form.json'))
-* set tipoPendenza.trasformazione = encodeBase64(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
+* set tipoPendenza.form.definizione = encodeBase64(read('msg/tipoPendenza-dovuta-form.json'))
+* set tipoPendenza.trasformazione.definizione = encodeBase64(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
 * set tipoPendenza.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
 
 Scenario: Aggiunta di un tipoPendenza

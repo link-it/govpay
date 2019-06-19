@@ -20,9 +20,7 @@ Background:
   validazione: null  
 }
 """          
-* set tipoPendenza.form = encodeBase64(read('msg/tipoPendenza-dovuta-form.json'))
-* set tipoPendenza.trasformazione = encodeBase64(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenza.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')      
+
           
 Scenario Outline: Sintassi errata nel campo (<field>)
 
