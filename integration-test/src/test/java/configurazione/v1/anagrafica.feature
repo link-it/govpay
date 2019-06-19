@@ -28,6 +28,7 @@ Background:
 * def idA2ABasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 * def idA2A2BasicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: 'password' } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+* def operatoreSpidAutenticationHeader = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
 Scenario: configurazione anagrafica base
 

@@ -1,11 +1,12 @@
-Feature: Trasformazione pendenza
+Feature: Lista tipipendenza
 
-Background: 
+Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
+* def backofficeBasicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
-Given url backofficeBaseurl
+Given url backofficeBasicBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
 And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuta', pagaTerzi: true}
@@ -32,7 +33,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * set tipoPendenzaDominio.trasformazione.definizione = encodeBase64(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
 * set tipoPendenzaDominio.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
 
-Given url backofficeBaseurl
+Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
 And request tipoPendenzaDominio
@@ -40,25 +41,28 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 
-Scenario: Pendenza da form validata e convertita con freemarker
+Scenario: Aggiunta di un tipoPendenza
 
-* def idPendenza = getCurrentTimeMillis()
-
-Given url backofficeBaseurl
-And path 'pendenze', idDominio, tipoPendenzaRinnovo
-And headers gpAdminBasicAutenticationHeader
-And request 
+* def operatore = 
 """
 {
-	idPendenza: "#(idPendenza)",
-	soggettoPagatore: {
-		"identificativo": "RSSMRA30A01H501I",
-		"anagrafica": "Mario Rossi",
-		"email": "mario.rossi@testmail.it"
-	},
-	importo: 10.0
+  ragioneSociale: 'Mario Rossi',
+  domini: ['#(idDominio)'],
+  tipiPendenza: ['#(codLibero)', '#(tipoPendenzaRinnovo)'],
+  acl: [ { servizio: 'Pendenze', autorizzazioni: [ 'R', 'W' ] } ],
+  abilitato: true
 }
 """
-When method post
-Then assert responseStatus == 201
+
+* def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+Given url backofficeSpidBaseurl
+And path 'domini', idDominio, 'tipiPendenza'
+And headers operatoreSpidAutenticationHeader
+And param form = true
+And param abilitato = true
+And param tipo = 'dovuto'
+When method get
+Then status 200
+ 
 
