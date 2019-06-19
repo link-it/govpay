@@ -109,4 +109,11 @@ Scenario:
 	}
 	"""
     
-  
+	* def encodeBase64InputStream = 
+	"""
+	function(inputstream){ 
+	  var IOUtils = Java.type('org.apache.commons.io.IOUtils');
+		var Base64 = Java.type('java.util.Base64');
+		return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream));
+	}
+	"""

@@ -25,7 +25,7 @@ Background:
 }
 """          
 * set tipoPendenza.form.definizione = encodeBase64(read('msg/tipoPendenza-dovuta-form.json'))
-* set tipoPendenza.trasformazione.definizione = encodeBase64(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
+* set tipoPendenza.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
 * set tipoPendenza.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
 
 Scenario: Aggiunta di un tipoPendenza

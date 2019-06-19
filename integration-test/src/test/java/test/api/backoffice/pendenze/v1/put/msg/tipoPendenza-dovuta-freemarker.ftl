@@ -8,7 +8,7 @@
 <#assign xxx = calendarInstance.setTime(java.util.Calendar.DATE, calendarInstance.getMaximum(java.util.Calendar.DATE))!>
 <#assign dataValidita = calendarInstance?string("yyyy-MM-dd")>
 {
-	"idA2A": "idA2A",
+	"idA2A": "#(idA2A)",
 	"idPendenza": "${request.get("idPendenza").asText()}",
 	"idDominio": "${request.get("idDominio").asText()}",
 	"tipoPendenza": "${request.get("tipoPendenza").asText()}",
