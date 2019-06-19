@@ -41,10 +41,12 @@ When method post
 Then status 201
 And match response == { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
 
+* configure followRedirects = false
+
 Given url govpay_url + "/govpay/frontend/web/connector/ecsp/psp"
 And param idSession = response.idSession
 And param idDominio = pendenza.idDomino
 And param esito = 'ERROR'
 When method get
 Then status 303
-And match responseHeaders.Location == pagamentoPost.urlRitorno
+And match header Location contains pagamentoPost.urlRitorno
