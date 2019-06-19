@@ -1,5 +1,11 @@
 package it.govpay.core.dao.pagamenti.dto;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
+
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
@@ -16,6 +22,10 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	private Boolean stampaAvviso;
 	private Boolean avvisaturaDigitale;
 	private ModoAvvisatura avvisaturaModalita;
+	private MultivaluedMap<String, String> queryParameters;
+	private MultivaluedMap<String, String> pathParameters;
+	private Map<String, String> headers;
+
 	public PutPendenzaDTO(Authentication user) {
 		super(user);
 	}
@@ -75,4 +85,30 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	public void setCodTipoVersamento(String codTipoVersamento) {
 		this.codTipoVersamento = codTipoVersamento;
 	}
+
+	public MultivaluedMap<String, String> getQueryParameters() {
+		return queryParameters;
+	}
+
+	public void setQueryParameters(MultivaluedMap<String, String> queryParameters) {
+		this.queryParameters = queryParameters;
+	}
+
+	public MultivaluedMap<String, String> getPathParameters() {
+		return pathParameters;
+	}
+
+	public void setPathParameters(MultivaluedMap<String, String> pathParameters) {
+		this.pathParameters = pathParameters;
+	}
+
+	public Map<String, String> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(Map<String, String> headers) {
+		this.headers = headers;
+	}
+	
+	
 }

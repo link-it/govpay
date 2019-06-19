@@ -41,12 +41,12 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.GpContext;
 
 
