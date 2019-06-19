@@ -31,16 +31,16 @@ And request tipoPendenza
 When method put
 Then status 400
 And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-And match response.dettaglio contains <fieldName>
+And match response.dettaglio contains '<fieldName>'
 
 Examples:
-| field | fieldValue | fieldName | 
-| codificaIUV | '' | 'codificaIUV' |
-| codificaIUV | 'aaa' | 'codificaIUV' |
-| codificaIUV | '00000' | 'codificaIUV' |
-| pagaTerzi |  '' | 'pagaTerzi' |
-| pagaTerzi |  'si' | 'pagaTerzi' |
-| form | { "tipo": null, "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| field | fieldValue |  
+| codificaIUV | '' | 
+| codificaIUV | 'aaa' | 
+| codificaIUV | '00000' |
+| pagaTerzi |  '' | 
+| pagaTerzi |  'si' |
+| form | { "tipo": null, "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | 
 | form | { "tipo": "angular2-json-schema-form", "definizione": null } |
 | trasformazione | { "tipo": "booo", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 | trasformazione | { "tipo": "freemarker", "definizione": null } |
