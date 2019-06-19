@@ -59,7 +59,7 @@ public class TipiPendenzaConverter {
 		}
 		
 		if(entrataPost.getPromemoria() != null) {
-			tipoVersamento.setPromemoriaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getPromemoria().getMessaggio(),null));
+			tipoVersamento.setPromemoriaMessaggioDefault(entrataPost.getPromemoria().getMessaggio());
 			tipoVersamento.setPromemoriaOggettoDefault(entrataPost.getPromemoria().getOggetto());
 			tipoVersamento.setPromemoriaAvvisoDefault(entrataPost.getPromemoria().AllegaAvviso());
 		}

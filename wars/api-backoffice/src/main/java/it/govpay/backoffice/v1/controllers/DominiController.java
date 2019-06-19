@@ -451,7 +451,7 @@ public class DominiController extends BaseController {
 
 			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 
 
-			new DominioValidator(putDominioDTO.getDominio()).validate();
+			new DominioValidator(putDominioDTO.getDominio()).validazioneSemantica();
 
 			DominiDAO dominiDAO = new DominiDAO();
 
