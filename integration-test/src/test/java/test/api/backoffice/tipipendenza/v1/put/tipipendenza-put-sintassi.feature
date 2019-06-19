@@ -26,7 +26,7 @@ Background:
           
 Scenario Outline: Sintassi errata nel campo (<field>)
 
-* set tipoPendenza.<fieldRequest> = <fieldValue>
+* set tipoPendenza.<field> = <value>
 
 Given url backofficeBaseurl
 And path 'tipiPendenza', 'Multa'
@@ -36,19 +36,19 @@ When method put
 Then status 400
 
 * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains <fieldResponse>
+* match response.dettaglio contains <field>
 
 Examples:
-| field | fieldRequest | fieldValue | fieldResponse |
-| descrizione | descrizione | null | 'descrizione' | 
-| descrizione | descrizione | loremIpsum | 'descrizione' | 
-| tipo | tipo | null | 'tipo' |
-| tipo | tipo | 'XXXX' | 'tipo' |
-| codificaIUV | codificaIUV | '' | 'codificaIUV' |
-| codificaIUV | codificaIUV | 'aaa' | 'codificaIUV' |
-| codificaIUV | codificaIUV | '00000' | 'codificaIUV' |
-| pagaTerzi | pagaTerzi | '' | 'pagaTerzi' |
-| pagaTerzi | pagaTerzi | 'si' | 'pagaTerzi' |
+| field | value 
+| descrizione | null |  
+| descrizione | loremIpsum |
+| tipo | null | 
+| tipo | 'XXXX' | 
+| codificaIUV | '' | 
+| codificaIUV | 'aaa' | 
+| codificaIUV | '00000' | 
+| pagaTerzi | '' | 
+| pagaTerzi | 'si' | 
 | form | { "tipo": null, "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 | form | { "tipo": "angular2-json-schema-form", "definizione": null } |
 | trasformazione | { "tipo": "booo", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
