@@ -343,6 +343,10 @@ public class Rpt extends BasicBD{
 					try {
 						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
+						
+						if(this.isClosed())
+							this.setupConnection(ContextThreadLocal.get().getTransactionId());
+						
 						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale, this);
 						// salvataggio id Rpt/ versamento/ pagamento
 						chiediStatoRptClient.getEventoCtx().setCodDominio(rpts.get(0).getCodDominio());

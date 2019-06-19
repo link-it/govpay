@@ -35,8 +35,6 @@ import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.converter.DominiConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
-import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
@@ -111,7 +109,7 @@ public class DominiController extends BaseController {
 				List<Long> idDominiAutorizzati = AuthorizationManager.getIdDominiAutorizzati(user);
 				if(idDominiAutorizzati == null)
 					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-				
+
 				listaDominiDTO.setIdDomini(idDominiAutorizzati);
 			}
 
@@ -470,17 +468,30 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response dominiIdDominioTipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo) {
+	public Response dominiIdDominioTipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form) {
 		String methodName = "dominiIdDominioTipiPendenzaGET";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
-
+			try {
+				// autorizzazione sulla API
+				this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
+			}catch (NotAuthorizedException e) {
+				associati = true;
+			}
+			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-
+			
+			if(associati != null && associati) {
+				List<String> codDominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+				if(codDominiAutorizzati == null)
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+				if(!codDominiAutorizzati.isEmpty() && !codDominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, idDominio, null);
+				}
+			}
+			
 			// Parametri - > DTO Input
 
 			FindTipiPendenzaDominioDTO findTipiPendenzaDominioDTO = new FindTipiPendenzaDominioDTO(user);
@@ -491,6 +502,15 @@ public class DominiController extends BaseController {
 			findTipiPendenzaDominioDTO.setCodDominio(idDominio);
 			findTipiPendenzaDominioDTO.setAbilitato(abilitato);
 			findTipiPendenzaDominioDTO.setTipo(tipo);
+			findTipiPendenzaDominioDTO.setForm(form); 
+			
+			if(associati != null && associati) {
+				List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+				if(idTipiVersamentoAutorizzati == null)
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+
+				findTipiPendenzaDominioDTO.setIdTipiVersamento(idTipiVersamentoAutorizzati);
+			}
 			// INIT DAO
 
 			DominiDAO dominiDAO = new DominiDAO(false);

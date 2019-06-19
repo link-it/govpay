@@ -31,6 +31,7 @@ public class FindTipiPendenzaDominioDTO extends BasicFindRequestDTO {
 	private String descrizione;
 	private Boolean abilitato;
 	private String tipo;
+	private Boolean form;
 	
 	public FindTipiPendenzaDominioDTO(Authentication user) throws ServiceException {
 		super(user);
@@ -77,6 +78,14 @@ public class FindTipiPendenzaDominioDTO extends BasicFindRequestDTO {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public Boolean getForm() {
+		return form;
+	}
+
+	public void setForm(Boolean form) {
+		this.form = form;
 	}
 	
 }
