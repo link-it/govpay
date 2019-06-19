@@ -45,6 +45,7 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 //import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
@@ -60,11 +61,14 @@ import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Applicazione;
 //import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
+import it.govpay.core.dao.anagrafica.exception.DominioNonTrovatoException;
+import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
@@ -82,6 +86,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.StatoPendenza;
@@ -782,26 +787,56 @@ public class PendenzeDAO extends BaseDAO{
 		return createOrUpdatePendenzaResponse;
 	}
 	
-	public PutPendenzaDTOResponse createOrUpdateCustom(PutPendenzaDTO putVersamentoDTO) throws GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException{ 
+	public PutPendenzaDTOResponse createOrUpdateCustom(PutPendenzaDTO putVersamentoDTO) throws GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException{ 
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			
-			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(putVersamentoDTO.getVersamento());
+			Dominio dominio = null;
+			try {
+				dominio = AnagraficaManager.getDominio(bd, putVersamentoDTO.getCodDominio());
+			} catch (NotFoundException e1) {
+				throw new DominioNonTrovatoException("Dominio ["+putVersamentoDTO.getCodDominio()+"] inesistente.", e1);
+			}
+			// lettura della configurazione TipoVersamentoDominio
+			TipoVersamentoDominio tipoVersamentoDominio = null;
+			try {
+				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), putVersamentoDTO.getCodTipoVersamento());
+			} catch (NotFoundException e1) {
+				throw new TipoVersamentoNonTrovatoException("TipoPendenza ["+putVersamentoDTO.getCodTipoVersamento()+"] inesistente per il Dominio ["+putVersamentoDTO.getCodDominio()+"].", e1);
+			}
+			
+			
+			if(tipoVersamentoDominio.getValidazioneDefinizione() != null) {
+				
+			}
+			
+			if(tipoVersamentoDominio.getTrasformazioneDefinizione() != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
+				
+			}
+			
+			if(tipoVersamentoDominio.getCodApplicazione() != null) {
+				
+			}
+			PendenzaPost pendenzaPost = null;
+			
+			
+			it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(versamentoCommons);
 			
 			Applicazione applicazioniBD = new Applicazione(bd);
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(putVersamentoDTO.getUser());
 			it.govpay.bd.model.Applicazione applicazioneAutenticata = details.getApplicazione();
 			if(applicazioneAutenticata != null) 
-				applicazioniBD.autorizzaApplicazione(putVersamentoDTO.getVersamento().getCodApplicazione(), applicazioneAutenticata, bd);
+				applicazioniBD.autorizzaApplicazione(versamentoCommons.getCodApplicazione(), applicazioneAutenticata, bd);
 			
 			createOrUpdatePendenzaResponse.setCreated(false);
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 
 			try {
-				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, putVersamentoDTO.getVersamento().getCodApplicazione()).getId(), putVersamentoDTO.getVersamento().getCodVersamentoEnte());
+				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, versamentoCommons.getCodApplicazione()).getId(), versamentoCommons.getCodVersamentoEnte());
 			}catch(NotFoundException e) {
 				createOrUpdatePendenzaResponse.setCreated(true);
 			}

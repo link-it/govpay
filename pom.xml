@@ -34,14 +34,14 @@
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
 		
 		<!-- op2 -->
-		<openspcoop2.version>3.1.0-SNAPSHOT</openspcoop2.version>
+		<openspcoop2.version>3.1.0</openspcoop2.version>
 		
 		<!-- log -->
-		<slf4j.version>1.7.21</slf4j.version>
+		<slf4j.version>1.7.25</slf4j.version>
 		<logger.version>2.6.2</logger.version>
 		
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-1-SNAPSHOT</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-2</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.5.21</swagger.version>
 		<swagger.v3.version>2.0.3</swagger.v3.version>
 		<swagger.parser.version>2.0.2</swagger.parser.version>
@@ -53,7 +53,7 @@
 		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 		
 		<!-- jackson -->
-		<jackson.version>2.9.6</jackson.version>
+		<jackson.version>2.9.8</jackson.version>
 		
 		<!-- Spring -->
 		<spring.version>5.0.8.RELEASE</spring.version>

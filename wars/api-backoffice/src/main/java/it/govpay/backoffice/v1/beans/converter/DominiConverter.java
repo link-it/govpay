@@ -25,6 +25,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
+import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
@@ -476,6 +477,13 @@ public class DominiConverter {
 		}
 		
 		if(tipoPendenzaRequest.getTrasformazione() != null) {
+			if(tipoPendenzaRequest.getTrasformazione().getTipo() != null) {
+				// valore tipo contabilita non valido
+				if(TipoEnum.fromValue(tipoPendenzaRequest.getTrasformazione().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + tipoPendenzaRequest.getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+				}
+			}
+			
 			tipoVersamentoDominio.setTrasformazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTrasformazione().getDefinizione(),null));
 			tipoVersamentoDominio.setTrasformazioneTipoCustom(tipoPendenzaRequest.getTrasformazione().getTipo());
 		}

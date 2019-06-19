@@ -12,7 +12,7 @@ Background:
 	"codificaIUV": "999",  
 	"pagaTerzi": false,
 	"abilitato": true,
-	"form": null
+	"form": null,
 	"validazione": null,
 	"trasformazione": null,
 	"inoltro": null,
@@ -31,7 +31,7 @@ And request tipoPendenza
 When method put
 Then status 400
 And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-And match response.dettaglio contains '<fieldName>'
+And match response.dettaglio contains '<field>'
 
 Examples:
 | field | fieldValue |  

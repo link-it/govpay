@@ -13,6 +13,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
+import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
@@ -64,6 +65,13 @@ public class TipiPendenzaConverter {
 		}
 		
 		if(entrataPost.getTrasformazione() != null) {
+			if(entrataPost.getTrasformazione().getTipo() != null) {
+				// valore tipo contabilita non valido
+				if(TipoEnum.fromValue(entrataPost.getTrasformazione().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo trasformazione. Valore fornito [" + entrataPost.getTrasformazione().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoEnum.values()));
+				}
+			}
+			
 			tipoVersamento.setTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getTrasformazione().getDefinizione(),null));
 			tipoVersamento.setTrasformazioneTipoDefault(entrataPost.getTrasformazione().getTipo());
 		}

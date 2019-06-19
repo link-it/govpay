@@ -46,5 +46,5 @@ And param idSession = response.idSession
 And param idDominio = pendenza.idDomino
 And param esito = 'ERROR'
 When method get
-Then status 302
+Then status 303
 And match responseHeaders.Location == pagamentoPost.urlRitorno
