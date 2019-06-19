@@ -14,45 +14,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-	"nome",
-	"causale",
-	"soggettoPagatore",
-	"importo",
-	"numeroAvviso",
-	"dataCaricamento",
-	"dataValidita",
-	"dataScadenza",
-	"annoRiferimento",
-	"cartellaPagamento",
-	"datiAllegati",
-	"tassonomia",
-	"tassonomiaAvviso",
-	"idDominio",
-	"idUnitaOperativa",
-	"voci",
+"idTipoPendenza",
+"nome",
+"causale",
+"soggettoPagatore",
+"importo",
+"numeroAvviso",
+"dataCaricamento",
+"dataValidita",
+"dataScadenza",
+"annoRiferimento",
+"cartellaPagamento",
+"datiAllegati",
+"tassonomia",
+"tassonomiaAvviso",
+"idDominio",
+"idUnitaOperativa",
+"voci",
 })
-
 public class PendenzaPut extends JSONSerializable implements IValidable {
 
-	private static final String FIELD_ID_DOMINIO = "idDominio";
-	private static final String FIELD_ID_UO = "idUnitaOperativa";
-	private static final String FIELD_NOME = "nome";
-	private static final String FIELD_CAUSALE = "causale";
-	private static final String FIELD_SOGGETTO_PAGATORE = "soggettoPagatore";
-	private static final String FIELD_IMPORTO = "importo";
-	private static final String FIELD_NUMERO_AVVISO = "numeroAvviso";
-	private static final String FIELD_DATA_VALIDITA = "dataValidita";
-	private static final String FIELD_DATA_SCADENZA = "dataScadenza";
-	private static final String FIELD_ANNORIFERIMENTO = "annoRiferimento";
-	private static final String FIELD_CARTELLA_PAGAMENTO = "cartellaPagamento";
-	private static final String FIELD_VOCI = "voci";
+  @JsonProperty("idTipoPendenza")
+  private String idTipoPendenza = null;
 
-	@JsonProperty("nome")
-	private String nome = null;
+  @JsonProperty("nome")
+  private String nome = null;
 
-	@JsonProperty("causale")
-	private String causale = null;
+  @JsonProperty("causale")
+  private String causale = null;
 
 	@JsonProperty("soggettoPagatore")
 	private Soggetto soggettoPagatore = null;
@@ -98,6 +89,22 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 
 	@JsonProperty("voci")
 	private List<VocePendenza> voci = new ArrayList<>();
+
+  /**
+   * Identificativo della tipologia pendenza
+   **/
+  public PendenzaPut idTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+    return this;
+  }
+
+  @JsonProperty("idTipoPendenza")
+  public String getIdTipoPendenza() {
+    return idTipoPendenza;
+  }
+  public void setIdTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+  }
 
 	/**
 	 * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -375,7 +382,8 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 			return false;
 		}
 		PendenzaPut pendenzaPut = (PendenzaPut) o;
-		return Objects.equals(this.nome, pendenzaPut.nome) &&
+		return 	Objects.equals(idTipoPendenza, pendenzaPut.idTipoPendenza) &&
+				Objects.equals(this.nome, pendenzaPut.nome) &&
 				Objects.equals(this.causale, pendenzaPut.causale) &&
 				Objects.equals(this.soggettoPagatore, pendenzaPut.soggettoPagatore) &&
 				Objects.equals(this.importo, pendenzaPut.importo) &&
@@ -395,7 +403,7 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idDominio, this.idUnitaOperativa, this.voci);
+		return Objects.hash(idTipoPendenza, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idDominio, this.idUnitaOperativa, this.voci);
 	}
 
 	public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -411,7 +419,7 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("class PendenzaPut {\n");
-
+		sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
 		sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
 		sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
 		sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
@@ -446,20 +454,25 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
+		
+		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
-		vf.getValidator(FIELD_ID_DOMINIO, this.idDominio).notNull().minLength(1).maxLength(35);
-		vf.getValidator(FIELD_ID_UO, this.idUnitaOperativa).minLength(1).maxLength(35);
-		vf.getValidator(FIELD_NOME, this.nome).minLength(1).maxLength(35);
-		vf.getValidator(FIELD_CAUSALE, this.causale).notNull().minLength(1).maxLength(140);
-		vf.getValidator(FIELD_SOGGETTO_PAGATORE, this.soggettoPagatore).notNull().validateFields();
-		vf.getValidator(FIELD_IMPORTO, this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
-		vf.getValidator(FIELD_NUMERO_AVVISO, this.numeroAvviso).pattern("[0-9]{18}");
-		vf.getValidator(FIELD_DATA_VALIDITA, this.dataValidita);
-		vf.getValidator(FIELD_DATA_SCADENZA, this.dataScadenza);
+		validatoreId.validaIdDominio("idDominio", this.idDominio);
+		if(this.idUnitaOperativa != null)
+			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa);
+		if(this.idTipoPendenza != null)
+			validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
+		vf.getValidator("nome", this.nome).minLength(1).maxLength(35);
+		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
+		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
+		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
+		vf.getValidator("numeroAvviso", this.numeroAvviso).pattern("[0-9]{18}");
+		vf.getValidator("dataValidita", this.dataValidita);
+		vf.getValidator("dataScadenza", this.dataScadenza);
 		if(this.annoRiferimento != null)
-			vf.getValidator(FIELD_ANNORIFERIMENTO, this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
-		vf.getValidator(FIELD_CARTELLA_PAGAMENTO, this.cartellaPagamento).minLength(1).maxLength(35);
-		vf.getValidator(FIELD_VOCI, this.voci).notNull().minItems(1).maxItems(5).validateObjects();
+			vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
+		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
+		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 	}
 }
 

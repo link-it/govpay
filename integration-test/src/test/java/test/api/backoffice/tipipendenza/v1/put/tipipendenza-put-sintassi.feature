@@ -11,7 +11,7 @@ Background:
 """
 {
   descrizione: "Sanzione codice della strada",
-  tipo: "dovuta",
+  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
   form: null,

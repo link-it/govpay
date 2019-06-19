@@ -10,7 +10,7 @@ Background:
 """
 {
   descrizione: "Sanzione codice della strada",
-  tipo: "dovuta",
+  tipo: "dovuto",
   codificaIUV: "030",
   pagaTerzi: true,
   form: { 
@@ -59,8 +59,8 @@ And match response.<field> == checkValue
 Examples:
 | field | value | 
 | descrizione | 'Nuova descrizione' |
-| tipo | 'spontanea' |
-| tipo | 'dovuta' |
+| tipo | 'spontaneo' |
+| tipo | 'dovuto' |
 | codificaIUV | null |
 | codificaIUV | '090' |
 | pagaTerzi | true |

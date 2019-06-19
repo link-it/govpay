@@ -8,7 +8,7 @@ Background:
 Given url backofficeBaseurl
 And path 'tipiPendenza', tipoPendenzaRinnovo
 And headers gpAdminBasicAutenticationHeader
-And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuta', pagaTerzi: true}
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, tipo: 'dovuto', pagaTerzi: true}
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
