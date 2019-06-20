@@ -3,7 +3,10 @@ package it.govpay.core.utils.trasformazioni;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -49,11 +52,11 @@ public class TrasformazioniUtils {
 		}
 
 		if(dynamicMap.containsKey(Costanti.MAP_QUERY_PARAMETER)==false && queryParameters!=null && !queryParameters.isEmpty()) {
-			dynamicMap.put(Costanti.MAP_QUERY_PARAMETER, queryParameters);
+			dynamicMap.put(Costanti.MAP_QUERY_PARAMETER, convertMultiToRegularMap(queryParameters));
 		}
 
 		if(dynamicMap.containsKey(Costanti.MAP_PATH_PARAMETER)==false && pathParameters!=null && !pathParameters.isEmpty()) {
-			dynamicMap.put(Costanti.MAP_PATH_PARAMETER, pathParameters);
+			dynamicMap.put(Costanti.MAP_PATH_PARAMETER, convertMultiToRegularMap(pathParameters));
 		}
 
 		if(json !=null) {
@@ -62,7 +65,7 @@ public class TrasformazioniUtils {
 			dynamicMap.put(Costanti.MAP_ELEMENT_JSON_PATH.toLowerCase(), pe);
 		}
 	}
-	
+
 	public static void convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, OutputStream out) throws TrasformazioneException {
 		try {			
 			OutputStreamWriter oow = new OutputStreamWriter(out);
@@ -79,23 +82,43 @@ public class TrasformazioniUtils {
 	private static void _convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, Writer writer) throws TrasformazioneException {
 		try {
 			// ** Aggiungo utility per usare metodi statici ed istanziare oggetti
-			
+
 			// statici
 			BeansWrapper wrapper = new BeansWrapper(Configuration.VERSION_2_3_23);
 			TemplateModel classModel = wrapper.getStaticModels();
 			dynamicMap.put(Costanti.MAP_CLASS_LOAD_STATIC, classModel);
-			
+
 			// newObject
 			dynamicMap.put(Costanti.MAP_CLASS_NEW_INSTANCE, new freemarker.template.utility.ObjectConstructor());
-			
-			
+
+
 			// ** costruisco template
 			Template templateFTL = TemplateUtils.buildTemplate(name, template);
 			templateFTL.process(dynamicMap, writer);
 			writer.flush();
-			
+
 		}catch(Exception e) {
 			throw new TrasformazioneException(e.getMessage(),e);
 		}
+	}
+
+	private static Map<String, String> convertMultiToRegularMap(MultivaluedMap<String, String> m) {
+		Map<String, String> map = new HashMap<String, String>();
+		if (m == null) {
+			return map;
+		}
+		for (Entry<String, List<String>> entry : m.entrySet()) {
+			if(entry.getValue() != null) {
+				StringBuilder sb = new StringBuilder();
+				for (String s : entry.getValue()) {
+					if (sb.length() > 0) {
+						sb.append(',');
+					}
+					sb.append(s);
+				}
+				map.put(entry.getKey(), sb.toString());
+			}
+		}
+		return map;
 	}
 }
