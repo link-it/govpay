@@ -214,7 +214,6 @@
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
-			<version>${json-smart.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -228,12 +227,23 @@
             <groupId>net.minidev</groupId>
             <artifactId>accessors-smart</artifactId>
             <exclusions>
-                    <exclusion>
-                            <groupId>*</groupId>
-                            <artifactId>*</artifactId>
-                    </exclusion>
+            	<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
             </exclusions>
-          </dependency>
+        </dependency>
+          
+       <dependency>
+          <groupId>com.networknt</groupId>
+          <artifactId>networknt_json-schema-validator</artifactId>
+          <exclusions>
+           	  <exclusion>
+				  <groupId>*</groupId>
+				  <artifactId>*</artifactId>
+			  </exclusion>
+           </exclusions>
+        </dependency>
 
 	</dependencies>
 

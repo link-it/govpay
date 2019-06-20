@@ -50,7 +50,7 @@ And headers gpAdminBasicAutenticationHeader
 And request 
 """
 {
-	idPendenza: "#(idPendenza)",
+	idPendenza: "#(''+idPendenza)",
 	soggettoPagatore: {
 		"identificativo": "RSSMRA30A01H501I",
 		"anagrafica": "Mario Rossi",

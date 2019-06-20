@@ -37,12 +37,11 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.IJsonSchemaValidator;
 import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
-import org.openspcoop2.utils.json.JsonSchemaValidatorConfig.POLITICA_INCLUSIONE_TIPI;
+import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.json.ValidationResponse;
 import org.openspcoop2.utils.json.ValidationResponse.ESITO;
 import org.openspcoop2.utils.json.ValidatorFactory;
-import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
@@ -831,41 +830,39 @@ public class PendenzeDAO extends BaseDAO{
 			if(tipoVersamentoDominio.getValidazioneDefinizione() != null) {
 				this.log.debug("Step "+(++i)+": Validazione tramite JSON Schema...");
 
-//				IJsonSchemaValidator validator = null;
-//
-//				try{
-//					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
-//				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-//					throw new GovPayException(EsitoOperazione.VAL_000, e, e.getMessage());
-//				}
-//				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
-//				config.setPoliticaInclusioneTipi(POLITICA_INCLUSIONE_TIPI.ANY);
-//				//config.setTipi(Arrays.asList("#/definitions/Pet"));
-//
-//				try {
-//					validator.setSchema(tipoVersamentoDominio.getValidazioneDefinizione().getBytes(), config);
-//				} catch (ValidationException e) {
-//					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
-//					throw new GovPayException(EsitoOperazione.VAL_001, e , e.getMessage());
-//				} 
-//				ValidationResponse validate = null;
-//				try {
-//					validate = validator.validate(json.getBytes());
-//				} catch (ValidationException e) {
-//					this.log.debug("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
-//					throw new GovPayException(EsitoOperazione.VAL_002, e, e.getMessage());
-//				} 
-//
-//				ESITO esito = validate.getEsito();
-//
-//				switch (esito) {
-//				case KO:
-//					this.log.debug("Validazione tramite JSON Schema completata con esito KO: " + validate.getErrors());
-//					throw new ValidationException(String.join(",", validate.getErrors()));
-//				case OK:
-//					this.log.debug("Validazione tramite JSON Schema completata con esito OK.");
-//					break;
-//				}
+				IJsonSchemaValidator validator = null;
+
+				try{
+					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					throw new GovPayException(EsitoOperazione.VAL_000, e, e.getMessage());
+				}
+				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
+
+				try {
+					validator.setSchema(tipoVersamentoDominio.getValidazioneDefinizione().getBytes(), config);
+				} catch (ValidationException e) {
+					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					throw new GovPayException(EsitoOperazione.VAL_001, e , e.getMessage());
+				} 	
+				ValidationResponse validate = null;
+				try {
+					validate = validator.validate(json.getBytes());
+				} catch (ValidationException e) {
+					this.log.debug("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					throw new GovPayException(EsitoOperazione.VAL_002, e, e.getMessage());
+				} 
+
+				ESITO esito = validate.getEsito();
+
+				switch (esito) {
+				case KO:
+					this.log.debug("Validazione tramite JSON Schema completata con esito KO: " + validate.getErrors());
+					throw new ValidationException(String.join(",", validate.getErrors()));
+				case OK:
+					this.log.debug("Validazione tramite JSON Schema completata con esito OK.");
+					break;
+				}
 			}
 
 			String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();

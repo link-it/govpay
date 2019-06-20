@@ -121,6 +121,7 @@
 		<json-path.version>2.4.0</json-path.version>
 		<json-smart.version>2.3</json-smart.version>
 		<accessors-smart.version>1.2</accessors-smart.version>
+		<networknt_json-schema-validator.gov4j.version>0.1.23-gov4j-1</networknt_json-schema-validator.gov4j.version>
 	</properties>
 
 	<dependencyManagement>
@@ -842,6 +843,18 @@
 	            <groupId>net.minidev</groupId>
 	            <artifactId>accessors-smart</artifactId>
 	            <version>${accessors-smart.version}</version>
+	            <exclusions>
+	                    <exclusion>
+	                            <groupId>*</groupId>
+	                            <artifactId>*</artifactId>
+	                    </exclusion>
+	            </exclusions>
+           </dependency>
+           
+           <dependency>
+	            <groupId>com.networknt</groupId>
+	            <artifactId>networknt_json-schema-validator</artifactId>
+	            <version>${networknt_json-schema-validator.gov4j.version}</version>
 	            <exclusions>
 	                    <exclusion>
 	                            <groupId>*</groupId>
