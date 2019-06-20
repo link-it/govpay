@@ -6,7 +6,7 @@
     "changeOrigin": true
   },
   "/govpay/backend/api/backoffice/rs/form/*": {
-    "target": "http://dock1:61428",
+    "target": "https://maeci.govcloud.it",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

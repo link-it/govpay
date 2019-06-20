@@ -353,7 +353,7 @@ export class UtilService {
   public static SCHEDA_PENDENZA: string = 'scheda_pendenza';
   public static NO_TYPE: string = '-';
   //Json schema generators
-  public static A2_JSON_SCHEMA_FORM: string = 'json-schema-form';
+  public static A2_JSON_SCHEMA_FORM: string = 'angular2-json-schema-form';
   //Material standard ref
   public static INPUT: string = 'input';
   public static FILTERABLE: string = 'filterable';

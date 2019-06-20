@@ -23,7 +23,7 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   protected _tipiPendenzaDominio: any[];
 
   protected _componentRef: ComponentRef<any>;
-  protected _componentRefType: string = UtilService.A2_JSON_SCHEMA_FORM;
+  protected _componentRefType: string = '';
   protected _autoSchemaForm: boolean = false;
   protected _showAutomaticForm: boolean = false;
   protected _formOptions: any = {
@@ -78,7 +78,8 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
     this._tipiPendenzaDominio = [];
     this._autoFormReset();
     this.fGroup.controls['tipiPendenzaDominio_ctrl'].disable();
-    this._loadTipiPendenzaDominio(event.value.tipiPendenza);
+    const _url = event.value.tipiPendenza + '?form=true&abilitato=true&tipo=dovuto';
+    this._loadTipiPendenzaDominio(_url);
   }
 
   protected _loadTipiPendenzaDominio(_dominioRef: string) {
@@ -101,16 +102,20 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
       schema: null,
       layout: null
     };
-    if(event.value.valori && event.value.valori.schema) {
-     _data.schema = event.value.valori.schema;
+    let _jsonDecoded;
+    if(event.value.valori) {
+      if(event.value.valori.form) {
+        _jsonDecoded = this._decodeB64ToJson(event.value.valori.form.definizione);
+        this._componentRefType = event.value.valori.form.tipo || '';
+      }
     } else {
-     _data.schema = event.value.schema?event.value.schema:null;
+      if(event.value.form) {
+        _jsonDecoded = this._decodeB64ToJson(event.value.form.definizione);
+        this._componentRefType = event.value.form.tipo || '';
+      }
     }
-    if(event.value.valori && event.value.valori.datiAllegati) {
-     _data.layout = event.value.valori.datiAllegati.layout?event.value.valori.datiAllegati.layout:null;
-    } else {
-     _data.layout = event.value.datiAllegati.layout?event.value.datiAllegati.layout:null;
-    }
+    _data.schema = _jsonDecoded.schema || null;
+    _data.layout = _jsonDecoded.layout || null;
     if(_data.schema) {
       this.jsonSchema = _data.schema;
       if(_data.layout) {
@@ -121,6 +126,16 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
     }
   }
 
+  protected _decodeB64ToJson(_base: string): any {
+    try {
+      const _jsonDecode = atob(_base);
+      return JSON.parse(_jsonDecode);
+    } catch (e) {
+      this.us.alert('Formato json non corretto.');
+      return null;
+    }
+  }
+
   protected _autoFormReset() {
     this._showAutomaticForm = false;
     if(this._componentRef) {
@@ -128,7 +143,7 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
     }
   }
 
-  protected _createJsForm(_typeGenerator: string = '') {
+  protected _createJsForm() {
     const componentType = GeneratorsEntryPointList.getComponentByName(this._componentRefType);
     this._mapByComponentType(componentType);
   }
@@ -157,8 +172,11 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
    * @param {ModalBehavior} mb
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
-    const body = mb.info.viewModel;
-    this.gps.saveData(UtilService.URL_PENDENZE, body, null, UtilService.METHODS.POST).subscribe(
+    const body = JSON.parse(JSON.stringify(mb.info.viewModel));
+    const _url = UtilService.URL_PENDENZE + '/' + encodeURIComponent(body.idDominio) + '/' + encodeURIComponent(body.idTipoPendenza);
+    delete body.idDominio;
+    delete body.idTipoPendenza;
+    this.gps.saveData(_url, body, null, UtilService.METHODS.POST).subscribe(
     () => {
       this.gps.updateSpinner(false);
       responseService.next(true);
@@ -180,6 +198,8 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
 
     if(this._componentRefType === UtilService.A2_JSON_SCHEMA_FORM) {
       _json = this._componentRef.instance.jsf.data;
+      _json.idDominio = this.fGroup.controls['domini_ctrl'].value.idDominio;
+      _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza;
     }
 
     return _json;

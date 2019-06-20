@@ -7,11 +7,12 @@
 <#assign yyy = calendarInstance.set(calendar.MONTH, 1)!>
 <#assign zzz = calendarInstance.set(calendar.DATE, calendarInstance.getMaximum(calendar.DATE))!>
 <#assign dataValidita = calendarInstance.getTime()?string("yyyy-MM-dd")>
+<#setting locale="en_US">
 {
 	"idA2A": "IDA2A01",
 	"idPendenza": "${request.get("idPendenza").asText()}",
-	"idDominio": "${pathParam["idDominio"]}",
-	"tipoPendenza": "${pathParam["idTipoPendenza"]}}",
+	"idDominio": "${pathParams["idDominio"]}",
+	"idTipoPendenza": "${pathParams["idTipoPendenza"]}}",
  	"causale": "Rinnovo autorizzazione - Pratica n. ${request.get("idPendenza").asText()}",
 	"soggettoPagatore": {
 		"tipo": "F",
