@@ -38,7 +38,7 @@
 			},
 			"importo": {
 				"type": "number",
-				"format": "double"
+				"pattern": "\\d+(.\\d{1,2})?"
 			}
 		}
 	},
@@ -61,7 +61,7 @@
 			"title": "E-Mail debitore"
 		},
 		{
-			"key": "datiAllegati.codiceFiscalePassaporto",
+			"key": "codiceFiscalePassaporto",
 			"title": "Codice fiscale del titolare del passaporto"
 		},
 		{
