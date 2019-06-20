@@ -12,7 +12,7 @@
 	"idA2A": "IDA2A01",
 	"idPendenza": "${request.get("idPendenza").asText()}",
 	"idDominio": "${pathParams["idDominio"]}",
-	"idTipoPendenza": "${pathParams["idTipoPendenza"]}}",
+	"idTipoPendenza": "${pathParams["idTipoPendenza"]}",
  	"causale": "Rinnovo autorizzazione - Pratica n. ${request.get("idPendenza").asText()}",
 	"soggettoPagatore": {
 		"tipo": "F",
