@@ -390,6 +390,8 @@ public class PendenzeDAO extends BaseDAO{
 				rpt.getVersamento(bd).getDominio(bd);
 				rpt.getVersamento(bd).getUo(bd);
 				rpt.getVersamento(bd).getApplicazione(bd);
+				rpt.getVersamento(bd).getTipoVersamento(versamentiBD);
+				rpt.getVersamento(bd).getTipoVersamentoDominio(versamentiBD);
 			}
 			
 			response.setRpts(findAll);
@@ -465,6 +467,8 @@ public class PendenzeDAO extends BaseDAO{
 				rpt.getVersamento(bd).getDominio(bd);
 				rpt.getVersamento(bd).getUo(bd);
 				rpt.getVersamento(bd).getApplicazione(bd);
+				rpt.getVersamento(bd).getTipoVersamento(versamentiBD);
+				rpt.getVersamento(bd).getTipoVersamentoDominio(versamentiBD);
 			}
 			
 			response.setRpts(findAll);

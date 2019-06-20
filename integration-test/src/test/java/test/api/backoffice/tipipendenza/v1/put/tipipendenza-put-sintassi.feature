@@ -36,7 +36,7 @@ Then status 400
 * match response.dettaglio contains '<field>'
 
 Examples:
-| field | value 
+| field | value |
 | descrizione | null |  
 | descrizione | loremIpsum |
 | tipo | null | 
