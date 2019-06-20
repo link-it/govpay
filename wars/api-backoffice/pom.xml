@@ -56,7 +56,6 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-wsdl</artifactId>
         </dependency>
-
 	</dependencies>
 
 	<build>
