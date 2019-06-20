@@ -30,7 +30,7 @@ Then assert responseStatus == 200 || responseStatus == 201
   abilitato: true
 }
 """          
-* set tipoPendenzaDominio.form.definizione = encodeBase64(read('msg/tipoPendenza-dovuta-form.json'))
+* set tipoPendenzaDominio.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenzaDominio.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
 * set tipoPendenzaDominio.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
 

@@ -24,7 +24,7 @@ Background:
   validazione: null;
 }
 """          
-* set tipoPendenza.form.definizione = encodeBase64(read('msg/tipoPendenza-dovuta-form.json'))
+* set tipoPendenza.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenza.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
 * set tipoPendenza.validazione = read('msg/tipoPendenza-dovuta-validazione-form.json')
 
