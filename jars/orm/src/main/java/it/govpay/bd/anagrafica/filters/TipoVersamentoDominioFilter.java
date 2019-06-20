@@ -126,9 +126,19 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 					newExpression.and();
 				
 				if(this.form) {
-					newExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE);
-					newExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+					IExpression formRidefinitoExpression = this.newExpression();
+					formRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE).and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+					
+					IExpression formDefaultExpression = this.newExpression();
+					formDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE)
+						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
+					
+					newExpression.or(formRidefinitoExpression,formDefaultExpression);
 				} else {
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_DEFINIZIONE);
+					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.FORM_TIPO);
 					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_DEFINIZIONE);
 					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().FORM_TIPO);
 				}
@@ -136,7 +146,29 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
+			if(this.searchAbilitato != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				if(this.searchAbilitato) {
+					IExpression abilitatoRidefinitoExpression = this.newExpression();
+					abilitatoRidefinitoExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato);
+					
+					IExpression abilitatoDefaultExpression = this.newExpression();
+					abilitatoDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO)
+						.and().equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato)
+						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO);
+					
+					newExpression.or(abilitatoRidefinitoExpression,abilitatoDefaultExpression);
+				} else {
+					newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato);
+					newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO,this.searchAbilitato);
+				}
+				
+				addAnd = true;
+			}
+			
+//			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

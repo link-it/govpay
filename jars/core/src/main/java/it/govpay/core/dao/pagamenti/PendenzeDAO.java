@@ -823,7 +823,7 @@ public class PendenzeDAO extends BaseDAO{
 			
 			if(tipoVersamentoDominio.getTrasformazioneDefinizione() != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
 				String name = "TrasformazionePendenzaPostCustom";
-				byte[] template = tipoVersamentoDominio.getTrasformazioneDefinizione().getBytes();
+				byte[] template = Base64.getDecoder().decode(tipoVersamentoDominio.getTrasformazioneDefinizione().getBytes());
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				Map<String, Object> dynamicMap = new HashMap<String, Object>();
 				TrasformazioniUtils.fillDynamicMap(log, dynamicMap, ContextThreadLocal.get(), putVersamentoDTO.getQueryParameters(), 

@@ -54,7 +54,11 @@ public class TipiPendenzaConverter {
 		tipoVersamento.setAbilitatoDefault(entrataPost.Abilitato());
 		
 		if(entrataPost.getForm() != null) {
-			tipoVersamento.setFormDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getForm().getDefinizione(),null));
+			Object definizione = entrataPost.getForm().getDefinizione();
+			if(definizione instanceof String)
+				tipoVersamento.setFormDefinizioneDefault((String) definizione);
+			else
+				tipoVersamento.setFormDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
 			tipoVersamento.setFormTipoDefault(entrataPost.getForm().getTipo());
 		}
 		
@@ -72,7 +76,11 @@ public class TipiPendenzaConverter {
 				}
 			}
 			
-			tipoVersamento.setTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getTrasformazione().getDefinizione(),null));
+			Object definizione = entrataPost.getTrasformazione().getDefinizione();
+			if(definizione instanceof String)
+				tipoVersamento.setTrasformazioneDefinizioneDefault((String) definizione);
+			else
+				tipoVersamento.setTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
 			tipoVersamento.setTrasformazioneTipoDefault(entrataPost.getTrasformazione().getTipo());
 		}
 		if(entrataPost.getValidazione() != null)

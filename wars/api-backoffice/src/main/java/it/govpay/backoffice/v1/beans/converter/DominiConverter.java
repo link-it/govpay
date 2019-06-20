@@ -466,7 +466,11 @@ public class DominiConverter {
 		tipoVersamentoDominio.setPagaTerziCustom(tipoPendenzaRequest.PagaTerzi());
 		
 		if(tipoPendenzaRequest.getForm() != null) {
-			tipoVersamentoDominio.setFormDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getForm().getDefinizione(),null));
+			Object definizione = tipoPendenzaRequest.getForm().getDefinizione();
+			if(definizione instanceof String)
+				tipoVersamentoDominio.setFormDefinizioneCustom((String) definizione);
+			else
+				tipoVersamentoDominio.setFormDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
 			tipoVersamentoDominio.setFormTipoCustom(tipoPendenzaRequest.getForm().getTipo());
 		}
 		
@@ -484,7 +488,12 @@ public class DominiConverter {
 				}
 			}
 			
-			tipoVersamentoDominio.setTrasformazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTrasformazione().getDefinizione(),null));
+			Object definizione = tipoPendenzaRequest.getTrasformazione().getDefinizione();
+			if(definizione instanceof String)
+				tipoVersamentoDominio.setTrasformazioneDefinizioneCustom((String) definizione);
+			else
+				tipoVersamentoDominio.setTrasformazioneDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
+			
 			tipoVersamentoDominio.setTrasformazioneTipoCustom(tipoPendenzaRequest.getTrasformazione().getTipo());
 		}
 		if(tipoPendenzaRequest.getValidazione() != null)

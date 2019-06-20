@@ -16,7 +16,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.backoffice.v1.beans.EsitoEvento;
 import it.govpay.backoffice.v1.beans.ListaTipiPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPost;
@@ -33,9 +32,9 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
-import it.govpay.model.TipoVersamento;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 

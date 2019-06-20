@@ -10,7 +10,7 @@ Background:
 Scenario: Caricamento pendenza dovuta 
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
-* set pendenzaPut.tipoPendenza = 'codLibero'
+* set pendenzaPut.idTipoPendenza = 'codLibero'
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -39,7 +39,7 @@ And match response == read('msg/pendenza-get.json')
 Scenario: Caricamento pendenza con entrata definita, riferita e marca da bollo
 
 * def pendenzaPut = read('msg/pendenza-put_multivoce_bollo.json')
-* set pendenzaPut.tipoPendenza = 'codLibero'
+* set pendenzaPut.idTipoPendenza = 'codLibero'
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
