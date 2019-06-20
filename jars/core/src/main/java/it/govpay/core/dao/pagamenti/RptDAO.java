@@ -69,6 +69,8 @@ public class RptDAO extends BaseDAO{
 			response.setApplicazione(versamento.getApplicazione(bd)); 
 			response.setDominio(versamento.getDominio(bd));
 			response.setUnitaOperativa(versamento.getUo(bd));
+			versamento.getTipoVersamentoDominio(bd);
+			versamento.getTipoVersamento(bd);
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
@@ -168,6 +170,8 @@ public class RptDAO extends BaseDAO{
 				VersamentoIncasso versamento = rpt.getVersamento(bd);
 				versamento.getDominio(bd);
 				versamento.getUo(bd);
+				versamento.getTipoVersamentoDominio(bd);
+				versamento.getTipoVersamento(bd);
 				elem.setVersamento(versamento);
 				elem.setApplicazione(versamento.getApplicazione(bd)); 
 				resList.add(elem);
@@ -224,6 +228,8 @@ public class RptDAO extends BaseDAO{
 			response.setApplicazione(rpt.getVersamento(bd).getApplicazione(bd)); 
 			response.setDominio(rpt.getVersamento(bd).getDominio(bd));
 			response.setUnitaOperativa(rpt.getVersamento(bd).getUo(bd));
+			rpt.getVersamento(bd).getTipoVersamentoDominio(bd);
+			rpt.getVersamento(bd).getTipoVersamento(bd);
 			List<SingoloVersamento> singoliVersamenti = rpt.getVersamento(bd).getSingoliVersamenti(bd);
 			response.setLstSingoliVersamenti(singoliVersamenti);
 			for (SingoloVersamento singoloVersamento : singoliVersamenti) {

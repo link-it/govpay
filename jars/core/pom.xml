@@ -158,6 +158,11 @@
 			<artifactId>openspcoop2_utils-certificate</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.openspcoop2.utils</groupId>
+			<artifactId>openspcoop2_utils-regexp</artifactId>
+		</dependency>
+		
 		<!-- SPRING -->
         <dependency>
             <groupId>org.springframework</groupId>

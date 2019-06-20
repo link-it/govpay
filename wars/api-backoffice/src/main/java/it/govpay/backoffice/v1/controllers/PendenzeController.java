@@ -446,6 +446,9 @@ public class PendenzeController extends BaseController {
 			putVersamentoDTO.setCustomReq(jsonRequest);
 			putVersamentoDTO.setCodDominio(idDominio);
 			putVersamentoDTO.setCodTipoVersamento(idTipoPendenza);
+			putVersamentoDTO.setHeaders(this.getHeaders(getRequest()));
+			putVersamentoDTO.setPathParameters(uriInfo.getPathParameters());
+			putVersamentoDTO.setQueryParameters(uriInfo.getQueryParameters());
 			
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdateCustom(putVersamentoDTO);
 			

@@ -20,13 +20,16 @@
  */
 package it.govpay.core.dao.pagamenti;
 
+import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -87,6 +90,8 @@ import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.TracciatiConverter;
+import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
+import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.StatoPendenza;
@@ -385,6 +390,8 @@ public class PendenzeDAO extends BaseDAO{
 				rpt.getVersamento(bd).getDominio(bd);
 				rpt.getVersamento(bd).getUo(bd);
 				rpt.getVersamento(bd).getApplicazione(bd);
+				rpt.getVersamento(bd).getTipoVersamento(versamentiBD);
+				rpt.getVersamento(bd).getTipoVersamentoDominio(versamentiBD);
 			}
 			
 			response.setRpts(findAll);
@@ -460,6 +467,8 @@ public class PendenzeDAO extends BaseDAO{
 				rpt.getVersamento(bd).getDominio(bd);
 				rpt.getVersamento(bd).getUo(bd);
 				rpt.getVersamento(bd).getApplicazione(bd);
+				rpt.getVersamento(bd).getTipoVersamento(versamentiBD);
+				rpt.getVersamento(bd).getTipoVersamentoDominio(versamentiBD);
 			}
 			
 			response.setRpts(findAll);
@@ -807,19 +816,28 @@ public class PendenzeDAO extends BaseDAO{
 				throw new TipoVersamentoNonTrovatoException("TipoPendenza ["+putVersamentoDTO.getCodTipoVersamento()+"] inesistente per il Dominio ["+putVersamentoDTO.getCodDominio()+"].", e1);
 			}
 			
-			
+			String json = putVersamentoDTO.getCustomReq();
 			if(tipoVersamentoDominio.getValidazioneDefinizione() != null) {
 				
 			}
 			
 			if(tipoVersamentoDominio.getTrasformazioneDefinizione() != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
+				String name = "TrasformazionePendenzaPostCustom";
+				byte[] template = tipoVersamentoDominio.getTrasformazioneDefinizione().getBytes();
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				Map<String, Object> dynamicMap = new HashMap<String, Object>();
+				TrasformazioniUtils.fillDynamicMap(log, dynamicMap, ContextThreadLocal.get(), putVersamentoDTO.getQueryParameters(), 
+						putVersamentoDTO.getPathParameters(), putVersamentoDTO.getHeaders(), putVersamentoDTO.getCustomReq()); 
+				TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 				
+				// assegno il json trasformato
+				json = baos.toString();
 			}
 			
 			if(tipoVersamentoDominio.getCodApplicazione() != null) {
 				
 			}
-			PendenzaPost pendenzaPost = null;
+			PendenzaPost pendenzaPost = PendenzaPost.parse(json);
 			
 			
 			it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
@@ -871,6 +889,8 @@ public class PendenzeDAO extends BaseDAO{
 			}
 
 		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		} catch (TrasformazioneException e) {
 			throw new GovPayException(e);
 		} finally {
 			if(bd != null)

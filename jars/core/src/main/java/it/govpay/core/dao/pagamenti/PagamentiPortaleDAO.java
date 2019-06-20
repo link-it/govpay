@@ -505,6 +505,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			for(Versamento versamento: pagamentoPortale.getVersamenti(bd)) {
 				versamento.getDominio(bd);
 				versamento.getSingoliVersamenti(bd);
+				versamento.getTipoVersamentoDominio(bd);
+				versamento.getTipoVersamento(bd);
 			}
 			leggiPagamentoPortaleDTOResponse.setPagamento(pagamentoPortale); 
 

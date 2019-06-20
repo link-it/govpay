@@ -1,4 +1,5 @@
 {  
+   "idTipoPendenza":"#ignore",
    "causale":"#notnull",
    "soggettoPagatore":"#notnull",
    "importo":"#? isImportoConDueDecimali(_)",
