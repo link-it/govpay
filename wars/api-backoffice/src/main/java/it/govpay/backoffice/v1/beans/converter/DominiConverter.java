@@ -467,9 +467,9 @@ public class DominiConverter {
 		
 		if(tipoPendenzaRequest.getForm() != null) {
 			Object definizione = tipoPendenzaRequest.getForm().getDefinizione();
-			if(definizione instanceof String)
-				tipoVersamentoDominio.setFormDefinizioneCustom((String) definizione);
-			else
+//			if(definizione instanceof String)
+//				tipoVersamentoDominio.setFormDefinizioneCustom((String) definizione);
+//			else
 				tipoVersamentoDominio.setFormDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
 			tipoVersamentoDominio.setFormTipoCustom(tipoPendenzaRequest.getForm().getTipo());
 		}
@@ -489,9 +489,9 @@ public class DominiConverter {
 			}
 			
 			Object definizione = tipoPendenzaRequest.getTrasformazione().getDefinizione();
-			if(definizione instanceof String)
-				tipoVersamentoDominio.setTrasformazioneDefinizioneCustom((String) definizione);
-			else
+//			if(definizione instanceof String)
+//				tipoVersamentoDominio.setTrasformazioneDefinizioneCustom((String) definizione);
+//			else
 				tipoVersamentoDominio.setTrasformazioneDefinizioneCustom(ConverterUtils.toJSON(definizione,null));
 			
 			tipoVersamentoDominio.setTrasformazioneTipoCustom(tipoPendenzaRequest.getTrasformazione().getTipo());

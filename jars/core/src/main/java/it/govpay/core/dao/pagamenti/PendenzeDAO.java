@@ -64,6 +64,7 @@ import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Applicazione;
 //import it.govpay.core.business.GiornaleEventi;
@@ -821,9 +822,17 @@ public class PendenzeDAO extends BaseDAO{
 				
 			}
 			
-			if(tipoVersamentoDominio.getTrasformazioneDefinizione() != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
+			String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();
+			if(trasformazioneDefinizione != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
 				String name = "TrasformazionePendenzaPostCustom";
-				byte[] template = Base64.getDecoder().decode(tipoVersamentoDominio.getTrasformazioneDefinizione().getBytes());
+				// TODO eliminare dopo demo
+				if(trasformazioneDefinizione.startsWith("\""))
+					trasformazioneDefinizione = trasformazioneDefinizione.substring(1);
+								
+				if(trasformazioneDefinizione.endsWith("\""))
+					trasformazioneDefinizione = trasformazioneDefinizione.substring(0, trasformazioneDefinizione.length() - 1);
+				
+				byte[] template = Base64.getDecoder().decode(trasformazioneDefinizione.getBytes());
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				Map<String, Object> dynamicMap = new HashMap<String, Object>();
 				TrasformazioniUtils.fillDynamicMap(log, dynamicMap, ContextThreadLocal.get(), putVersamentoDTO.getQueryParameters(), 
@@ -891,7 +900,7 @@ public class PendenzeDAO extends BaseDAO{
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
 		} catch (TrasformazioneException e) {
-			throw new GovPayException(e);
+			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
 		} finally {
 			if(bd != null)
 				bd.closeConnection();
