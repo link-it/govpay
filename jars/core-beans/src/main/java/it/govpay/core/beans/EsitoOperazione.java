@@ -651,7 +651,13 @@ public enum EsitoOperazione {
      * Iban Accredito disabilitato 
      * 
      */
-    VER_032;
+    VER_032,
+
+    /**
+     * Errore trasformazione pendenza 
+     * 
+     */
+    TRASFORMAZIONE;
 	
 
     public String value() {

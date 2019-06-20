@@ -64,6 +64,7 @@ import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Applicazione;
 //import it.govpay.core.business.GiornaleEventi;
@@ -891,7 +892,7 @@ public class PendenzeDAO extends BaseDAO{
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
 		} catch (TrasformazioneException e) {
-			throw new GovPayException(e);
+			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
 		} finally {
 			if(bd != null)
 				bd.closeConnection();

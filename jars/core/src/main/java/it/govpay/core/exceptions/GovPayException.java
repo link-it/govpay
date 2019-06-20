@@ -216,6 +216,7 @@ public class GovPayException extends Exception {
 		case TRB_001: return "Tributo (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
 		case VER_031: return "Non e' possibile indicare il numero avviso per una pendenza di tipo multivoce.";
 		case VER_032: return "Iban di accredito (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
+		case TRASFORMAZIONE: return "La trasformazione della pendenza si e' conclusa con un errore: " + this.params[0] + "";
 		}
 		
 		return "";
@@ -354,6 +355,8 @@ public class GovPayException extends Exception {
 		case TRB_001: return 422; // "Richiesta non valida";
 		case VER_031: return 422; // "Richiesta non valida";
 		case VER_032: return 422; // "Richiesta non valida";
+		
+		case TRASFORMAZIONE: return 500; // "Errore interno";
 		}
 		
 		return 500;
@@ -457,6 +460,8 @@ public class GovPayException extends Exception {
 		case TRB_001: return "Richiesta non valida";	
 		case VER_031: return "Richiesta non valida";
 		case VER_032: return "Richiesta non valida";
+		
+		case TRASFORMAZIONE: return "Errore durante la trasformazione";
 		}
 		
 		return "";
