@@ -657,7 +657,25 @@ public enum EsitoOperazione {
      * Errore trasformazione pendenza 
      * 
      */
-    TRASFORMAZIONE;
+    TRASFORMAZIONE,
+
+    /**
+     * Errore creazione factory validazione 
+     * 
+     */
+    VAL_000,
+
+    /**
+     * Schema utilizzato per la validazione non valido. 
+     * 
+     */
+    VAL_001,
+
+    /**
+     * Errore interno durante la validazione 
+     * 
+     */
+    VAL_002;
 	
 
     public String value() {
