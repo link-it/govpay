@@ -31,8 +31,8 @@ public class AvvisiController extends BaseController {
     	 super(nomeServizio,log);
      }
 
-    public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
-    	String methodName = "avvisiIdDominioIuvGET";  
+    public Response avvisiIdDominioNumeroAvvisoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+    	String methodName = "avvisiIdDominioNumeroAvvisoGET";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 

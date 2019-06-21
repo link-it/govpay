@@ -565,8 +565,8 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 			}
 			return;
 		} else if(this.idA2A == null && this.idDominio != null) {
-			validatoreId.validaIdDominio("idDominio", this.idDominio);
 			vf.getValidator(FIELD_NUMERO_AVVISO, this.numeroAvviso).notNull().pattern("[0-9]{18}");
+			validatoreId.validaIdDominio("idDominio", this.idDominio);
 			try {
 				vf.getValidator(FIELD_ID_UO, this.idUnitaOperativa).isNull();
 				vf.getValidator(FIELD_NOME, this.nome).isNull();

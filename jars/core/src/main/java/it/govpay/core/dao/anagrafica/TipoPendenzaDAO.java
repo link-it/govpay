@@ -19,7 +19,14 @@
  */
 package it.govpay.core.dao.anagrafica;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.IJsonSchemaValidator;
+import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
+import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.json.ValidatorFactory;
+import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BasicBD;
@@ -47,7 +54,8 @@ public class TipoPendenzaDAO extends BaseDAO{
 		super(useCacheData);
 	}
 
-	public PutTipoPendenzaDTOResponse createOrUpdateTipoPendenza(PutTipoPendenzaDTO putTipoPendenzaDTO) throws ServiceException,TipoVersamentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public PutTipoPendenzaDTOResponse createOrUpdateTipoPendenza(PutTipoPendenzaDTO putTipoPendenzaDTO) throws ServiceException,
+		TipoVersamentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		PutTipoPendenzaDTOResponse intermediarioDTOResponse = new PutTipoPendenzaDTOResponse();
 		BasicBD bd = null;
 
@@ -56,6 +64,25 @@ public class TipoPendenzaDAO extends BaseDAO{
 			TipiVersamentoBD intermediariBD = new TipiVersamentoBD(bd);
 			TipoVersamentoFilter filter = intermediariBD.newFilter(false);
 			filter.setCodTipoVersamento(putTipoPendenzaDTO.getCodTipoVersamento());
+			
+			if(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault() != null) {
+				// validazione schema di validazione
+				IJsonSchemaValidator validator = null;
+	
+				try{
+					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					throw new ServiceException(e);
+				}
+				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
+	
+				try {
+					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getValidazioneDefinizioneDefault().getBytes(), config);
+				} catch (ValidationException e) {
+					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+					throw new ValidationException("Lo schema indicato per la validazione non e' valido.", e);
+				} 
+			}
 
 			// flag creazione o update
 			boolean isCreate = intermediariBD.count(filter) == 0;

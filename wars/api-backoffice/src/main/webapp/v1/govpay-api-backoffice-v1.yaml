@@ -2991,7 +2991,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  '/avvisi/{idDominio}/{iuv}':
+  '/avvisi/{idDominio}/{numeroAvviso}':
     get:
       summary: Avviso di pagamento
       description: >-
@@ -3006,8 +3006,8 @@ paths:
           schema:
             type: string
         - in: path
-          name: iuv
-          description: Identificativo del versamento
+          name: numeroAvviso
+          description: Identificativo dell'avviso di pagamento
           required: true
           schema:
             type: string
@@ -3847,6 +3847,39 @@ paths:
                 type: array
                 items:
                   type: string
+        '500':
+          $ref: '#/components/responses/500'
+  '/enumerazioni/componentiEvento':
+    get:
+      tags:
+        - Enumerazioni
+      summary: Lista dei componenti che possono emettere eventi in GovPay
+      responses:
+        '200':
+          description: Lista dei componenti che possono emettere eventi in GovPay
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/componenteEvento'
+        '500':
+          $ref: '#/components/responses/500'
+  '/enumerazioni/labelTipiEvento':
+    get:
+      tags:
+        - Enumerazioni
+      summary: Lista di mapping tipoEvento / Label corrispondente
+      responses:
+        '200':
+          description: Lista di mapping tipoEvento / Label corrispondente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  example: { "paaAttivaRPT" : "Attiva pagamento" }
         '500':
           $ref: '#/components/responses/500'
   '/configurazioni/giornale':

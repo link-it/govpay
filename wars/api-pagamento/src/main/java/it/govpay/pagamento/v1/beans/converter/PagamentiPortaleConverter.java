@@ -402,7 +402,8 @@ public class PagamentiPortaleConverter {
 			String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
 					+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
 			versante.setAnagrafica(nomeCognome);
-			versante.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
+			if(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL) != null)
+				versante.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
 			versante.setTipo(TipoEnum.F);
 			versante.setCap(null);
 			versante.setCellulare(null);
@@ -450,7 +451,8 @@ public class PagamentiPortaleConverter {
 			String nomeCognome = cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_NAME) + " "
 					+ cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_FAMILY_NAME);
 			soggetto.setAnagrafica(nomeCognome);
-			soggetto.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
+			if(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL) != null)
+				soggetto.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
 			soggetto.setTipo(TipoEnum.F);
 			soggetto.setCap(null);
 			soggetto.setCellulare(null);

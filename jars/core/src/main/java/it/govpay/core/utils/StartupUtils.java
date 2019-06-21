@@ -54,7 +54,7 @@ public class StartupUtils {
 	private static boolean initialized = false;
 	
 	public static synchronized IContext startup(Logger log, String warName, String govpayVersion, String buildVersion, 
-			InputStream govpayPropertiesIS, URL log4j2XmlFile, InputStream msgDiagnosticiIS, String tipoServizioGovpay) throws RuntimeException {
+			InputStream govpayPropertiesIS, URL log4j2XmlFile, InputStream msgDiagnosticiIS, InputStream mappingTipiEventoPropertiesIS, String tipoServizioGovpay) throws RuntimeException {
 		
 		IContext ctx = null;
 		if(!initialized) {
@@ -124,6 +124,14 @@ public class StartupUtils {
 				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita.", e);
 			}
 
+			// Mapping TipiEvento
+			try {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				IOUtils.copy(mappingTipiEventoPropertiesIS, baos);
+				EventiUtils.newInstance(new ByteArrayInputStream(baos.toByteArray()));
+			} catch (Exception e) {
+				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
+			}
 		}
 		try {
 			GpContextFactory factory = new GpContextFactory();

@@ -33,6 +33,7 @@ import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
+import it.govpay.core.utils.EventiUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.InitConstants;
@@ -58,7 +59,8 @@ public class InitListener implements ServletContextListener {
 		InputStream govpayPropertiesIS = InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE);
 		URL log4j2URL = InitListener.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
 		InputStream msgDiagnosticiIS = InitListener.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
-		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay);
+		InputStream mappingTipiEventoPropertiesIS = InitListener.class.getResourceAsStream(EventiUtils.MAPPING_TIPI_EVENTO_PROPERTIES_FILE);
+		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, mappingTipiEventoPropertiesIS, tipoServizioGovpay);
 		
 		try {
 			log = LoggerWrapperFactory.getLogger("boot");	

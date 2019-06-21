@@ -29,6 +29,15 @@ public class Enumerazioni extends BaseRsServiceV1{
 
 
     @GET
+    @Path("/componentiEvento")
+    
+    @Produces({ "application/json" })
+    public Response findEnumerazioniComponentiEvento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+        this.controller.setContext(this.getContext());
+        return this.controller.enumerazioniComponentiEventoGET(this.getUser(), uriInfo, httpHeaders);
+    }
+
+    @GET
     @Path("/serviziACL")
     
     @Produces({ "application/json" })
@@ -44,6 +53,15 @@ public class Enumerazioni extends BaseRsServiceV1{
     public Response findEnumerazioniVersioneConnettore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setContext(this.getContext());
         return this.controller.enumerazioniVersioneConnettoreGET(this.getUser(), uriInfo, httpHeaders);
+    }
+
+    @GET
+    @Path("/labelTipiEvento")
+    
+    @Produces({ "application/json" })
+    public Response findEnumerazioniLabelTipiEvento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+        this.controller.setContext(this.getContext());
+        return this.controller.enumerazioniLabelTipiEventoGET(this.getUser(), uriInfo, httpHeaders);
     }
 
 }

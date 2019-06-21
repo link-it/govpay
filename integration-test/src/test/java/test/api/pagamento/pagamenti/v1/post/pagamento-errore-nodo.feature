@@ -69,10 +69,10 @@ And headers spidHeaders
 And request pagamentoPost
 When method post
 Then status 502
-And match response == { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+And match response == { id: '#notnull', location: '#notnull', categoria : 'PAGOPA', codice : 'PAA_NODO_INDISPONIBILE', descrizione: '#notnull' }
 
 Given url pagamentiBaseurl
-And path '/pagamenti/byIdSession/', response.idSession
+And path '/pagamenti/', response.id
 And headers basicAutenticationHeader
 When method get
 Then status 200
