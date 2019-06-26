@@ -12,4 +12,5 @@ public class CostantiTask {
 	public final static String AVVISATURA_DIGITALE_SINCRONA = "AvvisaturaDigitaleSincrona";
 	public final static String ELABORAZIONE_TRACCIATI_PENDENZE = "ElaborazioneTracciatiPendenze";
 	public final static String ELABORAZIONE_TRACCIATI_PENDENZE_CHECK = "ElaborazioneTracciatiPendenzeCheck";
+	public final static String SPEDIZIONE_PROMEMORIA = "SpedizionePromemoria";
 }

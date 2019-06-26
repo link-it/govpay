@@ -4,8 +4,8 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
-* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+* callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
 Scenario: Riconciliazione singola IUV non ISO da applicazione
 
@@ -120,6 +120,15 @@ Scenario: Riconciliazione singola IUV non ISO da operatore
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+Given url backofficeBaseurl
+And path 'operatori', 'RSSMRA30A01H501I'
+And headers basicAutenticationHeader
+And request read('msg/operatore_auth.json')
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
@@ -142,6 +151,15 @@ Scenario: Idempotenza riconciliazione singola IUV non ISO da operatore
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+Given url backofficeBaseurl
+And path 'operatori', 'RSSMRA30A01H501I'
+And headers basicAutenticationHeader
+And request read('msg/operatore_auth.json')
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
@@ -176,6 +194,15 @@ Scenario: Riconciliazione singola IUV ISO da operatore
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
+Given url backofficeBaseurl
+And path 'operatori', 'RSSMRA30A01H501I'
+And headers basicAutenticationHeader
+And request read('msg/operatore_auth.json')
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
@@ -198,6 +225,15 @@ Scenario: Idempotenza riconciliazione singola IUV ISO da operatore
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+Given url backofficeBaseurl
+And path 'operatori', 'RSSMRA30A01H501I'
+And headers basicAutenticationHeader
+And request read('msg/operatore_auth.json')
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}

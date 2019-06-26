@@ -47,6 +47,7 @@
 								<linkit:sql-table object-name="RPT" object-type="RPT"/>
 								<linkit:sql-table object-name="RR" object-type="RR"/>
 								<linkit:sql-table object-name="Notifica" object-type="Notifica"/>
+								<linkit:sql-table object-name="Promemoria" object-type="Promemoria"/>
 								<linkit:sql-table object-name="IUV" object-type="IUV"/>
 								<linkit:sql-table object-name="Incasso" object-type="Incasso"/>
 								<linkit:sql-table object-name="FR" object-type="FR"/>
@@ -436,6 +437,12 @@
 	<xsd:complexType name="id-notifica">
 		<xsd:sequence>
 			<xsd:element name="idNotifica" type="xsd:long"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="id-promemoria">
+		<xsd:sequence>
+			<xsd:element name="idPromemoria" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -1224,7 +1231,15 @@
 			</xsd:element>
 			<xsd:element name="codApplicazione" type="String35" minOccurs="0"/>
 			<xsd:element name="promemoriaAvviso" type="xsd:boolean" default="false"/>
-			<xsd:element name="promemoriaOggetto" type="String512" minOccurs="0"/>
+			<xsd:element name="promemoriaOggetto" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="promemoriaMessaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1331,7 +1346,15 @@
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
-			<xsd:element name="promemoriaOggetto" type="String512" minOccurs="0"/>
+			<xsd:element name="promemoriaOggetto" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="promemoriaMessaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -2213,6 +2236,55 @@
 			<xsd:element name="tentativiSpedizione" type="xsd:unsignedLong" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:element name="Promemoria" type="Promemoria"/>
+	<xsd:complexType name="Promemoria">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-promemoria"/>
+					<linkit:sql-table-mapping generate-sql="true" name="promemoria"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_ntf"/>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			
+			<xsd:element name="idVersamento" type="id-versamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Versamento" object-type="Versamento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="tipo" type="String16"/>
+			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="stato" type="String16"/>
+			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="debitoreEmail" type="String256" />
+			<xsd:element name="oggetto" type="String512" />
+			<xsd:element name="messaggio" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="allegaAvviso" type="xsd:boolean" default="false"/>
+			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
+			<xsd:element name="dataProssimaSpedizione" type="xsd:dateTime" />
+			<xsd:element name="tentativiSpedizione" type="xsd:unsignedLong" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:element name="Incasso" type="Incasso"/>
 	<xsd:complexType name="Incasso">
 		<xsd:annotation>

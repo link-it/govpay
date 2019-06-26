@@ -10,6 +10,7 @@ DELETE FROM pagamenti;
 DELETE FROM fr;
 DELETE FROM incassi;
 DELETE FROM iuv;
+DELETE FROM promemoria;
 DELETE FROM notifiche;
 DELETE FROM rr;
 DELETE FROM rpt;

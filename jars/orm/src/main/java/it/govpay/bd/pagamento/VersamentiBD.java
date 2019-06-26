@@ -42,8 +42,10 @@ import org.openspcoop2.utils.id.serial.InfoStatistics;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.exception.VersamentoException;
+import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.converter.PromemoriaConverter;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
 import it.govpay.bd.nativequeries.NativeQueries;
@@ -183,6 +185,14 @@ public class VersamentiBD extends BasicBD {
 	 * Crea un nuovo versamento.
 	 */
 	public void insertVersamento(Versamento versamento) throws ServiceException{
+		_insertVersamento(versamento, null);
+	}
+	
+	public void insertVersamento(Versamento versamento, Promemoria promemoria) throws ServiceException{
+		_insertVersamento(versamento, promemoria);
+	}
+
+	private void _insertVersamento(Versamento versamento, Promemoria promemoria) throws ServiceException {
 		try {
 			if(this.isAutoCommit())
 				throw new ServiceException("L'operazione insertVersamento deve essere completata in transazione singola");
@@ -201,6 +211,15 @@ public class VersamentiBD extends BasicBD {
 				this.getSingoloVersamentoService().create(singoloVersamentoVo);
 				singoloVersamento.setId(singoloVersamentoVo.getId());
 			}
+			
+			// promemoria mail
+			if(promemoria != null) {
+				promemoria.setIdVersamento(vo.getId());
+				it.govpay.orm.Promemoria promemoriaVo = PromemoriaConverter.toVO(promemoria);
+				this.getPromemoriaService().create(promemoriaVo);
+				promemoria.setId(promemoriaVo.getId());
+			}
+			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

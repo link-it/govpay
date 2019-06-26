@@ -446,12 +446,17 @@ And match response.risultati[0] ==
 """
 * def payloadRisposta = decodeBase64(response.risultati[0].parametriRisposta.payload)
 * match payloadRisposta ==
-"""	
-<SOAP-ENV:Fault xmlns="">
-   <faultcode>SOAP-ENV:Server</faultcode>
-   <faultstring>Internal server error</faultstring>
-   <detail>Bla bla bla bla bla bla</detail> 
-</SOAP-ENV:Fault>
+"""
+<SOAP-ENV:Envelope xmlns:SOAP-ENV = "http://schemas.xmlsoap.org/soap/envelope/"
+   xmlns:xsi = "http://www.w3.org/1999/XMLSchema-instance"
+   xmlns:xsd = "http://www.w3.org/1999/XMLSchema">
+   <SOAP-ENV:Body>
+      <SOAP-ENV:Fault>
+         <faultcode xsi:type = "xsd:string">SOAP-ENV:Client</faultcode>
+         <faultstring xsi:type = "xsd:string">Failed to locate method</faultstring>
+      </SOAP-ENV:Fault>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 """
 
 Scenario: Evento verifica pendenza applicazione risposta con errori di sintassi

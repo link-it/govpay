@@ -103,6 +103,7 @@ public class Operazioni{
 	public static final String BATCH_AVVISATURA_DIGITALE = "avvisatura-digitale";
 	public static final String BATCH_ESITO_AVVISATURA_DIGITALE = "esito-avvisatura-digitale";
 	public static final String BATCH_AVVISATURA_DIGITALE_SINCRONA = "avvisatura-digitale-immediata";
+	public static final String BATCH_SPEDIZIONE_PROMEMORIA = "spedizione-promemoria";
 
 
 
@@ -1094,6 +1095,50 @@ public class Operazioni{
 			}
 			log.error("Non è stato possibile eseguire l'elaborazione dei tracciati", e);
 			return "Non è stato possibile eseguire l'elaborazione dei tracciati: " + e;
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
+	}
+	
+	public static String spedizionePromemoria(IContext ctx){
+		BasicBD bd = null;
+		try {
+			bd = BasicBD.newInstance(ctx.getTransactionId());
+
+			if(BatchManager.startEsecuzione(bd, BATCH_SPEDIZIONE_PROMEMORIA)) {
+				log.trace("Spedizione promemoria non consegnati");
+				Promemoria promemoriaBD = new Promemoria(bd); 
+				List<it.govpay.bd.model.Promemoria> promemorias  = promemoriaBD.findPromemoriaDaSpedire();
+
+				if(promemorias.size() == 0) {
+					aggiornaSondaOK(BATCH_SPEDIZIONE_PROMEMORIA, bd,ctx);
+					BatchManager.stopEsecuzione(bd, BATCH_SPEDIZIONE_PROMEMORIA);
+					aggiornaSondaOK(BATCH_SPEDIZIONE_PROMEMORIA, bd,ctx);
+					log.debug("Nessun promemoria da inviare.");
+					return "Nessun promemoria da inviare.";
+				}
+
+				log.info("Trovati ["+promemorias.size()+"] promemoria da spedire");
+
+				for(it.govpay.bd.model.Promemoria promemoria: promemorias) {
+					promemoriaBD.invioPromemoria(promemoria);
+				}
+				aggiornaSondaOK(BATCH_SPEDIZIONE_PROMEMORIA, bd,ctx);
+				log.info("Spedizione promemoria completata.");
+				return "Spedizione promemoria completata.";
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare la spedizione dei promemoria", e);
+			try {
+				if(!bd.isAutoCommit()) bd.rollback();
+				aggiornaSondaKO(BATCH_SPEDIZIONE_PROMEMORIA, e, bd,ctx); 
+			} catch (ServiceException e1) {
+				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
+			}
+			return "Non è stato possibile avviare la spedizione dei promemoria: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}

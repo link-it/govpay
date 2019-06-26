@@ -401,8 +401,8 @@ public class DominiConverter {
 		
 		if(tipoVersamentoDominio.getPromemoriaMessaggioDefault() != null && tipoVersamentoDominio.getPromemoriaOggettoDefault() != null) {
 			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
-			promemoria.setOggetto(tipoVersamentoDominio.getPromemoriaOggettoDefault());
-			promemoria.setMessaggio(tipoVersamentoDominio.getPromemoriaMessaggioDefault());
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaOggettoDefault()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaMessaggioDefault()));
 			promemoria.setAllegaAvviso(tipoVersamentoDominio.getPromemoriaAvvisoDefault());
 			rsModel.setPromemoria(promemoria);
 		}
@@ -433,8 +433,8 @@ public class DominiConverter {
 		
 		if(tipoVersamentoDominio.getPromemoriaMessaggioCustom() != null && tipoVersamentoDominio.getPromemoriaOggettoCustom() != null) {
 			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
-			promemoria.setOggetto(tipoVersamentoDominio.getPromemoriaOggettoCustom());
-			promemoria.setMessaggio(tipoVersamentoDominio.getPromemoriaMessaggioCustom());
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaOggettoCustom()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaMessaggioCustom()));
 			promemoria.setAllegaAvviso(tipoVersamentoDominio.getPromemoriaAvvisoCustom());
 			valori.setPromemoria(promemoria);
 		}
@@ -475,8 +475,8 @@ public class DominiConverter {
 		}
 		
 		if(tipoPendenzaRequest.getPromemoria() != null) {
-			tipoVersamentoDominio.setPromemoriaMessaggioCustom(tipoPendenzaRequest.getPromemoria().getMessaggio());
-			tipoVersamentoDominio.setPromemoriaOggettoCustom(tipoPendenzaRequest.getPromemoria().getOggetto());
+			tipoVersamentoDominio.setPromemoriaMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoria().getMessaggio(),null));
+			tipoVersamentoDominio.setPromemoriaOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoria().getOggetto(),null));
 			tipoVersamentoDominio.setPromemoriaAvvisoCustom(tipoPendenzaRequest.getPromemoria().AllegaAvviso());
 		}
 		

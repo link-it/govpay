@@ -156,7 +156,7 @@ public class VersamentoUtils {
 	}
 
 	public static Versamento aggiornaVersamento(Versamento versamento, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
-			VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
+	VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
 			return versamento;
@@ -218,7 +218,7 @@ public class VersamentoUtils {
 			try {
 				versamento = verificaClient.invoke(codVersamentoEnte, bundlekey, debitore, dominio, iuv, bd);
 				ctx.getApplicationLogger().log("verifica.Ok", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
-				
+
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
@@ -263,7 +263,86 @@ public class VersamentoUtils {
 			versamentoBusiness.caricaVersamento(versamento, generaIuv, true);
 		}finally {
 			EventoContext eventoCtx = verificaClient.getEventoCtx();
-			
+
+			if(eventoCtx.isRegistraEvento()) {
+				// log evento
+				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
+				giornaleEventi.registraEvento(eventoCtx.toEventoDTO());
+			}
+		}
+		return versamento;
+	}
+
+
+	public static it.govpay.core.dao.commons.Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String jsonBody, BasicBD bd) 
+			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
+
+		IContext ctx = ContextThreadLocal.get();
+		ctx.getApplicationLogger().log("verifica.modello4Avvio", applicazione.getCodApplicazione(), codDominio, codTipoVersamento);
+		if(applicazione.getConnettoreIntegrazione() == null) {
+			ctx.getApplicationLogger().log("verifica.nonConfigurata");
+			throw new VersamentoSconosciutoException();
+		}
+		VerificaClient verificaClient = new VerificaClient(applicazione,bd);
+		// salvataggio id Rpt/ versamento/ pagamento
+		verificaClient.getEventoCtx().setCodDominio(codDominio); 
+		verificaClient.getEventoCtx().setIdA2A(applicazione.getCodApplicazione());
+		it.govpay.core.dao.commons.Versamento versamento = null;
+		try {
+			try {
+				versamento = verificaClient.invokeInoltro(codDominio, codTipoVersamento, jsonBody, bd);
+				String codVersamentoEnte = "-"; 
+				if(versamento != null) {
+					codVersamentoEnte = versamento.getCodVersamentoEnte(); 
+					verificaClient.getEventoCtx().setIuv(versamento.getIuv());
+					verificaClient.getEventoCtx().setIdPendenza(codVersamentoEnte);
+				}
+				ctx.getApplicationLogger().log("verifica.modello4Ok", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, codVersamentoEnte);
+				verificaClient.getEventoCtx().setEsito(Esito.OK);
+			} catch (ClientException e){
+				ctx.getApplicationLogger().log("verifica.modello4Fail", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, e.getMessage());
+				verificaClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+				verificaClient.getEventoCtx().setEsito(Esito.FAIL);
+				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				throw e;
+			} catch (VersamentoScadutoException e) {
+				ctx.getApplicationLogger().log("verifica.modello4Scaduto", applicazione.getCodApplicazione(),  codDominio, codTipoVersamento);
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza Scaduta");
+				verificaClient.getEventoCtx().setEsito(Esito.KO);
+				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				throw e;
+			} catch (VersamentoAnnullatoException e) {
+				ctx.getApplicationLogger().log("verifica.modello4Annullato", applicazione.getCodApplicazione(), codDominio, codTipoVersamento);
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza Annullata");
+				verificaClient.getEventoCtx().setEsito(Esito.KO);
+				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				throw e;
+			} catch (VersamentoDuplicatoException e) {
+				ctx.getApplicationLogger().log("verifica.modello4Duplicato", applicazione.getCodApplicazione(), codDominio, codTipoVersamento);
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza Duplicata");
+				verificaClient.getEventoCtx().setEsito(Esito.KO);
+				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				throw e;
+			} catch (VersamentoSconosciutoException e) {
+				ctx.getApplicationLogger().log("verifica.modello4Sconosciuto", applicazione.getCodApplicazione(), codDominio, codTipoVersamento);
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza Sconosciuta");
+				verificaClient.getEventoCtx().setEsito(Esito.KO);
+				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				throw e;
+			} catch (VersamentoNonValidoException e) {
+				ctx.getApplicationLogger().log("verifica.modello4Fail", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, e.getMessage());
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza non valida");
+				verificaClient.getEventoCtx().setEsito(Esito.KO);
+				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				throw e;
+			} 
+
+			//			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+			//			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(bd).size() == 1;
+			//			versamentoBusiness.caricaVersamento(versamento, generaIuv, true);
+		}finally {
+			EventoContext eventoCtx = verificaClient.getEventoCtx();
+
 			if(eventoCtx.isRegistraEvento()) {
 				// log evento
 				GiornaleEventi giornaleEventi = new GiornaleEventi(bd);
@@ -428,17 +507,41 @@ public class VersamentoUtils {
 			model.setAvvisaturaDaInviare(true);
 		}
 
+		String codTipoVersamento = versamento.getCodTipoVersamento();
+		boolean utilizzaTipoPendenzaNonCensito = false;
+		if(codTipoVersamento == null) {
+			utilizzaTipoPendenzaNonCensito = true;
+			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
+				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+				if(sv.getBolloTelematico() != null) {
+					codTipoVersamento = Tributo.BOLLOT;
+				} else if(sv.getCodTributo() != null) {
+					codTipoVersamento = sv.getCodTributo();
+				} else {
+					codTipoVersamento = GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere();
+				}
+			} 
+		}  
+
 		// tipo Pendenza
 		TipoVersamento tipoVersamento = null;
 		try {
-			tipoVersamento = AnagraficaManager.getTipoVersamento(bd, versamento.getCodTipoVersamento());
+			tipoVersamento = AnagraficaManager.getTipoVersamento(bd, codTipoVersamento);
 		} catch (NotFoundException e) {
-			try {
-				tipoVersamento = AnagraficaManager.getTipoVersamento(bd, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
-			} catch (NotFoundException e1) {
-				throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
+			if(utilizzaTipoPendenzaNonCensito) {
+				try {
+					tipoVersamento = AnagraficaManager.getTipoVersamento(bd, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
+				} catch (NotFoundException e1) {
+					throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
+				}
+			} else {
+				throw new GovPayException(EsitoOperazione.TVR_000, codTipoVersamento);
 			}
 		}
+		
+		if(!tipoVersamento.isAbilitatoDefault())
+			throw new GovPayException(EsitoOperazione.TVR_001, codTipoVersamento);
+		
 		model.setIdTipoVersamento(tipoVersamento.getId()); 
 
 		if(!applicazione.isTrusted() && !AuthorizationManager.isTipoVersamentoAuthorized(applicazione.getUtenza(), tipoVersamento.getCodTipoVersamento())) {
@@ -451,12 +554,17 @@ public class VersamentoUtils {
 		try {
 			tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), tipoVersamento.getCodTipoVersamento());
 		} catch (NotFoundException e) {
-			try {
-				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
-			} catch (NotFoundException e1) {
-				throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
-			}
+			throw new GovPayException(EsitoOperazione.TVD_000, codTipoVersamento, versamento.getCodDominio());
+//			try {
+//				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
+//			} catch (NotFoundException e1) {
+//				throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
+//			}
 		}
+		
+		if(tipoVersamentoDominio.getAbilitatoCustom() != null && !tipoVersamentoDominio.getAbilitatoCustom())
+			throw new GovPayException(EsitoOperazione.TVD_001, codTipoVersamento, versamento.getCodDominio());
+		
 		model.setIdTipoVersamentoDominio(tipoVersamentoDominio.getId());
 
 		return model;

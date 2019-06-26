@@ -71,13 +71,6 @@ And path '/pendenze', idA2A, idPendenza
 And headers idA2ABasicAutenticationHeader
 And request pendenzaPutMono
 When method put
-Then status 403
-And match response == 
-"""
-{ 
-	categoria: 'AUTORIZZAZIONE',
-	codice: '403000',
-	descrizione: 'Operazione non autorizzata',
-	dettaglio: '#notnull'
-}
-"""
+Then status 422
+And match response == {"categoria":"RICHIESTA","codice":"VER_022","descrizione":"Richiesta non valida","dettaglio":"Applicazione non autorizzata alla gestione del tipo pendenza indicato"}
+

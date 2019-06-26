@@ -81,7 +81,6 @@ public class GovpayConfig {
 	private Integer clusterId;
 	private long timeoutBatch;
 
-	private boolean batchAvvisiPagamento;
 	private boolean batchCaricamentoTracciati;
 	private boolean timeoutPendentiModello3;
 	private Integer timeoutPendentiModello3Mins;
@@ -118,6 +117,9 @@ public class GovpayConfig {
 	
 	private String codTipoVersamentoPendenzeLibere;
 	private String codTipoVersamentoPendenzeNonCensite;
+	
+	private boolean invioPromemoriaEnabled;
+	private Properties invioPromemoriaProperties;
 	
 	private Properties corsProperties;
 	
@@ -173,7 +175,8 @@ public class GovpayConfig {
 		this.scritturaDiagnosticiFileEnabled = false;
 		this.scritturaDumpFileEnabled = false;
 		this.giornaleEventiEnabled = true;
-		
+		this.invioPromemoriaEnabled = false;
+		this.invioPromemoriaProperties = new Properties();
 		this.corsProperties = new Properties();
 		try {
 
@@ -378,10 +381,6 @@ public class GovpayConfig {
 				this.conservazionePlugin = (IConservazione) instance;
 			}
 			
-			String batchAvvisiPagamentoStampaAvvisiString = getProperty("it.govpay.batch.avvisiPagamento.stampaAvvisiPagamento", this.props, false, log);
-			if(batchAvvisiPagamentoStampaAvvisiString != null && Boolean.valueOf(batchAvvisiPagamentoStampaAvvisiString))
-				this.batchAvvisiPagamento = true;
-			
 			String batchCaricamentoTracciatiString = getProperty("it.govpay.batch.caricamentoTracciati.enabled", this.props, false, log);
 			if(batchCaricamentoTracciatiString != null && Boolean.valueOf(batchCaricamentoTracciatiString))
 				this.batchCaricamentoTracciati = true;
@@ -495,6 +494,14 @@ public class GovpayConfig {
 			String giornaleEventiEnabledString = getProperty("it.govpay.context.giornaleEventi.enabled", this.props, false, log);
 			if(giornaleEventiEnabledString != null && Boolean.valueOf(giornaleEventiEnabledString))
 				this.giornaleEventiEnabled = true;
+			
+			
+			String invioPromemoriaString = getProperty("it.govpay.invioPromemoria.enabled", this.props, false, log);
+			if(invioPromemoriaString != null && Boolean.valueOf(invioPromemoriaString))
+				this.invioPromemoriaEnabled = true;
+			
+			Map<String, String> propertiesPromemoria = getProperties("it.govpay.invioPromemoria.mailServer.",this.props, false, log);
+			this.invioPromemoriaProperties.putAll(propertiesPromemoria);
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -669,10 +676,6 @@ public class GovpayConfig {
 		return this.conservazionePlugin;
 	}
 
-	public boolean isBatchAvvisiPagamento() {
-		return this.batchAvvisiPagamento;
-	}
-
 	public Integer getCacheLogo() {
 		return 2 * 60 * 60;
 	}
@@ -783,6 +786,14 @@ public class GovpayConfig {
 
 	public boolean isGiornaleEventiEnabled() {
 		return giornaleEventiEnabled;
+	}
+
+	public boolean isInvioPromemoriaEnabled() {
+		return invioPromemoriaEnabled;
+	}
+
+	public Properties getInvioPromemoriaProperties() {
+		return invioPromemoriaProperties;
 	}
 
 }

@@ -18,43 +18,43 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 public class TipoPendenzaPromemoria extends JSONSerializable implements IValidable{
   
   @JsonProperty("oggetto")
-  private String oggetto = null;
+  private Object oggetto = null;
   
   @JsonProperty("messaggio")
-  private String messaggio = null;
+  private Object messaggio = null;
   
   @JsonProperty("allegaAvviso")
   private Boolean allegaAvviso = true;
   
   /**
-   * Oggetto da inserire nella email
+   * Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
    **/
-  public TipoPendenzaPromemoria oggetto(String oggetto) {
+  public TipoPendenzaPromemoria oggetto(Object oggetto) {
     this.oggetto = oggetto;
     return this;
   }
 
   @JsonProperty("oggetto")
-  public String getOggetto() {
+  public Object getOggetto() {
     return oggetto;
   }
-  public void setOggetto(String oggetto) {
+  public void setOggetto(Object oggetto) {
     this.oggetto = oggetto;
   }
 
   /**
-   * Definisce il template del body da inserire nella email
+   * Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
    **/
-  public TipoPendenzaPromemoria messaggio(String messaggio) {
+  public TipoPendenzaPromemoria messaggio(Object messaggio) {
     this.messaggio = messaggio;
     return this;
   }
 
   @JsonProperty("messaggio")
-  public String getMessaggio() {
+  public Object getMessaggio() {
     return messaggio;
   }
-  public void setMessaggio(String messaggio) {
+  public void setMessaggio(Object messaggio) {
     this.messaggio = messaggio;
   }
 
@@ -128,10 +128,6 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
   
   @Override
 	public void validate() throws ValidationException {
-	   ValidatorFactory vf = ValidatorFactory.newInstance();
-	   
-	   vf.getValidator("oggetto", this.oggetto).minLength(1).maxLength(512);
-		
 	   if((this.oggetto != null && this.messaggio == null) || (this.oggetto == null && this.messaggio != null)) {
 			  throw new ValidationException("I campi 'oggetto' e 'definizione' devono essere entrambi valorizzati per definire il field 'promemoria'.");
 	  }

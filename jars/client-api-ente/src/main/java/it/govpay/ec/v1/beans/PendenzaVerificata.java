@@ -248,24 +248,24 @@ public class PendenzaVerificata  {
     this.idUnitaOperativa = idUnitaOperativa;
     return this;
   }
-  
-  
-  /**
+
+ /**
    * Identificativo della tipologia pendenza
-   **/
+   * @return idTipoPendenza
+  **/
   @JsonProperty("idTipoPendenza")
   @Valid
   public String getIdTipoPendenza() {
     return idTipoPendenza;
   }
-  
+
   public void setIdTipoPendenza(String idTipoPendenza) {
     this.idTipoPendenza = idTipoPendenza;
   }
-  
+
   public PendenzaVerificata idTipoPendenza(String idTipoPendenza) {
-	this.idTipoPendenza = idTipoPendenza;
-	return this;
+    this.idTipoPendenza = idTipoPendenza;
+    return this;
   }
 
  /**

@@ -150,20 +150,14 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				if(this.searchAbilitato) {
-					IExpression abilitatoRidefinitoExpression = this.newExpression();
-					abilitatoRidefinitoExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato);
-					
-					IExpression abilitatoDefaultExpression = this.newExpression();
-					abilitatoDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO)
-						.and().equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO);
-					
-					newExpression.or(abilitatoRidefinitoExpression,abilitatoDefaultExpression);
-				} else {
-					newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato);
-					newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO,this.searchAbilitato);
-				}
+				IExpression abilitatoRidefinitoExpression = this.newExpression();
+				abilitatoRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO).and().equals(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO,this.searchAbilitato);
+				
+				IExpression abilitatoDefaultExpression = this.newExpression();
+				abilitatoDefaultExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato)
+					.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO);
+				
+				newExpression.or(abilitatoRidefinitoExpression,abilitatoDefaultExpression);
 				
 				addAnd = true;
 			}

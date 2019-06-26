@@ -74,6 +74,7 @@
 		<commons.io.version>2.6</commons.io.version>
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.pool2.version>2.6.0</commons.pool2.version>
+		<commons.email.version>1.5</commons.email.version>
 		
 		<!-- soap -->
 		<soap.version>2.3.1</soap.version>
@@ -497,6 +498,12 @@
 				<artifactId>openspcoop2_utils-regexp</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.openspcoop2.utils</groupId>
+				<artifactId>openspcoop2_utils-mail</artifactId>
+				<version>${openspcoop2.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
@@ -861,6 +868,12 @@
 	                            <artifactId>*</artifactId>
 	                    </exclusion>
 	            </exclusions>
+           </dependency>
+           
+           <dependency>
+	            <groupId>org.apache.commons</groupId>
+	            <artifactId>commons-email</artifactId>
+	            <version>${commons.email.version}</version>
            </dependency>
 		</dependencies>
 	</dependencyManagement>

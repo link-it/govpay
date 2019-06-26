@@ -396,6 +396,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdPromemoria }
+     */
+    public IdPromemoria createIdPromemoria() {
+        return new IdPromemoria();
+    }
+
+    /**
      * Create an instance of {@link IdIncasso }
      */
     public IdIncasso createIdIncasso() {
@@ -589,6 +596,13 @@ public class ObjectFactory {
      */
     public Utenza createUtenza() {
         return new Utenza();
+    }
+
+    /**
+     * Create an instance of {@link Promemoria }
+     */
+    public Promemoria createPromemoria() {
+        return new Promemoria();
     }
 
     /**

@@ -35,6 +35,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.IJsonSchemaValidator;
 import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
 import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
@@ -94,11 +95,18 @@ import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.VersamentoAnnullatoException;
+import it.govpay.core.exceptions.VersamentoDuplicatoException;
+import it.govpay.core.exceptions.VersamentoNonValidoException;
+import it.govpay.core.exceptions.VersamentoScadutoException;
+import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.TracciatiConverter;
+import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.model.PatchOp;
@@ -893,18 +901,47 @@ public class PendenzeDAO extends BaseDAO{
 				}
 			}
 
-			if(tipoVersamentoDominio.getCodApplicazione() != null) {
-				this.log.debug("Step "+(++i)+": Inoltro verso l'applicazione "+tipoVersamentoDominio.getCodApplicazione()+"...");
+			it.govpay.core.dao.commons.Versamento versamentoCommons = null;
+			String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
+			if(codApplicazione != null) {
+				this.log.debug("Step "+(++i)+": Inoltro verso l'applicazione "+codApplicazione+"...");
 				
-				this.log.debug("Inoltro verso l'applicazione "+tipoVersamentoDominio.getCodApplicazione()+" completato con successo.");
+				it.govpay.bd.model.Applicazione applicazione = null; 
+				try {
+					applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+				} catch (NotFoundException e) {
+					throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
+				}
+				
+				if(!applicazione.getUtenza().isAbilitato())
+					throw new GovPayException(EsitoOperazione.APP_001, applicazione.getCodApplicazione());
+				
+				try {
+					versamentoCommons = VersamentoUtils.inoltroPendenza(applicazione, putVersamentoDTO.getCodDominio(), putVersamentoDTO.getCodTipoVersamento(), json, bd);
+				} catch (ClientException e){
+					throw new GovPayException(EsitoOperazione.INTERNAL, "verifica del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage());
+				} catch (UtilsException e){
+					throw new GovPayException(EsitoOperazione.INTERNAL, "verifica del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage());
+				} catch (VersamentoScadutoException e) {
+					throw new GovPayException("La verifica del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_SCADUTO", EsitoOperazione.VER_010);
+				} catch (VersamentoAnnullatoException e) {
+					throw new GovPayException("La verifica del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_ANNULLATO", EsitoOperazione.VER_013);
+				} catch (VersamentoDuplicatoException e) {
+					throw new GovPayException("La verifica del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_DUPLICATO", EsitoOperazione.VER_012);
+				} catch (VersamentoSconosciutoException e) {
+					throw new GovPayException("La verifica del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_SCONOSCIUTO", EsitoOperazione.VER_011);
+				} catch (VersamentoNonValidoException e) { 
+					throw new GovPayException("verifica del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage(), EsitoOperazione.INTERNAL);
+				}
+				
+				this.log.debug("Inoltro verso l'applicazione "+codApplicazione+" completato con successo.");
+			} else {
+				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
+				versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 			}
-
-			PendenzaPost pendenzaPost = PendenzaPost.parse(json);
 			
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(pendenzaPost.getIdPendenza());
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(pendenzaPost.getIdA2A());
-			
-			it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			Versamento chiediVersamento = versamentoBusiness.chiediVersamento(versamentoCommons);
 

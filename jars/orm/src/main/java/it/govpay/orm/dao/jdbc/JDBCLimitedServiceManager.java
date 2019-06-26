@@ -66,6 +66,8 @@ import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoPortaleVersamentoServiceSearch;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPagamentoServiceSearch;
+import it.govpay.orm.dao.IPromemoriaService;
+import it.govpay.orm.dao.IPromemoriaServiceSearch;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRPTServiceSearch;
 import it.govpay.orm.dao.IRRService;
@@ -1067,6 +1069,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public INotificaService getNotificaService() throws ServiceException,NotImplementedException{
 		return new JDBCNotificaService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Promemoria type:Promemoria
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Promemoria}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Promemoria}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IPromemoriaServiceSearch getPromemoriaServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCPromemoriaServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Promemoria}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Promemoria}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IPromemoriaService getPromemoriaService() throws ServiceException,NotImplementedException{
+		return new JDBCPromemoriaService(this.unlimitedJdbcServiceManager);
 	}
 	
 	

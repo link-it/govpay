@@ -53,7 +53,7 @@ ALTER TABLE tipi_versamento ADD COLUMN trasformazione_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_versamento ADD COLUMN trasformazione_definizione CLOB;
 ALTER TABLE tipi_versamento ADD COLUMN cod_applicazione VARCHAR2(35 CHAR);
 ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso NUMBER NOT NULL;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_oggetto VARCHAR2(512 CHAR);
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_oggetto CLOB;
 ALTER TABLE tipi_versamento ADD COLUMN promemoria_messaggio CLOB;
 ALTER TABLE tipi_versamento MODIFY promemoria_avviso DEFAULT 0;
 
@@ -66,7 +66,49 @@ ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_definizione CLOB;
 ALTER TABLE tipi_vers_domini ADD COLUMN cod_applicazione VARCHAR2(35 CHAR);
 ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso NUMBER;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto VARCHAR2(512 CHAR);
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto CLOB;
 ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_messaggio CLOB;
+
+
+-- 24/06/2019 Tabella per la spedizione dei promemoria via mail
+CREATE SEQUENCE seq_promemoria MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE promemoria
+(
+	tipo VARCHAR2(16 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(255 CHAR),
+	debitore_email VARCHAR2(256 CHAR) NOT NULL,
+	oggetto VARCHAR2(512 CHAR) NOT NULL,
+	messaggio CLOB NOT NULL,
+	allega_avviso NUMBER NOT NULL,
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione NUMBER,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_ntf_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_promemoria PRIMARY KEY (id)
+);
+
+
+ALTER TABLE promemoria MODIFY allega_avviso DEFAULT 0;
+
+CREATE TRIGGER trg_promemoria
+BEFORE
+insert on promemoria
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_promemoria.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
 

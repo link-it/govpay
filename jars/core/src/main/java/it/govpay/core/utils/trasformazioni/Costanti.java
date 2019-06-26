@@ -22,4 +22,7 @@ public class Costanti {
     
     public final static String MAP_SUFFIX_RESPONSE = "Response";
     
+    public final static String MAP_VERSAMENTO = "versamento";
+    public final static String MAP_DOMINIO = "dominio";
+    
 }

@@ -530,7 +530,7 @@ CREATE TABLE tipi_versamento
 	trasformazione_definizione CLOB,
 	cod_applicazione VARCHAR2(35 CHAR),
 	promemoria_avviso NUMBER NOT NULL,
-	promemoria_oggetto VARCHAR2(512 CHAR),
+	promemoria_oggetto CLOB,
 	promemoria_messaggio CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -573,7 +573,7 @@ CREATE TABLE tipi_vers_domini
 	trasformazione_definizione CLOB,
 	cod_applicazione VARCHAR2(35 CHAR),
 	promemoria_avviso NUMBER,
-	promemoria_oggetto VARCHAR2(512 CHAR),
+	promemoria_oggetto CLOB,
 	promemoria_messaggio CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -992,6 +992,46 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_notifiche.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
+CREATE SEQUENCE seq_promemoria MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE promemoria
+(
+	tipo VARCHAR2(16 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(255 CHAR),
+	debitore_email VARCHAR2(256 CHAR) NOT NULL,
+	oggetto VARCHAR2(512 CHAR) NOT NULL,
+	messaggio CLOB NOT NULL,
+	allega_avviso NUMBER NOT NULL,
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione NUMBER,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_ntf_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_promemoria PRIMARY KEY (id)
+);
+
+
+ALTER TABLE promemoria MODIFY allega_avviso DEFAULT 0;
+
+CREATE TRIGGER trg_promemoria
+BEFORE
+insert on promemoria
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_promemoria.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;

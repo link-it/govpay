@@ -41,6 +41,10 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 	public boolean isTipoCustom(){return this.getTipoCustom() != null;}
 	public boolean isPagaTerziCustom(){return this.getPagaTerziCustom() != null;}
 	public boolean isPagaTerzi(){return this.getPagaTerzi();}
+	public boolean isPromemoriaAvviso(){return this.getPromemoriaAvviso();}
+	public boolean isPromemoria(){
+		return this.getPromemoriaMessaggio() != null && this.getPromemoriaOggetto() != null;
+	}
 	
 	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
 		if(this.tipoVersamento == null) {

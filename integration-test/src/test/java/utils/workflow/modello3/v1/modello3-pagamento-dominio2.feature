@@ -41,7 +41,7 @@ Then assert responseStatus == 200
 
 # Verifico la notifica di attivazione
  
-* configure retry = { count: 10, interval: 1000 }
+* configure retry = { count: 30, interval: 1000 }
  
 Given url ente_api_url
 And path 'notificaAttivazione', idDominio_2, iuv, ccp

@@ -57,10 +57,13 @@ import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -161,6 +164,7 @@ public class Rendicontazioni extends BasicBD {
 						
 						try {
 							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale, this);
+							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null);
 							risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
 							chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.OK);
 						} catch (Exception e) {
@@ -582,6 +586,7 @@ public class Rendicontazioni extends BasicBD {
 			try {
 				Intermediario intermediario = stazione.getIntermediario(this);
 				chiediFlussoRendicontazioniClient = new NodoClient(intermediario, null, giornale, this);
+				popolaDatiPagoPAEvento(chiediFlussoRendicontazioniClient, intermediario, stazione, dominio);
 				risposta = chiediFlussoRendicontazioniClient.nodoChiediElencoFlussiRendicontazione(richiesta, stazione.getIntermediario(this).getDenominazione());
 				chiediFlussoRendicontazioniClient.getEventoCtx().setEsito(Esito.OK);
 			} catch (Exception e) {
@@ -661,5 +666,22 @@ public class Rendicontazioni extends BasicBD {
 		}
 
 		return flussiDaAcquisire;
+	}
+	
+	public static void popolaDatiPagoPAEvento(NodoClient client, Intermediario intermediario, Stazione stazione, Dominio dominio) throws ServiceException {
+
+		DatiPagoPA datiPagoPA = new DatiPagoPA();
+//		datiPagoPA.setCodCanale(rpt.getCodCanale());
+//		datiPagoPA.setCodPsp(rpt.getCodPsp());
+		datiPagoPA.setCodStazione(stazione.getCodStazione());
+		datiPagoPA.setCodIntermediario(intermediario.getCodIntermediario());
+		datiPagoPA.setErogatore(Evento.NDP);
+		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
+//		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
+//		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
+//		datiPagoPA.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
+		if(dominio != null)
+			datiPagoPA.setCodDominio(dominio.getCodDominio());
+		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 	}
 }

@@ -645,16 +645,16 @@ public class DominiDAO extends BaseDAO{
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), useCacheData);
 
 			TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
-			TipoVersamentoDominioFilter filter = null;
-			if(findTipiPendenzaDTO.isSimpleSearch()) {
-				filter = tipiVersamentoDominiBD.newFilter(true);
-				filter.setSimpleSearchString(findTipiPendenzaDTO.getSimpleSearch());
-			} else {
-				filter = tipiVersamentoDominiBD.newFilter(false);
-				filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
-				filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
-				filter.setCodDominio(findTipiPendenzaDTO.getCodDominio());
-			}
+			TipoVersamentoDominioFilter filter = tipiVersamentoDominiBD.newFilter();
+//			if(findTipiPendenzaDTO.isSimpleSearch()) {
+//				filter = tipiVersamentoDominiBD.newFilter(true);
+//				filter.setSimpleSearchString(findTipiPendenzaDTO.getSimpleSearch());
+//			} else {
+//				filter = tipiVersamentoDominiBD.newFilter(false);
+//				filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
+//				filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
+//				filter.setCodDominio(findTipiPendenzaDTO.getCodDominio());
+//			}
 			try {
 				filter.setIdDominio(AnagraficaManager.getDominio(bd, findTipiPendenzaDTO.getCodDominio()).getId());
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {

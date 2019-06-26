@@ -43,7 +43,7 @@ ALTER TABLE tipi_versamento ADD COLUMN trasformazione_tipo VARCHAR(35);
 ALTER TABLE tipi_versamento ADD COLUMN trasformazione_definizione TEXT;
 ALTER TABLE tipi_versamento ADD COLUMN cod_applicazione VARCHAR(35);
 ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_oggetto VARCHAR(512);
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_oggetto TEXT;
 ALTER TABLE tipi_versamento ADD COLUMN promemoria_messaggio TEXT;
 
 ALTER TABLE tipi_vers_domini DROP COLUMN json_schema;
@@ -55,8 +55,35 @@ ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_tipo VARCHAR(35);
 ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_definizione TEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN cod_applicazione VARCHAR(35);
 ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso BOOLEAN;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto VARCHAR(512);
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto TEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_messaggio TEXT;
 
+
+-- 24/06/2019 Tabella per la spedizione dei promemoria via mail
+
+CREATE SEQUENCE seq_promemoria start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE promemoria
+(
+	tipo VARCHAR(16) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR(16) NOT NULL,
+	descrizione_stato VARCHAR(255),
+	debitore_email VARCHAR(256) NOT NULL,
+	oggetto VARCHAR(512) NOT NULL,
+	messaggio TEXT NOT NULL,
+	allega_avviso BOOLEAN NOT NULL DEFAULT false
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione BIGINT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_promemoria') NOT NULL,
+	id_versamento BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_ntf_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_promemoria PRIMARY KEY (id)
+);
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 
 

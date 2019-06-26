@@ -82,20 +82,20 @@ public class VerificaConverter {
 		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenzaVerificata.getVoci());
 		
 		// tipo Pendenza
-		if(pendenzaVerificata.getIdTipoPendenza() == null) {
-			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-				if(sv.getBolloTelematico() != null) {
-					versamento.setCodTipoVersamento(Tributo.BOLLOT);
-				} else if(sv.getCodTributo() != null) {
-					versamento.setCodTipoVersamento(sv.getCodTributo());
-				} else {
-					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-				}
-			}
-		} else {
-			versamento.setCodTipoVersamento(pendenzaVerificata.getIdTipoPendenza());
-		}
+//		if(pendenzaVerificata.getIdTipoPendenza() == null) {
+//			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
+//				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+//				if(sv.getBolloTelematico() != null) {
+//					versamento.setCodTipoVersamento(Tributo.BOLLOT);
+//				} else if(sv.getCodTributo() != null) {
+//					versamento.setCodTipoVersamento(sv.getCodTributo());
+//				} else {
+//					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
+//				}
+//			}
+//		} else {
+		versamento.setCodTipoVersamento(pendenzaVerificata.getIdTipoPendenza());
+//		}
 		
 		return versamento;
 	}

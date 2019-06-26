@@ -675,7 +675,43 @@ public enum EsitoOperazione {
      * Errore interno durante la validazione 
      * 
      */
-    VAL_002;
+    VAL_002,
+
+    /**
+     * Tipo Pendenza non censito
+     * 
+     */
+    TVR_000,
+
+    /**
+     * Tipo Pendenza disabilitato
+     * 
+     */
+    TVR_001,
+
+    /**
+     * Tipo Pendenza Dominio non censito
+     * 
+     */
+    TVD_000,
+
+    /**
+     * Tipo Pendenza Dominio disabilitato
+     * 
+     */
+    TVD_001,
+
+    /**
+     * Errore generazione oggetto promemoria 
+     * 
+     */
+    PRM_001,
+
+    /**
+     * Errore generazione messggio promemoria 
+     * 
+     */
+    PRM_002;
 	
 
     public String value() {

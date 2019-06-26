@@ -4881,12 +4881,11 @@ components:
         - messaggio
       properties:
         oggetto:
-          type: string
-          description: Oggetto da inserire nella email
-          example: 'Avviso Pagamento n 1234abc'
+          type: object
+          description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
         messaggio:
-          type: string
-          description: Definisce il template del body da inserire nella email
+          type: object
+          description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
         allegaAvviso:
           type: boolean
           description: Indica se allegare alla email il pdf contenente l'avviso di pagamento

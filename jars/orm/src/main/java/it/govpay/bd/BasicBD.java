@@ -56,6 +56,7 @@ import it.govpay.orm.dao.IDBOperazioneService;
 import it.govpay.orm.dao.IDBPagamentoPortaleService;
 import it.govpay.orm.dao.IDBPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IDBPagamentoService;
+import it.govpay.orm.dao.IDBPromemoriaService;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneService;
@@ -86,6 +87,7 @@ import it.govpay.orm.dao.IOperazioneService;
 import it.govpay.orm.dao.IPagamentoPortaleService;
 import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoService;
+import it.govpay.orm.dao.IPromemoriaService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
@@ -151,6 +153,7 @@ public class BasicBD {
 	private IStampaService stampaService;
 	private IConfigurazioneService configurazioneService;
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
+	private IPromemoriaService promemoriaService;
 	
 	private String idTransaction;
 	private String idModulo;
@@ -240,6 +243,7 @@ public class BasicBD {
 				this.stampaService = this.serviceManager.getStampaService();
 				this.configurazioneService = this.serviceManager.getConfigurazioneService();
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
+				this.promemoriaService = this.serviceManager.getPromemoriaService();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -290,6 +294,7 @@ public class BasicBD {
 			((IDBAuditService)this.auditService).enableSelectForUpdate();
 			((IDBStampaService)this.stampaService).enableSelectForUpdate();
 			((IDBConfigurazioneService)this.configurazioneService).enableSelectForUpdate();
+			((IDBPromemoriaService)this.promemoriaService).enableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
@@ -338,6 +343,7 @@ public class BasicBD {
 			((IDBAuditService)this.auditService).disableSelectForUpdate();
 			((IDBStampaService)this.stampaService).disableSelectForUpdate();
 			((IDBConfigurazioneService)this.configurazioneService).disableSelectForUpdate();
+			((IDBPromemoriaService)this.promemoriaService).disableSelectForUpdate();
 			
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
@@ -625,6 +631,13 @@ public class BasicBD {
 			return this.father.getConfigurazioneService();
 		}
 		return this.configurazioneService;
+	}
+	
+	public IPromemoriaService getPromemoriaService() {
+		if(this.father != null) {
+			return this.father.getPromemoriaService();
+		}
+		return this.promemoriaService;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {

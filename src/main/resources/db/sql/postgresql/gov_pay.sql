@@ -351,7 +351,7 @@ CREATE TABLE tipi_versamento
 	trasformazione_definizione TEXT,
 	cod_applicazione VARCHAR(35),
 	promemoria_avviso BOOLEAN NOT NULL DEFAULT false,
-	promemoria_oggetto VARCHAR(512),
+	promemoria_oggetto TEXT,
 	promemoria_messaggio TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_versamento') NOT NULL,
@@ -379,7 +379,7 @@ CREATE TABLE tipi_vers_domini
 	trasformazione_definizione TEXT,
 	cod_applicazione VARCHAR(35),
 	promemoria_avviso BOOLEAN,
-	promemoria_oggetto VARCHAR(512),
+	promemoria_oggetto TEXT,
 	promemoria_messaggio TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_vers_domini') NOT NULL,
@@ -698,6 +698,32 @@ CREATE TABLE notifiche
 	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_promemoria start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE promemoria
+(
+	tipo VARCHAR(16) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR(16) NOT NULL,
+	descrizione_stato VARCHAR(255),
+	debitore_email VARCHAR(256) NOT NULL,
+	oggetto VARCHAR(512) NOT NULL,
+	messaggio TEXT NOT NULL,
+	allega_avviso BOOLEAN NOT NULL DEFAULT false,
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione BIGINT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_promemoria') NOT NULL,
+	id_versamento BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_ntf_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 );
 
 

@@ -348,7 +348,7 @@ CREATE TABLE tipi_versamento
 	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
 	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
 	promemoria_avviso BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
-	promemoria_oggetto VARCHAR(512) COMMENT 'Template della mail',
+	promemoria_oggetto LONGTEXT COMMENT 'Template della mail',
 	promemoria_messaggio LONGTEXT COMMENT 'Messaggio della mail',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
@@ -376,7 +376,7 @@ CREATE TABLE tipi_vers_domini
 	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
 	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
 	promemoria_avviso BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
-	promemoria_oggetto VARCHAR(512) COMMENT 'Template della mail',
+	promemoria_oggetto LONGTEXT COMMENT 'Template della mail',
 	promemoria_messaggio LONGTEXT COMMENT 'Messaggio della mail',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
@@ -708,6 +708,33 @@ CREATE TABLE notifiche
 	CONSTRAINT fk_ntf_id_rr FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Notifiche';
+
+
+
+
+CREATE TABLE promemoria
+(
+	tipo VARCHAR(16) NOT NULL,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione del promemoria',
+	stato VARCHAR(16) NOT NULL COMMENT 'Stato di comunicazione del promemoria',
+	descrizione_stato VARCHAR(255) COMMENT 'Descrizione dello stato di comunicazione del promemoria',
+	debitore_email VARCHAR(256) NOT NULL COMMENT 'Indirizzo email al quale spedire il promemoria',
+	oggetto VARCHAR(512) NOT NULL COMMENT 'Oggetto email promemoria',
+	messaggio LONGTEXT NOT NULL COMMENT 'Messaggio email promemoria',
+	allega_avviso BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se allegare l\'avviso di pagamento alla email promemoria',
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data dell\'ultimo aggiornamento',
+	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999
+	data_prossima_spedizione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)  COMMENT 'Data di prossima spedizione del promemoria',
+	tentativi_spedizione BIGINT COMMENT 'Numero di tentativi di consegna del promemoria',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
+	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto del promemoria',
+	-- fk/pk keys constraints
+	CONSTRAINT fk_ntf_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_promemoria PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
 

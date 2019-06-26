@@ -19,17 +19,29 @@
 	<b:bean id="batchAvvisaturaDigitaleSincrona" class="it.govpay.core.utils.tasks.AvvisaturaDigitaleSincrona"/>
 	<b:bean id="batchElaborazioneTracciatiCheck" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiPendenzeCheck"/>
 	<b:bean id="batchElaborazioneTracciati" class="it.govpay.core.utils.tasks.ElaborazioneTracciatiPendenze"/>
+	<b:bean id="batchSpedizionePromemoria" class="it.govpay.core.utils.tasks.SpedizionePromemoria"/>
 	
 	<task:scheduled-tasks scheduler="myScheduler">
+		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
 		<task:scheduled ref="batchAcquisizioneRendicontazioni" method="exec" cron="0 0 4,12,18 * * ?" />
+		<!-- Rpt pendenti tutti i giorni ogni ora -->
         <task:scheduled ref="batchRecuperoRptPendenti" method="exec" cron="0 0 * * * ?" />
+        <!-- Notifiche spedite tutti i giorni ogni minuto -->
         <task:scheduled ref="batchSpedizioneNotifiche" method="exec" cron="0 * * * * ?" />
+        <!-- Reset della cache tutti i giorni ogni 2 ore -->
         <task:scheduled ref="batchResetCacheAnagrafica" method="exec" cron="0 0 0/2 * * ?" />
+        <!-- Avvisatura digitale aincrona tutti i giorni ogni ora -->
         <task:scheduled ref="batchAvvisaturaDigitaleAsincrona" method="exec" cron="0 0 * * * ?" />
+        <!-- Avvisatura digitale aincrona tutti i giorni ogni ora -->
         <task:scheduled ref="batchEsitoAvvisaturaDigitaleAsincrona" method="exec" cron="0 0 * * * ?" />
+        <!-- Avvisatura digitale sincrona tutti i giorni ogni minuto -->
         <task:scheduled ref="batchAvvisaturaDigitaleSincrona" method="exec" cron="0 * * * * ?" />
+        <!-- Check tracciati da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
         <task:scheduled ref="batchElaborazioneTracciatiCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Elaborazione tracciati viene eseguito tutti i giorni ogni 30 minuti -->
         <task:scheduled ref="batchElaborazioneTracciati" method="exec" cron="0 0/30 * * * ?" />
+        <!-- Rendicontazioni acquisite tutti i giorni ogni minuto -->
+        <task:scheduled ref="batchSpedizionePromemoria" method="exec" cron="0 * * * * ?" />
     </task:scheduled-tasks>
  
 <task:scheduler id="myScheduler" pool-size="1"/>

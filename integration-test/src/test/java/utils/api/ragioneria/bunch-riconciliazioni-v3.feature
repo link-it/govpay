@@ -4,8 +4,8 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
-* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+* callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
 
 ## idRiconciliazioneSin_DOM1_A2A

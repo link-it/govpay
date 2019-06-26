@@ -33,6 +33,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Promemoria;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
@@ -165,8 +167,15 @@ public class Versamento extends BasicBD {
 					}
 				}
 				
-				// Versamento nuovo. Inserisco
-				versamentiBD.insertVersamento(versamento);
+				// Versamento nuovo. Inserisco versamento ed eventuale promemoria
+				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
+				Promemoria promemoria = null;
+				if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoria()) {
+					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
+					promemoria = promemoriaBD.creaPromemoriaEmail(versamento, tipoVersamentoDominio);
+				}
+				
+				versamentiBD.insertVersamento(versamento, promemoria);
 				ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") inserito");
 			}

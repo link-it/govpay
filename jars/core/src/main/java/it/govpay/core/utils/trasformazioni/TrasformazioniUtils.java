@@ -19,6 +19,8 @@ import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateModel;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 
@@ -120,5 +122,36 @@ public class TrasformazioniUtils {
 			}
 		}
 		return map;
+	}
+	
+	public static void fillDynamicMapPromemoria(Logger log, Map<String, Object> dynamicMap, IContext context, Versamento versamento, Dominio dominio) {
+		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
+			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
+		}
+
+		if(context !=null) {
+			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+			}
+			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
+				String idTransazione = context.getTransactionId();
+				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
+			}
+
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
+				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
+				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
+				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP.toLowerCase(), urle);
+			}
+		}
+
+		if(dynamicMap.containsKey(Costanti.MAP_VERSAMENTO)==false && versamento !=null) {
+			dynamicMap.put(Costanti.MAP_VERSAMENTO, versamento);
+		}
+
+		if(dynamicMap.containsKey(Costanti.MAP_DOMINIO)==false && dominio !=null) {
+			dynamicMap.put(Costanti.MAP_DOMINIO, dominio);
+		}
 	}
 }

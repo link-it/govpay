@@ -262,6 +262,10 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idNotifica" field="idNotifica" usage="required"/>
   </mapping>
+  <mapping name="id-promemoria" class="it.govpay.orm.IdPromemoria">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="idPromemoria" field="idPromemoria" usage="required"/>
+  </mapping>
   <mapping name="idSLA" class="it.govpay.orm.IdSla">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idSLA" field="idSLA" usage="required"/>
@@ -497,8 +501,15 @@
     <value name="tipo" field="tipo" usage="required"/>
     <value name="pagaTerzi" field="pagaTerzi" default="false" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
-    <value name="jsonSchema" field="jsonSchema" usage="optional"/>
-    <value name="datiAllegati" field="datiAllegati" usage="optional"/>
+    <value name="formTipo" field="formTipo" usage="optional"/>
+    <value name="formDefinizione" field="formDefinizione" usage="optional"/>
+    <value name="validazioneDefinizione" field="validazioneDefinizione" usage="optional"/>
+    <value name="trasformazioneTipo" field="trasformazioneTipo" usage="optional"/>
+    <value name="trasformazioneDefinizione" field="trasformazioneDefinizione" usage="optional"/>
+    <value name="codApplicazione" field="codApplicazione" usage="optional"/>
+    <value name="promemoriaAvviso" field="promemoriaAvviso" default="false" usage="required"/>
+    <value name="promemoriaOggetto" field="promemoriaOggetto" usage="optional"/>
+    <value name="promemoriaMessaggio" field="promemoriaMessaggio" usage="optional"/>
   </mapping>
   <mapping name="TipoVersamentoDominio" class="it.govpay.orm.TipoVersamentoDominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -508,8 +519,15 @@
     <value name="tipo" field="tipo" usage="optional"/>
     <value name="pagaTerzi" field="pagaTerzi" usage="optional"/>
     <value name="abilitato" field="abilitato" usage="optional"/>
-    <value name="jsonSchema" field="jsonSchema" usage="optional"/>
-    <value name="datiAllegati" field="datiAllegati" usage="optional"/>
+    <value name="formTipo" field="formTipo" usage="optional"/>
+    <value name="formDefinizione" field="formDefinizione" usage="optional"/>
+    <value name="validazioneDefinizione" field="validazioneDefinizione" usage="optional"/>
+    <value name="trasformazioneTipo" field="trasformazioneTipo" usage="optional"/>
+    <value name="trasformazioneDefinizione" field="trasformazioneDefinizione" usage="optional"/>
+    <value name="codApplicazione" field="codApplicazione" usage="optional"/>
+    <value name="promemoriaAvviso" field="promemoriaAvviso" usage="optional"/>
+    <value name="promemoriaOggetto" field="promemoriaOggetto" usage="optional"/>
+    <value name="promemoriaMessaggio" field="promemoriaMessaggio" usage="optional"/>
   </mapping>
   <mapping name="Versamento" class="it.govpay.orm.Versamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -567,18 +585,25 @@
   </mapping>
   <mapping name="Evento" class="it.govpay.orm.Evento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="codDominio" field="codDominio" usage="optional"/>
-    <value name="iuv" field="iuv" usage="optional"/>
-    <value name="ccp" field="ccp" usage="optional"/>
+    <value name="componente" field="componente" usage="optional"/>
+    <value name="ruolo" field="ruolo" usage="optional"/>
     <value name="categoriaEvento" field="categoriaEvento" usage="optional"/>
     <value name="tipoEvento" field="tipoEvento" usage="optional"/>
     <value name="sottotipoEvento" field="sottotipoEvento" usage="optional"/>
     <value name="data" field="data" usage="optional"/>
     <value name="intervallo" field="intervallo" usage="optional"/>
-    <value name="classnameDettaglio" field="classnameDettaglio" usage="optional"/>
-    <value name="dettaglio" field="dettaglio" usage="optional"/>
-    <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
-    <structure name="idPagamentoPortale" field="idPagamentoPortale" usage="optional" map-as="_IdPagamentoPortale_Type"/>
+    <value name="esito" field="esito" usage="optional"/>
+    <value name="sottotipoEsito" field="sottotipoEsito" usage="optional"/>
+    <value name="dettaglioEsito" field="dettaglioEsito" usage="optional"/>
+    <value name="parametriRichiesta" field="parametriRichiesta" usage="optional"/>
+    <value name="parametriRisposta" field="parametriRisposta" usage="optional"/>
+    <value name="datiPagoPA" field="datiPagoPA" usage="optional"/>
+    <value name="codVersamentoEnte" field="codVersamentoEnte" usage="optional"/>
+    <value name="codApplicazione" field="codApplicazione" usage="optional"/>
+    <value name="iuv" field="iuv" usage="optional"/>
+    <value name="ccp" field="ccp" usage="optional"/>
+    <value name="codDominio" field="codDominio" usage="optional"/>
+    <value name="idSessione" field="idSessione" usage="optional"/>
   </mapping>
   <mapping name="SingoloVersamento" class="it.govpay.orm.SingoloVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -740,6 +765,20 @@
     <value name="dataCreazione" field="dataCreazione" usage="required"/>
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
+    <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
+    <value name="dataProssimaSpedizione" field="dataProssimaSpedizione" usage="required"/>
+    <value name="tentativiSpedizione" field="tentativiSpedizione" usage="optional"/>
+  </mapping>
+  <mapping name="Promemoria" class="it.govpay.orm.Promemoria">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
+    <value name="tipo" field="tipo" usage="required"/>
+    <value name="dataCreazione" field="dataCreazione" usage="required"/>
+    <value name="stato" field="stato" usage="required"/>
+    <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
+    <value name="debitoreEmail" field="debitoreEmail" usage="required"/>
+    <value name="oggetto" field="oggetto" usage="required"/>
+    <value name="messaggio" field="messaggio" usage="required"/>
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
     <value name="dataProssimaSpedizione" field="dataProssimaSpedizione" usage="required"/>
     <value name="tentativiSpedizione" field="tentativiSpedizione" usage="optional"/>
