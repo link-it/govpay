@@ -20,7 +20,8 @@ import it.govpay.core.beans.JSONSerializable;
 "validazione",
 "trasformazione",
 "inoltro",
-"promemoria",
+"promemoriaAvviso",
+"promemoriaRicevuta",
 "idTipoPendenza",
 })
 public class TipoPendenza extends JSONSerializable {
@@ -52,8 +53,11 @@ public class TipoPendenza extends JSONSerializable {
   @JsonProperty("inoltro")
   private String inoltro = null;
   
-  @JsonProperty("promemoria")
-  private TipoPendenzaPromemoria promemoria = null;
+  @JsonProperty("promemoriaAvviso")
+  private TipoPendenzaPromemoria promemoriaAvviso = null;
+  
+  @JsonProperty("promemoriaRicevuta")
+  private TipoPendenzaPromemoria promemoriaRicevuta = null;
   
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
@@ -200,17 +204,32 @@ public class TipoPendenza extends JSONSerializable {
 
   /**
    **/
-  public TipoPendenza promemoria(TipoPendenzaPromemoria promemoria) {
-    this.promemoria = promemoria;
+  public TipoPendenza promemoriaAvviso(TipoPendenzaPromemoria promemoriaAvviso) {
+    this.promemoriaAvviso = promemoriaAvviso;
     return this;
   }
 
-  @JsonProperty("promemoria")
-  public TipoPendenzaPromemoria getPromemoria() {
-    return promemoria;
+  @JsonProperty("promemoriaAvviso")
+  public TipoPendenzaPromemoria getPromemoriaAvviso() {
+    return promemoriaAvviso;
   }
-  public void setPromemoria(TipoPendenzaPromemoria promemoria) {
-    this.promemoria = promemoria;
+  public void setPromemoriaAvviso(TipoPendenzaPromemoria promemoriaAvviso) {
+    this.promemoriaAvviso = promemoriaAvviso;
+  }
+
+  /**
+   **/
+  public TipoPendenza promemoriaRicevuta(TipoPendenzaPromemoria promemoriaRicevuta) {
+    this.promemoriaRicevuta = promemoriaRicevuta;
+    return this;
+  }
+
+  @JsonProperty("promemoriaRicevuta")
+  public TipoPendenzaPromemoria getPromemoriaRicevuta() {
+    return promemoriaRicevuta;
+  }
+  public void setPromemoriaRicevuta(TipoPendenzaPromemoria promemoriaRicevuta) {
+    this.promemoriaRicevuta = promemoriaRicevuta;
   }
 
   /**
@@ -246,13 +265,14 @@ public class TipoPendenza extends JSONSerializable {
         Objects.equals(validazione, tipoPendenza.validazione) &&
         Objects.equals(trasformazione, tipoPendenza.trasformazione) &&
         Objects.equals(inoltro, tipoPendenza.inoltro) &&
-        Objects.equals(promemoria, tipoPendenza.promemoria) &&
+        Objects.equals(promemoriaAvviso, tipoPendenza.promemoriaAvviso) &&
+        Objects.equals(promemoriaRicevuta, tipoPendenza.promemoriaRicevuta) &&
         Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoria, idTipoPendenza);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, idTipoPendenza);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -278,7 +298,8 @@ public class TipoPendenza extends JSONSerializable {
     sb.append("    validazione: ").append(toIndentedString(validazione)).append("\n");
     sb.append("    trasformazione: ").append(toIndentedString(trasformazione)).append("\n");
     sb.append("    inoltro: ").append(toIndentedString(inoltro)).append("\n");
-    sb.append("    promemoria: ").append(toIndentedString(promemoria)).append("\n");
+    sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
+    sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("}");
     return sb.toString();

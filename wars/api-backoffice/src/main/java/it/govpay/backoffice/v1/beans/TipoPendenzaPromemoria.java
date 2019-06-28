@@ -9,11 +9,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
-import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "oggetto",
 "messaggio",
-"allegaAvviso",
+"allegaPdf",
 })
 public class TipoPendenzaPromemoria extends JSONSerializable implements IValidable{
   
@@ -23,8 +22,8 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
   @JsonProperty("messaggio")
   private Object messaggio = null;
   
-  @JsonProperty("allegaAvviso")
-  private Boolean allegaAvviso = true;
+  @JsonProperty("allegaPdf")
+  private Boolean allegaPdf = true;
   
   /**
    * Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
@@ -59,20 +58,20 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
   }
 
   /**
-   * Indica se allegare alla email il pdf contenente l'avviso di pagamento
+   * Indica se allegare alla email il pdf contenente il promemoria
    **/
-  public TipoPendenzaPromemoria allegaAvviso(Boolean allegaAvviso) {
-    this.allegaAvviso = allegaAvviso;
+  public TipoPendenzaPromemoria allegaPdf(Boolean allegaPdf) {
+    this.allegaPdf = allegaPdf;
     return this;
   }
 
-  @JsonProperty("allegaAvviso")
+  @JsonProperty("allegaPdf")
   @com.fasterxml.jackson.databind.annotation.JsonDeserialize(using = it.govpay.rs.v1.beans.deserializer.BooleanDeserializer.class)
-  public Boolean AllegaAvviso() {
-    return allegaAvviso;
+  public Boolean AllegaPdf() {
+    return allegaPdf;
   }
-  public void setAllegaAvviso(Boolean allegaAvviso) {
-    this.allegaAvviso = allegaAvviso;
+  public void setAllegaPdf(Boolean allegaPdf) {
+    this.allegaPdf = allegaPdf;
   }
 
   @Override
@@ -86,12 +85,12 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
     TipoPendenzaPromemoria tipoPendenzaPromemoria = (TipoPendenzaPromemoria) o;
     return Objects.equals(oggetto, tipoPendenzaPromemoria.oggetto) &&
         Objects.equals(messaggio, tipoPendenzaPromemoria.messaggio) &&
-        Objects.equals(allegaAvviso, tipoPendenzaPromemoria.allegaAvviso);
+        Objects.equals(allegaPdf, tipoPendenzaPromemoria.allegaPdf);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(oggetto, messaggio, allegaAvviso);
+    return Objects.hash(oggetto, messaggio, allegaPdf);
   }
 
   public static TipoPendenzaPromemoria parse(String json) throws ServiceException, ValidationException {
@@ -110,7 +109,7 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
     
     sb.append("    oggetto: ").append(toIndentedString(oggetto)).append("\n");
     sb.append("    messaggio: ").append(toIndentedString(messaggio)).append("\n");
-    sb.append("    allegaAvviso: ").append(toIndentedString(allegaAvviso)).append("\n");
+    sb.append("    allegaPdf: ").append(toIndentedString(allegaPdf)).append("\n");
     sb.append("}");
     return sb.toString();
   }

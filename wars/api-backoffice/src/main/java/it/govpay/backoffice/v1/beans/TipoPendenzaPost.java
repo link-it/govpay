@@ -24,7 +24,8 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "validazione",
 "trasformazione",
 "inoltro",
-"promemoria",
+"promemoriaAvviso",
+"promemoriaRicevuta",
 })
 public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
@@ -57,8 +58,11 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   @JsonProperty("inoltro")
   private String inoltro = null;
   
-  @JsonProperty("promemoria")
-  private TipoPendenzaPromemoria promemoria = null;
+  @JsonProperty("promemoriaAvviso")
+  private TipoPendenzaPromemoria promemoriaAvviso = null;
+  
+  @JsonProperty("promemoriaRicevuta")
+  private TipoPendenzaPromemoria promemoriaRicevuta = null;
   
   /**
    **/
@@ -215,17 +219,32 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
 
   /**
    **/
-  public TipoPendenzaPost promemoria(TipoPendenzaPromemoria promemoria) {
-    this.promemoria = promemoria;
+  public TipoPendenzaPost promemoriaAvviso(TipoPendenzaPromemoria promemoriaAvviso) {
+    this.promemoriaAvviso = promemoriaAvviso;
     return this;
   }
 
-  @JsonProperty("promemoria")
-  public TipoPendenzaPromemoria getPromemoria() {
-    return promemoria;
+  @JsonProperty("promemoriaAvviso")
+  public TipoPendenzaPromemoria getPromemoriaAvviso() {
+    return promemoriaAvviso;
   }
-  public void setPromemoria(TipoPendenzaPromemoria promemoria) {
-    this.promemoria = promemoria;
+  public void setPromemoriaAvviso(TipoPendenzaPromemoria promemoriaAvviso) {
+    this.promemoriaAvviso = promemoriaAvviso;
+  }
+
+  /**
+   **/
+  public TipoPendenzaPost promemoriaRicevuta(TipoPendenzaPromemoria promemoriaRicevuta) {
+    this.promemoriaRicevuta = promemoriaRicevuta;
+    return this;
+  }
+
+  @JsonProperty("promemoriaRicevuta")
+  public TipoPendenzaPromemoria getPromemoriaRicevuta() {
+    return promemoriaRicevuta;
+  }
+  public void setPromemoriaRicevuta(TipoPendenzaPromemoria promemoriaRicevuta) {
+    this.promemoriaRicevuta = promemoriaRicevuta;
   }
 
   @Override
@@ -246,12 +265,13 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
         Objects.equals(validazione, tipoPendenzaPost.validazione) &&
         Objects.equals(trasformazione, tipoPendenzaPost.trasformazione) &&
         Objects.equals(inoltro, tipoPendenzaPost.inoltro) &&
-        Objects.equals(promemoria, tipoPendenzaPost.promemoria);
+        Objects.equals(promemoriaAvviso, tipoPendenzaPost.promemoriaAvviso) &&
+        Objects.equals(promemoriaRicevuta, tipoPendenzaPost.promemoriaRicevuta);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoria);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta);
   }
 
   public static TipoPendenzaPost parse(String json) throws ServiceException, ValidationException  {
@@ -277,7 +297,8 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     sb.append("    validazione: ").append(toIndentedString(validazione)).append("\n");
     sb.append("    trasformazione: ").append(toIndentedString(trasformazione)).append("\n");
     sb.append("    inoltro: ").append(toIndentedString(inoltro)).append("\n");
-    sb.append("    promemoria: ").append(toIndentedString(promemoria)).append("\n");
+    sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
+    sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -303,7 +324,8 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
 	vf.getValidator("abilitato", this.abilitato).notNull();
 	vf.getValidator("form", this.form).validateFields();
 	vf.getValidator("trasformazione", this.trasformazione).validateFields();
-	vf.getValidator("promemoria", this.promemoria).validateFields();
+	vf.getValidator("promemoriaAvviso", this.promemoriaAvviso).validateFields();
+	vf.getValidator("promemoriaRicevuta", this.promemoriaRicevuta).validateFields();
 	
 	ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 	

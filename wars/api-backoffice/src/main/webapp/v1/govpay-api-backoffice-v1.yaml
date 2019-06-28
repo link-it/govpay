@@ -4833,7 +4833,9 @@ components:
           type: string
           description: Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
           example: 'IDA2A01'
-        promemoria:
+        promemoriaAvviso:
+          $ref: '#/components/schemas/tipoPendenzaPromemoria'
+        promemoriaRicevuta:
           $ref: '#/components/schemas/tipoPendenzaPromemoria'
     tipoPendenza:
       type: object
@@ -4886,9 +4888,9 @@ components:
         messaggio:
           type: object
           description: Template di trasformazione da applicare per ottenere il messaggio da inserire nella email
-        allegaAvviso:
+        allegaPdf:
           type: boolean
-          description: Indica se allegare alla email il pdf contenente l'avviso di pagamento
+          description: Indica se allegare alla email il pdf contenente il promemoria
           default: true
     tipoPendenzaTipologia:
       type: string
@@ -4925,7 +4927,9 @@ components:
           type: string
           description: Identificativo dell'applicazione verso cui fare l'inoltro della pendenza
           example: 'IDA2A01'
-        promemoria:
+        promemoriaAvviso:
+          $ref: '#/components/schemas/tipoPendenzaPromemoria'
+        promemoriaRicevuta:
           $ref: '#/components/schemas/tipoPendenzaPromemoria'
     tipoPendenzaDominio:
       type: object

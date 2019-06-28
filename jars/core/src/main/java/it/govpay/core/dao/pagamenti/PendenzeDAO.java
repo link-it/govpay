@@ -836,7 +836,8 @@ public class PendenzeDAO extends BaseDAO{
 			this.log.debug("Caricamento pendenza modello 4: elaborazione dell'input ricevuto in corso...");
 			int i = 0;
 			String json = putVersamentoDTO.getCustomReq();
-			if(tipoVersamentoDominio.getValidazioneDefinizione() != null) {
+			String validazioneDefinizione = tipoVersamentoDominio.getValidazioneDefinizione();
+			if(validazioneDefinizione != null) {
 				this.log.debug("Step "+(++i)+": Validazione tramite JSON Schema...");
 
 				IJsonSchemaValidator validator = null;
@@ -849,7 +850,16 @@ public class PendenzeDAO extends BaseDAO{
 				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
 
 				try {
-					validator.setSchema(tipoVersamentoDominio.getValidazioneDefinizione().getBytes(), config);
+					// TODO eliminare dopo demo
+					if(validazioneDefinizione.startsWith("\""))
+						validazioneDefinizione = validazioneDefinizione.substring(1);
+
+					if(validazioneDefinizione.endsWith("\""))
+						validazioneDefinizione = validazioneDefinizione.substring(0, validazioneDefinizione.length() - 1);
+					
+					byte[] validazioneBytes = Base64.getDecoder().decode(validazioneDefinizione.getBytes());
+					
+					validator.setSchema(validazioneBytes, config);
 				} catch (ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new GovPayException(EsitoOperazione.VAL_001, e , e.getMessage());
