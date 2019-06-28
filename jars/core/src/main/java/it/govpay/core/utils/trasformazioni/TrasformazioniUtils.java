@@ -124,7 +124,7 @@ public class TrasformazioniUtils {
 		return map;
 	}
 	
-	public static void fillDynamicMapPromemoria(Logger log, Map<String, Object> dynamicMap, IContext context, Versamento versamento, Dominio dominio) {
+	public static void fillDynamicMapPromemoriaAvviso(Logger log, Map<String, Object> dynamicMap, IContext context, Versamento versamento, Dominio dominio) {
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
 		}
@@ -152,6 +152,41 @@ public class TrasformazioniUtils {
 
 		if(dynamicMap.containsKey(Costanti.MAP_DOMINIO)==false && dominio !=null) {
 			dynamicMap.put(Costanti.MAP_DOMINIO, dominio);
+		}
+	}
+	
+	public static void fillDynamicMapPromemoriaRicevuta(Logger log, Map<String, Object> dynamicMap, IContext context, it.govpay.bd.model.Rpt rpt, Versamento versamento, Dominio dominio) {
+		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
+			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
+		}
+
+		if(context !=null) {
+			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+			}
+			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
+				String idTransazione = context.getTransactionId();
+				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
+			}
+
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
+				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
+				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
+				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP.toLowerCase(), urle);
+			}
+		}
+
+		if(dynamicMap.containsKey(Costanti.MAP_VERSAMENTO)==false && versamento !=null) {
+			dynamicMap.put(Costanti.MAP_VERSAMENTO, versamento);
+		}
+
+		if(dynamicMap.containsKey(Costanti.MAP_DOMINIO)==false && dominio !=null) {
+			dynamicMap.put(Costanti.MAP_DOMINIO, dominio);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_RPT)==false && rpt !=null) {
+			dynamicMap.put(Costanti.MAP_RPT, rpt);
 		}
 	}
 }

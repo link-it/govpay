@@ -224,8 +224,10 @@ public class GovPayException extends Exception {
 		case TVR_001: return "Tipo pendenza (" + this.params[0] + ") disabilitato";
 		case TVD_000: return "Tipo pendenza (" + this.params[0] + ") del dominio (" + this.params[1] + ") inesistente";
 		case TVD_001: return "Tipo pendenza (" + this.params[0] + ") del dominio (" + this.params[1] + ") disabilitato";
-		case PRM_001: return "La generazione dell'oggetto per il promemoria per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
-		case PRM_002: return "La generazione del messaggio per il promemoria per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
+		case PRM_001: return "La generazione dell'oggetto per il promemoria avviso per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
+		case PRM_002: return "La generazione del messaggio per il promemoria avviso per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
+		case PRM_003: return "La generazione dell'oggetto per il promemoria ricevuta per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
+		case PRM_004: return "La generazione del messaggio per il promemoria ricevuta per la della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") si e' conclusa con un errore: " + this.params[2] + ".";
 		}
 		
 		return "";
@@ -376,6 +378,8 @@ public class GovPayException extends Exception {
 		case TVR_001: return 422; // "Richiesta non valida";
 		case PRM_001: return 500; // "Errore interno";
 		case PRM_002: return 500; // "Errore interno";
+		case PRM_003: return 500; // "Errore interno";
+		case PRM_004: return 500; // "Errore interno";
 		}
 		
 		return 500;
@@ -489,8 +493,10 @@ public class GovPayException extends Exception {
 		case TVD_001: return "Richiesta non valida";
 		case TVR_000: return "Richiesta non valida";
 		case TVR_001: return "Richiesta non valida";
-		case PRM_001: return  "Errore durante la generazione del promemoria"; 
-		case PRM_002: return  "Errore durante la generazione del promemoria"; 
+		case PRM_001: return  "Errore durante la generazione del promemoria avviso pagamento"; 
+		case PRM_002: return  "Errore durante la generazione del promemoria avviso pagamento"; 
+		case PRM_003: return  "Errore durante la generazione del promemoria ricevuta pagamento"; 
+		case PRM_004: return  "Errore durante la generazione del promemoria ricevuta pagamento"; 
 		}
 		
 		return "";

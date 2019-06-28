@@ -41,9 +41,13 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 	public boolean isTipoCustom(){return this.getTipoCustom() != null;}
 	public boolean isPagaTerziCustom(){return this.getPagaTerziCustom() != null;}
 	public boolean isPagaTerzi(){return this.getPagaTerzi();}
-	public boolean isPromemoriaAvviso(){return this.getPromemoriaAvviso();}
-	public boolean isPromemoria(){
-		return this.getPromemoriaMessaggio() != null && this.getPromemoriaOggetto() != null;
+	public boolean isPromemoriaAvvisoPdf(){return this.getPromemoriaAvvisoPdf();}
+	public boolean isPromemoriaAvviso(){
+		return this.getPromemoriaAvvisoMessaggio() != null && this.getPromemoriaAvvisoOggetto() != null;
+	}
+	public boolean isPromemoriaRicevutaPdf(){return this.getPromemoriaRicevutaPdf();}
+	public boolean isPromemoriaRicevuta(){
+		return this.getPromemoriaRicevutaMessaggio() != null && this.getPromemoriaRicevutaOggetto() != null;
 	}
 	
 	public TipoVersamento getTipoVersamento(BasicBD bd) throws ServiceException {
@@ -66,25 +70,46 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		return this.dominio;
 	}
 	
-	public Boolean getPromemoriaAvviso() {
-		if(this.getPromemoriaAvvisoCustom() != null)
-			return this.getPromemoriaAvvisoCustom();
+	public Boolean getPromemoriaAvvisoPdf() {
+		if(this.getPromemoriaAvvisoPdfCustom() != null)
+			return this.getPromemoriaAvvisoPdfCustom();
 		else 
-			return this.getPromemoriaAvvisoDefault();
+			return this.getPromemoriaAvvisoPdfDefault();
 	} 
 	
-	public String getPromemoriaOggetto() {
-		if(this.getPromemoriaOggettoCustom() != null)
-			return this.getPromemoriaOggettoCustom();
+	public String getPromemoriaAvvisoOggetto() {
+		if(this.getPromemoriaAvvisoOggettoCustom() != null)
+			return this.getPromemoriaAvvisoOggettoCustom();
 		else 
-			return this.getPromemoriaOggettoDefault();
+			return this.getPromemoriaAvvisoOggettoDefault();
 	}
 	
-	public String getPromemoriaMessaggio() {
-		if(this.getPromemoriaMessaggioCustom() != null)
-			return this.getPromemoriaMessaggioCustom();
+	public String getPromemoriaAvvisoMessaggio() {
+		if(this.getPromemoriaAvvisoMessaggioCustom() != null)
+			return this.getPromemoriaAvvisoMessaggioCustom();
 		else 
-			return this.getPromemoriaMessaggioDefault();
+			return this.getPromemoriaAvvisoMessaggioDefault();
+	}
+	
+	public Boolean getPromemoriaRicevutaPdf() {
+		if(this.getPromemoriaRicevutaPdfCustom() != null)
+			return this.getPromemoriaRicevutaPdfCustom();
+		else 
+			return this.getPromemoriaRicevutaPdfDefault();
+	} 
+	
+	public String getPromemoriaRicevutaOggetto() {
+		if(this.getPromemoriaRicevutaOggettoCustom() != null)
+			return this.getPromemoriaRicevutaOggettoCustom();
+		else 
+			return this.getPromemoriaRicevutaOggettoDefault();
+	}
+	
+	public String getPromemoriaRicevutaMessaggio() {
+		if(this.getPromemoriaRicevutaMessaggioCustom() != null)
+			return this.getPromemoriaRicevutaMessaggioCustom();
+		else 
+			return this.getPromemoriaRicevutaMessaggioDefault();
 	}
 	
 	public String getFormDefinizione() {

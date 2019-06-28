@@ -179,11 +179,11 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 				return "messaggio";
 			}
 		}
-		if(field.equals(Promemoria.model().ALLEGA_AVVISO)){
+		if(field.equals(Promemoria.model().ALLEGA_PDF)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".allega_avviso";
+				return this.toAliasTable(field)+".allega_pdf";
 			}else{
-				return "allega_avviso";
+				return "allega_pdf";
 			}
 		}
 		if(field.equals(Promemoria.model().DATA_AGGIORNAMENTO_STATO)){
@@ -268,7 +268,7 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Promemoria.model().MESSAGGIO)){
 			return this.toTable(Promemoria.model(), returnAlias);
 		}
-		if(field.equals(Promemoria.model().ALLEGA_AVVISO)){
+		if(field.equals(Promemoria.model().ALLEGA_PDF)){
 			return this.toTable(Promemoria.model(), returnAlias);
 		}
 		if(field.equals(Promemoria.model().DATA_AGGIORNAMENTO_STATO)){

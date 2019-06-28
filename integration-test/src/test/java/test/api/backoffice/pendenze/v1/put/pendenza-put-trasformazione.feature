@@ -25,12 +25,12 @@ Then assert responseStatus == 200 || responseStatus == 201
   	tipo: "freemarker",
   	definizione: null
   },
-  validazione: null;
+  validazione: null
 }
 """          
 * set tipoPendenzaDominio.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenzaDominio.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
-* set tipoPendenzaDominio.validazione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-validazione-form.json'))
+* set tipoPendenzaDominio.validazione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-validazione-form.json.payload'))
 
 Given url backofficeBaseurl
 And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo

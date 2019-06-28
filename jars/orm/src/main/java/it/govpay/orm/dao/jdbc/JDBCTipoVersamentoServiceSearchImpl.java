@@ -169,10 +169,14 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(TipoVersamento.model().VALIDAZIONE_DEFINIZIONE);
 			fields.add(TipoVersamento.model().TRASFORMAZIONE_DEFINIZIONE);
 			fields.add(TipoVersamento.model().TRASFORMAZIONE_TIPO);
-			fields.add(TipoVersamento.model().PROMEMORIA_AVVISO);
-			fields.add(TipoVersamento.model().PROMEMORIA_MESSAGGIO);
-			fields.add(TipoVersamento.model().PROMEMORIA_OGGETTO);
+			fields.add(TipoVersamento.model().PROMEMORIA_AVVISO_PDF);
+			fields.add(TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO);
+			fields.add(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO);
+			fields.add(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF);
+			fields.add(TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO);
+			fields.add(TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO);
 			fields.add(TipoVersamento.model().COD_APPLICAZIONE);
+
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         

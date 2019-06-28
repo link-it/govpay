@@ -702,16 +702,28 @@ public enum EsitoOperazione {
     TVD_001,
 
     /**
-     * Errore generazione oggetto promemoria 
+     * Errore generazione oggetto promemoria avviso
      * 
      */
     PRM_001,
 
     /**
-     * Errore generazione messggio promemoria 
+     * Errore generazione messggio promemoria avviso
      * 
      */
-    PRM_002;
+    PRM_002,
+
+    /**
+     * Errore generazione oggetto promemoria ricevuta
+     * 
+     */
+    PRM_003,
+
+    /**
+     * Errore generazione messggio promemoria ricevuta
+     * 
+     */
+    PRM_004;
 	
 
     public String value() {

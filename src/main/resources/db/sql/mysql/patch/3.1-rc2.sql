@@ -42,9 +42,12 @@ ALTER TABLE tipi_versamento ADD COLUMN validazione_definizione LONGTEXT;
 ALTER TABLE tipi_versamento ADD COLUMN trasformazione_tipo VARCHAR(35);
 ALTER TABLE tipi_versamento ADD COLUMN trasformazione_definizione LONGTEXT;
 ALTER TABLE tipi_versamento ADD COLUMN cod_applicazione VARCHAR(35);
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_oggetto LONGTEXT;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_messaggio LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_pdf BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_messaggio LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_pdf BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_oggetto LONGTEXT;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_messaggio LONGTEXT;
 
 ALTER TABLE tipi_vers_domini DROP COLUMN json_schema;
 ALTER TABLE tipi_vers_domini DROP COLUMN dati_allegati;
@@ -54,9 +57,13 @@ ALTER TABLE tipi_vers_domini ADD COLUMN validazione_definizione LONGTEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_tipo VARCHAR(35);
 ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_definizione LONGTEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN cod_applicazione VARCHAR(35);
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso BOOLEAN;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto LONGTEXT;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_messaggio LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_pdf BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_messaggio LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_pdf BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_oggetto LONGTEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_messaggio LONGTEXT;
+
 
 -- 24/06/2019 Tabella per la spedizione dei promemoria via mail
 CREATE TABLE promemoria
@@ -69,7 +76,7 @@ CREATE TABLE promemoria
 	debitore_email VARCHAR(256) NOT NULL,
 	oggetto VARCHAR(512) NOT NULL,
 	messaggio LONGTEXT NOT NULL,
-	allega_avviso BOOLEAN NOT NULL DEFAULT false,
+	allega_pdf BOOLEAN NOT NULL DEFAULT false,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999

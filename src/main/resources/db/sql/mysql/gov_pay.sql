@@ -347,9 +347,12 @@ CREATE TABLE tipi_versamento
 	trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
 	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
 	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
-	promemoria_avviso BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
-	promemoria_oggetto LONGTEXT COMMENT 'Template della mail',
-	promemoria_messaggio LONGTEXT COMMENT 'Messaggio della mail',
+	promemoria_avviso_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
+	promemoria_avviso_oggetto LONGTEXT COMMENT 'Template della mail del promemoria avviso',
+	promemoria_avviso_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria avviso',
+	promemoria_ricevuta_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
+	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
+	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -375,9 +378,12 @@ CREATE TABLE tipi_vers_domini
 	trasformazione_tipo VARCHAR(35) COMMENT 'Tipo di trasformazione richiesta',
 	trasformazione_definizione LONGTEXT COMMENT 'Template di trasformazione',
 	cod_applicazione VARCHAR(35) COMMENT 'Identificativo dell\'applicazione a cui inoltrare la pendenza',
-	promemoria_avviso BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
-	promemoria_oggetto LONGTEXT COMMENT 'Template della mail',
-	promemoria_messaggio LONGTEXT COMMENT 'Messaggio della mail',
+	promemoria_avviso_pdf BOOLEAN COMMENT 'Indica se inserire l\'avviso di pagamento come allegato alla mail',
+	promemoria_avviso_oggetto LONGTEXT COMMENT 'Template della mail del promemoria avviso',
+	promemoria_avviso_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria avviso',
+	promemoria_ricevuta_pdf BOOLEAN COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
+	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
+	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',
@@ -722,7 +728,7 @@ CREATE TABLE promemoria
 	debitore_email VARCHAR(256) NOT NULL COMMENT 'Indirizzo email al quale spedire il promemoria',
 	oggetto VARCHAR(512) NOT NULL COMMENT 'Oggetto email promemoria',
 	messaggio LONGTEXT NOT NULL COMMENT 'Messaggio email promemoria',
-	allega_avviso BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se allegare l\'avviso di pagamento alla email promemoria',
+	allega_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se allegare l\'avviso di pagamento alla email promemoria',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data dell\'ultimo aggiornamento',
 	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999

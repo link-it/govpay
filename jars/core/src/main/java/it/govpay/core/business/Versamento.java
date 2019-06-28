@@ -167,12 +167,12 @@ public class Versamento extends BasicBD {
 					}
 				}
 				
-				// Versamento nuovo. Inserisco versamento ed eventuale promemoria
+				// Versamento nuovo. Inserisco versamento ed eventuale promemoria avviso
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 				Promemoria promemoria = null;
-				if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoria()) {
+				if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaAvviso()) {
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
-					promemoria = promemoriaBD.creaPromemoriaEmail(versamento, tipoVersamentoDominio);
+					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio);
 				}
 				
 				versamentiBD.insertVersamento(versamento, promemoria);

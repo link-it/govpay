@@ -63,9 +63,15 @@ public class TipiPendenzaConverter {
 		}
 		
 		if(entrataPost.getPromemoriaAvviso() != null) {
-			tipoVersamento.setPromemoriaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaAvviso().getMessaggio(),null));
-			tipoVersamento.setPromemoriaOggettoDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaAvviso().getOggetto(),null));
-			tipoVersamento.setPromemoriaAvvisoDefault(entrataPost.getPromemoriaAvviso().AllegaPdf());
+			tipoVersamento.setPromemoriaAvvisoMessaggioDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaAvviso().getMessaggio(),null));
+			tipoVersamento.setPromemoriaAvvisoOggettoDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaAvviso().getOggetto(),null));
+			tipoVersamento.setPromemoriaAvvisoPdfDefault(entrataPost.getPromemoriaAvviso().AllegaPdf());
+		}
+		
+		if(entrataPost.getPromemoriaRicevuta() != null) {
+			tipoVersamento.setPromemoriaRicevutaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaRicevuta().getMessaggio(),null));
+			tipoVersamento.setPromemoriaRicevutaOggettoDefault(ConverterUtils.toJSON(entrataPost.getPromemoriaRicevuta().getOggetto(),null));
+			tipoVersamento.setPromemoriaRicevutaPdfDefault(entrataPost.getPromemoriaRicevuta().AllegaPdf());
 		}
 		
 		if(entrataPost.getTrasformazione() != null) {
@@ -119,12 +125,20 @@ public class TipiPendenzaConverter {
 			rsModel.setForm(form);
 		}
 		
-		if(tipoVersamento.getPromemoriaMessaggioDefault() != null && tipoVersamento.getPromemoriaOggettoDefault() != null) {
+		if(tipoVersamento.getPromemoriaAvvisoMessaggioDefault() != null && tipoVersamento.getPromemoriaAvvisoOggettoDefault() != null) {
 			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
-			promemoria.setOggetto(new RawObject(tipoVersamento.getPromemoriaOggettoDefault()));
-			promemoria.setMessaggio(new RawObject(tipoVersamento.getPromemoriaMessaggioDefault()));
-			promemoria.setAllegaPdf(tipoVersamento.getPromemoriaAvvisoDefault());
+			promemoria.setOggetto(new RawObject(tipoVersamento.getPromemoriaAvvisoOggettoDefault()));
+			promemoria.setMessaggio(new RawObject(tipoVersamento.getPromemoriaAvvisoMessaggioDefault()));
+			promemoria.setAllegaPdf(tipoVersamento.getPromemoriaAvvisoPdfDefault());
 			rsModel.setPromemoriaAvviso(promemoria);
+		}
+		
+		if(tipoVersamento.getPromemoriaRicevutaMessaggioDefault() != null && tipoVersamento.getPromemoriaRicevutaOggettoDefault() != null) {
+			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
+			promemoria.setOggetto(new RawObject(tipoVersamento.getPromemoriaRicevutaOggettoDefault()));
+			promemoria.setMessaggio(new RawObject(tipoVersamento.getPromemoriaRicevutaMessaggioDefault()));
+			promemoria.setAllegaPdf(tipoVersamento.getPromemoriaRicevutaPdfDefault());
+			rsModel.setPromemoriaRicevuta(promemoria);
 		}
 		
 		if(tipoVersamento.getTrasformazioneTipoDefault() != null && tipoVersamento.getTrasformazioneDefinizioneDefault() != null) {

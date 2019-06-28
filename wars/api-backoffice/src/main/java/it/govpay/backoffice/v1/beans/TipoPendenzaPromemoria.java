@@ -128,9 +128,14 @@ public class TipoPendenzaPromemoria extends JSONSerializable implements IValidab
   @Override
 	public void validate() throws ValidationException {
 	   if((this.oggetto != null && this.messaggio == null) || (this.oggetto == null && this.messaggio != null)) {
-			  throw new ValidationException("I campi 'oggetto' e 'definizione' devono essere entrambi valorizzati per definire il field 'promemoria'.");
+			  throw new ValidationException("I campi 'oggetto' e 'messaggio' devono essere entrambi valorizzati per definire il field 'promemoria'.");
 	  }
-	   
+	}
+  
+	public void validate(String fieldName) throws ValidationException {
+	   if((this.oggetto != null && this.messaggio == null) || (this.oggetto == null && this.messaggio != null)) {
+			  throw new ValidationException("I campi 'oggetto' e 'messaggio' devono essere entrambi valorizzati per definire il field '"+fieldName+"'.");
+	  }
 	}
 }
 

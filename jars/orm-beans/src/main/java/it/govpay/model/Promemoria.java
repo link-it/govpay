@@ -29,7 +29,7 @@ public class Promemoria extends BasicModel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public enum TipoPromemoria {EMAIL}
+	public enum TipoPromemoria { AVVISO, RICEVUTA}
 	public enum StatoSpedizione {DA_SPEDIRE, SPEDITO, ANNULLATO}
 	
 	private Long id;
@@ -44,7 +44,7 @@ public class Promemoria extends BasicModel {
 	private String debitoreEmail;
 	private String oggetto;
 	private String messaggio;
-	private boolean allegaAvviso;
+	private boolean allegaPdf;
 	
 	@Override
 	public Long getId() {
@@ -119,10 +119,10 @@ public class Promemoria extends BasicModel {
 	public void setDataProssimaSpedizione(Date dataProssimaSpedizione) {
 		this.dataProssimaSpedizione = dataProssimaSpedizione;
 	}
-	public boolean isAllegaAvviso() {
-		return allegaAvviso;
+	public boolean isAllegaPdf() {
+		return allegaPdf;
 	}
-	public void setAllegaAvviso(boolean allegaAvviso) {
-		this.allegaAvviso = allegaAvviso;
+	public void setAllegaPdf(boolean allegaPdf) {
+		this.allegaPdf = allegaPdf;
 	}
 }

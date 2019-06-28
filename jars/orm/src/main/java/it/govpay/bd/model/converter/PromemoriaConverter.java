@@ -45,7 +45,7 @@ public class PromemoriaConverter {
 		vo.setDebitoreEmail(dto.getDebitoreEmail());
 		vo.setOggetto(dto.getOggetto());
 		vo.setMessaggio(dto.getMessaggio());
-		vo.setAllegaAvviso(dto.isAllegaAvviso());
+		vo.setAllegaPdf(dto.isAllegaPdf());
 		return vo;
 	}
 
@@ -70,7 +70,7 @@ public class PromemoriaConverter {
 		dto.setDebitoreEmail(vo.getDebitoreEmail());
 		dto.setOggetto(vo.getOggetto());
 		dto.setMessaggio(vo.getMessaggio());
-		dto.setAllegaAvviso(vo.isAllegaAvviso());
+		dto.setAllegaPdf(vo.isAllegaPdf());
 		return dto;
 	}
 

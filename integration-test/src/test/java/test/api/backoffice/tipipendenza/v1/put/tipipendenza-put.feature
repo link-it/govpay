@@ -71,7 +71,10 @@ Examples:
 | trasformazione | null |
 | inoltro | idA2A |
 | inoltro | null |
-| promemoria | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaAvviso": true } |
-| promemoria | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaAvviso": false } |
-| promemoria | null |
+| promemoriaAvviso | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
+| promemoriaAvviso | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } |
+| promemoriaAvviso | null |
+| promemoriaRicevuta | { "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": true } |
+| promemoriaRicevuta | { "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": false } |
+| promemoriaRicevuta | null |
 

@@ -43,7 +43,7 @@ import java.io.Serializable;
  * 			&lt;element name="debitoreEmail" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="oggetto" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="messaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="allegaAvviso" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
+ * 			&lt;element name="allegaPdf" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="dataAggiornamentoStato" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataProssimaSpedizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tentativiSpedizione" type="{http://www.w3.org/2001/XMLSchema}unsignedLong" minOccurs="0" maxOccurs="1"/>
@@ -69,7 +69,7 @@ import java.io.Serializable;
   	"debitoreEmail",
   	"oggetto",
   	"messaggio",
-  	"allegaAvviso",
+  	"allegaPdf",
   	"dataAggiornamentoStato",
   	"dataProssimaSpedizione",
   	"tentativiSpedizione"
@@ -160,16 +160,16 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
     this.messaggio = messaggio;
   }
 
-  public boolean isAllegaAvviso() {
-    return this.allegaAvviso;
+  public boolean isAllegaPdf() {
+    return this.allegaPdf;
   }
 
-  public boolean getAllegaAvviso() {
-    return this.allegaAvviso;
+  public boolean getAllegaPdf() {
+    return this.allegaPdf;
   }
 
-  public void setAllegaAvviso(boolean allegaAvviso) {
-    this.allegaAvviso = allegaAvviso;
+  public void setAllegaPdf(boolean allegaPdf) {
+    this.allegaPdf = allegaPdf;
   }
 
   public java.util.Date getDataAggiornamentoStato() {
@@ -248,8 +248,8 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
   protected java.lang.String messaggio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="allegaAvviso",required=true,nillable=false,defaultValue="false")
-  protected boolean allegaAvviso = false;
+  @XmlElement(name="allegaPdf",required=true,nillable=false,defaultValue="false")
+  protected boolean allegaPdf = false;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

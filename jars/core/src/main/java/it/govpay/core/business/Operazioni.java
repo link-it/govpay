@@ -1121,7 +1121,7 @@ public class Operazioni{
 				log.info("Trovati ["+promemorias.size()+"] promemoria da spedire");
 
 				for(it.govpay.bd.model.Promemoria promemoria: promemorias) {
-					promemoriaBD.invioPromemoria(promemoria);
+					promemoriaBD.invioPromemoriaAvviso(promemoria);
 				}
 				aggiornaSondaOK(BATCH_SPEDIZIONE_PROMEMORIA, bd,ctx);
 				log.info("Spedizione promemoria completata.");

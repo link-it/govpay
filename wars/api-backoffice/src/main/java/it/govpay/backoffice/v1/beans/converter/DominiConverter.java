@@ -399,12 +399,20 @@ public class DominiConverter {
 			rsModel.setForm(form);
 		}
 		
-		if(tipoVersamentoDominio.getPromemoriaMessaggioDefault() != null && tipoVersamentoDominio.getPromemoriaOggettoDefault() != null) {
+		if(tipoVersamentoDominio.getPromemoriaAvvisoMessaggioDefault() != null && tipoVersamentoDominio.getPromemoriaAvvisoOggettoDefault() != null) {
 			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
-			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaOggettoDefault()));
-			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaMessaggioDefault()));
-			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaAvvisoDefault());
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaAvvisoOggettoDefault()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaAvvisoMessaggioDefault()));
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaAvvisoPdfDefault());
 			rsModel.setPromemoriaAvviso(promemoria);
+		}
+		
+		if(tipoVersamentoDominio.getPromemoriaRicevutaMessaggioDefault() != null && tipoVersamentoDominio.getPromemoriaRicevutaOggettoDefault() != null) {
+			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaRicevutaOggettoDefault()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaRicevutaMessaggioDefault()));
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaRicevutaPdfDefault());
+			rsModel.setPromemoriaRicevuta(promemoria);
 		}
 		
 		if(tipoVersamentoDominio.getTrasformazioneTipoDefault() != null && tipoVersamentoDominio.getTrasformazioneDefinizioneDefault() != null) {
@@ -431,12 +439,20 @@ public class DominiConverter {
 			valori.setForm(form);
 		}
 		
-		if(tipoVersamentoDominio.getPromemoriaMessaggioCustom() != null && tipoVersamentoDominio.getPromemoriaOggettoCustom() != null) {
+		if(tipoVersamentoDominio.getPromemoriaAvvisoMessaggioCustom() != null && tipoVersamentoDominio.getPromemoriaAvvisoOggettoCustom() != null) {
 			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
-			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaOggettoCustom()));
-			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaMessaggioCustom()));
-			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaAvvisoCustom());
-			valori.setPromemoria(promemoria);
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaAvvisoOggettoCustom()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaAvvisoMessaggioCustom()));
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaAvvisoPdfCustom());
+			valori.setPromemoriaAvviso(promemoria);
+		}
+		
+		if(tipoVersamentoDominio.getPromemoriaRicevutaMessaggioCustom() != null && tipoVersamentoDominio.getPromemoriaRicevutaOggettoCustom() != null) {
+			TipoPendenzaPromemoria promemoria = new TipoPendenzaPromemoria();
+			promemoria.setOggetto(new RawObject(tipoVersamentoDominio.getPromemoriaRicevutaOggettoCustom()));
+			promemoria.setMessaggio(new RawObject(tipoVersamentoDominio.getPromemoriaRicevutaMessaggioCustom()));
+			promemoria.setAllegaPdf(tipoVersamentoDominio.getPromemoriaRicevutaPdfCustom());
+			valori.setPromemoriaRicevuta(promemoria);
 		}
 		
 		if(tipoVersamentoDominio.getTrasformazioneTipoCustom() != null && tipoVersamentoDominio.getTrasformazioneDefinizioneCustom() != null) {
@@ -474,10 +490,16 @@ public class DominiConverter {
 			tipoVersamentoDominio.setFormTipoCustom(tipoPendenzaRequest.getForm().getTipo());
 		}
 		
-		if(tipoPendenzaRequest.getPromemoria() != null) {
-			tipoVersamentoDominio.setPromemoriaMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoria().getMessaggio(),null));
-			tipoVersamentoDominio.setPromemoriaOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoria().getOggetto(),null));
-			tipoVersamentoDominio.setPromemoriaAvvisoCustom(tipoPendenzaRequest.getPromemoria().AllegaPdf());
+		if(tipoPendenzaRequest.getPromemoriaAvviso() != null) {
+			tipoVersamentoDominio.setPromemoriaAvvisoMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaAvviso().getMessaggio(),null));
+			tipoVersamentoDominio.setPromemoriaAvvisoOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaAvviso().getOggetto(),null));
+			tipoVersamentoDominio.setPromemoriaAvvisoPdfCustom(tipoPendenzaRequest.getPromemoriaAvviso().AllegaPdf());
+		}
+		
+		if(tipoPendenzaRequest.getPromemoriaRicevuta() != null) {
+			tipoVersamentoDominio.setPromemoriaRicevutaMessaggioCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaRicevuta().getMessaggio(),null));
+			tipoVersamentoDominio.setPromemoriaRicevutaOggettoCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPromemoriaRicevuta().getOggetto(),null));
+			tipoVersamentoDominio.setPromemoriaRicevutaPdfCustom(tipoPendenzaRequest.getPromemoriaRicevuta().AllegaPdf());
 		}
 		
 		if(tipoPendenzaRequest.getTrasformazione() != null) {

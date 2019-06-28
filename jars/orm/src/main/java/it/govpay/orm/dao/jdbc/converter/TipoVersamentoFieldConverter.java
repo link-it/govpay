@@ -151,25 +151,46 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO)){
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_PDF)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".promemoria_avviso";
+				return this.toAliasTable(field)+".promemoria_avviso_pdf";
 			}else{
-				return "promemoria_avviso";
+				return "promemoria_avviso_pdf";
 			}
 		}
-		if(field.equals(TipoVersamento.model().PROMEMORIA_OGGETTO)){
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".promemoria_oggetto";
+				return this.toAliasTable(field)+".promemoria_avviso_oggetto";
 			}else{
-				return "promemoria_oggetto";
+				return "promemoria_avviso_oggetto";
 			}
 		}
-		if(field.equals(TipoVersamento.model().PROMEMORIA_MESSAGGIO)){
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".promemoria_messaggio";
+				return this.toAliasTable(field)+".promemoria_avviso_messaggio";
 			}else{
-				return "promemoria_messaggio";
+				return "promemoria_avviso_messaggio";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_pdf";
+			}else{
+				return "promemoria_ricevuta_pdf";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_oggetto";
+			}else{
+				return "promemoria_ricevuta_oggetto";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_messaggio";
+			}else{
+				return "promemoria_ricevuta_messaggio";
 			}
 		}
 
@@ -221,13 +242,22 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(TipoVersamento.model().COD_APPLICAZIONE)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
-		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO)){
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_PDF)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
-		if(field.equals(TipoVersamento.model().PROMEMORIA_OGGETTO)){
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
-		if(field.equals(TipoVersamento.model().PROMEMORIA_MESSAGGIO)){
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 

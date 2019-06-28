@@ -167,7 +167,7 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Promemoria.model().DEBITORE_EMAIL);
 			fields.add(Promemoria.model().OGGETTO);
 			fields.add(Promemoria.model().MESSAGGIO);
-			fields.add(Promemoria.model().ALLEGA_AVVISO);
+			fields.add(Promemoria.model().ALLEGA_PDF);
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         

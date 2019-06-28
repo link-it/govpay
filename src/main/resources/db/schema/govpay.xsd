@@ -1230,8 +1230,8 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codApplicazione" type="String35" minOccurs="0"/>
-			<xsd:element name="promemoriaAvviso" type="xsd:boolean" default="false"/>
-			<xsd:element name="promemoriaOggetto" type="xsd:string" minOccurs="0">
+			<xsd:element name="promemoriaAvvisoPdf" type="xsd:boolean" default="false"/>
+			<xsd:element name="promemoriaAvvisoOggetto" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1240,7 +1240,26 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="promemoriaMessaggio" type="xsd:string" minOccurs="0">
+			<xsd:element name="promemoriaAvvisoMessaggio" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="promemoriaRicevutaPdf" type="xsd:boolean" default="false"/>
+			<xsd:element name="promemoriaRicevutaOggetto" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="promemoriaRicevutaMessaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1339,14 +1358,14 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codApplicazione" type="String35" minOccurs="0"/>
-			<xsd:element name="promemoriaAvviso" minOccurs="0">
+			<xsd:element name="promemoriaAvvisoPdf" minOccurs="0">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
 						<xsd:pattern value="true|false"/>
 					</xsd:restriction>
 				</xsd:simpleType>
 			</xsd:element>
-			<xsd:element name="promemoriaOggetto" type="xsd:string" minOccurs="0">
+			<xsd:element name="promemoriaAvvisoOggetto" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1355,7 +1374,32 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="promemoriaMessaggio" type="xsd:string" minOccurs="0">
+			<xsd:element name="promemoriaAvvisoMessaggio" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="promemoriaRicevutaPdf" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:pattern value="true|false"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="promemoriaRicevutaOggetto" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="promemoriaRicevutaMessaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -2278,7 +2322,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="allegaAvviso" type="xsd:boolean" default="false"/>
+			<xsd:element name="allegaPdf" type="xsd:boolean" default="false"/>
 			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
 			<xsd:element name="dataProssimaSpedizione" type="xsd:dateTime" />
 			<xsd:element name="tentativiSpedizione" type="xsd:unsignedLong" minOccurs="0"/>

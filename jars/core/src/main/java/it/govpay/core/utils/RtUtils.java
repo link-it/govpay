@@ -47,12 +47,15 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.exceptions.GovPayException;
 //import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
@@ -212,7 +215,7 @@ public class RtUtils extends NdpValidationUtils {
 		return null;
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, String tipoFirma, byte[] rtByte, boolean recupero, BasicBD bd) throws ServiceException, NdpException, UtilsException, GovPayException {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
@@ -516,6 +519,15 @@ public class RtUtils extends NdpValidationUtils {
 			}
 			// schedulo l'invio dell'avvisatura
 			versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true);
+			
+			// schedulo l'invio del promemoria ricevuta
+			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(bd);
+			Promemoria promemoria = null;
+			if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaRicevuta()) {
+				it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(bd);
+				promemoria = promemoriaBD.creaPromemoriaRicevuta(rpt, versamento, versamento.getTipoVersamentoDominio(bd));
+				promemoriaBD.inserisciPromemoria(promemoria);
+			}
 			break;
 		default:
 			// do nothing

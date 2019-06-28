@@ -57,9 +57,12 @@ public class TipoVersamentoDominioConverter {
 		dto.setTrasformazioneDefinizioneCustom(vo.getTrasformazioneDefinizione());
 		dto.setTrasformazioneTipoCustom(vo.getTrasformazioneTipo());
 		dto.setCodApplicazioneCustom(vo.getCodApplicazione());
-		dto.setPromemoriaAvvisoCustom(vo.getPromemoriaAvviso());
-		dto.setPromemoriaMessaggioCustom(vo.getPromemoriaMessaggio());
-		dto.setPromemoriaOggettoCustom(vo.getPromemoriaOggetto());
+		dto.setPromemoriaAvvisoPdfCustom(vo.getPromemoriaAvvisoPdf());
+		dto.setPromemoriaAvvisoMessaggioCustom(vo.getPromemoriaAvvisoMessaggio());
+		dto.setPromemoriaAvvisoOggettoCustom(vo.getPromemoriaAvvisoOggetto());
+		dto.setPromemoriaRicevutaPdfCustom(vo.getPromemoriaRicevutaPdf());
+		dto.setPromemoriaRicevutaMessaggioCustom(vo.getPromemoriaRicevutaMessaggio());
+		dto.setPromemoriaRicevutaOggettoCustom(vo.getPromemoriaRicevutaOggetto());
 		
 		dto.setCodTipoVersamento(vo.getTipoVersamento().getCodTipoVersamento());
 		dto.setDescrizione(vo.getTipoVersamento().getDescrizione());
@@ -74,9 +77,12 @@ public class TipoVersamentoDominioConverter {
 		dto.setTrasformazioneDefinizioneDefault(vo.getTipoVersamento().getTrasformazioneDefinizione());
 		dto.setTrasformazioneTipoDefault(vo.getTipoVersamento().getTrasformazioneTipo());
 		dto.setCodApplicazioneDefault(vo.getTipoVersamento().getCodApplicazione());
-		dto.setPromemoriaAvvisoDefault(vo.getTipoVersamento().getPromemoriaAvviso());
-		dto.setPromemoriaMessaggioDefault(vo.getTipoVersamento().getPromemoriaMessaggio());
-		dto.setPromemoriaOggettoDefault(vo.getTipoVersamento().getPromemoriaOggetto());
+		dto.setPromemoriaAvvisoPdfDefault(vo.getTipoVersamento().getPromemoriaAvvisoPdf());
+		dto.setPromemoriaAvvisoMessaggioDefault(vo.getTipoVersamento().getPromemoriaAvvisoMessaggio());
+		dto.setPromemoriaAvvisoOggettoDefault(vo.getTipoVersamento().getPromemoriaAvvisoOggetto());
+		dto.setPromemoriaRicevutaPdfDefault(vo.getTipoVersamento().getPromemoriaRicevutaPdf());
+		dto.setPromemoriaRicevutaMessaggioDefault(vo.getTipoVersamento().getPromemoriaRicevutaMessaggio());
+		dto.setPromemoriaRicevutaOggettoDefault(vo.getTipoVersamento().getPromemoriaRicevutaOggetto());
 		
 		return dto;
 	}
@@ -100,9 +106,12 @@ public class TipoVersamentoDominioConverter {
 		tipoVersamento.setTrasformazioneDefinizione(dto.getTrasformazioneDefinizioneDefault());
 		tipoVersamento.setTrasformazioneTipo(dto.getTrasformazioneTipoDefault());
 		tipoVersamento.setCodApplicazione(dto.getCodApplicazioneDefault());
-		tipoVersamento.setPromemoriaAvviso(dto.getPromemoriaAvvisoDefault());
-		tipoVersamento.setPromemoriaMessaggio(dto.getPromemoriaMessaggioDefault());
-		tipoVersamento.setPromemoriaOggetto(dto.getPromemoriaOggettoDefault());
+		tipoVersamento.setPromemoriaAvvisoPdf(dto.getPromemoriaAvvisoPdfDefault());
+		tipoVersamento.setPromemoriaAvvisoMessaggio(dto.getPromemoriaAvvisoMessaggioDefault());
+		tipoVersamento.setPromemoriaAvvisoOggetto(dto.getPromemoriaAvvisoOggettoDefault());
+		tipoVersamento.setPromemoriaRicevutaPdf(dto.getPromemoriaRicevutaPdfDefault());
+		tipoVersamento.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioDefault());
+		tipoVersamento.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
 		if(dto.getTipoCustom() != null)
@@ -116,9 +125,12 @@ public class TipoVersamentoDominioConverter {
 		vo.setTrasformazioneDefinizione(dto.getTrasformazioneDefinizioneCustom());
 		vo.setTrasformazioneTipo(dto.getTrasformazioneTipoCustom());
 		vo.setCodApplicazione(dto.getCodApplicazioneCustom());
-		vo.setPromemoriaAvviso(dto.getPromemoriaAvvisoCustom());
-		vo.setPromemoriaMessaggio(dto.getPromemoriaMessaggioCustom());
-		vo.setPromemoriaOggetto(dto.getPromemoriaOggettoCustom());
+		vo.setPromemoriaAvvisoPdf(dto.getPromemoriaAvvisoPdfCustom());
+		vo.setPromemoriaAvvisoMessaggio(dto.getPromemoriaAvvisoMessaggioCustom());
+		vo.setPromemoriaAvvisoOggetto(dto.getPromemoriaAvvisoOggettoCustom());
+		vo.setPromemoriaRicevutaPdf(dto.getPromemoriaRicevutaPdfCustom());
+		vo.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioCustom());
+		vo.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoCustom());
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

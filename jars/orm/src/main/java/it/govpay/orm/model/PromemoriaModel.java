@@ -49,7 +49,7 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 		this.DEBITORE_EMAIL = new Field("debitoreEmail",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.OGGETTO = new Field("oggetto",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.MESSAGGIO = new Field("messaggio",java.lang.String.class,"Promemoria",Promemoria.class);
-		this.ALLEGA_AVVISO = new Field("allegaAvviso",boolean.class,"Promemoria",Promemoria.class);
+		this.ALLEGA_PDF = new Field("allegaPdf",boolean.class,"Promemoria",Promemoria.class);
 		this.DATA_AGGIORNAMENTO_STATO = new Field("dataAggiornamentoStato",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.DATA_PROSSIMA_SPEDIZIONE = new Field("dataProssimaSpedizione",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.TENTATIVI_SPEDIZIONE = new Field("tentativiSpedizione",java.lang.Long.class,"Promemoria",Promemoria.class);
@@ -68,7 +68,7 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 		this.DEBITORE_EMAIL = new ComplexField(father,"debitoreEmail",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.OGGETTO = new ComplexField(father,"oggetto",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.MESSAGGIO = new ComplexField(father,"messaggio",java.lang.String.class,"Promemoria",Promemoria.class);
-		this.ALLEGA_AVVISO = new ComplexField(father,"allegaAvviso",boolean.class,"Promemoria",Promemoria.class);
+		this.ALLEGA_PDF = new ComplexField(father,"allegaPdf",boolean.class,"Promemoria",Promemoria.class);
 		this.DATA_AGGIORNAMENTO_STATO = new ComplexField(father,"dataAggiornamentoStato",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.DATA_PROSSIMA_SPEDIZIONE = new ComplexField(father,"dataProssimaSpedizione",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.TENTATIVI_SPEDIZIONE = new ComplexField(father,"tentativiSpedizione",java.lang.Long.class,"Promemoria",Promemoria.class);
@@ -93,7 +93,7 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 	 
 	public IField MESSAGGIO = null;
 	 
-	public IField ALLEGA_AVVISO = null;
+	public IField ALLEGA_PDF = null;
 	 
 	public IField DATA_AGGIORNAMENTO_STATO = null;
 	 

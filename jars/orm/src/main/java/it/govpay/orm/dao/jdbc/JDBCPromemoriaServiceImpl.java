@@ -97,7 +97,7 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DEBITORE_EMAIL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().OGGETTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().MESSAGGIO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().ALLEGA_AVVISO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().ALLEGA_PDF,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DATA_AGGIORNAMENTO_STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DATA_PROSSIMA_SPEDIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().TENTATIVI_SPEDIZIONE,false),"?");
@@ -113,7 +113,7 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getDebitoreEmail(),Promemoria.model().DEBITORE_EMAIL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getOggetto(),Promemoria.model().OGGETTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getMessaggio(),Promemoria.model().MESSAGGIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getAllegaAvviso(),Promemoria.model().ALLEGA_AVVISO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getAllegaPdf(),Promemoria.model().ALLEGA_PDF.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getDataAggiornamentoStato(),Promemoria.model().DATA_AGGIORNAMENTO_STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getDataProssimaSpedizione(),Promemoria.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getTentativiSpedizione(),Promemoria.model().TENTATIVI_SPEDIZIONE.getFieldType()),
@@ -200,8 +200,8 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 		lstObjects_promemoria.add(new JDBCObject(promemoria.getOggetto(), Promemoria.model().OGGETTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().MESSAGGIO,false), "?");
 		lstObjects_promemoria.add(new JDBCObject(promemoria.getMessaggio(), Promemoria.model().MESSAGGIO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().ALLEGA_AVVISO,false), "?");
-		lstObjects_promemoria.add(new JDBCObject(promemoria.getAllegaAvviso(), Promemoria.model().ALLEGA_AVVISO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().ALLEGA_PDF,false), "?");
+		lstObjects_promemoria.add(new JDBCObject(promemoria.getAllegaPdf(), Promemoria.model().ALLEGA_PDF.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DATA_AGGIORNAMENTO_STATO,false), "?");
 		lstObjects_promemoria.add(new JDBCObject(promemoria.getDataAggiornamentoStato(), Promemoria.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DATA_PROSSIMA_SPEDIZIONE,false), "?");

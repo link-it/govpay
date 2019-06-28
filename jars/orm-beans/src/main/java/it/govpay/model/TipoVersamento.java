@@ -43,9 +43,12 @@ public class TipoVersamento extends BasicModel {
 	private String trasformazioneTipoDefault;
 	private String trasformazioneDefinizioneDefault;
 	private String codApplicazioneDefault;
-	private boolean promemoriaAvvisoDefault;
-	private String promemoriaOggettoDefault;
-	private String promemoriaMessaggioDefault;
+	private boolean promemoriaAvvisoPdfDefault;
+	private String promemoriaAvvisoOggettoDefault;
+	private String promemoriaAvvisoMessaggioDefault;
+	private boolean promemoriaRicevutaPdfDefault;
+	private String promemoriaRicevutaOggettoDefault;
+	private String promemoriaRicevutaMessaggioDefault;
 
 	public String getCodificaIuvDefault() {
 		return codificaIuvDefault;
@@ -126,22 +129,41 @@ public class TipoVersamento extends BasicModel {
 	public void setCodApplicazioneDefault(String codApplicazioneDefault) {
 		this.codApplicazioneDefault = codApplicazioneDefault;
 	}
-	public boolean getPromemoriaAvvisoDefault() {
-		return promemoriaAvvisoDefault;
+	public boolean getPromemoriaAvvisoPdfDefault() {
+		return promemoriaAvvisoPdfDefault;
 	}
-	public void setPromemoriaAvvisoDefault(boolean promemoriaAvvisoDefault) {
-		this.promemoriaAvvisoDefault = promemoriaAvvisoDefault;
+	public void setPromemoriaAvvisoPdfDefault(boolean promemoriaAvvisoPdfDefault) {
+		this.promemoriaAvvisoPdfDefault = promemoriaAvvisoPdfDefault;
 	}
-	public String getPromemoriaOggettoDefault() {
-		return promemoriaOggettoDefault;
+	public String getPromemoriaAvvisoOggettoDefault() {
+		return promemoriaAvvisoOggettoDefault;
 	}
-	public void setPromemoriaOggettoDefault(String promemoriaOggettoDefault) {
-		this.promemoriaOggettoDefault = promemoriaOggettoDefault;
+	public void setPromemoriaAvvisoOggettoDefault(String promemoriaAvvisoOggettoDefault) {
+		this.promemoriaAvvisoOggettoDefault = promemoriaAvvisoOggettoDefault;
 	}
-	public String getPromemoriaMessaggioDefault() {
-		return promemoriaMessaggioDefault;
+	public String getPromemoriaAvvisoMessaggioDefault() {
+		return promemoriaAvvisoMessaggioDefault;
 	}
-	public void setPromemoriaMessaggioDefault(String promemoriaMessaggioDefault) {
-		this.promemoriaMessaggioDefault = promemoriaMessaggioDefault;
+	public void setPromemoriaAvvisoMessaggioDefault(String promemoriaAvvisoMessaggioDefault) {
+		this.promemoriaAvvisoMessaggioDefault = promemoriaAvvisoMessaggioDefault;
 	}
+	public boolean getPromemoriaRicevutaPdfDefault() {
+		return promemoriaRicevutaPdfDefault;
+	}
+	public void setPromemoriaRicevutaPdfDefault(boolean promemoriaRicevutaPdfDefault) {
+		this.promemoriaRicevutaPdfDefault = promemoriaRicevutaPdfDefault;
+	}
+	public String getPromemoriaRicevutaOggettoDefault() {
+		return promemoriaRicevutaOggettoDefault;
+	}
+	public void setPromemoriaRicevutaOggettoDefault(String promemoriaRicevutaOggettoDefault) {
+		this.promemoriaRicevutaOggettoDefault = promemoriaRicevutaOggettoDefault;
+	}
+	public String getPromemoriaRicevutaMessaggioDefault() {
+		return promemoriaRicevutaMessaggioDefault;
+	}
+	public void setPromemoriaRicevutaMessaggioDefault(String promemoriaRicevutaMessaggioDefault) {
+		this.promemoriaRicevutaMessaggioDefault = promemoriaRicevutaMessaggioDefault;
+	}
+
 }

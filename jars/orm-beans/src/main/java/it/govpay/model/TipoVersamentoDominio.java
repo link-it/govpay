@@ -15,9 +15,12 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	private String trasformazioneTipoCustom;
 	private String trasformazioneDefinizioneCustom;
 	private String codApplicazioneCustom;
-	private Boolean promemoriaAvvisoCustom;
-	private String promemoriaOggettoCustom;
-	private String promemoriaMessaggioCustom;
+	private Boolean promemoriaAvvisoPdfCustom;
+	private String promemoriaAvvisoOggettoCustom;
+	private String promemoriaAvvisoMessaggioCustom;
+	private Boolean promemoriaRicevutaPdfCustom;
+	private String promemoriaRicevutaOggettoCustom;
+	private String promemoriaRicevutaMessaggioCustom;
 	
 	public String getFormTipoCustom() {
 		return formTipoCustom;
@@ -55,23 +58,41 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	public void setCodApplicazioneCustom(String codApplicazioneCustom) {
 		this.codApplicazioneCustom = codApplicazioneCustom;
 	}
-	public Boolean getPromemoriaAvvisoCustom() {
-		return promemoriaAvvisoCustom;
+	public Boolean getPromemoriaAvvisoPdfCustom() {
+		return promemoriaAvvisoPdfCustom;
 	}
-	public void setPromemoriaAvvisoCustom(Boolean promemoriaAvvisoCustom) {
-		this.promemoriaAvvisoCustom = promemoriaAvvisoCustom;
+	public void setPromemoriaAvvisoPdfCustom(Boolean promemoriaAvvisoPdfCustom) {
+		this.promemoriaAvvisoPdfCustom = promemoriaAvvisoPdfCustom;
 	}
-	public String getPromemoriaOggettoCustom() {
-		return promemoriaOggettoCustom;
+	public String getPromemoriaAvvisoOggettoCustom() {
+		return promemoriaAvvisoOggettoCustom;
 	}
-	public void setPromemoriaOggettoCustom(String promemoriaOggettoCustom) {
-		this.promemoriaOggettoCustom = promemoriaOggettoCustom;
+	public void setPromemoriaAvvisoOggettoCustom(String promemoriaAvvisoOggettoCustom) {
+		this.promemoriaAvvisoOggettoCustom = promemoriaAvvisoOggettoCustom;
 	}
-	public String getPromemoriaMessaggioCustom() {
-		return promemoriaMessaggioCustom;
+	public String getPromemoriaAvvisoMessaggioCustom() {
+		return promemoriaAvvisoMessaggioCustom;
 	}
-	public void setPromemoriaMessaggioCustom(String promemoriaMessaggioCustom) {
-		this.promemoriaMessaggioCustom = promemoriaMessaggioCustom;
+	public void setPromemoriaAvvisoMessaggioCustom(String promemoriaAvvisoMessaggioCustom) {
+		this.promemoriaAvvisoMessaggioCustom = promemoriaAvvisoMessaggioCustom;
+	}
+	public Boolean getPromemoriaRicevutaPdfCustom() {
+		return promemoriaRicevutaPdfCustom;
+	}
+	public void setPromemoriaRicevutaPdfCustom(Boolean promemoriaRicevutaPdfCustom) {
+		this.promemoriaRicevutaPdfCustom = promemoriaRicevutaPdfCustom;
+	}
+	public String getPromemoriaRicevutaOggettoCustom() {
+		return promemoriaRicevutaOggettoCustom;
+	}
+	public void setPromemoriaRicevutaOggettoCustom(String promemoriaRicevutaOggettoCustom) {
+		this.promemoriaRicevutaOggettoCustom = promemoriaRicevutaOggettoCustom;
+	}
+	public String getPromemoriaRicevutaMessaggioCustom() {
+		return promemoriaRicevutaMessaggioCustom;
+	}
+	public void setPromemoriaRicevutaMessaggioCustom(String promemoriaRicevutaMessaggioCustom) {
+		this.promemoriaRicevutaMessaggioCustom = promemoriaRicevutaMessaggioCustom;
 	}
 	public long getIdTipoVersamento() {
 		return idTipoVersamento;

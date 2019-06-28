@@ -24,5 +24,5 @@ public class Costanti {
     
     public final static String MAP_VERSAMENTO = "versamento";
     public final static String MAP_DOMINIO = "dominio";
-    
+    public final static String MAP_RPT = "rpt";
 }

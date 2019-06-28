@@ -47,9 +47,12 @@ import java.io.Serializable;
  * 			&lt;element name="trasformazioneTipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="trasformazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="promemoriaAvviso" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
- * 			&lt;element name="promemoriaOggetto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="promemoriaMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaAvvisoPdf" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
+ * 			&lt;element name="promemoriaAvvisoOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaAvvisoMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaRicevutaPdf" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
+ * 			&lt;element name="promemoriaRicevutaOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="promemoriaRicevutaMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -76,9 +79,12 @@ import java.io.Serializable;
   	"trasformazioneTipo",
   	"trasformazioneDefinizione",
   	"codApplicazione",
-  	"promemoriaAvviso",
-  	"promemoriaOggetto",
-  	"promemoriaMessaggio"
+  	"promemoriaAvvisoPdf",
+  	"promemoriaAvvisoOggetto",
+  	"promemoriaAvvisoMessaggio",
+  	"promemoriaRicevutaPdf",
+  	"promemoriaRicevutaOggetto",
+  	"promemoriaRicevutaMessaggio"
   }
 )
 
@@ -206,32 +212,60 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
     this.codApplicazione = codApplicazione;
   }
 
-  public boolean isPromemoriaAvviso() {
-    return this.promemoriaAvviso;
+  public boolean isPromemoriaAvvisoPdf() {
+    return this.promemoriaAvvisoPdf;
   }
 
-  public boolean getPromemoriaAvviso() {
-    return this.promemoriaAvviso;
+  public boolean getPromemoriaAvvisoPdf() {
+    return this.promemoriaAvvisoPdf;
   }
 
-  public void setPromemoriaAvviso(boolean promemoriaAvviso) {
-    this.promemoriaAvviso = promemoriaAvviso;
+  public void setPromemoriaAvvisoPdf(boolean promemoriaAvvisoPdf) {
+    this.promemoriaAvvisoPdf = promemoriaAvvisoPdf;
   }
 
-  public java.lang.String getPromemoriaOggetto() {
-    return this.promemoriaOggetto;
+  public java.lang.String getPromemoriaAvvisoOggetto() {
+    return this.promemoriaAvvisoOggetto;
   }
 
-  public void setPromemoriaOggetto(java.lang.String promemoriaOggetto) {
-    this.promemoriaOggetto = promemoriaOggetto;
+  public void setPromemoriaAvvisoOggetto(java.lang.String promemoriaAvvisoOggetto) {
+    this.promemoriaAvvisoOggetto = promemoriaAvvisoOggetto;
   }
 
-  public java.lang.String getPromemoriaMessaggio() {
-    return this.promemoriaMessaggio;
+  public java.lang.String getPromemoriaAvvisoMessaggio() {
+    return this.promemoriaAvvisoMessaggio;
   }
 
-  public void setPromemoriaMessaggio(java.lang.String promemoriaMessaggio) {
-    this.promemoriaMessaggio = promemoriaMessaggio;
+  public void setPromemoriaAvvisoMessaggio(java.lang.String promemoriaAvvisoMessaggio) {
+    this.promemoriaAvvisoMessaggio = promemoriaAvvisoMessaggio;
+  }
+
+  public boolean isPromemoriaRicevutaPdf() {
+    return this.promemoriaRicevutaPdf;
+  }
+
+  public boolean getPromemoriaRicevutaPdf() {
+    return this.promemoriaRicevutaPdf;
+  }
+
+  public void setPromemoriaRicevutaPdf(boolean promemoriaRicevutaPdf) {
+    this.promemoriaRicevutaPdf = promemoriaRicevutaPdf;
+  }
+
+  public java.lang.String getPromemoriaRicevutaOggetto() {
+    return this.promemoriaRicevutaOggetto;
+  }
+
+  public void setPromemoriaRicevutaOggetto(java.lang.String promemoriaRicevutaOggetto) {
+    this.promemoriaRicevutaOggetto = promemoriaRicevutaOggetto;
+  }
+
+  public java.lang.String getPromemoriaRicevutaMessaggio() {
+    return this.promemoriaRicevutaMessaggio;
+  }
+
+  public void setPromemoriaRicevutaMessaggio(java.lang.String promemoriaRicevutaMessaggio) {
+    this.promemoriaRicevutaMessaggio = promemoriaRicevutaMessaggio;
   }
 
   private static final long serialVersionUID = 1L;
@@ -302,15 +336,27 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
   protected java.lang.String codApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
-  @XmlElement(name="promemoriaAvviso",required=true,nillable=false,defaultValue="false")
-  protected boolean promemoriaAvviso = false;
+  @XmlElement(name="promemoriaAvvisoPdf",required=true,nillable=false,defaultValue="false")
+  protected boolean promemoriaAvvisoPdf = false;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="promemoriaOggetto",required=false,nillable=false)
-  protected java.lang.String promemoriaOggetto;
+  @XmlElement(name="promemoriaAvvisoOggetto",required=false,nillable=false)
+  protected java.lang.String promemoriaAvvisoOggetto;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="promemoriaMessaggio",required=false,nillable=false)
-  protected java.lang.String promemoriaMessaggio;
+  @XmlElement(name="promemoriaAvvisoMessaggio",required=false,nillable=false)
+  protected java.lang.String promemoriaAvvisoMessaggio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="promemoriaRicevutaPdf",required=true,nillable=false,defaultValue="false")
+  protected boolean promemoriaRicevutaPdf = false;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaRicevutaOggetto",required=false,nillable=false)
+  protected java.lang.String promemoriaRicevutaOggetto;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="promemoriaRicevutaMessaggio",required=false,nillable=false)
+  protected java.lang.String promemoriaRicevutaMessaggio;
 
 }

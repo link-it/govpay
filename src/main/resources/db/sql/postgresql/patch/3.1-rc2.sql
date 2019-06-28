@@ -42,9 +42,12 @@ ALTER TABLE tipi_versamento ADD COLUMN validazione_definizione TEXT;
 ALTER TABLE tipi_versamento ADD COLUMN trasformazione_tipo VARCHAR(35);
 ALTER TABLE tipi_versamento ADD COLUMN trasformazione_definizione TEXT;
 ALTER TABLE tipi_versamento ADD COLUMN cod_applicazione VARCHAR(35);
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso BOOLEAN NOT NULL DEFAULT false;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_oggetto TEXT;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_messaggio TEXT;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_pdf BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_oggetto TEXT;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_messaggio TEXT;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_pdf BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_oggetto TEXT;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_messaggio TEXT;
 
 ALTER TABLE tipi_vers_domini DROP COLUMN json_schema;
 ALTER TABLE tipi_vers_domini DROP COLUMN dati_allegati;
@@ -54,9 +57,12 @@ ALTER TABLE tipi_vers_domini ADD COLUMN validazione_definizione TEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_tipo VARCHAR(35);
 ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_definizione TEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN cod_applicazione VARCHAR(35);
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso BOOLEAN;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto TEXT;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_messaggio TEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_pdf BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_oggetto TEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_messaggio TEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_pdf BOOLEAN;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_oggetto TEXT;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_messaggio TEXT;
 
 
 -- 24/06/2019 Tabella per la spedizione dei promemoria via mail
@@ -72,7 +78,7 @@ CREATE TABLE promemoria
 	debitore_email VARCHAR(256) NOT NULL,
 	oggetto VARCHAR(512) NOT NULL,
 	messaggio TEXT NOT NULL,
-	allega_avviso BOOLEAN NOT NULL DEFAULT false
+	allega_pdf BOOLEAN NOT NULL DEFAULT false
 	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	data_prossima_spedizione TIMESTAMP NOT NULL,
 	tentativi_spedizione BIGINT,

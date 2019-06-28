@@ -320,7 +320,7 @@ public class Incassi extends BasicBD {
 											versamentiBD.updateVersamentoModalitaAvvisatura(versamento.getId(), avvisaturaDigitaleModalitaAnnullamentoAvviso.equals("asincrona") ? ModoAvvisatura.ASICNRONA.getValue() : ModoAvvisatura.SINCRONA.getValue());
 										}
 										// schedulo l'invio dell'avvisatura
-										versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true); 
+										versamentiBD.updateVersamentoStatoAvvisatura(versamento.getId(), true);
 										
 										break;
 									case ESEGUITO:

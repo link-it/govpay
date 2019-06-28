@@ -529,9 +529,12 @@ CREATE TABLE tipi_versamento
 	trasformazione_tipo VARCHAR2(35 CHAR),
 	trasformazione_definizione CLOB,
 	cod_applicazione VARCHAR2(35 CHAR),
-	promemoria_avviso NUMBER NOT NULL,
-	promemoria_oggetto CLOB,
-	promemoria_messaggio CLOB,
+	promemoria_avviso_pdf NUMBER NOT NULL,
+	promemoria_avviso_oggetto CLOB,
+	promemoria_avviso_messaggio CLOB,
+	promemoria_ricevuta_pdf NUMBER NOT NULL,
+	promemoria_ricevuta_oggetto CLOB,
+	promemoria_ricevuta_messaggio CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -542,7 +545,8 @@ CREATE TABLE tipi_versamento
 
 
 ALTER TABLE tipi_versamento MODIFY paga_terzi DEFAULT 0;
-ALTER TABLE tipi_versamento MODIFY promemoria_avviso DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY promemoria_avviso_pdf DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY promemoria_ricevuta_pdf DEFAULT 0;
 
 CREATE TRIGGER trg_tipi_versamento
 BEFORE
@@ -572,9 +576,12 @@ CREATE TABLE tipi_vers_domini
 	trasformazione_tipo VARCHAR2(35 CHAR),
 	trasformazione_definizione CLOB,
 	cod_applicazione VARCHAR2(35 CHAR),
-	promemoria_avviso NUMBER,
-	promemoria_oggetto CLOB,
-	promemoria_messaggio CLOB,
+	promemoria_avviso_pdf NUMBER,
+	promemoria_avviso_oggetto CLOB,
+	promemoria_avviso_messaggio CLOB,
+	promemoria_ricevuta_pdf NUMBER,
+	promemoria_ricevuta_oggetto CLOB,
+	promemoria_ricevuta_messaggio CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento NUMBER NOT NULL,
@@ -1010,7 +1017,7 @@ CREATE TABLE promemoria
 	debitore_email VARCHAR2(256 CHAR) NOT NULL,
 	oggetto VARCHAR2(512 CHAR) NOT NULL,
 	messaggio CLOB NOT NULL,
-	allega_avviso NUMBER NOT NULL,
+	allega_pdf NUMBER NOT NULL,
 	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	data_prossima_spedizione TIMESTAMP NOT NULL,
 	tentativi_spedizione NUMBER,
@@ -1023,7 +1030,7 @@ CREATE TABLE promemoria
 );
 
 
-ALTER TABLE promemoria MODIFY allega_avviso DEFAULT 0;
+ALTER TABLE promemoria MODIFY allega_pdf DEFAULT 0;
 
 CREATE TRIGGER trg_promemoria
 BEFORE

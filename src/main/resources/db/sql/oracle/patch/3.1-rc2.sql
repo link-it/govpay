@@ -52,10 +52,14 @@ ALTER TABLE tipi_versamento ADD COLUMN validazione_definizione CLOB;
 ALTER TABLE tipi_versamento ADD COLUMN trasformazione_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_versamento ADD COLUMN trasformazione_definizione CLOB;
 ALTER TABLE tipi_versamento ADD COLUMN cod_applicazione VARCHAR2(35 CHAR);
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso NUMBER NOT NULL;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_oggetto CLOB;
-ALTER TABLE tipi_versamento ADD COLUMN promemoria_messaggio CLOB;
-ALTER TABLE tipi_versamento MODIFY promemoria_avviso DEFAULT 0;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_pdf NUMBER NOT NULL;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_oggetto CLOB;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_avviso_messaggio CLOB;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_pdf NUMBER NOT NULL;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_oggetto CLOB;
+ALTER TABLE tipi_versamento ADD COLUMN promemoria_ricevuta_messaggio CLOB;
+ALTER TABLE tipi_versamento MODIFY promemoria_avviso_pdf DEFAULT 0;
+ALTER TABLE tipi_versamento MODIFY promemoria_ricevuta_pdf DEFAULT 0;
 
 ALTER TABLE tipi_vers_domini DROP COLUMN json_schema;
 ALTER TABLE tipi_vers_domini DROP COLUMN dati_allegati;
@@ -65,9 +69,12 @@ ALTER TABLE tipi_vers_domini ADD COLUMN validazione_definizione CLOB;
 ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_vers_domini ADD COLUMN trasformazione_definizione CLOB;
 ALTER TABLE tipi_vers_domini ADD COLUMN cod_applicazione VARCHAR2(35 CHAR);
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso NUMBER;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_oggetto CLOB;
-ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_messaggio CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_pdf NUMBER;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_oggetto CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_avviso_messaggio CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_pdf NUMBER;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_oggetto CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN promemoria_ricevuta_messaggio CLOB;
 
 
 -- 24/06/2019 Tabella per la spedizione dei promemoria via mail
@@ -82,7 +89,7 @@ CREATE TABLE promemoria
 	debitore_email VARCHAR2(256 CHAR) NOT NULL,
 	oggetto VARCHAR2(512 CHAR) NOT NULL,
 	messaggio CLOB NOT NULL,
-	allega_avviso NUMBER NOT NULL,
+	allega_pdf NUMBER NOT NULL,
 	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	data_prossima_spedizione TIMESTAMP NOT NULL,
 	tentativi_spedizione NUMBER,
@@ -95,7 +102,7 @@ CREATE TABLE promemoria
 );
 
 
-ALTER TABLE promemoria MODIFY allega_avviso DEFAULT 0;
+ALTER TABLE promemoria MODIFY allega_pdf DEFAULT 0;
 
 CREATE TRIGGER trg_promemoria
 BEFORE

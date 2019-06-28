@@ -68,8 +68,8 @@ public class PromemoriaFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "oggetto", Promemoria.model().OGGETTO.getFieldType()));
 				setParameter(object, "setMessaggio", Promemoria.model().MESSAGGIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "messaggio", Promemoria.model().MESSAGGIO.getFieldType()));
-				setParameter(object, "setAllegaAvviso", Promemoria.model().ALLEGA_AVVISO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "allega_avviso", Promemoria.model().ALLEGA_AVVISO.getFieldType()));
+				setParameter(object, "setAllegaPdf", Promemoria.model().ALLEGA_PDF.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "allega_pdf", Promemoria.model().ALLEGA_PDF.getFieldType()));
 				setParameter(object, "setDataAggiornamentoStato", Promemoria.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_aggiornamento_stato", Promemoria.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
 				setParameter(object, "setDataProssimaSpedizione", Promemoria.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType(),
@@ -112,8 +112,8 @@ public class PromemoriaFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"oggetto"));
 				setParameter(object, "setMessaggio", Promemoria.model().MESSAGGIO.getFieldType(),
 					this.getObjectFromMap(map,"messaggio"));
-				setParameter(object, "setAllegaAvviso", Promemoria.model().ALLEGA_AVVISO.getFieldType(),
-					this.getObjectFromMap(map,"allegaAvviso"));
+				setParameter(object, "setAllegaPdf", Promemoria.model().ALLEGA_PDF.getFieldType(),
+					this.getObjectFromMap(map,"allegaPdf"));
 				setParameter(object, "setDataAggiornamentoStato", Promemoria.model().DATA_AGGIORNAMENTO_STATO.getFieldType(),
 					this.getObjectFromMap(map,"dataAggiornamentoStato"));
 				setParameter(object, "setDataProssimaSpedizione", Promemoria.model().DATA_PROSSIMA_SPEDIZIONE.getFieldType(),

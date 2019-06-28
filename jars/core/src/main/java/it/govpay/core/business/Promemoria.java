@@ -64,13 +64,27 @@ public class Promemoria  extends BasicBD{
 
 	}
 	
-	
-	public it.govpay.bd.model.Promemoria creaPromemoriaEmail(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException, GovPayException {
-		it.govpay.bd.model.Promemoria promemoria = new it.govpay.bd.model.Promemoria(versamento, TipoPromemoria.EMAIL, this);
+	public it.govpay.bd.model.Promemoria creaPromemoriaRicevuta(it.govpay.bd.model.Rpt rpt, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException, GovPayException {
+		it.govpay.bd.model.Promemoria promemoria = new it.govpay.bd.model.Promemoria(versamento, TipoPromemoria.RICEVUTA, this);
 		promemoria.setDebitoreEmail(versamento.getAnagraficaDebitore().getEmail());
-		promemoria.setOggetto(this.getOggetto(tipoVersamentoDominio.getPromemoriaOggetto(), versamento));
-		promemoria.setMessaggio(this.getMessaggio(tipoVersamentoDominio.getPromemoriaMessaggio(), versamento));
-		promemoria.setAllegaAvviso(tipoVersamentoDominio.isPromemoriaAvviso());
+		Map<String, Object> dynamicMap = new HashMap<String, Object>();
+		TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(this));
+		promemoria.setOggetto(this.getOggettoRicevuta(tipoVersamentoDominio.getPromemoriaRicevutaOggetto(), rpt, versamento, dynamicMap));
+		promemoria.setMessaggio(this.getMessaggioRicevuta(tipoVersamentoDominio.getPromemoriaRicevutaMessaggio(), rpt, versamento, dynamicMap));
+		promemoria.setAllegaPdf(tipoVersamentoDominio.isPromemoriaRicevutaPdf());
+		promemoria.setIdVersamento(versamento.getId());
+		return promemoria;
+	}
+	
+	
+	public it.govpay.bd.model.Promemoria creaPromemoriaAvviso(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException, GovPayException {
+		it.govpay.bd.model.Promemoria promemoria = new it.govpay.bd.model.Promemoria(versamento, TipoPromemoria.AVVISO, this);
+		promemoria.setDebitoreEmail(versamento.getAnagraficaDebitore().getEmail());
+		Map<String, Object> dynamicMap = new HashMap<String, Object>();
+		TrasformazioniUtils.fillDynamicMapPromemoriaAvviso(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(this));
+		promemoria.setOggetto(this.getOggettoAvviso(tipoVersamentoDominio.getPromemoriaAvvisoOggetto(), versamento, dynamicMap));
+		promemoria.setMessaggio(this.getMessaggioAvviso(tipoVersamentoDominio.getPromemoriaAvvisoMessaggio(), versamento, dynamicMap));
+		promemoria.setAllegaPdf(tipoVersamentoDominio.isPromemoriaAvvisoPdf());
 		return promemoria;
 	}
 
@@ -81,7 +95,7 @@ public class Promemoria  extends BasicBD{
 		log.debug("Inserimento promemoria Pendenza["+promemoria.getVersamento(this).getCodVersamentoEnte() +"] effettuato.");
 	}
 
-	public String valorizzaTemplate(String nomeTrasformazione, String template, Versamento versamento) throws ServiceException, TrasformazioneException {
+	public String valorizzaTemplate(String nomeTrasformazione, Map<String, Object> dynamicMap, String template) throws ServiceException, TrasformazioneException {
 		try {
 			if(template.startsWith("\""))
 				template = template.substring(1);
@@ -90,8 +104,6 @@ public class Promemoria  extends BasicBD{
 				template = template.substring(0, template.length() - 1);
 			byte[] templateBytes = Base64.getDecoder().decode(template.getBytes());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Map<String, Object> dynamicMap = new HashMap<String, Object>();
-			TrasformazioniUtils.fillDynamicMapPromemoria(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(this));
 			TrasformazioniUtils.convertFreeMarkerTemplate(nomeTrasformazione, templateBytes , dynamicMap , baos );
 			return baos.toString();
 		} catch (TrasformazioneException e) {
@@ -100,21 +112,39 @@ public class Promemoria  extends BasicBD{
 		}
 	}
 	
-	public String getOggetto(String templateMessaggio, Versamento versamento)  throws ServiceException, GovPayException{
-		String name = "GenerazioneOggettoPromemoria";
+	public String getOggettoAvviso(String templateMessaggio, Versamento versamento, Map<String, Object> dynamicMap)  throws ServiceException, GovPayException{
+		String name = "GenerazioneOggettoPromemoriaAvviso";
 		try {
-			return this.valorizzaTemplate(name, templateMessaggio, versamento);
+			return this.valorizzaTemplate(name, dynamicMap, templateMessaggio);
 		} catch (TrasformazioneException e) {
 			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_001, e, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), e.getMessage());
 		}
 	}
 
-	public String getMessaggio(String templateMessaggio, Versamento versamento)  throws ServiceException, GovPayException{
-		String name = "GenerazioneMessaggioPromemoria";
+	public String getMessaggioAvviso(String templateMessaggio, Versamento versamento, Map<String, Object> dynamicMap)  throws ServiceException, GovPayException{
+		String name = "GenerazioneMessaggioPromemoriaAvviso";
 		try {
-			return this.valorizzaTemplate(name, templateMessaggio, versamento);
+			return this.valorizzaTemplate(name, dynamicMap, templateMessaggio);
 		} catch (TrasformazioneException e) {
 			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_002, e, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), e.getMessage());
+		}
+	}
+	
+	public String getOggettoRicevuta(String templateMessaggio, it.govpay.bd.model.Rpt rpt, Versamento versamento, Map<String, Object> dynamicMap)  throws ServiceException, GovPayException{
+		String name = "GenerazioneOggettoPromemoriaRicevuta";
+		try {
+			return this.valorizzaTemplate(name, dynamicMap, templateMessaggio);
+		} catch (TrasformazioneException e) {
+			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_003, e, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), e.getMessage());
+		}
+	}
+
+	public String getMessaggioRicevuta(String templateMessaggio, it.govpay.bd.model.Rpt rpt, Versamento versamento, Map<String, Object> dynamicMap)  throws ServiceException, GovPayException{
+		String name = "GenerazioneMessaggioPromemoriaRicevuta";
+		try {
+			return this.valorizzaTemplate(name, dynamicMap, templateMessaggio);
+		} catch (TrasformazioneException e) {
+			throw new GovPayException(e.getMessage(), EsitoOperazione.PRM_004, e, versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), e.getMessage());
 		}
 	}
 
@@ -124,7 +154,7 @@ public class Promemoria  extends BasicBD{
 		return promemoria;
 	}
 
-	public void invioPromemoria(it.govpay.bd.model.Promemoria promemoria) throws ServiceException {
+	public void invioPromemoriaAvviso(it.govpay.bd.model.Promemoria promemoria) throws ServiceException {
 		PromemoriaBD promemoriaBD = new PromemoriaBD(this);
 		Versamento versamento = promemoria.getVersamento(this);
 		boolean ok = true;
@@ -148,7 +178,7 @@ public class Promemoria  extends BasicBD{
 		mail.setSubject(promemoria.getOggetto());
 		mail.getBody().setMessage(promemoria.getMessaggio());
 
-		if(promemoria.isAllegaAvviso()) {
+		if(promemoria.isAllegaPdf()) {
 			AvvisoPagamento avvisoPagamento = new AvvisoPagamento(this);
 			PrintAvvisoDTO printAvviso = new PrintAvvisoDTO();
 			printAvviso.setVersamento(versamento);
