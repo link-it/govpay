@@ -16,6 +16,20 @@
     return hostname() + '/govpay/backend/api/backoffice/public'; // Root URL informazioni
   }
 
+  // Map key generators
+  function _mkg() {
+    return {
+      ANGULAR2_JSON_SCHEMA_FORM: 'angular2-json-schema-form'
+    }
+  }
+
+  // JSON Schema form generators list selection
+  function generatori() {
+    return [
+      { label: 'Angular Json schema form', value: _mkg().ANGULAR2_JSON_SCHEMA_FORM }
+    ]
+  }
+
   // Default application name/title
   function _applicationName() {
     const _NAME = 'GovPay';
@@ -47,6 +61,8 @@
       HOUR: 1, // Ore, (filtro badge)
       TIMER: 30000 // Millisecondi, (timer badge)
     },
+    GENERATORI: generatori(),
+    MGK: _mkg(),
     EXTERNAL_JS_PROCEDURE_URL: 'Converter.js' //Http URL al file Js per conversioni esterne (caricamento tracciati)
   };
 

@@ -272,9 +272,12 @@ public class VerificaClient extends BasicClient {
 					new PendenzaVerificataValidator(pendenzaVerificata).validate();
 	
 					// Verificare che parametri idDominio e idTipoPendenza corrispondano nella Risposta.
+					if(!(codDominio.equals(pendenzaVerificata.getIdDominio())))
+						throw new ServiceException("Il campo IdDominio della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
+					
 					if(pendenzaVerificata.getIdTipoPendenza() != null)
-						if(!(codDominio.equals(pendenzaVerificata.getIdDominio()) && codTipoVersamento.equals(pendenzaVerificata.getIdTipoPendenza())))
-							throw new ServiceException("I campi IdDominio e IdTipoPendenza della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
+						if(!(codTipoVersamento.equals(pendenzaVerificata.getIdTipoPendenza())))
+							throw new ServiceException("Il campo IdTipoPendenza della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
 					return VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata);
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[SINTASSI] " + e.getMessage());

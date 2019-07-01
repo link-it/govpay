@@ -36,6 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="Promemoria">
  * 		&lt;sequence>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idRPT" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -62,6 +63,7 @@ import java.io.Serializable;
 @XmlType(name = "Promemoria", 
   propOrder = {
   	"idVersamento",
+  	"idRPT",
   	"tipo",
   	"dataCreazione",
   	"stato",
@@ -102,6 +104,14 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
 
   public void setIdVersamento(IdVersamento idVersamento) {
     this.idVersamento = idVersamento;
+  }
+
+  public IdRpt getIdRPT() {
+    return this.idRPT;
+  }
+
+  public void setIdRPT(IdRpt idRPT) {
+    this.idRPT = idRPT;
   }
 
   public java.lang.String getTipo() {
@@ -217,6 +227,9 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
 
   @XmlElement(name="idVersamento",required=true,nillable=false)
   protected IdVersamento idVersamento;
+
+  @XmlElement(name="idRPT",required=false,nillable=false)
+  protected IdRpt idRPT;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo",required=true,nillable=false)

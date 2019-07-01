@@ -7,9 +7,9 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.json.ValidationException;
 
-import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.PagamentoContext;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;

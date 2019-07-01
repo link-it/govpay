@@ -157,6 +157,7 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Promemoria.model())));
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getFieldConverter().toTable(Promemoria.model())));
+			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getFieldConverter().toTable(Promemoria.model())));
 			fields.add(Promemoria.model().TIPO);
 			fields.add(Promemoria.model().DATA_CREAZIONE);
 			fields.add(Promemoria.model().STATO);
@@ -173,6 +174,11 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
         
 			for(Map<String, Object> map: returnMap) {
 				Long id_versamento = (Long) map.remove("id_versamento");
+				Object id_rptObj = map.remove("id_rpt");
+				Long id_rpt = null;
+				if(id_rptObj instanceof Long)
+					id_rpt = (Long) id_rptObj;  
+				
 				Promemoria notifica = (Promemoria)this.getPromemoriaFetch().fetch(jdbcProperties.getDatabase(), Promemoria.model(), map);
 				
 				if(idMappingResolutionBehaviour==null ||
@@ -187,6 +193,22 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 						id_promemoria_versamento.setId(id_versamento);
 						notifica.setIdVersamento(id_promemoria_versamento);
 					}
+				
+				if(id_rpt != null) {
+					if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+						){
+							// Object _notifica_rpt (recupero id)
+							it.govpay.orm.IdRpt id_promemoria_rpt = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_promemoria_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findId(id_rpt, false);
+							}else{
+								id_promemoria_rpt = new it.govpay.orm.IdRpt();
+							}
+							id_promemoria_rpt.setId(id_rpt);
+							notifica.setIdRPT(id_promemoria_rpt);
+						}
+				}
 
 				list.add(notifica);
 	        }
@@ -478,6 +500,10 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 				obj.getIdVersamento().getIdApplicazione().setId(imgSaved.getIdVersamento().getIdApplicazione().getId());
 			}
 		}
+		if(obj.getIdRPT()!=null && 
+				imgSaved.getIdRPT()!=null){
+			obj.getIdRPT().setId(imgSaved.getIdRPT().getId());
+		}
 
 	}
 	
@@ -541,6 +567,11 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
 		}
         
+		if(expression.inUseModel(Promemoria.model().ID_RPT,false)){
+			String tableName1 = this.getPromemoriaFieldConverter().toAliasTable(Promemoria.model());
+			String tableName2 = this.getPromemoriaFieldConverter().toAliasTable(Promemoria.model().ID_RPT);
+			sqlQueryObject.addWhereCondition(tableName1+".id_rpt="+tableName2+".id");
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPromemoria id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -573,6 +604,12 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_APPLICAZIONE),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_VERSAMENTO.ID_APPLICAZIONE))
+			));
+
+		// Promemoria.model().ID_RPT
+		mapTableToPKColumn.put(converter.toTable(Promemoria.model().ID_RPT),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Promemoria.model().ID_RPT))
 			));
 
         return mapTableToPKColumn;		

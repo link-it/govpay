@@ -130,6 +130,27 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 				return "stato_versamento";
 			}
 		}
+		if(field.equals(Promemoria.model().ID_RPT.COD_MSG_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_msg_richiesta";
+			}else{
+				return "cod_msg_richiesta";
+			}
+		}
+		if(field.equals(Promemoria.model().ID_RPT.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(Promemoria.model().ID_RPT.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
 		if(field.equals(Promemoria.model().TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".tipo";
@@ -247,6 +268,15 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Promemoria.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
 			return this.toTable(Promemoria.model().ID_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(Promemoria.model().ID_RPT.COD_MSG_RICHIESTA)){
+			return this.toTable(Promemoria.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(Promemoria.model().ID_RPT.COD_DOMINIO)){
+			return this.toTable(Promemoria.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(Promemoria.model().ID_RPT.IUV)){
+			return this.toTable(Promemoria.model().ID_RPT, returnAlias);
+		}
 		if(field.equals(Promemoria.model().TIPO)){
 			return this.toTable(Promemoria.model(), returnAlias);
 		}
@@ -301,6 +331,9 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Promemoria.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Promemoria.model().ID_RPT)){
+			return "rpt";
 		}
 
 

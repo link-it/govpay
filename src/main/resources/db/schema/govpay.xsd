@@ -2307,6 +2307,17 @@
 				</xsd:annotation>
 			</xsd:element>
 			
+			<xsd:element name="idRPT" type="id-rpt" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="RPT" object-type="RPT"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
 			<xsd:element name="tipo" type="String16"/>
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
 			<xsd:element name="stato" type="String16"/>

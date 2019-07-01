@@ -727,8 +727,10 @@ CREATE TABLE promemoria
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_promemoria') NOT NULL,
 	id_versamento BIGINT NOT NULL,
+	id_rpt BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_ntf_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_ntf_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_promemoria PRIMARY KEY (id)
 );
 

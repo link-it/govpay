@@ -42,6 +42,7 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 		super();
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"Promemoria",Promemoria.class));
+		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new Field("idRPT",it.govpay.orm.IdRpt.class,"Promemoria",Promemoria.class));
 		this.TIPO = new Field("tipo",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.STATO = new Field("stato",java.lang.String.class,"Promemoria",Promemoria.class);
@@ -61,6 +62,7 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 		super(father);
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"Promemoria",Promemoria.class));
+		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new ComplexField(father,"idRPT",it.govpay.orm.IdRpt.class,"Promemoria",Promemoria.class));
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Promemoria",Promemoria.class);
@@ -78,6 +80,8 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 	
 
 	public it.govpay.orm.model.IdVersamentoModel ID_VERSAMENTO = null;
+	 
+	public it.govpay.orm.model.IdRptModel ID_RPT = null;
 	 
 	public IField TIPO = null;
 	 

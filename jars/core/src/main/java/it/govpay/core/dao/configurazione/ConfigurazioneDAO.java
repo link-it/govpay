@@ -1,6 +1,5 @@
 package it.govpay.core.dao.configurazione;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -50,14 +49,8 @@ public class ConfigurazioneDAO extends BaseDAO{
 
 			ConfigurazioneBD configurazioneBD = new ConfigurazioneBD(bd);
 			
-			Configurazione configurazione = null;
 			boolean created = false;
-			try {
-				configurazione = configurazioneBD.getConfigurazione();
-			}catch(NotFoundException e) {
-				configurazione = new Configurazione();
-				created = true;
-			}
+			Configurazione configurazione = configurazioneBD.getConfigurazione();
 			
 			// aggiorno configurazione del giornale eventi
 			configurazione.setGiornale(putConfigurazioneDTO.getGiornale());

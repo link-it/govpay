@@ -34,6 +34,7 @@ public class Promemoria extends BasicModel {
 	
 	private Long id;
 	private long idVersamento;
+	private Long idRpt;
 	private TipoPromemoria tipo;
 	private Date dataCreazione;
 	private StatoSpedizione stato;
@@ -124,5 +125,11 @@ public class Promemoria extends BasicModel {
 	}
 	public void setAllegaPdf(boolean allegaPdf) {
 		this.allegaPdf = allegaPdf;
+	}
+	public Long getIdRpt() {
+		return idRpt;
+	}
+	public void setIdRpt(Long idRpt) {
+		this.idRpt = idRpt;
 	}
 }
