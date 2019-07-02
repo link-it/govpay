@@ -75,7 +75,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 	}
 
 	public void validaIdA2A(String idA2A) throws ValidationException {
-		this.validatoreId.validaId("idA2A", idA2A, CostantiValidazione.PATTERN_ID_APPLICAZIONE, 1, 35, false);
+		this.validatoreId.validaId("idA2A", idA2A, CostantiValidazione.PATTERN_ID_APPLICAZIONE, 1, 35);
 	}
 
 	public void validaIdDominio(String idDominio) throws ValidationException {

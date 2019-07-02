@@ -14,6 +14,8 @@ public class FaultBean  {
     AUTORIZZAZIONE("AUTORIZZAZIONE"),
     RICHIESTA("RICHIESTA"),
     OPERAZIONE("OPERAZIONE"),
+    EC("EC"),
+    PAGOPA("PAGOPA"),
     INTERNO("INTERNO");
 
     private String value;

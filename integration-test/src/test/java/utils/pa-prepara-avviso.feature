@@ -29,5 +29,5 @@ Scenario:
 Given url ente_api_url
 And path '/v1/pendenze', idA2A, idPendenza
 And request pendenza
-When method post
+When method put
 Then status 200

@@ -274,7 +274,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static it.govpay.core.dao.commons.Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String jsonBody, BasicBD bd) 
+	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String jsonBody, BasicBD bd) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		IContext ctx = ContextThreadLocal.get();
@@ -287,14 +287,14 @@ public class VersamentoUtils {
 		// salvataggio id Rpt/ versamento/ pagamento
 		verificaClient.getEventoCtx().setCodDominio(codDominio); 
 		verificaClient.getEventoCtx().setIdA2A(applicazione.getCodApplicazione());
-		it.govpay.core.dao.commons.Versamento versamento = null;
+		Versamento versamento = null;
 		try {
 			try {
 				versamento = verificaClient.invokeInoltro(codDominio, codTipoVersamento, jsonBody, bd);
 				String codVersamentoEnte = "-"; 
 				if(versamento != null) {
 					codVersamentoEnte = versamento.getCodVersamentoEnte(); 
-					verificaClient.getEventoCtx().setIuv(versamento.getIuv());
+					verificaClient.getEventoCtx().setIuv(versamento.getIuvVersamento());
 					verificaClient.getEventoCtx().setIdPendenza(codVersamentoEnte);
 				}
 				ctx.getApplicationLogger().log("verifica.modello4Ok", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, codVersamentoEnte);

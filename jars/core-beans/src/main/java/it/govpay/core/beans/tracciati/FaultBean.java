@@ -38,6 +38,9 @@ public class FaultBean extends JSONSerializable {
             
     PAGOPA("PAGOPA"),
     
+    
+    EC("EC"),
+    
             
     INTERNO("INTERNO");
             

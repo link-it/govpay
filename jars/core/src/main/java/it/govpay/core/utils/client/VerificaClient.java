@@ -156,12 +156,12 @@ public class VerificaClient extends BasicClient {
 					// Verificare che parametri idA2A e idPendenza, oppure idDominio, iuv corrispondano nella Risposta.
 					if(iuv == null) {
 						if(!(this.codApplicazione.equals(pendenzaVerificata.getIdA2A()) && codVersamentoEnte.equals(pendenzaVerificata.getIdPendenza())))
-							throw new ServiceException("I campi IdA2A e IdPendenza della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
+							throw new ValidationException("I campi IdA2A e IdPendenza della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 					} else {
 						String iuvRicevuto = IuvUtils.toIuv(pendenzaVerificata.getNumeroAvviso());
 						
 						if(!(codDominio.equals(pendenzaVerificata.getIdDominio()) && iuv.equals(iuvRicevuto)))
-							throw new ServiceException("I campi IdDominio e NumeroAvviso della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
+							throw new ValidationException("I campi IdDominio e NumeroAvviso della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 					}
 					return VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
 				} catch (GovPayException e) {
@@ -210,7 +210,7 @@ public class VerificaClient extends BasicClient {
 	 * @throws UtilsException
 	 * @throws ValidationException  
 	 */
-	public it.govpay.core.dao.commons.Versamento invokeInoltro(String codDominio, String codTipoVersamento, String jsonBody, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
+	public Versamento invokeInoltro(String codDominio, String codTipoVersamento, String jsonBody, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
 		VersamentoScadutoException, VersamentoSconosciutoException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		log.debug("Richiedo la verifica per il versamento [Applicazione:" + this.codApplicazione + " Dominio:" + codDominio + " CodTipoVersamento:" + codTipoVersamento + "] in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
@@ -273,12 +273,15 @@ public class VerificaClient extends BasicClient {
 	
 					// Verificare che parametri idDominio e idTipoPendenza corrispondano nella Risposta.
 					if(!(codDominio.equals(pendenzaVerificata.getIdDominio())))
-						throw new ServiceException("Il campo IdDominio della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
+						throw new ValidationException("Il campo IdDominio della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
 					
 					if(pendenzaVerificata.getIdTipoPendenza() != null)
 						if(!(codTipoVersamento.equals(pendenzaVerificata.getIdTipoPendenza())))
-							throw new ServiceException("Il campo IdTipoPendenza della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
-					return VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata);
+							throw new ValidationException("Il campo IdTipoPendenza della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
+					return VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata),bd);
+				} catch (GovPayException e) {
+					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[" + e.getCodEsito() + "] " + e.getMessage());
+					throw e;
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[SINTASSI] " + e.getMessage());
 					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), idPendenza, e.getMessage());
