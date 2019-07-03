@@ -78,7 +78,7 @@ CREATE TABLE promemoria
 	debitore_email VARCHAR(256) NOT NULL,
 	oggetto VARCHAR(512) NOT NULL,
 	messaggio TEXT NOT NULL,
-	allega_pdf BOOLEAN NOT NULL DEFAULT false
+	allega_pdf BOOLEAN NOT NULL DEFAULT false,
 	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	data_prossima_spedizione TIMESTAMP NOT NULL,
 	tentativi_spedizione BIGINT,
