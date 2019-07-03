@@ -2,9 +2,7 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 
 import org.springframework.security.core.Authentication;
 

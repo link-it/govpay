@@ -12,11 +12,31 @@ import it.govpay.core.beans.JSONSerializable;
 
 @JsonPropertyOrder({
 "descrizione",
+"tipo",
+"codificaIUV",
+"pagaTerzi",
+"abilitato",
+"form",
 })
 public class TipoPendenzaPost extends JSONSerializable{
   
   @JsonProperty("descrizione")
   private String descrizione = null;
+  
+  @JsonProperty("tipo")
+  private TipoPendenzaTipologia tipo = null;
+  
+  @JsonProperty("codificaIUV")
+  private String codificaIUV = null;
+  
+  @JsonProperty("pagaTerzi")
+  private Boolean pagaTerzi = false;
+  
+  @JsonProperty("abilitato")
+  private Boolean abilitato = true;
+  
+  @JsonProperty("form")
+  private TipoPendenzaForm form = null;
   
   /**
    **/
@@ -33,6 +53,84 @@ public class TipoPendenzaPost extends JSONSerializable{
     this.descrizione = descrizione;
   }
 
+  /**
+   **/
+  public TipoPendenzaPost tipo(TipoPendenzaTipologia tipo) {
+    this.tipo = tipo;
+    return this;
+  }
+
+  @JsonProperty("tipo")
+  public TipoPendenzaTipologia getTipo() {
+    return tipo;
+  }
+  public void setTipo(TipoPendenzaTipologia tipo) {
+    this.tipo = tipo;
+  }
+
+  /**
+   * Cifra identificativa negli IUV
+   **/
+  public TipoPendenzaPost codificaIUV(String codificaIUV) {
+    this.codificaIUV = codificaIUV;
+    return this;
+  }
+
+  @JsonProperty("codificaIUV")
+  public String getCodificaIUV() {
+    return codificaIUV;
+  }
+  public void setCodificaIUV(String codificaIUV) {
+    this.codificaIUV = codificaIUV;
+  }
+
+  /**
+   * Indica se la pendenza e' pagabile da soggetti terzi
+   **/
+  public TipoPendenzaPost pagaTerzi(Boolean pagaTerzi) {
+    this.pagaTerzi = pagaTerzi;
+    return this;
+  }
+
+  @JsonProperty("pagaTerzi")
+  public Boolean PagaTerzi() {
+    return pagaTerzi;
+  }
+  public void setPagaTerzi(Boolean pagaTerzi) {
+    this.pagaTerzi = pagaTerzi;
+  }
+
+  /**
+   * Indicazione la tipologia pendenza e' abilitata
+   **/
+  public TipoPendenzaPost abilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+    return this;
+  }
+
+  @JsonProperty("abilitato")
+  public Boolean Abilitato() {
+    return abilitato;
+  }
+  public void setAbilitato(Boolean abilitato) {
+    this.abilitato = abilitato;
+  }
+
+  /**
+   **/
+  public TipoPendenzaPost form(TipoPendenzaForm form) {
+    this.form = form;
+    return this;
+  }
+
+  @JsonProperty("form")
+  public TipoPendenzaForm getForm() {
+    return form;
+  }
+  public void setForm(TipoPendenzaForm form) {
+    this.form = form;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -42,12 +140,17 @@ public class TipoPendenzaPost extends JSONSerializable{
       return false;
     }
     TipoPendenzaPost tipoPendenzaPost = (TipoPendenzaPost) o;
-    return Objects.equals(descrizione, tipoPendenzaPost.descrizione);
+    return Objects.equals(descrizione, tipoPendenzaPost.descrizione) &&
+        Objects.equals(tipo, tipoPendenzaPost.tipo) &&
+        Objects.equals(codificaIUV, tipoPendenzaPost.codificaIUV) &&
+        Objects.equals(pagaTerzi, tipoPendenzaPost.pagaTerzi) &&
+        Objects.equals(abilitato, tipoPendenzaPost.abilitato) &&
+        Objects.equals(form, tipoPendenzaPost.form);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form);
   }
 
   public static TipoPendenzaPost parse(String json) throws ServiceException, ValidationException  {
@@ -65,6 +168,11 @@ public class TipoPendenzaPost extends JSONSerializable{
     sb.append("class TipoPendenzaPost {\n");
     
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
+    sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    form: ").append(toIndentedString(form)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -19,21 +19,34 @@
  */
 package it.govpay.core.utils;
 
+import java.io.ByteArrayOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.json.IJsonSchemaValidator;
+import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.json.ValidationResponse;
+import org.openspcoop2.utils.json.ValidatorFactory;
+import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
+import org.openspcoop2.utils.json.ValidationResponse.ESITO;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
+import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -44,8 +57,10 @@ import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.Iuv;
+import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
@@ -53,6 +68,8 @@ import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
+import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.model.Anagrafica.TIPO;
@@ -662,5 +679,139 @@ public class VersamentoUtils {
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
 		anagraficaModel.setTipo(TIPO.valueOf(anagrafica.getTipo()));
 		return anagraficaModel;
+	}
+	
+	public static void validazioneInputVersamentoModello4(Logger log, String inputModello4, TipoVersamentoDominio tipoVersamentoDominio) throws GovPayException, ValidationException {
+		String validazioneDefinizione = tipoVersamentoDominio.getValidazioneDefinizione();
+		if(validazioneDefinizione != null) {
+			log.debug("Validazione tramite JSON Schema...");
+
+			IJsonSchemaValidator validator = null;
+
+			try{
+				validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
+			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				throw new GovPayException(EsitoOperazione.VAL_000, e, e.getMessage());
+			}
+			JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
+
+			try {
+				// TODO eliminare dopo demo
+				if(validazioneDefinizione.startsWith("\""))
+					validazioneDefinizione = validazioneDefinizione.substring(1);
+
+				if(validazioneDefinizione.endsWith("\""))
+					validazioneDefinizione = validazioneDefinizione.substring(0, validazioneDefinizione.length() - 1);
+				
+				byte[] validazioneBytes = Base64.getDecoder().decode(validazioneDefinizione.getBytes());
+				
+				validator.setSchema(validazioneBytes, config);
+			} catch (ValidationException e) {
+				log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+				throw new GovPayException(EsitoOperazione.VAL_001, e , e.getMessage());
+			} 	
+			ValidationResponse validate = null;
+			try {
+				validate = validator.validate(inputModello4.getBytes());
+			} catch (ValidationException e) {
+				log.debug("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
+				throw new GovPayException(EsitoOperazione.VAL_002, e, e.getMessage());
+			} 
+
+			ESITO esito = validate.getEsito();
+
+			switch (esito) {
+			case KO:
+				log.debug("Validazione tramite JSON Schema completata con esito KO: " + validate.getErrors());
+				throw new ValidationException(String.join(",", validate.getErrors()));
+			case OK:
+				log.debug("Validazione tramite JSON Schema completata con esito OK.");
+				break;
+			}
+		}
+	}
+	
+	public static String trasformazioneInputVersamentoModello4(Logger log, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, String inputModello4,
+			MultivaluedMap<String, String> queryParameters, MultivaluedMap<String, String> pathParameters, Map<String, String> headers)
+			throws GovPayException {
+		String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();
+		if(trasformazioneDefinizione != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
+			log.debug("Trasformazione tramite template "+tipoVersamentoDominio.getTrasformazioneTipo()+"...");
+			String name = "TrasformazionePendenzaModello4";
+			try {
+				// TODO eliminare dopo demo
+				if(trasformazioneDefinizione.startsWith("\""))
+					trasformazioneDefinizione = trasformazioneDefinizione.substring(1);
+
+				if(trasformazioneDefinizione.endsWith("\""))
+					trasformazioneDefinizione = trasformazioneDefinizione.substring(0, trasformazioneDefinizione.length() - 1);
+
+				byte[] template = Base64.getDecoder().decode(trasformazioneDefinizione.getBytes());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				Map<String, Object> dynamicMap = new HashMap<String, Object>();
+				TrasformazioniUtils.fillDynamicMap(log, dynamicMap, ContextThreadLocal.get(), queryParameters, 
+						pathParameters, headers, inputModello4, dominio.getCodDominio(), tipoVersamentoDominio.getCodTipoVersamento()); 
+				TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
+				// assegno il json trasformato
+				inputModello4 = baos.toString();
+				log.debug("Trasformazione tramite template "+tipoVersamentoDominio.getTrasformazioneTipo()+" completata con successo.");
+			} catch (TrasformazioneException e) {
+				log.error("Trasformazione tramite template "+tipoVersamentoDominio.getTrasformazioneTipo()+" completata con errore: " + e.getMessage(), e);
+				throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
+			}
+		}
+		return inputModello4;
+	}
+	
+	public static Versamento inoltroInputVersamentoModello4(Logger log, String codDominio, String codTipoVersamento, TipoVersamentoDominio tipoVersamentoDominio, 
+			 String inputModello4, BasicBD bd) throws ServiceException, GovPayException, EcException, ValidationException {
+		Versamento chiediVersamento = null;
+		String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
+		if(codApplicazione != null) {
+			log.debug("Inoltro verso l'applicazione "+codApplicazione+"...");
+			
+			it.govpay.bd.model.Applicazione applicazione = null; 
+			try {
+				applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+			} catch (NotFoundException e) {
+				throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
+			}
+			
+			if(!applicazione.getUtenza().isAbilitato())
+				throw new GovPayException(EsitoOperazione.APP_001, applicazione.getCodApplicazione());
+			
+			try {
+				chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, inputModello4, bd);
+				VersamentoUtils.validazioneSemantica(chiediVersamento, chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1, bd);
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(chiediVersamento.getCodVersamentoEnte());
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(bd).getCodApplicazione());
+			} catch (ClientException e){
+				throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
+			} catch (UtilsException e){
+				throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
+			} catch (VersamentoScadutoException e) {
+				throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_SCADUTO");
+			} catch (VersamentoAnnullatoException e) {
+				throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_ANNULLATO");
+			} catch (VersamentoDuplicatoException e) {
+				throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_DUPLICATO");
+			} catch (VersamentoSconosciutoException e) {
+				throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_SCONOSCIUTO");
+			} catch (VersamentoNonValidoException e) { 
+				throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
+			} catch (GovPayException e){
+				throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
+			} 
+			
+			log.debug("Inoltro verso l'applicazione "+codApplicazione+" completato con successo.");
+		} else {
+			PendenzaPost pendenzaPost = PendenzaPost.parse(inputModello4);
+			it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
+			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+			chiediVersamento = versamentoBusiness.chiediVersamento(versamentoCommons);
+		}
+		return chiediVersamento;
 	}
 }

@@ -642,12 +642,14 @@ components:
              * `RICHIESTA` - Richiesta non valida
              * `OPERAZIONE` - Operazione non eseguibile
              * `PAGOPA` - Errore da PagoPA
+             * `EC` - Errore da Ente Creditore
              * `INTERNO` - Errore interno
           enum:
             - AUTORIZZAZIONE
             - RICHIESTA
             - OPERAZIONE
             - PAGOPA
+            - EC
             - INTERNO
         codice:
           type: string

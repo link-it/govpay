@@ -15,25 +15,27 @@ import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"idDominio",
-"idUnitaOperativa",
-"idTipoPendenza",
-"nome",
-"causale",
-"soggettoPagatore",
-"importo",
-"numeroAvviso",
-"dataCaricamento",
-"dataValidita",
-"dataScadenza",
-"annoRiferimento",
-"cartellaPagamento",
-"datiAllegati",
-"tassonomia",
-"tassonomiaAvviso",
-"voci",
-"idA2A",
-"idPendenza",
+	"idDominio",
+	"idUnitaOperativa",
+	"idTipoPendenza",
+	"nome",
+	"causale",
+	"soggettoPagatore",
+	"importo",
+	"numeroAvviso",
+	"dataCaricamento",
+	"dataValidita",
+	"dataScadenza",
+	"annoRiferimento",
+	"cartellaPagamento",
+	"datiAllegati",
+	"tassonomia",
+	"tassonomiaAvviso",
+	"voci",
+	"idA2A",
+	"idPendenza",
+	"idDebitore",
+	"dati",
 })
 public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implements IValidable {
   
@@ -93,6 +95,12 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   
   @JsonProperty("idPendenza")
   private String idPendenza = null;
+
+	@JsonProperty("idDebitore")
+	private String idDebitore = null;
+	
+	@JsonProperty("dati")
+	private Object dati = null;
   
   /**
    * Identificativo del dominio creditore
@@ -206,7 +214,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   }
 
   /**
-   * Numero avviso, assegnato se pagabile da psp
+   * Identificativo univoco versamento, assegnato se pagabile da psp
    **/
   public PendenzaPost numeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
@@ -407,6 +415,38 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
     this.idPendenza = idPendenza;
   }
 
+  /**
+   * Identificativo del soggetto debitore  della pendenza riferita dall'avviso
+   **/
+  public PendenzaPost idDebitore(String idDebitore) {
+    this.idDebitore = idDebitore;
+    return this;
+  }
+
+  @JsonProperty("idDebitore")
+  public String getIdDebitore() {
+    return idDebitore;
+  }
+  public void setIdDebitore(String idDebitore) {
+    this.idDebitore = idDebitore;
+  }
+  
+  /**
+	 * Dati applicativi allegati dal gestionale secondo un formato proprietario.
+	 **/
+	public PendenzaPost dati(Object dati) {
+		this.dati = dati;
+		return this;
+	}
+
+	@JsonProperty("dati")
+	public Object getDati() {
+		return this.dati;
+	}
+	public void setDati(Object dati) {
+		this.dati = dati;
+	}
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -434,12 +474,14 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
         Objects.equals(tassonomiaAvviso, pendenzaPost.tassonomiaAvviso) &&
         Objects.equals(voci, pendenzaPost.voci) &&
         Objects.equals(idA2A, pendenzaPost.idA2A) &&
-        Objects.equals(idPendenza, pendenzaPost.idPendenza);
+        Objects.equals(idPendenza, pendenzaPost.idPendenza) &&
+        Objects.equals(idDebitore, pendenzaPost.idDebitore) &&
+        Objects.equals(this.dati, pendenzaPost.dati);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci, idA2A, idPendenza);
+    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci, idA2A, idPendenza, this.idDebitore, this.dati);
   }
 
   public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -475,6 +517,8 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
+    sb.append("    idDebitore: ").append(toIndentedString(idDebitore)).append("\n");
+    sb.append("    dati: ").append(this.toIndentedString(dati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

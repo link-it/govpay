@@ -36,6 +36,13 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		else 
 			return this.getPagaTerziDefault();
 	} 
+	
+	public Boolean getAbilitato() {
+		if(this.getAbilitatoCustom() != null)
+			return this.getAbilitatoCustom();
+		else 
+			return this.isAbilitatoDefault();
+	} 
 
 	public boolean isCodificaIuvCustom(){return this.getCodificaIuvCustom() != null;}
 	public boolean isTipoCustom(){return this.getTipoCustom() != null;}

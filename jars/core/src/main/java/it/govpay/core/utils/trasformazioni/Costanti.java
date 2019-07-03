@@ -25,4 +25,6 @@ public class Costanti {
     public final static String MAP_VERSAMENTO = "versamento";
     public final static String MAP_DOMINIO = "dominio";
     public final static String MAP_RPT = "rpt";
+    public final static String MAP_ID_TIPO_VERSAMENTO = "idTipoVersamento";
+    public final static String MAP_ID_DOMINIO = "idDominio";
 }

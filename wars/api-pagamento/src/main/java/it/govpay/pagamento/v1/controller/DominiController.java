@@ -16,11 +16,14 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import eu.medsea.mimeutil.MimeUtil;
+import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindIbanDTO;
 import it.govpay.core.dao.anagrafica.dto.FindIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindTributiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindTributiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindUnitaOperativeDTO;
@@ -29,6 +32,8 @@ import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetIbanDTO;
 import it.govpay.core.dao.anagrafica.dto.GetIbanDTOResponse;
+import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTO;
+import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
@@ -37,13 +42,17 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v1.beans.ContiAccredito;
 import it.govpay.pagamento.v1.beans.Entrata;
 import it.govpay.pagamento.v1.beans.ListaDominiIndex;
 import it.govpay.pagamento.v1.beans.ListaEntrate;
 import it.govpay.pagamento.v1.beans.ListaIbanAccredito;
+import it.govpay.pagamento.v1.beans.ListaTipiPendenza;
 import it.govpay.pagamento.v1.beans.ListaUnitaOperative;
+import it.govpay.pagamento.v1.beans.TipoPendenza;
+import it.govpay.pagamento.v1.beans.TipoPendenzaTipologia;
 import it.govpay.pagamento.v1.beans.UnitaOperativa;
 import it.govpay.pagamento.v1.beans.converter.DominiConverter;
 
@@ -306,6 +315,141 @@ public class DominiController extends BaseController {
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 			
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(this.context);
+		}
+    }
+
+
+
+    public Response dominiIdDominioTipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form) {
+    	String methodName = "dominiIdDominioTipiPendenzaGET";  
+		String transactionId = this.context.getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			
+			if(associati == null)
+				associati = true;
+			
+			if(associati != null && associati) {
+				List<String> codDominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+				if(codDominiAutorizzati == null)
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+				if(!codDominiAutorizzati.isEmpty() && !codDominiAutorizzati.contains(idDominio)) {
+					throw AuthorizationManager.toNotAuthorizedException(user, idDominio, null);
+				}
+			}
+			
+			// Parametri - > DTO Input
+
+			FindTipiPendenzaDominioDTO findTipiPendenzaDominioDTO = new FindTipiPendenzaDominioDTO(user);
+
+			findTipiPendenzaDominioDTO.setLimit(risultatiPerPagina);
+			findTipiPendenzaDominioDTO.setPagina(pagina);
+			findTipiPendenzaDominioDTO.setOrderBy(ordinamento);
+			findTipiPendenzaDominioDTO.setCodDominio(idDominio);
+			if(abilitato != null)
+				findTipiPendenzaDominioDTO.setAbilitato(abilitato);
+			else 
+				findTipiPendenzaDominioDTO.setAbilitato(true);
+			
+			if(tipo != null) {
+				TipoPendenzaTipologia tipologia = TipoPendenzaTipologia.fromValue(tipo);
+				if(tipologia != null) {
+					switch (tipologia) {
+					case DOVUTO:
+						findTipiPendenzaDominioDTO.setTipo(TipoVersamento.Tipo.DOVUTO);
+						break;
+					case SPONTANEO:
+						findTipiPendenzaDominioDTO.setTipo(TipoVersamento.Tipo.SPONTANEO); 
+						break;
+					}
+				}
+			} else {
+				// default
+				findTipiPendenzaDominioDTO.setTipo(TipoVersamento.Tipo.SPONTANEO); 
+			}
+			
+			if(form != null)
+				findTipiPendenzaDominioDTO.setForm(form);
+			else 
+				findTipiPendenzaDominioDTO.setForm(true);
+			
+			if(associati != null && associati) {
+				List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+				if(idTipiVersamentoAutorizzati == null)
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+
+				findTipiPendenzaDominioDTO.setIdTipiVersamento(idTipiVersamentoAutorizzati);
+			}
+			// INIT DAO
+
+			DominiDAO dominiDAO = new DominiDAO(false);
+
+			// CHIAMATA AL DAO
+
+			FindTipiPendenzaDominioDTOResponse findTipiPendenzaDominioDTOResponse = dominiDAO.findTipiPendenza(findTipiPendenzaDominioDTO);
+
+			// CONVERT TO JSON DELLA RISPOSTA
+
+			List<it.govpay.pagamento.v1.beans.TipoPendenza> results = new ArrayList<>();
+			for(GetTipoPendenzaDominioDTOResponse tipoVersamentoDominio: findTipiPendenzaDominioDTOResponse.getResults()) {
+				results.add(DominiConverter.toTipoPendenzaRsModel(tipoVersamentoDominio));
+			}
+
+			ListaTipiPendenza response = new ListaTipiPendenza(results, this.getServicePath(uriInfo),
+					findTipiPendenzaDominioDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
+
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(this.context);
+		}
+    }
+
+
+
+    public Response dominiIdDominioTipiPendenzaIdTipoPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza) {
+    	String methodName = "dominiIdDominioTipiPendenzaIdTipoPendenzaGET";  
+		String transactionId = this.context.getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		try{
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
+
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+
+			// Parametri - > DTO Input
+
+			GetTipoPendenzaDominioDTO getTipoPendenzaDominioDTO = new GetTipoPendenzaDominioDTO(user, idDominio, idTipoPendenza);
+
+			// INIT DAO
+
+			DominiDAO dominiDAO = new DominiDAO(false);
+
+			// CHIAMATA AL DAO
+
+			GetTipoPendenzaDominioDTOResponse getTipoPendenzaDominioDTOResponse = dominiDAO.getTipoPendenza(getTipoPendenzaDominioDTO); 
+
+			// CONVERT TO JSON DELLA RISPOSTA
+
+			TipoPendenza response = DominiConverter.toTipoPendenzaRsModel(getTipoPendenzaDominioDTOResponse);
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

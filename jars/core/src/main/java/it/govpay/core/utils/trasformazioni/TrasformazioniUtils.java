@@ -26,7 +26,7 @@ import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 
 public class TrasformazioniUtils {
 
-	public static void fillDynamicMap(Logger log, Map<String, Object> dynamicMap, IContext context, MultivaluedMap<String, String> queryParameters,
+	private static void fillDynamicMap(Logger log, Map<String, Object> dynamicMap, IContext context, MultivaluedMap<String, String> queryParameters,
 			MultivaluedMap<String, String> pathParameters, Map<String, String> headers, String json) {
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
@@ -66,6 +66,20 @@ public class TrasformazioniUtils {
 			dynamicMap.put(Costanti.MAP_ELEMENT_JSON_PATH, pe);
 			dynamicMap.put(Costanti.MAP_ELEMENT_JSON_PATH.toLowerCase(), pe);
 		}
+	}
+	
+	public static void fillDynamicMap(Logger log, Map<String, Object> dynamicMap, IContext context, MultivaluedMap<String, String> queryParameters,
+			MultivaluedMap<String, String> pathParameters, Map<String, String> headers, String json, String idDominio, String idTipoVersamento) {
+		fillDynamicMap(log, dynamicMap, context, queryParameters, pathParameters, headers, json);
+		
+		if(dynamicMap.containsKey(Costanti.MAP_ID_TIPO_VERSAMENTO)==false && idTipoVersamento !=null) {
+			dynamicMap.put(Costanti.MAP_ID_TIPO_VERSAMENTO, idTipoVersamento);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_ID_DOMINIO)==false && idDominio !=null) {
+			dynamicMap.put(Costanti.MAP_ID_DOMINIO, idDominio);
+		}
+		
 	}
 
 	public static void convertFreeMarkerTemplate(String name, byte[] template, Map<String,Object> dynamicMap, OutputStream out) throws TrasformazioneException {

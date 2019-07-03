@@ -32,6 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -45,6 +47,7 @@ import org.openspcoop2.utils.json.ValidationResponse.ESITO;
 import org.openspcoop2.utils.json.ValidatorFactory;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
@@ -822,144 +825,30 @@ public class PendenzeDAO extends BaseDAO{
 			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			Dominio dominio = null;
+			String codDominio = putVersamentoDTO.getCodDominio(); 
 			try {
-				dominio = AnagraficaManager.getDominio(bd, putVersamentoDTO.getCodDominio());
+				dominio = AnagraficaManager.getDominio(bd, codDominio);
 			} catch (NotFoundException e1) {
-				throw new DominioNonTrovatoException("Dominio ["+putVersamentoDTO.getCodDominio()+"] inesistente.", e1);
+				throw new DominioNonTrovatoException("Dominio ["+codDominio+"] inesistente.", e1);
 			}
 			// lettura della configurazione TipoVersamentoDominio
 			TipoVersamentoDominio tipoVersamentoDominio = null;
+			String codTipoVersamento = putVersamentoDTO.getCodTipoVersamento();
 			try {
-				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), putVersamentoDTO.getCodTipoVersamento());
+				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), codTipoVersamento);
 			} catch (NotFoundException e1) {
-				throw new TipoVersamentoNonTrovatoException("TipoPendenza ["+putVersamentoDTO.getCodTipoVersamento()+"] inesistente per il Dominio ["+putVersamentoDTO.getCodDominio()+"].", e1);
+				throw new TipoVersamentoNonTrovatoException("TipoPendenza ["+codTipoVersamento+"] inesistente per il Dominio ["+codDominio+"].", e1);
 			}
 
 			this.log.debug("Caricamento pendenza modello 4: elaborazione dell'input ricevuto in corso...");
-			int i = 0;
 			String json = putVersamentoDTO.getCustomReq();
-			String validazioneDefinizione = tipoVersamentoDominio.getValidazioneDefinizione();
-			if(validazioneDefinizione != null) {
-				this.log.debug("Step "+(++i)+": Validazione tramite JSON Schema...");
+			VersamentoUtils.validazioneInputVersamentoModello4(this.log, json, tipoVersamentoDominio);
 
-				IJsonSchemaValidator validator = null;
-
-				try{
-					validator = ValidatorFactory.newJsonSchemaValidator(ApiName.NETWORK_NT);
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-					throw new GovPayException(EsitoOperazione.VAL_000, e, e.getMessage());
-				}
-				JsonSchemaValidatorConfig config = new JsonSchemaValidatorConfig();
-
-				try {
-					// TODO eliminare dopo demo
-					if(validazioneDefinizione.startsWith("\""))
-						validazioneDefinizione = validazioneDefinizione.substring(1);
-
-					if(validazioneDefinizione.endsWith("\""))
-						validazioneDefinizione = validazioneDefinizione.substring(0, validazioneDefinizione.length() - 1);
-					
-					byte[] validazioneBytes = Base64.getDecoder().decode(validazioneDefinizione.getBytes());
-					
-					validator.setSchema(validazioneBytes, config);
-				} catch (ValidationException e) {
-					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
-					throw new GovPayException(EsitoOperazione.VAL_001, e , e.getMessage());
-				} 	
-				ValidationResponse validate = null;
-				try {
-					validate = validator.validate(json.getBytes());
-				} catch (ValidationException e) {
-					this.log.debug("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
-					throw new GovPayException(EsitoOperazione.VAL_002, e, e.getMessage());
-				} 
-
-				ESITO esito = validate.getEsito();
-
-				switch (esito) {
-				case KO:
-					this.log.debug("Validazione tramite JSON Schema completata con esito KO: " + validate.getErrors());
-					throw new ValidationException(String.join(",", validate.getErrors()));
-				case OK:
-					this.log.debug("Validazione tramite JSON Schema completata con esito OK.");
-					break;
-				}
-			}
-
-			String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();
-			if(trasformazioneDefinizione != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
-				this.log.debug("Step "+(++i)+": Trasformazione tramite template "+tipoVersamentoDominio.getTrasformazioneTipo()+"...");
-				String name = "TrasformazionePendenzaModello4";
-				try {
-					// TODO eliminare dopo demo
-					if(trasformazioneDefinizione.startsWith("\""))
-						trasformazioneDefinizione = trasformazioneDefinizione.substring(1);
-
-					if(trasformazioneDefinizione.endsWith("\""))
-						trasformazioneDefinizione = trasformazioneDefinizione.substring(0, trasformazioneDefinizione.length() - 1);
-
-					byte[] template = Base64.getDecoder().decode(trasformazioneDefinizione.getBytes());
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					Map<String, Object> dynamicMap = new HashMap<String, Object>();
-					TrasformazioniUtils.fillDynamicMap(log, dynamicMap, ContextThreadLocal.get(), putVersamentoDTO.getQueryParameters(), 
-							putVersamentoDTO.getPathParameters(), putVersamentoDTO.getHeaders(), putVersamentoDTO.getCustomReq()); 
-					TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
-					// assegno il json trasformato
-					json = baos.toString();
-					this.log.debug("Trasformazione tramite template "+tipoVersamentoDominio.getTrasformazioneTipo()+" completata con successo.");
-				} catch (TrasformazioneException e) {
-					this.log.error("Trasformazione tramite template "+tipoVersamentoDominio.getTrasformazioneTipo()+" completata con errore: " + e.getMessage(), e);
-					throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
-				}
-			}
-
-			Versamento chiediVersamento = null;
-			String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
-			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-			if(codApplicazione != null) {
-				this.log.debug("Step "+(++i)+": Inoltro verso l'applicazione "+codApplicazione+"...");
-				
-				it.govpay.bd.model.Applicazione applicazione = null; 
-				try {
-					applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
-				} catch (NotFoundException e) {
-					throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
-				}
-				
-				if(!applicazione.getUtenza().isAbilitato())
-					throw new GovPayException(EsitoOperazione.APP_001, applicazione.getCodApplicazione());
-				
-				try {
-					chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, putVersamentoDTO.getCodDominio(), putVersamentoDTO.getCodTipoVersamento(), json, bd);
-					VersamentoUtils.validazioneSemantica(chiediVersamento, chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1, bd);
-					((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(chiediVersamento.getCodVersamentoEnte());
-					((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(bd).getCodApplicazione());
-				} catch (ClientException e){
-					throw new EcException("L'inoltro del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
-				} catch (UtilsException e){
-					throw new EcException("L'inoltro del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
-				} catch (VersamentoScadutoException e) {
-					throw new EcException("L'inoltro del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_SCADUTO");
-				} catch (VersamentoAnnullatoException e) {
-					throw new EcException("L'inoltro del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_ANNULLATO");
-				} catch (VersamentoDuplicatoException e) {
-					throw new EcException("L'inoltro del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_DUPLICATO");
-				} catch (VersamentoSconosciutoException e) {
-					throw new EcException("L'inoltro del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_SCONOSCIUTO");
-				} catch (VersamentoNonValidoException e) { 
-					throw new EcException("L'inoltro del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
-				} catch (GovPayException e){
-					throw new EcException("L'inoltro del versamento [Dominio: " + putVersamentoDTO.getCodDominio() + " TipoVersamento:" + putVersamentoDTO.getCodTipoVersamento() + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
-				} 
-				
-				this.log.debug("Inoltro verso l'applicazione "+codApplicazione+" completato con successo.");
-			} else {
-				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
-				it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
-				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
-				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
-				chiediVersamento = versamentoBusiness.chiediVersamento(versamentoCommons);
-			}
+			MultivaluedMap<String, String> queryParameters = putVersamentoDTO.getQueryParameters(); 
+			MultivaluedMap<String, String> pathParameters = putVersamentoDTO.getPathParameters();
+			Map<String, String> headers = putVersamentoDTO.getHeaders();
+			json = VersamentoUtils.trasformazioneInputVersamentoModello4(this.log, dominio, tipoVersamentoDominio, json, queryParameters, pathParameters, headers);
+			Versamento chiediVersamento = VersamentoUtils.inoltroInputVersamentoModello4(this.log, codDominio, codTipoVersamento, tipoVersamentoDominio, json, bd);
 			
 			Applicazione applicazioniBD = new Applicazione(bd);
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(putVersamentoDTO.getUser());
@@ -975,7 +864,8 @@ public class PendenzeDAO extends BaseDAO{
 			}catch(NotFoundException e) {
 				createOrUpdatePendenzaResponse.setCreated(true);
 			}
-
+			
+			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			boolean generaIuv = chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti(bd).size() == 1;
 			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true);
 

@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -18,12 +21,13 @@ import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.DominiBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
@@ -49,10 +53,12 @@ import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoModello4;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentoPatchDTO;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
+import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -72,7 +78,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	public PagamentiPortaleDAO() {
 	}
 
-	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException { 
+	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) 
+			throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException, EcException { 
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpAvviaTransazionePagamentoResponse transazioneResponse = new GpAvviaTransazionePagamentoResponse();
 		Logger log = LoggerWrapperFactory.getLogger(WebControllerDAO.class);
@@ -83,7 +90,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		try {
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(pagamentiPortaleDTO.getUser());
 			bd = BasicBD.newInstance(ctx.getTransactionId());
-			DominiBD dominiBD = new DominiBD(bd);
 			List<Versamento> versamenti = new ArrayList<>();
 
 			// Aggiungo il codSessionePortale al PaymentContext
@@ -139,8 +145,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					String idDominio = ((RefVersamentoAvviso)v).getIdDominio();
 					String cfToCheck = ((RefVersamentoAvviso)v).getIdDebitore();
 					try {
-						Dominio dominio = dominiBD.getDominio(idDominio);
-
+						Dominio dominio = AnagraficaManager.getDominio(bd, idDominio);
+						
 						if(!dominio.isAbilitato())
 							throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
 
@@ -156,6 +162,36 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					}
 				}  else if(v instanceof RefVersamentoPendenza) {
 					versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
+				} else if(v instanceof RefVersamentoModello4) {
+					String idDominio = ((RefVersamentoModello4)v).getIdDominio();
+					String idTipoVersamento = ((RefVersamentoModello4)v).getIdTipoPendenza();
+					String dati = ((RefVersamentoModello4)v).getDati();
+					
+					Dominio dominio = null;
+					try {
+						dominio = AnagraficaManager.getDominio(bd, idDominio);
+					} catch (NotFoundException e1) {
+						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio non disponibile [Dominio:"+idDominio+"].", EsitoOperazione.DOM_000, idDominio);
+					}
+					
+					if(!dominio.isAbilitato())
+						throw new GovPayException(EsitoOperazione.DOM_001, dominio.getCodDominio());
+					// lettura della configurazione TipoVersamentoDominio
+					TipoVersamentoDominio tipoVersamentoDominio = null;
+					try {
+						tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), idTipoVersamento);
+					} catch (NotFoundException e1) {
+						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un tipo pendenza ["+idTipoVersamento+"] non disponibilte per il dominio ["+idDominio+"].", EsitoOperazione.TVD_000, idDominio, idTipoVersamento);
+					}
+
+//					this.log.debug("Caricamento pendenza modello 4: elaborazione dell'input ricevuto in corso...");
+					VersamentoUtils.validazioneInputVersamentoModello4(this.log, dati, tipoVersamentoDominio);
+
+					MultivaluedMap<String, String> queryParameters = pagamentiPortaleDTO.getQueryParameters(); 
+					MultivaluedMap<String, String> pathParameters = pagamentiPortaleDTO.getPathParameters();
+					Map<String, String> headers = pagamentiPortaleDTO.getHeaders();
+					dati = VersamentoUtils.trasformazioneInputVersamentoModello4(this.log, dominio, tipoVersamentoDominio, dati, queryParameters, pathParameters, headers);
+					versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(this.log, codDominio, idTipoVersamento, tipoVersamentoDominio, dati, bd);
 				}
 
 				if(versamentoModel != null) {

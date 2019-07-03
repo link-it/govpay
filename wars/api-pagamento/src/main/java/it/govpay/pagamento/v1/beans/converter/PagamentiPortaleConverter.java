@@ -100,8 +100,15 @@ public class PagamentiPortaleConverter {
 
 			int i =0;
 			for (PendenzaPost pendenza: pagamentiPortaleRequest.getPendenze()) {
-
-				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
+				
+				if((pendenza.getIdDominio() != null && pendenza.getIdTipoPendenza() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null && pendenza.getNumeroAvviso() == null)) {
+					PagamentiPortaleDTO.RefVersamentoModello4 ref = pagamentiPortaleDTO. new RefVersamentoModello4();
+					ref.setIdDominio(pendenza.getIdDominio());
+					ref.setIdTipoPendenza(pendenza.getIdTipoPendenza());
+					ref.setDati(ConverterUtils.toJSON(pendenza.getDati(),null));
+					listRefs.add(ref);
+					
+				} else if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
 					ref.setIdDominio(pendenza.getIdDominio());
