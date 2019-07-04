@@ -28,12 +28,12 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.ragioneria.v1.beans.ListaRiscossioni;
-import it.govpay.ragioneria.v1.beans.Riscossione;
-import it.govpay.ragioneria.v1.beans.RiscossioneIndex;
-import it.govpay.ragioneria.v1.beans.StatoRiscossione;
-import it.govpay.ragioneria.v1.beans.TipoRiscossione;
-import it.govpay.ragioneria.v1.beans.converter.RiscossioniConverter;
+import it.govpay.ragioneria.v2.beans.ListaRiscossioni;
+import it.govpay.ragioneria.v2.beans.Riscossione;
+import it.govpay.ragioneria.v2.beans.RiscossioneIndex;
+import it.govpay.ragioneria.v2.beans.StatoRiscossione;
+import it.govpay.ragioneria.v2.beans.TipoRiscossione;
+import it.govpay.ragioneria.v2.beans.converter.RiscossioniConverter;
 
 
 

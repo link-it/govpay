@@ -1,6 +1,6 @@
 package it.govpay.ragioneria.v2.beans.converter;
 
-import it.govpay.ragioneria.v1.beans.TipoPendenza;
+import it.govpay.ragioneria.v2.beans.TipoPendenza;
 
 public class TipiPendenzaConverter {
 

@@ -8,11 +8,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.ragioneria.v1.beans.PendenzaIndex;
-import it.govpay.ragioneria.v1.beans.StatoPendenza;
-import it.govpay.ragioneria.v1.beans.TassonomiaAvviso;
-import it.govpay.ragioneria.v1.beans.TipoContabilita;
-import it.govpay.ragioneria.v1.beans.VocePendenza;
+import it.govpay.ragioneria.v2.beans.PendenzaIndex;
+import it.govpay.ragioneria.v2.beans.StatoPendenza;
+import it.govpay.ragioneria.v2.beans.TassonomiaAvviso;
+import it.govpay.ragioneria.v2.beans.TipoContabilita;
+import it.govpay.ragioneria.v2.beans.VocePendenza;
 
 public class PendenzeConverter {
 

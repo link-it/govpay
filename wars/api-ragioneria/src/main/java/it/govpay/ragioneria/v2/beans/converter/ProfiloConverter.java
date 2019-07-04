@@ -10,8 +10,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.ragioneria.v1.beans.DominioIndex;
-import it.govpay.ragioneria.v1.beans.Profilo;
+import it.govpay.ragioneria.v2.beans.DominioIndex;
+import it.govpay.ragioneria.v2.beans.Profilo;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

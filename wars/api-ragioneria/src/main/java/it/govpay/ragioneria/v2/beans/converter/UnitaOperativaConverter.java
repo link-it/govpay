@@ -2,7 +2,7 @@ package it.govpay.ragioneria.v2.beans.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.ragioneria.v1.beans.UnitaOperativa;
+import it.govpay.ragioneria.v2.beans.UnitaOperativa;
 
 public class UnitaOperativaConverter {
 

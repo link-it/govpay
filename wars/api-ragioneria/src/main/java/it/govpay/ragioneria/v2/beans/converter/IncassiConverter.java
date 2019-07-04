@@ -11,10 +11,10 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
-import it.govpay.ragioneria.v1.beans.Incasso;
-import it.govpay.ragioneria.v1.beans.IncassoIndex;
-import it.govpay.ragioneria.v1.beans.IncassoPost;
-import it.govpay.ragioneria.v1.beans.Riscossione;
+import it.govpay.ragioneria.v2.beans.Incasso;
+import it.govpay.ragioneria.v2.beans.IncassoIndex;
+import it.govpay.ragioneria.v2.beans.IncassoPost;
+import it.govpay.ragioneria.v2.beans.Riscossione;
 
 public class IncassiConverter {
 

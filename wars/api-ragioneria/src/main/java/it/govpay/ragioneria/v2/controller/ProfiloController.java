@@ -12,8 +12,8 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.ragioneria.v1.beans.Profilo;
-import it.govpay.ragioneria.v1.beans.converter.ProfiloConverter;
+import it.govpay.ragioneria.v2.beans.Profilo;
+import it.govpay.ragioneria.v2.beans.converter.ProfiloConverter;
 
 public class ProfiloController extends BaseController {
 

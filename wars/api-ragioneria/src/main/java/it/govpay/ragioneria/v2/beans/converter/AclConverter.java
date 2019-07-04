@@ -2,8 +2,8 @@ package it.govpay.ragioneria.v2.beans.converter;
 
 import java.util.stream.Collectors;
 
-import it.govpay.ragioneria.v1.beans.AclPost;
-import it.govpay.ragioneria.v1.beans.AclPost.ServizioEnum;
+import it.govpay.ragioneria.v2.beans.AclPost;
+import it.govpay.ragioneria.v2.beans.AclPost.ServizioEnum;
 
 public class AclConverter {
 	

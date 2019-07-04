@@ -32,11 +32,11 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.ragioneria.v1.beans.Incasso;
-import it.govpay.ragioneria.v1.beans.IncassoIndex;
-import it.govpay.ragioneria.v1.beans.IncassoPost;
-import it.govpay.ragioneria.v1.beans.ListaIncassiIndex;
-import it.govpay.ragioneria.v1.beans.converter.IncassiConverter;
+import it.govpay.ragioneria.v2.beans.Incasso;
+import it.govpay.ragioneria.v2.beans.IncassoIndex;
+import it.govpay.ragioneria.v2.beans.IncassoPost;
+import it.govpay.ragioneria.v2.beans.ListaIncassiIndex;
+import it.govpay.ragioneria.v2.beans.converter.IncassiConverter;
 
 
 

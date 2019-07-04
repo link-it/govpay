@@ -10,10 +10,10 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
-import it.govpay.ragioneria.v1.beans.FlussoRendicontazione;
-import it.govpay.ragioneria.v1.beans.FlussoRendicontazioneIndex;
-import it.govpay.ragioneria.v1.beans.Segnalazione;
-import it.govpay.ragioneria.v1.beans.StatoFlussoRendicontazione;
+import it.govpay.ragioneria.v2.beans.FlussoRendicontazione;
+import it.govpay.ragioneria.v2.beans.FlussoRendicontazioneIndex;
+import it.govpay.ragioneria.v2.beans.Segnalazione;
+import it.govpay.ragioneria.v2.beans.StatoFlussoRendicontazione;
 
 public class FlussiRendicontazioneConverter {
 
@@ -38,7 +38,7 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setSegnalazioni(segnalazioni);
 		}
 
-		List<it.govpay.ragioneria.v1.beans.Rendicontazione> rendicontazioniLst = new ArrayList<>();
+		List<it.govpay.ragioneria.v2.beans.Rendicontazione> rendicontazioniLst = new ArrayList<>();
 		for(Rendicontazione rendicontazione: fr.getRendicontazioni(null)) {
 			rendicontazioniLst.add(toRendicontazioneRsModel(rendicontazione));
 		}
@@ -99,8 +99,8 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.ragioneria.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, NotFoundException {
-		it.govpay.ragioneria.v1.beans.Rendicontazione rsModel = new it.govpay.ragioneria.v1.beans.Rendicontazione();
+	public static it.govpay.ragioneria.v2.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, NotFoundException {
+		it.govpay.ragioneria.v2.beans.Rendicontazione rsModel = new it.govpay.ragioneria.v2.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
 		if(rendicontazione.getIndiceDati()!=null)

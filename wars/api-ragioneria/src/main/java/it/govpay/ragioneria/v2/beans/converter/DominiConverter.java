@@ -3,7 +3,7 @@ package it.govpay.ragioneria.v2.beans.converter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.ragioneria.v1.beans.DominioIndex;
+import it.govpay.ragioneria.v2.beans.DominioIndex;
 
 public class DominiConverter {
 	

@@ -14,7 +14,7 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.beans.Costanti;
-import it.govpay.ragioneria.v1.controller.RiscossioniController;
+import it.govpay.ragioneria.v2.controller.RiscossioniController;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
 

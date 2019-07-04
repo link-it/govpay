@@ -22,7 +22,7 @@
     <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider"/>
     
     <!-- FaultBean Exception Mapper -->
-    <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v2.handler.WebApplicationExceptionHandler"/>
+    <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>
     
     <!-- Context -->
 	<b:bean id="contextConfigV2" class="it.govpay.rs.v2.service.context.ContextConfig">

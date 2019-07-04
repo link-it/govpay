@@ -27,11 +27,11 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.ragioneria.v1.beans.FlussoRendicontazione;
-import it.govpay.ragioneria.v1.beans.FlussoRendicontazioneIndex;
-import it.govpay.ragioneria.v1.beans.ListaFlussiRendicontazione;
-import it.govpay.ragioneria.v1.beans.StatoFlussoRendicontazione;
-import it.govpay.ragioneria.v1.beans.converter.FlussiRendicontazioneConverter;
+import it.govpay.ragioneria.v2.beans.FlussoRendicontazione;
+import it.govpay.ragioneria.v2.beans.FlussoRendicontazioneIndex;
+import it.govpay.ragioneria.v2.beans.ListaFlussiRendicontazione;
+import it.govpay.ragioneria.v2.beans.StatoFlussoRendicontazione;
+import it.govpay.ragioneria.v2.beans.converter.FlussiRendicontazioneConverter;
 
 
 public class FlussiRendicontazioneController extends BaseController {
