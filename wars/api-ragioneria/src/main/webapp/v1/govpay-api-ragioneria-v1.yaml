@@ -782,10 +782,6 @@ components:
           description: Codifica del capitolo di bilancio
           type: string
           example: 3321
-        codificaIUV:
-          type: string
-          description: Cifra identificativa negli IUV
-          example: 01
     tipoEntrata:
       type: object
       allOf:
@@ -846,7 +842,7 @@ components:
           description: Identificativo della cartella di pagamento a cui afferisce la pendenza
           example: ABC00000001
         datiAllegati:
-          type: string
+          type: object
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
         tassonomia:
           type: string
@@ -916,7 +912,7 @@ components:
                 - Non eseguito
                 - Anomalo
             datiAllegati:
-              type: string
+              type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
         - oneOf:
             - description: Definisce i dettagli di incasso.
@@ -1351,15 +1347,6 @@ components:
              * Giornale degli Eventi
              * Statistiche
              * Configurazione e Manutenzione
-          enum:
-            - Anagrafica PagoPA
-            - Anagrafica Creditore
-            - Anagrafica Applicazioni
-            - Anagrafica Ruoli
-            - Pagamenti e Pendenze
-            - Rendicontazioni e Incassi
-            - Giornale degli Eventi
-            - Configurazione e manutenzione
           example:
             Pendenze e Pagamenti
         autorizzazioni:
