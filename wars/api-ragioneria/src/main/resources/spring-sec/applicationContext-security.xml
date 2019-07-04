@@ -130,6 +130,7 @@
                 <csrf disabled="true"/>
 
                 <intercept-url pattern="/v1/govpay-api-ragioneria-v1.yaml" access="permitAll"/>
+                <intercept-url pattern="/v2/govpay-api-ragioneria-v2.yaml" access="permitAll"/>
                 <intercept-url pattern="/index.html" access="permitAll"/>
                 <intercept-url pattern="/*.png" access="permitAll"/>
                 <intercept-url pattern="/*.css" access="permitAll"/>
