@@ -24,7 +24,6 @@ paths:
     get:
       tags:
         - Pendenze
-      operationId: findPendenze
       summary: Elenco delle pendenze
       description: Fornisce la lista delle pendenze filtrata ed ordinata.
       parameters:
@@ -64,20 +63,6 @@ paths:
             type: string
             format: csv
             default: +dataCaricamento
-        - name: dataDa
-          in: query
-          description: Inizio della finestra temporale di osservazione
-          required: false
-          schema:
-            type: string  
-            format: date-time     
-        - name: dataA
-          in: query
-          description: Fine della finestra temporale di osservazione
-          required: false
-          schema:
-            type: string  
-            format: date-time
         - name: idDominio
           in: query
           description: filtro per dominio creditore
@@ -145,7 +130,6 @@ paths:
         essere composta da più voci fino ad un massimo di cinque, ciascuna
         avente un identificativo _idVocePendenza_ assegnato dal gestionale come
         riferimento interno. 
-      operationId: addPendenza
       parameters:
         - in: path
           name: idA2A
@@ -173,12 +157,6 @@ paths:
           schema:
             type: boolean
             default: false
-        - in: query
-          name: modalitaAvvisaturaDigitale
-          description: Modalita' di avvisatura scelta per le pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
       requestBody:
         content:
           application/json:
@@ -193,6 +171,7 @@ paths:
                 type: object
                 required:
                   - idDominio
+                  - numeroAvviso
                 properties:
                   idDominio:
                     type: string
@@ -211,26 +190,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/avviso'
         '400':
           $ref: '#/components/responses/400'
-        '422':
-          $ref: '#/components/responses/400'          
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -241,7 +203,6 @@ paths:
       tags:
         - Pendenze
       summary: Aggiornamento di una pendenza
-      operationId: updatePendenza      
       parameters:
         - in: path
           name: idA2A
@@ -279,7 +240,6 @@ paths:
     get:
       tags:
         - Pendenze
-      operationId: getPendenza        
       summary: Dettaglio di una pendenza per identificativo
       description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
       parameters:
@@ -350,20 +310,6 @@ paths:
             type: string
             format: csv
             default: +dataRichiesta
-        - name: dataDa
-          in: query
-          description: Inizio della finestra temporale di osservazione
-          required: false
-          schema:
-            type: string  
-            format: date-time     
-        - name: dataA
-          in: query
-          description: Fine della finestra temporale di osservazione
-          required: false
-          schema:
-            type: string  
-            format: date-time
         - in: query
           name: idDominio
           description: Codice fiscale del dominio beneficiario
@@ -535,11 +481,6 @@ paths:
           required: true
           schema:
             type: string
-        - in: query
-          name: visualizzaSoggettoDebitore
-          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
-          schema:
-            type: boolean
       responses:
         '200':
           description: Ricevuta di pagamento
@@ -642,14 +583,12 @@ components:
              * `RICHIESTA` - Richiesta non valida
              * `OPERAZIONE` - Operazione non eseguibile
              * `PAGOPA` - Errore da PagoPA
-             * `EC` - Errore da Ente Creditore
              * `INTERNO` - Errore interno
           enum:
             - AUTORIZZAZIONE
             - RICHIESTA
             - OPERAZIONE
             - PAGOPA
-            - EC
             - INTERNO
         codice:
           type: string
@@ -1012,6 +951,37 @@ components:
               description: Codice fiscale dell'unita
               example: 01234567890
         - $ref: '#/components/schemas/unitaOperativaPost'
+    tipoEntrataPost:
+      type: object
+      required: 
+        - descrizione
+        - tipoContabilita
+        - codiceContabilita
+      properties:
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
+        tipoContabilita:
+          $ref: '#/components/schemas/tipoContabilita'
+        codiceContabilita:
+          description: Codifica del capitolo di bilancio
+          type: string
+          example: 3321
+        codificaIUV:
+          type: string
+          description: Cifra identificativa negli IUV
+          example: 01
+    tipoEntrata:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idEntrata
+          properties:
+            idEntrata:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/tipoEntrataPost'
     tipoContabilita:
       description: Tipologia di codifica del capitolo di bilancio
       type: string
@@ -1028,10 +998,6 @@ components:
         - importo
         - causale
       properties:
-        idTipoPendenza:
-          type: string
-          description: Identificativo della tipologia pendenza
-          example: IMU    
         nome:
           type: string
           description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -1074,7 +1040,7 @@ components:
           description: Identificativo della cartella di pagamento a cui afferisce la pendenza
           example: ABC00000001
         datiAllegati:
-          type: object
+          type: string
           description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
         tassonomia:
           type: string
@@ -1169,10 +1135,6 @@ components:
               $ref: '#/components/schemas/unitaOperativa'
             stato:
               $ref: '#/components/schemas/statoPendenza'
-            descrizioneStato:
-              type: string
-              description: Descrizione estesa dello stato di elaborazione della pendenza
-              example: 'Pendenza in stato...'
             segnalazioni:
               type: array
               items: 
@@ -1226,7 +1188,7 @@ components:
                 - Non eseguito
                 - Anomalo
             datiAllegati:
-              type: object
+              type: string
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
         - oneOf:
             - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
@@ -1266,7 +1228,7 @@ components:
                   description: Tipologia di Bollo digitale
                   type: string
                   enum:
-                    - 01
+                    - Imposta di bollo
                 hashDocumento:
                   description: Digest in base64 del documento informatico associato alla marca da bollo
                   type: string
@@ -1387,8 +1349,8 @@ components:
              * Anagrafica Creditore
              * Anagrafica Applicazioni
              * Anagrafica Ruoli
-             * Pagamenti
-             * Pendenze
+             * Pendenze e Pagamenti
+             * Pendenze e Pagamenti propri 
              * Rendicontazioni e Incassi
              * Giornale degli Eventi
              * Statistiche
@@ -1398,8 +1360,7 @@ components:
             - Anagrafica Creditore
             - Anagrafica Applicazioni
             - Anagrafica Ruoli
-            - Pagamenti
-            - Pendenze
+            - Pagamenti e Pendenze
             - Rendicontazioni e Incassi
             - Giornale degli Eventi
             - Configurazione e manutenzione
@@ -1412,6 +1373,7 @@ components:
             enum:
              - Lettura
              - Scrittura
+             - Esecuzione
           example:
             - Lettura
             - Scrittura
@@ -1443,7 +1405,7 @@ components:
       required: 
         - nome
         - domini
-        - tipiPendenza
+        - entrate
         - acl
       properties:
         nome:
@@ -1454,37 +1416,12 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/dominioIndex'
-        tipiPendenza:
+        entrate:
           type: array
-          description: tipologie di pendenza su cui e' abilitato ad operare
+          description: entrate su cui e' abilitato ad operare
           items: 
-            $ref: '#/components/schemas/tipoPendenza'
+            $ref: '#/components/schemas/tipoEntrata'
         acl:
           type: array
           items:
             $ref: '#/components/schemas/aclPost'
-    tipoPendenzaPost:
-      type: object
-      required: 
-        - descrizione
-      properties:
-        descrizione:
-          type: string
-          example: Imposta municipale urbana
-    tipoPendenza:
-      type: object
-      allOf:
-        - type: object
-          required:
-           - idTipoPendenza
-          properties:
-            idTipoPendenza:
-              type: string
-              example: IMU
-        - $ref: '#/components/schemas/tipoPendenzaPost'
-    modalitaAvvisaturaDigitale:
-      example: ASINCRONA
-      type: string
-      enum:
-        - ASINCRONA
-        - SINCRONA

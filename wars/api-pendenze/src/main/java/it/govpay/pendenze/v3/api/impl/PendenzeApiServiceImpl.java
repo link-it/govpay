@@ -1,4 +1,4 @@
-package it.govpay.pendenze.v2.api.impl;
+package it.govpay.pendenze.v3.api.impl;
 
 import java.util.List;
 
@@ -20,16 +20,15 @@ import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.exception.WebApplicationExceptionMapper;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pendenze.v2.api.PendenzeApi;
-import it.govpay.pendenze.v2.beans.ModalitaAvvisaturaDigitale;
-import it.govpay.pendenze.v2.beans.NuovaPendenza;
-import it.govpay.pendenze.v2.beans.PatchOp;
-import it.govpay.pendenze.v2.beans.Pendenza;
-import it.govpay.pendenze.v2.beans.PendenzaCreata;
-import it.govpay.pendenze.v2.beans.Pendenze;
-import it.govpay.pendenze.v2.beans.StatoPendenza;
-//import it.govpay.pendenze.v2.beans.TipiPendenza;
-import it.govpay.pendenze.v2.beans.converter.PendenzeConverter;
+import it.govpay.pendenze.v3.api.PendenzeApi;
+import it.govpay.pendenze.v3.beans.ModalitaAvvisaturaDigitale;
+import it.govpay.pendenze.v3.beans.NuovaPendenza;
+import it.govpay.pendenze.v3.beans.PatchOp;
+import it.govpay.pendenze.v3.beans.Pendenza;
+import it.govpay.pendenze.v3.beans.PendenzaCreata;
+import it.govpay.pendenze.v3.beans.Pendenze;
+import it.govpay.pendenze.v3.beans.StatoPendenza;
+import it.govpay.pendenze.v3.beans.converter.PendenzeConverter;
 import it.govpay.rs.v3.acl.Acl;
 import it.govpay.rs.v3.acl.AuthorizationRules;
 import it.govpay.rs.v3.acl.impl.TipoUtenzaOnlyAcl;

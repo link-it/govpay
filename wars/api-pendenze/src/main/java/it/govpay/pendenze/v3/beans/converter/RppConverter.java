@@ -1,4 +1,4 @@
-package it.govpay.pendenze.v2.beans.converter;
+package it.govpay.pendenze.v3.beans.converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,11 +8,11 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
-import it.govpay.pendenze.v2.api.impl.PendenzeApiServiceImpl;
-import it.govpay.pendenze.v2.api.impl.TransazioniApiServiceImpl;
-import it.govpay.pendenze.v2.beans.Rpp;
-import it.govpay.pendenze.v2.beans.RppIndex;
-import it.govpay.pendenze.v2.beans.Rpps;
+import it.govpay.pendenze.v3.beans.Rpp;
+import it.govpay.pendenze.v3.beans.RppIndex;
+import it.govpay.pendenze.v3.beans.Rpps;
+import it.govpay.pendenze.v3.api.impl.PendenzeApiServiceImpl;
+import it.govpay.pendenze.v3.api.impl.TransazioniApiServiceImpl;
 
 public class RppConverter {
 

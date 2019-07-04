@@ -1,4 +1,4 @@
-package it.govpay.pendenze.v2.api.impl;
+package it.govpay.pendenze.v3.api.impl;
 
 import java.net.URLDecoder;
 import java.util.List;
@@ -29,11 +29,11 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.rs.v3.acl.Acl;
 import it.govpay.rs.v3.acl.AuthorizationRules;
 import it.govpay.rs.v3.acl.impl.TipoUtenzaOnlyAcl;
-import it.govpay.pendenze.v2.api.TransazioniApi;
-import it.govpay.pendenze.v2.beans.EsitoRpp;
-import it.govpay.pendenze.v2.beans.Rpp;
-import it.govpay.pendenze.v2.beans.Rpps;
-import it.govpay.pendenze.v2.beans.converter.RppConverter;
+import it.govpay.pendenze.v3.api.TransazioniApi;
+import it.govpay.pendenze.v3.beans.EsitoRpp;
+import it.govpay.pendenze.v3.beans.Rpp;
+import it.govpay.pendenze.v3.beans.Rpps;
+import it.govpay.pendenze.v3.beans.converter.RppConverter;
 /**
  * GovPay - API Pagamento
  *
