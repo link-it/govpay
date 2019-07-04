@@ -1231,6 +1231,7 @@
 			</xsd:element>
 			<xsd:element name="codApplicazione" type="String35" minOccurs="0"/>
 			<xsd:element name="promemoriaAvvisoPdf" type="xsd:boolean" default="false"/>
+			<xsd:element name="promemoriaAvvisoTipo" type="String35" minOccurs="0"/>
 			<xsd:element name="promemoriaAvvisoOggetto" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1249,6 +1250,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="promemoriaRicevutaTipo" type="String35" minOccurs="0"/>
 			<xsd:element name="promemoriaRicevutaPdf" type="xsd:boolean" default="false"/>
 			<xsd:element name="promemoriaRicevutaOggetto" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
@@ -1358,6 +1360,7 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codApplicazione" type="String35" minOccurs="0"/>
+			<xsd:element name="promemoriaAvvisoTipo" type="String35" minOccurs="0"/>
 			<xsd:element name="promemoriaAvvisoPdf" minOccurs="0">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
@@ -1383,6 +1386,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="promemoriaRicevutaTipo" type="String35" minOccurs="0"/>
 			<xsd:element name="promemoriaRicevutaPdf" minOccurs="0">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">

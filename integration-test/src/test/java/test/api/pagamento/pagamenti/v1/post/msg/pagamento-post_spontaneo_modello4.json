@@ -1,0 +1,11 @@
+{
+    "pendenze": [
+		{
+			"idDominio": '#(idDominio)',
+			"idTipoPendenza": '#(idTipoPendenza)',
+			"dati" :  {
+				"numero" : 10
+			}
+		}
+	]
+}

@@ -1,6 +1,6 @@
 package it.govpay.pagamento.v2.beans.converter;
 
-import it.govpay.pagamento.v2.beans.TipoPendenza;
+import it.govpay.pagamento.v1.beans.TipoPendenza;
 
 public class TipiPendenzaConverter {
 
@@ -8,6 +8,7 @@ public class TipiPendenzaConverter {
 		TipoPendenza rsModel = new TipoPendenza();
 		
 		rsModel.descrizione(tipoVersamento.getDescrizione())
+//		.codificaIUV(tipoVersamento.getCodificaIuvDefault())
 		.idTipoPendenza(tipoVersamento.getCodTipoVersamento());
 		
 		return rsModel;

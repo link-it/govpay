@@ -9,8 +9,8 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
-import it.govpay.pagamento.v2.beans.Profilo;
-import it.govpay.pagamento.v2.beans.Soggetto;
+import it.govpay.pagamento.v1.beans.Profilo;
+import it.govpay.pagamento.v1.beans.Soggetto;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class ProfiloConverter {
@@ -53,9 +53,9 @@ public class ProfiloConverter {
 			break;
 		case APPLICAZIONE:
 			if(leggiProfilo.getDomini()!=null) {
-				List<it.govpay.pagamento.v2.beans.Dominio> dominiLst = new ArrayList<>();
+				List<it.govpay.pagamento.v1.beans.DominioIndex> dominiLst = new ArrayList<>();
 				for(Dominio dominio: leggiProfilo.getDomini()) {
-					dominiLst.add(DominiConverter.toRsModel(dominio));
+					dominiLst.add(DominiConverter.toRsModelIndex(dominio));
 				}
 				profilo.setDomini(dominiLst);
 			}

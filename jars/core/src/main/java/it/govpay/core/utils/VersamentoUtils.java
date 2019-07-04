@@ -39,11 +39,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.IJsonSchemaValidator;
 import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
+import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.json.ValidationResponse;
-import org.openspcoop2.utils.json.ValidatorFactory;
-import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.json.ValidationResponse.ESITO;
+import org.openspcoop2.utils.json.ValidatorFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -67,11 +67,12 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
-import it.govpay.core.utils.EventoContext.Esito;
-import it.govpay.core.utils.client.VerificaClient;
+import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -806,6 +807,8 @@ public class VersamentoUtils {
 			log.debug("Inoltro verso l'applicazione "+codApplicazione+" completato con successo.");
 		} else {
 			PendenzaPost pendenzaPost = PendenzaPost.parse(inputModello4);
+			new PendenzaPostValidator(pendenzaPost).validate();
+			
 			it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());

@@ -30,9 +30,9 @@ import it.govpay.pendenze.v2.beans.Pendenze;
 import it.govpay.pendenze.v2.beans.StatoPendenza;
 //import it.govpay.pendenze.v2.beans.TipiPendenza;
 import it.govpay.pendenze.v2.beans.converter.PendenzeConverter;
-import it.govpay.rs.v2.acl.Acl;
-import it.govpay.rs.v2.acl.AuthorizationRules;
-import it.govpay.rs.v2.acl.impl.TipoUtenzaOnlyAcl;
+import it.govpay.rs.v3.acl.Acl;
+import it.govpay.rs.v3.acl.AuthorizationRules;
+import it.govpay.rs.v3.acl.impl.TipoUtenzaOnlyAcl;
 /**
  * GovPay - API Pagamento
  */
