@@ -30,10 +30,10 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v1.beans.ListaPendenzeIndex;
-import it.govpay.pagamento.v1.beans.Pendenza;
-import it.govpay.pagamento.v1.beans.PendenzaIndex;
-import it.govpay.pagamento.v1.beans.converter.PendenzeConverter;
+import it.govpay.pagamento.v2.beans.ListaPendenzeIndex;
+import it.govpay.pagamento.v2.beans.Pendenza;
+import it.govpay.pagamento.v2.beans.PendenzaIndex;
+import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 
 
 
@@ -146,7 +146,7 @@ public class PendenzeController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.pagamento.v1.beans.PendenzaIndex> results = new ArrayList<>();
+			List<it.govpay.pagamento.v2.beans.PendenzaIndex> results = new ArrayList<>();
 			for(LeggiPendenzaDTOResponse ricevutaDTOResponse: listaPendenzeDTOResponse.getResults()) {
 				PendenzaIndex rsModel = PendenzeConverter.toRsModelIndex(ricevutaDTOResponse.getVersamentoIncasso(),user);
 				results.add(rsModel);

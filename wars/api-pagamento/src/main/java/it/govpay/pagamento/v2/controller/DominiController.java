@@ -44,17 +44,17 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v1.beans.ContiAccredito;
-import it.govpay.pagamento.v1.beans.Entrata;
-import it.govpay.pagamento.v1.beans.ListaDominiIndex;
-import it.govpay.pagamento.v1.beans.ListaEntrate;
-import it.govpay.pagamento.v1.beans.ListaIbanAccredito;
-import it.govpay.pagamento.v1.beans.ListaTipiPendenza;
-import it.govpay.pagamento.v1.beans.ListaUnitaOperative;
-import it.govpay.pagamento.v1.beans.TipoPendenza;
-import it.govpay.pagamento.v1.beans.TipoPendenzaTipologia;
-import it.govpay.pagamento.v1.beans.UnitaOperativa;
-import it.govpay.pagamento.v1.beans.converter.DominiConverter;
+import it.govpay.pagamento.v2.beans.ContiAccredito;
+import it.govpay.pagamento.v2.beans.Entrata;
+import it.govpay.pagamento.v2.beans.ListaDominiIndex;
+import it.govpay.pagamento.v2.beans.ListaEntrate;
+import it.govpay.pagamento.v2.beans.ListaIbanAccredito;
+import it.govpay.pagamento.v2.beans.ListaTipiPendenza;
+import it.govpay.pagamento.v2.beans.ListaUnitaOperative;
+import it.govpay.pagamento.v2.beans.TipoPendenza;
+import it.govpay.pagamento.v2.beans.TipoPendenzaTipologia;
+import it.govpay.pagamento.v2.beans.UnitaOperativa;
+import it.govpay.pagamento.v2.beans.converter.DominiConverter;
 
 
 
@@ -216,7 +216,7 @@ public class DominiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.pagamento.v1.beans.DominioIndex> results = new ArrayList<>();
+			List<it.govpay.pagamento.v2.beans.DominioIndex> results = new ArrayList<>();
 			for(it.govpay.bd.model.Dominio dominio: listaDominiDTOResponse.getResults()) {
 				results.add(DominiConverter.toRsModelIndex(dominio));
 			}
@@ -262,7 +262,7 @@ public class DominiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			it.govpay.pagamento.v1.beans.Dominio response = DominiConverter.toRsModel(listaDominiDTOResponse.getDominio(), listaDominiDTOResponse.getUo(), listaDominiDTOResponse.getTributi(), listaDominiDTOResponse.getIban());
+			it.govpay.pagamento.v2.beans.Dominio response = DominiConverter.toRsModel(listaDominiDTOResponse.getDominio(), listaDominiDTOResponse.getUo(), listaDominiDTOResponse.getTributi(), listaDominiDTOResponse.getIban());
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
@@ -304,7 +304,7 @@ public class DominiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.pagamento.v1.beans.Entrata> results = new ArrayList<>();
+			List<it.govpay.pagamento.v2.beans.Entrata> results = new ArrayList<>();
 			for(GetTributoDTOResponse tributo: listaDominiEntrateDTOResponse.getResults()) {
 				results.add(DominiConverter.toEntrataRsModel(tributo.getTributo(), tributo.getIbanAppoggio()));
 			}
@@ -399,7 +399,7 @@ public class DominiController extends BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			List<it.govpay.pagamento.v1.beans.TipoPendenza> results = new ArrayList<>();
+			List<it.govpay.pagamento.v2.beans.TipoPendenza> results = new ArrayList<>();
 			for(GetTipoPendenzaDominioDTOResponse tipoVersamentoDominio: findTipiPendenzaDominioDTOResponse.getResults()) {
 				results.add(DominiConverter.toTipoPendenzaRsModel(tipoVersamentoDominio));
 			}
@@ -489,7 +489,7 @@ public class DominiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.pagamento.v1.beans.UnitaOperativa> results = new ArrayList<>();
+			List<it.govpay.pagamento.v2.beans.UnitaOperativa> results = new ArrayList<>();
 			for(it.govpay.bd.model.UnitaOperativa uo: listaDominiUoDTOResponse.getResults()) {
 				results.add(DominiConverter.toUnitaOperativaRsModel(uo));
 			}
@@ -577,7 +577,7 @@ public class DominiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.pagamento.v1.beans.ContiAccredito> results = new ArrayList<>();
+			List<it.govpay.pagamento.v2.beans.ContiAccredito> results = new ArrayList<>();
 			for(it.govpay.bd.model.IbanAccredito ibanAccredito: listaDominiIbanDTOResponse.getResults()) {
 				results.add(DominiConverter.toIbanRsModel(ibanAccredito));
 			}

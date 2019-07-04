@@ -16,11 +16,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.beans.Costanti;
 import it.govpay.ragioneria.v2.controller.FlussiRendicontazioneController;
-import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.rs.v2.BaseRsServiceV2;
 
 @Path("/flussiRendicontazione")
 
-public class FlussiRendicontazione extends BaseRsServiceV1{
+public class FlussiRendicontazione extends BaseRsServiceV2{
 
 
 	private FlussiRendicontazioneController controller = null;

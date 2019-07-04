@@ -14,8 +14,8 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v1.beans.Rpp;
-import it.govpay.pagamento.v1.beans.RppIndex;
+import it.govpay.pagamento.v2.beans.Rpp;
+import it.govpay.pagamento.v2.beans.RppIndex;
 import it.govpay.rs.v1.ConverterUtils;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 

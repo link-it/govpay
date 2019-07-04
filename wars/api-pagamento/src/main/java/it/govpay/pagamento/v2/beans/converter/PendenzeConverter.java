@@ -18,19 +18,19 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v1.beans.Avviso;
-import it.govpay.pagamento.v1.beans.Avviso.StatoEnum;
-import it.govpay.pagamento.v1.beans.Pagamento;
-import it.govpay.pagamento.v1.beans.Pendenza;
-import it.govpay.pagamento.v1.beans.PendenzaIndex;
-import it.govpay.pagamento.v1.beans.Rpp;
-import it.govpay.pagamento.v1.beans.Segnalazione;
-import it.govpay.pagamento.v1.beans.Soggetto;
-import it.govpay.pagamento.v1.beans.StatoPendenza;
-import it.govpay.pagamento.v1.beans.TassonomiaAvviso;
-import it.govpay.pagamento.v1.beans.VocePendenza;
-import it.govpay.pagamento.v1.beans.VocePendenza.TipoBolloEnum;
-import it.govpay.pagamento.v1.beans.VocePendenza.TipoContabilitaEnum;
+import it.govpay.pagamento.v2.beans.Avviso;
+import it.govpay.pagamento.v2.beans.Avviso.StatoEnum;
+import it.govpay.pagamento.v2.beans.Pagamento;
+import it.govpay.pagamento.v2.beans.Pendenza;
+import it.govpay.pagamento.v2.beans.PendenzaIndex;
+import it.govpay.pagamento.v2.beans.Rpp;
+import it.govpay.pagamento.v2.beans.Segnalazione;
+import it.govpay.pagamento.v2.beans.Soggetto;
+import it.govpay.pagamento.v2.beans.StatoPendenza;
+import it.govpay.pagamento.v2.beans.TassonomiaAvviso;
+import it.govpay.pagamento.v2.beans.VocePendenza;
+import it.govpay.pagamento.v2.beans.VocePendenza.TipoBolloEnum;
+import it.govpay.pagamento.v2.beans.VocePendenza.TipoContabilitaEnum;
 
 public class PendenzeConverter {
 	

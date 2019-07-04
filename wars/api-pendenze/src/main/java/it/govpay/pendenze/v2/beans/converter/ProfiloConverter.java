@@ -11,9 +11,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.model.TipoVersamento;
-import it.govpay.pendenze.v1.beans.DominioIndex;
-import it.govpay.pendenze.v1.beans.Profilo;
-import it.govpay.pendenze.v1.beans.TipoPendenza;
+import it.govpay.pendenze.v2.beans.DominioIndex;
+import it.govpay.pendenze.v2.beans.Profilo;
+import it.govpay.pendenze.v2.beans.TipoPendenza;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

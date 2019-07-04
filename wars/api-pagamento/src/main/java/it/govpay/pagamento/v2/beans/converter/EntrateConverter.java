@@ -1,7 +1,7 @@
 package it.govpay.pagamento.v2.beans.converter;
 
-import it.govpay.pagamento.v1.beans.TipoContabilita;
-import it.govpay.pagamento.v1.beans.TipoEntrata;
+import it.govpay.pagamento.v2.beans.TipoContabilita;
+import it.govpay.pagamento.v2.beans.TipoEntrata;
 
 public class EntrateConverter {
 

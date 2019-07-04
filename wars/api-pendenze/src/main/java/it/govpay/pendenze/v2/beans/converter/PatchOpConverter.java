@@ -7,9 +7,9 @@ import it.govpay.model.PatchOp;
 
 public class PatchOpConverter {
 
-	public static List<PatchOp> toModel(List<it.govpay.pendenze.v1.beans.PatchOp> lstOp) {
+	public static List<PatchOp> toModel(List<it.govpay.pendenze.v2.beans.PatchOp> lstOp) {
 		List<PatchOp> list = new ArrayList<>();
-		for(it.govpay.pendenze.v1.beans.PatchOp op : lstOp) {
+		for(it.govpay.pendenze.v2.beans.PatchOp op : lstOp) {
 			PatchOp e = new PatchOp();
 			e.setOp(PatchOp.OpEnum.fromValue(op.getOp().name()));
 			e.setPath(op.getPath());

@@ -10,7 +10,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -19,24 +18,23 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.RequestValidationException;
-import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
-import it.govpay.pagamento.v1.beans.ContoAddebito;
-import it.govpay.pagamento.v1.beans.ModalitaAvvisaturaDigitale;
-import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
-import it.govpay.pagamento.v1.beans.Pagamento;
-import it.govpay.pagamento.v1.beans.PagamentoIndex;
-import it.govpay.pagamento.v1.beans.PagamentoPost;
-import it.govpay.pagamento.v1.beans.PagamentoPost.AutenticazioneSoggettoEnum;
-import it.govpay.pagamento.v1.beans.PendenzaPost;
-import it.govpay.pagamento.v1.beans.Soggetto;
-import it.govpay.pagamento.v1.beans.Soggetto.TipoEnum;
-import it.govpay.pagamento.v1.beans.StatoPagamento;
-import it.govpay.pagamento.v1.beans.TassonomiaAvviso;
-import it.govpay.pagamento.v1.beans.VocePendenza;
+import it.govpay.pagamento.v2.beans.ContoAddebito;
+import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
+import it.govpay.pagamento.v2.beans.PagamentiPortaleResponseOk;
+import it.govpay.pagamento.v2.beans.Pagamento;
+import it.govpay.pagamento.v2.beans.PagamentoIndex;
+import it.govpay.pagamento.v2.beans.PagamentoPost;
+import it.govpay.pagamento.v2.beans.PagamentoPost.AutenticazioneSoggettoEnum;
+import it.govpay.pagamento.v2.beans.PendenzaPost;
+import it.govpay.pagamento.v2.beans.Soggetto;
+import it.govpay.pagamento.v2.beans.Soggetto.TipoEnum;
+import it.govpay.pagamento.v2.beans.StatoPagamento;
+import it.govpay.pagamento.v2.beans.TassonomiaAvviso;
+import it.govpay.pagamento.v2.beans.VocePendenza;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class PagamentiPortaleConverter {
@@ -336,7 +334,7 @@ public class PagamentiPortaleConverter {
 				rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 				rsModel.setSoggettoVersante(controlloUtenzaVersante(pagamentiPortaleRequest.getSoggettoVersante(),user));
-				rsModel.setAutenticazioneSoggetto(it.govpay.pagamento.v1.beans.Pagamento.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
+				rsModel.setAutenticazioneSoggetto(it.govpay.pagamento.v2.beans.Pagamento.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 			} catch (ServiceException | ValidationException e) {
 
 			}
@@ -372,7 +370,7 @@ public class PagamentiPortaleConverter {
 				rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 				rsModel.setSoggettoVersante(controlloUtenzaVersante(pagamentiPortaleRequest.getSoggettoVersante(),user));
-				rsModel.setAutenticazioneSoggetto(it.govpay.pagamento.v1.beans.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
+				rsModel.setAutenticazioneSoggetto(it.govpay.pagamento.v2.beans.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
 			} catch (ServiceException | ValidationException e) {
 
 			}

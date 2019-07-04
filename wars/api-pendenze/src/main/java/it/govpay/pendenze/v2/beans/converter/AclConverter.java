@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import it.govpay.pendenze.v1.beans.AclPost;
-import it.govpay.pendenze.v1.beans.AclPost.ServizioEnum;
+import it.govpay.pendenze.v2.beans.AclPost;
+import it.govpay.pendenze.v2.beans.AclPost.ServizioEnum;
 
 public class AclConverter {
 	

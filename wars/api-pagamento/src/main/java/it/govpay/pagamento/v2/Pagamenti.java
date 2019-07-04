@@ -16,14 +16,14 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.beans.Costanti;
-import it.govpay.pagamento.v1.beans.ModalitaAvvisaturaDigitale;
-import it.govpay.pagamento.v1.controller.PagamentiController;
-import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
+import it.govpay.pagamento.v2.controller.PagamentiController;
+import it.govpay.rs.v2.BaseRsServiceV2;
 
 
 @Path("/pagamenti")
 
-public class Pagamenti extends BaseRsServiceV1{
+public class Pagamenti extends BaseRsServiceV2{
 
 
 	private PagamentiController controller = null;

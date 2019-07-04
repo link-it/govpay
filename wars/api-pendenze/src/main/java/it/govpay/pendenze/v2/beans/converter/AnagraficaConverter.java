@@ -1,7 +1,7 @@
 package it.govpay.pendenze.v2.beans.converter;
 
-import it.govpay.pendenze.v1.beans.Soggetto;
-import it.govpay.pendenze.v1.beans.Soggetto.TipoEnum;
+import it.govpay.pendenze.v2.beans.Soggetto;
+import it.govpay.pendenze.v2.beans.Soggetto.TipoEnum;
 
 public class AnagraficaConverter {
 

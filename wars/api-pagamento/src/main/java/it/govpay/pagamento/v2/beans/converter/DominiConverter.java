@@ -9,14 +9,14 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.pagamento.v1.beans.ContiAccredito;
-import it.govpay.pagamento.v1.beans.Dominio;
-import it.govpay.pagamento.v1.beans.DominioIndex;
-import it.govpay.pagamento.v1.beans.Entrata;
-import it.govpay.pagamento.v1.beans.TipoContabilita;
-import it.govpay.pagamento.v1.beans.TipoPendenza;
-import it.govpay.pagamento.v1.beans.TipoPendenzaForm;
-import it.govpay.pagamento.v1.beans.UnitaOperativa;
+import it.govpay.pagamento.v2.beans.ContiAccredito;
+import it.govpay.pagamento.v2.beans.Dominio;
+import it.govpay.pagamento.v2.beans.DominioIndex;
+import it.govpay.pagamento.v2.beans.Entrata;
+import it.govpay.pagamento.v2.beans.TipoContabilita;
+import it.govpay.pagamento.v2.beans.TipoPendenza;
+import it.govpay.pagamento.v2.beans.TipoPendenzaForm;
+import it.govpay.pagamento.v2.beans.UnitaOperativa;
 
 public class DominiConverter {
 	
@@ -190,10 +190,10 @@ public class DominiConverter {
 		if(tipoVersamentoDominio.getTipo() != null) {
 			switch (tipoVersamentoDominio.getTipo()) {
 			case DOVUTO:
-				rsModel.setTipo(it.govpay.pagamento.v1.beans.TipoPendenzaTipologia.DOVUTO);
+				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.DOVUTO);
 				break;
 			case SPONTANEO:
-				rsModel.setTipo(it.govpay.pagamento.v1.beans.TipoPendenzaTipologia.SPONTANEO);
+				rsModel.setTipo(it.govpay.pagamento.v2.beans.TipoPendenzaTipologia.SPONTANEO);
 				break;
 			}
 		}

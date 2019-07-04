@@ -3,8 +3,8 @@ package it.govpay.pendenze.v2.beans.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.pendenze.v1.beans.Rpp;
-import it.govpay.pendenze.v1.beans.RppIndex;
+import it.govpay.pendenze.v2.beans.Rpp;
+import it.govpay.pendenze.v2.beans.RppIndex;
 import it.govpay.rs.v1.ConverterUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 

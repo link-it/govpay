@@ -42,18 +42,18 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
-import it.govpay.pendenze.v1.beans.FaultBean;
-import it.govpay.pendenze.v1.beans.FaultBean.CategoriaEnum;
-import it.govpay.pendenze.v1.beans.ListaPendenze;
-import it.govpay.pendenze.v1.beans.ModalitaAvvisaturaDigitale;
-import it.govpay.pendenze.v1.beans.PatchOp;
-import it.govpay.pendenze.v1.beans.PatchOp.OpEnum;
-import it.govpay.pendenze.v1.beans.Pendenza;
-import it.govpay.pendenze.v1.beans.PendenzaCreata;
-import it.govpay.pendenze.v1.beans.PendenzaIndex;
-import it.govpay.pendenze.v1.beans.PendenzaPut;
-import it.govpay.pendenze.v1.beans.converter.PatchOpConverter;
-import it.govpay.pendenze.v1.beans.converter.PendenzeConverter;
+import it.govpay.pendenze.v2.beans.FaultBean;
+import it.govpay.pendenze.v2.beans.FaultBean.CategoriaEnum;
+import it.govpay.pendenze.v2.beans.ListaPendenze;
+import it.govpay.pendenze.v2.beans.ModalitaAvvisaturaDigitale;
+import it.govpay.pendenze.v2.beans.PatchOp;
+import it.govpay.pendenze.v2.beans.PatchOp.OpEnum;
+import it.govpay.pendenze.v2.beans.Pendenza;
+import it.govpay.pendenze.v2.beans.PendenzaCreata;
+import it.govpay.pendenze.v2.beans.PendenzaIndex;
+import it.govpay.pendenze.v2.beans.PendenzaPut;
+import it.govpay.pendenze.v2.beans.converter.PatchOpConverter;
+import it.govpay.pendenze.v2.beans.converter.PendenzeConverter;
 
 
 

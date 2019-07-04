@@ -40,8 +40,8 @@ import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v1.beans.FaultBean;
-import it.govpay.pagamento.v1.beans.FaultBean.CategoriaEnum;
+import it.govpay.pagamento.v2.beans.FaultBean;
+import it.govpay.pagamento.v2.beans.FaultBean.CategoriaEnum;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)

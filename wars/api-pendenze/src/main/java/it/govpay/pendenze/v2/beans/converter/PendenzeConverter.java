@@ -17,18 +17,18 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
-import it.govpay.pendenze.v1.beans.Avviso;
-import it.govpay.pendenze.v1.beans.Avviso.StatoEnum;
-import it.govpay.pendenze.v1.beans.Pendenza;
-import it.govpay.pendenze.v1.beans.PendenzaIndex;
-import it.govpay.pendenze.v1.beans.PendenzaPut;
-import it.govpay.pendenze.v1.beans.RppIndex;
-import it.govpay.pendenze.v1.beans.Segnalazione;
-import it.govpay.pendenze.v1.beans.Soggetto;
-import it.govpay.pendenze.v1.beans.StatoPendenza;
-import it.govpay.pendenze.v1.beans.TassonomiaAvviso;
-import it.govpay.pendenze.v1.beans.TipoContabilita;
-import it.govpay.pendenze.v1.beans.VocePendenza;
+import it.govpay.pendenze.v2.beans.Avviso;
+import it.govpay.pendenze.v2.beans.Avviso.StatoEnum;
+import it.govpay.pendenze.v2.beans.Pendenza;
+import it.govpay.pendenze.v2.beans.PendenzaIndex;
+import it.govpay.pendenze.v2.beans.PendenzaPut;
+import it.govpay.pendenze.v2.beans.RppIndex;
+import it.govpay.pendenze.v2.beans.Segnalazione;
+import it.govpay.pendenze.v2.beans.Soggetto;
+import it.govpay.pendenze.v2.beans.StatoPendenza;
+import it.govpay.pendenze.v2.beans.TassonomiaAvviso;
+import it.govpay.pendenze.v2.beans.TipoContabilita;
+import it.govpay.pendenze.v2.beans.VocePendenza;
 
 public class PendenzeConverter {
 

@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import it.govpay.pagamento.v1.beans.AclPost.ServizioEnum;
+import it.govpay.pagamento.v2.beans.AclPost.ServizioEnum;
 
 public class AclConverter {
 	
-	public static it.govpay.pagamento.v1.beans.AclPost toRsModel(it.govpay.bd.model.Acl acl) {
-		it.govpay.pagamento.v1.beans.AclPost rsModel = new it.govpay.pagamento.v1.beans.AclPost();
+	public static it.govpay.pagamento.v2.beans.AclPost toRsModel(it.govpay.bd.model.Acl acl) {
+		it.govpay.pagamento.v2.beans.AclPost rsModel = new it.govpay.pagamento.v2.beans.AclPost();
 		rsModel.principal(acl.getUtenzaPrincipalOriginale())
 		.ruolo(acl.getRuolo());
 		

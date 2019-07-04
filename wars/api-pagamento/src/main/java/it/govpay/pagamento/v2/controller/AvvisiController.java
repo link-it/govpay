@@ -23,9 +23,9 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v1.beans.Avviso;
-import it.govpay.pagamento.v1.beans.Avviso.StatoEnum;
-import it.govpay.pagamento.v1.beans.converter.PendenzeConverter;
+import it.govpay.pagamento.v2.beans.Avviso;
+import it.govpay.pagamento.v2.beans.Avviso.StatoEnum;
+import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 
 public class AvvisiController extends BaseController {
 

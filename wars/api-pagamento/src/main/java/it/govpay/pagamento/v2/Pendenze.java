@@ -14,13 +14,13 @@ import javax.ws.rs.core.UriInfo;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.beans.Costanti;
-import it.govpay.pagamento.v1.controller.PendenzeController;
-import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.pagamento.v2.controller.PendenzeController;
+import it.govpay.rs.v2.BaseRsServiceV2;
 
 
 @Path("/pendenze")
 
-public class Pendenze extends BaseRsServiceV1{
+public class Pendenze extends BaseRsServiceV2{
 
 
 	private PendenzeController controller = null;

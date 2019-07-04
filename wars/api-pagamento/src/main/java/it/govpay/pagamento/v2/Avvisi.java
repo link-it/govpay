@@ -12,13 +12,13 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.pagamento.v1.controller.AvvisiController;
-import it.govpay.rs.v1.BaseRsServiceV1;
+import it.govpay.pagamento.v2.controller.AvvisiController;
+import it.govpay.rs.v2.BaseRsServiceV2;
 
 
 @Path("/avvisi")
 
-public class Avvisi extends BaseRsServiceV1{
+public class Avvisi extends BaseRsServiceV2{
 
 
 	private AvvisiController controller = null;

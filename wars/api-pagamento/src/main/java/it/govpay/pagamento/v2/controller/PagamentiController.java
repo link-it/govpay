@@ -41,18 +41,18 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.utils.validazione.semantica.NuovoPagamentoValidator;
-import it.govpay.pagamento.v1.beans.FaultBean;
-import it.govpay.pagamento.v1.beans.FaultBeanEsteso;
-import it.govpay.pagamento.v1.beans.FaultBeanEsteso.CategoriaEnum;
-import it.govpay.pagamento.v1.beans.ListaPagamentiIndex;
-import it.govpay.pagamento.v1.beans.ModalitaAvvisaturaDigitale;
-import it.govpay.pagamento.v1.beans.PagamentiPortaleResponseOk;
-import it.govpay.pagamento.v1.beans.PagamentoPost;
-import it.govpay.pagamento.v1.beans.PendenzaIndex;
-import it.govpay.pagamento.v1.beans.RppIndex;
-import it.govpay.pagamento.v1.beans.converter.PagamentiPortaleConverter;
-import it.govpay.pagamento.v1.beans.converter.PendenzeConverter;
-import it.govpay.pagamento.v1.beans.converter.RptConverter;
+import it.govpay.pagamento.v2.beans.FaultBean;
+import it.govpay.pagamento.v2.beans.FaultBeanEsteso;
+import it.govpay.pagamento.v2.beans.FaultBeanEsteso.CategoriaEnum;
+import it.govpay.pagamento.v2.beans.ListaPagamentiIndex;
+import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
+import it.govpay.pagamento.v2.beans.PagamentiPortaleResponseOk;
+import it.govpay.pagamento.v2.beans.PagamentoPost;
+import it.govpay.pagamento.v2.beans.PendenzaIndex;
+import it.govpay.pagamento.v2.beans.RppIndex;
+import it.govpay.pagamento.v2.beans.converter.PagamentiPortaleConverter;
+import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
+import it.govpay.pagamento.v2.beans.converter.RptConverter;
 
 
 
@@ -177,7 +177,7 @@ public class PagamentiController extends BaseController {
 			}
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
+			it.govpay.pagamento.v2.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
 			
 			List<RppIndex> rpp = new ArrayList<>();
 			List<PendenzaIndex> pendenze = new ArrayList<>();
@@ -256,7 +256,7 @@ public class PagamentiController extends BaseController {
 			}
 			
 			it.govpay.bd.model.PagamentoPortale pagamentoPortaleModel = pagamentoPortaleDTOResponse.getPagamento();
-			it.govpay.pagamento.v1.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
+			it.govpay.pagamento.v2.beans.Pagamento response = PagamentiPortaleConverter.toRsModel(pagamentoPortaleModel,user);
 			
 			List<RppIndex> rpp = new ArrayList<>();
 			List<PendenzaIndex> pendenze = new ArrayList<>();
@@ -335,7 +335,7 @@ public class PagamentiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.pagamento.v1.beans.PagamentoIndex> results = new ArrayList<>();
+			List<it.govpay.pagamento.v2.beans.PagamentoIndex> results = new ArrayList<>();
 			for(LeggiPagamentoPortaleDTOResponse pagamentoPortale: pagamentoPortaleDTOResponse.getResults()) {
 				this.log.info("get Pagamenti portale: " + pagamentoPortale.getPagamento().getIdSessione());
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale,user));
