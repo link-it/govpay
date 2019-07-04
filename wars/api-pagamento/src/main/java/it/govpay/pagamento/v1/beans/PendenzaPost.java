@@ -19,7 +19,6 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 	"idDominio",
 	"idUnitaOperativa",
-	"idTipoPendenza",
 	"nome",
 	"causale",
 	"soggettoPagatore",
@@ -37,7 +36,6 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 	"idA2A",
 	"idPendenza",
 	"idDebitore",
-	"dati",
 })
 public class PendenzaPost extends JSONSerializable implements IValidable {
 	
@@ -46,9 +44,6 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("idUnitaOperativa")
 	private String idUnitaOperativa = null;
-
-        @JsonProperty("idTipoPendenza")
-        private String idTipoPendenza = null;
 
 	@JsonProperty("nome")
 	private String nome = null;
@@ -103,9 +98,6 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("idDebitore")
 	private String idDebitore = null;
-	
-	@JsonProperty("dati")
-	private Object dati = null;
 
 	/**
 	 * Identificativo del dominio creditore
@@ -138,22 +130,6 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 	public void setIdUnitaOperativa(String idUnitaOperativa) {
 		this.idUnitaOperativa = idUnitaOperativa;
 	}
-
-  /**
-   * Identificativo della tipologia pendenza
-   **/
-  public PendenzaPost idTipoPendenza(String idTipoPendenza) {
-    this.idTipoPendenza = idTipoPendenza;
-    return this;
-  }
-
-  @JsonProperty("idTipoPendenza")
-  public String getIdTipoPendenza() {
-    return idTipoPendenza;
-  }
-  public void setIdTipoPendenza(String idTipoPendenza) {
-    this.idTipoPendenza = idTipoPendenza;
-  }
 
 	/**
 	 * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -438,22 +414,6 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
     this.idDebitore = idDebitore;
   }
   
-  /**
-	 * Dati applicativi allegati dal gestionale secondo un formato proprietario.
-	 **/
-	public PendenzaPost dati(Object dati) {
-		this.dati = dati;
-		return this;
-	}
-
-	@JsonProperty("dati")
-	public Object getDati() {
-		return this.dati;
-	}
-	public void setDati(Object dati) {
-		this.dati = dati;
-	}
-
 	@Override
 	public boolean equals(java.lang.Object o) {
 		if (this == o) {
@@ -465,7 +425,6 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 		PendenzaPost pendenzaPost = (PendenzaPost) o;
 		return Objects.equals(this.idDominio, pendenzaPost.idDominio) &&
 				Objects.equals(this.idUnitaOperativa, pendenzaPost.idUnitaOperativa) &&
-			    Objects.equals(idTipoPendenza, pendenzaPost.idTipoPendenza) &&				
 			    Objects.equals(this.nome, pendenzaPost.nome) &&
 				Objects.equals(this.causale, pendenzaPost.causale) &&
 				Objects.equals(this.soggettoPagatore, pendenzaPost.soggettoPagatore) &&
@@ -482,13 +441,12 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				Objects.equals(this.voci, pendenzaPost.voci) &&
 				Objects.equals(this.idA2A, pendenzaPost.idA2A) &&
 				Objects.equals(this.idPendenza, pendenzaPost.idPendenza) &&
-				Objects.equals(idDebitore, pendenzaPost.idDebitore) &&
-				Objects.equals(this.dati, pendenzaPost.dati);
+				Objects.equals(idDebitore, pendenzaPost.idDebitore) ;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.idDominio, this.idUnitaOperativa, idTipoPendenza, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.voci, this.idA2A, this.idPendenza, this.idDebitore, this.dati);
+		return Objects.hash(this.idDominio, this.idUnitaOperativa, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.voci, this.idA2A, this.idPendenza, this.idDebitore);
 	}
 
 	public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -507,7 +465,6 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 
 		sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
 		sb.append("    idUnitaOperativa: ").append(this.toIndentedString(this.idUnitaOperativa)).append("\n");
-		sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
 	    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
 		sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
 		sb.append("    soggettoPagatore: ").append(this.toIndentedString(this.soggettoPagatore)).append("\n");
@@ -525,7 +482,6 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 		sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
 		sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
 		sb.append("    idDebitore: ").append(toIndentedString(idDebitore)).append("\n");
-		sb.append("    dati: ").append(this.toIndentedString(this.dati)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
@@ -564,7 +520,6 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
 				vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
 				vf.getValidator("voci", this.voci).isNull();
-				vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
 			} catch (ValidationException ve) {
 				throw new ValidationException("Pendenza riferita per identificativo A2A. " + ve.getMessage());
 			}
@@ -585,38 +540,13 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator("voci", this.voci).isNull();
 				vf.getValidator("idA2A", this.idA2A).isNull();
 				vf.getValidator("idPendenza", this.idPendenza).isNull();
-				vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
 			} catch (ValidationException ve) {
 				throw new ValidationException("Pendenza riferita per numero avviso. " + ve.getMessage());
-			}
-		} else if(this.idA2A == null && this.idDominio != null && this.idTipoPendenza != null) {
-			validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
-			validatoreId.validaIdDominio("idDominio", this.idDominio);
-			try {
-				if(this.dati == null)
-					throw new ValidationException("Il campo dati non deve essere vuoto.");
-				vf.getValidator("numeroAvviso", this.numeroAvviso).isNull();
-				vf.getValidator("idUnitaOperativa", this.idUnitaOperativa).isNull();
-				vf.getValidator("nome", this.nome).isNull();
-				vf.getValidator("causale", this.causale).isNull();
-				vf.getValidator("soggettoPagatore", this.soggettoPagatore).isNull();
-				vf.getValidator("importo", this.importo).isNull();
-				vf.getValidator("dataValidita", this.dataValidita).isNull();
-				vf.getValidator("dataScadenza", this.dataScadenza).isNull();
-				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
-				vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
-				vf.getValidator("voci", this.voci).isNull();
-				vf.getValidator("idA2A", this.idA2A).isNull();
-				vf.getValidator("idPendenza", this.idPendenza).isNull();
-			} catch (ValidationException ve) {
-				throw new ValidationException("Pendenza modello 4. " + ve.getMessage());
 			}
 		} else {
 			validatoreId.validaIdDominio("idDominio", this.idDominio);
 			if(this.idUnitaOperativa != null)
 				validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa);
-			if(this.idTipoPendenza != null)
-				validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
 			vf.getValidator("nome", this.nome).minLength(1).maxLength(35);
 			vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
 			vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
