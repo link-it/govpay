@@ -43,9 +43,11 @@ public class TipoVersamento extends BasicModel {
 	private String trasformazioneTipoDefault;
 	private String trasformazioneDefinizioneDefault;
 	private String codApplicazioneDefault;
+	private String promemoriaAvvisoTipoDefault;
 	private boolean promemoriaAvvisoPdfDefault;
 	private String promemoriaAvvisoOggettoDefault;
 	private String promemoriaAvvisoMessaggioDefault;
+	private String promemoriaRicevutaTipoDefault;
 	private boolean promemoriaRicevutaPdfDefault;
 	private String promemoriaRicevutaOggettoDefault;
 	private String promemoriaRicevutaMessaggioDefault;
@@ -164,6 +166,18 @@ public class TipoVersamento extends BasicModel {
 	}
 	public void setPromemoriaRicevutaMessaggioDefault(String promemoriaRicevutaMessaggioDefault) {
 		this.promemoriaRicevutaMessaggioDefault = promemoriaRicevutaMessaggioDefault;
+	}
+	public String getPromemoriaAvvisoTipoDefault() {
+		return promemoriaAvvisoTipoDefault;
+	}
+	public void setPromemoriaAvvisoTipoDefault(String promemoriaAvvisoTipoDefault) {
+		this.promemoriaAvvisoTipoDefault = promemoriaAvvisoTipoDefault;
+	}
+	public String getPromemoriaRicevutaTipoDefault() {
+		return promemoriaRicevutaTipoDefault;
+	}
+	public void setPromemoriaRicevutaTipoDefault(String promemoriaRicevutaTipoDefault) {
+		this.promemoriaRicevutaTipoDefault = promemoriaRicevutaTipoDefault;
 	}
 
 }

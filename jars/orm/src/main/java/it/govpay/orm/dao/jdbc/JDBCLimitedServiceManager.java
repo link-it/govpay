@@ -102,6 +102,12 @@ import it.govpay.orm.dao.IUtenzaTipoVersamentoServiceSearch;
 import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaEventiPagamentoService;
+import it.govpay.orm.dao.IVistaEventiPagamentoServiceSearch;
+import it.govpay.orm.dao.IVistaEventiRptService;
+import it.govpay.orm.dao.IVistaEventiRptServiceSearch;
+import it.govpay.orm.dao.IVistaEventiVersamentoService;
+import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 
 /**     
@@ -430,12 +436,12 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	public ITributoService getTributoService() throws ServiceException,NotImplementedException{
 		return new JDBCTributoService(this.unlimitedJdbcServiceManager);
 	}
-	
+		
 	
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:tipoTributo type:TipoTributo
+	 Services relating to the object with name:TipoTributo type:TipoTributo
 	 =====================================================================================================================
 	*/
 	
@@ -750,7 +756,7 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	public ITipoVersamentoDominioService getTipoVersamentoDominioService() throws ServiceException,NotImplementedException{
 		return new JDBCTipoVersamentoDominioService(this.unlimitedJdbcServiceManager);
 	}
-	
+
 	
 	
 	/*
@@ -1389,6 +1395,102 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 		return new JDBCVistaRiscossioniServiceSearch(this.unlimitedJdbcServiceManager);
 	}
 	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaEventiVersamento type:Evento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiVersamentoServiceSearch getVistaEventiVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiVersamentoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiVersamentoService getVistaEventiVersamentoService() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiVersamentoService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaEventiPagamento type:Evento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiPagamentoServiceSearch getVistaEventiPagamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiPagamentoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiPagamentoService getVistaEventiPagamentoService() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiPagamentoService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaEventiRpt type:Evento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiRptServiceSearch getVistaEventiRptServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiRptServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiRptService getVistaEventiRptService() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiRptService(this.unlimitedJdbcServiceManager);
+	}
 	
 	
 	

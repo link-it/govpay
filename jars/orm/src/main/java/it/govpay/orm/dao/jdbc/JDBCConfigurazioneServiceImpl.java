@@ -175,12 +175,12 @@ public class JDBCConfigurazioneServiceImpl extends JDBCConfigurazioneServiceSear
 	private void _delete(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject) throws NotImplementedException,ServiceException,Exception {
 	
 		// Used by internal elements (if exists)
-		Long id = null;
-		try{
-			id = this.get(jdbcProperties, log, connection, sqlQueryObject,null).getId();		
-		}catch(NotFoundException notFound){
-			return;
-		}
+//		Long id = null;
+//		try{
+//			id = this.get(jdbcProperties, log, connection, sqlQueryObject,null).getId();		
+//		}catch(NotFoundException notFound){
+//			return;
+//		}
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);

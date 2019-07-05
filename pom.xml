@@ -41,7 +41,7 @@
 		<logger.version>2.6.2</logger.version>
 		
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-2</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-3</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.5.21</swagger.version>
 		<swagger.v3.version>2.0.3</swagger.v3.version>
 		<swagger.parser.version>2.0.2</swagger.parser.version>

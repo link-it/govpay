@@ -64,6 +64,8 @@ public class PromemoriaFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Promemoria.model().DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setDebitoreEmail", Promemoria.model().DEBITORE_EMAIL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "debitore_email", Promemoria.model().DEBITORE_EMAIL.getFieldType()));
+				setParameter(object, "setMessaggioContentType", Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "messaggio_content_type", Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType()));
 				setParameter(object, "setOggetto", Promemoria.model().OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "oggetto", Promemoria.model().OGGETTO.getFieldType()));
 				setParameter(object, "setMessaggio", Promemoria.model().MESSAGGIO.getFieldType(),
@@ -108,6 +110,8 @@ public class PromemoriaFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"descrizioneStato"));
 				setParameter(object, "setDebitoreEmail", Promemoria.model().DEBITORE_EMAIL.getFieldType(),
 					this.getObjectFromMap(map,"debitoreEmail"));
+				setParameter(object, "setMessaggioContentType", Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType(),
+					this.getObjectFromMap(map,"messaggioContentType"));
 				setParameter(object, "setOggetto", Promemoria.model().OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"oggetto"));
 				setParameter(object, "setMessaggio", Promemoria.model().MESSAGGIO.getFieldType(),

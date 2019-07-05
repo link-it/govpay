@@ -97,6 +97,8 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.IMPORTO_INCASSATO = new Field("importoIncassato",java.lang.Double.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.STATO_PAGAMENTO = new Field("statoPagamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.DIVISIONE = new Field("divisione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.DIREZIONE = new Field("direzione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_DATE = new Field("smartOrderDate",long.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_RANK = new Field("smartOrderRank",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
 	
@@ -162,6 +164,8 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 		this.IMPORTO_INCASSATO = new ComplexField(father,"importoIncassato",java.lang.Double.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.STATO_PAGAMENTO = new ComplexField(father,"statoPagamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.DIVISIONE = new ComplexField(father,"divisione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
+		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_DATE = new ComplexField(father,"smartOrderDate",long.class,"VersamentoIncasso",VersamentoIncasso.class);
 		this.SMART_ORDER_RANK = new ComplexField(father,"smartOrderRank",java.lang.Integer.class,"VersamentoIncasso",VersamentoIncasso.class);
 	
@@ -280,6 +284,10 @@ public class VersamentoIncassoModel extends AbstractModel<VersamentoIncasso> {
 	public IField STATO_PAGAMENTO = null;
 	 
 	public IField IUV_PAGAMENTO = null;
+	 
+	public IField DIVISIONE = null;
+	 
+	public IField DIREZIONE = null;
 	 
 	public IField SMART_ORDER_DATE = null;
 	 

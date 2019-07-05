@@ -169,6 +169,7 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Promemoria.model().OGGETTO);
 			fields.add(Promemoria.model().MESSAGGIO);
 			fields.add(Promemoria.model().ALLEGA_PDF);
+			fields.add(Promemoria.model().MESSAGGIO_CONTENT_TYPE);
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -673,18 +674,6 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
-		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the method
-
         return inUse;
 
 	}

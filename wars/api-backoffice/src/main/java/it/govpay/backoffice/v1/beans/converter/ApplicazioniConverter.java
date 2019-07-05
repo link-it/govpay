@@ -12,6 +12,7 @@ import it.govpay.backoffice.v1.beans.Applicazione;
 import it.govpay.backoffice.v1.beans.ApplicazionePost;
 import it.govpay.backoffice.v1.beans.CodificaAvvisi;
 import it.govpay.backoffice.v1.beans.DominioIndex;
+import it.govpay.backoffice.v1.beans.Ruolo;
 import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.Acl;
@@ -123,6 +124,10 @@ public class ApplicazioniConverter {
 		
 		applicazione.getUtenza().setAclPrincipal(aclPrincipal);
 		
+		if(applicazionePost.getRuoli() != null ) {
+			applicazione.getUtenza().setRuoli(applicazionePost.getRuoli());
+		}
+		
 		return applicazioneDTO;		
 	}
 
@@ -231,6 +236,16 @@ public class ApplicazioniConverter {
 					break;
 				}
 			}
+		}
+		
+		if(applicazione.getUtenza().getRuoli() != null && applicazione.getUtenza().getRuoli().size() > 0) {
+			List<Ruolo> ruoli = new ArrayList<>();
+
+			for (String idRuolo : applicazione.getUtenza().getRuoli()) {
+				ruoli.add(RuoliConverter.toRsModel(idRuolo, applicazione.getUtenza().getRuoliUtenza().get(idRuolo)));
+			}
+			
+			rsModel.setRuoli(ruoli);
 		}
 		
 		return rsModel;

@@ -42,6 +42,7 @@ import java.io.Serializable;
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreEmail" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="messaggioContentType" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="oggetto" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="messaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="allegaPdf" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
@@ -69,6 +70,7 @@ import java.io.Serializable;
   	"stato",
   	"descrizioneStato",
   	"debitoreEmail",
+  	"messaggioContentType",
   	"oggetto",
   	"messaggio",
   	"allegaPdf",
@@ -152,6 +154,14 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
 
   public void setDebitoreEmail(java.lang.String debitoreEmail) {
     this.debitoreEmail = debitoreEmail;
+  }
+
+  public java.lang.String getMessaggioContentType() {
+    return this.messaggioContentType;
+  }
+
+  public void setMessaggioContentType(java.lang.String messaggioContentType) {
+    this.messaggioContentType = messaggioContentType;
   }
 
   public java.lang.String getOggetto() {
@@ -251,6 +261,10 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="debitoreEmail",required=true,nillable=false)
   protected java.lang.String debitoreEmail;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="messaggioContentType",required=true,nillable=false)
+  protected java.lang.String messaggioContentType;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="oggetto",required=true,nillable=false)

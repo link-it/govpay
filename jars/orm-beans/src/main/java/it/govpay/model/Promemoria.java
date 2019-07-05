@@ -46,6 +46,7 @@ public class Promemoria extends BasicModel {
 	private String oggetto;
 	private String messaggio;
 	private boolean allegaPdf;
+	private String contentType;
 	
 	@Override
 	public Long getId() {
@@ -131,5 +132,11 @@ public class Promemoria extends BasicModel {
 	}
 	public void setIdRpt(Long idRpt) {
 		this.idRpt = idRpt;
+	}
+	public String getContentType() {
+		return contentType;
+	}
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 }

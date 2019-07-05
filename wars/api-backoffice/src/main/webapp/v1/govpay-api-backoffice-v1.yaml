@@ -4442,6 +4442,14 @@ components:
           description: lista delle acl attive sull'applicazione
           items:
             $ref: '#/components/schemas/aclPost'
+        ruoli:
+          type: array
+          description: lista dei ruoli attivi sull'applicazione
+          items:
+            type: string
+            example:
+              - Operatore
+              - Amministratore
         servizioIntegrazione:
           $ref: '#/components/schemas/connector'
         abilitato:
@@ -4516,6 +4524,11 @@ components:
           description: lista delle acl attive sull'applicazione
           items:
             $ref: '#/components/schemas/aclPost'
+        ruoli:
+          type: array
+          description: lista dei ruoli attivi sull'applicazione
+          items:
+            $ref: '#/components/schemas/ruolo'
         servizioIntegrazione:
           $ref: '#/components/schemas/connector'
         abilitato:
@@ -4553,6 +4566,14 @@ components:
           description: lista delle acl attive sull'operatore
           items:
             $ref: '#/components/schemas/aclPost'
+        ruoli:
+          type: array
+          description: lista dei ruoli attivi sull'operatore
+          items:
+            type: string
+            example:
+              - Operatore
+              - Amministratore
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
@@ -4607,6 +4628,11 @@ components:
           description: lista delle acl attive sull'applicazione
           items:
             $ref: '#/components/schemas/aclPost'
+        ruoli:
+          type: array
+          description: lista dei ruoli attivi sull'operatore
+          items:
+            $ref: '#/components/schemas/ruolo'
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
@@ -4881,9 +4907,16 @@ components:
     tipoPendenzaPromemoria:
       type: object
       required:
+        - tipo
         - oggetto
         - messaggio
       properties:
+        tipo:
+          type: string
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per attualizzare il promemoria
         oggetto:
           type: object
           description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email

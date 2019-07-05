@@ -186,6 +186,13 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 				return "debitore_email";
 			}
 		}
+		if(field.equals(Promemoria.model().MESSAGGIO_CONTENT_TYPE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".messaggio_content_type";
+			}else{
+				return "messaggio_content_type";
+			}
+		}
 		if(field.equals(Promemoria.model().OGGETTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".oggetto";
@@ -290,6 +297,9 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Promemoria.model(), returnAlias);
 		}
 		if(field.equals(Promemoria.model().DEBITORE_EMAIL)){
+			return this.toTable(Promemoria.model(), returnAlias);
+		}
+		if(field.equals(Promemoria.model().MESSAGGIO_CONTENT_TYPE)){
 			return this.toTable(Promemoria.model(), returnAlias);
 		}
 		if(field.equals(Promemoria.model().OGGETTO)){

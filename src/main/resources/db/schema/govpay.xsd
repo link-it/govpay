@@ -1086,6 +1086,7 @@
 			<xsd:element name="abilitato" type="xsd:boolean" default="true"/>
 			<xsd:element name="autorizzazione_domini_star" type="xsd:boolean" default="false"/>
 			<xsd:element name="autorizzazione_tipi_vers_star" type="xsd:boolean" default="false"/>
+			<xsd:element name="ruoli" type="String512" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1589,6 +1590,8 @@
 			</xsd:element>
 			<xsd:element name="ack" type="xsd:boolean" />
 			<xsd:element name="anomalo" type="xsd:boolean" />
+			<xsd:element name="divisione" type="String35" minOccurs="0"/>
+			<xsd:element name="direzione" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2326,9 +2329,11 @@
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
 			<xsd:element name="stato" type="String16"/>
 			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="debitoreEmail" type="String256" />
-			<xsd:element name="oggetto" type="String512" />
-			<xsd:element name="messaggio" type="xsd:string">
+			<xsd:element name="destinatarioTo" type="String256" />
+			<xsd:element name="destinatarioCc" type="String256" minOccurs="0" />
+			<xsd:element name="messaggioContentType" type="String256" minOccurs="0" />
+			<xsd:element name="oggetto" type="String512" minOccurs="0" />
+			<xsd:element name="messaggio" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -2942,6 +2947,8 @@
 			<xsd:element name="importoIncassato" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="statoPagamento" type="String35" minOccurs="0"/>
 			<xsd:element name="iuvPagamento" type="String35" minOccurs="0"/>
+			<xsd:element name="divisione" type="String35" minOccurs="0"/>
+			<xsd:element name="direzione" type="String35" minOccurs="0"/>
 			
 			<xsd:element name="smartOrderDate" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="smartOrderRank" type="xsd:positiveInteger" minOccurs="0"/>
@@ -2991,4 +2998,8 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	<xsd:element name="VistaEventiVersamento" type="Evento"/>
+	<xsd:element name="VistaEventiPagamento" type="Evento"/>
+	<xsd:element name="VistaEventiRpt" type="Evento"/>
+		
 </xsd:schema>

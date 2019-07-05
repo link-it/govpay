@@ -84,6 +84,13 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			return this.getPromemoriaAvvisoPdfDefault();
 	} 
 	
+	public String getPromemoriaAvvisoTipo() {
+		if(this.getPromemoriaAvvisoTipoCustom() != null)
+			return this.getPromemoriaAvvisoTipoCustom();
+		else 
+			return this.getPromemoriaAvvisoTipoDefault();
+	}
+	
 	public String getPromemoriaAvvisoOggetto() {
 		if(this.getPromemoriaAvvisoOggettoCustom() != null)
 			return this.getPromemoriaAvvisoOggettoCustom();
@@ -96,6 +103,13 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 			return this.getPromemoriaAvvisoMessaggioCustom();
 		else 
 			return this.getPromemoriaAvvisoMessaggioDefault();
+	}
+	
+	public String getPromemoriaRicevutaTipo() {
+		if(this.getPromemoriaRicevutaTipoCustom() != null)
+			return this.getPromemoriaRicevutaTipoCustom();
+		else 
+			return this.getPromemoriaRicevutaTipoDefault();
 	}
 	
 	public Boolean getPromemoriaRicevutaPdf() {

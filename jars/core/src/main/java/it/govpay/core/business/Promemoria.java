@@ -31,6 +31,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.trasformazioni.Costanti;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.model.Promemoria.TipoPromemoria;
@@ -76,6 +77,7 @@ public class Promemoria  extends BasicBD{
 		promemoria.setOggetto(this.getOggettoRicevuta(tipoVersamentoDominio.getPromemoriaRicevutaOggetto(), rpt, versamento, dynamicMap));
 		promemoria.setMessaggio(this.getMessaggioRicevuta(tipoVersamentoDominio.getPromemoriaRicevutaMessaggio(), rpt, versamento, dynamicMap));
 		promemoria.setAllegaPdf(tipoVersamentoDominio.isPromemoriaRicevutaPdf());
+		promemoria.setContentType(this.getContentType(dynamicMap));
 		return promemoria;
 	}
 	
@@ -88,9 +90,17 @@ public class Promemoria  extends BasicBD{
 		promemoria.setOggetto(this.getOggettoAvviso(tipoVersamentoDominio.getPromemoriaAvvisoOggetto(), versamento, dynamicMap));
 		promemoria.setMessaggio(this.getMessaggioAvviso(tipoVersamentoDominio.getPromemoriaAvvisoMessaggio(), versamento, dynamicMap));
 		promemoria.setAllegaPdf(tipoVersamentoDominio.isPromemoriaAvvisoPdf());
+		promemoria.setContentType(this.getContentType(dynamicMap));
 		return promemoria;
 	}
 
+	
+	public String getContentType(Map<String, Object> dynamicMap) {
+		if(dynamicMap.containsKey(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA))
+			return (String) dynamicMap.get(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA);
+		
+		return Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA_DEFAULT_VALUE;
+	}
 
 	public void inserisciPromemoria(it.govpay.bd.model.Promemoria promemoria) throws ServiceException {
 		PromemoriaBD promemoriaBD = new PromemoriaBD(this);

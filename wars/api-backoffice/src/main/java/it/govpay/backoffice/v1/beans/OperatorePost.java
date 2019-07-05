@@ -14,8 +14,9 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ragioneSociale",
 "domini",
-"entrate",
+"tipiPendenza",
 "acl",
+"ruoli",
 "abilitato",
 })
 public class OperatorePost extends it.govpay.core.beans.JSONSerializable implements IValidable{
@@ -31,6 +32,9 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
   
   @JsonProperty("acl")
   private List<AclPost> acl = null;
+  
+  @JsonProperty("ruoli")
+  private List<String> ruoli = null;
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
@@ -100,6 +104,22 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
   }
 
   /**
+   * lista dei ruoli attivi sull'operatore
+   **/
+  public OperatorePost ruoli(List<String> ruoli) {
+    this.ruoli = ruoli;
+    return this;
+  }
+
+  @JsonProperty("ruoli")
+  public List<String> getRuoli() {
+    return ruoli;
+  }
+  public void setRuoli(List<String> ruoli) {
+    this.ruoli = ruoli;
+  }
+
+  /**
    * Indicazione se l'operatore è abilitato ad operare sulla piattaforma
    **/
   public OperatorePost abilitato(Boolean abilitato) {
@@ -124,16 +144,17 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
       return false;
     }
     OperatorePost operatorePost = (OperatorePost) o;
-    return Objects.equals(this.ragioneSociale, operatorePost.ragioneSociale) &&
-        Objects.equals(this.domini, operatorePost.domini) &&
-        Objects.equals(this.tipiPendenza, operatorePost.tipiPendenza) &&
-        Objects.equals(this.acl, operatorePost.acl) &&
-        Objects.equals(this.abilitato, operatorePost.abilitato);
+    return Objects.equals(ragioneSociale, operatorePost.ragioneSociale) &&
+        Objects.equals(domini, operatorePost.domini) &&
+        Objects.equals(tipiPendenza, operatorePost.tipiPendenza) &&
+        Objects.equals(acl, operatorePost.acl) &&
+        Objects.equals(ruoli, operatorePost.ruoli) &&
+        Objects.equals(abilitato, operatorePost.abilitato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.ragioneSociale, this.domini, this.tipiPendenza, this.acl, this.abilitato);
+    return Objects.hash(ragioneSociale, domini, tipiPendenza, acl, ruoli, abilitato);
   }
 
   public static OperatorePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -150,11 +171,12 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
     StringBuilder sb = new StringBuilder();
     sb.append("class OperatorePost {\n");
     
-    sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
-    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-    sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
-    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
-    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
+    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
+    sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
+    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    ruoli: ").append(toIndentedString(ruoli)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -191,6 +213,14 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
 			}
 		}
+		
+		if(this.ruoli != null && !this.ruoli.isEmpty()) {
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			for (String idRuolo : this.ruoli) {
+				validatoreId.validaIdRuolo("ruoli", idRuolo);
+			}
+		}
+		
 		vf.getValidator("abilitato", this.abilitato).notNull();
 	}
 }

@@ -20,6 +20,9 @@
 package it.govpay.orm;
 
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.bind.annotation.XmlElementDecl;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -652,6 +655,45 @@ public class ObjectFactory {
      */
     public IdSla createIdSla() {
         return new IdSla();
+    }
+
+    private final static QName _VistaEventiVersamento = new QName("http://www.govpay.it/orm", "VistaEventiVersamento");
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Evento }{@code >}}
+     */
+    @XmlElementDecl(namespace = "http://www.govpay.it/orm", name="VistaEventiVersamento")
+    public JAXBElement<Evento> createVistaEventiVersamento() {
+        return new JAXBElement<Evento>(_VistaEventiVersamento, Evento.class, null, this.createEvento());
+    }
+    public JAXBElement<Evento> createVistaEventiVersamento(Evento vistaEventiVersamento) {
+        return new JAXBElement<Evento>(_VistaEventiVersamento, Evento.class, null, vistaEventiVersamento);
+    }
+
+    private final static QName _VistaEventiPagamento = new QName("http://www.govpay.it/orm", "VistaEventiPagamento");
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Evento }{@code >}}
+     */
+    @XmlElementDecl(namespace = "http://www.govpay.it/orm", name="VistaEventiPagamento")
+    public JAXBElement<Evento> createVistaEventiPagamento() {
+        return new JAXBElement<Evento>(_VistaEventiPagamento, Evento.class, null, this.createEvento());
+    }
+    public JAXBElement<Evento> createVistaEventiPagamento(Evento vistaEventiPagamento) {
+        return new JAXBElement<Evento>(_VistaEventiPagamento, Evento.class, null, vistaEventiPagamento);
+    }
+
+    private final static QName _VistaEventiRpt = new QName("http://www.govpay.it/orm", "VistaEventiRpt");
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Evento }{@code >}}
+     */
+    @XmlElementDecl(namespace = "http://www.govpay.it/orm", name="VistaEventiRpt")
+    public JAXBElement<Evento> createVistaEventiRpt() {
+        return new JAXBElement<Evento>(_VistaEventiRpt, Evento.class, null, this.createEvento());
+    }
+    public JAXBElement<Evento> createVistaEventiRpt(Evento vistaEventiRpt) {
+        return new JAXBElement<Evento>(_VistaEventiRpt, Evento.class, null, vistaEventiRpt);
     }
 
 

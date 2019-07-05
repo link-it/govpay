@@ -80,10 +80,14 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", TipoVersamento.model().COD_APPLICAZIONE.getFieldType()));
 				setParameter(object, "setPromemoriaAvvisoPdf", TipoVersamento.model().PROMEMORIA_AVVISO_PDF.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_pdf", TipoVersamento.model().PROMEMORIA_AVVISO_PDF.getFieldType()));
+				setParameter(object, "setPromemoriaAvvisoTipo", TipoVersamento.model().PROMEMORIA_AVVISO_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_tipo", TipoVersamento.model().PROMEMORIA_AVVISO_TIPO.getFieldType()));
 				setParameter(object, "setPromemoriaAvvisoOggetto", TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_oggetto", TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO.getFieldType()));
 				setParameter(object, "setPromemoriaAvvisoMessaggio", TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "promemoria_avviso_messaggio", TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO.getFieldType()));
+				setParameter(object, "setPromemoriaRicevutaTipo", TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_tipo", TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO.getFieldType()));
 				setParameter(object, "setPromemoriaRicevutaPdf", TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_pdf", TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF.getFieldType()));
 				setParameter(object, "setPromemoriaRicevutaOggetto", TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO.getFieldType(),
@@ -138,10 +142,14 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codApplicazione"));
 				setParameter(object, "setPromemoriaAvvisoPdf", TipoVersamento.model().PROMEMORIA_AVVISO_PDF.getFieldType(),
 					this.getObjectFromMap(map,"promemoriaAvvisoPdf"));
+				setParameter(object, "setPromemoriaAvvisoTipo", TipoVersamento.model().PROMEMORIA_AVVISO_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"promemoriaAvvisoTipo"));
 				setParameter(object, "setPromemoriaAvvisoOggetto", TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"promemoriaAvvisoOggetto"));
 				setParameter(object, "setPromemoriaAvvisoMessaggio", TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO.getFieldType(),
 					this.getObjectFromMap(map,"promemoriaAvvisoMessaggio"));
+				setParameter(object, "setPromemoriaRicevutaTipo", TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"promemoriaRicevutaTipo"));
 				setParameter(object, "setPromemoriaRicevutaPdf", TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF.getFieldType(),
 					this.getObjectFromMap(map,"promemoriaRicevutaPdf"));
 				setParameter(object, "setPromemoriaRicevutaOggetto", TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO.getFieldType(),

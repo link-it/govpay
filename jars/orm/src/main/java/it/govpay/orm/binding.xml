@@ -237,7 +237,7 @@
     <value name="codCarrello" field="codCarrello" usage="required"/>
     <structure name="idRpt" field="idRpt" usage="required" map-as="_IdRpt_Type"/>
   </mapping>
-  <mapping name="idRpt" class="it.govpay.orm.IdRpt" abstract="false">
+  <mapping name="idRPT" class="it.govpay.orm.IdRpt" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codMsgRichiesta" field="codMsgRichiesta" usage="required"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
@@ -475,6 +475,7 @@
     <value name="abilitato" field="abilitato" default="true" usage="required"/>
     <value name="autorizzazione_domini_star" field="autorizzazioneDominiStar" default="false" usage="required"/>
     <value name="autorizzazione_tipi_vers_star" field="autorizzazioneTipiVersStar" default="false" usage="required"/>
+    <value name="ruoli" field="ruoli" usage="required"/>
   </mapping>
   <mapping name="Operatore" class="it.govpay.orm.Operatore">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -507,9 +508,14 @@
     <value name="trasformazioneTipo" field="trasformazioneTipo" usage="optional"/>
     <value name="trasformazioneDefinizione" field="trasformazioneDefinizione" usage="optional"/>
     <value name="codApplicazione" field="codApplicazione" usage="optional"/>
-    <value name="promemoriaAvviso" field="promemoriaAvviso" default="false" usage="required"/>
-    <value name="promemoriaOggetto" field="promemoriaOggetto" usage="optional"/>
-    <value name="promemoriaMessaggio" field="promemoriaMessaggio" usage="optional"/>
+    <value name="promemoriaAvvisoPdf" field="promemoriaAvvisoPdf" default="false" usage="required"/>
+    <value name="promemoriaAvvisoTipo" field="promemoriaAvvisoTipo" usage="optional"/>
+    <value name="promemoriaAvvisoOggetto" field="promemoriaAvvisoOggetto" usage="optional"/>
+    <value name="promemoriaAvvisoMessaggio" field="promemoriaAvvisoMessaggio" usage="optional"/>
+    <value name="promemoriaRicevutaTipo" field="promemoriaRicevutaTipo" usage="optional"/>
+    <value name="promemoriaRicevutaPdf" field="promemoriaRicevutaPdf" default="false" usage="required"/>
+    <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
+    <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
   </mapping>
   <mapping name="TipoVersamentoDominio" class="it.govpay.orm.TipoVersamentoDominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -525,9 +531,14 @@
     <value name="trasformazioneTipo" field="trasformazioneTipo" usage="optional"/>
     <value name="trasformazioneDefinizione" field="trasformazioneDefinizione" usage="optional"/>
     <value name="codApplicazione" field="codApplicazione" usage="optional"/>
-    <value name="promemoriaAvviso" field="promemoriaAvviso" usage="optional"/>
-    <value name="promemoriaOggetto" field="promemoriaOggetto" usage="optional"/>
-    <value name="promemoriaMessaggio" field="promemoriaMessaggio" usage="optional"/>
+    <value name="promemoriaAvvisoTipo" field="promemoriaAvvisoTipo" usage="optional"/>
+    <value name="promemoriaAvvisoPdf" field="promemoriaAvvisoPdf" usage="optional"/>
+    <value name="promemoriaAvvisoOggetto" field="promemoriaAvvisoOggetto" usage="optional"/>
+    <value name="promemoriaAvvisoMessaggio" field="promemoriaAvvisoMessaggio" usage="optional"/>
+    <value name="promemoriaRicevutaTipo" field="promemoriaRicevutaTipo" usage="optional"/>
+    <value name="promemoriaRicevutaPdf" field="promemoriaRicevutaPdf" usage="optional"/>
+    <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
+    <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
   </mapping>
   <mapping name="Versamento" class="it.govpay.orm.Versamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -582,6 +593,8 @@
     <structure name="idTracciatoAvvisatura" field="idTracciatoAvvisatura" usage="optional" map-as="_IdTracciato_Type"/>
     <value name="ack" field="ack" usage="required"/>
     <value name="anomalo" field="anomalo" usage="required"/>
+    <value name="divisione" field="divisione" usage="optional"/>
+    <value name="direzione" field="direzione" usage="optional"/>
   </mapping>
   <mapping name="Evento" class="it.govpay.orm.Evento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -772,13 +785,16 @@
   <mapping name="Promemoria" class="it.govpay.orm.Promemoria">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
+    <structure name="idRPT" field="idRPT" usage="optional" map-as="_IdRpt_Type"/>
     <value name="tipo" field="tipo" usage="required"/>
     <value name="dataCreazione" field="dataCreazione" usage="required"/>
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="debitoreEmail" field="debitoreEmail" usage="required"/>
+    <value name="messaggioContentType" field="messaggioContentType" usage="required"/>
     <value name="oggetto" field="oggetto" usage="required"/>
     <value name="messaggio" field="messaggio" usage="required"/>
+    <value name="allegaPdf" field="allegaPdf" default="false" usage="required"/>
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
     <value name="dataProssimaSpedizione" field="dataProssimaSpedizione" usage="required"/>
     <value name="tentativiSpedizione" field="tentativiSpedizione" usage="optional"/>

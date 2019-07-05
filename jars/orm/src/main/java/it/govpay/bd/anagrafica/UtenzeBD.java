@@ -181,6 +181,20 @@ public class UtenzeBD extends BasicBD {
 			} 
 		}
 		
+		if(utenza.getRuoli() != null && utenza.getRuoli().size() > 0) {
+			List<Acl> findAllRuoli = new ArrayList<>();
+			for (String idRuolo : utenza.getRuoli()) {
+				filter = aclDB.newFilter();
+				filter.setRuolo(idRuolo);
+				
+				findAll = aclDB.findAll(filter);
+				if(findAll != null && findAll.size() > 0) {
+					findAllRuoli.addAll(findAll);
+				}
+			}
+			utenza.setAclRuoliUtenza(findAllRuoli);
+		}
+		
 		utenza.setAclPrincipal(findAll);
 		return utenza;
 	}

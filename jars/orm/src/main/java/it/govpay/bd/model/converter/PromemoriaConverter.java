@@ -52,6 +52,7 @@ public class PromemoriaConverter {
 			idRpt.setId(dto.getIdRpt());
 			vo.setIdRPT(idRpt);
 		}
+		vo.setMessaggioContentType(dto.getContentType());
 		return vo;
 	}
 
@@ -79,6 +80,7 @@ public class PromemoriaConverter {
 		dto.setAllegaPdf(vo.isAllegaPdf());
 		if(vo.getIdRPT() != null)
 			dto.setIdRpt(vo.getIdRPT().getId());
+		dto.setContentType(vo.getMessaggioContentType());
 		return dto;
 	}
 

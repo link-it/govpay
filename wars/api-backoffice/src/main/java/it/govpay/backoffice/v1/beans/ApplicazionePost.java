@@ -20,6 +20,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 	"apiPendenze",
 	"apiRagioneria",
 	"acl",
+	"ruoli",
 	"servizioIntegrazione",
 	"abilitato",
 })
@@ -49,8 +50,11 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 	@JsonProperty("acl")
 	private List<AclPost> acl = null;
 
+	@JsonProperty("ruoli")
+	private List<String> ruoli = null;
+
 	@JsonProperty("servizioIntegrazione")
-        private Connector servizioIntegrazione = null;
+    private Connector servizioIntegrazione = null;
 
 	@JsonProperty("abilitato")
 	private Boolean abilitato = true;
@@ -166,23 +170,39 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
     this.apiRagioneria = apiRagioneria;
   }
 
-	/**
-	 * lista delle acl attive sull'operatore
-	 **/
-	public ApplicazionePost acl(List<AclPost> acl) {
-		this.acl = acl;
-		return this;
-	}
+  /**
+   * lista delle acl attive sull'applicazione
+   **/
+  public ApplicazionePost acl(List<AclPost> acl) {
+    this.acl = acl;
+    return this;
+  }
 
-	@JsonProperty("acl")
-	public List<AclPost> getAcl() {
-		return this.acl;
-	}
-	public void setAcl(List<AclPost> acl) {
-		this.acl = acl;
-	}
+  @JsonProperty("acl")
+  public List<AclPost> getAcl() {
+    return acl;
+  }
+  public void setAcl(List<AclPost> acl) {
+    this.acl = acl;
+  }
 
-	/**
+  /**
+   * lista dei ruoli attivi sull'applicazione
+   **/
+  public ApplicazionePost ruoli(List<String> ruoli) {
+    this.ruoli = ruoli;
+    return this;
+  }
+
+  @JsonProperty("ruoli")
+  public List<String> getRuoli() {
+    return ruoli;
+  }
+  public void setRuoli(List<String> ruoli) {
+    this.ruoli = ruoli;
+  }
+
+  /**
    **/
   public ApplicazionePost servizioIntegrazione(Connector servizioIntegrazione) {
     this.servizioIntegrazione = servizioIntegrazione;
@@ -230,14 +250,15 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
         Objects.equals(apiPendenze, applicazionePost.apiPendenze) &&
         Objects.equals(apiRagioneria, applicazionePost.apiRagioneria) &&
         Objects.equals(acl, applicazionePost.acl) &&
+        Objects.equals(ruoli, applicazionePost.ruoli) &&
         Objects.equals(servizioIntegrazione, applicazionePost.servizioIntegrazione) &&
         Objects.equals(abilitato, applicazionePost.abilitato);
 	}
 
-	@Override
-	public int hashCode() {
-	  return Objects.hash(principal, codificaAvvisi, domini, tipiPendenza, apiPagamenti, apiPendenze, apiRagioneria, acl, servizioIntegrazione, abilitato);
- }
+  @Override
+  public int hashCode() {
+    return Objects.hash(principal, codificaAvvisi, domini, tipiPendenza, apiPagamenti, apiPendenze, apiRagioneria, acl, ruoli, servizioIntegrazione, abilitato);
+  }
 
 	public static ApplicazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
 		return parse(json, ApplicazionePost.class);
@@ -261,6 +282,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
     sb.append("    apiPendenze: ").append(toIndentedString(apiPendenze)).append("\n");
     sb.append("    apiRagioneria: ").append(toIndentedString(apiRagioneria)).append("\n");
     sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    ruoli: ").append(toIndentedString(ruoli)).append("\n");
     sb.append("    servizioIntegrazione: ").append(toIndentedString(servizioIntegrazione)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
 sb.append("}");
@@ -300,6 +322,13 @@ sb.append("}");
 				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR) && 
 						!idTipoPendenza.equals(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE))
 					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
+			}
+		}
+		
+		if(this.ruoli != null && !this.ruoli.isEmpty()) {
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			for (String idRuolo : this.ruoli) {
+				validatoreId.validaIdRuolo("ruoli", idRuolo);
 			}
 		}
 		

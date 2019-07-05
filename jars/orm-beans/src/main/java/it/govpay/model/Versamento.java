@@ -144,6 +144,25 @@ public class Versamento extends BasicModel {
 	private Long idTracciatoAvvisatura;
 	private boolean ack;
 	private boolean anomalo;
+	
+	private String divisione;
+	private String direzione;
+
+	public String getDivisione() {
+		return divisione;
+	}
+
+	public void setDivisione(String divisione) {
+		this.divisione = divisione;
+	}
+
+	public String getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
+	}
 
 	public String getIuvVersamento() {
 		return this.iuvVersamento;

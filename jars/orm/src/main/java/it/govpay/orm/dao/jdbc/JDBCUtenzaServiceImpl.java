@@ -78,6 +78,7 @@ public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().AUTORIZZAZIONE_DOMINI_STAR,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getUtenzaFieldConverter().toColumn(Utenza.model().RUOLI,false),"?");
 
 		// Insert utenza
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getUtenzaFetch().getKeyGeneratorObject(Utenza.model());
@@ -86,7 +87,8 @@ public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getPrincipalOriginale(),Utenza.model().PRINCIPAL_ORIGINALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getAbilitato(),Utenza.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getAutorizzazioneDominiStar(),Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getAutorizzazioneTipiVersStar(),Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getAutorizzazioneTipiVersStar(),Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(utenza.getRuoli(),Utenza.model().RUOLI.getFieldType())
 		);
 		utenza.setId(id);
 
@@ -128,8 +130,10 @@ public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-		org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour);
-		org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+//		boolean setIdMappingResolutionBehaviour = 
+//			(idMappingResolutionBehaviour==null) ||
+//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
 
@@ -148,6 +152,8 @@ public class JDBCUtenzaServiceImpl extends JDBCUtenzaServiceSearchImpl
 		lstObjects_utenza.add(new JDBCObject(utenza.getAutorizzazioneDominiStar(), Utenza.model().AUTORIZZAZIONE_DOMINI_STAR.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getUtenzaFieldConverter().toColumn(Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR,false), "?");
 		lstObjects_utenza.add(new JDBCObject(utenza.getAutorizzazioneTipiVersStar(), Utenza.model().AUTORIZZAZIONE_TIPI_VERS_STAR.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getUtenzaFieldConverter().toColumn(Utenza.model().RUOLI,false), "?");
+		lstObjects_utenza.add(new JDBCObject(utenza.getRuoli(), Utenza.model().RUOLI.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_utenza.add(new JDBCObject(tableId, Long.class));
 

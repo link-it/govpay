@@ -27,4 +27,7 @@ public class Costanti {
     public final static String MAP_RPT = "rpt";
     public final static String MAP_ID_TIPO_VERSAMENTO = "idTipoVersamento";
     public final static String MAP_ID_DOMINIO = "idDominio";
+    
+    public final static String MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA = "contentTypePromemoria";
+    public final static String MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA_DEFAULT_VALUE = "text/html";
 }

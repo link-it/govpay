@@ -1,13 +1,16 @@
 package it.govpay.bd.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.model.TipoVersamento;
 
@@ -18,8 +21,9 @@ public class Utenza extends it.govpay.model.Utenza {
 	protected transient List<Dominio> domini;
 	protected transient List<TipoVersamento> tipiVersamento;
 	protected transient List<Acl> aclPrincipal;
-	protected transient List<Acl> aclRuoli;
-	protected List<String> ruoli;
+	protected transient List<Acl> aclRuoliEsterni;
+	protected transient List<Acl> aclRuoliUtenza;
+	protected transient Map<String,List<Acl>> ruoliUtenza;
 
 	public TIPO_UTENZA getTipoUtenza() { 
 		return TIPO_UTENZA.ANONIMO;
@@ -32,8 +36,10 @@ public class Utenza extends it.govpay.model.Utenza {
 		List<Acl> collect = new ArrayList<>();
 		if(this.aclPrincipal!=null)
 			collect.addAll(this.aclPrincipal);
-		if(this.aclRuoli!=null)
-			collect.addAll(this.aclRuoli);
+		if(this.aclRuoliEsterni!=null)
+			collect.addAll(this.aclRuoliEsterni);
+		if(this.aclRuoliUtenza!=null)
+			collect.addAll(this.aclRuoliUtenza);
 		return collect;
 	}
 
@@ -43,14 +49,6 @@ public class Utenza extends it.govpay.model.Utenza {
 
 	public List<String> getIdTipoVersamento() {
 		return this.tipiVersamento != null ? this.tipiVersamento.stream().map(d -> d.getCodTipoVersamento()).collect(Collectors.toList()) : null;
-	}
-
-	public List<String> getRuoli() {
-		return this.ruoli;
-	}
-
-	public void setRuoli(List<String> ruoli) {
-		this.ruoli = ruoli;
 	}
 
 	public List<Dominio> getDomini(BasicBD bd) throws ServiceException {
@@ -82,6 +80,26 @@ public class Utenza extends it.govpay.model.Utenza {
 		}
 		return this.tipiVersamento;
 	}
+	
+	public Map<String,List<Acl>> getRuoliUtenza() throws ServiceException {
+		if(this.ruoliUtenza == null && this.getRuoli() != null) {
+			this.ruoliUtenza = new HashMap<>();
+			for(String idRuolo : this.getRuoli()) {
+				for (Acl aclUtenza: this.aclRuoliUtenza) {
+					if(aclUtenza.getRuolo() != null && aclUtenza.getRuolo().equals(idRuolo)) {
+						List<Acl> remove = this.ruoliUtenza.remove(idRuolo);
+						
+						if(remove == null) {
+							remove = new ArrayList<>();
+						} 
+						remove.add(aclUtenza);
+						this.ruoliUtenza.put(idRuolo, remove);
+					}
+				}
+			}
+		}
+		return this.ruoliUtenza;
+	}
 
 
 	public void setDomini(List<Dominio> domini) {
@@ -99,15 +117,18 @@ public class Utenza extends it.govpay.model.Utenza {
 	public List<Acl> getAclPrincipal() {
 		return aclPrincipal;
 	}
-	
-	public void setAclRuoli(List<Acl> aclRuoli) {
-		this.aclRuoli = aclRuoli;
+	public List<Acl> getAclRuoliEsterni() {
+		return aclRuoliEsterni;
 	}
-	
-	public List<Acl> getAclRuoli() {
-		return aclRuoli;
+	public void setAclRuoliEsterni(List<Acl> aclRuoliEsterni) {
+		this.aclRuoliEsterni = aclRuoliEsterni;
 	}
-	
+	public List<Acl> getAclRuoliUtenza() {
+		return aclRuoliUtenza;
+	}
+	public void setAclRuoliUtenza(List<Acl> aclRuoliUtenza) {
+		this.aclRuoliUtenza = aclRuoliUtenza;
+	}
 	public String getMessaggioUtenzaDisabilitata() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Utenza [").append(this.getIdentificativo()).append("] disabilitata");

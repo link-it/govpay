@@ -53,9 +53,11 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.TRASFORMAZIONE_TIPO = new Field("trasformazioneTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.TRASFORMAZIONE_DEFINIZIONE = new Field("trasformazioneDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_AVVISO_TIPO = new Field("promemoriaAvvisoTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_AVVISO_PDF = new Field("promemoriaAvvisoPdf",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_AVVISO_OGGETTO = new Field("promemoriaAvvisoOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_AVVISO_MESSAGGIO = new Field("promemoriaAvvisoMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_RICEVUTA_TIPO = new Field("promemoriaRicevutaTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_RICEVUTA_PDF = new Field("promemoriaRicevutaPdf",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_RICEVUTA_OGGETTO = new Field("promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new Field("promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
@@ -78,9 +80,11 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.TRASFORMAZIONE_TIPO = new ComplexField(father,"trasformazioneTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.TRASFORMAZIONE_DEFINIZIONE = new ComplexField(father,"trasformazioneDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_AVVISO_TIPO = new ComplexField(father,"promemoriaAvvisoTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_AVVISO_PDF = new ComplexField(father,"promemoriaAvvisoPdf",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_AVVISO_OGGETTO = new ComplexField(father,"promemoriaAvvisoOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_AVVISO_MESSAGGIO = new ComplexField(father,"promemoriaAvvisoMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.PROMEMORIA_RICEVUTA_TIPO = new ComplexField(father,"promemoriaRicevutaTipo",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_RICEVUTA_PDF = new ComplexField(father,"promemoriaRicevutaPdf",Boolean.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_RICEVUTA_OGGETTO = new ComplexField(father,"promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new ComplexField(father,"promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
@@ -113,11 +117,15 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 	 
 	public IField COD_APPLICAZIONE = null;
 	 
+	public IField PROMEMORIA_AVVISO_TIPO = null;
+	 
 	public IField PROMEMORIA_AVVISO_PDF = null;
 	 
 	public IField PROMEMORIA_AVVISO_OGGETTO = null;
 	 
 	public IField PROMEMORIA_AVVISO_MESSAGGIO = null;
+	 
+	public IField PROMEMORIA_RICEVUTA_TIPO = null;
 	 
 	public IField PROMEMORIA_RICEVUTA_PDF = null;
 	 
