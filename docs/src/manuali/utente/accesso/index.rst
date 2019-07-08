@@ -27,8 +27,8 @@ La colonna sinistra presente nell'interfaccia rappresenta il menu di
 navigazione, con voci che possono variare in base ai ruoli e relative
 autorizzazioni associate all'utenza autenticata.
 
-.. figure:: ./images/1000020100000140000001E8CEABADA2C37F806E.png
-   Figura 2: Menu di Navigazione
+.. figure:: ./images/01PrimoAccesso.png
+   Figura 2: Immissione delle credenziali
 
 L'area iniziale del menu di navigazione è composta dai seguenti
 elementi:
