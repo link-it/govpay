@@ -3,7 +3,7 @@
 Accesso al cruscotto e profilo
 ==============================
 
-Posto che si sia completata con successo la procedura di installazione
+Una volta completata con successo la procedura di installazione
 sarà possibile procedere con la configurazione accedendo al **Cruscotto
 di Gestione** al seguente indirizzo:
 
