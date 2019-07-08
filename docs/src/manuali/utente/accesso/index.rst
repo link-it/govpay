@@ -14,7 +14,7 @@ Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i rif
 .. figure:: ../_images/02FunzionalitaPreAutenticazione.png
    :align: center
 
-   Figura #: Funzionalità disponibili senza autenticazione
+   Figura 1: Funzionalità disponibili senza autenticazione
    
 Sono disponibili le seguenti funzionalità informative, prima dellì'autenticazione:
 
@@ -33,16 +33,20 @@ utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità ch
    
 .. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
    
-Dopo aver effettuato l’accesso, con le credenziali in proprio possesso, si accede a tutte le funzionalità descritte nelle corrispondenti sezioni di questo documento.
+Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si accede a tutte le funzionalità descritte nelle corrispondenti sezioni di questo documento.
 
 
 Menu di navigazione
 -------------------
 
-La colonna posta sinistra nell'interfaccia rappresenta il menu di
-navigazione, con le relative voci che variano in funzione dei ruoli associati all'utenza autenticata.
+La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, con le relative voci che variano in funzione dei ruoli associati all'utenza autenticata.
 
+.. figure:: ../_images/03VistaIniziale.png
+   :align: center
 
+   Figura 3: Cruscotto iniziale [#]_
+   
+.. [#] Si noti come le funzionalità evidenziali corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
 
 L'area iniziale del menu di navigazione è composta dai seguenti
 elementi:
