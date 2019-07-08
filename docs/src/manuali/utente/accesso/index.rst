@@ -17,8 +17,11 @@ Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i rif
    Figura 1: Funzionalità disponibili senza autenticazione
    
 Sono disponibili le seguenti funzionalità informative, prima dellì'autenticazione:
-* primo elemento
-* secondo
+
+*  **Manuale Utente**, che permette di accedere alla versione più recente di questo manuale
+*  **Licenza**, che mostra gli estremi della licenza cui fa riferimento l'istanza
+*  **Progetto GovPay**, che illustra le caratteristiche salienti del prodotto e le sue novità
+
 
 Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni 
 utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità che sono destinate all'utente stesso. Questo meccanismo, che verrà maggiormente dettagliato in seguito, permette di *ritagliare* in modo assolutamente generico il giusto profilo funzionale per tutte le classi di utente abilitati all'uso della piattaforma.
