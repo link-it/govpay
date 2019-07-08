@@ -809,6 +809,10 @@ components:
         - importo
         - causale
       properties:
+        idTipoPendenza:
+          type: string
+          description: Identificativo della tipologia pendenza
+          example: IMU
         nome:
           type: string
           description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -852,13 +856,21 @@ components:
           example: ABC00000001
         datiAllegati:
           type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
         tassonomia:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
           example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/tassonomiaAvviso'
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione ABC
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione001
     pendenzaIndex:
       type: object
       allOf:
