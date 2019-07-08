@@ -12,9 +12,11 @@ Glossario
 
 +------+----------------------------------+
 | NDP  | Nodo dei Pagamenti SPC           |
-+------+----------------------------------+
-| SPC  | Sistema Pubblico di Connettività |
-+------+----------------------------------+
++------+----------------------------------+---------------------------------------------------------------------------------------+
+| SPC  | Sistema Pubblico di Connettività |il Sistema Pubblico di Connettività (SPC) è una cornice nazionale di interoperabilità: | 
+|      |                                  |definisce, cioè, le modalità preferenziali che i sistemi informativi delle pubbliche   |    
+|      |                                  |amministrazioni devono adottare per essere tra loro interoperabili                     |
++------+----------------------------------+---------------------------------------------------------------------------------------+
 | AgID | Agenzia per l'Italia Digitale    |
 +------+----------------------------------+
 | RPT  | Richiesta Pagamento Telematico   |
