@@ -193,6 +193,8 @@ public class PagamentiPortaleConverter {
 //				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
 //			}
 //		}
+		versamento.setDirezione(pendenza.getDirezione());
+		versamento.setDivisione(pendenza.getDivisione()); 
 
 		return versamento;
 	}
@@ -254,7 +256,10 @@ public class PagamentiPortaleConverter {
 //		}else {
 			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
 //		}
-
+			versamento.setDirezione(pendenza.getDirezione());
+			versamento.setDivisione(pendenza.getDivisione()); 
+			
+			
 		return versamento;
 	}
 

@@ -33,6 +33,8 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 	"datiAllegati",
 	"tassonomia",
 	"tassonomiaAvviso",
+	"direzione",
+	"divisione",
 	"voci",
 	"idA2A",
 	"idPendenza",
@@ -91,6 +93,12 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 
 	@JsonProperty("tassonomiaAvviso")
 	private String tassonomiaAvviso = null;
+
+  	@JsonProperty("direzione")
+  	private String direzione = null;
+
+	@JsonProperty("divisione")
+	private String divisione = null;
 
 	@JsonProperty("voci")
 	private List<VocePendenza> voci = new ArrayList<>();
@@ -375,6 +383,38 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 		this.tassonomiaAvviso = tassonomiaAvviso;
 	}
 
+  /**
+   * Identificativo della direzione interna all'ente creditore
+   **/
+  public PendenzaPost direzione(String direzione) {
+    this.direzione = direzione;
+    return this;
+  }
+
+  @JsonProperty("direzione")
+  public String getDirezione() {
+    return direzione;
+  }
+  public void setDirezione(String direzione) {
+    this.direzione = direzione;
+  }
+
+  /**
+   * Identificativo della divisione interna all'ente creditore
+   **/
+  public PendenzaPost divisione(String divisione) {
+    this.divisione = divisione;
+    return this;
+  }
+
+  @JsonProperty("divisione")
+  public String getDivisione() {
+    return divisione;
+  }
+  public void setDivisione(String divisione) {
+    this.divisione = divisione;
+  }
+
 	/**
 	 **/
 	public PendenzaPost voci(List<VocePendenza> voci) {
@@ -479,6 +519,8 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				Objects.equals(this.datiAllegati, pendenzaPost.datiAllegati) &&
 				Objects.equals(this.tassonomia, pendenzaPost.tassonomia) &&
 				Objects.equals(this.tassonomiaAvviso, pendenzaPost.tassonomiaAvviso) &&
+        Objects.equals(direzione, pendenzaPost.direzione) &&
+        Objects.equals(divisione, pendenzaPost.divisione) &&
 				Objects.equals(this.voci, pendenzaPost.voci) &&
 				Objects.equals(this.idA2A, pendenzaPost.idA2A) &&
 				Objects.equals(this.idPendenza, pendenzaPost.idPendenza) &&
@@ -488,7 +530,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.idDominio, this.idUnitaOperativa, idTipoPendenza, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.voci, this.idA2A, this.idPendenza, this.idDebitore, this.dati);
+		return Objects.hash(this.idDominio, this.idUnitaOperativa, idTipoPendenza, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, direzione, divisione, this.voci, this.idA2A, this.idPendenza, this.idDebitore, this.dati);
 	}
 
 	public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -521,6 +563,8 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 		sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
 		sb.append("    tassonomia: ").append(this.toIndentedString(this.tassonomia)).append("\n");
 		sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
+    sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
+    sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
 		sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
 		sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
 		sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
@@ -565,6 +609,8 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
 				vf.getValidator("voci", this.voci).isNull();
 				vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
+				vf.getValidator("direzione", this.direzione).isNull();
+				vf.getValidator("divisione", this.divisione).isNull();
 			} catch (ValidationException ve) {
 				throw new ValidationException("Pendenza riferita per identificativo A2A. " + ve.getMessage());
 			}
@@ -586,6 +632,8 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator("idA2A", this.idA2A).isNull();
 				vf.getValidator("idPendenza", this.idPendenza).isNull();
 				vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
+				vf.getValidator("direzione", this.direzione).isNull();
+				vf.getValidator("divisione", this.divisione).isNull();
 			} catch (ValidationException ve) {
 				throw new ValidationException("Pendenza riferita per numero avviso. " + ve.getMessage());
 			}
@@ -608,6 +656,8 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator("voci", this.voci).isNull();
 				vf.getValidator("idA2A", this.idA2A).isNull();
 				vf.getValidator("idPendenza", this.idPendenza).isNull();
+				vf.getValidator("direzione", this.direzione).isNull();
+				vf.getValidator("divisione", this.divisione).isNull();
 			} catch (ValidationException ve) {
 				throw new ValidationException("Pendenza modello 4. " + ve.getMessage());
 			}
@@ -628,8 +678,14 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
 			vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
 			vf.getValidator("idA2A", this.idA2A).notNull().minLength(1).maxLength(35);
-			vf.getValidator("idPendenza", this.idPendenza).notNull().minLength(1).maxLength(35);
 			vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
+			
+			validatoreId.validaIdPendenza("idPendenza", this.idPendenza);
+			
+			if(this.direzione != null)
+				validatoreId.validaIdDirezione("direzione",this.direzione);
+			if(this.divisione != null)
+				validatoreId.validaIdDivisione("divisione",this.divisione);
 		}
 	}
 }
