@@ -1075,13 +1075,20 @@ components:
           example: ABC00000001
         datiAllegati:
           type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
         tassonomia:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
           example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/tassonomiaAvviso'
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione ABC
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione001
     pendenzaPut:
       type: object
       allOf:

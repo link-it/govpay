@@ -13,8 +13,6 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Tributo;
-import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.pendenze.v2.beans.Avviso;
@@ -112,6 +110,9 @@ public class PendenzeConverter {
 
 		rsModel.setDescrizioneStato(versamento.getDescrizioneStato());
 		rsModel.setSegnalazioni(unmarshall(versamento.getAnomalie()));
+		
+		rsModel.setDirezione(versamento.getDirezione());
+		rsModel.setDivisione(versamento.getDivisione()); 
 
 		return rsModel;
 	}
@@ -186,6 +187,9 @@ public class PendenzeConverter {
 			rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(versamento.getUo(null)));
 
 		rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
+		
+		rsModel.setDirezione(versamento.getDirezione());
+		rsModel.setDivisione(versamento.getDivisione()); 
 
 		return rsModel;
 	}
@@ -324,7 +328,8 @@ public class PendenzeConverter {
 //		}else {
 			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
 //		}
-
+			versamento.setDirezione(pendenza.getDirezione());
+			versamento.setDivisione(pendenza.getDivisione()); 
 
 		return versamento;
 	}

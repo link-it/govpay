@@ -30,6 +30,8 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "datiAllegati",
 "tassonomia",
 "tassonomiaAvviso",
+"direzione",
+"divisione",
 "idDominio",
 "idUnitaOperativa",
 "voci",
@@ -80,6 +82,12 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 
 	@JsonProperty("tassonomiaAvviso")
 	private String tassonomiaAvviso = null;
+
+  @JsonProperty("direzione")
+  private String direzione = null;
+  
+  @JsonProperty("divisione")
+  private String divisione = null;
 
 	@JsonProperty("idDominio")
 	private String idDominio = null;
@@ -326,6 +334,38 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 		this.tassonomiaAvviso = tassonomiaAvviso;
 	}
 
+  /**
+   * Identificativo della direzione interna all'ente creditore
+   **/
+  public PendenzaPut direzione(String direzione) {
+    this.direzione = direzione;
+    return this;
+  }
+
+  @JsonProperty("direzione")
+  public String getDirezione() {
+    return direzione;
+  }
+  public void setDirezione(String direzione) {
+    this.direzione = direzione;
+  }
+
+  /**
+   * Identificativo della divisione interna all'ente creditore
+   **/
+  public PendenzaPut divisione(String divisione) {
+    this.divisione = divisione;
+    return this;
+  }
+
+  @JsonProperty("divisione")
+  public String getDivisione() {
+    return divisione;
+  }
+  public void setDivisione(String divisione) {
+    this.divisione = divisione;
+  }
+
 	/**
 	 * Identificativo del dominio creditore
 	 **/
@@ -396,14 +436,16 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 				Objects.equals(this.datiAllegati, pendenzaPut.datiAllegati) &&
 				Objects.equals(this.tassonomia, pendenzaPut.tassonomia) &&
 				Objects.equals(this.tassonomiaAvviso, pendenzaPut.tassonomiaAvviso) &&
-				Objects.equals(this.idDominio, pendenzaPut.idDominio) &&
+				Objects.equals(direzione, pendenzaPut.direzione) &&
+        Objects.equals(divisione, pendenzaPut.divisione) &&
+        Objects.equals(this.idDominio, pendenzaPut.idDominio) &&
 				Objects.equals(this.idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
 				Objects.equals(this.voci, pendenzaPut.voci);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(idTipoPendenza, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idDominio, this.idUnitaOperativa, this.voci);
+		return Objects.hash(idTipoPendenza, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, direzione, divisione, this.idDominio, this.idUnitaOperativa, this.voci);
 	}
 
 	public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -433,7 +475,9 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 		sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
 		sb.append("    tassonomia: ").append(this.toIndentedString(this.tassonomia)).append("\n");
 		sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
-		sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
+    sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
+    sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
+	sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
 		sb.append("    idUnitaOperativa: ").append(this.toIndentedString(this.idUnitaOperativa)).append("\n");
 		sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
 		sb.append("}");
