@@ -10,12 +10,12 @@ pagamenti, può avvalersi del servizio di mediazione offerto dal "Nodo
 SPC" per interagire con i PSP secondo una piattaforma paritetica e
 garantita da una governance pubblica. 
 
-In tale scenario ciascun ente deve predisporre l'ambiente tecnologico
+In tale scenario ciascun Ente deve predisporre l'ambiente tecnologico
 per far dialogare i propri sistemi, portale e sistema informativo per la
 gestione dei pagamenti, con il Nodo SPC. GovPay si pone come mediatore
 tra l'ambiente tecnologico dell'ente ed il Nodo SPC con l'obiettivo di
-abbattere i tempi di realizzazione delle interfacce di colloquio tra
-questi sistemi.
+ottimizzare i tempi di realizzazione delle interfacce di colloquio tra
+questi sistemi, semplificando al contempo lo scenario tecnologico di integrazione.
 
 .. figure:: ../_figure_utente/10000000000002CF00000253B67C83F68F49AAF4.jpg
    :alt: 
