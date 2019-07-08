@@ -165,7 +165,8 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Promemoria.model().DATA_AGGIORNAMENTO_STATO);
 			fields.add(Promemoria.model().TENTATIVI_SPEDIZIONE);
 			fields.add(Promemoria.model().DATA_PROSSIMA_SPEDIZIONE);
-			fields.add(Promemoria.model().DEBITORE_EMAIL);
+			fields.add(Promemoria.model().DESTINATARIO_TO);
+			fields.add(Promemoria.model().DESTINATARIO_CC);
 			fields.add(Promemoria.model().OGGETTO);
 			fields.add(Promemoria.model().MESSAGGIO);
 			fields.add(Promemoria.model().ALLEGA_PDF);

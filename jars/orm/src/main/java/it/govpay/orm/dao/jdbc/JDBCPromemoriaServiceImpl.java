@@ -111,7 +111,8 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DATA_CREAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DESCRIZIONE_STATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DEBITORE_EMAIL,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DESTINATARIO_TO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DESTINATARIO_CC,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().MESSAGGIO_CONTENT_TYPE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().OGGETTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().MESSAGGIO,false),"?");
@@ -129,7 +130,8 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getDataCreazione(),Promemoria.model().DATA_CREAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getStato(),Promemoria.model().STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getDescrizioneStato(),Promemoria.model().DESCRIZIONE_STATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getDebitoreEmail(),Promemoria.model().DEBITORE_EMAIL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getDestinatarioTo(),Promemoria.model().DESTINATARIO_TO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getDestinatarioCc(),Promemoria.model().DESTINATARIO_CC.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getMessaggioContentType(),Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getOggetto(),Promemoria.model().OGGETTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(promemoria.getMessaggio(),Promemoria.model().MESSAGGIO.getFieldType()),
@@ -232,8 +234,10 @@ public class JDBCPromemoriaServiceImpl extends JDBCPromemoriaServiceSearchImpl
 		lstObjects_promemoria.add(new JDBCObject(promemoria.getStato(), Promemoria.model().STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DESCRIZIONE_STATO,false), "?");
 		lstObjects_promemoria.add(new JDBCObject(promemoria.getDescrizioneStato(), Promemoria.model().DESCRIZIONE_STATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DEBITORE_EMAIL,false), "?");
-		lstObjects_promemoria.add(new JDBCObject(promemoria.getDebitoreEmail(), Promemoria.model().DEBITORE_EMAIL.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DESTINATARIO_TO,false), "?");
+		lstObjects_promemoria.add(new JDBCObject(promemoria.getDestinatarioTo(), Promemoria.model().DESTINATARIO_TO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().DESTINATARIO_CC,false), "?");
+		lstObjects_promemoria.add(new JDBCObject(promemoria.getDestinatarioCc(), Promemoria.model().DESTINATARIO_CC.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().MESSAGGIO_CONTENT_TYPE,false), "?");
 		lstObjects_promemoria.add(new JDBCObject(promemoria.getMessaggioContentType(), Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPromemoriaFieldConverter().toColumn(Promemoria.model().OGGETTO,false), "?");

@@ -17,6 +17,8 @@ public class CostantiValidazione {
 	public static final String PATTERN_ID_PENDENZA = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 	public static final String PATTERN_PROVINCIA = "[A-Z]{2,2}";
 	public static final String PATTERN_COD_CONTABILITA = "\\S{3,138}";
+	public static final String PATTERN_ID_DIREZIONE = "(^[a-zA-Z0-9\\-_]{1,35}$)";
+	public static final String PATTERN_ID_DIVISIONE = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 	
 	public static final String PATTERN_NAZIONE = "[A-Z]{2,2}";
 	public static final String PATTERN_EMAIL = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)";

@@ -40,7 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
  * 			&lt;element name="autorizzazione_domini_star" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="autorizzazione_tipi_vers_star" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
- * 			&lt;element name="ruoli" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ruoli" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -184,7 +184,7 @@ public class Utenza extends org.openspcoop2.utils.beans.BaseBean implements Seri
   protected boolean autorizzazioneTipiVersStar = false;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ruoli",required=true,nillable=false)
+  @XmlElement(name="ruoli",required=false,nillable=false)
   protected java.lang.String ruoli;
 
 }

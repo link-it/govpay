@@ -179,11 +179,18 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione_stato";
 			}
 		}
-		if(field.equals(Promemoria.model().DEBITORE_EMAIL)){
+		if(field.equals(Promemoria.model().DESTINATARIO_TO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".debitore_email";
+				return this.toAliasTable(field)+".destinatario_to";
 			}else{
-				return "debitore_email";
+				return "destinatario_to";
+			}
+		}
+		if(field.equals(Promemoria.model().DESTINATARIO_CC)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".destinatario_cc";
+			}else{
+				return "destinatario_cc";
 			}
 		}
 		if(field.equals(Promemoria.model().MESSAGGIO_CONTENT_TYPE)){
@@ -296,7 +303,10 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Promemoria.model().DESCRIZIONE_STATO)){
 			return this.toTable(Promemoria.model(), returnAlias);
 		}
-		if(field.equals(Promemoria.model().DEBITORE_EMAIL)){
+		if(field.equals(Promemoria.model().DESTINATARIO_TO)){
+			return this.toTable(Promemoria.model(), returnAlias);
+		}
+		if(field.equals(Promemoria.model().DESTINATARIO_CC)){
 			return this.toTable(Promemoria.model(), returnAlias);
 		}
 		if(field.equals(Promemoria.model().MESSAGGIO_CONTENT_TYPE)){

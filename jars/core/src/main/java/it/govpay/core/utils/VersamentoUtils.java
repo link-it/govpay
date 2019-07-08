@@ -584,6 +584,9 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.TVD_001, codTipoVersamento, versamento.getCodDominio());
 		
 		model.setIdTipoVersamentoDominio(tipoVersamentoDominio.getId());
+		
+		model.setDirezione(versamento.getDirezione());
+		model.setDivisione(versamento.getDivisione()); 
 
 		return model;
 	}

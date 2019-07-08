@@ -41,10 +41,11 @@ import java.io.Serializable;
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="debitoreEmail" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="messaggioContentType" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="oggetto" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="messaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="destinatarioTo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="destinatarioCc" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="messaggioContentType" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="oggetto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="messaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="allegaPdf" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="dataAggiornamentoStato" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataProssimaSpedizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
@@ -69,7 +70,8 @@ import java.io.Serializable;
   	"dataCreazione",
   	"stato",
   	"descrizioneStato",
-  	"debitoreEmail",
+  	"destinatarioTo",
+  	"destinatarioCc",
   	"messaggioContentType",
   	"oggetto",
   	"messaggio",
@@ -148,12 +150,20 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
     this.descrizioneStato = descrizioneStato;
   }
 
-  public java.lang.String getDebitoreEmail() {
-    return this.debitoreEmail;
+  public java.lang.String getDestinatarioTo() {
+    return this.destinatarioTo;
   }
 
-  public void setDebitoreEmail(java.lang.String debitoreEmail) {
-    this.debitoreEmail = debitoreEmail;
+  public void setDestinatarioTo(java.lang.String destinatarioTo) {
+    this.destinatarioTo = destinatarioTo;
+  }
+
+  public java.lang.String getDestinatarioCc() {
+    return this.destinatarioCc;
+  }
+
+  public void setDestinatarioCc(java.lang.String destinatarioCc) {
+    this.destinatarioCc = destinatarioCc;
   }
 
   public java.lang.String getMessaggioContentType() {
@@ -259,19 +269,23 @@ public class Promemoria extends org.openspcoop2.utils.beans.BaseBean implements 
   protected java.lang.String descrizioneStato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="debitoreEmail",required=true,nillable=false)
-  protected java.lang.String debitoreEmail;
+  @XmlElement(name="destinatarioTo",required=true,nillable=false)
+  protected java.lang.String destinatarioTo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="messaggioContentType",required=true,nillable=false)
+  @XmlElement(name="destinatarioCc",required=false,nillable=false)
+  protected java.lang.String destinatarioCc;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="messaggioContentType",required=false,nillable=false)
   protected java.lang.String messaggioContentType;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="oggetto",required=true,nillable=false)
+  @XmlElement(name="oggetto",required=false,nillable=false)
   protected java.lang.String oggetto;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="messaggio",required=true,nillable=false)
+  @XmlElement(name="messaggio",required=false,nillable=false)
   protected java.lang.String messaggio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")

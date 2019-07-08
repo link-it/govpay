@@ -103,6 +103,22 @@ public class ValidatoreIdentificativi {
 		this.validaId(fieldName, idPendenza, CostantiValidazione.PATTERN_ID_PENDENZA, 1, 35);
 	}
 	
+	public void validaIdDirezione(String idDirezione) throws ValidationException {
+		this.validaIdDirezione("idDirezione", idDirezione);
+	}
+	
+	public void validaIdDirezione(String fieldName, String idDirezione) throws ValidationException {
+		this.validaId(fieldName, idDirezione, CostantiValidazione.PATTERN_ID_DIREZIONE, 1, 35);
+	}
+	
+	public void validaIdDivisione(String idDivisione) throws ValidationException {
+		this.validaIdDivisione("idDivisione", idDivisione);
+	}
+	
+	public void validaIdDivisione(String fieldName, String idDivisione) throws ValidationException {
+		this.validaId(fieldName, idDivisione, CostantiValidazione.PATTERN_ID_DIVISIONE, 1, 35);
+	}
+	
 	public StringValidator validaId(String fieldName, String id, String pattern, Integer minLength, Integer maxLength) throws ValidationException {
 		return validaId(fieldName, id, pattern, minLength, maxLength, true);
 	}

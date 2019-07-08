@@ -28,6 +28,8 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "datiAllegati",
 "tassonomia",
 "tassonomiaAvviso",
+"direzione",
+"divisione",
 "idDominio",
 "idUnitaOperativa",
 "idTipoPendenza",
@@ -76,6 +78,12 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 
   @JsonProperty("tassonomiaAvviso")
   private String tassonomiaAvviso = null;
+  
+  @JsonProperty("direzione")
+  private String direzione = null;
+  
+  @JsonProperty("divisione")
+  private String divisione = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -309,6 +317,30 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 		this.tassonomiaAvviso = tassonomiaAvviso;
 	}
 
+  @JsonProperty("direzione")
+  public String getDirezione() {
+    return direzione;
+  }
+  public void setDirezione(String direzione) {
+    this.direzione = direzione;
+  }
+
+  /**
+   * Identificativo della divisione interna all'ente creditore
+   **/
+  public PendenzaPut divisione(String divisione) {
+    this.divisione = divisione;
+    return this;
+  }
+
+  @JsonProperty("divisione")
+  public String getDivisione() {
+    return divisione;
+  }
+  public void setDivisione(String divisione) {
+    this.divisione = divisione;
+  }
+
   /**
    * Identificativo del dominio creditore
    **/
@@ -394,6 +426,8 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(datiAllegati, pendenzaPut.datiAllegati) &&
         Objects.equals(tassonomia, pendenzaPut.tassonomia) &&
         Objects.equals(tassonomiaAvviso, pendenzaPut.tassonomiaAvviso) &&
+        Objects.equals(direzione, pendenzaPut.direzione) &&
+        Objects.equals(divisione, pendenzaPut.divisione) &&
         Objects.equals(idDominio, pendenzaPut.idDominio) &&
         Objects.equals(idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
         Objects.equals(idTipoPendenza, pendenzaPut.idTipoPendenza) &&
@@ -402,7 +436,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idDominio, idUnitaOperativa, idTipoPendenza, voci);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, idDominio, idUnitaOperativa, idTipoPendenza, voci);
   }
 
   public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -432,6 +466,8 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
+    sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
+    sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
@@ -473,6 +509,11 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
 		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
+		
+		if(this.direzione != null)
+			validatoreId.validaIdDirezione("direzione",this.direzione);
+		if(this.divisione != null)
+			validatoreId.validaIdDivisione("divisione",this.divisione);
 	}
 }
 

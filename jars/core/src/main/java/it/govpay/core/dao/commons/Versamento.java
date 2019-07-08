@@ -284,6 +284,22 @@ public class Versamento {
 		this.codTipoVersamento = codTipoVersamento;
 	}
 
+	public String getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
+	}
+
+	public String getDivisione() {
+		return divisione;
+	}
+
+	public void setDivisione(String divisione) {
+		this.divisione = divisione;
+	}
+
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
 	private String codVersamentoEnte;
@@ -314,6 +330,8 @@ public class Versamento {
 	private String modoAvvisatura;
 	private Boolean avvisaturaAbilitata; 
 	private String cartellaPagamento;
+	private String divisione;
+	private String direzione;
     
     private TIPO tipo;
     private List<String> spezzoneCausale;
