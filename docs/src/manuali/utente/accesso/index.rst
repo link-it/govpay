@@ -14,7 +14,7 @@ Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i rif
 .. figure:: ../_images/02FunzionalitaPreAutenticazione.png
    :align: center
 
-   Figura 1: Funzionalità disponibili senza autenticazione
+   Figura #: Funzionalità disponibili senza autenticazione
    
 Sono disponibili le seguenti funzionalità informative, prima dellì'autenticazione:
 
