@@ -14,7 +14,7 @@ inseriti i riferimenti al proprio ambiente di installazione (nome host o
 indirizzo IP e relativa porta).
 
 Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni 
-utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità che sono destinate all'utente stesso. Questo meccanismo, che verrà maggiormente dettagliato in seguito, permette di **ritagliare** in modo 
+utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità che sono destinate all'utente stesso. Questo meccanismo, che verrà maggiormente dettagliato in seguito, permette di *ritagliare* in modo assolutamente generico il giusto profilo funzionale per tutte le classi di utente che componge la platea della piattaforma.
 
 .. figure:: ../images/01PrimoAccesso.png
    :align: center
