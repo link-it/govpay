@@ -28,7 +28,9 @@ navigazione, con voci che possono variare in base ai ruoli e relative
 autorizzazioni associate all'utenza autenticata.
 
 .. figure:: ../images/01PrimoAccesso.png
-   Figura 2: Immissione delle credenziali
+   :align: center
+
+   Figura 1: Immissione delle credenziali
 
 L'area iniziale del menu di navigazione è composta dai seguenti
 elementi:
