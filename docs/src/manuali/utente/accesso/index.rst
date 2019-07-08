@@ -11,26 +11,29 @@ http://<hostname>:<port>/backend/gui/backoffice
 
 Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i riferimenti al proprio ambiente di installazione (nome host o indirizzo IP e relativa porta).
 
-Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni 
-utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità che sono destinate all'utente stesso. Questo meccanismo, che verrà maggiormente dettagliato in seguito, permette di *ritagliare* in modo assolutamente generico il giusto profilo funzionale per tutte le classi di utente che componge la platea della piattaforma.
-
-.. figure:: ../images/01PrimoAccesso.png
+.. figure:: ../_images/02FunzionalitaPreAutenticazione.png
    :align: center
 
-   Figura 1: Immissione delle credenziali [#]_
+   Figura 1: Immissione delle credenziali
+
+Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni 
+utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità che sono destinate all'utente stesso. Questo meccanismo, che verrà maggiormente dettagliato in seguito, permette di *ritagliare* in modo assolutamente generico il giusto profilo funzionale per tutte le classi di utente abilitati all'uso della piattaforma.
+
+.. figure:: ../_images/01PrimoAccesso.png
+   :align: center
+
+   Figura 2: Immissione delle credenziali [#]_
    
 .. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
    
-Dopo aver effettuato l’accesso, con le credenziali in proprio possesso, si accede alla sezione di consultazione dei pagamenti, descritta più
-avanti.
+Dopo aver effettuato l’accesso, con le credenziali in proprio possesso, si accede a tutte le funzionalità descritte nelle corrispondenti sezioni di questo documento.
 
 
 Menu di navigazione
 -------------------
 
-La colonna sinistra presente nell'interfaccia rappresenta il menu di
-navigazione, con voci che possono variare in base ai ruoli e relative
-autorizzazioni associate all'utenza autenticata.
+La colonna posta sinistra nell'interfaccia rappresenta il menu di
+navigazione, con le relative voci che variano in funzione dei ruoli associati all'utenza autenticata.
 
 
 
