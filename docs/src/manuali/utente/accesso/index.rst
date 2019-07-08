@@ -13,9 +13,14 @@ Dove al posto dei placeholder <hostname> e <port> dovranno essere
 inseriti i riferimenti al proprio ambiente di installazione (nome host o
 indirizzo IP e relativa porta).
 
-Per l'accesso al cruscotto viene presentata la maschera di
+Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni 
 autenticazione.
 
+.. figure:: ../images/01PrimoAccesso.png
+   :align: center
+
+   Figura 1: Immissione delle credenziali
+   
 Dopo aver effettuato l’accesso, con le credenziali in proprio possesso,
 si accede alla sezione di consultazione dei pagamenti, descritta più
 avanti.
@@ -27,10 +32,7 @@ La colonna sinistra presente nell'interfaccia rappresenta il menu di
 navigazione, con voci che possono variare in base ai ruoli e relative
 autorizzazioni associate all'utenza autenticata.
 
-.. figure:: ../images/01PrimoAccesso.png
-   :align: center
 
-   Figura 1: Immissione delle credenziali
 
 L'area iniziale del menu di navigazione è composta dai seguenti
 elementi:
