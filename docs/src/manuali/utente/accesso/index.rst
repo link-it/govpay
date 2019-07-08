@@ -19,11 +19,11 @@ utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità ch
 
    Figura 1: Immissione delle credenziali [#]_
    
-   
+.. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
    
 Dopo aver effettuato l’accesso, con le credenziali in proprio possesso, si accede alla sezione di consultazione dei pagamenti, descritta più
 avanti.
-.. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
+
 
 Menu di navigazione
 -------------------
