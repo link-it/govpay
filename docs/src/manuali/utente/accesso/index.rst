@@ -3,32 +3,50 @@
 Accesso al cruscotto e profilo
 ==============================
 
-Posto che si sia completata con successo la procedura di installazione
+Una volta completata con successo la procedura di installazione
 sarà possibile procedere con la configurazione accedendo al **Cruscotto
 di Gestione** al seguente indirizzo:
 
 http://<hostname>:<port>/backend/gui/backoffice
 
-Dove al posto dei placeholder <hostname> e <port> dovranno essere
-inseriti i riferimenti al proprio ambiente di installazione (nome host o
-indirizzo IP e relativa porta).
+Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i riferimenti al proprio ambiente di installazione (nome host o indirizzo IP e relativa porta).
 
-Per l'accesso al cruscotto viene presentata la maschera di
-autenticazione.
+.. figure:: ../_images/02FunzionalitaPreAutenticazione.png
+   :align: center
 
-Dopo aver effettuato l’accesso, con le credenziali in proprio possesso,
-si accede alla sezione di consultazione dei pagamenti, descritta più
-avanti.
+   Figura 1: Funzionalità disponibili senza autenticazione
+   
+Sono disponibili le seguenti funzionalità informative, prima dellì'autenticazione:
+
+*  **Manuale Utente**, che permette di accedere alla versione più recente di questo manuale
+*  **Licenza**, che mostra gli estremi della licenza cui fa riferimento l'istanza
+*  **Progetto GovPay**, che illustra le caratteristiche salienti del prodotto e le sue novità
+
+
+Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni 
+utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità che sono destinate all'utente stesso. Questo meccanismo, che verrà maggiormente dettagliato in seguito, permette di *ritagliare* in modo assolutamente generico il giusto profilo funzionale per tutte le classi di utente abilitati all'uso della piattaforma.
+
+.. figure:: ../_images/01PrimoAccesso.png
+   :align: center
+
+   Figura 2: Immissione delle credenziali [#]_
+   
+.. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
+   
+Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si accede a tutte le funzionalità descritte nelle corrispondenti sezioni di questo documento.
+
 
 Menu di navigazione
 -------------------
 
-La colonna sinistra presente nell'interfaccia rappresenta il menu di
-navigazione, con voci che possono variare in base ai ruoli e relative
-autorizzazioni associate all'utenza autenticata.
+La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, con le relative voci che variano in funzione dei ruoli associati all'utenza autenticata.
 
-.. figure:: ../_figure_utente/1000020100000140000001E8CEABADA2C37F806E.png
-   Figura 2: Menu di Navigazione
+.. figure:: ../_images/03VistaIniziale.png
+   :align: center
+
+   Figura 3: Cruscotto iniziale [#]_
+   
+.. [#] Si noti come le funzionalità evidenziali corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
 
 L'area iniziale del menu di navigazione è composta dai seguenti
 elementi:
