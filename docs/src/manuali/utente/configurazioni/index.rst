@@ -44,21 +44,44 @@ essere censiti con le informazioni di corredo necessarie.
 
    Figura 2: Vista di dettaglio intermediari
 
+Accedendo alla sezione corrispondente (*Configurazioni > Intermediari*), viene visualizzato l'elenco degli intermediari censiti
+sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, con una funzionalità di filtro disponibile sulla sinistra del box di dettaglio, come di seguito mostrato:
 
+.. figure:: ../_images/10FiltroSuIntermediari.png
+   :align: center
 
-Accedendo alla sezione corrispondente (*Configurazioni > Registro
-Intermediari*), viene visualizzato l'elenco degli intermediari censiti
-sul sistema.
+   Figura 2: Filtro su ricerca Intermediari
 
-È possibile filtrare gli elementi visualizzati utilizzando il form
-presente sul lato sinistro della pagina.
 
 Nuovo Intermediario
 ~~~~~~~~~~~~~~~~~~~
 
 Per inserire un nuovo intermediario è necessario premere l'apposito
-pulsante, presente nella pagina di elenco, è compilare il form che viene
+pulsante, presente nella pagina di elenco in basso a destra, e compilare il form che viene
 aperto:
+.. table:: Elenco Didascalia testo tabella. Enim ad minim veniam neste.
+   :name: attivita-previste
+
+   +-----------+-----------+-----------+
+   | Lorem     | Vivamus   | Phasellus |
+   | ipsum sit | elementum | viverra   |
+   | dolor est | semper    | nulla ut  |
+   | quantu    | nisi      | metus     |
+   | ieres     | aenean    | arius     |
+   | numer     | vusere    | laoreet   |
+   |           |           | quisque   |
+   |           |           | rutrum    |
+   +-----------+-----------+-----------+
+   | Maecenas  | Cursus    | Fusce     |
+   | nec odio  | nunc,     | vulputate |
+   | et ante   | quis      | eleifend  |
+   | tincidunt | gravida   | sapie ves |
+   | tempus    | magna mi  | tibulum   |
+   |           | a libero  | purus     |
+   |           |           | quam      |
+   +-----------+-----------+-----------+
+
+
 
 -  *Denominazione*: Nome associato all'Intermediario o al Partner
    Tecnologico.
