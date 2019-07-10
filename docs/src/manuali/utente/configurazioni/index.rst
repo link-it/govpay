@@ -123,7 +123,7 @@ Per definire una stazione connessa all'intermediario occorre immettere le seguen
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "IdStazione", "Identificativo della stazione, fornito da   AgID", "Obbligatorio"
+  "IdStazione", "Identificativo della stazione, fornito da AgID", "Obbligatorio"
   "Password", "Chiave segreta, fornita da AgID", "Obbligatorio"
   "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
 
@@ -175,15 +175,35 @@ possibile procedere con la creazione di un nuovo dominio.
    
    Parametri di filtro per la ricerca dominio
 
-È necessario
-compilare il form di creazione inserendo i seguenti dati:
+È necessario compilare il seguente form di creazione:
 
--  *Id Dominio*: identificativo del dominio. Obbligatorio, fornito da
-   AgID, corrisponde alla Partita Iva dell'ente.
--  Global Location Number: identificativo del dominio nella codifica
-   standard GS1. Obbligatorio, fornito da AgID.
--  Stazione: stazione tecnologica scelta in fase di adesione a pagoPA,
-   deve essere censita sul sistema. Obbligatorio, fornito da AgID.
+.. figure:: ../_images/18ParametriDominio.png
+   :align: center
+   :name: CampiDelDominio
+   
+   Campi del form di inserimento Nuovo Dominio
+
+
+.. csv-table:: Dettagli di un nuovo Dominio
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Id Dominio", "Identificativo del dominio, fornito da AgID, corrisponde alla Partita Iva dell'ente", "Obbligatorio"
+  "Ragione Sociale", "Ragione sociale del dominio", "Obbligatorio"
+  "Area", "Identificativo interno dell'Area", ""
+  "GLN (Global Location Number)", "identificativo del dominio nella codifica standard GS1. Obbligatorio, fornito da AgIDD", ""
+  "Intermediario", "Intermediario selezionato", "Obbligatorio"
+  "Stazione", "Stazione tecnologica scelta in fase di adesione a pagoPA, deve ovviamente essere stata già censita sul sistema", "Obbligatorio"
+  "Riferimenti anagrafici del Dominio", "riferimenti anagrafici del dominio forniti dal Referente dei Pagamenti: Indirizzo (Indirizzo completo di toponimo), Numero Civico, CAP, Località, Provincia, Nazione (condice di due lettere, IT per Itlia), eMail, PEC, Sito web, Telefono, Fax", ""
+    "Località", "", ""
+  "Ragione Sociale", "Chiave segreta, fornita da AgID", ""
+  "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
+
+inserendo i seguenti dati:
+
+
+
+-  
 -  Dati anagrafici: riferimenti anagrafici del dominio forniti dal
    Referente dei Pagamenti. Obbligatoria solo la ragione sociale.
 -  CBILL: codice CBILL per i domini che supportano questa modalità di
