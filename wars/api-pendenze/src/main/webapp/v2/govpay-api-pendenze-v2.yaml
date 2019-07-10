@@ -485,13 +485,6 @@ components:
       required: false
       schema:
         type: string
-    risultatiPerPagina:
-      name: risultatiPerPagina
-      in: query
-      description: How many items to return at one time (max 100)
-      required: false
-      schema:
-        $ref: '#/components/schemas/RisultatiPerPagina'
     pagina:
       name: pagina
       in: query
@@ -513,6 +506,13 @@ components:
       schema:
         type: string
         example: +name
+    risultatiPerPagina:
+      name: risultatiPerPagina
+      in: query
+      description: How many items to return at one time (max 100)
+      required: false
+      schema:
+        $ref: '#/components/schemas/RisultatiPerPagina'        
     Etag:
       name: Etag
       description: |
