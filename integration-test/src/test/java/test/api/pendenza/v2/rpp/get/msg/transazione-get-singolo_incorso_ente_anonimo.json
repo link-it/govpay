@@ -68,7 +68,7 @@
 	"rt": "##null",
 	"pendenza": {
 		"idTipoPendenza": "#notnull",
-		"causale": "#notnull",
+		"descrizione": "#notnull",
 		"soggettoPagatore": "##null",
 		"importo": "#? isImportoConDueDecimali(_)",
 		"numeroAvviso": "#ignore",

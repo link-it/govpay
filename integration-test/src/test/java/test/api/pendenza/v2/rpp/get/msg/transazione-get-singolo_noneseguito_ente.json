@@ -167,7 +167,7 @@
 	},
 	"pendenza": {
 		"idTipoPendenza": "#notnull",
-		"causale": "#notnull",
+		"descrizione": "#notnull",
 		"soggettoPagatore": "#notnull",
 		"importo": "#? isImportoConDueDecimali(_)",
 		"numeroAvviso": "#ignore",

@@ -1,6 +1,6 @@
 {  
    "idTipoPendenza":"#string",
-   "causale":"#notnull",
+   "descrizione":"#notnull",
    "soggettoPagatore":"#notnull",
    "importo":"#? isImportoConDueDecimali(_)",
    "numeroAvviso":"#ignore",
