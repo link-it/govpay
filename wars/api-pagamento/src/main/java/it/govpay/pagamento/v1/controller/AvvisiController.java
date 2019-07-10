@@ -35,7 +35,7 @@ public class AvvisiController extends BaseController {
 
 
 
-    public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String idDebitore) {
+    public Response avvisiIdDominioNumeroAvvisoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String idDebitore) {
     	String methodName = "avvisiIdDominioIuvGET";  
 		String transactionId = this.context.getTransactionId();
 
@@ -48,10 +48,9 @@ public class AvvisiController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 
-			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(user, idDominio);
+			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(user, idDominio, numeroAvviso);
 			getAvvisoDTO.setAccessoAnonimo(true);
 			getAvvisoDTO.setCfDebitore(idDebitore);
-			getAvvisoDTO.setIuv(iuv);
 			
 			String accept = MediaType.APPLICATION_JSON;
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
@@ -78,7 +77,7 @@ public class AvvisiController extends BaseController {
 				} catch (PendenzaNonTrovataException pnte) {
 					avviso = new Avviso();
 					avviso.setStato(StatoEnum.SCONOSCIUTO);
-					avviso.setNumeroAvviso(iuv);
+					avviso.setNumeroAvviso(numeroAvviso);
 					avviso.setIdDominio(idDominio);
 				}
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 

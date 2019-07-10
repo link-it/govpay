@@ -6,7 +6,7 @@ Background:
 * call read('classpath:configurazione/v1/anagrafica.feature')
 * configure followRedirects = false
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
@@ -15,7 +15,7 @@ Scenario: Iban appoggio in tributo precaricato iniziativa ente
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza
@@ -26,7 +26,7 @@ Then status 201
 
 * def numeroAvviso = response.numeroAvviso
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -53,7 +53,7 @@ Scenario: Iban appoggio in tributo non precaricato iniziativa ente
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -76,7 +76,7 @@ And match response.rpp[0].rpt.datiVersamento.datiSingoloVersamento[0].bicAppoggi
 Scenario: Iban appoggio in tributo spontaneo iniziativa ente
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo.json')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -101,7 +101,7 @@ Scenario: Iban appoggio in pendenza precaricato iniziativa ente
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenza.voci[0].codEntrata = null
 * set pendenza.voci[0].ibanAccredito = ibanAccredito
 * set pendenza.voci[0].ibanAppoggio = ibanAccreditoPostale
@@ -117,7 +117,7 @@ Then status 201
 
 * def numeroAvviso = response.numeroAvviso
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -155,7 +155,7 @@ Scenario: Iban appoggio in pendenza non precaricato iniziativa ente
 
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -178,7 +178,7 @@ And match response.rpp[0].rpt.datiVersamento.datiSingoloVersamento[0].bicAppoggi
 Scenario: Iban appoggio in pendenza spontaneo iniziativa ente
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo.json')
 * set pagamentoPost.pendenze[0].voci[1].ibanAppoggio = ibanAccreditoPostale
 
 Given url pagamentiBaseurl
@@ -204,7 +204,7 @@ Scenario: Iban appoggio in tributo precaricato iniziativa psp
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza
@@ -275,7 +275,7 @@ Scenario: Iban appoggio in pendenza precaricato iniziativa psp
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenza.voci[0].codEntrata = null
 * set pendenza.voci[0].ibanAccredito = ibanAccredito
 * set pendenza.voci[0].ibanAppoggio = ibanAccreditoPostale

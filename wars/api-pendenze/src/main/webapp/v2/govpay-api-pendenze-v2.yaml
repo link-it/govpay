@@ -1075,6 +1075,7 @@ components:
           example: ABC00000001
         datiAllegati:
           type: object
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
         tassonomia:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
@@ -1229,7 +1230,7 @@ components:
               type: string
               description: Stato della voce di pagamento
               enum:
-                - Eseguito 
+                - Eseguito
                 - Non eseguito
                 - Anomalo
             datiAllegati:

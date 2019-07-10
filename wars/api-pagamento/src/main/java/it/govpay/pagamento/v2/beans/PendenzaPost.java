@@ -49,8 +49,8 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 	@JsonProperty("idUnitaOperativa")
 	private String idUnitaOperativa = null;
 
-        @JsonProperty("idTipoPendenza")
-        private String idTipoPendenza = null;
+    @JsonProperty("idTipoPendenza")
+    private String idTipoPendenza = null;
 
 	@JsonProperty("nome")
 	private String nome = null;
@@ -563,8 +563,8 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 		sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
 		sb.append("    tassonomia: ").append(this.toIndentedString(this.tassonomia)).append("\n");
 		sb.append("    tassonomiaAvviso: ").append(this.toIndentedString(this.tassonomiaAvviso)).append("\n");
-    sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
-    sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
+		sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
+		sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
 		sb.append("    voci: ").append(this.toIndentedString(this.voci)).append("\n");
 		sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
 		sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
@@ -611,55 +611,68 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
 				vf.getValidator("direzione", this.direzione).isNull();
 				vf.getValidator("divisione", this.divisione).isNull();
+				if(this.dati != null)
+					throw new ValidationException("Il campo dati deve essere vuoto.");
 			} catch (ValidationException ve) {
 				throw new ValidationException("Pendenza riferita per identificativo A2A. " + ve.getMessage());
 			}
 			return;
-		} else if(this.idA2A == null && this.idDominio != null && this.numeroAvviso != null) {
-			vf.getValidator("numeroAvviso", this.numeroAvviso).notNull().pattern("[0-9]{18}");
+		}else if(this.idA2A == null && this.idDominio != null) {
 			validatoreId.validaIdDominio("idDominio", this.idDominio);
-			try {
-				vf.getValidator("idUnitaOperativa", this.idUnitaOperativa).isNull();
-				vf.getValidator("nome", this.nome).isNull();
-				vf.getValidator("causale", this.causale).isNull();
-				vf.getValidator("soggettoPagatore", this.soggettoPagatore).isNull();
-				vf.getValidator("importo", this.importo).isNull();
-				vf.getValidator("dataValidita", this.dataValidita).isNull();
-				vf.getValidator("dataScadenza", this.dataScadenza).isNull();
-				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
-				vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
-				vf.getValidator("voci", this.voci).isNull();
-				vf.getValidator("idA2A", this.idA2A).isNull();
-				vf.getValidator("idPendenza", this.idPendenza).isNull();
-				vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
-				vf.getValidator("direzione", this.direzione).isNull();
-				vf.getValidator("divisione", this.divisione).isNull();
-			} catch (ValidationException ve) {
-				throw new ValidationException("Pendenza riferita per numero avviso. " + ve.getMessage());
+			
+			// idDominio e' chiave insieme a numeroAvviso oppure IdTipoPendenza se sono entrambe null ho errore
+			if(this.numeroAvviso == null && this.idTipoPendenza == null) {
+				throw new ValidationException("Pendenza riferita per numeroAvviso o idTipoPendenza: dati mancanti");
 			}
-		} else if(this.idA2A == null && this.idDominio != null && this.idTipoPendenza != null) {
-			validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
-			validatoreId.validaIdDominio("idDominio", this.idDominio);
-			try {
-				if(this.dati == null)
-					throw new ValidationException("Il campo dati non deve essere vuoto.");
-				vf.getValidator("numeroAvviso", this.numeroAvviso).isNull();
-				vf.getValidator("idUnitaOperativa", this.idUnitaOperativa).isNull();
-				vf.getValidator("nome", this.nome).isNull();
-				vf.getValidator("causale", this.causale).isNull();
-				vf.getValidator("soggettoPagatore", this.soggettoPagatore).isNull();
-				vf.getValidator("importo", this.importo).isNull();
-				vf.getValidator("dataValidita", this.dataValidita).isNull();
-				vf.getValidator("dataScadenza", this.dataScadenza).isNull();
-				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
-				vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
-				vf.getValidator("voci", this.voci).isNull();
-				vf.getValidator("idA2A", this.idA2A).isNull();
-				vf.getValidator("idPendenza", this.idPendenza).isNull();
-				vf.getValidator("direzione", this.direzione).isNull();
-				vf.getValidator("divisione", this.divisione).isNull();
-			} catch (ValidationException ve) {
-				throw new ValidationException("Pendenza modello 4. " + ve.getMessage());
+			
+			if(this.numeroAvviso != null && this.idTipoPendenza == null) {
+				vf.getValidator("numeroAvviso", this.numeroAvviso).notNull().pattern("[0-9]{18}");
+				try {
+					vf.getValidator("idUnitaOperativa", this.idUnitaOperativa).isNull();
+					vf.getValidator("nome", this.nome).isNull();
+					vf.getValidator("causale", this.causale).isNull();
+					vf.getValidator("soggettoPagatore", this.soggettoPagatore).isNull();
+					vf.getValidator("importo", this.importo).isNull();
+					vf.getValidator("dataValidita", this.dataValidita).isNull();
+					vf.getValidator("dataScadenza", this.dataScadenza).isNull();
+					vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
+					vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
+					vf.getValidator("voci", this.voci).isNull();
+					vf.getValidator("idA2A", this.idA2A).isNull();
+					vf.getValidator("idPendenza", this.idPendenza).isNull();
+					vf.getValidator("idTipoPendenza", this.idTipoPendenza).isNull();
+					vf.getValidator("direzione", this.direzione).isNull();
+					vf.getValidator("divisione", this.divisione).isNull();
+					if(this.dati != null)
+						throw new ValidationException("Il campo dati deve essere vuoto.");
+				} catch (ValidationException ve) {
+					throw new ValidationException("Pendenza riferita per numero avviso. " + ve.getMessage());
+				}
+			}
+			
+			if(this.numeroAvviso == null && this.idTipoPendenza != null) {
+				validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
+				try {
+					if(this.dati == null)
+						throw new ValidationException("Il campo dati non deve essere vuoto.");
+					vf.getValidator("numeroAvviso", this.numeroAvviso).isNull();
+					vf.getValidator("idUnitaOperativa", this.idUnitaOperativa).isNull();
+					vf.getValidator("nome", this.nome).isNull();
+					vf.getValidator("causale", this.causale).isNull();
+					vf.getValidator("soggettoPagatore", this.soggettoPagatore).isNull();
+					vf.getValidator("importo", this.importo).isNull();
+					vf.getValidator("dataValidita", this.dataValidita).isNull();
+					vf.getValidator("dataScadenza", this.dataScadenza).isNull();
+					vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
+					vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
+					vf.getValidator("voci", this.voci).isNull();
+					vf.getValidator("idA2A", this.idA2A).isNull();
+					vf.getValidator("idPendenza", this.idPendenza).isNull();
+					vf.getValidator("direzione", this.direzione).isNull();
+					vf.getValidator("divisione", this.divisione).isNull();
+				} catch (ValidationException ve) {
+					throw new ValidationException("Pendenza modello 4. " + ve.getMessage());
+				}
 			}
 		} else {
 			validatoreId.validaIdDominio("idDominio", this.idDominio);

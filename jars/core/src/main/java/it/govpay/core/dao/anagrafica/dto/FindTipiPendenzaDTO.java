@@ -34,7 +34,7 @@ public class FindTipiPendenzaDTO extends BasicFindRequestDTO {
 	private Boolean abilitato;
 	private TipoVersamento.Tipo tipo;
 	private Boolean form;
-	
+		
 	public FindTipiPendenzaDTO(Authentication user) throws ServiceException {
 		super(user);
 		this.addSortField("idTipoPendenza", it.govpay.orm.TipoVersamento.model().COD_TIPO_VERSAMENTO);

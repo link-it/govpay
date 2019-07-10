@@ -6,7 +6,7 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo.json')
 * set pagamentoPost.soggettoVersante.tipo = 'F'
 * set pagamentoPost.soggettoVersante.identificativo = 'VRDGPP65B03A112N'
 * set pagamentoPost.soggettoVersante.anagrafica = 'Giuseppe Verdi'
@@ -133,7 +133,7 @@ Scenario: Riferimento avviso errato
 Given url pagamentiBaseurl
 And path '/pagamenti'
 And headers basicAutenticationHeader
-And request { pendenze: [ { idDominio: idDominio, numeroAvviso: null } ] }
+And request { pendenze: [ { idDominio: '00000000000', numeroAvviso: null } ] }
 When method post
 Then status 400
 

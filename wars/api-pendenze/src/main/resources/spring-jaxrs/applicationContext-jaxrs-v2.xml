@@ -51,10 +51,10 @@
         
    	<!-- JAX-RS Service Impl -->
 
-   	<b:bean id="domini" class="it.govpay.pendenze.v2.Domini"/>
-   	<b:bean id="pendenze" class="it.govpay.pendenze.v2.Pendenze"/>
-   	<b:bean id="profilo" class="it.govpay.pendenze.v2.Profilo"/>
-   	<b:bean id="rpp" class="it.govpay.pendenze.v2.Rpp"/>
+   	<b:bean id="dominiV2" class="it.govpay.pendenze.v2.Domini"/>
+   	<b:bean id="pendenzeV2" class="it.govpay.pendenze.v2.Pendenze"/>
+   	<b:bean id="profiloV2" class="it.govpay.pendenze.v2.Profilo"/>
+   	<b:bean id="rppV2" class="it.govpay.pendenze.v2.Rpp"/>
        
    	<!-- JAX-RS Configuration -->
    
@@ -63,10 +63,10 @@
 	<!-- BASIC_START -->
     <jaxrs:server id="apiPendenzeBasicV2" address="/basic/v2/">
         <jaxrs:serviceBeans>
-                <ref bean="domini" />
-			   	<ref bean="pendenze" />
-			   	<ref bean="profilo" />
-			   	<ref bean="rpp" />
+                <ref bean="dominiV2" />
+			   	<ref bean="pendenzeV2" />
+			   	<ref bean="profiloV2" />
+			   	<ref bean="rppV2" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -85,10 +85,10 @@
     <!-- SSL_START -->
     <jaxrs:server id="apiPendenzeSSLV2" address="/ssl/v2/">
         <jaxrs:serviceBeans>
-                <ref bean="domini" />
-			   	<ref bean="pendenze" />
-			   	<ref bean="profilo" />
-			   	<ref bean="rpp" />
+                <ref bean="dominiV2" />
+			   	<ref bean="pendenzeV2" />
+			   	<ref bean="profiloV2" />
+			   	<ref bean="rppV2" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -107,10 +107,10 @@
     <!-- HEADER_START -->    
     <jaxrs:server id="apiPendenzeHeaderV2" address="/header/v2/">
         <jaxrs:serviceBeans>
-                <ref bean="domini" />
-			   	<ref bean="pendenze" />
-			   	<ref bean="profilo" />
-			   	<ref bean="rpp" />
+                <ref bean="dominiV2" />
+			   	<ref bean="pendenzeV2" />
+			   	<ref bean="profiloV2" />
+			   	<ref bean="rppV2" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />

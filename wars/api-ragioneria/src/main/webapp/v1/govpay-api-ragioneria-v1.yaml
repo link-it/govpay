@@ -228,6 +228,12 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: stato
+          description: filtro sullo stato del flusso
+          required: false
+          schema:
+            $ref: '#/components/schemas/statoFlussoRendicontazione'
       responses:
         '200':
           description: Lista dei flussi rendicontazione
@@ -300,6 +306,36 @@ paths:
             type: integer
             default: 25
             maximum: 200
+        - name: ordinamento
+          in: query
+          description: >-
+            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * data
+          required: false
+          schema:
+            type: string
+            format: csv
+            default: +data
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di riscossione
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di riscossione
+          required: false
+          schema:
+            type: string
+            format: date            
+        - name: idDominio
+          in: query
+          description: filtro per dominio creditore
+          required: false
+          schema:
+            type: string
       responses:
         '201':
           description: Dettaglio dell'incasso
@@ -843,7 +879,7 @@ components:
           example: ABC00000001
         datiAllegati:
           type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
         tassonomia:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
@@ -1150,7 +1186,15 @@ components:
       type: string
       enum:
         - ENTRATA
-        - MBT       
+        - MBT
+    statoFlussoRendicontazione:
+      description: Stato del flusso di rendicontazione
+      example: Acquisito
+      type: string
+      enum:
+        - Acquisito
+        - Anomalo
+        - Rifiutato
     flussoRendicontazioneIndex:
       type: object
       required:
@@ -1384,4 +1428,4 @@ components:
         acl:
           type: array
           items:
-            $ref: '#/components/schemas/aclPost'     
+            $ref: '#/components/schemas/aclPost'

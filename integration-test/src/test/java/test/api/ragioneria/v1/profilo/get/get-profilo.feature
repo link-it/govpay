@@ -21,6 +21,6 @@ And match response ==
    "nome":"IDA2A01",
    "domini":"#[]",
    "acl":"#[]",
-   "tipiPendenza":"#[]"
+   "entrate":"#[]"
 }
 """

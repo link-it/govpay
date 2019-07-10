@@ -25,7 +25,7 @@ And path '/pendenze', idA2A, idPendenza
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response == read('classpath:test/api/pendenza/v1/pendenze/get/msg/pendenza-get-dettaglio.json')
+And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
 
 * match response.numeroAvviso == responsePut.numeroAvviso
 * match response.stato == 'NON_ESEGUITA'
@@ -63,7 +63,7 @@ And path '/pendenze', idA2A, idPendenza
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response == read('classpath:test/api/pendenza/v1/pendenze/get/msg/pendenza-get-dettaglio.json')
+And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
 
 * match response.numeroAvviso == responsePut.numeroAvviso
 * match response.stato == 'NON_ESEGUITA'

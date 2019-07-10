@@ -11,7 +11,7 @@ Background:
 
 Scenario: Pagamento spontaneo autenticato spid con entrata riferita
 
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -39,7 +39,7 @@ When method put
 Then status 200
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'

@@ -23,6 +23,11 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private Integer indiceDati;
 	private String codVersamentoEnte;
 	private String codApplicazione;
+	private Date dataPagamento;
+	private String codTipoVersamento;
+	private String codEntrata;
+	private String identificativoDebitore;
+	private Integer anno; 
 	
 	public String getCodDominio() {
 		return codDominio;
@@ -108,7 +113,37 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
 	}
-	
+	public Date getDataPagamento() {
+		return dataPagamento;
+	}
+	public void setDataPagamento(Date dataPagamento) {
+		this.dataPagamento = dataPagamento;
+	}
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
+	public String getCodEntrata() {
+		return codEntrata;
+	}
+	public void setCodEntrata(String codEntrata) {
+		this.codEntrata = codEntrata;
+	}
+	public String getIdentificativoDebitore() {
+		return identificativoDebitore;
+	}
+	public void setIdentificativoDebitore(String identificativoDebitore) {
+		this.identificativoDebitore = identificativoDebitore;
+	}
+	public Integer getAnno() {
+		return anno;
+	}
+	public void setAnno(Integer anno) {
+		this.anno = anno;
+	}
+
 	public class IUVComparator implements Comparator<EntrataPrevista> {
 		@Override
 		public int compare(EntrataPrevista o1, EntrataPrevista o2) {

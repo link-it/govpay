@@ -17,7 +17,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 
 Given url ragioneriaBaseurl
 And path '/riscossioni', <riscossione>.idDominio, <riscossione>.iuv, <riscossione>.iur, <riscossione>.indice
@@ -31,6 +31,9 @@ And match response ==
 	iuv:'#(<riscossione>.iuv)', 
 	iur:'#(<riscossione>.iur)', 
 	indice:'#(<riscossione>.indice)', 
+	pendenza:'#notnull',
+	vocePendenza:'#notnull',
+	rpp:'#notnull',
 	stato:'RISCOSSA', 
 	tipo:'ENTRATA', 
 	importo:'#(<riscossione>.importo)', 
@@ -74,7 +77,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 
 Given url ragioneriaBaseurl
 And path '/riscossioni', <riscossione>.idDominio, <riscossione>.iuv, <riscossione>.iur, <riscossione>.indice

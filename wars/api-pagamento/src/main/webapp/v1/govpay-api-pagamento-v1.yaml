@@ -453,6 +453,19 @@ paths:
           required: false
           schema:
             type: string
+        - in: query
+          name: avvisaturaDigitale
+          description: Indica se la pendenza deve essere avvisata digitalmente
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: modalitaAvvisaturaDigitale
+          description: Modalita' di avvisatura scelta per le pendenza
+          required: false
+          schema:
+            $ref: '#/components/schemas/modalitaAvvisaturaDigitale'
       requestBody:
         content:
           application/json:
@@ -530,12 +543,26 @@ paths:
           description: >-
             csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
              * dataRichiestaPagamento
-             * stato
+             * smart
           required: false
           schema:
             type: string
             format: csv
             default: +dataRichiestaPagamento
+        - name: dataDa
+          in: query
+          description: Inizio della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time     
+        - name: dataA
+          in: query
+          description: Fine della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time              
         - in: query
           name: stato
           description: Filtro sullo stato del pagamento
@@ -552,6 +579,13 @@ paths:
         - in: query
           name: idSessionePortale
           description: Filtro sull'identificativo di sessione assegnato dal chiamante
+          required: false
+          schema:
+            type: string
+            example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+        - in: query
+          name: idSessione
+          description: Filtro sull'identificativo di sessione assegnato dal psp
           required: false
           schema:
             type: string
@@ -680,6 +714,20 @@ paths:
             type: string
             format: csv
             default: +dataRichiestaPagamento
+        - name: dataDa
+          in: query
+          description: Inizio della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time     
+        - name: dataA
+          in: query
+          description: Fine della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time
         - name: idDominio
           in: query
           description: filtro per dominio creditore
@@ -806,6 +854,20 @@ paths:
             type: string
             format: csv
             default: +dataRichiesta
+        - name: dataDa
+          in: query
+          description: Inizio della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time     
+        - name: dataA
+          in: query
+          description: Fine della finestra temporale di osservazione
+          required: false
+          schema:
+            type: string  
+            format: date-time
         - in: query
           name: idDominio
           description: Codice fiscale del dominio beneficiario
@@ -977,6 +1039,11 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: visualizzaSoggettoDebitore
+          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
+          schema:
+            type: boolean
       responses:
         '200':
           description: Ricevuta di pagamento
@@ -1002,7 +1069,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'             
-  '/avvisi/{idDominio}/{iuv}':
+  '/avvisi/{idDominio}/{numeroAvviso}':
     get:
       tags:
         - Pendenze
@@ -1016,8 +1083,8 @@ paths:
           schema:
             type: string
         - in: path
-          name: iuv
-          description: Identificativo del versamento
+          name: numeroAvviso
+          description: Numero identificativo dell'avviso di pagamento
           required: true
           schema:
             type: string
@@ -1242,7 +1309,7 @@ components:
           pattern: "[A-Za-z0-9_]+([\\-\\+\\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*\\.[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*"
         cellulare:
           type: string
-          example: +39 000 1234567    
+          example: +39 000-1234567    
           pattern: "\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}"
     segnalazione:
       type: object
@@ -2004,7 +2071,7 @@ components:
           example: ABC00000001
         datiAllegati:
           type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.          
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.   
         tassonomia:
           type: string
           description: Macro categoria della pendenza secondo la classificazione del creditore
@@ -2423,3 +2490,9 @@ components:
         - SIOPE
         - ALTRO
       example: SIOPE
+    modalitaAvvisaturaDigitale:
+      example: ASINCRONA
+      type: string
+      enum:
+        - ASINCRONA
+        - SINCRONA

@@ -18,7 +18,7 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio, <idRiconciliazione>

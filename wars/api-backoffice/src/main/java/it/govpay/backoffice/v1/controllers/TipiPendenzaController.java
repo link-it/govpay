@@ -47,7 +47,7 @@ public class TipiPendenzaController extends BaseController {
 
 
 
-    public Response tipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form) {
+    public Response tipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, String idTipoPendenza, String descrizione) {
     	String methodName = "tipiPendenzaGET";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -89,6 +89,8 @@ public class TipiPendenzaController extends BaseController {
 				
 				findTipiPendenzaDTO.setIdTipiVersamento(idTipiVersamentoAutorizzati);
 			}
+			findTipiPendenzaDTO.setDescrizione(descrizione);
+			findTipiPendenzaDTO.setCodTipoVersamento(idTipoPendenza);
 			
 			// INIT DAO
 			

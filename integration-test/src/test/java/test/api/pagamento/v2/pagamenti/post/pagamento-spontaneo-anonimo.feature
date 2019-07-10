@@ -10,7 +10,7 @@ Background:
 
 Scenario: Pagamento spontaneo anonimo con entrata riferita
 
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.soggettoVersante = 
 """
 {
@@ -61,7 +61,7 @@ And match response.rpp[0].rpt.soggettoPagatore == null
 Scenario: Pagamento spontaneo anonimo con entrata riferita non consentita su spontaneo
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.pendenze[0].voci[0].codEntrata = codDovuto
 * set pagamentoPost.soggettoVersante = 
 """
@@ -98,7 +98,7 @@ And match response ==
 
 Scenario: Pagamento spontaneo anonimo senza versante
 
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.soggettoVersante = null
 
 Given url pagamentiBaseurl
@@ -109,7 +109,7 @@ Then status 400
 
 Scenario: Pagamento spontaneo anonimo senza email
 
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.soggettoVersante = 
 """
 {

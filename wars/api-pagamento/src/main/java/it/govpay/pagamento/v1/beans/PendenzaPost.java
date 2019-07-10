@@ -524,7 +524,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				throw new ValidationException("Pendenza riferita per identificativo A2A. " + ve.getMessage());
 			}
 			return;
-		} else if(this.idA2A == null && this.idDominio != null && this.numeroAvviso != null) {
+		} else if(this.idA2A == null && this.idDominio != null) {
 			vf.getValidator("numeroAvviso", this.numeroAvviso).notNull().pattern("[0-9]{18}");
 			validatoreId.validaIdDominio("idDominio", this.idDominio);
 			try {

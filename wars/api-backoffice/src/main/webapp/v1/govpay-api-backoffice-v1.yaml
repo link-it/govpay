@@ -1488,6 +1488,20 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: idTipoPendenza
+          in: query
+          description: Identificativo della tipologia di pendenza
+          required: false
+          schema:
+            type: string
+            example: IMU
+        - name: descrizione
+          in: query
+          description: Descrizione della tipologia di pendenza
+          required: false
+          schema:
+            type: string
+            example: Imposta Municipale
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -2393,6 +2407,13 @@ paths:
           schema:
             type: string
             format: date
+        - name: idTipoPendenza
+          in: query
+          description: Identificativo della tipologia di pendenza
+          required: false
+          schema:
+            type: string
+            example: IMU
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca

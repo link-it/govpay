@@ -51,22 +51,22 @@
         
    	<!-- JAX-RS Service Impl -->
 
-  	<b:bean id="domini" class="it.govpay.ragioneria.v2.Domini"/>
-   	<b:bean id="flussiRendicontazione" class="it.govpay.ragioneria.v2.FlussiRendicontazione"/>
-   	<b:bean id="incassi" class="it.govpay.ragioneria.v2.Incassi"/>
-   	<b:bean id="profilo" class="it.govpay.ragioneria.v2.Profilo"/>
-   	<b:bean id="riscossioni" class="it.govpay.ragioneria.v2.Riscossioni"/>
+  	<b:bean id="dominiV2" class="it.govpay.ragioneria.v2.Domini"/>
+   	<b:bean id="flussiRendicontazioneV2" class="it.govpay.ragioneria.v2.FlussiRendicontazione"/>
+   	<b:bean id="incassiV2" class="it.govpay.ragioneria.v2.Incassi"/>
+   	<b:bean id="profiloV2" class="it.govpay.ragioneria.v2.Profilo"/>
+   	<b:bean id="riscossioniV2" class="it.govpay.ragioneria.v2.Riscossioni"/>
        
    	<!-- JAX-RS Configuration -->
    
    <!-- BASIC_START -->
     <jaxrs:server id="apiRagioneriaBasicV2" address="/basic/v2/">
         <jaxrs:serviceBeans>
-               	<ref bean="domini" />
-			   	<ref bean="flussiRendicontazione" />
-			   	<ref bean="incassi" />
-			   	<ref bean="profilo" />
-			   	<ref bean="riscossioni" />
+               	<ref bean="dominiV2" />
+			   	<ref bean="flussiRendicontazioneV2" />
+			   	<ref bean="incassiV2" />
+			   	<ref bean="profiloV2" />
+			   	<ref bean="riscossioniV2" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -85,11 +85,11 @@
    <!-- SSL_START -->
     <jaxrs:server id="apiRagioneriaSSLV2" address="/ssl/v2/">
         <jaxrs:serviceBeans>
-               	<ref bean="domini" />
-			   	<ref bean="flussiRendicontazione" />
-			   	<ref bean="incassi" />
-			   	<ref bean="profilo" />
-			   	<ref bean="riscossioni" />
+               	<ref bean="dominiV2" />
+			   	<ref bean="flussiRendicontazioneV2" />
+			   	<ref bean="incassiV2" />
+			   	<ref bean="profiloV2" />
+			   	<ref bean="riscossioniV2" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -108,11 +108,11 @@
     <!-- HEADER_START -->
     <jaxrs:server id="apiRagioneriaHeaderV2" address="/header/v2/">
         <jaxrs:serviceBeans>
-               	<ref bean="domini" />
-			   	<ref bean="flussiRendicontazione" />
-			   	<ref bean="incassi" />
-			   	<ref bean="profilo" />
-			   	<ref bean="riscossioni" />
+               	<ref bean="dominiV2" />
+			   	<ref bean="flussiRendicontazioneV2" />
+			   	<ref bean="incassiV2" />
+			   	<ref bean="profiloV2" />
+			   	<ref bean="riscossioniV2" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />

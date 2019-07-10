@@ -4,7 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Scenario Outline: Errore di validazione della richiesta: <scenario>

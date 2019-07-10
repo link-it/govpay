@@ -6,10 +6,10 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo.json')
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pagamentoPostEntrataRiferita = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
+* def pagamentoPostEntrataRiferita = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
 
 Scenario: Data pagamento decorsa
 

@@ -28,6 +28,7 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	private String idA2A;
 	private String idPendenza;
 	private String iuv;
+	private String idTipoVersamento;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -82,5 +83,11 @@ public class ListaPendenzeDTO extends BasicFindRequestDTO{
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+	public String getIdTipoVersamento() {
+		return idTipoVersamento;
+	}
+	public void setIdTipoVersamento(String idTipoVersamento) {
+		this.idTipoVersamento = idTipoVersamento;
 	}
 }

@@ -10,7 +10,7 @@ Scenario: Pagamento avviso precaricato autenticato basic con indicazione del ver
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza
@@ -21,7 +21,7 @@ Then status 201
 
 * def numeroAvviso = response.numeroAvviso
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
 * set pagamentoPost.soggettoVersante = 
 """
 {
@@ -76,7 +76,7 @@ Scenario: Pagamento avviso precaricato autenticato basic senza indicazione del v
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza
@@ -87,7 +87,7 @@ Then status 201
 
 * def numeroAvviso = response.numeroAvviso
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'

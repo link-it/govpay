@@ -29,7 +29,7 @@ And match response ==
 {
 	"nome":"RSSMRA30A01H501I",
 	"domini":[],
-	"tipiPendenza":[],
+	"entrate":[],
 	"acl":[],
 	"anagrafica": {
 		"identificativo":"RSSMRA30A01H501I",
@@ -72,7 +72,7 @@ And match response ==
          "logo":"/domini/12345678901/logo"
       }
    ],
-   "tipiPendenza":[
+   "entrate":[
 
    ],
    "acl":[]

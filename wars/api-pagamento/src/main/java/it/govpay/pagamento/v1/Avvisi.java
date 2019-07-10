@@ -31,12 +31,12 @@ public class Avvisi extends BaseRsServiceV1{
 
 
     @GET
-    @Path("/{idDominio}/{iuv}")
+    @Path("/{idDominio}/{numeroAvviso}")
     
     @Produces({ "application/json", "application/pdf" })
-    public Response getAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @QueryParam("idDebitore") String idDebitore){
+    public Response getAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso, @QueryParam("idDebitore") String idDebitore){
         this.controller.setContext(this.getContext());
-        return this.controller.avvisiIdDominioIuvGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv, idDebitore);
+        return this.controller.avvisiIdDominioNumeroAvvisoGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso, idDebitore);
     }
 
 }

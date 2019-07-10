@@ -10,7 +10,7 @@ Scenario: Pagamento pendenza precaricata anonimo
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza
@@ -20,7 +20,7 @@ When method put
 Then status 201
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'public'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_pendenza.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_pendenza.json')
 * set pagamentoPost.soggettoVersante = 
 """
 {
@@ -74,7 +74,7 @@ Scenario: Pagamento avviso precaricato anonimo senza versante
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza
@@ -84,7 +84,7 @@ When method put
 Then status 201
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'public'})
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_pendenza.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_pendenza.json')
 * set pagamentoPost.soggettoVersante = null
 
 Given url pagamentiBaseurl

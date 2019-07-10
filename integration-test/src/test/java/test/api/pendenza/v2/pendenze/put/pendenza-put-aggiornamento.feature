@@ -5,12 +5,12 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 
 Scenario: Aggiornamento pendenza non pagata senza modifiche
 
-* def pendenzaGet = read('classpath:test/api/pendenza/v1/pendenze/get/msg/pendenza-get-dettaglio.json')
+* def pendenzaGet = read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -48,7 +48,7 @@ And match response == pendenzaGetResponse
 
 Scenario: Aggiornamento pendenza non pagata con modifica permessa
 
-* def pendenzaGet = read('classpath:test/api/pendenza/v1/pendenze/get/msg/pendenza-get-dettaglio.json')
+* def pendenzaGet = read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza
@@ -139,7 +139,7 @@ And match response ==
 
 Scenario: Aggiornamento pendenza annullata 
 
-* def pendenzaGet = read('classpath:test/api/pendenza/v1/pendenze/get/msg/pendenza-get-dettaglio.json')
+* def pendenzaGet = read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
 
 Given url pendenzeBaseurl
 And path '/pendenze', idA2A, idPendenza

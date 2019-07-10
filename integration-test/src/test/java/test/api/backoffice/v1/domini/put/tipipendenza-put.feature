@@ -59,8 +59,8 @@ Examples:
 | validazione | { "tipo": "angular2-json-schema-form", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 | trasformazione | { "tipo": "freemarker", "definizione": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
 | inoltro | idA2A |
-| promemoriaAvviso | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
-| promemoriaAvviso | { "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } |
-| promemoriaRicevuta | { "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": true } |
-| promemoriaRicevuta | { "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": false } |
+| promemoriaAvviso | { "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": true } |
+| promemoriaAvviso | { "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } |
+| promemoriaRicevuta | { "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": true } |
+| promemoriaRicevuta | { "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": false } |
 

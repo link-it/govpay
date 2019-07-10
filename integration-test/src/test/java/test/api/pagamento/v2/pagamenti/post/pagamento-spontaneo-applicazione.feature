@@ -10,7 +10,7 @@ Background:
 
 Scenario: Pagamento spontaneo basic con entrata riferita e versante specificato
 
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
 * set pagamentoPost.soggettoVersante = 
 """
@@ -62,7 +62,7 @@ And match response.rpp[0].rpt.soggettoVersante ==
 
 Scenario: Pagamento spontaneo basic autodeterminato e versante non specificato
 
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo.json')
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -82,7 +82,7 @@ And match response.rpp[0].rpt.soggettoVersante == null
 Scenario: Pagamento spontaneo basic con pendenza non consentita su spontaneo
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.pendenze[0].voci[0].codEntrata = codDovuto
 
 Given url pagamentiBaseurl

@@ -7,7 +7,7 @@ Background:
 
 Scenario: Acquisizione del profilo autenticato basic
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v1', autenticazione: 'basic'})
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Given url pagamentiBaseurl

@@ -2,7 +2,7 @@ Feature: Dettaglio pagamenti
 
 Background:
 
-* callonce read('classpath:utils/workflow/modello1/v1/modello1-bunch-pagamenti-v3.feature')
+* callonce read('classpath:utils/workflow/modello1/v2/modello1-bunch-pagamenti-v3.feature')
 
 Scenario Outline: Lettura dettaglio pagamento utente anonimo
 

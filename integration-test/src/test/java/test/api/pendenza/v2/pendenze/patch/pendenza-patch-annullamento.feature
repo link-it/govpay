@@ -8,7 +8,7 @@ Background:
 * def pendenzaPut = read('../put/msg/pendenza-put_monovoce_riferimento.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenzaGet = read('classpath:test/api/pendenza/v1/pendenze/get/msg/pendenza-get-dettaglio.json')
+* def pendenzaGet = read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
 
 Scenario: Annullamento pendenza non eseguita
 
