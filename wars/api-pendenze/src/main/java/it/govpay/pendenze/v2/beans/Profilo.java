@@ -12,8 +12,10 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "domini",
-"entrate",
+"tipiPendenza",
 "acl",
+"anagrafica",
+"identityData",
 })
 public class Profilo extends JSONSerializable {
   
@@ -21,16 +23,22 @@ public class Profilo extends JSONSerializable {
   private String nome = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = new ArrayList<>();
+  private List<Dominio> domini = new ArrayList<>();
   
   @JsonProperty("tipiPendenza")
   private List<TipoPendenza> tipiPendenza = new ArrayList<>();
   
   @JsonProperty("acl")
-  private List<AclPost> acl = new ArrayList<>();
+  private List<Acl> acl = new ArrayList<>();
+  
+  @JsonProperty("anagrafica")
+  private Soggetto anagrafica = null;
+  
+  @JsonProperty("identityData")
+  private Object identityData = null;
   
   /**
-   * Nome dell'utenza
+   * Nome o principal dell'utenza
    **/
   public Profilo nome(String nome) {
     this.nome = nome;
@@ -39,7 +47,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("nome")
   public String getNome() {
-    return this.nome;
+    return nome;
   }
   public void setNome(String nome) {
     this.nome = nome;
@@ -48,16 +56,16 @@ public class Profilo extends JSONSerializable {
   /**
    * domini su cui e' abilitato ad operare
    **/
-  public Profilo domini(List<DominioIndex> domini) {
+  public Profilo domini(List<Dominio> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<DominioIndex> getDomini() {
-    return this.domini;
+  public List<Dominio> getDomini() {
+    return domini;
   }
-  public void setDomini(List<DominioIndex> domini) {
+  public void setDomini(List<Dominio> domini) {
     this.domini = domini;
   }
 
@@ -71,7 +79,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("tipiPendenza")
   public List<TipoPendenza> getTipiPendenza() {
-    return this.tipiPendenza;
+    return tipiPendenza;
   }
   public void setTipiPendenza(List<TipoPendenza> tipiPendenza) {
     this.tipiPendenza = tipiPendenza;
@@ -79,17 +87,47 @@ public class Profilo extends JSONSerializable {
 
   /**
    **/
-  public Profilo acl(List<AclPost> acl) {
+  public Profilo acl(List<Acl> acl) {
     this.acl = acl;
     return this;
   }
 
   @JsonProperty("acl")
-  public List<AclPost> getAcl() {
-    return this.acl;
+  public List<Acl> getAcl() {
+    return acl;
   }
-  public void setAcl(List<AclPost> acl) {
+  public void setAcl(List<Acl> acl) {
     this.acl = acl;
+  }
+
+  /**
+   **/
+  public Profilo anagrafica(Soggetto anagrafica) {
+    this.anagrafica = anagrafica;
+    return this;
+  }
+
+  @JsonProperty("anagrafica")
+  public Soggetto getAnagrafica() {
+    return anagrafica;
+  }
+  public void setAnagrafica(Soggetto anagrafica) {
+    this.anagrafica = anagrafica;
+  }
+
+  /**
+   **/
+  public Profilo identityData(Object identityData) {
+    this.identityData = identityData;
+    return this;
+  }
+
+  @JsonProperty("identityData")
+  public Object getIdentityData() {
+    return identityData;
+  }
+  public void setIdentityData(Object identityData) {
+    this.identityData = identityData;
   }
 
   @Override
@@ -97,19 +135,21 @@ public class Profilo extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Profilo profilo = (Profilo) o;
-    return Objects.equals(this.nome, profilo.nome) &&
-        Objects.equals(this.domini, profilo.domini) &&
-        Objects.equals(this.tipiPendenza, profilo.tipiPendenza) &&
-        Objects.equals(this.acl, profilo.acl);
+    return Objects.equals(nome, profilo.nome) &&
+        Objects.equals(domini, profilo.domini) &&
+        Objects.equals(tipiPendenza, profilo.tipiPendenza) &&
+        Objects.equals(acl, profilo.acl) &&
+        Objects.equals(anagrafica, profilo.anagrafica) &&
+        Objects.equals(identityData, profilo.identityData);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.nome, this.domini, this.tipiPendenza, this.acl);
+    return Objects.hash(nome, domini, tipiPendenza, acl, anagrafica, identityData);
   }
 
   public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -126,10 +166,12 @@ public class Profilo extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
     
-    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
-    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
-    sb.append("    tipiPendenza: ").append(this.toIndentedString(this.tipiPendenza)).append("\n");
-    sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
+    sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
+    sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    anagrafica: ").append(toIndentedString(anagrafica)).append("\n");
+    sb.append("    identityData: ").append(toIndentedString(identityData)).append("\n");
     sb.append("}");
     return sb.toString();
   }

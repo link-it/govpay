@@ -11,32 +11,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
 @JsonPropertyOrder({
-"descrizione",
 "idTipoPendenza",
+"descrizione",
 })
 public class TipoPendenza extends JSONSerializable {
-  
-  @JsonProperty("descrizione")
-  private String descrizione = null;
   
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
   
-  /**
-   **/
-  public TipoPendenza descrizione(String descrizione) {
-    this.descrizione = descrizione;
-    return this;
-  }
-
   @JsonProperty("descrizione")
-  public String getDescrizione() {
-    return descrizione;
-  }
-  public void setDescrizione(String descrizione) {
-    this.descrizione = descrizione;
-  }
-
+  private String descrizione = null;
+  
   /**
    **/
   public TipoPendenza idTipoPendenza(String idTipoPendenza) {
@@ -52,6 +37,21 @@ public class TipoPendenza extends JSONSerializable {
     this.idTipoPendenza = idTipoPendenza;
   }
 
+  /**
+   **/
+  public TipoPendenza descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -61,13 +61,13 @@ public class TipoPendenza extends JSONSerializable {
       return false;
     }
     TipoPendenza tipoPendenza = (TipoPendenza) o;
-    return Objects.equals(descrizione, tipoPendenza.descrizione) &&
-        Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza);
+    return Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza) &&
+        Objects.equals(descrizione, tipoPendenza.descrizione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, idTipoPendenza);
+    return Objects.hash(idTipoPendenza, descrizione);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -83,9 +83,9 @@ public class TipoPendenza extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenza {\n");
-    
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("}");
     return sb.toString();
   }

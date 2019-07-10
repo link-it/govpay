@@ -841,6 +841,10 @@ components:
         - importo
         - voci
       properties:
+        idTipoPendenza:
+          type: string
+          description: Identificativo della tipologia pendenza
+          example: IMU
         idDominio:
           type: string
           description: Identificativo del dominio creditore
@@ -872,7 +876,15 @@ components:
           example: 123456789012345678
           pattern: "[0-9]18"
         tassonomiaAvviso:
-          $ref: '#/components/schemas/TassonomiaAvviso'  
+          $ref: '#/components/schemas/TassonomiaAvviso'
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione
         dataValidita:
           type: string
           format: date

@@ -11,7 +11,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.model.TipoVersamento;
-import it.govpay.pendenze.v2.beans.DominioIndex;
 import it.govpay.pendenze.v2.beans.Profilo;
 import it.govpay.pendenze.v2.beans.TipoPendenza;
 
@@ -33,9 +32,9 @@ public class ProfiloConverter {
 		
 		profilo.setNome(leggiProfilo.getNome());
 		if(leggiProfilo.getDomini()!=null) {
-			List<DominioIndex> dominiLst = new ArrayList<>();
+			List<it.govpay.pendenze.v2.beans.Dominio> dominiLst = new ArrayList<>();
 			for(Dominio dominio: leggiProfilo.getDomini()) {
-				dominiLst.add(DominiConverter.toRsModelIndex(dominio));
+				dominiLst.add(DominiConverter.toRsModel(dominio));
 			}
 			profilo.setDomini(dominiLst); 
 		}

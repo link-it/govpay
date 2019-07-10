@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * Esito della richiesta di pagamento:  * IN_CORSO: Pagamento in corso  * RIFIUTATO: Pagamento rifiutato  * ESEGUITO: Pagamento eseguito  * NON_ESEGUITO: Pagamento non eseguito  * ESEGUITO_PARZIALE: Pagamento parzialmente eseguito  * DECORRENZA: Decorrenza termini  * DECORRENZA_PARZIALE: Decorrenza termini parziale 
  */
-public enum EsitoRpt {
+public enum EsitoRpp {
   
   
   
@@ -37,7 +37,7 @@ public enum EsitoRpt {
 
   private String value;
 
-  EsitoRpt(String value) {
+  EsitoRpp(String value) {
     this.value = value;
   }
 
@@ -48,8 +48,8 @@ public enum EsitoRpt {
   }
 
   @JsonCreator
-  public static EsitoRpt fromValue(String text) {
-    for (EsitoRpt b : EsitoRpt.values()) {
+  public static EsitoRpp fromValue(String text) {
+    for (EsitoRpp b : EsitoRpp.values()) {
       if (String.valueOf(b.value).equals(text)) {
         return b;
       }

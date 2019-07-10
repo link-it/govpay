@@ -10,11 +10,10 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "numeroAvviso",
-"pdf"
+"pdf",
 })
 public class PendenzaCreata extends JSONSerializable {
   
-    
   @JsonProperty("idDominio")
   private String idDominio = null;
   
@@ -23,7 +22,7 @@ public class PendenzaCreata extends JSONSerializable {
   
   @JsonProperty("pdf")
   private String pdf = null;
-
+  
   /**
    * Identificativo del creditore dell'avviso
    **/
@@ -34,7 +33,7 @@ public class PendenzaCreata extends JSONSerializable {
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return this.idDominio;
+    return idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
@@ -50,14 +49,14 @@ public class PendenzaCreata extends JSONSerializable {
 
   @JsonProperty("numeroAvviso")
   public String getNumeroAvviso() {
-    return this.numeroAvviso;
+    return numeroAvviso;
   }
   public void setNumeroAvviso(String numeroAvviso) {
     this.numeroAvviso = numeroAvviso;
   }
 
   /**
-   * Base64 del pdf dell'avviso
+   * Stampa pdf dell'avviso
    **/
   public PendenzaCreata pdf(String pdf) {
     this.pdf = pdf;
@@ -66,30 +65,30 @@ public class PendenzaCreata extends JSONSerializable {
 
   @JsonProperty("pdf")
   public String getPdf() {
-    return this.pdf;
+    return pdf;
   }
   public void setPdf(String pdf) {
     this.pdf = pdf;
   }
-  
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PendenzaCreata avviso = (PendenzaCreata) o;
-    return 
-        Objects.equals(this.idDominio, avviso.idDominio) &&
-        Objects.equals(this.numeroAvviso, avviso.numeroAvviso) &&
-        Objects.equals(this.pdf, avviso.pdf);
+    PendenzaCreata pendenzaCreata = (PendenzaCreata) o;
+    return Objects.equals(idDominio, pendenzaCreata.idDominio) &&
+        Objects.equals(numeroAvviso, pendenzaCreata.numeroAvviso) &&
+        Objects.equals(pdf, pendenzaCreata.pdf);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idDominio, this.numeroAvviso, this.pdf);  }
+    return Objects.hash(idDominio, numeroAvviso, pdf);
+  }
 
   public static PendenzaCreata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
     return parse(json, PendenzaCreata.class);
@@ -97,16 +96,17 @@ public class PendenzaCreata extends JSONSerializable {
 
   @Override
   public String getJsonIdFilter() {
-    return "avviso";
+    return "pendenzaCreata";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Avviso {\n");
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    numeroAvviso: ").append(this.toIndentedString(this.numeroAvviso)).append("\n");
-    sb.append("    pdf: ").append(this.toIndentedString(this.pdf)).append("\n");
+    sb.append("class PendenzaCreata {\n");
+    
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
+    sb.append("    pdf: ").append(toIndentedString(pdf)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -121,7 +121,6 @@ public class PendenzaCreata extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-
 }
 
 

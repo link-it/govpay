@@ -3,12 +3,12 @@ package it.govpay.pendenze.v2.beans.converter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.pendenze.v2.beans.DominioIndex;
+import it.govpay.pendenze.v2.beans.Dominio;
 
 public class DominiConverter {
 	
-	public static DominioIndex toRsModelIndex(it.govpay.bd.model.Dominio dominio) throws ServiceException {
-		DominioIndex rsModel = new DominioIndex();
+	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) throws ServiceException {
+		Dominio rsModel = new Dominio();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
 		rsModel.setIdDominio(dominio.getCodDominio()); 
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
@@ -23,18 +23,9 @@ public class DominiConverter {
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
-		rsModel.setAuxDigit("" + dominio.getAuxDigit());
-		if(dominio.getSegregationCode() != null)
-			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
-		rsModel.setIuvPrefix(dominio.getIuvPrefix());
-		rsModel.setStazione(dominio.getStazione().getCodStazione());
-		rsModel.setContiAccredito(UriBuilderUtils.getContiAccreditoByDominio(dominio.getCodDominio()));
-		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
-		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
-		rsModel.setAbilitato(dominio.isAbilitato());
 		
 		return rsModel;
 	}

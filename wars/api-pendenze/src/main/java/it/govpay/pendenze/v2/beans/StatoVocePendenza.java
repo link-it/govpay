@@ -1,46 +1,47 @@
 package it.govpay.pendenze.v2.beans;
 
+
+/**
+ * Stato della voce di pagamento
+ **/
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 
 /**
- * Tipologia di codifica del capitolo di bilancio
+ * Stato della voce di pagamento
  */
-public enum TipoContabilita {
+public enum StatoVocePendenza {
   
   
   
   
-  CAPITOLO("CAPITOLO"),
+  ESEGUITO("Eseguito"),
   
   
-  SPECIALE("SPECIALE"),
+  NON_ESEGUITO("Non eseguito"),
   
   
-  SIOPE("SIOPE"),
-  
-  
-  ALTRO("ALTRO");
+  ANOMALO("Anomalo");
   
   
   
 
   private String value;
 
-  TipoContabilita(String value) {
+  StatoVocePendenza(String value) {
     this.value = value;
   }
 
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(this.value);
+    return String.valueOf(value);
   }
 
   @JsonCreator
-  public static TipoContabilita fromValue(String text) {
-    for (TipoContabilita b : TipoContabilita.values()) {
+  public static StatoVocePendenza fromValue(String text) {
+    for (StatoVocePendenza b : StatoVocePendenza.values()) {
       if (String.valueOf(b.value).equals(text)) {
         return b;
       }

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"idUnita",
+"idDominio",
 "ragioneSociale",
 "indirizzo",
 "civico",
@@ -21,12 +21,14 @@ import it.govpay.core.beans.JSONSerializable;
 "tel",
 "fax",
 "web",
-"area",
+"gln",
+"cbill",
+"logo",
 })
-public class UnitaOperativa extends JSONSerializable {
+public class Dominio extends JSONSerializable {
   
-  @JsonProperty("idUnita")
-  private String idUnita = null;
+  @JsonProperty("idDominio")
+  private String idDominio = null;
   
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
@@ -64,29 +66,35 @@ public class UnitaOperativa extends JSONSerializable {
   @JsonProperty("web")
   private String web = null;
   
-  @JsonProperty("area")
-  private String area = null;
+  @JsonProperty("gln")
+  private String gln = null;
+  
+  @JsonProperty("cbill")
+  private String cbill = null;
+  
+  @JsonProperty("logo")
+  private String logo = null;
   
   /**
    * Codice fiscale
    **/
-  public UnitaOperativa idUnita(String idUnita) {
-    this.idUnita = idUnita;
+  public Dominio idDominio(String idDominio) {
+    this.idDominio = idDominio;
     return this;
   }
 
-  @JsonProperty("idUnita")
-  public String getIdUnita() {
-    return idUnita;
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
   }
-  public void setIdUnita(String idUnita) {
-    this.idUnita = idUnita;
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
   }
 
   /**
    * Ragione sociale
    **/
-  public UnitaOperativa ragioneSociale(String ragioneSociale) {
+  public Dominio ragioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
     return this;
   }
@@ -101,7 +109,7 @@ public class UnitaOperativa extends JSONSerializable {
 
   /**
    **/
-  public UnitaOperativa indirizzo(String indirizzo) {
+  public Dominio indirizzo(String indirizzo) {
     this.indirizzo = indirizzo;
     return this;
   }
@@ -116,7 +124,7 @@ public class UnitaOperativa extends JSONSerializable {
 
   /**
    **/
-  public UnitaOperativa civico(String civico) {
+  public Dominio civico(String civico) {
     this.civico = civico;
     return this;
   }
@@ -131,7 +139,7 @@ public class UnitaOperativa extends JSONSerializable {
 
   /**
    **/
-  public UnitaOperativa cap(String cap) {
+  public Dominio cap(String cap) {
     this.cap = cap;
     return this;
   }
@@ -146,7 +154,7 @@ public class UnitaOperativa extends JSONSerializable {
 
   /**
    **/
-  public UnitaOperativa localita(String localita) {
+  public Dominio localita(String localita) {
     this.localita = localita;
     return this;
   }
@@ -161,7 +169,7 @@ public class UnitaOperativa extends JSONSerializable {
 
   /**
    **/
-  public UnitaOperativa provincia(String provincia) {
+  public Dominio provincia(String provincia) {
     this.provincia = provincia;
     return this;
   }
@@ -176,7 +184,7 @@ public class UnitaOperativa extends JSONSerializable {
 
   /**
    **/
-  public UnitaOperativa nazione(String nazione) {
+  public Dominio nazione(String nazione) {
     this.nazione = nazione;
     return this;
   }
@@ -192,7 +200,7 @@ public class UnitaOperativa extends JSONSerializable {
   /**
    * Posta elettronica ordinaria
    **/
-  public UnitaOperativa email(String email) {
+  public Dominio email(String email) {
     this.email = email;
     return this;
   }
@@ -208,7 +216,7 @@ public class UnitaOperativa extends JSONSerializable {
   /**
    * Posta elettronica certificata
    **/
-  public UnitaOperativa pec(String pec) {
+  public Dominio pec(String pec) {
     this.pec = pec;
     return this;
   }
@@ -224,7 +232,7 @@ public class UnitaOperativa extends JSONSerializable {
   /**
    * Numero di telefono dell'help desk di primo livello
    **/
-  public UnitaOperativa tel(String tel) {
+  public Dominio tel(String tel) {
     this.tel = tel;
     return this;
   }
@@ -240,7 +248,7 @@ public class UnitaOperativa extends JSONSerializable {
   /**
    * Numero di fax dell'help desk di primo livello
    **/
-  public UnitaOperativa fax(String fax) {
+  public Dominio fax(String fax) {
     this.fax = fax;
     return this;
   }
@@ -256,7 +264,7 @@ public class UnitaOperativa extends JSONSerializable {
   /**
    * Url del sito web
    **/
-  public UnitaOperativa web(String web) {
+  public Dominio web(String web) {
     this.web = web;
     return this;
   }
@@ -270,19 +278,51 @@ public class UnitaOperativa extends JSONSerializable {
   }
 
   /**
-   * Nome dell'area di competenza
+   * Global location number del beneficiario
    **/
-  public UnitaOperativa area(String area) {
-    this.area = area;
+  public Dominio gln(String gln) {
+    this.gln = gln;
     return this;
   }
 
-  @JsonProperty("area")
-  public String getArea() {
-    return area;
+  @JsonProperty("gln")
+  public String getGln() {
+    return gln;
   }
-  public void setArea(String area) {
-    this.area = area;
+  public void setGln(String gln) {
+    this.gln = gln;
+  }
+
+  /**
+   * codice cbill del beneficiario
+   **/
+  public Dominio cbill(String cbill) {
+    this.cbill = cbill;
+    return this;
+  }
+
+  @JsonProperty("cbill")
+  public String getCbill() {
+    return cbill;
+  }
+  public void setCbill(String cbill) {
+    this.cbill = cbill;
+  }
+
+  /**
+   * URL del logo
+   **/
+  public Dominio logo(String logo) {
+    this.logo = logo;
+    return this;
+  }
+
+  @JsonProperty("logo")
+  public String getLogo() {
+    return logo;
+  }
+  public void setLogo(String logo) {
+    this.logo = logo;
   }
 
   @Override
@@ -293,43 +333,45 @@ public class UnitaOperativa extends JSONSerializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UnitaOperativa unitaOperativa = (UnitaOperativa) o;
-    return Objects.equals(idUnita, unitaOperativa.idUnita) &&
-        Objects.equals(ragioneSociale, unitaOperativa.ragioneSociale) &&
-        Objects.equals(indirizzo, unitaOperativa.indirizzo) &&
-        Objects.equals(civico, unitaOperativa.civico) &&
-        Objects.equals(cap, unitaOperativa.cap) &&
-        Objects.equals(localita, unitaOperativa.localita) &&
-        Objects.equals(provincia, unitaOperativa.provincia) &&
-        Objects.equals(nazione, unitaOperativa.nazione) &&
-        Objects.equals(email, unitaOperativa.email) &&
-        Objects.equals(pec, unitaOperativa.pec) &&
-        Objects.equals(tel, unitaOperativa.tel) &&
-        Objects.equals(fax, unitaOperativa.fax) &&
-        Objects.equals(web, unitaOperativa.web) &&
-        Objects.equals(area, unitaOperativa.area);
+    Dominio dominio = (Dominio) o;
+    return Objects.equals(idDominio, dominio.idDominio) &&
+        Objects.equals(ragioneSociale, dominio.ragioneSociale) &&
+        Objects.equals(indirizzo, dominio.indirizzo) &&
+        Objects.equals(civico, dominio.civico) &&
+        Objects.equals(cap, dominio.cap) &&
+        Objects.equals(localita, dominio.localita) &&
+        Objects.equals(provincia, dominio.provincia) &&
+        Objects.equals(nazione, dominio.nazione) &&
+        Objects.equals(email, dominio.email) &&
+        Objects.equals(pec, dominio.pec) &&
+        Objects.equals(tel, dominio.tel) &&
+        Objects.equals(fax, dominio.fax) &&
+        Objects.equals(web, dominio.web) &&
+        Objects.equals(gln, dominio.gln) &&
+        Objects.equals(cbill, dominio.cbill) &&
+        Objects.equals(logo, dominio.logo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idUnita, ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, area);
+    return Objects.hash(idDominio, ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, logo);
   }
 
-  public static UnitaOperativa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return parse(json, UnitaOperativa.class);
+  public static Dominio parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+    return parse(json, Dominio.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "unitaOperativa";
+    return "dominio";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class UnitaOperativa {\n");
+    sb.append("class Dominio {\n");
     
-    sb.append("    idUnita: ").append(toIndentedString(idUnita)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("    indirizzo: ").append(toIndentedString(indirizzo)).append("\n");
     sb.append("    civico: ").append(toIndentedString(civico)).append("\n");
@@ -342,7 +384,9 @@ public class UnitaOperativa extends JSONSerializable {
     sb.append("    tel: ").append(toIndentedString(tel)).append("\n");
     sb.append("    fax: ").append(toIndentedString(fax)).append("\n");
     sb.append("    web: ").append(toIndentedString(web)).append("\n");
-    sb.append("    area: ").append(toIndentedString(area)).append("\n");
+    sb.append("    gln: ").append(toIndentedString(gln)).append("\n");
+    sb.append("    cbill: ").append(toIndentedString(cbill)).append("\n");
+    sb.append("    logo: ").append(toIndentedString(logo)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -10,7 +10,6 @@ public class UnitaOperativaConverter {
 	public static UnitaOperativa toRsModel(it.govpay.bd.model.UnitaOperativa uo) throws ServiceException {
 		UnitaOperativa rsModel = new UnitaOperativa();
 
-		rsModel.setAbilitato(uo.isAbilitato());
 		rsModel.setArea(uo.getAnagrafica().getArea());
 		rsModel.setCap(uo.getAnagrafica().getCap());
 		rsModel.setCivico(uo.getAnagrafica().getCivico());

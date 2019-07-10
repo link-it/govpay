@@ -42,7 +42,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pendenze.v2.beans.EsitoRpt;
+import it.govpay.pendenze.v2.beans.EsitoRpp;
 import it.govpay.pendenze.v2.beans.ListaRpp;
 import it.govpay.pendenze.v2.beans.PendenzaIndex;
 import it.govpay.pendenze.v2.beans.Rpp;
@@ -73,7 +73,7 @@ public class RppController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
 			if(esito != null) {
-				EsitoRpt esitoRPT = EsitoRpt.valueOf(esito);
+				EsitoRpp esitoRPT = EsitoRpp.valueOf(esito);
 
 				EsitoPagamento esitoPagamento = null;
 				if(esitoRPT != null) {

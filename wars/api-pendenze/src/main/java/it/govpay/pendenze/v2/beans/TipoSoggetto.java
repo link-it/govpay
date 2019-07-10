@@ -1,46 +1,44 @@
 package it.govpay.pendenze.v2.beans;
 
+
+/**
+ * tipologia di soggetto, se persona fisica (F) o giuridica (G)
+ **/
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 
 /**
- * Tipologia di codifica del capitolo di bilancio
+ * tipologia di soggetto, se persona fisica (F) o giuridica (G)
  */
-public enum TipoContabilita {
+public enum TipoSoggetto {
   
   
   
   
-  CAPITOLO("CAPITOLO"),
+  G("G"),
   
   
-  SPECIALE("SPECIALE"),
-  
-  
-  SIOPE("SIOPE"),
-  
-  
-  ALTRO("ALTRO");
+  F("F");
   
   
   
 
   private String value;
 
-  TipoContabilita(String value) {
+  TipoSoggetto(String value) {
     this.value = value;
   }
 
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(this.value);
+    return String.valueOf(value);
   }
 
   @JsonCreator
-  public static TipoContabilita fromValue(String text) {
-    for (TipoContabilita b : TipoContabilita.values()) {
+  public static TipoSoggetto fromValue(String text) {
+    for (TipoSoggetto b : TipoSoggetto.values()) {
       if (String.valueOf(b.value).equals(text)) {
         return b;
       }

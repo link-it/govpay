@@ -51,7 +51,7 @@ import it.govpay.pendenze.v2.beans.PatchOp.OpEnum;
 import it.govpay.pendenze.v2.beans.Pendenza;
 import it.govpay.pendenze.v2.beans.PendenzaCreata;
 import it.govpay.pendenze.v2.beans.PendenzaIndex;
-import it.govpay.pendenze.v2.beans.PendenzaPut;
+import it.govpay.pendenze.v2.beans.NuovaPendenza;
 import it.govpay.pendenze.v2.beans.converter.PatchOpConverter;
 import it.govpay.pendenze.v2.beans.converter.PendenzeConverter;
 
@@ -295,7 +295,7 @@ public class PendenzeController extends BaseController {
 			}
 
 			String jsonRequest = baos.toString();
-			PendenzaPut pendenzaPost= JSONSerializable.parse(jsonRequest, PendenzaPut.class);
+			NuovaPendenza pendenzaPost= JSONSerializable.parse(jsonRequest, NuovaPendenza.class);
 			pendenzaPost.validate();
 
 			Versamento versamento = PendenzeConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza);
