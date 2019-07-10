@@ -5,7 +5,7 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def faultBean =
 """
 {

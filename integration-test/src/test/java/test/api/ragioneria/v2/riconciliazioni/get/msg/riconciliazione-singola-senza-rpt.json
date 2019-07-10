@@ -1,0 +1,33 @@
+{
+   "idDominio":"#(idDominio)",
+   "idIncasso":"#notnull",
+   "causale":"#(causale)",
+   "importo":"#(importo)",
+   "riscossioni":[
+      {
+         "idDominio":"#(idDominio)",
+         "iuv":"#(iuv)",
+         "iur":"#notnull",
+         "indice":1,
+         "pendenza":"#notnull",
+         "vocePendenza":{
+            "indice":1,
+            "idVocePendenza":"1",
+            "importo":"#(importo)",
+            "descrizione":"Diritti e segreteria",
+            "stato":"Eseguito",
+            "codEntrata":"SEGRETERIA"
+         },
+         "stato":"INCASSATA",
+         "tipo":"ENTRATA",
+         "importo":"#(importo)",
+         "data":"#notnull",
+         "incasso":{
+            "causale":"#(causale)",
+            "importo":"#(importo)",
+            "idDominio":"#(idDominio)",
+            "idIncasso":"#notnull"
+         }
+      }
+   ]
+}

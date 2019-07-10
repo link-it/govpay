@@ -147,7 +147,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA) {
+	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, String idTipoPendenza) {
 		String methodName = "pendenzeGET";
 		String transactionId = this.context.getTransactionId();
 		try{
@@ -187,6 +187,9 @@ public class PendenzeController extends BaseController {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				listaPendenzeDTO.setDataA(dataADate);
 			}
+			
+			if(idTipoPendenza != null)
+				listaPendenzeDTO.setIdTipoVersamento(idTipoPendenza);
 			
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);

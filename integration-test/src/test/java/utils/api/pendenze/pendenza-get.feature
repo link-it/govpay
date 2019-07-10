@@ -2,7 +2,7 @@ Feature: Lettura pendenza
 
 Background: 
 
-* def pendenzaGet = read('classpath:test/api/pendenza/pendenze/v1/get/msg/pendenza-get-dettaglio.json')
+* def pendenzaGet = read('classpath:test/api/pendenza/v1/pendenze/get/msg/pendenza-get-dettaglio.json')
 
 Scenario: 
 

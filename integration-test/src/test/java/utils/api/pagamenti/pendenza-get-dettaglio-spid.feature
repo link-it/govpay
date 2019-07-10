@@ -2,7 +2,7 @@ Feature: Lettura pendenza
 
 Background: 
 
-* def pendenzaGet = read('classpath:test/api/pagamento/pendenze/v1/get/msg/pendenza-get-dettaglio.json')
+* def pendenzaGet = read('classpath:test/api/pagamento/v1/pendenze/get/msg/pendenza-get-dettaglio.json')
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
 * def spidHeaders = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'} 
 

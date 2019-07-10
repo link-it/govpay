@@ -107,6 +107,12 @@ import it.govpay.orm.dao.IUtenzaTipoVersamentoServiceSearch;
 import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaEventiPagamentoService;
+import it.govpay.orm.dao.IVistaEventiPagamentoServiceSearch;
+import it.govpay.orm.dao.IVistaEventiRptService;
+import it.govpay.orm.dao.IVistaEventiRptServiceSearch;
+import it.govpay.orm.dao.IVistaEventiVersamentoService;
+import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 
 /**     
@@ -510,7 +516,7 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:tipoTributo type:TipoTributo
+	 Services relating to the object with name:TipoTributo type:TipoTributo
 	 =====================================================================================================================
 	*/
 	
@@ -1464,6 +1470,102 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 		return new JDBCVistaRiscossioniServiceSearch(this);
 	}
 	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaEventiVersamento type:Evento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiVersamentoServiceSearch getVistaEventiVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiVersamentoServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiVersamentoService getVistaEventiVersamentoService() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiVersamentoService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaEventiPagamento type:Evento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiPagamentoServiceSearch getVistaEventiPagamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiPagamentoServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiPagamentoService getVistaEventiPagamentoService() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiPagamentoService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaEventiRpt type:Evento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiRptServiceSearch getVistaEventiRptServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiRptServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaEventiRptService getVistaEventiRptService() throws ServiceException,NotImplementedException{
+		return new JDBCVistaEventiRptService(this);
+	}
 	
 	
 	

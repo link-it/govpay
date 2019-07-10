@@ -20,6 +20,7 @@ public class Utenza extends BasicModel {
 	protected boolean checkSubject;
 	protected boolean autorizzazioneDominiStar;
 	protected boolean autorizzazioneTipiVersamentoStar;
+	protected List<String> ruoli;
 	
 	public String getPrincipal() {
 		return this.principal;
@@ -93,5 +94,10 @@ public class Utenza extends BasicModel {
 	public void setAutorizzazioneTipiVersamentoStar(boolean autorizzazioneTipiVersamentoStar) {
 		this.autorizzazioneTipiVersamentoStar = autorizzazioneTipiVersamentoStar;
 	}
-	
+	public List<String> getRuoli() {
+		return this.ruoli;
+	}
+	public void setRuoli(List<String> ruoli) {
+		this.ruoli = ruoli;
+	}
 }

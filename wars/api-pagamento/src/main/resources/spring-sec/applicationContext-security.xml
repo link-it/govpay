@@ -33,27 +33,11 @@
 			<authentication-provider ref="wildflyApplicationAuthenticationProvider"/>
         </authentication-manager>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/basic/v1/**" authentication-manager-ref="authenticationManager">
+        <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/basic/**" authentication-manager-ref="authenticationManager">
                 <csrf disabled="true"/>
-                <intercept-url pattern="/rs/basic/v1/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
                 <intercept-url pattern="/**" access="denyAll" />
                 <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
-                <headers>
-                        <content-type-options disabled="true"/>
-                        <frame-options disabled="true"/>
-                        <xss-protection disabled="true"/>
-                </headers>
-        </http>
-        
-        <b:bean id="basicAuthenticationEntryPointV2" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.BasicAuthenticationEntryPoint" >
-                <b:property name="wwwAuthenticate" value="false"/>
-        </b:bean>
-        <http auto-config="false" use-expressions="true" create-session="stateless" pattern="/rs/basic/v2/**" authentication-manager-ref="authenticationManager">
-                <csrf disabled="true"/>
-                <intercept-url pattern="/rs/basic/v2/api-docs/*" access="permitAll" />
-                <intercept-url pattern="/rs/basic/v2/**" access="isFullyAuthenticated()" />
-                <intercept-url pattern="/**" access="denyAll" />
-                <http-basic entry-point-ref="basicAuthenticationEntryPointV2" />
                 <headers>
                         <content-type-options disabled="true"/>
                         <frame-options disabled="true"/>
@@ -67,9 +51,9 @@
         <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         	<b:property name="checkSubject" value="true"/>
         </b:bean>
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint" pattern="/rs/ssl/v1/**">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint" pattern="/rs/ssl/**">
                 <csrf disabled="true"/>
-                <intercept-url pattern="/rs/ssl/v1/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/rs/ssl/**" access="isFullyAuthenticated()" />
                 <intercept-url pattern="/**" access="denyAll" />
                 <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
                 <headers>
@@ -78,20 +62,6 @@
                         <xss-protection disabled="true"/>
                 </headers>
         </http>
-        
-        <b:bean id="x509AuthenticationEntryPointV2" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.X509AuthenticationEntryPoint" />
-        
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPointV2" pattern="/rs/ssl/v2/**">
-                <csrf disabled="true"/>
-                <intercept-url pattern="/rs/ssl/v2/**" access="isFullyAuthenticated()" />
-                <intercept-url pattern="/**" access="denyAll" />
-                <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
-                <headers>
-                        <content-type-options disabled="true"/>
-                        <frame-options disabled="true"/>
-                        <xss-protection disabled="true"/>
-                </headers>
-        </http>        
 		<!-- SSL_END -->
         
 		<!-- SPID_START
@@ -146,17 +116,7 @@
                 </headers>
         </http>
         
-        
-        <b:bean id="http403ForbiddenEntryPointV2" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
-        </b:bean>
-        <b:bean id="invalidSessionStrategyV2" class="it.govpay.rs.v2.authentication.session.NotAuthorizedInvalidSessionStrategy">
-        	<b:property name="createNewSession" value="false" />
-        </b:bean>
-        
-        <b:bean id="expiredSessionStrategyV2" class="it.govpay.rs.v2.authentication.session.NotAuthorizedSessionInformationExpiredStrategy">
-        </b:bean>
-        <b:bean id="logoutSuccessHandlerV2" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
-        <http auto-config="false" use-expressions="true" create-session="ifRequired" entry-point-ref="http403ForbiddenEntryPointV2" pattern="/rs/spid/v2/**">
+        <http auto-config="false" use-expressions="true" create-session="ifRequired" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/spid/v2/**">
 
                 <csrf disabled="true"/>
                 
@@ -164,10 +124,10 @@
                 <intercept-url pattern="/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterCit" />
                 
-                <logout logout-url="/rs/spid/v1/logout" success-handler-ref="logoutSuccessHandlerV2" delete-cookies="JSESSIONID" invalidate-session="true" />
+                <logout logout-url="/rs/spid/v2/logout" success-handler-ref="logoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true" />
                 
-                <session-management session-fixation-protection="changeSessionId" invalid-session-strategy-ref="invalidSessionStrategyV2">
-                	<concurrency-control max-sessions="2" expired-session-strategy-ref="expiredSessionStrategyV2" />
+                <session-management session-fixation-protection="changeSessionId" invalid-session-strategy-ref="invalidSessionStrategy">
+                	<concurrency-control max-sessions="2" expired-session-strategy-ref="expiredSessionStrategy" />
 	       		</session-management>
 
                 <headers>
@@ -198,14 +158,11 @@
                 </headers>
         </http>
         
-        <b:bean id="http403ForbiddenEntryPointPublicV2" class="org.openspcoop2.utils.service.authentication.entrypoint.jaxrs.Http403ForbiddenEntryPoint" >
-        </b:bean>
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublicV2" pattern="/rs/public/v2/**">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v2/**">
                 <csrf disabled="true"/>
                 <intercept-url pattern="/rs/public/v2/avvisi/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v2/pagamenti/**" access="isAnonymous()" />
-                <intercept-url pattern="/rs/public/v2/domini/**" access="isAnonymous()" method="GET" />
-                <intercept-url pattern="/rs/public/v2/profilo/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v2/rpp/**" access="isAnonymous()" />
                 <intercept-url pattern="/rs/public/v2/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterAnonymous" />
                 <headers>
@@ -240,28 +197,11 @@
         	</b:property>
         </b:bean>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointHeader" pattern="/rs/header/v1/**">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointHeader" pattern="/rs/header/**">
 
                 <csrf disabled="true"/>
                 
-                <intercept-url pattern="/rs/header/v1/**" access="isFullyAuthenticated()" />
-                <intercept-url pattern="/**" access="denyAll" />
-                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterHead" />
-                
-                <headers>
-                        <content-type-options disabled="true"/>
-                        <frame-options disabled="true"/>
-                        <xss-protection disabled="true"/>
-                </headers>
-        </http>
-        
-        <b:bean id="http403ForbiddenEntryPointHeaderV2" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
-        </b:bean>
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointHeaderV2" pattern="/rs/header/v2/**">
-
-                <csrf disabled="true"/>
-                
-                <intercept-url pattern="/rs/header/v2/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/rs/header/**" access="isFullyAuthenticated()" />
                 <intercept-url pattern="/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterHead" />
                 
@@ -280,6 +220,7 @@
                 <csrf disabled="true"/>
                 <intercept-url pattern="/v1/govpay-api-pagamento-v1.yaml" access="permitAll"/>
                 <intercept-url pattern="/v2/govpay-api-pagamento-v2.yaml" access="permitAll"/>
+                <intercept-url pattern="/v3/govpay-api-pagamento-v3.yaml" access="permitAll"/>
                 <intercept-url pattern="/index.html" access="permitAll"/>
                 <intercept-url pattern="/*.png" access="permitAll"/>
                 <intercept-url pattern="/*.css" access="permitAll"/>

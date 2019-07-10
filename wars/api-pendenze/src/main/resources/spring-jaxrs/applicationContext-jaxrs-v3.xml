@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns:b="http://www.springframework.org/schema/beans"
+        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+        xmlns:cxf="http://cxf.apache.org/core"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+
+        <b:import resource="classpath:META-INF/cxf/cxf.xml"/>
+        <b:import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+        
+	<b:bean id="openApiFeatureV3" class="org.apache.cxf.jaxrs.openapi.OpenApiFeature">
+		<!-- customize some of the properties -->
+		<b:property name="configLocation" value="openapi-configuration.json"/>
+		<b:property name="prettyPrint" value="true"/>
+		<b:property name="supportSwaggerUi" value="true"/>
+		<b:property name="license" value="GPL v3.0"/>
+		<b:property name="licenseUrl" value="https://www.gnu.org/licenses/gpl-3.0.txt"/>
+		<b:property name="description" value="Servizi per la realizzazione di Portali di Pagamento"/>
+		<b:property name="version" value="2.0.0"/>
+		<b:property name="title" value="GovPay - API Pendenze"/>
+	</b:bean>
+
+	<!-- Parameter Converter -->
+	<b:bean id="parameterConverterV3" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider" />
+
+	<!-- Object BodyReader -->
+	<b:bean id="objectMessageBodyReaderV3" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader" />
+
+    <!-- Jackson Provider for JSON/XML -->
+	<b:bean id="jacksonJsonProviderV3" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider" />
+	<b:bean id="jacksonXmlProviderV3" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider" />
+
+	<!-- FaultBean Exception Mapper -->
+	<b:bean id="typeStatusGenerator" class="org.openspcoop2.utils.service.fault.jaxrs.TypeStatusGenerator">
+		<b:property name="typeTemplate" value="https://govpay.readthedocs.io/it/latest/integrazione/errori/errore-http-@CODE@.html"/>
+	</b:bean>
+	<b:bean id="webApplicationExceptionMapperV3" class="it.govpay.exception.WebApplicationExceptionMapper">
+		<b:property name="typeGenerator" >
+			<b:ref bean="typeStatusGenerator"/>
+		</b:property>
+	</b:bean>
+	<b:bean id="validationExceptionMapperV3" class="org.openspcoop2.utils.service.fault.jaxrs.ValidationExceptionMapper">
+		<b:property name="typeGenerator" >
+			<b:ref bean="typeStatusGenerator"/>
+		</b:property>
+	</b:bean>
+	
+	<!-- Giornale Eventi -->
+	<b:bean id="giornaleEventiConfigV3" class="it.govpay.rs.eventi.GiornaleEventiConfig">
+		<b:property name="apiName" value="API_PENDENZE" />
+	</b:bean>
+	<b:bean id="giornaleEventiV3" class="it.govpay.rs.eventi.GiornaleEventiFeature">
+		<b:property name="giornaleEventiConfig" >
+			<b:ref bean="giornaleEventiConfigV1"/>
+		</b:property>
+	</b:bean>
+	
+	<!-- Context -->
+	<b:bean id="contextConfigV3" class="it.govpay.rs.v3.service.context.ContextConfig">
+	</b:bean>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory">
+		<b:property name="apiName" value="API_PENDENZE" />
+	</b:bean>
+	<b:bean id="contextV3" class="org.openspcoop2.utils.service.context.ContextFeature">
+		<b:property name="contextFactory" >
+			<b:ref bean="customContextFactory"/>
+		</b:property>
+		<b:property name="contextConfig" >
+			<b:ref bean="contextConfigV3"/>
+		</b:property>
+	</b:bean>
+	
+	<b:bean id="commonValidationFeatureV3" class="org.apache.cxf.validation.BeanValidationFeature"/>
+        
+   	<!-- JAX-RS Service Impl -->
+   	
+	<b:bean id="pendenzeV3" class="it.govpay.pendenze.v3.api.impl.PendenzeApiServiceImpl" />
+	<b:bean id="profiloV3" class="it.govpay.pendenze.v3.api.impl.UtentiApiServiceImpl" />
+	<b:bean id="rppV3" class="it.govpay.pendenze.v3.api.impl.TransazioniApiServiceImpl" />
+
+   	<!-- JAX-RS Configuration -->
+   
+   
+   <!--Servizi V3 -->
+	<!-- BASIC_START -->
+    <jaxrs:server id="apiPendenzeBasicV3" address="/basic/v3/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="pendenzeV3" />
+			   	<ref bean="profiloV3" />
+			   	<ref bean="rppV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+			<ref bean="parameterConverterV3" />
+			<ref bean="objectMessageBodyReaderV3" /> 
+			<ref bean="jacksonJsonProviderV3" />
+			<ref bean="jacksonXmlProviderV3" />
+			<ref bean="webApplicationExceptionMapperV3" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeatureV3" />
+			<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+			<ref bean="commonValidationFeatureV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- BASIC_END -->
+    
+    <!-- SSL_START -->
+    <jaxrs:server id="apiPendenzeSSLV3" address="/ssl/v3/">
+        <jaxrs:serviceBeans>
+                <ref bean="pendenzeV3" />
+			   	<ref bean="profiloV3" />
+			   	<ref bean="rppV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+			<ref bean="parameterConverterV3" />
+			<ref bean="objectMessageBodyReaderV3" /> 
+			<ref bean="jacksonJsonProviderV3" />
+			<ref bean="jacksonXmlProviderV3" />
+			<ref bean="webApplicationExceptionMapperV3" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeatureV3" />
+			<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+			<ref bean="commonValidationFeatureV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SSL_END -->
+    
+    <!-- HEADER_START -->
+    <jaxrs:server id="apiPendenzeHeaderV3" address="/header/v3/">
+        <jaxrs:serviceBeans>
+                <ref bean="pendenzeV3" />
+			   	<ref bean="profiloV3" />
+			   	<ref bean="rppV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+			<ref bean="parameterConverterV3" />
+			<ref bean="objectMessageBodyReaderV3" /> 
+			<ref bean="jacksonJsonProviderV3" />
+			<ref bean="jacksonXmlProviderV3" />
+			<ref bean="webApplicationExceptionMapperV3" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<ref bean="openApiFeatureV3" />
+			<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+			<ref bean="commonValidationFeatureV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- HEADER_END -->
+    
+</b:beans>
+        

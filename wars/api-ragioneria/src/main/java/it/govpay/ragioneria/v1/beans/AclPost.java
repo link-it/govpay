@@ -23,70 +23,8 @@ public class AclPost extends JSONSerializable {
   @JsonProperty("principal")
   private String principal = null;
   
-    
-  /**
-   * Servizio oggetto dell'autorizzazione  * Anagrafica PagoPA  * Anagrafica Creditore  * Anagrafica Applicazioni  * Anagrafica Ruoli  * Pagamenti  * Pendenze   * Rendicontazioni e Incassi  * Giornale degli Eventi  * Statistiche  * Configurazione e Manutenzione
-   */
-  public enum ServizioEnum {
-    
-    
-        
-            
-    ANAGRAFICA_PAGOPA("Anagrafica PagoPA"),
-    
-            
-    ANAGRAFICA_CREDITORE("Anagrafica Creditore"),
-    
-            
-    ANAGRAFICA_APPLICAZIONI("Anagrafica Applicazioni"),
-    
-            
-    ANAGRAFICA_RUOLI("Anagrafica Ruoli"),
-    
-            
-    PAGAMENTI("Pagamenti"),
-    
-            
-    PENDENZE("Pendenze"),
-    
-            
-    RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
-    
-            
-    GIORNALE_DEGLI_EVENTI("Giornale degli Eventi"),
-    
-            
-    CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione");
-            
-        
-    
-
-    private String value;
-
-    ServizioEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(this.value);
-    }
-
-    public static ServizioEnum fromValue(String text) {
-      for (ServizioEnum b : ServizioEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("servizio")
-  private ServizioEnum servizio = null;
+  private String servizio = null;
     /**
    * Gets or Sets autorizzazioni
    */
@@ -164,16 +102,16 @@ public class AclPost extends JSONSerializable {
   /**
    * Servizio oggetto dell'autorizzazione  * Anagrafica PagoPA  * Anagrafica Creditore  * Anagrafica Applicazioni  * Anagrafica Ruoli  * Pagamenti  * Pendenze   * Rendicontazioni e Incassi  * Giornale degli Eventi  * Statistiche  * Configurazione e Manutenzione
    **/
-  public AclPost servizio(ServizioEnum servizio) {
+  public AclPost servizio(String servizio) {
     this.servizio = servizio;
     return this;
   }
 
   @JsonProperty("servizio")
-  public ServizioEnum getServizio() {
-    return this.servizio;
+  public String getServizio() {
+    return servizio;
   }
-  public void setServizio(ServizioEnum servizio) {
+  public void setServizio(String servizio) {
     this.servizio = servizio;
   }
 

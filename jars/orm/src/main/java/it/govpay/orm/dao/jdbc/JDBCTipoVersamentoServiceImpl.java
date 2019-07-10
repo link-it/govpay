@@ -86,8 +86,10 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().TRASFORMAZIONE_DEFINIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().COD_APPLICAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_AVVISO_PDF,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_AVVISO_TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO,false),"?");
@@ -108,8 +110,10 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getTrasformazioneDefinizione(),TipoVersamento.model().TRASFORMAZIONE_DEFINIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getCodApplicazione(),TipoVersamento.model().COD_APPLICAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPromemoriaAvvisoPdf(),TipoVersamento.model().PROMEMORIA_AVVISO_PDF.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPromemoriaAvvisoTipo(),TipoVersamento.model().PROMEMORIA_AVVISO_TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPromemoriaAvvisoOggetto(),TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPromemoriaAvvisoMessaggio(),TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPromemoriaRicevutaTipo(),TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPromemoriaRicevutaPdf(),TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPromemoriaRicevutaOggetto(),TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamento.getPromemoriaRicevutaMessaggio(),TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType())
@@ -192,10 +196,14 @@ public class JDBCTipoVersamentoServiceImpl extends JDBCTipoVersamentoServiceSear
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getCodApplicazione(), TipoVersamento.model().COD_APPLICAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_AVVISO_PDF,false), "?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPromemoriaAvvisoPdf(), TipoVersamento.model().PROMEMORIA_AVVISO_PDF.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_AVVISO_TIPO,false), "?");
+		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPromemoriaAvvisoTipo(), TipoVersamento.model().PROMEMORIA_AVVISO_TIPO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO,false), "?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPromemoriaAvvisoOggetto(), TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO,false), "?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPromemoriaAvvisoMessaggio(), TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO,false), "?");
+		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPromemoriaRicevutaTipo(), TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF,false), "?");
 		lstObjects_tipoVersamento.add(new JDBCObject(tipoVersamento.getPromemoriaRicevutaPdf(), TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoFieldConverter().toColumn(TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO,false), "?");

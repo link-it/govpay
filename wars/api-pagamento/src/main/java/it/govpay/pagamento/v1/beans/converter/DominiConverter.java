@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.jaxrs.RawObject;
 
 import it.govpay.bd.model.Tributo;
-import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.pagamento.v1.beans.ContiAccredito;
 import it.govpay.pagamento.v1.beans.Dominio;
 import it.govpay.pagamento.v1.beans.DominioIndex;
 import it.govpay.pagamento.v1.beans.Entrata;
 import it.govpay.pagamento.v1.beans.TipoContabilita;
-import it.govpay.pagamento.v1.beans.TipoPendenza;
-import it.govpay.pagamento.v1.beans.TipoPendenzaForm;
 import it.govpay.pagamento.v1.beans.UnitaOperativa;
 
 public class DominiConverter {
@@ -173,39 +169,4 @@ public class DominiConverter {
 
 		return rsModel;
 	}
-	
-	public static TipoPendenza toTipoPendenzaRsModel(GetTipoPendenzaDominioDTOResponse response) throws ServiceException {
-		return toTipoPendenzaRsModel(response.getTipoVersamento());
-	}
-	
-	public static TipoPendenza toTipoPendenzaRsModel(it.govpay.bd.model.TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException {
-		TipoPendenza rsModel = new TipoPendenza();
-		
-		rsModel.descrizione(tipoVersamentoDominio.getDescrizione())
-		.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento())
-		.codificaIUV(tipoVersamentoDominio.getCodificaIuv())
-		.abilitato(tipoVersamentoDominio.getAbilitato())
-		.pagaTerzi(tipoVersamentoDominio.getPagaTerzi());
-		
-		if(tipoVersamentoDominio.getTipo() != null) {
-			switch (tipoVersamentoDominio.getTipo()) {
-			case DOVUTO:
-				rsModel.setTipo(it.govpay.pagamento.v1.beans.TipoPendenzaTipologia.DOVUTO);
-				break;
-			case SPONTANEO:
-				rsModel.setTipo(it.govpay.pagamento.v1.beans.TipoPendenzaTipologia.SPONTANEO);
-				break;
-			}
-		}
-		
-		if(tipoVersamentoDominio.getFormDefinizione() != null && tipoVersamentoDominio.getFormDefinizione() != null) {
-			TipoPendenzaForm form = new TipoPendenzaForm();
-			form.setTipo(tipoVersamentoDominio.getFormTipo());
-			form.setDefinizione(new RawObject(tipoVersamentoDominio.getFormDefinizione())); 
-			rsModel.setForm(form);
-		}
-		
-		return rsModel;
-	}
-	
 }

@@ -524,9 +524,19 @@ public class RtUtils extends NdpValidationUtils {
 			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(bd);
 			Promemoria promemoria = null;
 			if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaRicevuta()) {
+				log.debug("Schedulazione invio ricevuta di pagamento in corso...");
 				it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(bd);
-				promemoria = promemoriaBD.creaPromemoriaRicevuta(rpt, versamento, versamento.getTipoVersamentoDominio(bd));
-				promemoriaBD.inserisciPromemoria(promemoria);
+				try {
+					promemoria = promemoriaBD.creaPromemoriaRicevuta(rpt, versamento, versamento.getTipoVersamentoDominio(bd));
+					String msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
+					if(promemoria.getDestinatarioTo() != null) {
+						msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
+						promemoriaBD.inserisciPromemoria(promemoria);
+					}
+					log.debug("Creazione promemoria completata: "+msg);
+				} catch (JAXBException | SAXException e) {
+					log.error("Errore durante la lettura dei dati della RT: ", e.getMessage(),e);
+				}
 			}
 			break;
 		default:

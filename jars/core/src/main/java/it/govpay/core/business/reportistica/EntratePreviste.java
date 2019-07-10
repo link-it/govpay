@@ -127,6 +127,11 @@ public class EntratePreviste extends BasicBD{
 				voceRiscossione.setIdPendenza(entrataPrevista.getCodVersamentoEnte());
 				voceRiscossione.setImporto(entrataPrevista.getImportoPagato() != null ? entrataPrevista.getImportoPagato().doubleValue() : 0.0);
 				voceRiscossione.setIuv(entrataPrevista.getIuv());
+				voceRiscossione.setAnno(entrataPrevista.getAnno() != null ? entrataPrevista.getAnno()+"" : "");
+				voceRiscossione.setDataPagamento(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
+				voceRiscossione.setIdentificativoDebitore(entrataPrevista.getIdentificativoDebitore());
+				voceRiscossione.setIdEntrata(entrataPrevista.getCodEntrata());
+				voceRiscossione.setIdTipoPendenza(entrataPrevista.getCodTipoVersamento());
 				
 				elencoRiscossioni.getVoceRiscossione().add(voceRiscossione );
 			}
@@ -161,6 +166,11 @@ public class EntratePreviste extends BasicBD{
 					voceRiscossione.setIdPendenza(entrataPrevista.getCodVersamentoEnte());
 					voceRiscossione.setImporto(entrataPrevista.getImportoPagato() != null ? entrataPrevista.getImportoPagato().doubleValue() : 0.0);
 					voceRiscossione.setIuv(entrataPrevista.getIuv());
+					voceRiscossione.setAnno(entrataPrevista.getAnno() != null ? entrataPrevista.getAnno()+"" : "");
+					voceRiscossione.setDataPagamento(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
+					voceRiscossione.setIdentificativoDebitore(entrataPrevista.getIdentificativoDebitore());
+					voceRiscossione.setIdEntrata(entrataPrevista.getCodEntrata());
+					voceRiscossione.setIdTipoPendenza(entrataPrevista.getCodTipoVersamento());
 					
 					elencoRiscossioni.getVoceRiscossione().add(voceRiscossione);
 				}

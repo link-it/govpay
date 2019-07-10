@@ -60,7 +60,6 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.eventi.DatiPagoPA;

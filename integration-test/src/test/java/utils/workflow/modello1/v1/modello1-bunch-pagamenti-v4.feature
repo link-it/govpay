@@ -173,7 +173,7 @@ Scenario: Pagamento ad iniziativa Ente
 # idPagamentoVerdi_RIFIUTATO_DOM1_LIBERO
 * def idPendenza = getCurrentTimeMillis()
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
-* def pendenza = read('classpath:test/api/pendenza/pendenze/v1/put/msg/pendenza-put_monovoce_definito.json')
+* def pendenza = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_definito.json')
 * set pendenza.voci[0].ibanAccredito = ibanAccreditoErrato
 
 Given url pendenzeBaseurl
@@ -184,7 +184,7 @@ When method put
 Then status 201
 
 * def numeroAvviso = response.numeroAvviso
-* def pagamentoPost = read('classpath:test/api/pagamento/pagamenti/v1/post/msg/pagamento-post_riferimento_avviso.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
 
 Given url pagamentiBaseurl
@@ -218,7 +218,7 @@ Then status 200
 # idPagamentoVerdi_INCORSO_DOM2_ENTRATASIOPE
 
 * def idPendenza = getCurrentTimeMillis()
-* def pagamentoPost = read('classpath:test/api/pagamento/pagamenti/v1/post/msg/pagamento-post_spontaneo_entratariferita.json')
+* def pagamentoPost = read('classpath:test/api/pagamento/v1/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
 * set pagamentoPost.pendenze[0].idDominio = idDominioPagamento
 * set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataPagamento
 
@@ -249,7 +249,7 @@ And match response == { id: '#notnull', location: '#notnull', redirect: '#notnul
 * def idDominioPendenza = idDominio
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
-* call read('classpath:utils/api/pendenze/v1/caricamento-pendenza-generico.feature')
+* call read('classpath:utils/api/v1/pendenze/caricamento-pendenza-generico.feature')
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def ccp = getCurrentTimeMillis()
 

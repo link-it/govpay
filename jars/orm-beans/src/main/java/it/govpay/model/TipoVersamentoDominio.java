@@ -15,12 +15,27 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	private String trasformazioneTipoCustom;
 	private String trasformazioneDefinizioneCustom;
 	private String codApplicazioneCustom;
+	private String promemoriaAvvisoTipoCustom;
 	private Boolean promemoriaAvvisoPdfCustom;
 	private String promemoriaAvvisoOggettoCustom;
 	private String promemoriaAvvisoMessaggioCustom;
+	private String promemoriaRicevutaTipoCustom;
 	private Boolean promemoriaRicevutaPdfCustom;
 	private String promemoriaRicevutaOggettoCustom;
 	private String promemoriaRicevutaMessaggioCustom;
+	
+	public String getPromemoriaAvvisoTipoCustom() {
+		return promemoriaAvvisoTipoCustom;
+	}
+	public void setPromemoriaAvvisoTipoCustom(String promemoriaAvvisoTipoCustom) {
+		this.promemoriaAvvisoTipoCustom = promemoriaAvvisoTipoCustom;
+	}
+	public String getPromemoriaRicevutaTipoCustom() {
+		return promemoriaRicevutaTipoCustom;
+	}
+	public void setPromemoriaRicevutaTipoCustom(String promemoriaRicevutaTipoCustom) {
+		this.promemoriaRicevutaTipoCustom = promemoriaRicevutaTipoCustom;
+	}
 	
 	public String getFormTipoCustom() {
 		return formTipoCustom;

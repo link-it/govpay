@@ -434,130 +434,6 @@ paths:
           $ref: '#/components/responses/403' 
         '500':
           $ref: '#/components/responses/500'
-  '/domini/{idDominio}/tipiPendenza':
-    get:
-      tags:
-        - Domini
-      summary: Elenco delle tipologie di pendenza del dominio
-      parameters:
-        - name: idDominio
-          in: path
-          description: Identificativo del dominio
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: pagina
-          description: Numero di pagina dei risultati
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - in: query
-          name: risultatiPerPagina
-          description: Numero massimo di risultati nella risposta
-          required: false
-          schema:
-            type: integer
-            default: 25
-            maximum: 200
-        - name: ordinamento
-          in: query
-          description: >-
-            csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
-             * idEntrata
-          required: false
-          schema:
-            type: string
-            format: csv
-            default: +descrizione
-        - name: campi
-          in: query
-          description: >-
-            csv dei campi da includere nella risposta (default tutti)
-          required: false
-          schema:
-            type: string
-            format: csv
-        - name: abilitato
-          in: query
-          description: Restrizione ai soli elementi abilitati o disabilitati
-          required: false
-          schema:
-            type: boolean
-        - name: tipo
-          in: query
-          description: >-
-            filtro sul tipo di tipologia pendenza
-          required: false
-          schema:
-            $ref: '#/components/schemas/tipoPendenzaTipologia'
-        - name: associati
-          in: query
-          description: Restrizione ai soli tipi pendenza associati all'utenza chiamante
-          required: false
-          schema:
-            type: boolean
-        - name: form
-          in: query
-          description: >-
-            Restrizione ai soli elementi che mettono a disposizione la form di inserimento custom
-          required: false
-          schema:
-            type: boolean
-      responses:
-        '200':
-          description: Lista paginata delle tipologie di pendenza ricercate
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/listaPaginata'
-                  - type: object
-                    required:
-                      - risultati
-                    properties:
-                      risultati:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/tipoPendenza'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
-  '/domini/{idDominio}/tipiPendenza/{idTipoPendenza}':
-    get:
-      tags:
-        - Domini
-      summary: Lettura dei dati di una entrata
-      parameters:
-        - in: path
-          name: idDominio
-          schema:
-            type: string
-          description: Codice fiscale del beneficiario
-          required: true
-        - name: idTipoPendenza
-          in: path
-          description: Identificativo della tipologia di pendenza
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Dettaglio della tipologia di pendenza
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tipoPendenza'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '500':
-          $ref: '#/components/responses/500'
   '/pagamenti':
     post:
       summary: Avvio di un pagamento di pendenze
@@ -1317,14 +1193,12 @@ components:
              * `RICHIESTA` - Richiesta non valida
              * `OPERAZIONE` - Operazione non eseguibile
              * `PAGOPA` - Errore da PagoPA
-             * `EC` - Errore da Ente Creditore
              * `INTERNO` - Errore interno
           enum:
             - AUTORIZZAZIONE
             - RICHIESTA
             - OPERAZIONE
             - PAGOPA
-            - EC
             - INTERNO
         codice:
           type: string
@@ -1466,11 +1340,10 @@ components:
           example: Non pagato
           type: string
           enum:
-            - DUPLICATA
-            - NON_ESEGUITA
-            - ANNULLATA
-            - SCONOSCIUTA
-            - SCADUTA
+            - Pagato
+            - Non pagato
+            - Scaduto
+            - Annullato
         importo:
           type: number
           description: Importo della pendenza associata all'avviso.
@@ -1912,25 +1785,6 @@ components:
                       Identificativo del soggetto debitore 
                       della pendenza riferita dall'avviso
                     example: 'RSSMRA30A01H501I'
-              - type: object
-                required:
-                  - idDominio
-                  - idTipoPendenza
-                additionalProperties: false
-                properties:
-                  idDominio:
-                    type: string
-                    description: Codice fiscale dell'ente creditore
-                    example: 01234567890
-                  idTipoPendenza:
-                    type: string
-                    description: >-
-                      Identificativo della tipologia pendenza
-                    example: IMU
-                  dati:
-                    type: object
-                    description: >- 
-                      Definizione della pendenza nel modello 4
               - $ref: '#/components/schemas/pendenzaPost'
         urlRitorno:
           type: string
@@ -2170,10 +2024,6 @@ components:
         - importo
         - causale
       properties:
-        idTipoPendenza:
-          type: string
-          description: Identificativo della tipologia pendenza
-          example: IMU
         nome:
           type: string
           description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -2583,22 +2433,12 @@ components:
              * Anagrafica Creditore
              * Anagrafica Applicazioni
              * Anagrafica Ruoli
-             * Pagamenti
-             * Pendenze
+             * Pendenze e Pagamenti
+             * Pendenze e Pagamenti propri 
              * Rendicontazioni e Incassi
              * Giornale degli Eventi
              * Statistiche
              * Configurazione e Manutenzione
-          enum:
-            - Anagrafica PagoPA
-            - Anagrafica Creditore
-            - Anagrafica Applicazioni
-            - Anagrafica Ruoli
-            - Pagamenti
-            - Pendenze
-            - Rendicontazioni e Incassi
-            - Giornale degli Eventi
-            - Configurazione e manutenzione
           example:
             Pendenze e Pagamenti
         autorizzazioni:
@@ -2608,6 +2448,7 @@ components:
             enum:
              - Lettura
              - Scrittura
+             - Esecuzione
           example:
             - Lettura
             - Scrittura
@@ -2616,7 +2457,7 @@ components:
       required: 
         - nome
         - domini
-        - tipiPendenza
+        - entrate
         - acl
       properties:
         nome:
@@ -2627,11 +2468,11 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/dominioIndex'
-        tipiPendenza:
+        entrate:
           type: array
-          description: tipologie di pendenza su cui e' abilitato ad operare
+          description: entrate su cui e' abilitato ad operare
           items: 
-            $ref: '#/components/schemas/tipoPendenzaIndex'
+            $ref: '#/components/schemas/tipoEntrata'
         acl:
           type: array
           items:
@@ -2640,79 +2481,6 @@ components:
           $ref: '#/components/schemas/soggetto'
         identityData:
           type: object
-    tipoPendenzaPost:
-      type: object
-      required:
-        - descrizione
-        - tipo
-      properties:
-        descrizione:
-          type: string
-          example: Imposta municipale urbana
-        tipo:
-          $ref: '#/components/schemas/tipoPendenzaTipologia'
-        codificaIUV:
-          type: string
-          description: Cifra identificativa negli IUV
-          example: 01
-          pattern: "[0-9]{1,3}"
-        pagaTerzi:
-          type: boolean
-          description: Indica se la pendenza e' pagabile da soggetti terzi
-          example: true
-          default: false
-        abilitato:
-          type: boolean
-          description: Indicazione la tipologia pendenza e' abilitata
-          example: true
-          default: true
-        form:
-          $ref: '#/components/schemas/tipoPendenzaForm'
-    tipoPendenza:
-      type: object
-      allOf:
-        - type: object
-          required:
-           - idTipoPendenza
-          properties:
-            idTipoPendenza:
-              type: string
-              example: IMU
-        - $ref: '#/components/schemas/tipoPendenzaPost'
-    tipoPendenzaIndex:
-      type: object
-      required:
-        - idTipoPendenza
-        - descrizione
-        - tipo
-      properties:
-        idTipoPendenza:
-          type: string
-          example: IMU
-        descrizione:
-          type: string
-          example: Imposta municipale urbana
-        tipo:
-          $ref: '#/components/schemas/tipoPendenzaTipologia'
-    tipoPendenzaTipologia:
-      type: string
-      enum:
-        - spontaneo
-        - dovuto
-      example: spontaneo
-    tipoPendenzaForm:
-      type: object
-      required:
-        - tipo
-        - definizione
-      properties:
-        tipo:
-          type: string
-          description: Indica il linguaggio da utilizzare per il disegno della form di inserimento della pendenza
-          example: 'AngularJS v6'
-        definizione:
-          type: object
-          description: Definizione della form nel linguaggio indicato nel field tipo
     tipoContabilita:
       description: Tipologia di codifica del capitolo di bilancio
       type: string

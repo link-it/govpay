@@ -171,8 +171,16 @@ public class Versamento extends BasicBD {
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 				Promemoria promemoria = null;
 				if(GovpayConfig.getInstance().isInvioPromemoriaEnabled() && tipoVersamentoDominio.isPromemoriaAvviso()) {
+					log.debug("Schedulazione invio avviso di pagamento in corso...");
 					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria(this);
 					promemoria = promemoriaBD.creaPromemoriaAvviso(versamento, tipoVersamentoDominio);
+					
+					String msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
+					if(promemoria.getDestinatarioTo() == null) {
+						msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
+						promemoria = null;
+					}
+					log.debug("Creazione promemoria completata: "+ msg);
 				}
 				
 				versamentiBD.insertVersamento(versamento, promemoria);

@@ -22,6 +22,7 @@ public class UtenzaAnonima extends Utenza {
 		this.autorizzazioneDominiStar = true;
 		this.autorizzazioneTipiVersamentoStar = true;
 		this.abilitato = true;
+		this.ruoli = new ArrayList<>();
 	}
 	
 	private static final long serialVersionUID = 1L;

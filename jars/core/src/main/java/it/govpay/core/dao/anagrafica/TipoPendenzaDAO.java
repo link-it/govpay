@@ -114,7 +114,6 @@ public class TipoPendenzaDAO extends BaseDAO{
 				filter.setSimpleSearchString(findTipiPendenzaDTO.getSimpleSearch());
 			} else {
 				filter = stazioneBD.newFilter(false);
-				filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
 			}
 
 			filter.setOffset(findTipiPendenzaDTO.getOffset());
@@ -125,6 +124,8 @@ public class TipoPendenzaDAO extends BaseDAO{
 				filter.setTipo(findTipiPendenzaDTO.getTipo().getCodifica());
 			filter.setListaIdTipiVersamento(findTipiPendenzaDTO.getIdTipiVersamento());
 			filter.setForm(findTipiPendenzaDTO.getForm());
+			filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
+			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
 
 			return new FindTipiPendenzaDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
 		} finally {

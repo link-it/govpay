@@ -1,0 +1,22 @@
+{
+  "iuv": "#string",
+  "iur": "#string",
+  "indice": "#number",
+  "importo": "#number",
+  "esito": "#number",
+  "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+  "segnalazioni": "#ignore",
+  "riscossione": {
+	"idDominio":"#string",
+	"iuv":"#string",
+	"iur":"#string",
+	"indice":"#number",
+	"pendenza":"#string",
+	"rpp":"#string",
+	"stato":"#string",
+	"tipo":"#string",
+	"importo":"#? isImportoConDueDecimali(_)",
+	"data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d"
+  }
+}
+

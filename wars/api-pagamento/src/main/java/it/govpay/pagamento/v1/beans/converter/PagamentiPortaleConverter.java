@@ -101,14 +101,7 @@ public class PagamentiPortaleConverter {
 			int i =0;
 			for (PendenzaPost pendenza: pagamentiPortaleRequest.getPendenze()) {
 				
-				if((pendenza.getIdDominio() != null && pendenza.getIdTipoPendenza() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null && pendenza.getNumeroAvviso() == null)) {
-					PagamentiPortaleDTO.RefVersamentoModello4 ref = pagamentiPortaleDTO. new RefVersamentoModello4();
-					ref.setIdDominio(pendenza.getIdDominio());
-					ref.setIdTipoPendenza(pendenza.getIdTipoPendenza());
-					ref.setDati(ConverterUtils.toJSON(pendenza.getDati(),null));
-					listRefs.add(ref);
-					
-				} else if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
+				if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
 
 					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
 					ref.setIdDominio(pendenza.getIdDominio());
@@ -183,19 +176,6 @@ public class PagamentiPortaleConverter {
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
 
-		// tipo Pendenza
-		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
-//		if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-//			it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-//			if(sv.getBolloTelematico() != null) {
-//				versamento.setCodTipoVersamento(Tributo.BOLLOT);
-//			} else if(sv.getCodTributo() != null) {
-//				versamento.setCodTipoVersamento(sv.getCodTributo());
-//			} else {
-//				versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-//			}
-//		}
-
 		return versamento;
 	}
 
@@ -240,22 +220,6 @@ public class PagamentiPortaleConverter {
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
-
-		// tipo Pendenza
-//		if(pendenza.getIdTipoPendenza() == null) {
-//			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-//				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-//				if(sv.getBolloTelematico() != null) {
-//					versamento.setCodTipoVersamento(Tributo.BOLLOT);
-//				} else if(sv.getCodTributo() != null) {
-//					versamento.setCodTipoVersamento(sv.getCodTributo());
-//				} else {
-//					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-//				}
-//			}
-//		}else {
-			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
-//		}
 
 		return versamento;
 	}

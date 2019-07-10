@@ -49,7 +49,6 @@ public class PendenzeConverter {
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
-		rsModel.setIdTipoPendenza(versamento.getTipoVersamentoDominio(null).getCodTipoVersamento());
 		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
@@ -149,7 +148,6 @@ public class PendenzeConverter {
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
-		rsModel.setIdTipoPendenza(versamento.getTipoVersamentoDominio(null).getCodTipoVersamento());
 		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
@@ -308,23 +306,6 @@ public class PendenzeConverter {
 
 		// voci pagamento
 		fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
-
-		// tipo Pendenza
-//		if(pendenza.getIdTipoPendenza() == null) {
-//			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-//				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
-//				if(sv.getBolloTelematico() != null) {
-//					versamento.setCodTipoVersamento(Tributo.BOLLOT);
-//				} else if(sv.getCodTributo() != null) {
-//					versamento.setCodTipoVersamento(sv.getCodTributo());
-//				} else {
-//					versamento.setCodTipoVersamento(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-//				}
-//			}
-//		}else {
-			versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
-//		}
-
 
 		return versamento;
 	}

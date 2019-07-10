@@ -57,9 +57,11 @@ public class TipoVersamentoDominioConverter {
 		dto.setTrasformazioneDefinizioneCustom(vo.getTrasformazioneDefinizione());
 		dto.setTrasformazioneTipoCustom(vo.getTrasformazioneTipo());
 		dto.setCodApplicazioneCustom(vo.getCodApplicazione());
+		dto.setPromemoriaAvvisoTipoCustom(vo.getPromemoriaAvvisoTipo());
 		dto.setPromemoriaAvvisoPdfCustom(vo.getPromemoriaAvvisoPdf());
 		dto.setPromemoriaAvvisoMessaggioCustom(vo.getPromemoriaAvvisoMessaggio());
 		dto.setPromemoriaAvvisoOggettoCustom(vo.getPromemoriaAvvisoOggetto());
+		dto.setPromemoriaRicevutaTipoCustom(vo.getPromemoriaRicevutaTipo());
 		dto.setPromemoriaRicevutaPdfCustom(vo.getPromemoriaRicevutaPdf());
 		dto.setPromemoriaRicevutaMessaggioCustom(vo.getPromemoriaRicevutaMessaggio());
 		dto.setPromemoriaRicevutaOggettoCustom(vo.getPromemoriaRicevutaOggetto());
@@ -77,9 +79,11 @@ public class TipoVersamentoDominioConverter {
 		dto.setTrasformazioneDefinizioneDefault(vo.getTipoVersamento().getTrasformazioneDefinizione());
 		dto.setTrasformazioneTipoDefault(vo.getTipoVersamento().getTrasformazioneTipo());
 		dto.setCodApplicazioneDefault(vo.getTipoVersamento().getCodApplicazione());
+		dto.setPromemoriaAvvisoTipoDefault(vo.getTipoVersamento().getPromemoriaAvvisoTipo());
 		dto.setPromemoriaAvvisoPdfDefault(vo.getTipoVersamento().getPromemoriaAvvisoPdf());
 		dto.setPromemoriaAvvisoMessaggioDefault(vo.getTipoVersamento().getPromemoriaAvvisoMessaggio());
 		dto.setPromemoriaAvvisoOggettoDefault(vo.getTipoVersamento().getPromemoriaAvvisoOggetto());
+		dto.setPromemoriaRicevutaTipoDefault(vo.getTipoVersamento().getPromemoriaRicevutaTipo());
 		dto.setPromemoriaRicevutaPdfDefault(vo.getTipoVersamento().getPromemoriaRicevutaPdf());
 		dto.setPromemoriaRicevutaMessaggioDefault(vo.getTipoVersamento().getPromemoriaRicevutaMessaggio());
 		dto.setPromemoriaRicevutaOggettoDefault(vo.getTipoVersamento().getPromemoriaRicevutaOggetto());
@@ -106,9 +110,11 @@ public class TipoVersamentoDominioConverter {
 		tipoVersamento.setTrasformazioneDefinizione(dto.getTrasformazioneDefinizioneDefault());
 		tipoVersamento.setTrasformazioneTipo(dto.getTrasformazioneTipoDefault());
 		tipoVersamento.setCodApplicazione(dto.getCodApplicazioneDefault());
+		tipoVersamento.setPromemoriaAvvisoTipo(dto.getPromemoriaAvvisoTipoDefault());
 		tipoVersamento.setPromemoriaAvvisoPdf(dto.getPromemoriaAvvisoPdfDefault());
 		tipoVersamento.setPromemoriaAvvisoMessaggio(dto.getPromemoriaAvvisoMessaggioDefault());
 		tipoVersamento.setPromemoriaAvvisoOggetto(dto.getPromemoriaAvvisoOggettoDefault());
+		tipoVersamento.setPromemoriaRicevutaTipo(dto.getPromemoriaRicevutaTipoDefault());
 		tipoVersamento.setPromemoriaRicevutaPdf(dto.getPromemoriaRicevutaPdfDefault());
 		tipoVersamento.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioDefault());
 		tipoVersamento.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoDefault());
@@ -125,9 +131,11 @@ public class TipoVersamentoDominioConverter {
 		vo.setTrasformazioneDefinizione(dto.getTrasformazioneDefinizioneCustom());
 		vo.setTrasformazioneTipo(dto.getTrasformazioneTipoCustom());
 		vo.setCodApplicazione(dto.getCodApplicazioneCustom());
+		vo.setPromemoriaAvvisoTipo(dto.getPromemoriaAvvisoTipoCustom());
 		vo.setPromemoriaAvvisoPdf(dto.getPromemoriaAvvisoPdfCustom());
 		vo.setPromemoriaAvvisoMessaggio(dto.getPromemoriaAvvisoMessaggioCustom());
 		vo.setPromemoriaAvvisoOggetto(dto.getPromemoriaAvvisoOggettoCustom());
+		vo.setPromemoriaRicevutaTipo(dto.getPromemoriaRicevutaTipoCustom());
 		vo.setPromemoriaRicevutaPdf(dto.getPromemoriaRicevutaPdfCustom());
 		vo.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioCustom());
 		vo.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoCustom());

@@ -42,10 +42,12 @@ public class Promemoria extends BasicModel {
 	private Long tentativiSpedizione;
 	private Date dataProssimaSpedizione;
 	private Date dataAggiornamento;
-	private String debitoreEmail;
+	private String destinatarioTo;
+	private String destinatarioCc;
 	private String oggetto;
 	private String messaggio;
 	private boolean allegaPdf;
+	private String contentType;
 	
 	@Override
 	public Long getId() {
@@ -65,12 +67,6 @@ public class Promemoria extends BasicModel {
 	}
 	public void setTipo(TipoPromemoria tipo) {
 		this.tipo = tipo;
-	}
-	public String getDebitoreEmail() {
-		return debitoreEmail;
-	}
-	public void setDebitoreEmail(String debitoreEmail) {
-		this.debitoreEmail = debitoreEmail;
 	}
 	public String getOggetto() {
 		return oggetto;
@@ -131,5 +127,23 @@ public class Promemoria extends BasicModel {
 	}
 	public void setIdRpt(Long idRpt) {
 		this.idRpt = idRpt;
+	}
+	public String getContentType() {
+		return contentType;
+	}
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+	public String getDestinatarioTo() {
+		return destinatarioTo;
+	}
+	public void setDestinatarioTo(String destinatarioTo) {
+		this.destinatarioTo = destinatarioTo;
+	}
+	public String getDestinatarioCc() {
+		return destinatarioCc;
+	}
+	public void setDestinatarioCc(String destinatarioCc) {
+		this.destinatarioCc = destinatarioCc;
 	}
 }

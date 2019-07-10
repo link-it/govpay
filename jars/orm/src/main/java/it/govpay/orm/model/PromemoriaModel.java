@@ -47,7 +47,9 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.STATO = new Field("stato",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"Promemoria",Promemoria.class);
-		this.DEBITORE_EMAIL = new Field("debitoreEmail",java.lang.String.class,"Promemoria",Promemoria.class);
+		this.DESTINATARIO_TO = new Field("destinatarioTo",java.lang.String.class,"Promemoria",Promemoria.class);
+		this.DESTINATARIO_CC = new Field("destinatarioCc",java.lang.String.class,"Promemoria",Promemoria.class);
+		this.MESSAGGIO_CONTENT_TYPE = new Field("messaggioContentType",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.OGGETTO = new Field("oggetto",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.MESSAGGIO = new Field("messaggio",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.ALLEGA_PDF = new Field("allegaPdf",boolean.class,"Promemoria",Promemoria.class);
@@ -67,7 +69,9 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"Promemoria",Promemoria.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"Promemoria",Promemoria.class);
-		this.DEBITORE_EMAIL = new ComplexField(father,"debitoreEmail",java.lang.String.class,"Promemoria",Promemoria.class);
+		this.DESTINATARIO_TO = new ComplexField(father,"destinatarioTo",java.lang.String.class,"Promemoria",Promemoria.class);
+		this.DESTINATARIO_CC = new ComplexField(father,"destinatarioCc",java.lang.String.class,"Promemoria",Promemoria.class);
+		this.MESSAGGIO_CONTENT_TYPE = new ComplexField(father,"messaggioContentType",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.OGGETTO = new ComplexField(father,"oggetto",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.MESSAGGIO = new ComplexField(father,"messaggio",java.lang.String.class,"Promemoria",Promemoria.class);
 		this.ALLEGA_PDF = new ComplexField(father,"allegaPdf",boolean.class,"Promemoria",Promemoria.class);
@@ -91,7 +95,11 @@ public class PromemoriaModel extends AbstractModel<Promemoria> {
 	 
 	public IField DESCRIZIONE_STATO = null;
 	 
-	public IField DEBITORE_EMAIL = null;
+	public IField DESTINATARIO_TO = null;
+	 
+	public IField DESTINATARIO_CC = null;
+	 
+	public IField MESSAGGIO_CONTENT_TYPE = null;
 	 
 	public IField OGGETTO = null;
 	 

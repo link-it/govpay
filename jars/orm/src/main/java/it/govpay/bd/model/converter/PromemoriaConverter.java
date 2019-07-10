@@ -43,7 +43,8 @@ public class PromemoriaConverter {
 		vo.setStato(dto.getStato().toString());
 		vo.setTentativiSpedizione(dto.getTentativiSpedizione());
 		vo.setTipo(dto.getTipo().toString());
-		vo.setDebitoreEmail(dto.getDebitoreEmail());
+		vo.setDestinatarioTo(dto.getDestinatarioTo());
+		vo.setDestinatarioCc(dto.getDestinatarioCc());
 		vo.setOggetto(dto.getOggetto());
 		vo.setMessaggio(dto.getMessaggio());
 		vo.setAllegaPdf(dto.isAllegaPdf());
@@ -52,6 +53,7 @@ public class PromemoriaConverter {
 			idRpt.setId(dto.getIdRpt());
 			vo.setIdRPT(idRpt);
 		}
+		vo.setMessaggioContentType(dto.getContentType());
 		return vo;
 	}
 
@@ -73,12 +75,14 @@ public class PromemoriaConverter {
 		dto.setStato(StatoSpedizione.valueOf(vo.getStato()));
 		dto.setTentativiSpedizione(vo.getTentativiSpedizione());
 		dto.setTipo(TipoPromemoria.valueOf(vo.getTipo()));
-		dto.setDebitoreEmail(vo.getDebitoreEmail());
+		dto.setDestinatarioTo(vo.getDestinatarioTo());
+		dto.setDestinatarioCc(vo.getDestinatarioCc());
 		dto.setOggetto(vo.getOggetto());
 		dto.setMessaggio(vo.getMessaggio());
 		dto.setAllegaPdf(vo.isAllegaPdf());
 		if(vo.getIdRPT() != null)
 			dto.setIdRpt(vo.getIdRPT().getId());
+		dto.setContentType(vo.getMessaggioContentType());
 		return dto;
 	}
 

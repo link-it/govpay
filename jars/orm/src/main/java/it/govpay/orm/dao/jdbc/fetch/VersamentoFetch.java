@@ -140,6 +140,10 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "ack", Versamento.model().ACK.getFieldType()));
 				this.setParameter(object, "setAnomalo", Versamento.model().ANOMALO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "anomalo", Versamento.model().ANOMALO.getFieldType()));
+				setParameter(object, "setDivisione", Versamento.model().DIVISIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "divisione", Versamento.model().DIVISIONE.getFieldType()));
+				setParameter(object, "setDirezione", Versamento.model().DIREZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "direzione", Versamento.model().DIREZIONE.getFieldType()));
 				return object;
 			}
 			
@@ -248,6 +252,10 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"ack"));
 				this.setParameter(object, "setAnomalo", Versamento.model().ANOMALO.getFieldType(),
 					this.getObjectFromMap(map,"anomalo"));
+				setParameter(object, "setDivisione", Versamento.model().DIVISIONE.getFieldType(),
+					this.getObjectFromMap(map,"divisione"));
+				setParameter(object, "setDirezione", Versamento.model().DIREZIONE.getFieldType(),
+					this.getObjectFromMap(map,"direzione"));
 				return object;
 			}
 			

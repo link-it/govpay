@@ -87,14 +87,14 @@ public class AutorizzazioneUtils {
 			applicazione = checkSubject ? AnagraficaManager.getApplicazioneBySubject(bd, username) : AnagraficaManager.getApplicazioneByPrincipal(bd, username); 
 			tipoUtenza = TIPO_UTENZA.APPLICAZIONE;
 			Utenza utenzaTmp = applicazione.getUtenza();
-			utenzaTmp.setAclRuoli(aclsRuolo);
+			utenzaTmp.setAclRuoliEsterni(aclsRuolo);
 			utenza = new UtenzaApplicazione(utenzaTmp, applicazione.getCodApplicazione());
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) { 
 			try {
 				operatore = checkSubject ? AnagraficaManager.getOperatoreBySubject(bd, username) : AnagraficaManager.getOperatoreByPrincipal(bd, username);
 				tipoUtenza = TIPO_UTENZA.OPERATORE;
 				Utenza utenzaTmp  = operatore.getUtenza();
-				utenzaTmp.setAclRuoli(aclsRuolo);
+				utenzaTmp.setAclRuoliEsterni(aclsRuolo);
 				utenza = new UtenzaOperatore(utenzaTmp, operatore.getNome(), headerValues);
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException ex) {
 				throw new UsernameNotFoundException("Utenza non trovata.",ex);				
@@ -150,7 +150,7 @@ public class AutorizzazioneUtils {
 		}
 
 		Utenza utenza = new UtenzaCittadino(username,headerValues);
-		utenza.setAclRuoli(aclsRuolo);
+		utenza.setAclRuoliEsterni(aclsRuolo);
 		List<Acl> aclPrincipal = new ArrayList<>();
 		Acl acl = new Acl();
 		acl.setUtenza(utenza);
@@ -198,7 +198,7 @@ public class AutorizzazioneUtils {
 		}
 
 		Utenza utenza = new UtenzaAnonima();
-		utenza.setAclRuoli(aclsRuolo);
+		utenza.setAclRuoliEsterni(aclsRuolo);
 		List<Acl> aclPrincipal = new ArrayList<>();
 		Acl acl = new Acl();
 		acl.setUtenza(utenza);

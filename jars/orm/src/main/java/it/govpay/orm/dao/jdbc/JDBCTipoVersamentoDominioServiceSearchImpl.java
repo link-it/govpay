@@ -168,7 +168,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
         	idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
      		
-        try{
+        try{  
 			List<IField> fields = new ArrayList<>();
 			AliasField tributoId = new AliasField(new CustomField("id", Long.class, "id", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())), "id");
 			fields.add(tributoId);
@@ -181,9 +181,11 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(TipoVersamentoDominio.model().VALIDAZIONE_DEFINIZIONE);
 			fields.add(TipoVersamentoDominio.model().TRASFORMAZIONE_DEFINIZIONE);
 			fields.add(TipoVersamentoDominio.model().TRASFORMAZIONE_TIPO);
+			fields.add(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_TIPO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_PDF);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_MESSAGGIO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_AVVISO_OGGETTO);
+			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_TIPO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_PDF);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO);
@@ -210,12 +212,16 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(trasformazioneDefinizioneAlias);
 			AliasField trasformazioneTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRASFORMAZIONE_TIPO);
 			fields.add(trasformazioneTipoAlias);
+			AliasField promemoriaAvvisoTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_TIPO);
+			fields.add(promemoriaAvvisoTipoAlias);
 			AliasField promemoriaAvvisoPdfAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_PDF);
 			fields.add(promemoriaAvvisoPdfAlias);
 			AliasField promemoriaAvvisoMessaggioAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_MESSAGGIO);
 			fields.add(promemoriaAvvisoMessaggioAlias);
 			AliasField promemoriaAvvisoOggettoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_AVVISO_OGGETTO);
 			fields.add(promemoriaAvvisoOggettoAlias);
+			AliasField promemoriaRicevutaTipoAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_TIPO);
+			fields.add(promemoriaRicevutaTipoAlias);
 			AliasField promemoriaRicevutaPdfAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_PDF);
 			fields.add(promemoriaRicevutaPdfAlias);
 			AliasField promemoriaRicevutaMessaggioAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO);

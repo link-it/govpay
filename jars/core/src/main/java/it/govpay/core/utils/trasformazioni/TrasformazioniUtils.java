@@ -139,6 +139,10 @@ public class TrasformazioniUtils {
 	}
 	
 	public static void fillDynamicMapPromemoriaAvviso(Logger log, Map<String, Object> dynamicMap, IContext context, Versamento versamento, Dominio dominio) {
+		if(dynamicMap.containsKey(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA)==false) {
+			dynamicMap.put(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA, Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA_DEFAULT_VALUE);
+		}
+		
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
 		}
@@ -170,6 +174,10 @@ public class TrasformazioniUtils {
 	}
 	
 	public static void fillDynamicMapPromemoriaRicevuta(Logger log, Map<String, Object> dynamicMap, IContext context, it.govpay.bd.model.Rpt rpt, Versamento versamento, Dominio dominio) {
+		if(dynamicMap.containsKey(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA)==false) {
+			dynamicMap.put(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA, Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA_DEFAULT_VALUE);
+		}
+		
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
 		}

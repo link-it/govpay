@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"idTipoPendenza",
 "nome",
 "causale",
 "soggettoPagatore",
@@ -37,9 +36,6 @@ import it.govpay.core.beans.JSONSerializable;
 "rpp",
 })
 public class Pendenza extends JSONSerializable {
-  
-  @JsonProperty("idTipoPendenza")
-  private String idTipoPendenza = null;
   
   @JsonProperty("nome")
   private String nome = null;
@@ -107,22 +103,6 @@ public class Pendenza extends JSONSerializable {
   @JsonProperty("rpp")
   private List<RppIndex> rpp = new ArrayList<>();
   
-  /**
-   * Identificativo della tipologia pendenza
-   **/
-  public Pendenza idTipoPendenza(String idTipoPendenza) {
-    this.idTipoPendenza = idTipoPendenza;
-    return this;
-  }
-
-  @JsonProperty("idTipoPendenza")
-  public String getIdTipoPendenza() {
-    return idTipoPendenza;
-  }
-  public void setIdTipoPendenza(String idTipoPendenza) {
-    this.idTipoPendenza = idTipoPendenza;
-  }
-
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
    **/
@@ -476,8 +456,7 @@ public class Pendenza extends JSONSerializable {
       return false;
     }
     Pendenza pendenza = (Pendenza) o;
-    return Objects.equals(idTipoPendenza, pendenza.idTipoPendenza) &&
-        Objects.equals(nome, pendenza.nome) &&
+    return Objects.equals(nome, pendenza.nome) &&
         Objects.equals(causale, pendenza.causale) &&
         Objects.equals(soggettoPagatore, pendenza.soggettoPagatore) &&
         Objects.equals(importo, pendenza.importo) &&
@@ -503,7 +482,7 @@ public class Pendenza extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, voci, rpp);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, idA2A, idPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, voci, rpp);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -520,7 +499,6 @@ public class Pendenza extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Pendenza {\n");
     
-    sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");

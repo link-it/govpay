@@ -1,0 +1,97 @@
+{
+	"stato": "#notnull",
+	"dettaglioStato": "#ignore",
+	"rpt": {
+		"versioneOggetto": "6.2.0",
+		"dominio": {
+			"identificativoDominio": "#notnull",
+			"identificativoStazioneRichiedente": "#notnull"
+		},
+		"identificativoMessaggioRichiesta": "#notnull",
+		"dataOraMessaggioRichiesta": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
+		"autenticazioneSoggetto": "N/A",
+		"soggettoVersante": {
+			"identificativoUnivocoVersante": {
+				"tipoIdentificativoUnivoco": "#notnull",
+				"codiceIdentificativoUnivoco": "#notnull"
+			},
+			"anagraficaVersante": "#notnull",
+			"indirizzoVersante": "#ignore",
+			"civicoVersante": "#ignore",
+			"capVersante": "#ignore",
+			"localitaVersante": "#ignore",
+			"provinciaVersante": "#ignore",
+			"nazioneVersante": "#ignore",
+			"e-mailVersante": "#ignore"
+		},
+		"soggettoPagatore": {
+			"identificativoUnivocoPagatore": {
+				"tipoIdentificativoUnivoco": "#notnull",
+				"codiceIdentificativoUnivoco": "#notnull"
+			},
+			"anagraficaPagatore": "#notnull",
+			"indirizzoPagatore": "#ignore",
+			"civicoPagatore": "#ignore",
+			"capPagatore": "#ignore",
+			"localitaPagatore": "#ignore",
+			"provinciaPagatore": "#ignore",
+			"nazionePagatore": "#ignore",
+			"e-mailPagatore": "#ignore"
+		},
+		"enteBeneficiario": {
+			"identificativoUnivocoBeneficiario": {
+				"tipoIdentificativoUnivoco": "#notnull",
+				"codiceIdentificativoUnivoco": "#notnull"
+			},
+			"denominazioneBeneficiario": "#notnull",
+			"codiceUnitOperBeneficiario": "#ignore",
+			"denomUnitOperBeneficiario": "#ignore",
+			"indirizzoBeneficiario": "#ignore",
+			"civicoBeneficiario": "#ignore",
+			"capBeneficiario": "#ignore",
+			"localitaBeneficiario": "#ignore",
+			"provinciaBeneficiario": "#ignore",
+			"nazioneBeneficiario": "#ignore"
+		},
+		"datiVersamento": {
+			"dataEsecuzionePagamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+			"importoTotaleDaVersare": "#regex [0-9]{1,9}\\.[0-9]{2}",
+			"tipoVersamento": "#notnull",
+			"identificativoUnivocoVersamento": "#notnull",
+			"codiceContestoPagamento": "#notnull",
+			"ibanAddebito": "#ignore",
+			"bicAddebito": "#ignore",
+			"firmaRicevuta": "0",
+			"datiSingoloVersamento": [
+				{
+					"importoSingoloVersamento": "#regex [0-9]{1,9}\\.[0-9]{2}",
+					"commissioneCaricoPA": "#ignore",
+					"ibanAccredito": "#notnull",
+					"bicAccredito": "#ignore",
+					"ibanAppoggio": "#ignore",
+					"bicAppoggio": "#ignore",
+					"credenzialiPagatore": "#ignore",
+					"causaleVersamento": "#notnull",
+					"datiSpecificiRiscossione": "#notnull",
+					"datiMarcaBolloDigitale": "##null"
+				}
+			]
+		}
+	},
+	"rt": "##null",
+	"pendenza": {
+		"causale": "#notnull",
+		"soggettoPagatore": "#notnull",
+		"importo": "#? isImportoConDueDecimali(_)",
+		"numeroAvviso": "#ignore",
+		"dataCaricamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+		"dataValidita": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+		"dataScadenza": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+		"tassonomiaAvviso": "#ignore",
+		"idA2A": "#notnull",
+		"idPendenza": "#notnull",
+		"dominio": "#notnull",
+		"stato": "NON_ESEGUITA",
+		"rpp": "#notnull"
+	}
+}

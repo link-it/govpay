@@ -92,6 +92,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"Versamento",Versamento.class));
 		this.ACK = new Field("ack",boolean.class,"Versamento",Versamento.class);
 		this.ANOMALO = new Field("anomalo",boolean.class,"Versamento",Versamento.class);
+		this.DIVISIONE = new Field("divisione",java.lang.String.class,"Versamento",Versamento.class);
+		this.DIREZIONE = new Field("direzione",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -150,6 +152,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.ID_TRACCIATO_AVVISATURA = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciatoAvvisatura",it.govpay.orm.IdTracciato.class,"Versamento",Versamento.class));
 		this.ACK = new ComplexField(father,"ack",boolean.class,"Versamento",Versamento.class);
 		this.ANOMALO = new ComplexField(father,"anomalo",boolean.class,"Versamento",Versamento.class);
+		this.DIVISIONE = new ComplexField(father,"divisione",java.lang.String.class,"Versamento",Versamento.class);
+		this.DIREZIONE = new ComplexField(father,"direzione",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -256,6 +260,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField ACK = null;
 	 
 	public IField ANOMALO = null;
+	 
+	public IField DIVISIONE = null;
+	 
+	public IField DIREZIONE = null;
 	 
 
 	@Override

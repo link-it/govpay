@@ -1488,6 +1488,20 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: idTipoPendenza
+          in: query
+          description: Identificativo della tipologia di pendenza
+          required: false
+          schema:
+            type: string
+            example: IMU
+        - name: descrizione
+          in: query
+          description: Descrizione della tipologia di pendenza
+          required: false
+          schema:
+            type: string
+            example: Imposta Municipale
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -2393,6 +2407,13 @@ paths:
           schema:
             type: string
             format: date
+        - name: idTipoPendenza
+          in: query
+          description: Identificativo della tipologia di pendenza
+          required: false
+          schema:
+            type: string
+            example: IMU
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -4442,6 +4463,14 @@ components:
           description: lista delle acl attive sull'applicazione
           items:
             $ref: '#/components/schemas/aclPost'
+        ruoli:
+          type: array
+          description: lista dei ruoli attivi sull'applicazione
+          items:
+            type: string
+            example:
+              - Operatore
+              - Amministratore
         servizioIntegrazione:
           $ref: '#/components/schemas/connector'
         abilitato:
@@ -4516,6 +4545,11 @@ components:
           description: lista delle acl attive sull'applicazione
           items:
             $ref: '#/components/schemas/aclPost'
+        ruoli:
+          type: array
+          description: lista dei ruoli attivi sull'applicazione
+          items:
+            $ref: '#/components/schemas/ruolo'
         servizioIntegrazione:
           $ref: '#/components/schemas/connector'
         abilitato:
@@ -4553,6 +4587,14 @@ components:
           description: lista delle acl attive sull'operatore
           items:
             $ref: '#/components/schemas/aclPost'
+        ruoli:
+          type: array
+          description: lista dei ruoli attivi sull'operatore
+          items:
+            type: string
+            example:
+              - Operatore
+              - Amministratore
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
@@ -4607,6 +4649,11 @@ components:
           description: lista delle acl attive sull'applicazione
           items:
             $ref: '#/components/schemas/aclPost'
+        ruoli:
+          type: array
+          description: lista dei ruoli attivi sull'operatore
+          items:
+            $ref: '#/components/schemas/ruolo'
         abilitato:
           type: boolean
           description: Indicazione se l'operatore è abilitato ad operare sulla piattaforma
@@ -4881,9 +4928,16 @@ components:
     tipoPendenzaPromemoria:
       type: object
       required:
+        - tipo
         - oggetto
         - messaggio
       properties:
+        tipo:
+          type: string
+          enum:
+            - freemarker
+          example: freemarker
+          description: Indica il tipo di template da applicare per attualizzare il promemoria
         oggetto:
           type: object
           description: Template di trasformazione da applicare per ottenere l'oggetto da inserire nella email
@@ -5213,6 +5267,14 @@ components:
           example: Sanzioni
         tassonomiaAvviso:
           $ref: '#/components/schemas/tassonomiaAvviso'
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione ABC
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione001
     pendenzaPut:
       type: object
       allOf:

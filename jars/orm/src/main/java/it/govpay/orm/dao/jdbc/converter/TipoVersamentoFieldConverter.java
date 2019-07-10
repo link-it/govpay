@@ -158,6 +158,13 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "promemoria_avviso_pdf";
 			}
 		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_avviso_tipo";
+			}else{
+				return "promemoria_avviso_tipo";
+			}
+		}
 		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".promemoria_avviso_oggetto";
@@ -170,6 +177,13 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".promemoria_avviso_messaggio";
 			}else{
 				return "promemoria_avviso_messaggio";
+			}
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".promemoria_ricevuta_tipo";
+			}else{
+				return "promemoria_ricevuta_tipo";
 			}
 		}
 		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF)){
@@ -245,10 +259,16 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_PDF)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_TIPO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
 		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_OGGETTO)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().PROMEMORIA_AVVISO_MESSAGGIO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_TIPO)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_PDF)){

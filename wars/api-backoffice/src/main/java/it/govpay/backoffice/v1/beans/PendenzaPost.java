@@ -31,6 +31,8 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 	"datiAllegati",
 	"tassonomia",
 	"tassonomiaAvviso",
+	"direzione",
+	"divisione",
 	"voci",
 	"idA2A",
 	"idPendenza",
@@ -86,6 +88,12 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
+  
+  @JsonProperty("direzione")
+  private String direzione = null;
+  
+  @JsonProperty("divisione")
+  private String divisione = null;
   
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
@@ -369,6 +377,38 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   }
 
   /**
+   * Identificativo della direzione interna all'ente creditore
+   **/
+  public PendenzaPost direzione(String direzione) {
+    this.direzione = direzione;
+    return this;
+  }
+
+  @JsonProperty("direzione")
+  public String getDirezione() {
+    return direzione;
+  }
+  public void setDirezione(String direzione) {
+    this.direzione = direzione;
+  }
+
+  /**
+   * Identificativo della divisione interna all'ente creditore
+   **/
+  public PendenzaPost divisione(String divisione) {
+    this.divisione = divisione;
+    return this;
+  }
+
+  @JsonProperty("divisione")
+  public String getDivisione() {
+    return divisione;
+  }
+  public void setDivisione(String divisione) {
+    this.divisione = divisione;
+  }
+
+  /**
    **/
   public PendenzaPost voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -472,6 +512,8 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
         Objects.equals(datiAllegati, pendenzaPost.datiAllegati) &&
         Objects.equals(tassonomia, pendenzaPost.tassonomia) &&
         Objects.equals(tassonomiaAvviso, pendenzaPost.tassonomiaAvviso) &&
+        Objects.equals(direzione, pendenzaPost.direzione) &&
+        Objects.equals(divisione, pendenzaPost.divisione) &&
         Objects.equals(voci, pendenzaPost.voci) &&
         Objects.equals(idA2A, pendenzaPost.idA2A) &&
         Objects.equals(idPendenza, pendenzaPost.idPendenza) &&
@@ -481,7 +523,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci, idA2A, idPendenza, this.idDebitore, this.dati);
+    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, voci, idA2A, idPendenza, this.idDebitore, this.dati);
   }
 
   public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -514,6 +556,8 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
+    sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
+    sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
@@ -570,6 +614,11 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 			vf.getValidator("annoRiferimento", this.annoRiferimento.toBigInteger().toString()).pattern("[0-9]{4}");
 		vf.getValidator("cartellaPagamento", this.cartellaPagamento).minLength(1).maxLength(35);
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
+		
+		if(this.direzione != null)
+			validatoreId.validaIdDirezione("direzione",this.direzione);
+		if(this.divisione != null)
+			validatoreId.validaIdDivisione("divisione",this.divisione);
 	}
 }
 

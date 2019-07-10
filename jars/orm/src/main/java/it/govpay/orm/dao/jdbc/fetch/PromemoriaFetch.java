@@ -62,8 +62,12 @@ public class PromemoriaFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "stato", Promemoria.model().STATO.getFieldType()));
 				setParameter(object, "setDescrizioneStato", Promemoria.model().DESCRIZIONE_STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Promemoria.model().DESCRIZIONE_STATO.getFieldType()));
-				setParameter(object, "setDebitoreEmail", Promemoria.model().DEBITORE_EMAIL.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "debitore_email", Promemoria.model().DEBITORE_EMAIL.getFieldType()));
+				setParameter(object, "setDestinatarioTo", Promemoria.model().DESTINATARIO_TO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "destinatario_to", Promemoria.model().DESTINATARIO_TO.getFieldType()));
+				setParameter(object, "setDestinatarioCc", Promemoria.model().DESTINATARIO_CC.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "destinatario_cc", Promemoria.model().DESTINATARIO_CC.getFieldType()));
+				setParameter(object, "setMessaggioContentType", Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "messaggio_content_type", Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType()));
 				setParameter(object, "setOggetto", Promemoria.model().OGGETTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "oggetto", Promemoria.model().OGGETTO.getFieldType()));
 				setParameter(object, "setMessaggio", Promemoria.model().MESSAGGIO.getFieldType(),
@@ -106,8 +110,12 @@ public class PromemoriaFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"stato"));
 				setParameter(object, "setDescrizioneStato", Promemoria.model().DESCRIZIONE_STATO.getFieldType(),
 					this.getObjectFromMap(map,"descrizioneStato"));
-				setParameter(object, "setDebitoreEmail", Promemoria.model().DEBITORE_EMAIL.getFieldType(),
-					this.getObjectFromMap(map,"debitoreEmail"));
+				setParameter(object, "setDestinatarioTo", Promemoria.model().DESTINATARIO_TO.getFieldType(),
+					this.getObjectFromMap(map,"destinatarioTo"));
+				setParameter(object, "setDestinatarioCc", Promemoria.model().DESTINATARIO_CC.getFieldType(),
+					this.getObjectFromMap(map,"destinatarioCc"));
+				setParameter(object, "setMessaggioContentType", Promemoria.model().MESSAGGIO_CONTENT_TYPE.getFieldType(),
+					this.getObjectFromMap(map,"messaggioContentType"));
 				setParameter(object, "setOggetto", Promemoria.model().OGGETTO.getFieldType(),
 					this.getObjectFromMap(map,"oggetto"));
 				setParameter(object, "setMessaggio", Promemoria.model().MESSAGGIO.getFieldType(),

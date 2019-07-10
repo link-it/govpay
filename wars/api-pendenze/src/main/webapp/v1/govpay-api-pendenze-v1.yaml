@@ -193,6 +193,7 @@ paths:
                 type: object
                 required:
                   - idDominio
+                  - numeroAvviso
                 properties:
                   idDominio:
                     type: string
@@ -211,22 +212,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - idDominio
-                properties:
-                  idDominio:
-                    type: string
-                    description: Identificativo del creditore dell'avviso
-                    example: 01234567890
-                  numeroAvviso:
-                    type: string
-                    description: Numero identificativo dell'avviso di pagamento
-                    example: 00100000000000012
-                  pdf:
-                    type: string
-                    format: base64
-                    description: Stampa pdf dell'avviso
+                $ref: '#/components/schemas/avviso'
         '400':
           $ref: '#/components/responses/400'
         '422':
@@ -642,14 +628,12 @@ components:
              * `RICHIESTA` - Richiesta non valida
              * `OPERAZIONE` - Operazione non eseguibile
              * `PAGOPA` - Errore da PagoPA
-             * `EC` - Errore da Ente Creditore
              * `INTERNO` - Errore interno
           enum:
             - AUTORIZZAZIONE
             - RICHIESTA
             - OPERAZIONE
             - PAGOPA
-            - EC
             - INTERNO
         codice:
           type: string
@@ -1012,6 +996,33 @@ components:
               description: Codice fiscale dell'unita
               example: 01234567890
         - $ref: '#/components/schemas/unitaOperativaPost'
+    tipoEntrataPost:
+      type: object
+      required: 
+        - descrizione
+        - tipoContabilita
+        - codiceContabilita
+      properties:
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
+        tipoContabilita:
+          $ref: '#/components/schemas/tipoContabilita'
+        codiceContabilita:
+          description: Codifica del capitolo di bilancio
+          type: string
+          example: 3321
+    tipoEntrata:
+      type: object
+      allOf:
+        - type: object
+          required:
+           - idEntrata
+          properties:
+            idEntrata:
+              type: string
+              example: IMU
+        - $ref: '#/components/schemas/tipoEntrataPost'
     tipoContabilita:
       description: Tipologia di codifica del capitolo di bilancio
       type: string
@@ -1028,10 +1039,6 @@ components:
         - importo
         - causale
       properties:
-        idTipoPendenza:
-          type: string
-          description: Identificativo della tipologia pendenza
-          example: IMU    
         nome:
           type: string
           description: Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -1169,10 +1176,6 @@ components:
               $ref: '#/components/schemas/unitaOperativa'
             stato:
               $ref: '#/components/schemas/statoPendenza'
-            descrizioneStato:
-              type: string
-              description: Descrizione estesa dello stato di elaborazione della pendenza
-              example: 'Pendenza in stato...'
             segnalazioni:
               type: array
               items: 
@@ -1222,7 +1225,7 @@ components:
               type: string
               description: Stato della voce di pagamento
               enum:
-                - Eseguito 
+                - Eseguito
                 - Non eseguito
                 - Anomalo
             datiAllegati:
@@ -1266,7 +1269,7 @@ components:
                   description: Tipologia di Bollo digitale
                   type: string
                   enum:
-                    - 01
+                    - Imposta di bollo
                 hashDocumento:
                   description: Digest in base64 del documento informatico associato alla marca da bollo
                   type: string
@@ -1387,22 +1390,12 @@ components:
              * Anagrafica Creditore
              * Anagrafica Applicazioni
              * Anagrafica Ruoli
-             * Pagamenti
-             * Pendenze
+             * Pendenze e Pagamenti
+             * Pendenze e Pagamenti propri 
              * Rendicontazioni e Incassi
              * Giornale degli Eventi
              * Statistiche
              * Configurazione e Manutenzione
-          enum:
-            - Anagrafica PagoPA
-            - Anagrafica Creditore
-            - Anagrafica Applicazioni
-            - Anagrafica Ruoli
-            - Pagamenti
-            - Pendenze
-            - Rendicontazioni e Incassi
-            - Giornale degli Eventi
-            - Configurazione e manutenzione
           example:
             Pendenze e Pagamenti
         autorizzazioni:
@@ -1412,6 +1405,7 @@ components:
             enum:
              - Lettura
              - Scrittura
+             - Esecuzione
           example:
             - Lettura
             - Scrittura
@@ -1443,7 +1437,7 @@ components:
       required: 
         - nome
         - domini
-        - tipiPendenza
+        - entrate
         - acl
       properties:
         nome:
@@ -1454,34 +1448,15 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/dominioIndex'
-        tipiPendenza:
+        entrate:
           type: array
-          description: tipologie di pendenza su cui e' abilitato ad operare
+          description: entrate su cui e' abilitato ad operare
           items: 
-            $ref: '#/components/schemas/tipoPendenza'
+            $ref: '#/components/schemas/tipoEntrata'
         acl:
           type: array
           items:
             $ref: '#/components/schemas/aclPost'
-    tipoPendenzaPost:
-      type: object
-      required: 
-        - descrizione
-      properties:
-        descrizione:
-          type: string
-          example: Imposta municipale urbana
-    tipoPendenza:
-      type: object
-      allOf:
-        - type: object
-          required:
-           - idTipoPendenza
-          properties:
-            idTipoPendenza:
-              type: string
-              example: IMU
-        - $ref: '#/components/schemas/tipoPendenzaPost'
     modalitaAvvisaturaDigitale:
       example: ASINCRONA
       type: string

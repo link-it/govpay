@@ -1,7 +1,7 @@
 package it.govpay.pendenze.v2.beans.converter;
 
 import it.govpay.pendenze.v2.beans.Soggetto;
-import it.govpay.pendenze.v2.beans.TipoSoggetto;
+import it.govpay.pendenze.v2.beans.Soggetto.TipoEnum;
 
 public class AnagraficaConverter {
 
@@ -10,7 +10,7 @@ public class AnagraficaConverter {
 		if(anagrafica == null) return null;
 		Soggetto rsModel = new Soggetto();
 
-		rsModel.setTipo(TipoSoggetto.fromValue(anagrafica.getTipo().toString()));
+		rsModel.setTipo(TipoEnum.fromValue(anagrafica.getTipo().toString()));
 		rsModel.setIdentificativo(anagrafica.getCodUnivoco());
 		rsModel.setAnagrafica(anagrafica.getRagioneSociale());
 		rsModel.setIndirizzo(anagrafica.getIndirizzo());

@@ -20,14 +20,11 @@
  */
 package it.govpay.core.dao.pagamenti;
 
-import java.io.ByteArrayOutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,17 +34,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.IJsonSchemaValidator;
-import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
-import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
 import org.openspcoop2.utils.json.ValidationException;
-import org.openspcoop2.utils.json.ValidationResponse;
-import org.openspcoop2.utils.json.ValidationResponse.ESITO;
-import org.openspcoop2.utils.json.ValidatorFactory;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
-import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BasicBD;
@@ -61,7 +50,6 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
-//import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -75,10 +63,8 @@ import it.govpay.bd.viste.model.converter.VersamentoIncassoConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Applicazione;
-//import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.business.model.PrintAvvisoDTO;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
@@ -99,27 +85,17 @@ import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.exceptions.VersamentoAnnullatoException;
-import it.govpay.core.exceptions.VersamentoDuplicatoException;
-import it.govpay.core.exceptions.VersamentoNonValidoException;
-import it.govpay.core.exceptions.VersamentoScadutoException;
-import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.AvvisaturaUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
-import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
+import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.StatoPendenza;
 import it.govpay.model.TipoVersamento;
-//import it.govpay.model.Evento.CategoriaEvento;
-//import it.govpay.model.Evento.EsitoEvento;
-//import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.AvvisaturaOperazione;
 import it.govpay.model.Versamento.ModoAvvisatura;
@@ -205,8 +181,7 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setCfCittadino(userDetails.getIdentificativo()); 
 			filter.setAbilitaFiltroCittadino(true);
 		}
-
-
+		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
 
 		long count = versamentiBD.count(filter);
 
@@ -305,6 +280,7 @@ public class PendenzeDAO extends BaseDAO{
 		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 			filter.setCfCittadino(userDetails.getIdentificativo()); 
 		}
+		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
 
 		long count = versamentiBD.count(filter);
 
@@ -847,8 +823,24 @@ public class PendenzeDAO extends BaseDAO{
 			MultivaluedMap<String, String> queryParameters = putVersamentoDTO.getQueryParameters(); 
 			MultivaluedMap<String, String> pathParameters = putVersamentoDTO.getPathParameters();
 			Map<String, String> headers = putVersamentoDTO.getHeaders();
-			json = VersamentoUtils.trasformazioneInputVersamentoModello4(this.log, dominio, tipoVersamentoDominio, json, queryParameters, pathParameters, headers);
-			Versamento chiediVersamento = VersamentoUtils.inoltroInputVersamentoModello4(this.log, codDominio, codTipoVersamento, tipoVersamentoDominio, json, bd);
+			String trasformazioneDefinizione = tipoVersamentoDominio.getTrasformazioneDefinizione();
+			if(trasformazioneDefinizione != null && tipoVersamentoDominio.getTrasformazioneTipo() != null) {
+				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, tipoVersamentoDominio, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
+			}
+			Versamento chiediVersamento = null;
+			String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
+			if(codApplicazione != null) {
+				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, json, bd, codApplicazione);
+			} else {
+				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
+				new PendenzaPostValidator(pendenzaPost).validate();
+				
+				it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
+				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+				chiediVersamento = versamentoBusiness.chiediVersamento(versamentoCommons);
+			}
 			
 			Applicazione applicazioniBD = new Applicazione(bd);
 			GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(putVersamentoDTO.getUser());

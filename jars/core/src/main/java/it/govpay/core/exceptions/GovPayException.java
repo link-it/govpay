@@ -515,6 +515,8 @@ public class GovPayException extends Exception {
 		case NDP_000: 
 		case NDP_001: return CategoriaEnum.PAGOPA; 
 		case VER_014: return CategoriaEnum.OPERAZIONE;
+		case VAL_000:
+		case VAL_001: return CategoriaEnum.INTERNO;
 		default: return CategoriaEnum.RICHIESTA;
 		}
 	}

@@ -21,28 +21,23 @@ package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
 
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
-
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
 import it.govpay.orm.Evento;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
  * JDBCEventoServiceImpl
@@ -146,10 +141,10 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-		boolean setIdMappingResolutionBehaviour = 
-			(idMappingResolutionBehaviour==null) ||
-			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+//		boolean setIdMappingResolutionBehaviour = 
+//			(idMappingResolutionBehaviour==null) ||
+//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
 

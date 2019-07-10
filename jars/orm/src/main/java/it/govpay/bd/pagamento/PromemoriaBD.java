@@ -134,4 +134,24 @@ public class PromemoriaBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	
+	public void updateMessaggioPromemoria(long id, String oggetto, String messaggio, String contentType) throws ServiceException {
+		try {
+//			IdPromemoria idVO = ((JDBCPromemoriaServiceSearch)this.getPromemoriaService()).findId(id, true);
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+			if(oggetto != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().OGGETTO, oggetto));
+			if(messaggio != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().MESSAGGIO, messaggio));
+			if(contentType != null) 
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().MESSAGGIO_CONTENT_TYPE, contentType));
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().DATA_AGGIORNAMENTO_STATO, new Date()));
+
+			((JDBCPromemoriaService)this.getPromemoriaService()).updateFields(id, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
 }

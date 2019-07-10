@@ -53,9 +53,9 @@ public class ProfiloConverter {
 			break;
 		case APPLICAZIONE:
 			if(leggiProfilo.getDomini()!=null) {
-				List<it.govpay.pagamento.v2.beans.Dominio> dominiLst = new ArrayList<>();
+				List<it.govpay.pagamento.v2.beans.DominioIndex> dominiLst = new ArrayList<>();
 				for(Dominio dominio: leggiProfilo.getDomini()) {
-					dominiLst.add(DominiConverter.toRsModel(dominio));
+					dominiLst.add(DominiConverter.toRsModelIndex(dominio));
 				}
 				profilo.setDomini(dominiLst);
 			}

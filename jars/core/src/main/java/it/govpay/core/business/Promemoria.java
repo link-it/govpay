@@ -1,12 +1,15 @@
 package it.govpay.core.business;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.xml.bind.JAXBException;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -18,7 +21,9 @@ import org.openspcoop2.utils.mail.SenderFactory;
 import org.openspcoop2.utils.mail.SenderType;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
+import org.xml.sax.SAXException;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -31,6 +36,8 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.trasformazioni.Costanti;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.model.Promemoria.TipoPromemoria;
@@ -68,29 +75,44 @@ public class Promemoria  extends BasicBD{
 
 	}
 	
-	public it.govpay.bd.model.Promemoria creaPromemoriaRicevuta(it.govpay.bd.model.Rpt rpt, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException, GovPayException {
+	public it.govpay.bd.model.Promemoria creaPromemoriaRicevuta(it.govpay.bd.model.Rpt rpt, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException, GovPayException, JAXBException, SAXException {
 		it.govpay.bd.model.Promemoria promemoria = new it.govpay.bd.model.Promemoria(rpt, versamento, TipoPromemoria.RICEVUTA, this);
-		promemoria.setDebitoreEmail(versamento.getAnagraficaDebitore().getEmail());
-		Map<String, Object> dynamicMap = new HashMap<String, Object>();
-		TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(this));
-		promemoria.setOggetto(this.getOggettoRicevuta(tipoVersamentoDominio.getPromemoriaRicevutaOggetto(), rpt, versamento, dynamicMap));
-		promemoria.setMessaggio(this.getMessaggioRicevuta(tipoVersamentoDominio.getPromemoriaRicevutaMessaggio(), rpt, versamento, dynamicMap));
+		this.setRicevutaDestinatari(rpt, versamento, promemoria); 
 		promemoria.setAllegaPdf(tipoVersamentoDominio.isPromemoriaRicevutaPdf());
 		return promemoria;
 	}
 	
 	
-	public it.govpay.bd.model.Promemoria creaPromemoriaAvviso(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException, GovPayException {
+	public it.govpay.bd.model.Promemoria creaPromemoriaAvviso(Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio) {
 		it.govpay.bd.model.Promemoria promemoria = new it.govpay.bd.model.Promemoria(versamento, TipoPromemoria.AVVISO, this);
-		promemoria.setDebitoreEmail(versamento.getAnagraficaDebitore().getEmail());
-		Map<String, Object> dynamicMap = new HashMap<String, Object>();
-		TrasformazioniUtils.fillDynamicMapPromemoriaAvviso(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(this));
-		promemoria.setOggetto(this.getOggettoAvviso(tipoVersamentoDominio.getPromemoriaAvvisoOggetto(), versamento, dynamicMap));
-		promemoria.setMessaggio(this.getMessaggioAvviso(tipoVersamentoDominio.getPromemoriaAvvisoMessaggio(), versamento, dynamicMap));
+		promemoria.setDestinatarioTo(versamento.getAnagraficaDebitore().getEmail());
 		promemoria.setAllegaPdf(tipoVersamentoDominio.isPromemoriaAvvisoPdf());
 		return promemoria;
 	}
 
+	public void setRicevutaDestinatari(it.govpay.bd.model.Rpt rpt, Versamento versamento, it.govpay.bd.model.Promemoria promemoria) throws JAXBException, SAXException {
+		String debitore = versamento.getAnagraficaDebitore().getEmail();
+		CtRichiestaPagamentoTelematico rptCtRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
+		String versante = rptCtRichiestaPagamentoTelematico.getSoggettoVersante() != null ? rptCtRichiestaPagamentoTelematico.getSoggettoVersante().getEMailVersante() : null;
+		
+		if(versante != null && debitore != null) {
+			promemoria.setDestinatarioTo(versante);
+			promemoria.setDestinatarioCc(debitore);
+		} else if(versante != null && debitore == null) {
+			promemoria.setDestinatarioTo(versante);
+		} else if(versante == null && debitore != null) {
+			promemoria.setDestinatarioTo(debitore);
+		} else {
+			// nessuna mail
+		}
+	}
+	
+	public String getContentType(Map<String, Object> dynamicMap) {
+		if(dynamicMap.containsKey(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA))
+			return (String) dynamicMap.get(Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA);
+		
+		return Costanti.MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA_DEFAULT_VALUE;
+	}
 
 	public void inserisciPromemoria(it.govpay.bd.model.Promemoria promemoria) throws ServiceException {
 		PromemoriaBD promemoriaBD = new PromemoriaBD(this);
@@ -157,7 +179,7 @@ public class Promemoria  extends BasicBD{
 		return promemoria;
 	}
 
-	public void invioPromemoria(it.govpay.bd.model.Promemoria promemoria) throws ServiceException {
+	public void invioPromemoria(it.govpay.bd.model.Promemoria promemoria) throws ServiceException, GovPayException { 
 		switch (promemoria.getTipo()) {
 		case AVVISO:
 			this.invioPromemoriaAvviso(promemoria);
@@ -168,9 +190,10 @@ public class Promemoria  extends BasicBD{
 		}
 		
 	}
-	private void invioPromemoriaAvviso(it.govpay.bd.model.Promemoria promemoria) throws ServiceException {
+	private void invioPromemoriaAvviso(it.govpay.bd.model.Promemoria promemoria) throws ServiceException, GovPayException {
 		PromemoriaBD promemoriaBD = new PromemoriaBD(this);
 		Versamento versamento = promemoria.getVersamento(this);
+		TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 		boolean ok = true;
 		String errore  = "";
 
@@ -187,9 +210,32 @@ public class Promemoria  extends BasicBD{
 		mail.setStartTls(false);
 
 		mail.setFrom(this.from);
-		mail.setTo(promemoria.getDebitoreEmail());
+		mail.setTo(promemoria.getDestinatarioTo());
+		if(promemoria.getDestinatarioCc() !=null)
+			mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
+		
+		log.debug("Invio promemoria avviso di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()
+				+" , IdPendenza: "+versamento.getCodVersamentoEnte()+ "], al destinatario ["+promemoria.getDestinatarioTo()+"] CC["+(promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")+"]");
 
+		boolean inserisciOggetto = promemoria.getOggetto() == null;
+		if(promemoria.getOggetto() == null) {
+			log.debug("Creazione oggetto del promemoria...");
+			Map<String, Object> dynamicMap = new HashMap<String, Object>();
+			TrasformazioniUtils.fillDynamicMapPromemoriaAvviso(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(this));
+			promemoria.setOggetto(this.getOggettoAvviso(tipoVersamentoDominio.getPromemoriaAvvisoOggetto(), versamento, dynamicMap));
+			log.debug("Creazione oggetto del promemoria completata.");
+		}
 		mail.setSubject(promemoria.getOggetto());
+		
+		boolean inserisciMessaggio = promemoria.getMessaggio() == null;
+		if(promemoria.getMessaggio() == null) {
+			log.debug("Creazione messaggio del promemoria...");
+			Map<String, Object> dynamicMap = new HashMap<String, Object>();
+			TrasformazioniUtils.fillDynamicMapPromemoriaAvviso(log, dynamicMap, ContextThreadLocal.get(), versamento, versamento.getDominio(this));
+			promemoria.setMessaggio(this.getMessaggioAvviso(tipoVersamentoDominio.getPromemoriaAvvisoMessaggio(), versamento, dynamicMap));
+			promemoria.setContentType(this.getContentType(dynamicMap));
+			log.debug("Creazione messaggio del promemoria completata.");
+		}
 		mail.getBody().setMessage(promemoria.getMessaggio());
 
 		if(promemoria.isAllegaPdf()) {
@@ -205,15 +251,27 @@ public class Promemoria  extends BasicBD{
 
 			mail.getBody().getAttachments().add(avvisoAttach );
 		}
+		
+		// salvo il contenuto del promemoria
+		if(inserisciMessaggio || inserisciOggetto) {
+			log.debug("Salvataggio messaggio e oggetto del promemoria...");
+			promemoriaBD.updateMessaggioPromemoria(promemoria.getId(), promemoria.getOggetto(), promemoria.getMessaggio(), promemoria.getContentType()); 
+			log.debug("Salvataggio messaggio e oggetto del promemoria completato.");
+		}
+		
 		try {
+			log.debug("Spediazione promemoria verso il mail server ["+this.host+"]:["+this.port+"]...");
 			this.senderCommonsMail.send(mail, true);
+			log.debug("Spediazione promemoria verso il mail server ["+this.host+"]:["+this.port+"] completata.");
 		}catch (Exception e) {
-			errore = "Errore durante l'invio del promemoria per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()+" , IdPendenza: "+versamento.getCodVersamentoEnte()+ "] al destinatario ["+promemoria.getDebitoreEmail()+"]:"+e.getMessage();
-			log.warn(errore);
+			errore = "Errore durante l'invio del promemoria avviso di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()+" , IdPendenza: "+versamento.getCodVersamentoEnte()
+				+ "] al destinatario ["+promemoria.getDestinatarioTo()+"] CC["+(promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")+"]:"+e.getMessage();
+			log.error(errore, e);
 			ok = false;
 		}
 		
 		if(!ok) {
+			log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
 			long tentativi = promemoria.getTentativiSpedizione() + 1;
 			Date today = new Date();
 			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
@@ -223,14 +281,17 @@ public class Promemoria  extends BasicBD{
 			if(prossima.after(tomorrow)) prossima = tomorrow;
 			
 			promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
+			log.debug("La spedizione del promemoria schedulata con successo.");
 		} else {
 			promemoriaBD.updateSpedito(promemoria.getId());
 		}
 	}
 	
-	private void invioPromemoriaRicevuta(it.govpay.bd.model.Promemoria promemoria) throws ServiceException {
+	private void invioPromemoriaRicevuta(it.govpay.bd.model.Promemoria promemoria) throws ServiceException, GovPayException {
 		PromemoriaBD promemoriaBD = new PromemoriaBD(this);
 		Versamento versamento = promemoria.getVersamento(this);
+		TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
+		Rpt rpt = promemoria.getRpt(this);
 		boolean ok = true;
 		String errore  = "";
 
@@ -247,14 +308,36 @@ public class Promemoria  extends BasicBD{
 		mail.setStartTls(false);
 
 		mail.setFrom(this.from);
-		mail.setTo(promemoria.getDebitoreEmail());
+		mail.setTo(promemoria.getDestinatarioTo());
+		if(promemoria.getDestinatarioCc() !=null)
+			mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
 
+		log.debug("Invio promemoria ricevuta di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()
+				+" , IdPendenza: "+versamento.getCodVersamentoEnte()+ "], al destinatario ["+promemoria.getDestinatarioTo()+"] CC["+(promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")+"]");
+
+		boolean inserisciOggetto = promemoria.getOggetto() == null;
+		if(promemoria.getOggetto() == null) {
+			log.debug("Creazione oggetto del promemoria...");
+			Map<String, Object> dynamicMap = new HashMap<String, Object>();
+			TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(this));
+			promemoria.setOggetto(this.getOggettoRicevuta(tipoVersamentoDominio.getPromemoriaRicevutaOggetto(), rpt, versamento, dynamicMap));
+			log.debug("Creazione oggetto del promemoria completata.");
+		}
 		mail.setSubject(promemoria.getOggetto());
+		
+		boolean inserisciMessaggio = promemoria.getMessaggio() == null;
+		if(promemoria.getMessaggio() == null) {
+			log.debug("Creazione messaggio del promemoria...");
+			Map<String, Object> dynamicMap = new HashMap<String, Object>();
+			TrasformazioniUtils.fillDynamicMapPromemoriaRicevuta(log, dynamicMap, ContextThreadLocal.get(), rpt, versamento, versamento.getDominio(this));
+			promemoria.setMessaggio(this.getMessaggioRicevuta(tipoVersamentoDominio.getPromemoriaRicevutaMessaggio(), rpt, versamento, dynamicMap));
+			promemoria.setContentType(this.getContentType(dynamicMap));
+			log.debug("Creazione messaggio del promemoria completata.");
+		}
 		mail.getBody().setMessage(promemoria.getMessaggio());
 
+
 		if(promemoria.isAllegaPdf()) {
-			Rpt rpt = promemoria.getRpt(this);
-			
 			String codDominio = rpt.getCodDominio();
 			String iuv = rpt.getIuv();
 			String ccp = rpt.getCcp();
@@ -274,15 +357,27 @@ public class Promemoria  extends BasicBD{
 
 			mail.getBody().getAttachments().add(avvisoAttach );
 		}
+		
+		// salvo il contenuto del promemoria
+		if(inserisciMessaggio || inserisciOggetto) {
+			log.debug("Salvataggio messaggio e oggetto del promemoria...");
+			promemoriaBD.updateMessaggioPromemoria(promemoria.getId(), promemoria.getOggetto(), promemoria.getMessaggio(), promemoria.getContentType()); 
+			log.debug("Salvataggio messaggio e oggetto del promemoria completato.");
+		}
+		
 		try {
+			log.debug("Spediazione promemoria verso il mail server ["+this.host+"]:["+this.port+"]...");
 			this.senderCommonsMail.send(mail, true);
+			log.debug("Spediazione promemoria verso il mail server ["+this.host+"]:["+this.port+"] completata.");
 		}catch (Exception e) {
-			errore = "Errore durante l'invio del promemoria per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()+" , IdPendenza: "+versamento.getCodVersamentoEnte()+ "] al destinatario ["+promemoria.getDebitoreEmail()+"]:"+e.getMessage();
-			log.warn(errore);
+			errore = "Errore durante l'invio del promemoria ricevuta di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()+" , IdPendenza: "+versamento.getCodVersamentoEnte()
+			+ "] al destinatario ["+promemoria.getDestinatarioTo()+"] CC["+(promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")+"]:"+e.getMessage();
+			log.error(errore, e);
 			ok = false;
 		}
 		
 		if(!ok) {
+			log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
 			long tentativi = promemoria.getTentativiSpedizione() + 1;
 			Date today = new Date();
 			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
@@ -292,6 +387,7 @@ public class Promemoria  extends BasicBD{
 			if(prossima.after(tomorrow)) prossima = tomorrow;
 			
 			promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
+			log.debug("La spedizione del promemoria schedulata con successo.");
 		} else {
 			promemoriaBD.updateSpedito(promemoria.getId());
 		}
