@@ -5,19 +5,20 @@ Configurazioni
 
 La sezione di configurazione, visibile solo agli amministratori del
 sistema, consente il censimento e manutenzione delle entità logiche
-coinvolte nel processo di pagamento
+coinvolte nel processo di pagamento. 
+
+.. figure:: ../_images/08Configurazioni.png
+   :align: center
+
+   Figura 1: Lista delle funzionalità di configurazione
 
 
-
--  *Registro Intermediari*: rappresentano le entità “Intermediario” o
-   “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
-   fase di adesione dagli Enti Creditore per l'accesso al sistema
-   pagoPA.
--  *Entrate*: rappresentano le esigenze dell'ente creditore dalle quali
+-  *Intermediari*: rappresentano le entità “Intermediario” o “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
+   fase di adesione dagli Enti Creditore per l'accesso al sistema pagoPA.
+-  *Domini*: corrispondono agli enti creditori aderenti al sistema pagoPA.
+-  *Tipi Pendenza*: rappresentano le esigenze dell'ente creditore dalle quali
    scaturiscono le tipologie di pagamenti che possono essere gestiti dal
    sistema (tassa rifiuti, licenza di caccia, bollo auto, ...).
--  *Domini*: corrispondono agli enti creditori aderenti al sistema
-   pagoPA.
 -  *Applicazioni*: rappresentano i portali di pagamento e i gestionali
    delle posizioni debitorie degli enti Creditori integrati con GovPay
    tramite gli appositi servizi.
@@ -26,16 +27,27 @@ coinvolte nel processo di pagamento
    consentite sulle entità dati, che saranno assegnati agli utenti del
    cruscotto.
 
-Registro Intermediari
----------------------
+.. note:: Nell'analisi delle funzionalità di configurazione, le immagini esemplificative mostrate mancheranno della
+   sezione di sinistra (*Lista funzionalità*) al fine di permettere la concentrazione sulla sola parte importante, una volta
+   che si sia selezionata la funzionalità, ovvero il suo dettaglio, posto a destra.
+
+Intermediari
+------------
 
 Gli intermediari o partner tecnologici sono entità censite da AgID sul
 circuito pagoPA al momento dell'adesione di un Ente Creditore. Per il
 corretto funzionamento di GovPay, gli intermediari di interesse devono
 essere censiti con le informazioni di corredo necessarie.
 
-Accedendo alla sezione corrispondente (“Configurazioni > Registro
-Intermediari”), viene visualizzato l'elenco degli intermediari censiti
+.. figure:: ../_images/09Intermediari.png
+   :align: center
+
+   Figura 2: Vista di dettaglio intermediari
+
+
+
+Accedendo alla sezione corrispondente (*Configurazioni > Registro
+Intermediari*), viene visualizzato l'elenco degli intermediari censiti
 sul sistema.
 
 È possibile filtrare gli elementi visualizzati utilizzando il form
