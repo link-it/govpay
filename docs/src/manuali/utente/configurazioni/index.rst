@@ -195,15 +195,13 @@ possibile procedere con la creazione di un nuovo dominio.
   "Intermediario", "Intermediario selezionato", "Obbligatorio"
   "Stazione", "Stazione tecnologica scelta in fase di adesione a pagoPA, deve ovviamente essere stata già censita sul sistema", "Obbligatorio"
   "Riferimenti anagrafici del Dominio", "riferimenti anagrafici del dominio forniti dal Referente dei Pagamenti: Indirizzo (Indirizzo completo di toponimo), Numero Civico, CAP, Località, Provincia, Nazione (condice di due lettere, IT per Itlia), eMail, PEC, Sito web, Telefono, Fax", ""
-   "CBILL", "codice CBILL per i domini che supportano questa modalità di pagamento", ""
+   "CBILL", "codice CBILL per i domini che supportano questa modalità di pagamento, attribuito da PagoPA", ""
    "Prefisso IUV", " prefisso da inserire negli IUV generati da GovPay per questo dominio. Il prefisso, numerico, può contenere dei placeholder racchiusi tra graffe, ad esempio “1%(a)%(t)”", ""
-   "Località", "", ""
-   "Località", "", ""
-   "Località", "", ""
-  "Ragione Sociale", "Chiave segreta, fornita da AgID", ""
-  "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
+   "Aux", "valore numerico che definisce la struttura del codice IUV in funzione del numero di punti di generazione dello stesso (cfr. Specifiche Attuative dei codici identificativi di versamento, riversamento e rendicontazione")", ""
+   "Codice di segregazione", "Se configurato come dominio pluri-intermediato, imposta il codice numerico di segregazione.", "Fornito da AgID"
+  "Abilitato", "indica se il dominio è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
 
-.. note:: I placeholder IUV vengono sostituiti a runtime con i valori forniti dagli applicativi richiedenti o con i valori di sistema configurati. La lunghezza del prefisso riduce lo spazio di IUV generabili, quindi è necessario che sia il più breve possibile. Questi i placeholder di sistema, sovrascrivibili dall'applicazione chiamante:
+I **placeholder contenuti nel prefisso IUV** vengono sostituiti a runtime con i valori forniti dagli applicativi richiedenti o con i valori di sistema configurati. La lunghezza del prefisso riduce lo spazio di IUV generabili, quindi è necessario che sia il più breve possibile. Questi i placeholder di sistema, sovrascrivibili dall'applicazione chiamante:
    -  a: codice IUV assegnato all'applicazione che gestisce il debito
    -  t: codice IUV assegnato al tributo
    -  y: anno di emissione dello iuv, due cifre
@@ -212,28 +210,7 @@ possibile procedere con la creazione di un nuovo dominio.
 
 -  Logo: elemento per il caricamento del logo dell’ente creditore
    corrispondente al dominio.
--  *Abilitato*: indica se il dominio è usabile da GovPay per gestire
-   nuovi pagamenti o se impedire nuove richieste che lo riguardano.
--  *Codice di segregazione*: se configurato come pluri-intermediato,
-   imposta il codice numerico di segregazione. Fornito da AgID.
--  *Prefisso IUV*: prefisso da inserire negli IUV generati da GovPay per
-   questo dominio. Il prefisso, numerico, può contenere dei placeholder
-   racchiusi tra graffe, ad esempio “1%(a)%(t)”. I placeholder vengono
-   sostituiti a runtime con i valori forniti dagli applicativi
-   richiedenti o con i valori di sistema configurati. La lunghezza del
-   prefisso riduce lo spazio di IUV generabili, quindi e' necessario
-   limitarlo il più possibile. Questi i placeholder di sistema,
-   sovrascrivibili dall'applicazione chiamante:
 
-   -  a: codice IUV assegnato all'applicazione che gestisce il debito
-   -  t: codice IUV assegnato al tributo
-   -  y: anno di emissione dello iuv, due cifre
-   -  Y: anno di emissione dello iuv, quattro cifre
-
--  *Aux Digit*: Valore numerico che definisce la struttura del codice
-   IUV in funzione del numero di punti di generazione dello stesso (vedi
-   "SPECIFICHE ATTUATIVE DEI CODICI IDENTIFICATIVI DI VERSAMENTO,
-   RIVERSAMENTO E RENDICONTAZIONE").
 
 Dettaglio Dominio
 ~~~~~~~~~~~~~~~~~
