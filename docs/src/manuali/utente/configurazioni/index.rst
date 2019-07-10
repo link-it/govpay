@@ -50,7 +50,7 @@ sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, 
 .. figure:: ../_images/10FiltroSuIntermediari.png
    :align: center
 
-   Figura 2: Filtro su ricerca Intermediari
+   Figura 3: Filtro su ricerca Intermediari
 
 
 Nuovo Intermediario
@@ -59,27 +59,26 @@ Nuovo Intermediario
 Per inserire un nuovo intermediario è necessario premere l'apposito
 pulsante, presente nella pagina di elenco in basso a destra, e compilare il form che viene
 aperto:
-.. table:: Elenco Didascalia testo tabella. Enim ad minim veniam neste.
-   :name: attivita-previste
 
-   +-----------+-----------+-----------+
-   | Lorem     | Vivamus   | Phasellus |
-   | ipsum sit | elementum | viverra   |
-   | dolor est | semper    | nulla ut  |
-   | quantu    | nisi      | metus     |
-   | ieres     | aenean    | arius     |
-   | numer     | vusere    | laoreet   |
-   |           |           | quisque   |
-   |           |           | rutrum    |
-   +-----------+-----------+-----------+
-   | Maecenas  | Cursus    | Fusce     |
-   | nec odio  | nunc,     | vulputate |
-   | et ante   | quis      | eleifend  |
-   | tincidunt | gravida   | sapie ves |
-   | tempus    | magna mi  | tibulum   |
-   |           | a libero  | purus     |
-   |           |           | quam      |
-   +-----------+-----------+-----------+
+.. figure:: ../_images/11CampiNuovoIntermediario.png
+   :align: center
+
+   Figura 4: Informazioni che definiscono un nuovo intermediario
+
+Le informazioni contenute nel form sono le seguenti:
+
+.. csv-table:: Titolo
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Denominazione", "Nome associato all'Intermediario o al Partner Tecnologico", "Obbligatorio"
+  "Id Intermediario", "Identificativo dell'intermediario o Partner Tecnologico, fornito da AgID, corrisponde alla Partita IVA del soggetto", "Obbligatorio"
+  "Principal", "identificativo (subject certificato o principal) corrispondente alle credenziali con cui Govpay riceve le chiamate in entrata da pagoPA", ""
+  "Abilitato/Non Abilitato", "Stato del nuovo intermediario", "Potrebbe servire a creare una serie di intermediari non abilitati, avendo tutto pronto a livello intermediari, semplicemente abilitandoli"
+  
+  
+  
+  
 
 
 
