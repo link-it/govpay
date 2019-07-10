@@ -4,8 +4,7 @@ Accesso al cruscotto e profilo
 ==============================
 
 Una volta completata con successo la procedura di installazione
-sarà possibile procedere con la configurazione accedendo al **Cruscotto
-di Gestione** al seguente indirizzo:
+sarà possibile procedere con la configurazione accedendo al **Cruscotto di Gestione** al seguente indirizzo:
 
 http://<hostname>:<port>/backend/gui/backoffice
 
@@ -45,13 +44,6 @@ Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si acce
 
 Funzionalità di profilo
 -----------------------
-Il primo box in alto a sinistra mette a disposizione informazioni sul profilo e permette di effettuare il logut dalla piattaforma.
-
-.. figure:: ../_images/05FunzionalitaArchitetturaConEvidenziazione.png
-   :align: center
-   
-   Figura 4: Funzionalità di profilo
-
 
 
 Menu di navigazione
@@ -62,21 +54,31 @@ La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, c
 .. figure:: ../_images/03VistaIniziale.png
    :align: center   
 
-   Figura 3: Cruscotto iniziale [#]_
+   Figura 4: Cruscotto iniziale [#]_
    
 .. [#] Si noti come le funzionalità evidenziali corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
 
-L'area iniziale del menu di navigazione è composta dai seguenti
-elementi:
+L'area iniziale (primo box in alto a sinistra) mette a disposizione informazioni sul profilo e permette di effettuare il logut dalla piattaforma.
 
--  Identificativo dell'utente in sessione.
--  Icona per la visualizzazione del profilo utente che mostra i dati
-   anagrafici di dettaglio e le autorizzazioni possedute.
--  Icona per il Logout dal cruscotto.
+.. figure:: ../_images/05FunzionalitaArchitetturaConEvidenziazione.png
+   :align: center
+   
+   Figura 5: Funzionalità di profilo
+   
+Si faccia riferimento alle evidenziazioni in rosso: da sinistra verso destra abbiamo:
+* **Identificativo** dell'utente appena autenticatosi
+* **Dettaglio** profilo Utente
+* **Logout** per permettere l'uscita dal sistema
 
-A seguire sono elencate le sezioni del menu di navigazione, che possono
-variare in base alle autorizzazioni possedute dall'utente in sessione.
-Le sezioni del menu sono:
+Si tenga presente che, come regola generale, **se si è indecisi sulla funzionalità associata a un pulsante, basta stazionarci sopra con il puntatore del mouse** per avere una descrizione sintetica della funzionalità cui esso è associato.
+Cliccando su profilo utente abbiamo, sul riquadro di destra, il dettaglio dell'utente con le autorizzazioni sulle funzionalità che gli sono state concesse. Ad esempio avremmo:
+
+.. figure:: ../_images/07DettaglioProfiloUtente.png
+   :align: center
+   
+   Figura 6: Dettaglio del profilo (esempio)
+
+A seguire sono elencate le sezioni del menu di navigazione, che variare in base alle autorizzazioni possedute dall'utente che ha effettuato l'accesso. Le sezioni del menu sono:
 
 1. *Pendenze*: sezione di consultazione delle pendenze di pagamento in
    carico ai debitori.
@@ -91,4 +93,11 @@ Le sezioni del menu sono:
    avanzate (rendicontazioni, riscossioni, ecc.).
 6. *Manutenzione*: Accesso a funzionalità di manutenzione straordinaria.
 
+Per l'utente che si è autenticato nel nostro caso esemplificativo (gpadmin) avremo la seguente lista funzionalità:
 
+.. figure:: ../_images/06ListaFunzionalita.png
+   :align: center
+   
+   Figura 7: Lista funzionalità (esempio)
+
+A ciascuna di queste funzionalità verrà dedicata una sezione di dettaglio esplicativo.
