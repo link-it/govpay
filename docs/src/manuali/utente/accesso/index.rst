@@ -33,7 +33,25 @@ utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità ch
    
 .. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
    
-Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si accede a tutte le funzionalità descritte nelle corrispondenti sezioni di questo documento.
+Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si accede a tutte le funzionalità descritte nelle corrispondenti sezioni di questo documento. La schermata dovrebbe presentarsi in questo modo [#]_
+   
+.. [#] Si tenga sempre presente che la propria schermata dipende dai ruoli cui si è associati
+
+.. figure:: ../_images/03VistaIniziale.png
+   :align: center   
+
+   Figura 3: Schermata iniziale
+
+
+Funzionalità di profilo
+-----------------------
+Il primo box in alto a sinistra mette a disposizione informazioni sul profilo e permette di effettuare il logut dalla piattaforma.
+
+.. figure:: ../_images/05FunzionalitaArchitetturaConEvidenziazione.png
+   :align: center
+   
+   Figura 4: Funzionalità di profilo
+
 
 
 Menu di navigazione
@@ -42,7 +60,7 @@ Menu di navigazione
 La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, con le relative voci che variano in funzione dei ruoli associati all'utenza autenticata.
 
 .. figure:: ../_images/03VistaIniziale.png
-   :align: center
+   :align: center   
 
    Figura 3: Cruscotto iniziale [#]_
    
