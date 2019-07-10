@@ -10,7 +10,7 @@ coinvolte nel processo di pagamento.
 .. figure:: ../_images/08Configurazioni.png
    :align: center
 
-   Figura 1: Lista delle funzionalità di configurazione
+   Lista delle funzionalità di configurazione
 
 
 -  *Intermediari*: rappresentano le entità “Intermediario” o “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
@@ -42,7 +42,7 @@ essere censiti con le informazioni di corredo necessarie.
 .. figure:: ../_images/09Intermediari.png
    :align: center
 
-   Figura 2: Vista di dettaglio intermediari
+   Vista di dettaglio intermediari
 
 Accedendo alla sezione corrispondente (*Configurazioni > Intermediari*), viene visualizzato l'elenco degli intermediari censiti
 sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, con una funzionalità di filtro disponibile sulla sinistra del box di dettaglio, come di seguito mostrato:
@@ -50,7 +50,7 @@ sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, 
 .. figure:: ../_images/10FiltroSuIntermediari.png
    :align: center
 
-   Figura 3: Filtro su ricerca Intermediari
+   Filtro su ricerca Intermediari
 
 
 Nuovo Intermediario
@@ -63,7 +63,7 @@ aperto:
 .. figure:: ../_images/11CampiNuovoIntermediario.png
    :align: center
 
-   Figura 4: Informazioni che definiscono un nuovo intermediario
+   Informazioni che definiscono un nuovo intermediario
 
 Le informazioni contenute nel form sono le seguenti:
 
@@ -93,7 +93,7 @@ registrate su GovPay.
 .. figure:: ../_images/12ModificaOggetto.png
    :align: center
 
-   Figura 5: Pulsante di modifica
+   Pulsante di modifica
 
 Il pulsante di modifica presente nella pagina consente di aprire il form
 per modificare le proprietà dell'intermediario.
@@ -108,14 +108,14 @@ stazioni in cui è possibile aggiungerne di nuove:
 .. figure:: ../_images/13AggiuntaStazionePlus.png
    :align: center
    
-   Figura 6: Pulsante di aggiunta stazione (evidenziato in rosso)
+   Pulsante di aggiunta stazione (evidenziato in rosso)
    
 Si ottiene così il seguente risultato:
 
 .. figure:: ../_images/14AggiuntaStazioneForm.png
    :align: center
    
-   Figura 7: Maschera di inserimento di una nuova stazione
+   Maschera di inserimento di una nuova stazione
 
 Per definire una stazione connessa all'intermediario occorre immettere le seguenti informazioni:
 
@@ -137,14 +137,14 @@ i pulsanti per la modifica delle informazioni:
 .. figure:: ../_images/15ModificaStazione1.png
    :align: center
    
-   Figura 8: Modifica di una stazione esistente
+   Modifica di una stazione esistente
 
 I dati modificabili della stazione saranno la sola password e lo stato; l'identificativo non sarà modificabile:
 
 .. figure:: ../_images/16ModificaStazione2.png
    :align: center
    
-   Figura 9: Maschera di modifica di una stazione
+   Maschera di modifica di una stazione
 
 Una volta terminata la modifica è necessaria la pressione della voce *Salva* per renderla effettiva.
 
@@ -158,7 +158,7 @@ Accedendo alla sezione *Configurazioni > Domini*, viene visualizzato l'elenco de
 .. figure:: ../_images/17FilttroSuDomini.png
    :align: center
    
-   Figura 10: Parametri di filtro per la ricerca dominio
+   Parametri di filtro per la ricerca dominio
 
 
 Ciascun dominio presente in elenco è identificato tramite denominazione
@@ -173,7 +173,7 @@ possibile procedere con la creazione di un nuovo dominio.
 .. figure:: ../_images/17FilttroSuDomini.png
    :align: center
    
-   Figura 11: Parametri di filtro per la ricerca dominio
+   Parametri di filtro per la ricerca dominio
 
 È necessario
 compilare il form di creazione inserendo i seguenti dati:
