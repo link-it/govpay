@@ -10,6 +10,21 @@ manutenzione dell'infrastruttura di pagamento.
 Glossario
 ---------
 
+.. glossary::
+
+   NDP
+      Nodo dei Pagamenti SPC.
+
+   SPC
+      Sistema Pubblico di Connettività.
+      
+   AgID
+      Agenzia per l'Italia Digitale.
+
+   RPT
+      Richiesta Pagamento Telematico.
+      
+      
 +------+----------------------------------+
 | NDP  | Nodo dei Pagamenti SPC           |
 +------+----------------------------------+
