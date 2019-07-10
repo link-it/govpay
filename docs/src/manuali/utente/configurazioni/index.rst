@@ -67,7 +67,7 @@ aperto:
 
 Le informazioni contenute nel form sono le seguenti:
 
-.. csv-table:: Titolo
+.. csv-table:: Dettagli di un nuovo intermediario
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
@@ -90,30 +90,63 @@ Infatti, al censimento di un Intermediario o Partner Tecnologico, AgID
 assegna anche una o più Stazioni Tecnologiche che devono essere
 registrate su GovPay.
 
+.. figure:: ../_images/12ModificaOggetto.png
+   :align: center
+
+   Figura 5: Pulsante di modifica
+
 Il pulsante di modifica presente nella pagina consente di aprire il form
 per modificare le proprietà dell'intermediario.
+
 
 Stazioni
 ~~~~~~~~
 
-Nella sezione della pagina di dettaglio dell'intermediario dedicata alle
-stazioni è possibile utilizzare il pulsante per crearne di nuove. Le
-stazioni create vengono automaticamente associate all'intermediario ed è
-inoltre necessario fornire i seguenti dati:
+Nella pagina di dettaglio dell'intermediario (quindi una volta che lo si è creato) esiste una sezione dedicata alle
+stazioni in cui è possibile aggiungerne di nuove:
 
--  *IdStazione*: Identificativo della stazione. Obbligatorio, fornito da
-   AgID.
--  *Password*: Chiave segreta. Obbligatoria, fornita da AgID.
--  *Abilitato*: indica se la stazione è usabile da GovPay per gestire
-   nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste
-   (disabilitato).
+.. figure:: ../_images/13AggiuntaStazionePlus.png
+   :align: center
+   
+   Figura 6: Pulsante di aggiunta stazione (evidenziato in rosso)
+   
+Si ottiene così il seguente risultato:
 
-È possibile visualizzare il dettaglio di una stazione selezionandola
-dall’elenco.
+.. figure:: ../_images/14AggiuntaStazioneForm.png
+   :align: center
+   
+   Figura 7: Maschera di inserimento di una nuova stazione
+
+Per definire una stazione connessa all'intermediario occorre immettere le seguenti informazioni:
+
+.. csv-table:: Dettagli di una nuova stazione
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "IdStazione", "Identificativo della stazione, fornito da   AgID", "Obbligatorio"
+  "Password", "IChiave segreta, fornita da AgID", "Obbligatorio"
+  "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
+
+.. note:: Si noti come le stazioni sono connesse univocamente a ciascun intermediario, non è quindi possibile avere una stessa stazione connessa a due intermediari
+
+È possibile visualizzare il dettaglio di una stazione selezionandola dall’elenco, avendo il dettaglio dei campi appena visti.
 
 In corrispondenza di ciascuna stazione presente in elenco sono presenti
-i pulsanti per la modifica delle informazioni, ad eccezione
-dell'identificativo, e per eliminare la stazione.
+i pulsanti per la modifica delle informazioni:
+
+.. figure:: ../_images/15ModificaStazione1.png
+   :align: center
+   
+   Figura 8: Modifica di una stazione esistente
+
+I dati modificabili della stazione saranno la sola password e lo stato; l'identificativo non sarà modificabile:
+
+.. figure:: ../_images/16ModificaStazione2.png
+   :align: center
+   
+   Figura 9: Maschera di modifica di una stazione
+
+Una volta terminata la modifica è necessaria la pressione della voce *Salva* per renderla effettiva.
 
 Domini
 ------
