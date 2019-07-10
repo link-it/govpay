@@ -124,7 +124,7 @@ Per definire una stazione connessa all'intermediario occorre immettere le seguen
   :widths: 40,40,20
   
   "IdStazione", "Identificativo della stazione, fornito da   AgID", "Obbligatorio"
-  "Password", "IChiave segreta, fornita da AgID", "Obbligatorio"
+  "Password", "Chiave segreta, fornita da AgID", "Obbligatorio"
   "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
 
 .. note:: Si noti come le stazioni sono connesse univocamente a ciascun intermediario, non è quindi possibile avere una stessa stazione connessa a due intermediari
@@ -151,12 +151,15 @@ Una volta terminata la modifica è necessaria la pressione della voce *Salva* pe
 Domini
 ------
 
-Ogni Ente Creditore su pagoPA corrisponde ad un Dominio da registrare
-nell'anagrafica di GovPay.
+Ogni Ente Creditore su pagoPA corrisponde ad un Dominio da registrare nell'anagrafica di GovPay.
 
-Accedendo alla sezione "Configurazioni > Domini”, viene visualizzato
-l'elenco dei domini già censiti. Sul lato sinistro è presente il form
-per filtrare i domini visualizzati in elenco.
+Accedendo alla sezione *Configurazioni > Domini*, viene visualizzato l'elenco dei domini già censiti. Sul lato sinistro è presente il form per filtrare i domini visualizzati in elenco, con i possibili parametri di ricerca, ovvero:
+
+.. figure:: ../_images/17FilttroSuDomini.png
+   :align: center
+   
+   Figura 10: Maschera di modifica di una stazione
+
 
 Ciascun dominio presente in elenco è identificato tramite denominazione
 e codice identificativo.
