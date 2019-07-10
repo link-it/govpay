@@ -203,11 +203,13 @@ possibile procedere con la creazione di un nuovo dominio.
   "Autorizzazione stampa PT", "Numero di autorizzazione PT per la stampa in proprio del bollettino postale", ""
   "Sfoglia.. (Logo)", "Elemento per il caricamento del logo dell’ente creditore corrispondente al dominio", ""
 
-I **placeholder contenuti nel prefisso IUV** vengono sostituiti a runtime con i valori forniti dagli applicativi richiedenti o con i valori di sistema configurati. La lunghezza del prefisso riduce lo spazio di IUV generabili, quindi è necessario che sia il più breve possibile. Questi i placeholder di sistema, sovrascrivibili dall'applicazione chiamante:
-   -  a: codice IUV assegnato all'applicazione che gestisce il debito
-   -  t: codice IUV assegnato al tributo
-   -  y: anno di emissione dello iuv, due cifre
-   -  Y: anno di emissione dello iuv, quattro cifre
+I **placeholder contenuti nel prefisso IUV** vengono sostituiti a runtime con i valori forniti dagli applicativi richiedenti o con i valori di sistema configurati. La lunghezza del prefisso riduce lo spazio di IUV generabili, quindi è necessario che sia il più breve possibile.
+I seguenti sono i placeholder di sistema, sovrascrivibili dall'applicazione chiamante:
+
+* a: codice IUV assegnato all'applicazione che gestisce il debito
+* t: codice IUV assegnato al tributo
+* y: anno di emissione dello iuv, due cifre
+* Y: anno di emissione dello iuv, quattro cifre
 
 Dettaglio Dominio
 ~~~~~~~~~~~~~~~~~
