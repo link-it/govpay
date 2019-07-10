@@ -214,7 +214,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 							versamentoModel = versamentoBusiness.chiediVersamento(versamentoCommons);
 						}catch(ValidationException e) {
 							if(trasformazione) { // se la pendenza generata dalla trasformazione non e' valida restituisco errore interno
-								throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
+								throw new GovPayException(EsitoOperazione.VAL_003, e.getMessage());
 							} else {
 								throw e;
 							}

@@ -220,6 +220,7 @@ public class GovPayException extends Exception {
 		case VAL_000: return "Impossibile caricare la factory di validazione: " + this.params[0] + ".";
 		case VAL_001: return "Lo schema indicato per la validazione non e' valido: " + this.params[0] + ".";
 		case VAL_002: return "Errore interno durante la validazione: " + this.params[0] + "."; 
+		case VAL_003: return "La validazione del risultato della trasformazione si e' conclusa con un errore: " + this.params[0] + "."; 
 		case TVR_000: return "Tipo pendenza (" + this.params[0] + ") inesistente";	
 		case TVR_001: return "Tipo pendenza (" + this.params[0] + ") disabilitato";
 		case TVD_000: return "Tipo pendenza (" + this.params[0] + ") del dominio (" + this.params[1] + ") inesistente";
@@ -372,6 +373,7 @@ public class GovPayException extends Exception {
 		case VAL_000: return 500; // "Errore interno";
 		case VAL_001: return 500; // "Errore interno";
 		case VAL_002: return 500; // "Errore interno";
+		case VAL_003: return 500; // "Errore interno";
 		case TVD_000: return 422; // "Richiesta non valida";
 		case TVD_001: return 422; // "Richiesta non valida";
 		case TVR_000: return 422; // "Richiesta non valida";
@@ -489,6 +491,7 @@ public class GovPayException extends Exception {
 		case VAL_000: return  "Errore durante la validazione"; 
 		case VAL_001: return  "Errore durante la validazione"; 
 		case VAL_002: return  "Errore durante la validazione"; 
+		case VAL_003: return  "Errore durante la trasformazione"; 
 		case TVD_000: return "Richiesta non valida";
 		case TVD_001: return "Richiesta non valida";
 		case TVR_000: return "Richiesta non valida";
@@ -516,7 +519,8 @@ public class GovPayException extends Exception {
 		case NDP_001: return CategoriaEnum.PAGOPA; 
 		case VER_014: return CategoriaEnum.OPERAZIONE;
 		case VAL_000:
-		case VAL_001: return CategoriaEnum.INTERNO;
+		case VAL_001:
+		case VAL_003: return CategoriaEnum.INTERNO;
 		default: return CategoriaEnum.RICHIESTA;
 		}
 	}

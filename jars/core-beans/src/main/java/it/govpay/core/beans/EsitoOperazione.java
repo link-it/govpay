@@ -678,6 +678,12 @@ public enum EsitoOperazione {
     VAL_002,
 
     /**
+     * Validazione del risultato della trasformazione non valido 
+     * 
+     */
+    VAL_003,
+
+    /**
      * Tipo Pendenza non censito
      * 
      */
