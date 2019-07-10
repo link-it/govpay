@@ -2,7 +2,7 @@
   <mat-select [placeholder]="json.label" formControlName="{{json.id}}_ctrl" (selectionChange)="_onChangeSelection()"
               [required]="json.required">
     <mat-option>{{json.noOptionLabel}}</mat-option>
-    <mat-option *ngFor="let item of json.values" [value]="item.value" [matTooltip]="item.value"
+    <mat-option *ngFor="let item of json.values" [value]="item.value" [matTooltip]="item.value" [matTooltipDisabled]="!json.showTooltip"
                 #tooltip="matTooltip" (mouseover)="tooltip.show()" (mouseout)="tooltip.hide()">{{item.label}}</mat-option>
   </mat-select>
 </mat-form-field>

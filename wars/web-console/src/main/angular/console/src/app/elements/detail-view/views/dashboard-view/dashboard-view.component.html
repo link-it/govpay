@@ -1,5 +1,5 @@
 <div class="container-fluid p-3">
-  <div class="row align-items-stretch" *ngIf="hasAuthentication">
+  <div class="row align-items-stretch" *ngIf="hasAuthentication && hasPagamenti">
     <div class="col-sm-6 col-12 flex-column">
       <link-badge-card class="d-block action" badge-title="Pagamenti rifiutati"
                        [service]="_PFService" [diff-service]="_PFDiffService" [exam-service]="_PFExamService"
@@ -25,7 +25,7 @@
               </mat-form-field>
               <mat-form-field class="w-100" color="accent">
                 <input id="inputPassword" matInput placeholder="Password" type="password"
-                       name="_pass" [(ngModel)]="_pass" required>
+                       name="_pass" [(ngModel)]="_pass" required autocomplete="on">
               </mat-form-field>
               <button mat-button mat-raised-button color="accent" class="mat-elevation-z0 mt-3" type="submit"
                       [disabled]="!loginForm.form.valid" (click)="onSubmitCredentials(loginForm)">ACCEDI</button>

@@ -62,7 +62,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
     _dettaglio.informazioni.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
     if(this.json.servizioPagoPa) {
       _dettaglio.connettoriSoap.push(new Dato({ label: Voce.SERVIZIO_RPT, value: this.json.servizioPagoPa.urlRPT }));
-      if(this.json.servizioPagoPa.urlAvvisatura) {
+      if(this.json.servizioPagoPa.urlAvvisatura && UtilService.TEMPORARY_DEPRECATED_CODE) {
         _dettaglio.connettoriSoap.push(new Dato({label: Voce.SERVIZIO_AVVISATURA, value: this.json.servizioPagoPa.urlAvvisatura}));
       }
       if(this.json.servizioPagoPa.auth) {
@@ -140,8 +140,8 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
     let _st = Dato.arraysToDato(
-      [ Voce.PASSWORD, Voce.ABILITATO ],
-      [ UtilService.defaultDisplay({ value: item.password }), UtilService.defaultDisplay({ value: UtilService.ABILITA[(item.abilitato).toString()] }) ],
+      [ Voce.ABILITATO ],
+      [ UtilService.defaultDisplay({ value: UtilService.ABILITA[(item.abilitato).toString()] }) ],
       ', '
     );
     _std.titolo = new Dato({ label: Voce.ID_STAZIONE+': ', value: item.idStazione });

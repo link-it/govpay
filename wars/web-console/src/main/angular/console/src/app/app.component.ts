@@ -87,7 +87,17 @@ export class AppComponent implements AfterContentChecked {
       });
     UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
       if(_profilo) {
-        this.gps.multiGetService([ UtilService.URL_SERVIZIACL, UtilService.URL_TIPI_VERSIONE_API ], [ 'SERVIZI', 'TIPI_VERSIONE_API' ], UtilService);
+        this.gps.multiGetService([
+            UtilService.URL_SERVIZIACL,
+            UtilService.URL_TIPI_VERSIONE_API,
+            UtilService.URL_LABEL_TIPI_EVENTO,
+            UtilService.URL_COMPONENTI_EVENTO
+          ],
+          [ 'SERVIZI',
+            'TIPI_VERSIONE_API',
+            'MAP_TIPI_EVENTO',
+            'COMPONENTI_EVENTO',
+          ], UtilService);
         this.setupSideNavigator();
       } else {
         this.ls.routeToLoginForm(UtilService.URL_DASHBOARD);
@@ -252,11 +262,13 @@ export class AppComponent implements AfterContentChecked {
     UtilService.PROFILO_UTENTE.acl.forEach((acl) => {
       switch(acl.servizio) {
         case 'Anagrafica Applicazioni':
-          UtilService.USER_ACL.hasApplicazioni = true;
-          this._sideNavSetup.secMenu.push({ link: UtilService.URL_APPLICAZIONI, name: UtilService.TXT_APPLICAZIONI, xhttp: false, icon: false, sort: 2 });
+          UtilService.USER_ACL.hasApplicazioni = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_APPLICAZIONI, name: UtilService.TXT_APPLICAZIONI, xhttp: false, icon: false, sort: 3 });
           break;
         case 'Anagrafica Creditore':
-          UtilService.USER_ACL.hasCreditore = true;
+          UtilService.USER_ACL.hasCreditore = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_DOMINI, name: UtilService.TXT_DOMINI, xhttp: false, icon: false, sort: 1 });
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_TIPI_PENDENZA, name: UtilService.TXT_TIPI_PENDENZA, xhttp: false, icon: false, sort: 2 });
           // this._sideNavSetup.secMenu.push({ link: UtilService.URL_ENTRATE, name: UtilService.TXT_ENTRATE, xhttp: false, icon: false, sort: -1 });
           break;
         case 'Rendicontazioni e Incassi':
@@ -266,6 +278,7 @@ export class AppComponent implements AfterContentChecked {
           this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 2 });
           break;
         case 'Pagamenti':
+          UtilService.USER_ACL.hasPagamenti = true;
           this._sideNavSetup.menu.push({ link: UtilService.URL_PAGAMENTI, name: UtilService.TXT_PAGAMENTI, xhttp: false, icon: false, sort: 1 });
           if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
             UtilService.USER_ACL.hasPagamentiePendenze = true;
@@ -273,8 +286,7 @@ export class AppComponent implements AfterContentChecked {
           }
           break;
         case 'Pendenze':
-          // UtilService.USER_ACL.hasPagamentiePendenze = true;
-          UtilService.USER_ACL.hasPendenze = true;
+          UtilService.USER_ACL.hasPendenze = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
           this._sideNavSetup.menu.push({ link: UtilService.URL_PENDENZE, name: UtilService.TXT_PENDENZE, xhttp: false, icon: false, sort: 2 });
           if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
             UtilService.USER_ACL.hasPagamentiePendenze = true;
@@ -287,21 +299,20 @@ export class AppComponent implements AfterContentChecked {
           break;
         case 'Configurazione e manutenzione':
           UtilService.USER_ACL.hasConfig = true;
-          this._sideNavSetup.secMenu.push({ link: UtilService.URL_OPERATORI, name: UtilService.TXT_OPERATORI, xhttp: false, icon: false, sort: 3 });
           // this._sideNavSetup.quaMenu.push({ link: '#', name: UtilService.TXT_MAN_NOTIFICHE, xhttp: true, icon: false });
           this._sideNavSetup.quaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false });
           this._sideNavSetup.quaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false });
           // this._sideNavSetup.quaMenu.push({ link: '#', name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false });
           break;
         case 'Anagrafica PagoPA':
-          UtilService.USER_ACL.hasPagoPA = true;
-          this._sideNavSetup.secMenu.push({ link: UtilService.URL_DOMINI, name: UtilService.TXT_DOMINI, xhttp: false, icon: false, sort: 1 });
+          UtilService.USER_ACL.hasPagoPA = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
           this._sideNavSetup.secMenu.push({ link: UtilService.URL_REGISTRO_INTERMEDIARI, name: UtilService.TXT_REGISTRO_INTERMEDIARI, xhttp: false, icon: false, sort: 0 });
           //this._sideNavSetup.secMenu.push({ link: UtilService.URL_RPPS, name: UtilService.TXT_RPPS, xhttp: false, icon: false, sort: -1 });
           break;
         case 'Anagrafica Ruoli':
-          UtilService.USER_ACL.hasRuoli = true;
-          this._sideNavSetup.secMenu.push({ link: UtilService.URL_RUOLI, name: UtilService.TXT_RUOLI, xhttp: false, icon: false, sort: 4 });
+          UtilService.USER_ACL.hasRuoli = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_OPERATORI, name: UtilService.TXT_OPERATORI, xhttp: false, icon: false, sort: 4 });
+          this._sideNavSetup.secMenu.push({ link: UtilService.URL_RUOLI, name: UtilService.TXT_RUOLI, xhttp: false, icon: false, sort: 5 });
           break;
       }
     });

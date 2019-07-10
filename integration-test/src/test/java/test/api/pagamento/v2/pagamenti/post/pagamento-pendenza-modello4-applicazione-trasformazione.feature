@@ -117,7 +117,8 @@ And headers basicAutenticationHeader
 And request pagamentoPost
 When method post
 Then status 500
-And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+* match response == { categoria: 'INTERNO', codice: 'VAL_003', descrizione: 'Errore durante la trasformazione', dettaglio: '#notnull' }
+* match response.dettaglio contains decodeBase64(tipoPendenzaDominio.trasformazione.definizione)
 
 Scenario: Pagamento spontaneo modello 4 autenticato basic template di trasformazione crea una pendenza con errori di sintassi
 
@@ -140,6 +141,7 @@ And headers basicAutenticationHeader
 And request pagamentoPost
 When method post
 Then status 500
-And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+* match response == { categoria: 'INTERNO', codice: 'VAL_003', descrizione: 'Errore durante la trasformazione', dettaglio: '#notnull' }
+* match response.dettaglio contains 'Il campo idPendenza non deve essere vuoto'
 
 

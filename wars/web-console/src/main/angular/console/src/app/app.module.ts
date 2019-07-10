@@ -52,10 +52,12 @@ import { LogoComponent } from './elements/logo/logo.component';
 import { DashboardViewComponent } from './elements/detail-view/views/dashboard-view/dashboard-view.component';
 import { BadgeCardComponent } from './elements/badge-card/badge-card.component';
 import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/nota-view/nota-view.component';
+import { TwoColsViewComponent } from './elements/item-view/views/two-cols-view/two-cols-view.component';
 
 import { JsonSchemaFormModule, MaterialDesignFrameworkModule } from 'angular2-json-schema-form';
 import { GeneratorsEntryListComponents } from "./classes/generators-entry-point-list";
-import { JsfLoaderViewComponent } from './elements/jsf-loader-view/jsf-loader-view.component';
+import { TipoPendenzaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
+import { FileSelectorViewComponent } from './elements/file-selector-view/file-selector-view.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +84,9 @@ import { JsfLoaderViewComponent } from './elements/jsf-loader-view/jsf-loader-vi
     TimepickerScrollDirective,
     BadgeCardComponent,
     NotaViewComponent,
-    JsfLoaderViewComponent
+    TwoColsViewComponent,
+    TipoPendenzaViewComponent,
+    FileSelectorViewComponent
   ],
   imports: [
     BrowserModule,
