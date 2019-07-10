@@ -263,41 +263,42 @@ Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay
   "Id unità", "Codice identificativo, ad uso interno, dell'unità operativa", "Obbligatorio"
   "Ragione Sociale", "Ragione sociale dell'Unità Operativa", "Obbligatorio"
   "Sezione Anagrafica", "Riferimenti anagrafici dell'unità forniti dal Referente dei Pagamenti", ""
-  "Abilitato", "Indica se l'unità operativa è abilitata o meni nel contesto del dominio su cui si opera", ""
+  "Abilitato", "Indica se l'unità operativa è abilitata o meno nel contesto del dominio su cui si opera", ""
 
-Tornando all'elenco delle unità operative, è possibile scegliere le
-operazioni di modifica e cancellazione degli elementi precedentemente
-creati.
+Tornando all'elenco delle unità operative, è possibile scegliere le operazioni di modifica degli elementi precedentemente associati al dominio.
 
 Iban
 ^^^^
 
-Gli iban utilizzati per l'accredito degli importi versati devono essere
-censiti su GovPay.
+Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPay.
+Esiste quindi una maschera di definizione degli IBAN associati al dominio.
+
+.. figure:: ../_images/22NuovoIBAN.png
+   :align: center
+   :name: CampiPerNuovoIBAN
+   
+   Maschera di creazione IBAN associato al dominio
 
 Il form di creazione di un Iban deve essere compilato con i dati
 seguenti:
 
--  *Iban Accredito*: il codice iban del conto di accredito.
-   Obbligatorio, fornito dal referente dei .
--  *Bic Accredito*: bic del conto di accredito. Opzionale.
--  *My Bank*: indica se l'iban è abilitato alle transazioni MyBank
--  *Postale*: indica se l'iban di accredito è riferito ad un conto
-   corrente postale.
--  *Abilitato*: indica se l'iban è usabile da GovPay per gestire nuovi
-   pagamenti o se impedire nuove richieste.
+.. csv-table:: Dettagli di un nuovo IBAN
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "IBAN Accredito", "Codice iban del conto di accredito", "Obbligatorio, fornito dal referente dei Pagamenti"
+  "BIC Accredito", "BIC del conto di accredito", "Obbligatorio"
+  "Postale", "Indica se l'iban di accredito è riferito ad un conto corrente postale", ""
+  "My Bank", "Indica se l'iban di accredito è è abilitato alle transazioni MyBank", ""
+  "Abilitato", "Indica se l'IBAN  è abilitato o meno nel contesto del dominio su cui si opera", ""
 
-Tornando all'elenco degli Iban, è possibile scegliere le operazioni di
-modifica e cancellazione degli elementi precedentemente creati. Il campo
-Iban Accredito non è modificabile.
+Tornando all'elenco degli Iban, è possibile scegliere le operazioni di modifica degli elementi precedentemente creati. Il campo
+Iban Accredito non è, ovviamente, modificabile.
 
 Entrate
 ^^^^^^^
 
-Ogni importo che costituisce un versamento deve essere associato ad una
-entrata censita sul sistema. L'entrata associata al versamento ne
-determina l'iban di accredito dell'importo e le coordinate di
-rendicontazione.
+Ogni importo che costituisce un versamento deve essere associato ad una entrata censita sul sistema. L'entrata associata al versamento ne determina l'iban di accredito dell'importo e le coordinate di rendicontazione.
 
 Il form di creazione di una entrata deve essere compilato con i seguenti
 dati:
