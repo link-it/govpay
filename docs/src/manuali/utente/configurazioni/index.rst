@@ -191,26 +191,23 @@ possibile procedere con la creazione di un nuovo dominio.
   "Id Dominio", "Identificativo del dominio, fornito da AgID, corrisponde alla Partita Iva dell'ente", "Obbligatorio"
   "Ragione Sociale", "Ragione sociale del dominio", "Obbligatorio"
   "Area", "Identificativo interno dell'Area", ""
-  "GLN (Global Location Number)", "identificativo del dominio nella codifica standard GS1. Obbligatorio, fornito da AgIDD", ""
+  "GLN (Global Location Number)", "Identificativo del dominio nella codifica standard GS1. Obbligatorio, fornito da AgIDD", ""
   "Intermediario", "Intermediario selezionato", "Obbligatorio"
   "Stazione", "Stazione tecnologica scelta in fase di adesione a pagoPA, deve ovviamente essere stata già censita sul sistema", "Obbligatorio"
-  "Riferimenti anagrafici del Dominio", "riferimenti anagrafici del dominio forniti dal Referente dei Pagamenti: Indirizzo (Indirizzo completo di toponimo), Numero Civico, CAP, Località, Provincia, Nazione (condice di due lettere, IT per Itlia), eMail, PEC, Sito web, Telefono, Fax", ""
-   "CBILL", "codice CBILL per i domini che supportano questa modalità di pagamento, attribuito da PagoPA", ""
-   "Prefisso IUV", " prefisso da inserire negli IUV generati da GovPay per questo dominio. Il prefisso, numerico, può contenere dei placeholder racchiusi tra graffe, ad esempio “1%(a)%(t)”", ""
-   "Aux", "valore numerico che definisce la struttura del codice IUV in funzione del numero di punti di generazione dello stesso (cfr. Specifiche Attuative dei codici identificativi di versamento, riversamento e rendicontazione")", ""
+  "Riferimenti anagrafici del Dominio", "Riferimenti anagrafici del dominio forniti dal Referente dei Pagamenti: Indirizzo (Indirizzo completo di toponimo), Numero Civico, CAP, Località, Provincia, Nazione (condice di due lettere, IT per Itlia), eMail, PEC, Sito web, Telefono, Fax", ""
+   "CBILL", "Codice CBILL per i domini che supportano questa modalità di pagamento, attribuito da PagoPA", ""
+   "Prefisso IUV", "Prefisso da inserire negli IUV generati da GovPay per questo dominio. Il prefisso, numerico, può contenere dei placeholder racchiusi tra graffe, ad esempio “1%(a)%(t)”", ""
+   "Aux", "Valore numerico che definisce la struttura del codice IUV in funzione del numero di punti di generazione dello stesso (cfr. Specifiche Attuative dei codici identificativi di versamento, riversamento e rendicontazione")", ""
    "Codice di segregazione", "Se configurato come dominio pluri-intermediato, imposta il codice numerico di segregazione.", "Fornito da AgID"
-  "Abilitato", "indica se il dominio è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
+  "Abilitato", "Indica se il dominio è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
+  "Autorizzazione stampa PT", "Numero di autorizzazione PT per la stampa in proprio del bollettino postale", ""
+  "Sfoglia.. (Logo)", "Elemento per il caricamento del logo dell’ente creditore corrispondente al dominio", ""
 
 I **placeholder contenuti nel prefisso IUV** vengono sostituiti a runtime con i valori forniti dagli applicativi richiedenti o con i valori di sistema configurati. La lunghezza del prefisso riduce lo spazio di IUV generabili, quindi è necessario che sia il più breve possibile. Questi i placeholder di sistema, sovrascrivibili dall'applicazione chiamante:
    -  a: codice IUV assegnato all'applicazione che gestisce il debito
    -  t: codice IUV assegnato al tributo
    -  y: anno di emissione dello iuv, due cifre
    -  Y: anno di emissione dello iuv, quattro cifre
-
-
--  Logo: elemento per il caricamento del logo dell’ente creditore
-   corrispondente al dominio.
-
 
 Dettaglio Dominio
 ~~~~~~~~~~~~~~~~~
