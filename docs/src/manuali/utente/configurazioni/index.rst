@@ -5,7 +5,9 @@ Configurazioni
 
 La sezione di configurazione, visibile solo agli amministratori del
 sistema, consente il censimento e manutenzione delle entità logiche
-coinvolte nel processo di pagamento:
+coinvolte nel processo di pagamento
+
+
 
 -  *Registro Intermediari*: rappresentano le entità “Intermediario” o
    “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
