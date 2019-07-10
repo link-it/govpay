@@ -214,17 +214,17 @@ Dettaglio Dominio
 
 Selezionando uno dei domini presenti nella pagina di elenco si accede
 alla pagina di dettaglio. La pagina di dettaglio di un dominio è
-ripartita in quattro distinte aree:
+ripartita nelle seguenti distinte aree:
 
--  *Riepilogo Informazioni*: la visualizzazione dei dati che
-   caratterizzano il dominio.
--  *Unità Operative*: sono gli uffici di gestione dei pagamenti in cui è
-   suddiviso il dominio dell’ente creditore.
--  *Iban*: sono i codici iban dei conti correnti su cui l’ente creditore
-   riceve gli accrediti in banca tesoriera. Tali Iban sono quelli già
-   comunicati ad AgID per l’accreditamento.
--  *Entrate*: sono le entrate attive nel dominio dell’ente creditore e
-   quindi sulle quali è predisposto per ricevere dei pagamenti.
+.. csv-table:: Aree del dettaglio dominio
+  :header: "Area", "Descrizione"
+  :widths: 40,40
+  
+  "*Riepilogo Informazioni*", "Dati che caratterizzano il dominio, appena visti nella sezione di creazione del dominio"
+  "*Unità Operative*", "Uffici di gestione dei pagamenti in cui è suddiviso il dominio dell’ente creditore."
+  "*Iban*", "Codici IBAN dei conti correnti su cui l’ente creditore riceve gli accrediti in banca tesoriera. Tali Iban sono quelli già comunicati ad AgID in fase di accreditamento."
+  "*Entrate*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
+  "*Pendenze*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
 
 Tramite il pulsante di modifica presente nella pagina di dettaglio è
 possibile procedere con l'aggiornamento dei dati di base, visualizzati
