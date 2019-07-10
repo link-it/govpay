@@ -228,13 +228,22 @@ ripartita nelle seguenti distinte aree:
   "*Entrate*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
   "*Pendenze*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
 
-Tramite il pulsante di modifica presente nella pagina di dettaglio è
-possibile procedere con l'aggiornamento dei dati di base, visualizzati
-nell'area "Riepilogo Informazioni". Si tenga presente che il valore del
-campo “Codice Dominio” non è modificabile.
+Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile procedere con l'aggiornamento dei dati di base, visualizzati nell'area "Riepilogo Informazioni". Si tenga presente che il **valore del campo “Codice Dominio” non è modificabile**.
 
-Le tre aree seguenti contengono i propri pulsanti di creazione, modifica
-e cancellazione degli elementi visualizzati.
+.. figure:: ../_images/19DettaglioDominio1.png
+   :align: center
+   :name: CampiDelDettaglioDominio
+   
+   Campi del dettaglio del Dominio:
+
+Le aree seguenti contengono i propri pulsanti di creazione, modifica e cancellazione degli elementi visualizzati, con le solite, naturali, uniformi convenzioni grafiche.
+
+.. figure:: ../_images/20DettaglioDominio2.png
+   :align: center
+   :name: CampiDegliOggettiDelDominio
+   
+   Campi degli oggetti correllati al Dominio:
+
 
 Unità Operative
 ^^^^^^^^^^^^^^^
