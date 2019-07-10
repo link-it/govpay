@@ -181,7 +181,7 @@ possibile procedere con la creazione di un nuovo dominio.
    :align: center
    :name: CampiDelDominio
    
-   Campi del form di inserimento Nuovo Dominio
+   Campi del form di inserimento Nuovo Dominio:
 
 
 .. csv-table:: Dettagli di un nuovo Dominio
@@ -195,19 +195,21 @@ possibile procedere con la creazione di un nuovo dominio.
   "Intermediario", "Intermediario selezionato", "Obbligatorio"
   "Stazione", "Stazione tecnologica scelta in fase di adesione a pagoPA, deve ovviamente essere stata già censita sul sistema", "Obbligatorio"
   "Riferimenti anagrafici del Dominio", "riferimenti anagrafici del dominio forniti dal Referente dei Pagamenti: Indirizzo (Indirizzo completo di toponimo), Numero Civico, CAP, Località, Provincia, Nazione (condice di due lettere, IT per Itlia), eMail, PEC, Sito web, Telefono, Fax", ""
-    "Località", "", ""
+   "CBILL", "codice CBILL per i domini che supportano questa modalità di pagamento", ""
+   "Prefisso IUV", " prefisso da inserire negli IUV generati da GovPay per questo dominio. Il prefisso, numerico, può contenere dei placeholder racchiusi tra graffe, ad esempio “1%(a)%(t)”", ""
+   "Località", "", ""
+   "Località", "", ""
+   "Località", "", ""
   "Ragione Sociale", "Chiave segreta, fornita da AgID", ""
   "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
 
-inserendo i seguenti dati:
+.. note:: I placeholder IUV vengono sostituiti a runtime con i valori forniti dagli applicativi richiedenti o con i valori di sistema configurati. La lunghezza del prefisso riduce lo spazio di IUV generabili, quindi è necessario che sia il più breve possibile. Questi i placeholder di sistema, sovrascrivibili dall'applicazione chiamante:
+   -  a: codice IUV assegnato all'applicazione che gestisce il debito
+   -  t: codice IUV assegnato al tributo
+   -  y: anno di emissione dello iuv, due cifre
+   -  Y: anno di emissione dello iuv, quattro cifre
 
 
-
--  
--  Dati anagrafici: riferimenti anagrafici del dominio forniti dal
-   Referente dei Pagamenti. Obbligatoria solo la ragione sociale.
--  CBILL: codice CBILL per i domini che supportano questa modalità di
-   pagamento.
 -  Logo: elemento per il caricamento del logo dell’ente creditore
    corrispondente al dominio.
 -  *Abilitato*: indica se il dominio è usabile da GovPay per gestire
