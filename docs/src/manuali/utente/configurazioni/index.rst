@@ -5,17 +5,20 @@ Configurazioni
 
 La sezione di configurazione, visibile solo agli amministratori del
 sistema, consente il censimento e manutenzione delle entità logiche
-coinvolte nel processo di pagamento:
+coinvolte nel processo di pagamento. 
 
--  *Registro Intermediari*: rappresentano le entità “Intermediario” o
-   “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
-   fase di adesione dagli Enti Creditore per l'accesso al sistema
-   pagoPA.
--  *Entrate*: rappresentano le esigenze dell'ente creditore dalle quali
+.. figure:: ../_images/08Configurazioni.png
+   :align: center
+
+   Figura 1: Lista delle funzionalità di configurazione
+
+
+-  *Intermediari*: rappresentano le entità “Intermediario” o “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
+   fase di adesione dagli Enti Creditore per l'accesso al sistema pagoPA.
+-  *Domini*: corrispondono agli enti creditori aderenti al sistema pagoPA.
+-  *Tipi Pendenza*: rappresentano le esigenze dell'ente creditore dalle quali
    scaturiscono le tipologie di pagamenti che possono essere gestiti dal
    sistema (tassa rifiuti, licenza di caccia, bollo auto, ...).
--  *Domini*: corrispondono agli enti creditori aderenti al sistema
-   pagoPA.
 -  *Applicazioni*: rappresentano i portali di pagamento e i gestionali
    delle posizioni debitorie degli enti Creditori integrati con GovPay
    tramite gli appositi servizi.
@@ -24,50 +27,56 @@ coinvolte nel processo di pagamento:
    consentite sulle entità dati, che saranno assegnati agli utenti del
    cruscotto.
 
-Registro Intermediari
----------------------
+.. note:: Nell'analisi delle funzionalità di configurazione, le immagini esemplificative mostrate mancheranno della
+   sezione di sinistra (*Lista funzionalità*) al fine di permettere la concentrazione sulla sola parte importante, una volta
+   che si sia selezionata la funzionalità, ovvero il suo dettaglio, posto a destra.
+
+Intermediari
+------------
 
 Gli intermediari o partner tecnologici sono entità censite da AgID sul
 circuito pagoPA al momento dell'adesione di un Ente Creditore. Per il
 corretto funzionamento di GovPay, gli intermediari di interesse devono
 essere censiti con le informazioni di corredo necessarie.
 
-Accedendo alla sezione corrispondente (“Configurazioni > Registro
-Intermediari”), viene visualizzato l'elenco degli intermediari censiti
-sul sistema.
+.. figure:: ../_images/09Intermediari.png
+   :align: center
 
-È possibile filtrare gli elementi visualizzati utilizzando il form
-presente sul lato sinistro della pagina.
+   Figura 2: Vista di dettaglio intermediari
+
+Accedendo alla sezione corrispondente (*Configurazioni > Intermediari*), viene visualizzato l'elenco degli intermediari censiti
+sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, con una funzionalità di filtro disponibile sulla sinistra del box di dettaglio, come di seguito mostrato:
+
+.. figure:: ../_images/10FiltroSuIntermediari.png
+   :align: center
+
+   Figura 3: Filtro su ricerca Intermediari
+
 
 Nuovo Intermediario
 ~~~~~~~~~~~~~~~~~~~
 
 Per inserire un nuovo intermediario è necessario premere l'apposito
-pulsante, presente nella pagina di elenco, è compilare il form che viene
+pulsante, presente nella pagina di elenco in basso a destra, e compilare il form che viene
 aperto:
 
--  *Denominazione*: Nome associato all'Intermediario o al Partner
-   Tecnologico.
--  *Id Intermediario*: Identificativo dell'intermediario o Partner
-   Tecnologico. Obbligatorio, fornito da AgID, corrisponde alla Partita
-   IVA del soggetto.
--  *Principal*: identificativo (subject certificato o principal)
-   corrispondente alle credenziali con cui Govpay riceve le chiamate in
-   entrata da pagoPA,
--  *Connettore pagoPA*: riferimenti utilizzati da Govpay per comunicare
-   con il Nodo SPC.
+.. figure:: ../_images/11CampiNuovoIntermediario.png
+   :align: center
 
-   -  *URL*: Endpoint per le chiamate in uscita verso il Nodo SPC.
-   -  Versione API: Lista a discesa per selezionare la versione delle
-      API supportata per il colloquio con il Nodo SPC.
-   -  Tipo Autenticazione: Lista a discesa per selezionare il tipo di
-      autenticazione adottata per le comunicazioni con il Nodo SPC. Si
-      sceglie tra: Nessuna, HTTP-Basic e SSL. Nel caso si scelga una
-      modalità di autenticazione, dovranno essere inserite i relativi
-      dati di configurazione.
+   Figura 4: Informazioni che definiscono un nuovo intermediario
 
--  *Abilitato*: indica se l'intermediario è usabile da GovPay per
-   gestire nuovi pagamenti o se impedire nuove richieste.
+Le informazioni contenute nel form sono le seguenti:
+
+.. csv-table:: Titolo
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Denominazione", "Nome associato all'Intermediario o al Partner Tecnologico", "Obbligatorio"
+  "Id Intermediario", "Identificativo dell'intermediario o Partner Tecnologico, fornito da AgID, corrisponde alla Partita IVA del soggetto", "Obbligatorio"
+  "Principal", "identificativo (subject certificato o principal) corrispondente alle credenziali con cui Govpay riceve le chiamate in entrata da pagoPA", ""
+  "Abilitato/Non Abilitato", "Stato del nuovo intermediario: indica se l'intermediario è usabile da GovPay per gestire nuovi pagamenti o se impedire nuove richieste.", ""
+  "Servizio RPT", "Riferimenti utilizzati da Govpay per comunicare con il Nodo SPC: Endpoint per le chiamate in uscita verso il Nodo SPC", ""
+  "Tipo Autenticazione", "Lista a discesa per selezionare il tipo di autenticazione adottata per le comunicazioni con il Nodo SPC. Si sceglie tra: Nessuna e HTTP-Basic. Nel caso si scelga una modalità di autenticazione, dovranno essere inserite i relativi dati di configurazione", ""  
 
 Selezionando un intermediario dalla pagina che li elenca si accede alla
 pagina di dettaglio.
