@@ -183,7 +183,6 @@ possibile procedere con la creazione di un nuovo dominio.
    
    Campi del form di inserimento Nuovo Dominio:
 
-
 .. csv-table:: Dettagli di un nuovo Dominio
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
@@ -234,7 +233,7 @@ Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile 
    :align: center
    :name: CampiDelDettaglioDominio
    
-   Campi del dettaglio del Dominio:
+   Campi del dettaglio del Dominio
 
 Le aree seguenti contengono i propri pulsanti di creazione, modifica e cancellazione degli elementi visualizzati, con le solite, naturali, uniformi convenzioni grafiche.
 
@@ -242,27 +241,29 @@ Le aree seguenti contengono i propri pulsanti di creazione, modifica e cancellaz
    :align: center
    :name: CampiDegliOggettiDelDominio
    
-   Campi degli oggetti correllati al Dominio:
+   Campi degli oggetti correlati al Dominio
 
 
 Unità Operative
 ^^^^^^^^^^^^^^^
 
-La specifica pagoPA consente di indicare l'anagrafica dell'Unità
-operativa titolare del credito, qualora sia diversa da quella dell'Ente
-Creditore. È quindi possibile censire le Unità operative del Dominio in
-GovPay da utilizzare poi in fase di pagamento.
+La specifica pagoPA consente di indicare l'anagrafica dell'Unità operativa titolare del credito, qualora sia diversa da quella dell'Ente
+Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay da utilizzare poi in fase di pagamento.
 
-Il form di creazione di una Unità Operativa deve essere compilato con i
-seguenti dati:
+.. figure:: ../_images/21NuovaUnitaOperativa.png
+   :align: center
+   :name: CampiPerNuovaUnitaOperativa
+   
+   Campi per creare una Nuova Unità Operativa
 
--  *Id unità*: identificativo ad uso interno dell'unità operativa.
-   Obbligatorio a scelta dell'amministratore.
--  *Anagrafica*: riferimenti anagrafici del dell'unità forniti dal
-   Referente dei Pagamenti. Obbligatoria la ragione sociale, opzionali
-   le altre informazioni.
--  *Abilitato*: consente di scegliere se abilitare l'unità operativa o
-   meno per l'utilizzo nel contesto del dominio.
+.. csv-table:: Dettagli di una nuova Unità Operativa
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Id unità", "Codice identificativo, ad uso interno, dell'unità operativa", "Obbligatorio"
+  "Ragione Sociale", "Ragione sociale dell'Unità Operativa", "Obbligatorio"
+  "Sezione Anagrafica", "Riferimenti anagrafici dell'unità forniti dal Referente dei Pagamenti", ""
+  "Abilitato", "Indica se l'unità operativa è abilitata o meni nel contesto del dominio su cui si opera", ""
 
 Tornando all'elenco delle unità operative, è possibile scegliere le
 operazioni di modifica e cancellazione degli elementi precedentemente
