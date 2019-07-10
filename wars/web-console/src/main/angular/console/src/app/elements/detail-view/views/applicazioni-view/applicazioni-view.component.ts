@@ -206,7 +206,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
   }
 
   title(): string {
-    return UtilService.defaultDisplay({ value: this.json?this.json.principal:null });
+    return UtilService.defaultDisplay({ value: this.json?this.json.idA2A:null });
   }
 
   infoDetail(): any {

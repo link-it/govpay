@@ -16,6 +16,7 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { CronoCode } from '../../../../classes/view/crono-code';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
+import { TwoCols } from '../../../../classes/view/two-cols';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -181,18 +182,16 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     this.gps.getDataService(_url, _query).subscribe(function (_response) {
         let _body = _response.body;
         this.eventi = _body['risultati'].map(function(item) {
-          let _dataOraRichiesta = item.dataOraRichiesta?moment(item.dataOraRichiesta).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
-          let _std = new Standard();
-          let _st: Dato = Dato.arraysToDato(
-            [ Voce.ID_DOMINIO, Voce.IUV, Voce.CCP, Voce.DATA ],
-            [ item.idDominio, item.iuv, item.ccp, _dataOraRichiesta ],
-            ', '
-          );
-          _std.titolo = new Dato({ label: item.tipoEvento });
-          _std.sottotitolo = _st;
-          _std.stato = item.esito;
+          const _stdTC: TwoCols = new TwoCols();
+          const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
+          const _riferimento = this.us.mapRiferimentoGiornale(item);
+          _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+          _stdTC.sottotitolo = new Dato({ label: _riferimento });
+          _stdTC.stato = item.esito;
+          _stdTC.data = _dataOraEventi;
           let p = new Parameters();
-          p.model = _std;
+          p.model = _stdTC;
+          p.type = UtilService.TWO_COLS;
           return p;
         }, this);
         this.gps.updateSpinner(false);
@@ -333,11 +332,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       // types.push('blob'); *
 
       //Pdf Avviso di pagamento
-      if(this.json.iuvAvviso) {
+      if(this.json.numeroAvviso) {
         if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
           folders.push(UtilService.ROOT_ZIP_FOLDER);
         }
-        urls.push(UtilService.URL_AVVISI+'/'+encodeURIComponent(this.json.dominio.idDominio)+'/'+encodeURIComponent(this.json.iuvAvviso));
+        urls.push(UtilService.URL_AVVISI+'/'+encodeURIComponent(this.json.dominio.idDominio)+'/'+encodeURIComponent(this.json.numeroAvviso));
         contents.push('application/pdf');
         names.push(this.json.dominio.idDominio + '_' + this.json.numeroAvviso + '.pdf' + UtilService.ROOT_ZIP_FOLDER);
         types.push('blob');

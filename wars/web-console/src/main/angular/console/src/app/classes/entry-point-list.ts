@@ -7,6 +7,7 @@ import { StandardViewComponent } from '../elements/item-view/views/standard-view
 import { CronoViewComponent } from '../elements/item-view/views/crono-view/crono-view.component';
 import { CronoCodeViewComponent } from '../elements/item-view/views/crono-code-view/crono-code-view.component';
 import { KeyValueViewComponent } from '../elements/item-view/views/key-value-view/key-value-view.component';
+import { TwoColsViewComponent } from '../elements/item-view/views/two-cols-view/two-cols-view.component';
 
 import { InputViewComponent } from '../elements/item-view/views/input-view/input-view.component';
 import { FilterableViewComponent } from '../elements/item-view/views/filterable-view/filterable-view.component';
@@ -48,6 +49,8 @@ import { RuoloViewComponent } from '../elements/detail-view/views/dialog-view/di
 import { TracciatiViewComponent } from '../elements/detail-view/views/tracciati-view/tracciati-view.component';
 import { TracciatoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tracciato-view/tracciato-view.component';
 import { NotaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/nota-view/nota-view.component';
+import { TipiPendenzeViewComponent } from '../elements/detail-view/views/tipi-pendenze-view/tipi-pendenze-view.component';
+import { TipoPendenzaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
 
 export class EntryPointList {
 
@@ -55,6 +58,7 @@ export class EntryPointList {
     PendenzeViewComponent,
     PagamentiViewComponent,
     RegistroIntermediariViewComponent,
+    TipiPendenzeViewComponent,
     ApplicazioniViewComponent,
     RppsViewComponent,
     GiornaleEventiViewComponent,
@@ -75,6 +79,7 @@ export class EntryPointList {
     IncassoViewComponent,
     EntrataViewComponent,
     TipiPendenzaViewComponent,
+    TipoPendenzaViewComponent,
     DominioViewComponent, AlertDialog,
     EntrataDominioViewComponent,
     TipiPendenzaDominioViewComponent,
@@ -90,6 +95,7 @@ export class EntryPointList {
     CronoViewComponent,
     CronoCodeViewComponent,
     KeyValueViewComponent,
+    TwoColsViewComponent,
     InputViewComponent,
     FilterableViewComponent,
     DatePickerViewComponent, TimePickerDialogComponent,
@@ -111,6 +117,9 @@ export class EntryPointList {
         break;
       case UtilService.REGISTRO_INTERMEDIARI:
         _type = RegistroIntermediariViewComponent;
+        break;
+      case UtilService.TIPI_PENDENZE:
+        _type = TipiPendenzeViewComponent;
         break;
       case UtilService.APPLICAZIONI:
         _type = ApplicazioniViewComponent;
@@ -155,6 +164,9 @@ export class EntryPointList {
       case UtilService.STANDARD_COLLAPSE:
         _type = StandardCollapseViewComponent;
         break;
+      case UtilService.TWO_COLS:
+        _type = TwoColsViewComponent;
+        break;
       case UtilService.KEY_VALUE:
         _type = KeyValueViewComponent;
         break;
@@ -188,6 +200,9 @@ export class EntryPointList {
         break;
       case UtilService.TIPI_PENDENZA:
         _type = TipiPendenzaViewComponent;
+        break;
+      case UtilService.TIPO_PENDENZA:
+        _type = TipoPendenzaViewComponent;
         break;
       case UtilService.INCASSO:
         _type = IncassoViewComponent;
@@ -256,6 +271,9 @@ export class EntryPointList {
       case 'RegistroIntermediariViewComponent':
         _name = UtilService.REGISTRO_INTERMEDIARI;
         break;
+      case 'TipiPendenzeViewComponent':
+        _name = UtilService.TIPI_PENDENZE;
+        break;
       case 'ApplicazioniViewComponent':
         _name = UtilService.APPLICAZIONI;
         break;
@@ -302,6 +320,9 @@ export class EntryPointList {
       case 'StandardCollapseViewComponent':
         _name = UtilService.STANDARD_COLLAPSE;
         break;
+      case 'TwoColsViewComponent':
+        _name = UtilService.TWO_COLS;
+        break;
       case 'KeyValueViewComponent':
         _name = UtilService.KEY_VALUE;
         break;
@@ -329,6 +350,9 @@ export class EntryPointList {
         break;
       case 'TipiPendenzaViewComponent':
         _name = UtilService.TIPI_PENDENZA;
+        break;
+      case 'TipoPendenzaViewComponent':
+        _name = UtilService.TIPO_PENDENZA;
         break;
       case 'IncassoViewComponent':
         _name = UtilService.INCASSO;

@@ -98,11 +98,10 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   protected _tipiPendenzaDominioChangeSelection(event: any) {
     // console.log(event.value);
     this._autoFormReset();
-    const _data = {
+    let _jsonDecoded = {
       schema: null,
       layout: null
     };
-    let _jsonDecoded;
     if(event.value.valori) {
       if(event.value.valori.form) {
         _jsonDecoded = this._decodeB64ToJson(event.value.valori.form.definizione);
@@ -114,12 +113,10 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
         this._componentRefType = event.value.form.tipo || '';
       }
     }
-    _data.schema = _jsonDecoded.schema || null;
-    _data.layout = _jsonDecoded.layout || null;
-    if(_data.schema) {
-      this.jsonSchema = _data.schema;
-      if(_data.layout) {
-        this.jsonLayout = _data.layout;
+    if(_jsonDecoded.schema) {
+      this.jsonSchema = _jsonDecoded.schema;
+      if(_jsonDecoded.layout) {
+        this.jsonLayout = _jsonDecoded.layout;
       }
       this._createJsForm();
       this._showAutomaticForm = true;
@@ -128,7 +125,9 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
 
   protected _decodeB64ToJson(_base: string): any {
     try {
-      const _jsonDecode = atob(_base);
+      const _jsonDecode = decodeURIComponent(atob(_base).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
       return JSON.parse(_jsonDecode);
     } catch (e) {
       this.us.alert('Formato json non corretto.');
@@ -138,6 +137,7 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
 
   protected _autoFormReset() {
     this._showAutomaticForm = false;
+    this.fGroup.controls['_autoSchemaForm_ctrl'].setValue(true);
     if(this._componentRef) {
       this._componentRef.destroy();
     }

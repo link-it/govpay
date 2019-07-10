@@ -1,19 +1,19 @@
 <div class="row">
   <div class="col-12 col-lg-2"></div>
   <div class="col-12 col-lg-8">
-    <mat-card class="no-shadow container-fluid">
+    <mat-card class="shadow no-border-radius mb-4">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.RIEPILOGO}}</p>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
         <mat-select #tipo_pendenza placeholder="Tipo pendenza" formControlName="tipoPendenza_ctrl"
                     (selectionChange)="_onChangeSelection(tipo_pendenza)" [compareWith]="_tipoPendenzaComparingFct" required>
           <mat-option *ngFor="let item of tipiPendenza_items" [value]="item.jsonP">{{item.model.titolo.label}}</mat-option>
-          <mat-option>Nuovo tipo pendenza...</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-        <input matInput [placeholder]="_phCiuv" formControlName="codificaIUV_ctrl" autocomplete="off">
+        <input matInput [placeholder]="_voce.IUV_CODEC" formControlName="codificaIUV_ctrl" autocomplete="off">
       </mat-form-field>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-        <mat-select placeholder="Pagabile da altri" formControlName="pagaTerzi_ctrl">
+        <mat-select placeholder="{{_voce.TERZI}}" formControlName="pagaTerzi_ctrl">
           <mat-option>Default</mat-option>
           <mat-option [value]="true">Si</mat-option>
           <mat-option [value]="false">No</mat-option>
@@ -26,56 +26,104 @@
           <mat-option [value]="false">No</mat-option>
         </mat-select>
       </mat-form-field>
-      <!--<div class="row">
-        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
-          <mat-select placeholder="Generatore form" formControlName="generatore_ctrl">
+    </mat-card>
+    <mat-card class="shadow no-border-radius mb-4">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.LAYOUT_FORM_DATI}}</p>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_LAYOUT" formControlName="generatore_ctrl">
+            <mat-option>{{_voce.NESSUNO}}</mat-option>
             <mat-option *ngFor="let _tipo of _generatori" [value]="_tipo.value">{{_tipo.label}}</mat-option>
           </mat-select>
         </mat-form-field>
-      </div>-->
+        <link-file-selector-view class="col-12 col-sm-6 mb-3 mb-sm-0" [fControlName]="'schema_ctrl'" [doubleSet]="_doubleSet.schema"
+                                 [fGroup]="fGroup" placeholder="Definizione" (fileSelectorReset)="_lfsReset($event, 'schema_ctrl')"></link-file-selector-view>
+      </div>
+    </mat-card>
+    <mat-card class="shadow no-border-radius mb-4">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.ELABORAZIONE}}</p>
       <div class="row">
-        <div class="col-12 col-sm-6 mb-3 mb-sm-0" [formGroup]="fGroup">
-          <input #iSchemaBrowse type="file" (change)="readJsonSchema($event)" hidden>
-          <div class="row align-items-center flex-nowrap">
-            <button mat-icon-button class="action" type="button" (click)="_showSchemaContent(true)" *ngIf="_jsonSchemaSelected">
-              <mat-icon aria-label="Open schema json">open_in_new</mat-icon>
-            </button>
-            <button mat-icon-button class="action mx-3" type="button" (click)="_trashSchemaSelection(true)" *ngIf="_trashSchema">
-              <mat-icon aria-label="Remove schema json">delete</mat-icon>
-            </button>
-            <div class="d-flex align-items-center flex-nowrap" *ngIf="!_trashSchema">
-              <button mat-icon-button class="action" type="button" (click)="iSchemaBrowse.click()">
-                <mat-icon aria-label="Schema json">attach_file</mat-icon>
-              </button>
-              <label class="m-0 regular-16 color-gray text-truncate">{{_schema}}</label>
-              <button mat-icon-button class="action regular-14 color-gray" *ngIf="_schemaSelected"
-                      type="button" (click)="_clear('schema', true)">
-                <mat-icon aria-label="Schema json">cancel</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6" [formGroup]="fGroup">
-          <input #iLayoutBrowse type="file" (change)="readJsonLayout($event)" hidden>
-          <div class="row align-items-center flex-nowrap">
-            <button mat-icon-button class="action" type="button" (click)="_showSchemaContent()" *ngIf="_jsonLayoutSelected">
-              <mat-icon aria-label="Open layout json">open_in_new</mat-icon>
-            </button>
-            <button mat-icon-button class="action mx-3" type="button" (click)="_trashSchemaSelection()" *ngIf="_trashlayout">
-              <mat-icon aria-label="Remove layout json">delete</mat-icon>
-            </button>
-            <div class="d-flex align-items-center flex-nowrap" *ngIf="!_trashlayout">
-              <button mat-icon-button class="action" type="button" (click)="iLayoutBrowse.click()">
-                <mat-icon aria-label="Layout json">attach_file</mat-icon>
-              </button>
-              <label class="m-0 regular-16 color-gray text-truncate">{{_datiAllegati}}</label>
-              <button mat-icon-button class="action regular-14 color-gray" *ngIf="_layoutSelected"
-                      type="button" (click)="_clear('datiAllegati')">
-                <mat-icon aria-label="Layout json">cancel</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.VALIDAZIONE}}</p>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'validazione_ctrl'" [doubleSet]="_doubleSet.validazione"
+                                 [fGroup]="fGroup" placeholder="JSON Schema" (fileSelectorReset)="_lfsReset($event, 'validazione_ctrl')"></link-file-selector-view>
+      </div>
+      <div class="row mb-2">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.TRASFORMAZIONE}}</p>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTrasformazione_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3 mb-sm-0" [fControlName]="'definizione_ctrl'" [doubleSet]="_doubleSet.definizione"
+                                 [fGroup]="fGroup" placeholder="Template" (fileSelectorReset)="_lfsReset($event, 'definizione_ctrl')"></link-file-selector-view>
+      </div>
+      <div class="row">
+        <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.INOLTRO}}</p>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.APPLICAZIONE" formControlName="inoltro_ctrl">
+            <mat-select-trigger>
+              {{fGroup?.controls['inoltro_ctrl']?.value}}
+            </mat-select-trigger>
+            <mat-option>Nessuno</mat-option>
+            <mat-option class="custom-option" *ngFor="let _app of _applicazioni" [value]="_app.idA2A">
+              <span class="d-block">{{_app.idA2A}}</span>
+              <small class="text-truncate color-gray">{{_app.principal}}</small>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card>
+    <mat-card class="shadow no-border-radius mb-4">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_AVVISO_PAGAMENTO}}</p>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6 mb-3" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateAP_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ALLEGA_PDF_AVVISO" formControlName="allegaPdf_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggetto_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggio_ctrl')"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [doubleSet]="_doubleSet.oggetto"
+                                 (fileSelectorReset)="_lfsReset($event, 'oggetto_ctrl')"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggio_ctrl'"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [doubleSet]="_doubleSet.messaggio"
+                                 (fileSelectorReset)="_lfsReset($event, 'messaggio_ctrl')"></link-file-selector-view>
+      </div>
+    </mat-card>
+    <mat-card class="shadow no-border-radius mb-4">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.PROMEMORIA_RICEVUTA_TELEMATICA}}</p>
+      <div class="row">
+        <mat-form-field class="col-12 col-sm-6 mb-3" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TIPO_TEMPLATE" formControlName="tipoTemplateAR_ctrl">
+            <mat-option>Nessuno</mat-option>
+            <mat-option value="freemarker">Freemarker</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.ALLEGA_PDF_RICEVUTA" formControlName="allegaPdfRicevuta_ctrl">
+            <mat-option>Default</mat-option>
+            <mat-option [value]="true">Si</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'oggettoRicevuta_ctrl'" (fileSelectorChange)="_lfsChange($event, 'messaggioRicevuta_ctrl')"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_OGGETTO}}" [doubleSet]="_doubleSet.oggettoRicevuta"
+                                 (fileSelectorReset)="_lfsReset($event, 'oggettoRicevuta_ctrl')"></link-file-selector-view>
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'messaggioRicevuta_ctrl'"
+                                 [fGroup]="fGroup" placeholder="{{_voce.TEMPLATE_MESSAGGIO}}" [doubleSet]="_doubleSet.messaggioRicevuta"
+                                 (fileSelectorReset)="_lfsReset($event, 'messaggioRicevuta_ctrl')"></link-file-selector-view>
       </div>
     </mat-card>
   </div>

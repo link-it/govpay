@@ -22,6 +22,8 @@ export class UtilService {
   public static JS_URL: string = GovPayConfig.EXTERNAL_JS_PROCEDURE_URL;
   public static URL_LOGOUT_SERVICE: string = GovPayConfig.HTTP_LOGOUT_SERVICE;
 
+  // DEBUG VARS
+  public static TEMPORARY_DEPRECATED_CODE: boolean = false;
 
   public static APPLICATION_VERSION: any;
 
@@ -157,6 +159,14 @@ export class UtilService {
     OTH: 'Pagamento da portale'
   };
 
+  //MODELLI PAGAMENTO
+  public static MODELLI_PAGAMENTO: any = {
+    0: 'Immediato',
+    1: 'Immediato multibeneficiario',
+    2: 'Differito',
+    4: 'Attivato presso Psp'
+  };
+
   //TIPOLOGIE CATEGORIA EVENTO
   public static TIPI_CATEGORIA_EVENTO: any = {
     INTERNO: 'Interno',
@@ -165,6 +175,30 @@ export class UtilService {
 
   //TIPI VERSIONE
   public static TIPI_VERSIONE_API: string[] = [];
+  //MAPPATURA TIPI EVENTO (GIORNALE)
+  static set MAP_TIPI_EVENTO(value: any[]) {
+    this._MAP_TIPI_EVENTO = value.map(te => {
+      const _key = Object.keys(te)[0];
+      return { value: _key, label: te[_key] };
+    }).sort((a, b) => {
+      if (a.label > b.label) {
+        return 1;
+      }
+      if (a.label < b.label) {
+        return -1;
+      }
+      return 0;
+    });
+    if(value) {
+      UtilService.DIRECT_MAP_TIPI_EVENTO = {};
+      this._MAP_TIPI_EVENTO.forEach(e => {
+        UtilService.DIRECT_MAP_TIPI_EVENTO[e.value] = e.label;
+      });
+    }
+  }
+  private static _MAP_TIPI_EVENTO: any[] = [];
+  public static DIRECT_MAP_TIPI_EVENTO: any;
+  public static COMPONENTI_EVENTO: any;
 
   //LISTA OPERAZIONI ENTRATE
   public static AUTODETERMINAZIONE_ENTRATE: any = { label: 'Autodeterminazione delle Entrate', value: 'autodeterminazione'};
@@ -173,7 +207,7 @@ export class UtilService {
   //LISTA OPERAZIONI TIPI PENDENZA
   public static AUTODETERMINAZIONE_TIPI_PENDENZA: any = { label: 'Autodeterminazione tipi pendenza', value: 'autodeterminazione'};
   public static TUTTI_TIPI_PENDENZA: any = { label: 'Tutti', value: '*'};
-  public static TIPOLOGIA_PENDENZA: any[] = [ { label: 'Spontanea', value: 'spontanea'}, { label: 'Dovuta', value: 'dovuta'} ];
+  public static TIPOLOGIA_PENDENZA: any[] = [ { label: 'Spontaneo', value: 'spontaneo'}, { label: 'Dovuto', value: 'dovuto'} ];
 
   //LISTA OPERAZIONI DOMINI
   public static TUTTI_DOMINI: any = { label: 'Tutti', value: '*'};
@@ -194,6 +228,19 @@ export class UtilService {
   public static TIPI_RISCOSSIONE: any = {
     'ENTRATA': 'Entrata in tesoreria',
     'MBT': 'Marca da bollo telematica'
+  };
+
+  //RUOLI GIORNALE DEGLI EVENTI
+  public static RUOLI_GDE: any = {
+    'SERVER': 'Server',
+    'CLIENT': 'Client'
+  };
+
+  //ESITI GIORNALE DEGLI EVENTI
+  public static ESITI_GDE: any = {
+    'OK': 'OK',
+    'KO': 'KO',
+    'FAIL': 'Fail'
   };
 
   //ABILITAZIONI
@@ -269,6 +316,8 @@ export class UtilService {
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
   public static URL_TIPI_VERSIONE_API: string = '/enumerazioni/versioneConnettore';
+  public static URL_LABEL_TIPI_EVENTO: string = '/enumerazioni/labelTipiEvento';
+  public static URL_COMPONENTI_EVENTO: string = '/enumerazioni/componentiEvento';
 
   //LABEL
   public static TXT_DASHBOARD: string = 'Cruscotto';
@@ -279,6 +328,7 @@ export class UtilService {
   public static TXT_RPPS: string = 'Richieste di pagamento';
   public static TXT_APPLICAZIONI: string = 'Applicazioni';
   public static TXT_DOMINI: string = 'Domini';
+  public static TXT_TIPI_PENDENZA: string = 'Tipi pendenza';
   public static TXT_ENTRATE: string = 'Entrate';
   public static TXT_RUOLI: string = 'Ruoli';
   public static TXT_OPERATORI: string = 'Operatori';
@@ -302,6 +352,7 @@ export class UtilService {
   public static SCHEDA_PENDENZE: string = 'scheda_pendenze';
   public static PAGAMENTI: string = 'pagamenti';
   public static REGISTRO_INTERMEDIARI: string = 'registro_intermediari';
+  public static TIPI_PENDENZE: string = 'tipi_pendenze';
   public static RPPS: string = 'richieste_pagamenti';
   public static APPLICAZIONI: string = 'applicazioni';
   public static DOMINI: string = 'domini';
@@ -324,6 +375,7 @@ export class UtilService {
   //Item view ref
   public static STANDARD: string = '';
   public static STANDARD_COLLAPSE: string = 'standard_collapse';
+  public static TWO_COLS: string = 'two_cols';
   public static RIEPILOGO: string = 'riepilogo';
   public static CRONO: string = 'crono';
   public static CRONO_CODE: string = 'crono_code';
@@ -345,6 +397,7 @@ export class UtilService {
   public static INCASSO: string = 'incasso';
   public static ENTRATA: string = 'entrata';
   public static TIPI_PENDENZA: string = 'tipi_pendenza';
+  public static TIPO_PENDENZA: string = 'tipo_pendenza';
   public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
@@ -353,7 +406,8 @@ export class UtilService {
   public static SCHEDA_PENDENZA: string = 'scheda_pendenza';
   public static NO_TYPE: string = '-';
   //Json schema generators
-  public static A2_JSON_SCHEMA_FORM: string = 'angular2-json-schema-form';
+  public static GENERATORI: any[] = GovPayConfig.GENERATORI;
+  public static A2_JSON_SCHEMA_FORM: string = GovPayConfig.MGK.ANGULAR2_JSON_SCHEMA_FORM;
   //Material standard ref
   public static INPUT: string = 'input';
   public static FILTERABLE: string = 'filterable';
@@ -535,6 +589,29 @@ export class UtilService {
     return '€ 0,00';
   }
 
+  mappaturaTipoEvento(value: string): string {
+    if(UtilService.DIRECT_MAP_TIPI_EVENTO[value]) {
+      return UtilService.DIRECT_MAP_TIPI_EVENTO[value];
+    }
+    return value;
+  }
+
+  mapRiferimentoGiornale(_item : any): string {
+    let s = '';
+    if(_item.idDominio && _item.iuv && _item.ccp) {
+      s = [_item.idDominio, _item.iuv, _item.ccp].join('/');
+    } else {
+      if(_item.idA2A && _item.idPendenza) {
+        s = [_item.idA2A, _item.idPendenza].join('/');
+      } else {
+        if(_item.idPagamento) {
+          s = _item.idPagamento;
+        }
+      }
+    }
+    return s;
+  }
+
   // importoClass(_stato: string, detail: boolean = false): any {
   //   let _status = { e: false, w: false, n: false, got: false };
   //   switch(_stato) {
@@ -580,6 +657,18 @@ export class UtilService {
   }
 
   /**
+   * Sentence capitalize
+   * @param value
+   * @returns {string}
+   */
+  sentenceCapitalize(value: string): string {
+    if(value) {
+      value = value.charAt(0).toUpperCase() + value.substring(1);
+    }
+    return value;
+  }
+
+  /**
    * Object key by value
    * @param object
    * @param value
@@ -589,6 +678,20 @@ export class UtilService {
     return Object.keys(object).filter(function(key) {
       return object[key] === value
     })[0];
+  }
+
+  /**
+   * Get label by value
+   * @param items (any[{label: '', value: ''}])
+   * @param value
+   * @returns {string}
+   */
+  getLabelByValue(items: any[], value: string) {
+    const item = items.filter(function(el) {
+      return el.value === value;
+    });
+
+    return (item && item[0].label) || '';
   }
 
   desaturateColor(_color: string): string {
@@ -674,7 +777,8 @@ export class UtilService {
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
                       values: this.statiPendenza() }),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
-          new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT })
+          new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT }),
+          new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA })
           // new FormInput({ id: 'stato2', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza(),
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })
         ];
@@ -735,6 +839,8 @@ export class UtilService {
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
           //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
           //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          new FormInput({ id: 'tipoEvento', label: FormService.FORM_TIPI_EVENTO, type: UtilService.FILTERABLE, values: UtilService._MAP_TIPI_EVENTO,
+            optionControlValue: true, showTooltip: false }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
@@ -743,7 +849,14 @@ export class UtilService {
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
               eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
-          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT })
+          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
+          new FormInput({ id: 'ruolo', label: FormService.FORM_RUOLO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            showTooltip: false, values: this.ruoliGdE() }),
+          new FormInput({ id: 'esito', label: FormService.FORM_ESITO_GDE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            showTooltip: false, values: this.esitiGdE() }),
+          new FormInput({ id: 'componente', label: FormService.FORM_COMPONENTE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_COMPONENTI_EVENTO, mapFct: this.asyncComponentiGdE.bind(this),
+              eventType: 'componente-async-load', preventSelection: true }, showTooltip: false }, this.http),
         ];
       break;
       case UtilService.RISCOSSIONI:
@@ -776,6 +889,13 @@ export class UtilService {
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http)
+        ];
+      break;
+      case UtilService.TIPI_PENDENZE:
+        _list = [
+          new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
+          new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_ID_TIPO_PENDENZA, type: UtilService.INPUT }),
+          new FormInput({ id: 'descrizione', label: FormService.FORM_DESCRIZIONE, type: UtilService.INPUT })
         ];
       break;
     }
@@ -861,6 +981,16 @@ export class UtilService {
     return _elenco;
   }
 
+  asyncComponentiGdE(response: any): any[] {
+    let _elenco = [];
+    if(response) {
+      _elenco = response.map((item) => {
+        return { label: item, value: item };
+      });
+    }
+    return _elenco;
+  }
+
   statiPendenza(): any[] {
     return Object.keys(UtilService.STATI_PENDENZE).map((key) => {
       return { label: UtilService.STATI_PENDENZE[key], value: key };
@@ -916,6 +1046,18 @@ export class UtilService {
   elencoTipiRiscossione(): any[] {
     return Object.keys(UtilService.TIPI_RISCOSSIONE).map((key) => {
       return { label: UtilService.TIPI_RISCOSSIONE[key], value: key };
+    });
+  }
+
+  ruoliGdE(): any[] {
+    return Object.keys(UtilService.RUOLI_GDE).map((key) => {
+      return { label: UtilService.RUOLI_GDE[key], value: key };
+    });
+  }
+
+  esitiGdE(): any[] {
+    return Object.keys(UtilService.ESITI_GDE).map((key) => {
+      return { label: UtilService.ESITI_GDE[key], value: key };
     });
   }
 

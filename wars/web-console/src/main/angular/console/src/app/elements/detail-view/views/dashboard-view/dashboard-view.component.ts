@@ -31,14 +31,19 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   protected DASHBOARD: string = UtilService.URL_DASHBOARD;
   protected hasAuthentication: boolean = false;
+  protected hasPagamenti: boolean = false;
   protected profiloSubscription: Subscription;
 
   constructor(private sanitizer: DomSanitizer, private ls: LinkService, private us: UtilService, private gps: GovpayService) {
     this.profiloSubscription = UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
       if(_profilo) {
         this.hasAuthentication = true;
-        this.initBadges();
+        this.hasPagamenti = UtilService.USER_ACL.hasPagamenti;
+        if(this.hasPagamenti) {
+          this.initBadges();
+        }
       } else {
+        this.hasPagamenti = false;
         this.hasAuthentication = false;
       }
     });

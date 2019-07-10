@@ -15,6 +15,8 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
   @Input() fGroup: FormGroup;
   @Input() json: any;
 
+  protected _us = UtilService;
+
   protected BASIC = UtilService.TIPI_AUTENTICAZIONE.basic;
   protected SSL = UtilService.TIPI_AUTENTICAZIONE.ssl;
   protected CLIENT = UtilService.TIPI_SSL.client;
@@ -63,7 +65,7 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
         if(this.json.servizioPagoPa) {
           const _rpt = this.json.servizioPagoPa;
           this.fGroup.controls['urlRPT_ctrl'].setValue(_rpt.urlRPT?_rpt.urlRPT:'');
-          this.fGroup.controls['urlAvvisatura_ctrl'].setValue(_rpt.urlAvvisatura?_rpt.urlAvvisatura:'');
+          this.fGroup.controls['urlAvvisatura_ctrl'].setValue(_rpt.urlAvvisatura && UtilService.TEMPORARY_DEPRECATED_CODE?_rpt.urlAvvisatura:'');
           // this.fGroup.controls['versioneApi_ctrl'].setValue(this.json.servizioPagoPa.versioneApi);
           if(_rpt.auth) {
             let _sppaa = _rpt.auth;
