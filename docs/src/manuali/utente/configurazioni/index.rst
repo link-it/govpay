@@ -158,7 +158,7 @@ Accedendo alla sezione *Configurazioni > Domini*, viene visualizzato l'elenco de
 .. figure:: ../_images/17FilttroSuDomini.png
    :align: center
    
-   Figura 10: Maschera di modifica di una stazione
+   Figura 10: Parametri di filtro per la ricerca dominio
 
 
 Ciascun dominio presente in elenco è identificato tramite denominazione
@@ -168,7 +168,14 @@ Nuovo Dominio
 ~~~~~~~~~~~~~
 
 Utilizzando il pulsante di creazione, presente nella pagina di elenco, è
-possibile procedere con la creazione di un nuovo dominio. È necessario
+possibile procedere con la creazione di un nuovo dominio. 
+
+.. figure:: ../_images/17FilttroSuDomini.png
+   :align: center
+   
+   Figura 11: Parametri di filtro per la ricerca dominio
+
+È necessario
 compilare il form di creazione inserendo i seguenti dati:
 
 -  *Id Dominio*: identificativo del dominio. Obbligatorio, fornito da
