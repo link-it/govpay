@@ -35,7 +35,7 @@ public class FaultBean extends JSONSerializable {
             
     PAGOPA("PAGOPA"),
     
-    
+            
     EC("EC"),
     
             
@@ -81,7 +81,7 @@ public class FaultBean extends JSONSerializable {
   private String dettaglio = null;
   
   /**
-   * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
+   * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno
    **/
   public FaultBean categoria(CategoriaEnum categoria) {
     this.categoria = categoria;
