@@ -9,6 +9,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
+  import { of } from 'rxjs/observable/of';
+
 @Injectable()
 export class GovpayService {
 
@@ -57,7 +59,7 @@ export class GovpayService {
    */
   getDataService(service: string, query?: string): Observable<any> {
     this.updateSpinner(true);
-    let url = UtilService.ROOT_SERVICE + service;
+    let url = UtilService.RootByTOA() + service;
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', '*/*');
@@ -88,7 +90,7 @@ export class GovpayService {
    */
   saveData(service: string, body: any, query?: string, method?: string, autoHeaders: boolean = false): Observable<any> {
     method = (method || UtilService.METHODS.PUT);
-    let url = UtilService.ROOT_SERVICE + service;
+    let url = UtilService.RootByTOA() + service;
     let headers = new HttpHeaders();
     if(!autoHeaders) {
       headers = headers.set('Content-Type', 'application/json');
@@ -115,7 +117,7 @@ export class GovpayService {
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', '*/*');
     let methods = services.map((service) => {
-      let url = UtilService.ROOT_SERVICE + service;
+      let url = UtilService.RootByTOA() + service;
       let method = this.http.get(url, { headers: headers, observe: 'response' }).timeout(UtilService.TIMEOUT);
       return method;
     });
@@ -134,7 +136,7 @@ export class GovpayService {
 
   multiExportService(services: string[], contents: string[], types: string[]): Observable<any> {
     let methods = services.map((service, index) => {
-      let url = UtilService.ROOT_SERVICE + service;
+      let url = UtilService.RootByTOA() + service;
       let headers = new HttpHeaders();
       headers = headers.set('Content-Type', contents[index]);
       headers = headers.set('Accept', contents[index]);
@@ -157,17 +159,38 @@ export class GovpayService {
       });
   }
 
-  isAuthenticated(service): Observable<any> {
-    this.updateSpinner(true);
-    let url = UtilService.ROOT_SERVICE + service;
-    let _headers = new HttpHeaders();
-    _headers = _headers.set('Content-Type', 'application/json');
-    _headers = _headers.set('Accept', '*/*');
-    return this.http.get(url, { headers: _headers, observe: 'response' })
-      .timeout(UtilService.TIMEOUT)
-      .map((response) => {
-        return response;
-      })
+  isAuthenticated(service): Observable<any> { //*** Develop
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json');
+    let fullMethods: any[] = [];
+    const methods = [];
+    if(UtilService.BASIC.ENABLED) {
+      methods.push({ service: UtilService.BASIC.HTTP_ROOT_SERVICE, type: UtilService.ACCESS_BASIC });
+    }
+    if(UtilService.SPID.ENABLED) {
+      methods.push({ service: UtilService.SPID.HTTPS_ROOT_SERVICE, type: UtilService.ACCESS_SPID });
+    }
+
+    methods.forEach((_method) => {
+      fullMethods.push(this.http.get(_method.service + service, { headers: headers, observe: 'response' }).catch(error => of(error)));
+    });
+
+    return forkJoin(fullMethods)
+      .map((responses: any) => {
+        UtilService.TOA.Basic = false;
+        UtilService.TOA.Spid = false;
+        let _result;
+        const _validResponse = responses.filter((response, index) => {
+          UtilService.TOA[methods[index].type] = (response.status === 200);
+          return response.status === 200;
+        });
+        if(_validResponse && _validResponse.length != 0) {
+          _result = _validResponse[0];
+        } else {
+          throw(responses[0].error);
+        }
+        return _result;
+      });
   }
 
   authenticate(data: any): Observable<any> {
@@ -176,7 +199,7 @@ export class GovpayService {
     _headers = _headers.set('Authorization', 'Basic ' + btoa(data.username + ':' + data.password));
     const options = { headers: _headers, withCredentials: true };
 
-    return this.http.get(UtilService.ROOT_SERVICE + UtilService.URL_LOGIN_SERVICE, options);
+    return this.http.get(UtilService.BASIC.HTTP_ROOT_SERVICE + UtilService.URL_LOGIN_SERVICE, options);
   }
 
   exit(): Observable<any> {
@@ -184,7 +207,7 @@ export class GovpayService {
     let _headers = new HttpHeaders();
     _headers = _headers.set('Content-Type', 'application/json');
 
-    return this.http.get(UtilService.URL_LOGOUT_SERVICE, { headers: _headers, observe: 'response' });
+    return this.http.get(UtilService.LogoutByTOA(), { headers: _headers, observe: 'response' });
   }
 
   /**
@@ -195,7 +218,7 @@ export class GovpayService {
     headers = headers.set('Content-Type', 'application/json');
     let fullMethods: any[] = [];
     methods.forEach((_method) => {
-      fullMethods.push(this.http.get(UtilService.ROOT_SERVICE + _method, { headers: headers, observe: 'response' }));
+      fullMethods.push(this.http.get(UtilService.RootByTOA() + _method, { headers: headers, observe: 'response' }).timeout(UtilService.TIMEOUT));
     });
 
     return forkJoin(fullMethods)
