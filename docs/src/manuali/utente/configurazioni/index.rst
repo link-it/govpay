@@ -420,7 +420,13 @@ Sono presenti le voci:
 * *Visualizza*: visualizza la definizione del form
 * *Ripristina*: ripristina la definizione del form in relazione 
 
+Vediamo adesso la sezione *Runtime*
+
+.. figure:: ../_images/33SezioneRuntimeDellaModificaPendenze.png
+   :align: center
+   :name: SezioneRuntimeDellaSanzioneAmministrativa
    
+   Funzionalità della sezione *Runtime* della *Sanzione Amministrativa*
    
    
 
