@@ -300,7 +300,7 @@ Entrate
 
 Ogni importo che costituisce un versamento deve essere associato ad una entrata censita sul sistema. L'entrata associata al versamento ne determina l'iban di accredito dell'importo e le coordinate di rendicontazione.
 
-.. note:: **Si noti come la gestione delle Entrate è stata sostituita da quella delle Pendenze, assai più flessibile e che consente anche la generazione di interfacce automatiche per la riscossione, semplificando quindi grandemente l'implementazione effettiva di queste modalità di pagamento verso l'Utente finale
+.. note:: **Si noti come la gestione delle Entrate è stata sostituita da quella delle Pendenze, assai più flessibile e che consente anche la generazione di interfacce automatiche per la riscossione, semplificando quindi grandemente l'implementazione effettiva di queste modalità di pagamento verso l'Utente finale. Si decide di lasciare questa tipologia di oggetti per meri scopi di ereditarietà. Le nuove configurazioni dovrebbero pertanto utilizzare la Gestione delle Pendenze.**
 
 
 .. figure:: ../_images/23NuovaEntrata.png
@@ -343,13 +343,35 @@ Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata,
 Pendenze
 ^^^^^^^^
 
-Ogni importo che costituisce un versamento deve essere associato ad una entrata censita sul sistema. L'entrata associata al versamento ne determina l'iban di accredito dell'importo e le coordinate di rendicontazione.
+Ogni importo che costituisce un versamento deve essere associato ad una pendenza censita sul sistema. La configurazione di questo oggetto, ne determina quindi le coordinate di pagamento e quelle di rendicontazione. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta si gestisce a livello delle funzionalità della voce *Tipi Pendenze* del menu di configurazione sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
+Ad esempio, in un dominio abbiamo le seguenti tipologie di pendenza già selezionate:
 
-.. figure:: ../_images/23NuovaEntrata.png
+.. figure:: ../_images/25PendenzeSceltePerIlDominio.png
    :align: center
-   :name: CampiPerNuovaEntrata
+   :name: PendenzeRelativeAUnDominio
    
-   Maschera di creazione nuova entrata associata al dominio
+   Pendenze associate a un dominio
+   
+A questo punto, sul dominio selezionato, si potrà aggiungere una sola pendenza (quella non ancora selezionata), come mostrato:
+
+.. figure:: ../_images/26PendenzaSelezionabile.png
+   :align: center
+   :name: PendenzaSelezionabilePerAggiunta
+   
+   Pendenza selezionabile per aggiunta al dominio
+
+Risulta possibile, una volta aggiunta una nuova pendenza, personalizzarla per il dominio, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
+
+.. figure:: ../_images/24NuovaPendenza.png
+   :align: center
+   :name: CampiPerNuovaPendenza
+   
+   Maschera di modifica di pendenza associata al dominio
+   
+   
+   
+   
+   
 
 Il form di creazione di un'entrata va compilato con i seguenti
 dati:
