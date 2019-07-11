@@ -398,7 +398,7 @@ Analizziamo la sezione *Form*
    :align: center
    :name: ModificaSanzioneAmministrativa_Form
    
-   Modifica la sezione form della *Sanzione Amministrativa*
+   Sezione form della *Sanzione Amministrativa*
 
 
 .. csv-table:: Campi modificabili della sezione form della *Sanzione Amministrativa*
@@ -412,18 +412,13 @@ Analizziamo la sezione *Form*
    :align: center
    :name: MenuDefinizioneForm
    
-   Voci selezionabili per la definizione form della *Sanzione Amministrativa*
+   Funzionalità selezionabili per la definizione form della *Sanzione Amministrativa*
 
 Sono presenti le voci:
 
-* jsanjasnd
-* sjkjasdnasjd
-* adfnaklnalk
-
-
-
-
-
+* *Carica*: carica un nuovo file di definizione del form
+* *Visualizza*: visualizza la definizione del form
+* *Ripristina*: ripristina la definizione del form in relazione 
 
    
    
