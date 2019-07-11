@@ -428,37 +428,20 @@ Vediamo adesso la sezione *Runtime*
    
    Funzionalità della sezione *Runtime* della *Sanzione Amministrativa*
    
-   
 
-Il form di creazione di un'entrata va compilato con i seguenti
-dati:
-
-.. csv-table:: Dettagli di una nuova entrata
+.. csv-table:: Dettagli della sezione Runtime
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Tipo entrata", "Selezione tra le tipologie già censite", "Se non risulta presente la voce desiderata, selezionare *Nuova Entrata*
-      -  Id Entrata: identificativo dell'entrata. 
-      -  Descrizione: testo di descrizione dell'entrata per facilitarne
-         il riconoscimento agli operatori. Obbligatorio, a discrezione
-         dell'operatore.
-      -  Tipo Contabilità: tipologia di codifica contabile assegnata
-         all'entrata (SIOPE/SPECIALE/...). Obbligatorio, fornito dalla
-         segreteria.
-      -  Codice Contabilità: codice contabilità assegnato all'entrata
-         secondo la codifica indicata precedentemente. Obbligatorio,
-         fornito dalla segreteria.
-      -  *Codifica IUV*: codifica dell'entrata nel contesto degli IUV
-         generati da GovPay, se configurato in tal senso."
-  "IBAN Accredito", "IBAN di accredito del tributo a scelta tra quelli censiti per il dominio", "Obbligatorio"
+  "Validazione", "Selezione delle funzionalità sulla definizione della validazione", "* Carica
+  * Visualizza
+  * Ripristina"
   "IBAN Appoggio", "utilizzato nelle situazioni in cui il PSP non è in condizioni di accreditare somme sul conto di accredito (si considerino le limitazioni in essere nel circuito postale)", ""
   "Tipo contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
   "Codice contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
   "Abilitato", "Indica se l'Entrata è abilitata o meno nel contesto del dominio su cui si opera", ""
 
-.. note:: I campi *Tipo Contabilità e Codice Contabilità* rappresentano i valori di default per il tipo entrata e saranno attualizzabili nel contesto di ciascun dominio.
 
-Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata, con il campo *Codice Entrata* non modificabile. Fa eccezione l'entrata preconfigurata “Marca da Bollo Telematica” per la quale si ha la sola possibilità di modificare i parametri di contabilizzazione.
 
 
 Applicazioni
