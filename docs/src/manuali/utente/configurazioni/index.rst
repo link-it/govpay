@@ -181,9 +181,9 @@ possibile procedere con la creazione di un nuovo dominio.
    :align: center
    :name: CampiDelDominio
    
-   Campi del form di inserimento Nuovo Dominio:
+   Campi del form di inserimento Nuovo Dominio
 
-
+Il dettaglio dei campi da inseguire è il seguente:
 
 .. csv-table:: Dettagli di un Nuovo Dominio
   :header: "Campo", "Significato", "Note"
