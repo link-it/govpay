@@ -1,7 +1,7 @@
 .. _utente_configurazioni:
 
-Configurazioni
-==============
+Configurazioni del Sistema
+==========================
 
 La sezione di configurazione, visibile solo agli amministratori del
 sistema, consente il censimento e manutenzione delle entità logiche
@@ -313,8 +313,7 @@ dati:
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Tipo entrata", "Selezione tra le tipologie già censite", "Se è presente la voce desiderata, selezionare *Nuova Entrata*  -  *Id Entrata*: identificativo dell'entrata. Obbligatorio, a
-         discrezione dell'operatore.
+  "Tipo entrata", "Selezione tra le tipologie già censite", "Se è presente la voce desiderata, selezionare *Nuova Entrata*  -  *Id Entrata*: identificativo dell'entrata. 
       -  Descrizione: testo di descrizione dell'entrata per facilitarne
          il riconoscimento agli operatori. Obbligatorio, a discrezione
          dell'operatore.
