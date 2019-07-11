@@ -313,7 +313,8 @@ dati:
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Tipo entrata", "Selezione tra le tipologie già censite", "Se è presente la voce desiderata, selezionare *Nuova Entrata*  -  *Id Entrata*: identificativo dell'entrata. 
+  "Tipo entrata", "Selezione tra le tipologie già censite", "Se non risulta presente la voce desiderata, selezionare *Nuova Entrata*
+      -  Id Entrata: identificativo dell'entrata. 
       -  Descrizione: testo di descrizione dell'entrata per facilitarne
          il riconoscimento agli operatori. Obbligatorio, a discrezione
          dell'operatore.
@@ -332,22 +333,7 @@ dati:
 
 
 
-   -  Compilare i campi della finestra per la creazione della nuova
-      entrata fornendo:
-
-      -  *Id Entrata*: identificativo dell'entrata. Obbligatorio, a
-         discrezione dell'operatore.
-      -  Descrizione: testo di descrizione dell'entrata per facilitarne
-         il riconoscimento agli operatori. Obbligatorio, a discrezione
-         dell'operatore.
-      -  Tipo Contabilità: tipologia di codifica contabile assegnata
-         all'entrata (SIOPE/SPECIALE/...). Obbligatorio, fornito dalla
-         segreteria.
-      -  Codice Contabilità: codice contabilità assegnato all'entrata
-         secondo la codifica indicata precedentemente. Obbligatorio,
-         fornito dalla segreteria.
-      -  *Codifica IUV*: codifica dell'entrata nel contesto degli IUV
-         generati da GovPay, se configurato in tal senso.
+   
 
       *Nota Bene*: I campi *Tipo Contabilità, Codice Contabilità* e
       *Codifica IUV* rappresentano i valori di default per il tipo
