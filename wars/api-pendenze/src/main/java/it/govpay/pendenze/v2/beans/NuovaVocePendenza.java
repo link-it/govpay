@@ -203,7 +203,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     
         
             
-    _1("1");
+    _01("01");
             
         
     

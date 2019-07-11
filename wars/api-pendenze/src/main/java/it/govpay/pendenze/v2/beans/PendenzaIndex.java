@@ -17,11 +17,12 @@ import it.govpay.core.beans.JSONSerializable;
 "dominio",
 "unitaOperativa",
 "stato",
+"descrizioneStato",
 "segnalazioni",
 "iuvAvviso",
 "iuvPagamento",
 "dataPagamento",
-"descrizione",
+"causale",
 "soggettoPagatore",
 "importo",
 "numeroAvviso",
@@ -58,6 +59,9 @@ public class PendenzaIndex extends JSONSerializable {
   @JsonProperty("stato")
   private StatoPendenza stato = null;
   
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
+  
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
   
@@ -70,8 +74,8 @@ public class PendenzaIndex extends JSONSerializable {
   @JsonProperty("dataPagamento")
   private Date dataPagamento = null;
   
-  @JsonProperty("descrizione")
-  private String descrizione = null;
+  @JsonProperty("causale")
+  private String causale = null;
   
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
@@ -212,6 +216,22 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   * Descrizione estesa dello stato di elaborazione della pendenza
+   **/
+  public PendenzaIndex descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
+  /**
    **/
   public PendenzaIndex segnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
@@ -277,17 +297,17 @@ public class PendenzaIndex extends JSONSerializable {
   /**
    * Descrizione da inserire nell'avviso di pagamento
    **/
-  public PendenzaIndex descrizione(String descrizione) {
-    this.descrizione = descrizione;
+  public PendenzaIndex causale(String causale) {
+    this.causale = causale;
     return this;
   }
 
-  @JsonProperty("descrizione")
-  public String getDescrizione() {
-    return descrizione;
+  @JsonProperty("causale")
+  public String getCausale() {
+    return causale;
   }
-  public void setDescrizione(String descrizione) {
-    this.descrizione = descrizione;
+  public void setCausale(String causale) {
+    this.causale = causale;
   }
 
   /**
@@ -543,11 +563,12 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(dominio, pendenzaIndex.dominio) &&
         Objects.equals(unitaOperativa, pendenzaIndex.unitaOperativa) &&
         Objects.equals(stato, pendenzaIndex.stato) &&
+        Objects.equals(descrizioneStato, pendenzaIndex.descrizioneStato) &&
         Objects.equals(segnalazioni, pendenzaIndex.segnalazioni) &&
         Objects.equals(iuvAvviso, pendenzaIndex.iuvAvviso) &&
         Objects.equals(iuvPagamento, pendenzaIndex.iuvPagamento) &&
         Objects.equals(dataPagamento, pendenzaIndex.dataPagamento) &&
-        Objects.equals(descrizione, pendenzaIndex.descrizione) &&
+        Objects.equals(causale, pendenzaIndex.causale) &&
         Objects.equals(soggettoPagatore, pendenzaIndex.soggettoPagatore) &&
         Objects.equals(importo, pendenzaIndex.importo) &&
         Objects.equals(numeroAvviso, pendenzaIndex.numeroAvviso) &&
@@ -567,7 +588,7 @@ public class PendenzaIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, descrizione, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomiaAvviso, direzione, divisione, href, rpp, pagamenti);
+    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomiaAvviso, direzione, divisione, href, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -590,11 +611,12 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    unitaOperativa: ").append(toIndentedString(unitaOperativa)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
     sb.append("    iuvAvviso: ").append(toIndentedString(iuvAvviso)).append("\n");
     sb.append("    iuvPagamento: ").append(toIndentedString(iuvPagamento)).append("\n");
     sb.append("    dataPagamento: ").append(toIndentedString(dataPagamento)).append("\n");
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");

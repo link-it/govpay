@@ -1,5 +1,5 @@
 {
- 	"descrizione": '#("Pagamento dovuto n." + idPendenza)',
+ 	"causale": '#("Pagamento dovuto n." + idPendenza)',
 	"soggettoPagatore": {
 		"tipo": "F",
 		"identificativo": "RSSMRA30A01H501I",

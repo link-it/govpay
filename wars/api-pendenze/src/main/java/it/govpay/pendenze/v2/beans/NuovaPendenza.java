@@ -18,8 +18,8 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTipoPendenza",
 "idDominio",
-"idUnita",
-"descrizione",
+"idUnitaOperativa",
+"causale",
 "soggettoPagatore",
 "importo",
 "numeroAvviso",
@@ -34,18 +34,18 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "voci",
 })
 public class NuovaPendenza extends JSONSerializable implements IValidable {
-
+  
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-
+  
   @JsonProperty("idDominio")
   private String idDominio = null;
   
-  @JsonProperty("idUnita")
-  private String idUnita = null;
+  @JsonProperty("idUnitaOperativa")
+  private String idUnitaOperativa = null;
   
-  @JsonProperty("descrizione")
-  private String descrizione = null;
+  @JsonProperty("causale")
+  private String causale = null;
   
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
@@ -121,33 +121,33 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   /**
    * Identificativo dell'unita' operativa
    **/
-  public NuovaPendenza idUnita(String idUnita) {
-    this.idUnita = idUnita;
+  public NuovaPendenza idUnitaOperativa(String idUnitaOperativa) {
+    this.idUnitaOperativa = idUnitaOperativa;
     return this;
   }
 
-  @JsonProperty("idUnita")
-  public String getIdUnita() {
-    return idUnita;
+  @JsonProperty("idUnitaOperativa")
+  public String getIdUnitaOperativa() {
+    return idUnitaOperativa;
   }
-  public void setIdUnita(String idUnita) {
-    this.idUnita = idUnita;
+  public void setIdUnitaOperativa(String idUnitaOperativa) {
+    this.idUnitaOperativa = idUnitaOperativa;
   }
 
   /**
    * Descrizione della pendenza
    **/
-  public NuovaPendenza descrizione(String descrizione) {
-    this.descrizione = descrizione;
+  public NuovaPendenza causale(String causale) {
+    this.causale = causale;
     return this;
   }
 
-  @JsonProperty("descrizione")
-  public String getDescrizione() {
-    return descrizione;
+  @JsonProperty("causale")
+  public String getCausale() {
+    return causale;
   }
-  public void setDescrizione(String descrizione) {
-    this.descrizione = descrizione;
+  public void setCausale(String causale) {
+    this.causale = causale;
   }
 
   /**
@@ -223,8 +223,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     return this.tassonomiaAvviso;
   }
   public void setTassonomiaAvviso(String tassonomiaAvviso) {
-	this.tassonomiaAvviso = tassonomiaAvviso;
- }
+    this.tassonomiaAvviso = tassonomiaAvviso;
+  }
 
   /**
    * Identificativo della direzione interna all'ente creditore
@@ -364,8 +364,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     NuovaPendenza nuovaPendenza = (NuovaPendenza) o;
     return Objects.equals(idTipoPendenza, nuovaPendenza.idTipoPendenza) &&
         Objects.equals(idDominio, nuovaPendenza.idDominio) &&
-        Objects.equals(idUnita, nuovaPendenza.idUnita) &&
-        Objects.equals(descrizione, nuovaPendenza.descrizione) &&
+        Objects.equals(idUnitaOperativa, nuovaPendenza.idUnitaOperativa) &&
+        Objects.equals(causale, nuovaPendenza.causale) &&
         Objects.equals(soggettoPagatore, nuovaPendenza.soggettoPagatore) &&
         Objects.equals(importo, nuovaPendenza.importo) &&
         Objects.equals(numeroAvviso, nuovaPendenza.numeroAvviso) &&
@@ -382,7 +382,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, idDominio, idUnita, descrizione, soggettoPagatore, importo, numeroAvviso, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, voci);
+    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, voci);
   }
 
   public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -401,8 +401,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    idUnita: ").append(toIndentedString(idUnita)).append("\n");
-    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
+    sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
@@ -437,11 +437,11 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
 		validatoreId.validaIdDominio("idDominio", this.idDominio);
-		if(this.idUnita != null)
-			validatoreId.validaIdUO("idUnita", this.idUnita);
+		if(this.idUnitaOperativa != null)
+			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa);
 		if(this.idTipoPendenza != null)
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
-		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(140);
+		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
 		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
 		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();
 		vf.getValidator("numeroAvviso", this.numeroAvviso).pattern("[0-9]{18}");

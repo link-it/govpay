@@ -239,7 +239,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
     
         
             
-    _1("1");
+    _01("01");
             
         
     
