@@ -183,7 +183,9 @@ possibile procedere con la creazione di un nuovo dominio.
    
    Campi del form di inserimento Nuovo Dominio:
 
-.. csv-table:: Dettagli di un nuovo Dominio
+
+
+.. csv-table:: Dettagli di un Nuovo Dominio
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
@@ -201,6 +203,10 @@ possibile procedere con la creazione di un nuovo dominio.
   "Abilitato", "Indica se il dominio è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
   "Autorizzazione stampa PT", "Numero di autorizzazione PT per la stampa in proprio del bollettino postale", ""
   "Sfoglia.. (Logo)", "Elemento per il caricamento del logo dell’ente creditore corrispondente al dominio", ""
+
+
+
+
 
 I **placeholder contenuti nel prefisso IUV** vengono sostituiti a runtime con i valori forniti dagli applicativi richiedenti o con i valori di sistema configurati. La lunghezza del prefisso riduce lo spazio di IUV generabili, quindi è necessario che sia il più breve possibile.
 I seguenti sono i placeholder di sistema, sovrascrivibili dall'applicazione chiamante:
@@ -300,12 +306,38 @@ Entrate
 
 Ogni importo che costituisce un versamento deve essere associato ad una entrata censita sul sistema. L'entrata associata al versamento ne determina l'iban di accredito dell'importo e le coordinate di rendicontazione.
 
-Il form di creazione di una entrata deve essere compilato con i seguenti
+.. figure:: ../_images/23NuovaEntrata.png
+   :align: center
+   :name: CampiPerNuovaEntrata
+   
+   Maschera di creazione nuova entrata associata al dominio
+
+Il form di creazione di un'entrata va compilato con i seguenti
 dati:
 
--  *Tipo entrata*: selezione dell'entrata a scelta tra quelle già
-   censite. Obbligatorio. Se non è presente la voce desiderata è
-   possibile crearla selezionando la voce "Nuova Entrata":
+.. csv-table:: Dettagli di una nuova entrata
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Tipo entrata", "Selezione tra le tipologie già censite", "Se è presente la voce desiderata, selezionare *Nuova Entrata*  -  *Id Entrata*: identificativo dell'entrata. Obbligatorio, a
+         discrezione dell'operatore.
+      -  Descrizione: testo di descrizione dell'entrata per facilitarne
+         il riconoscimento agli operatori. Obbligatorio, a discrezione
+         dell'operatore.
+      -  Tipo Contabilità: tipologia di codifica contabile assegnata
+         all'entrata (SIOPE/SPECIALE/...). Obbligatorio, fornito dalla
+         segreteria.
+      -  Codice Contabilità: codice contabilità assegnato all'entrata
+         secondo la codifica indicata precedentemente. Obbligatorio,
+         fornito dalla segreteria.
+      -  *Codifica IUV*: codifica dell'entrata nel contesto degli IUV
+         generati da GovPay, se configurato in tal senso."
+  "BIC Accredito", "BIC del conto di accredito", "Obbligatorio"
+  "Postale", "Indica se l'iban di accredito è riferito ad un conto corrente postale", ""
+  "My Bank", "Indica se l'iban di accredito è è abilitato alle transazioni MyBank", ""
+  "Abilitato", "Indica se l'IBAN  è abilitato o meno nel contesto del dominio su cui si opera", ""
+
+
 
    -  Compilare i campi della finestra per la creazione della nuova
       entrata fornendo:
