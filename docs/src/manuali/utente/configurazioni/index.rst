@@ -235,7 +235,7 @@ Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile 
    
    Campi del dettaglio del Dominio
 
-Le aree seguenti contengono i propri pulsanti di creazione, modifica e cancellazione degli elementi visualizzati, con le solite, naturali, uniformi convenzioni grafiche.
+Le aree seguenti contengono i relativi pulsanti di creazione e modifica dei rispettivi elementi, con le solite, naturali, uniformi convenzioni grafiche.
 
 .. figure:: ../_images/20DettaglioDominio2.png
    :align: center
@@ -326,38 +326,15 @@ dati:
          fornito dalla segreteria.
       -  *Codifica IUV*: codifica dell'entrata nel contesto degli IUV
          generati da GovPay, se configurato in tal senso."
-  "BIC Accredito", "BIC del conto di accredito", "Obbligatorio"
-  "Postale", "Indica se l'iban di accredito è riferito ad un conto corrente postale", ""
-  "My Bank", "Indica se l'iban di accredito è è abilitato alle transazioni MyBank", ""
-  "Abilitato", "Indica se l'IBAN  è abilitato o meno nel contesto del dominio su cui si opera", ""
+  "IBAN Accredito", "IBAN di accredito del tributo a scelta tra quelli censiti per il dominio", "Obbligatorio"
+  "IBAN Appoggio", "utilizzato nelle situazioni in cui il PSP non è in condizioni di accreditare somme sul conto di accredito (si considerino le limitazioni in essere nel circuito postale)", ""
+  "Tipo contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
+  "Codice contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
+  "Abilitato", "Indica se l'Entrata è abilitata o meno nel contesto del dominio su cui si opera", ""
 
+.. note:: I campi *Tipo Contabilità e Codice Contabilità* rappresentano i valori di default per il tipo entrata e saranno attualizzabili nel contesto di ciascun dominio.
 
-
-   
-
-      *Nota Bene*: I campi *Tipo Contabilità, Codice Contabilità* e
-      *Codifica IUV* rappresentano i valori di default per il tipo
-      entrata e saranno attualizzabili nel contesto di ciascun dominio a
-      scelta dell'operatore.
-
--  *Iban Accredito*: iban di accredito del tributo a scelta tra quelli
-   censiti per il dominio. Obbligatorio.
--  *Iban Appoggio*: L'iban di appoggio viene utilizzato nelle situazioni
-   in cui il PSP non è in condizioni di accreditare somme sul conto di
-   accredito (si considerino le limitazioni in essere nel circuito
-   postale). Opzionale.
--  *Tipo contabilità, Codice contabilità *\ e *Codifica IUV*: se
-   valorizzati, sovrascrivono le impostazioni previste nei valori di
-   default per l'entrata cui si fa riferimento (come descritto in
-   precedenza). Opzionali.
--  *Abilitato*: indica se l'entrata è usabile da GovPay per gestire
-   nuovi pagamenti o se impedire nuove richieste.
-
-Tornando all'elenco delle entrate è possibile scegliere le operazioni di
-modifica e cancellazione degli elementi precedentemente creati. Il campo
-*Codice Entrata* non è modificabile. Fa eccezione l'entrata
-preconfigurata “Marca da Bollo Telematica” per la quale si ha la sola
-possibilità di modificare i parametri di contabilizzazione.
+Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata, con il campo *Codice Entrata* non modificabile. Fa eccezione l'entrata preconfigurata “Marca da Bollo Telematica” per la quale si ha la sola possibilità di modificare i parametri di contabilizzazione.
 
 Applicazioni
 ------------
