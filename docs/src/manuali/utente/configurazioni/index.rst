@@ -300,6 +300,9 @@ Entrate
 
 Ogni importo che costituisce un versamento deve essere associato ad una entrata censita sul sistema. L'entrata associata al versamento ne determina l'iban di accredito dell'importo e le coordinate di rendicontazione.
 
+.. note:: **Si noti come la gestione delle Entrate è stata sostituita da quella delle Pendenze, assai più flessibile e che consente anche la generazione di interfacce automatiche per la riscossione, semplificando quindi grandemente l'implementazione effettiva di queste modalità di pagamento verso l'Utente finale
+
+
 .. figure:: ../_images/23NuovaEntrata.png
    :align: center
    :name: CampiPerNuovaEntrata
