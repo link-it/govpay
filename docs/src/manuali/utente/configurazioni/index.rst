@@ -368,7 +368,63 @@ Risulta possibile, una volta aggiunta una nuova pendenza, personalizzarla per il
    
    Maschera di modifica di pendenza associata al dominio
    
+Tenendo presente che affronteremo il dettaglio dell'aggiunta di un nuovo Tipo Pendenza nella sezione di dettaglio, vediamo come personalizzare una pendenza già censita rispetto a un Dominio. Selezioniamo la Pendenza *Sanzione Amministrativa*
+
+.. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
+   :align: center
+   :name: SelezionePendenza
    
+   Selezione della Pendenza *Sanzione Amministrativa*
+
+Il sistema mostra la seguente maschera
+
+.. figure:: ../_images/30ModificaSanzioneAmministrativa.png
+   :align: center
+   :name: ModificaSanzioneAmministrativa
+   
+   Modifica *Sanzione Amministrativa*
+
+
+.. csv-table:: Campi modificabili della prima sezione
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Pagabile da altri", "Indica se la sanzione possa o meno essere pagata non dal debitore", ""
+  "Abilitato", "Indica se la Sanzione Amministrativa sia abilitata o meno nel contesto del dominio su cui si opera", ""
+
+Analizziamo la sezione *Form*
+
+.. figure:: ../_images/31ModificaFormSanzioneAmministrativa.png
+   :align: center
+   :name: ModificaSanzioneAmministrativa_Form
+   
+   Modifica la sezione form della *Sanzione Amministrativa*
+
+
+.. csv-table:: Campi modificabili della sezione form della *Sanzione Amministrativa*
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Tipo generatore", "Indica il motore di interpretazione della descrizione formale della maschera di immissione del pagamento da parte del debitore", ""
+  "Definizione", "Mostra il menu di caricamento e visualizzazione della descrizione formale dell'interfaccia di pagamento", ""
+
+.. figure:: ../_images/32MenuDefinizioneForm.png
+   :align: center
+   :name: MenuDefinizioneForm
+   
+   Voci selezionabili per la definizione form della *Sanzione Amministrativa*
+
+Sono presenti le voci:
+
+* jsanjasnd
+* sjkjasdnasjd
+* adfnaklnalk
+
+
+
+
+
+
    
    
    
