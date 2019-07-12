@@ -560,7 +560,7 @@ export class UtilService {
           }
           break;
         case 403:
-          if(error.error && !error.error.descrizione) {
+          if(!error.error) {
             UtilService.cleanUser();
             _msg = 'Accesso al servizio non autorizzato. Sessione non valida.';
           }
