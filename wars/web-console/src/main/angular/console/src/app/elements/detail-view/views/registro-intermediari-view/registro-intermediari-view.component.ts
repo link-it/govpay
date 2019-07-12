@@ -55,12 +55,12 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
 
   protected mapJsonDetail() {
     //Riepilogo
-    let _dettaglio = { informazioni: [], connettoriSoap: [], connettoriSFtp: { lettura: [], scrittura: [] } };
+    let _dettaglio = { informazioni: [], connettoriSoap: [] };
     _dettaglio.informazioni.push(new Dato({ label: Voce.DENOMINAZIONE, value: this.json.denominazione }));
     _dettaglio.informazioni.push(new Dato({ label: Voce.ID_INTERMEDIARIO, value: this.json.idIntermediario }));
-    _dettaglio.informazioni.push(new Dato({ label: Voce.PAGO_PA, value: this.json.principalPagoPa }));
     _dettaglio.informazioni.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
     if(this.json.servizioPagoPa) {
+      _dettaglio.connettoriSoap.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principalPagoPa }));
       _dettaglio.connettoriSoap.push(new Dato({ label: Voce.SERVIZIO_RPT, value: this.json.servizioPagoPa.urlRPT }));
       if(this.json.servizioPagoPa.urlAvvisatura && UtilService.TEMPORARY_DEPRECATED_CODE) {
         _dettaglio.connettoriSoap.push(new Dato({label: Voce.SERVIZIO_AVVISATURA, value: this.json.servizioPagoPa.urlAvvisatura}));
@@ -86,41 +86,10 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
         _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
       }
     }
-    if(this.json.servizioFtp) {
-      if(this.json.servizioFtp.ftp_lettura) {
-        if(this.json.servizioFtp.ftp_lettura.host) {
-          _dettaglio.connettoriSFtp.lettura.push(new Dato({label: Voce.HOSTNAME, value: this.json.servizioFtp.ftp_lettura.host }));
-        }
-        if(this.json.servizioFtp.ftp_lettura.porta) {
-          _dettaglio.connettoriSFtp.lettura.push(new Dato({label: Voce.PORTA, value: this.json.servizioFtp.ftp_lettura.porta }));
-        }
-        if(this.json.servizioFtp.ftp_lettura.username) {
-          _dettaglio.connettoriSFtp.lettura.push(new Dato({label: Voce.USERNAME, value: this.json.servizioFtp.ftp_lettura.username }));
-        }
-        if(this.json.servizioFtp.ftp_lettura.password) {
-          _dettaglio.connettoriSFtp.lettura.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioFtp.ftp_lettura.password }));
-        }
-      }
-      if(this.json.servizioFtp.ftp_scrittura) {
-        if(this.json.servizioFtp.ftp_scrittura.host) {
-          _dettaglio.connettoriSFtp.scrittura.push(new Dato({label: Voce.HOSTNAME, value: this.json.servizioFtp.ftp_scrittura.host }));
-        }
-        if(this.json.servizioFtp.ftp_scrittura.porta) {
-          _dettaglio.connettoriSFtp.scrittura.push(new Dato({label: Voce.PORTA, value: this.json.servizioFtp.ftp_scrittura.porta }));
-        }
-        if(this.json.servizioFtp.ftp_scrittura.username) {
-          _dettaglio.connettoriSFtp.scrittura.push(new Dato({label: Voce.USERNAME, value: this.json.servizioFtp.ftp_scrittura.username }));
-        }
-        if(this.json.servizioFtp.ftp_scrittura.password) {
-          _dettaglio.connettoriSFtp.scrittura.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioFtp.ftp_scrittura.password }));
-        }
-      }
-    }
+
     this.elencoStazioni();
     this.informazioni = _dettaglio.informazioni.slice(0);
     this.connettoriSoap = _dettaglio.connettoriSoap.slice(0);
-    this.connettoriSFtp.lettura = _dettaglio.connettoriSFtp.lettura.slice(0);
-    this.connettoriSFtp.scrittura = _dettaglio.connettoriSFtp.scrittura.slice(0);
   }
 
   protected elencoStazioni() {

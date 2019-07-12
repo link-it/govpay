@@ -6,7 +6,6 @@ import { Voce } from '../../../../services/voce.service';
 
 import { Riepilogo } from '../../../../classes/view/riepilogo';
 import { Dato } from '../../../../classes/view/dato';
-import { Standard } from '../../../../classes/view/standard';
 import { Parameters } from '../../../../classes/parameters';
 import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
 import { IExport } from '../../../../classes/interfaces/IExport';

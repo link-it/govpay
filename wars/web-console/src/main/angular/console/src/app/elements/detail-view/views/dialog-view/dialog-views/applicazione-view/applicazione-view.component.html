@@ -25,6 +25,11 @@
             <mat-option *ngFor="let item of tipiPendenza" [value]="item">{{item.descrizione}}</mat-option>
           </mat-select>
         </mat-form-field>
+        <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="voce.RUOLI" formControlName="ruoli_ctrl" multiple [compareWith]="ruoliCmpFn">
+            <mat-option *ngFor="let item of ruoli" [value]="item">{{item.id}}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <p class="color-gray pt-2 mt-3 mb-2">Codifica avvisi</p>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
@@ -97,16 +102,6 @@
         <div class="col-12 col-sm-4" [formGroup]="fGroup">
           <mat-slide-toggle formControlName="apiRagioneria_ctrl" color="accent">{{voce.API_RAGIONERIA}}</mat-slide-toggle>
         </div>
-      </div>
-      <p class="color-gray pt-2 mt-3 mb-2">{{voce.AUTORIZZAZIONI_BACKOFFICE}}</p>
-      <div class="row">
-        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngFor="let item of acl; let i = index">
-          <mat-select [placeholder]="item.mapACL" [formControlName]="'autorizzazioni_ctrl_'+i">
-            <mat-option value="">Non autorizzato</mat-option>
-            <mat-option value="R">Lettura</mat-option>
-            <mat-option value="R,W">Scrittura</mat-option>
-          </mat-select>
-        </mat-form-field>
       </div>
     </mat-card>
   </div>

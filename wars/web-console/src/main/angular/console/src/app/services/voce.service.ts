@@ -146,6 +146,7 @@ export class Voce {
   public static RIEPILOGO: string = 'Riepilogo informazioni';
   public static RISORSA: string = 'Risorsa';
   public static RUOLO: string = 'Ruolo';
+  public static RUOLI: string = 'Ruoli';
 
   public static SCADENZA: string = 'Scadenza';
   public static SCT: string = 'SCT';
