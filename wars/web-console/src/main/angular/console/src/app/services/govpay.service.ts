@@ -159,7 +159,7 @@ export class GovpayService {
       });
   }
 
-  isAuthenticated(service): Observable<any> { //*** Develop
+  isAuthenticated(service): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
     let fullMethods: any[] = [];

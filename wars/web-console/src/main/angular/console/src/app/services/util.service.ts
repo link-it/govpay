@@ -562,7 +562,9 @@ export class UtilService {
         case 403:
           if(!error.error) {
             UtilService.cleanUser();
-            _msg = 'Accesso al servizio non autorizzato. Sessione non valida.';
+            _msg = 'Accesso non autorizzato. Sessione non valida.';
+          } else {
+            _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
           }
           break;
         case 404:
