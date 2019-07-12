@@ -548,7 +548,7 @@ export class UtilService {
    * @param {string} customMessage
    */
   onError(error: any, customMessage?: string) {
-    let _msg = '';
+    let _msg = 'Warning: status ' + error.status;
     try {
       switch(error.status) {
         case 401:
@@ -557,6 +557,12 @@ export class UtilService {
             _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
           } else {
             _msg = 'Accesso al servizio non autorizzato. Autenticarsi per avviare la sessione.';
+          }
+          break;
+        case 403:
+          if(error.error && !error.error.descrizione) {
+            UtilService.cleanUser();
+            _msg = 'Accesso al servizio non autorizzato. Sessione non valida.';
           }
           break;
         case 404:
