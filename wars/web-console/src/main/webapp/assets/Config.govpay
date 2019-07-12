@@ -32,7 +32,7 @@
 
   // Default application name/title
   function _applicationName() {
-    const _NAME = '${it.govpay.backoffice.gui.appName}';
+    const _NAME = 'GovPay';
     document.title = _NAME;
     return _NAME;
   }
@@ -43,13 +43,13 @@
     HOST_NAME: hostname(),
     INFO: {
       DOCUMENTS: {
-        ENABLED: ${it.govpay.backoffice.gui.info.enabled},
+        ENABLED: true,
         HTTP_DOCUMENTS_ROOT: _HTTP_DOCUMENTS_ROOT,
         LICENSE: _HTTP_DOCUMENTS_ROOT + '/LICENSE',
         MANUALE_UTENTE: _HTTP_DOCUMENTS_ROOT + '/GovPay-ManualeUtente.pdf'
       },
       NEWS: {
-        ENABLED: ${it.govpay.backoffice.gui.news.enabled},
+        ENABLED: true,
         URL: 'https://api.github.com/repos/link-it/GovPay/releases' // URL GovPay Github distribuzioni
       },
       APP_NAME: _applicationName(), // Default application name
@@ -63,17 +63,17 @@
     MGK: _mkg(),
     EXTERNAL_JS_PROCEDURE_URL: 'Converter.js', //Http URL al file Js per conversioni esterne (caricamento tracciati)
     BASIC: {
-      ENABLED: ${it.govpay.backoffice.gui.basic.enabled},
+      ENABLED: true,
       HTTP_ROOT_SERVICE: httpRootService(),
       HTTP_LOGOUT_SERVICE: httpLogOutService()
     },
     SPID: {
-      ENABLED: ${it.govpay.backoffice.gui.spid.enabled},
-      HTTPS_ROOT_SERVICE: '${it.govpay.backoffice.gui.spid.apibaseurl}',
-      HTTPS_LOGOUT_SERVICE: '${it.govpay.backoffice.gui.spid.logout}',
-      SERVICE_TARGET: '${it.govpay.backoffice.gui.spid.return}',
-      TEST_PROVIDER: '${it.govpay.backoffice.gui.spid.testprovider}',
-      ACTION_FORM_URL: '${it.govpay.backoffice.gui.spid.formaction}'
+      ENABLED: true,
+      HTTPS_ROOT_SERVICE: '/govpay/backend/api/backoffice/rs/spid/v1',
+      HTTPS_LOGOUT_SERVICE: 'https://spcoop.it/govpay/frontend/api/pagamento/rs/spid/v1/logout',
+      SERVICE_TARGET: 'http://localhost:4200/',
+      TEST_PROVIDER: 'https://idp.spid.gov.it',
+      ACTION_FORM_URL: 'https://lab.link.it/Shibboleth.sso/Login'
     }
   };
 
