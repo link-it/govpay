@@ -38,12 +38,18 @@
 						<webResource>
 							<filtering>false</filtering>
 							<directory>src/main/webapp</directory>
-							<exclude>assets/Config.govpay</exclude>
+							<excludes>
+								<exclude>assets/Config.govpay</exclude>
+								<exclude>index.html</exclude>
+							</excludes>
 						</webResource>
 						<webResource>
 							<filtering>true</filtering>
 							<directory>src/main/webapp</directory>
-							<include>assets/Config.govpay</include>
+							<includes>
+								<include>assets/Config.govpay</include>
+								<include>index.html</include>
+							</includes>
 						</webResource>
 					</webResources>
 					<webXml>src/main/resources/web.xml</webXml>
