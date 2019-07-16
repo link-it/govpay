@@ -525,9 +525,6 @@ La sezione *Avviso di pagamento* permette l'inoltro automatico verso la mail del
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Validazione", "Selezione delle funzionalità sulla definizione della validazione in formato Json Schema", "* Carica
-  * Visualizza
-  * Ripristina"
   "Tipo template", "Motore di trasformazione delle informazioni immesse nel template *oggetto* e *messaggio* della mail di Avviso Pagamento", "Freemarker"
   "Template Oggetto", "Template di defizione dell'oggetto della mail di Avviso Pagamento", "* Carica
   * Visualizza
@@ -538,11 +535,30 @@ La sezione *Avviso di pagamento* permette l'inoltro automatico verso la mail del
   "Allega pdf avviso", "Permette di allegare o meno il pdf dell'avviso di pagamento alla mail di promemoria", ""
 
 
-
-
 Promemoria Ricevuta Telematica
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+La sezione *Promemoria Ricevuta Telematica* è del tutto analoga a quella relativa all' *Avviso di pagamento*: essa permette l'inoltro automatico verso la mail del debitore della ricevuta telematica dell'avvenuto pagamento. Anche in questo caso la tipologia di definizione formale del *oggetto* e del corpo della mail è, al momento, basata su `Freemarker <https://freemarker.apache.org/>`_
+
+.. figure:: ../_images/35EntrataPromemoriaRicevutaTelematica.png
+   :align: center
+   :name: PromemoriaRicevutaTelematica
+   
+   Informazioni della sezione *Promemoria Ricevuta Telematica*
+   
+
+.. csv-table:: Dettagli della sezione *Promemoria Ricevuta Telematica*
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Tipo template", "Motore di trasformazione delle informazioni immesse nel template *oggetto* e *messaggio* della mail di Ricevuta Telematica", "Freemarker"
+  "Template Oggetto", "Template di defizione dell'oggetto della mail di Ricevuta Telematica", "* Carica
+  * Visualizza
+  * Ripristina"
+   "Template Messaggio", "Template di defizione del messaggio della mail di Ricevuta Telematica", "* Carica
+  * Visualizza
+  * Ripristina"
+  "Allega pdf avviso", "Permette di allegare o meno il pdf della Ricevuta Telematica", ""
 
 
 Applicazioni
