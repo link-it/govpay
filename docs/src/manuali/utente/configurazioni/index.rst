@@ -392,9 +392,9 @@ Le modalità per la creazione di una nuova pendenza sono sempre le medesime (tas
    :align: center
    :name: CampiPerNuovaPendenza
    
-   Maschera di modifica di pendenza
+   Maschera di creazione di una Nuova Pendenza
    
-Vediamo come modificare una pendenza esistente: selezioniamo quindi la Pendenza *Sanzione Amministrativa*.
+Vediamo come modificare una pendenza esistente; ciò ci permetterà di illustrare il dettaglio dei campi presenti. Sslezioniamo quindi la Pendenza *Sanzione Amministrativa*.
 
 .. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
@@ -410,6 +410,15 @@ Il sistema mostra la seguente maschera
    
    Modifica *Sanzione Amministrativa*
 
+Possiamo identificare le seguenti sezioni dell'Entrata:
+
+* Sezione1
+* Sezione 2
+
+
+
+Nuovo Intermediario
+~~~~~~~~~~~~~~~~~~~
 
 .. csv-table:: Campi modificabili della prima sezione
   :header: "Campo", "Significato", "Note"
