@@ -433,7 +433,7 @@ Vediamo adesso la sezione *Runtime*
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Validazione", "Selezione delle funzionalità sulla definizione della validazione", "* Carica
+  "Validazione", "Selezione delle funzionalità sulla definizione della validazione in formato Json Schema", "* Carica
   * Visualizza
   * Ripristina"
   "IBAN Appoggio", "utilizzato nelle situazioni in cui il PSP non è in condizioni di accreditare somme sul conto di accredito (si considerino le limitazioni in essere nel circuito postale)", ""
