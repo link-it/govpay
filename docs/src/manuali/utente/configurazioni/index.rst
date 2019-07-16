@@ -476,16 +476,14 @@ Vediamo un esempio di un file di definizione dell'interfaccia:
 .. figure:: ../_images/28SchemaFormEntrata1.jpg
    :align: center
    :name: MenuDefinizioneForm
-   
-   Funzionalità selezionabili per la definizione form
-   
+      
 .. figure:: ../_images/29SchemaFormEntrata2.jpg
    :align: center
    :name: MenuDefinizioneForm
    
    Funzionalità selezionabili per la definizione form
 
-Layout form dati
+Esecuzione
 ~~~~~~~~~~~~~~~~
 
 Vediamo adesso la sezione *Runtime*
