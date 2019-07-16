@@ -607,6 +607,7 @@ Analizziamo le sottosezioni in cui è strutturata l'applicazione, ovvero:
 * Codifica avvisi
 * API integrazione
 * Autorizzazioni API
+* Autorizzazioni Backoffice
 
 
 Informazioni di riepilogo
@@ -618,6 +619,7 @@ In questa sottosezione sono contenute le informazioni che definiscono un'applica
    :name: ApplicazioneInformazioniDiRiepilogo
    
    Informazioni di riepilogo di un'applicazione
+
 
 Nell'esempio si è selezionata l'autoderminazione delle pendenza e l'abilitazione dell'applicazione su tutti i domini del sistema.
 
@@ -642,6 +644,7 @@ In questa sottosezione sono contenute le informazioni che definiscono un'applica
    
    Sezione Codifica Avvisi di un'applicazione
 
+
 .. csv-table:: Dettagli della sezione *Codifica avvisi* di una nuova Applicazione
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
@@ -656,44 +659,51 @@ API Integrazione
 
 In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
 
-.. figure:: ../_images/39ApplicazioneCodificaAvvisi.png
+.. figure:: ../_images/40ApplicazioneAPIIntegrazione.png
    :align: center
-   :name: ApplicazioneCodificaAvvisi
+   :name: ApplicazioneAPIIntegrazione
    
-   Sezione Codifica Avvisi di un'applicazione
+   Sezione API Integrazione di un'applicazione
 
-.. csv-table:: Dettagli della sezione *Codifica avvisi* di una nuova Applicazione
+.. csv-table:: Dettagli della sezione *API Integrazione* di una nuova Applicazione
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Codifica IUV", "Numero identificativo dell'applicazione nel prefisso IUV, se configurato", ""
-  "RegEx IUV", "Espressione regolare che consente di effettuare la validazione dei codici IUV inviati dall'applicazione", ""
-  "Generazione IUV interna", "Se il flag è attivo l'applicazione genera autonomamente i codici IUV relativi alle proprie pendenze, altrimenti detti codici saranno generati da GovPay", ""
-
-
+  "API Integrazione", "Endpoint del servizio del verticale che viene integrato da GovPay", ""
+  "Versione API", "Versione delle interfacce di integrazione utilizzate dall'applicazione", ""
+  "Tipo Autenticazione", "selezione a scelta tra: Nessuna, Http-Basic e SSL", "In base al valore selezionato sarà necessario inserire i conseguenti dati di configurazione della specifica modalità di autenticazione"
    
 
--  Servizio Verifica
+Autorizzazione API
+^^^^^^^^^^^^^^^^^^
 
-   -  *URL*: Endpoint del servizio di verifica erogato dall'applicazione
-      e descritto nel manuale di integrazione (GP-API).
-   -  Versione API: versione delle interfacce di integrazione utilizzate
-      dall'applicazione. Obbligatorio ed avanzato.
-   -  Tipo Autenticazione: selezione a scelta tra: Nessuna, Http-Basic e
-      SSL. In base al valore selezionato sarà necessario inserire i
-      conseguenti dati di configurazione della specifica modalità di
-      autenticazione.
+GovPay espone tre API: in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con ciascuna di essa..
 
--  Servizio Notifica
+.. figure:: ../_images/41ApplicazioneAutorizzazioniAPI.png
+   :align: center
+   :name: ApplicazioneAutorizzazioniAPI
+   
+   Sezione autorizzazione API di un'applicazione
 
-   -  *URL*: Endpoint del servizio di notifica erogato dall'applicazione
-      e descritto nel manuale di integrazione (GP-API).
-   -  Versione API: versione delle interfacce di integrazione utilizzate
-      dall'applicazione. Obbligatorio ed avanzato.
-   -  Tipo Autenticazione: selezione a scelta tra: Nessuna, Http-Basic e
-      SSL. In base al valore selezionato sarà necessario inserire i
-      conseguenti dati di configurazione della specifica modalità di
-      autenticazione.
+
+Autorizzazione Backoffice
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+GovPay espone tre API: in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con ciascuna di essa..
+
+.. figure:: ../_images/41ApplicazioneAutorizzazioniAPI.png
+   :align: center
+   :name: ApplicazioneAutorizzazioniAPI
+   
+   Sezione autorizzazione API di un'applicazione
+
+
+
+
+
+
+
+
 
 Dettaglio Applicazione
 ~~~~~~~~~~~~~~~~~~~~~~
