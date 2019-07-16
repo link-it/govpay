@@ -7,6 +7,10 @@ La sezione "Pagamenti" è dedicata alla consultazione delle operazioni di pagame
 Si noti come, all'interno del sistema, il diagramma di stato dei pagamenti sia il seguente:
 
 
+.. figure:: ../_images/P01StatiPagamento.png
+   :align: center
+
+   Diagramma degli stati del Pagamento
 
 
 
