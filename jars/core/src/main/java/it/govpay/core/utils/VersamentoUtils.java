@@ -710,6 +710,9 @@ public class VersamentoUtils {
 				byte[] validazioneBytes = Base64.getDecoder().decode(validazioneDefinizione.getBytes());
 				
 				validator.setSchema(validazioneBytes, config);
+			} catch (IllegalArgumentException e) {
+				log.error("JSON schema non codificato correttamente: " + e.getMessage(), e);
+				throw new GovPayException(EsitoOperazione.VAL_001, e, "non e' stato possibile decodificare il jsonschema di validazione ("+e.getMessage()+").");
 			} catch (ValidationException e) {
 				log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 				throw new GovPayException(EsitoOperazione.VAL_001, e , e.getMessage());

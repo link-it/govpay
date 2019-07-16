@@ -328,8 +328,6 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
 		this.promemoriaAvviso.validate("promemoriaAvviso");
 	if(this.promemoriaRicevuta != null)
 		this.promemoriaRicevuta.validate("promemoriaRicevuta");
-//	vf.getValidator("promemoriaAvviso", this.promemoriaAvviso).validateFields();
-//	vf.getValidator("promemoriaRicevuta", this.promemoriaRicevuta).validateFields();
 	
 	ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 	
