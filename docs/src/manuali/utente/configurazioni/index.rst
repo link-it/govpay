@@ -594,8 +594,7 @@ della pagina è presente un form che consente di filtrare i dati visualizzati ne
 Nuova Applicazione
 ~~~~~~~~~~~~~~~~~~
 
-Utilizzando l'apposito pulsante presente nella pagina di elenco, posizionato come sempre in basso a destra è
-possibile censire nuove applicazioni:
+Utilizzando l'apposito pulsante presente nella pagina di elenco, posizionato come sempre in basso a destra è possibile censire nuove applicazioni. Analizzeremo questa funzionalità che è del tutto analoga, dal punto di vista delle informazioni richieste, a quella della modifica di un'applicazione già censita nel sistema.
 
 .. figure:: ../_images/37NuovaApplicazioneVistaInsieme.png
    :align: center
@@ -637,46 +636,42 @@ Codifica avvisi
 ^^^^^^^^^^^^^^^
 In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
 
-.. figure:: ../_images/38ApplicazioneRiepilogoInformazioni.png
+.. figure:: ../_images/39ApplicazioneCodificaAvvisi.png
    :align: center
-   :name: ApplicazioneInformazioniDiRiepilogo
+   :name: ApplicazioneCodificaAvvisi
    
-   Informazioni di riepilogo di un'applicazione
+   Sezione Codifica Avvisi di un'applicazione
 
-Nell'esempio si è selezionata l'autoderminazione delle pendenza e l'abilitazione dell'applicazione su tutti i domini del sistema.
-
-.. csv-table:: Dettagli della sezione *Informazioni di riepilogo* di una nuova Applicazione
+.. csv-table:: Dettagli della sezione *Codifica avvisi* di una nuova Applicazione
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Id A2A", "identificativo dell'applicazione", "Obbligatorio"
-  "Principal", "Identificativo del principal autenticato nelle chiamate alle Web API di integrazione", ""
-  "Abilitato", "se disabilitato, tutte le nuove richieste all'applicazione saranno negate", ""
-  "Domini", "Elenco dei domini su cui l'applicazione può agire", "Obbligatoria almeno una selezione; esiste l'opzione *Tutti*"
-  "Pendenze", "Elenco delle pendenze che l'applicazione può gestire", "Obbligatoria almeno una selezione; esiste l'opzione *Autodeterminazione tipo pendenze* che lascia all'applicazione la gestione dei tipi di pendenza gestibili"
-
-
-  
-  
-  
-  
-  
-  
+  "Codifica IUV", "Numero identificativo dell'applicazione nel prefisso IUV, se configurato", ""
+  "RegEx IUV", "Espressione regolare che consente di effettuare la validazione dei codici IUV inviati dall'applicazione", ""
+  "Generazione IUV interna", "Se il flag è attivo l'applicazione genera autonomamente i codici IUV relativi alle proprie pendenze, altrimenti detti codici saranno generati da GovPay", ""
   
 
+API Integrazione
+^^^^^^^^^^^^^^^^
+
+In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
+
+.. figure:: ../_images/39ApplicazioneCodificaAvvisi.png
+   :align: center
+   :name: ApplicazioneCodificaAvvisi
+   
+   Sezione Codifica Avvisi di un'applicazione
+
+.. csv-table:: Dettagli della sezione *Codifica avvisi* di una nuova Applicazione
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Codifica IUV", "Numero identificativo dell'applicazione nel prefisso IUV, se configurato", ""
+  "RegEx IUV", "Espressione regolare che consente di effettuare la validazione dei codici IUV inviati dall'applicazione", ""
+  "Generazione IUV interna", "Se il flag è attivo l'applicazione genera autonomamente i codici IUV relativi alle proprie pendenze, altrimenti detti codici saranno generati da GovPay", ""
 
 
--  : .
--  Codifica Avvisi
-
-   -  Codifica IUV: numero identificativo dell'applicazione nel prefisso
-      IUV, se configurato. Opzionale
-   -  RegExp IUV: espressione regolare che consente di effettuare la
-      validazione dei codici IUV inviati dall'applicazione.
-   -  Generazione IUV interna: attivare questo flag nel caso in cui
-      l'applicazione generi autonomamente i codici IUV relativi alle
-      proprie pendenze. In alternativa i codici saranno generati da
-      GovPay.
+   
 
 -  Servizio Verifica
 
