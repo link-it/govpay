@@ -452,24 +452,41 @@ Layout form dati
    Sezione form della *Sanzione Amministrativa*
 
 
-.. csv-table:: Campi modificabili della sezione form della *Sanzione Amministrativa*
+.. csv-table:: Campi modificabili della sezione *Layout Form dati*
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Tipo generatore", "Indica il motore di interpretazione della descrizione formale della maschera di immissione del pagamento da parte del debitore", ""
+  "Tipo layout", "Indica il motore di interpretazione della descrizione formale della maschera di immissione del pagamento da parte del debitore", " Al momento solo Angular Json schema form"
   "Definizione", "Mostra il menu di caricamento e visualizzazione della descrizione formale dell'interfaccia di pagamento", ""
 
 .. figure:: ../_images/32MenuDefinizioneForm.png
    :align: center
    :name: MenuDefinizioneForm
    
-   Funzionalità selezionabili per la definizione form della *Sanzione Amministrativa*
+   Funzionalità selezionabili per la definizione form
 
 Sono presenti le voci:
 
 * *Carica*: carica un nuovo file di definizione del form
 * *Visualizza*: visualizza la definizione del form
 * *Ripristina*: ripristina la definizione del form in relazione 
+
+Vediamo un esempio di un file di definizione dell'interfaccia:
+
+.. figure:: ../_images/28SchemaFormEntrata1.jpg
+   :align: center
+   :name: MenuDefinizioneForm
+   
+   Funzionalità selezionabili per la definizione form
+   
+.. figure:: ../_images/29SchemaFormEntrata2.jpg
+   :align: center
+   :name: MenuDefinizioneForm
+   
+   Funzionalità selezionabili per la definizione form
+
+Layout form dati
+~~~~~~~~~~~~~~~~
 
 Vediamo adesso la sezione *Runtime*
 
