@@ -410,24 +410,40 @@ Il sistema mostra la seguente maschera
    
    Modifica *Sanzione Amministrativa*
 
-Possiamo identificare le seguenti sezioni dell'Entrata:
+Possiamo identificare i seguenti raggruppamenti di informazioni:
 
-* Sezione1
-* Sezione 2
+* Riepilogo Informazioni
+* Layout form dati
+* Elaborazione
+* Promemoria avviso pagamento
+* Promemoria ricevuta telematica
 
+A ciascuno di essi è dedicata una sezione di dettaglio, come segue.
 
+Riepilogo Informazioni
+~~~~~~~~~~~~~~~~~~~~~~
+La sottosezione si presenta nel seguente modo:
 
-Nuovo Intermediario
-~~~~~~~~~~~~~~~~~~~
+.. figure:: ../_images/34EntrataRiepilogoInformazioni.png
+   :align: center
+   :name: RiepilogoInformazioni
+   
+   Sezione Riepilogo Informazioni
 
 .. csv-table:: Campi modificabili della prima sezione
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Pagabile da altri", "Indica se la sanzione possa o meno essere pagata non dal debitore", ""
-  "Abilitato", "Indica se la Sanzione Amministrativa sia abilitata o meno nel contesto del dominio su cui si opera", ""
+  "Descrizione", "Descrizione sintetica del tipo di pendenza", ""
+  "Id Tipo Pendenza", "Codice tecnico che indica in modo univoco la pendenza", "Non modificabile"
+  "Tipologia", "Tipo di pendenza: dovuta o spontanea", ""
+  "Codifica IUV", "Identificatore della struttura del codice IUV", ""
+  "Abilitato", "Indica se la Sanzione Amministrativa sia abilitata o meno, quindi sia o meno associabile a domini esistenti", ""
+  "Pagabile da terzi", "Indica se la sanzione possa o meno essere pagata non dal debitore", ""
 
-Analizziamo la sezione *Form*
+
+Layout form dati
+~~~~~~~~~~~~~~~~
 
 .. figure:: ../_images/31ModificaFormSanzioneAmministrativa.png
    :align: center
