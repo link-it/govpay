@@ -521,7 +521,7 @@ La sezione *Avviso di pagamento* permette l'inoltro automatico verso la mail del
    Funzionalità della sezione *Elaborazione*
    
 
-.. csv-table:: Dettagli della sezione *Elaborazione*
+.. csv-table:: Dettagli della sezione *Promemoria Avviso Pagamento*
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
