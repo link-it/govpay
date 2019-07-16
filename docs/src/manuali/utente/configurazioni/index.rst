@@ -514,11 +514,11 @@ Promemoria Avviso Pagamento
 
 La sezione *Avviso di pagamento* permette l'inoltro automatico verso la mail del debitore dell'avviso di pagamento. La tipologia di definizione del *subject* e del corpo della mail è, al momento, basata su `Freemarker <https://freemarker.apache.org/>`_
 
-.. figure:: ../_images/33SezioneElaborazioneDellaModificaPendenze.png
+.. figure:: ../_images/35EntrataPromemoriaAvvisoDiPagamento.png
    :align: center
-   :name: SezioneElaborazioneDellaSanzioneAmministrativa
+   :name: PromemoriaAvvisoDiPagamento
    
-   Funzionalità della sezione *Elaborazione*
+   Informazioni della sezione *Promemoria Avviso Pagamento*
    
 
 .. csv-table:: Dettagli della sezione *Promemoria Avviso Pagamento*
@@ -528,11 +528,14 @@ La sezione *Avviso di pagamento* permette l'inoltro automatico verso la mail del
   "Validazione", "Selezione delle funzionalità sulla definizione della validazione in formato Json Schema", "* Carica
   * Visualizza
   * Ripristina"
-  "Trasformazione: tipo template", "Motore di trasformazione delle informazioni immesse nel Form Dati", "Freemarker"
-  "Trasformazione: Template", "Template di defizione della trasformazione dati", "* Carica
+  "Tipo template", "Motore di trasformazione delle informazioni immesse nel template *oggetto* e *messaggio* della mail di Avviso Pagamento", "Freemarker"
+  "Template Oggetto", "Template di defizione dell'oggetto della mail di Avviso Pagamento", "* Carica
   * Visualizza
   * Ripristina"
-  "Applicazione", "Consente di selezionare l'applicazione cui verranno inoltrati i dati", "L'applicazione deve essere censita nella sezione *Applicazioni*"
+   "Template Messaggio", "Template di defizione del messaggio della mail di Avviso Pagamento", "* Carica
+  * Visualizza
+  * Ripristina"
+  "Allega pdf avviso", "Permette di allegare o meno il pdf dell'avviso di pagamento alla mail di promemoria", ""
 
 
 
