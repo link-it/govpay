@@ -4,6 +4,11 @@ Pagamenti
 =========
 
 La sezione "Pagamenti" è dedicata alla consultazione delle operazioni di pagamento che sono state richieste a Govpay in seguito all'interazione tra l'utente pagatore e il portale dei servizi di pagamento dell'ente creditore.
+
+
+Gli stati del Pagamento
+-----------------------
+
 Si noti come, all'interno del sistema, il diagramma di stato dei pagamenti sia il seguente:
 
 
@@ -12,6 +17,19 @@ Si noti come, all'interno del sistema, il diagramma di stato dei pagamenti sia i
 
    Diagramma degli stati del Pagamento
 
+
+In particolare:
+
+* Lo stato *rifiutato* si verifica quando un pagamento è stato richiesto a GovPay ma non è stato autorizzato su PagoPa
+* Lo stato *decorso* si verifica quando AgID
+
+Area iniziale
+-------------
+
+.. figure:: ../_images/P02AreaIniziale.png
+   :align: center
+
+   Area iniziale dei Pagamenti
 
 
 L'area di ricerca è composta dai seguenti elementi:
