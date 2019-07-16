@@ -650,7 +650,7 @@ In questa sottosezione sono contenute le informazioni che definiscono un'applica
   :widths: 40,40,20
   
   "Codifica IUV", "Numero identificativo dell'applicazione nel prefisso IUV, se configurato", ""
-  "RegEx IUV", "Espressione regolare che consente di effettuare la validazione dei codici IUV inviati dall'applicazione", ""
+  "RegEx IUV", "Espressione regolare che consente di effettuare la validazione dei codici IUV inviati dall'applicazione", "es. 99[0-9]*"
   "Generazione IUV interna", "Se il flag è attivo l'applicazione genera autonomamente i codici IUV relativi alle proprie pendenze, altrimenti detti codici saranno generati da GovPay", ""
   
 
@@ -677,7 +677,7 @@ In questa sottosezione sono contenute le informazioni che definiscono un'applica
 Autorizzazione API
 ^^^^^^^^^^^^^^^^^^
 
-GovPay espone tre API: in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con ciascuna di essa..
+GovPay espone tre API (Pagamenti, Pendenze e Ragioneria): in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con ciascuna di essa.
 
 .. figure:: ../_images/41ApplicazioneAutorizzazioniAPI.png
    :align: center
@@ -686,244 +686,141 @@ GovPay espone tre API: in questa sottosezione è possibile definire se l'applica
    Sezione autorizzazione API di un'applicazione
 
 
-Autorizzazione Backoffice
+Autorizzazioni Backoffice
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-GovPay espone tre API: in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con ciascuna di essa..
+Risulta possibile e, spesso, assai utile, determinare in modo più fine le autorizzazioni, da parte dell'applicazione, all'utilizzo delle API esposte da GovPay. Questa sezione incorpora questo comportamento:
 
-.. figure:: ../_images/41ApplicazioneAutorizzazioniAPI.png
+.. figure:: ../_images/42ApplicazioneAutorizzazioniBackoffice.png
    :align: center
    :name: ApplicazioneAutorizzazioniAPI
    
-   Sezione autorizzazione API di un'applicazione
+   Sezione autorizzazione Backoffice di un'applicazione
+
+I sottosistemi integrabili sono i seguenti:
+
+* Anagrafica Applicazioni
+* Anagrafica Enti
+* Anagrafica Operatori
+* Anagrafica PagoPA
+* Backoffice Pagamenti
+* Backoffice Pendenze
+* Backoffice Ragioneria
+* Gestione Batch
+* Giornale degli eventi
 
 
+A ciascun sottosistema si danno le seguenti caratteristiche di integrazione:
 
-
-
-
-
+.. figure:: ../_images/42ApplicazioneAutorizzazioniBackoffice.png
+   :align: center
+   :name: ApplicazioneAutorizzazioniAPI
+   
+   Sezione autorizzazione:scelta valori
 
 
 Dettaglio Applicazione
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Selezionando una delle applicazioni presenti nella pagina di elenco si
-accede alla pagina di dettaglio. La pagina di dettaglio di
-un'applicazione è ripartita in tre distinte aree:
+Selezionando una delle applicazioni presenti nella pagina di elenco si accede alla pagina di dettaglio, che permette di vedere i dati di sintesi dell'applicazione:
 
--  Riepilogo Informazioni
--  Domini
--  Entrate
--  Autorizzazioni
 
-Tramite il pulsante di modifica presente nella pagina di dettaglio è
-possibile procedere con l'aggiornamento dei dati di base, visualizzati
-nell'area "Riepilogo Informazioni".
+.. figure:: ../_images/43ApplicazioneVistaDiSintesiPreModifica.png
+   :align: center
+   :name: ApplicazioneVistaSintesi
+   
+   Vista di sintesi di un'applicazione
 
-Le tre aree seguenti contengono i propri pulsanti di creazione, modifica
-e cancellazione degli elementi visualizzati.
+Con l'uso delle solite metafore (matita su cerchio verde) è possibile accedere alle modifiche puntuali della definizione dell'applicazione. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione.
 
-.. _domini-1:
-
-Domini
-^^^^^^
-
-L'area visualizza l'elenco dei domini su cui l'applicazione può agire.
-Ciascun dominio in elenco può essere rimosso tramite il pulsante
-visibile alla destra dell'elemento. Il pulsante di creazione consente di
-aggiungere nuovi domini tra quelli censiti nel sistema.
-
-.. _entrate-1:
-
-Entrate
-^^^^^^^
-
-L'area visualizza l'elenco delle entrate su cui l'applicazione può
-agire. Ciascuna entrata in elenco può essere rimossa tramite il pulsante
-visibile alla destra dell'elemento. Il pulsante di creazione consente di
-aggiungere nuove entrate tra quelle censite nel sistema.
-
-Autorizzazioni
-^^^^^^^^^^^^^^
-
-L'area visualizza le autorizzazioni possedute dall'applicazione. Le
-autorizzazioni visualizzate in elenco possono essere modificate o
-eliminate tramite i pulsanti presenti alla destra di ciascun elemento.
-Il pulsante di creazione consente di aggiungere nuove autorizzazioni. Il
-form di creazione di una autorizzazione deve essere compilato con i
-seguenti dati:
-
--  *Servizio*: indica la specifica funzionalità o entità dati sulla
-   quale l'autorizzazione ha effetto (Giornale Eventi, Rendicontazioni,
-   ...). Si seleziona un valore da un elenco predefinito. Obbligatorio.
--  *Operazioni*: indica l'operazione consentita sul servizio sopra
-   selezionato. Si seleziona una o più scelte tra:
-
-   -  Lettura
-   -  Scrittura
-   -  Esecuzione
 
 Operatori
 ---------
 
-Gli operatori rappresentano gli utenti autorizzati all'accesso al
-cruscotto di gestione di GovPay.
-
-Accedendo alla sezione “Configurazioni > Operatori”, viene visualizzato
-l'elenco degli operatori già censiti. Sul lato sinistro della pagina è
-presente un form che consente di filtrare i dati visualizzati nella
-pagina.
-
-Gli elementi nell'elenco identificano gli operatori presenti
-visualizzando i campi principal e nome.
+Gli operatori rappresentano gli utenti autorizzati all'accesso al cruscotto di gestione di GovPay. Accedendo alla sezione *Configurazioni > Operatori*, il sistema visualizza l'elenco degli operatori già censiti. Sul lato sinistro della pagina è presente un form che consente di filtrare gli operatori in relazione al proprio stato.
+Gli elementi nell'elenco identificano gli operatori presenti visualizzando i campi *principal* e *nome*.
 
 Nuovo Operatore
 ~~~~~~~~~~~~~~~
 
-Tramite il pulsante presente nella pagina di elenco è possibile aprire
-il form di creazione di un operatore, che deve essere compilato con i
-seguenti dati:
+Tramite il pulsante presente nella pagina di elenco è possibile aprire il form di creazione di un operatore:
 
--  *Principal*: identificativo del principal autenticato. Obbligatorio,
-   a discrezione del gestore.
--  Nome: Nome e cognome dell'utente operatore. Obbligatorio.
--  *Abilitato*: se disabilitato, sarà negato l'accesso al cruscotto di
-   gestione.
+
+.. figure:: ../_images/44NuovoOperatore.png
+   :align: center
+   :name: NuovoOperatore
+   
+   Definizione di un nuovo Operatore
+
+
+.. csv-table:: Informazioni di dettaglio di un nuovo Operatore
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Principal", "Identificativo dell'operatore dato da PagoPa", "Obbligatorio"
+  "Nome", "Nome e cognome dell'operatore", "Obbligatorio"
+  "Abilitato", "Indica se l'operatore ha o meno l'accesso al Cruscotto di gestione", ""
+  "Domini", "Indica i domini su cui può svolgere compiti l'Operatore", "E' presente l'opzione *tutti* che permette a una sola utenza di operare trasversalmente a più domini"
+  "Pendenze", "Area che elenca le pendenze sulle quali l'operatore ha giurisdizione", "Presente l'opzione *Tutte*"
+  "Area autorizzativa", "Sistemi (e relativi permessi) o ruoli cui l'utente è abilitato", ""
+
 
 Dettaglio Operatore
 ~~~~~~~~~~~~~~~~~~~
 
-Dalla pagina elenco degli operatori, selezionando uno degli elementi, si
-giunge alla relativa pagina di dettaglio.
+Dalla pagina elenco degli operatori, selezionando uno degli elementi, si giunge alla relativa pagina di sintesi. 
 
-La pagina di dettaglio dell'operatore è composta dalle seguenti aree:
 
--  Riepilogo Informazioni: area che visualizza i dati identificativi
-   dell'operatore.
--  Domini: area che elenca gli enti creditori su cui l'operatore ha
-   visibilità.
--  Entrate: area che elenca le entrate sulle quali l'operatore ha
-   visibilità.
--  Autorizzazioni: area che elenca le autorizzazioni possedute
-   dall'operatore. Le autorizzazioni rappresentano le specifiche
-   operazioni che può effettuare.
+.. figure:: ../_images/45OperatoreVistaDiSintesi.png
+   :align: center
+   :name: OperatoreVistaDiSintesi
+   
+   Vista di sintesi di un Operatore
+   
 
-Tramite il pulsante di modifica presente nella pagina di dettaglio è
-possibile aprire il form per l'aggiornamento dei dati identificativi
-dell'operatore.
+Da quest'ultima è possibile, con l'uso delle solite metafore (matita su cerchio verde), accedere alle modifiche puntuali della definizione di un operatore. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione, con una sola informazione non modificabile, ovvero *principal*.
 
-.. _domini-2:
-
-Domini
-^^^^^^
-
-L'area visualizza l'elenco dei domini su cui l'operatore può agire.
-Ciascun dominio in elenco può essere rimosso tramite il pulsante
-visibile alla destra dell'elemento. Il pulsante di creazione consente di
-aggiungere nuovi domini tra quelli censiti nel sistema.
-
-.. _entrate-2:
-
-Entrate
-^^^^^^^
-
-L'area visualizza l'elenco delle entrate su cui l'operatore può agire.
-Ciascuna entrata in elenco può essere rimossa tramite il pulsante
-visibile alla destra dell'elemento. Il pulsante di creazione consente di
-aggiungere nuove entrate tra quelle censite nel sistema.
-
-.. _autorizzazioni-1:
-
-Autorizzazioni
-^^^^^^^^^^^^^^
-
-L'area visualizza le autorizzazioni possedute dall'operatore. Le
-autorizzazioni visualizzate in elenco possono essere modificate o
-eliminate tramite i pulsanti presenti alla destra di ciascun elemento.
-Il pulsante di creazione consente di aggiungere nuove autorizzazioni. Il
-form di creazione di una autorizzazione deve essere compilato con i
-seguenti dati:
-
--  *Servizio*: indica la specifica funzionalità, entità o gruppo di
-   entità sui quali l'autorizzazione ha effetto (Giornale Eventi,
-   Rendicontazioni, ...). Si seleziona un valore da un elenco
-   predefinito. Obbligatorio.
--  *Operazioni*: indica l'operazione consentita sul servizio sopra
-   selezionato. Si seleziona una o più scelte tra:
-
-   -  Lettura
-   -  Scrittura
-   -  Esecuzione
 
 Ruoli
 -----
 
-I ruoli rappresentano una delle modalità con cui assegnare le
-autorizzazioni a operatori e applicazioni. I ruoli vengono acquisiti da
-GovPay tramite il profilo utente ottenuto dal sistema che gestisce il
-processo di autenticazione. Dopo aver effettuato l'accesso a GovPay,
-l'operatore o applicazione ottiene le autorizzazioni che gli sono state
-concesse puntualmente (vedi sezioni `7.3.2.3 <#anchor-30>`__ e
-`7.4.2.3 <#anchor-36>`__) in aggiunta a quelle associate ai ruoli
-posseduti.
+I ruoli rappresentano una delle modalità con cui assegnare le autorizzazioni a operatori e applicazioni. I ruoli vengono acquisiti da
+GovPay tramite il profilo utente ottenuto dal sistema che gestisce il processo di autenticazione. Dopo aver effettuato l'accesso a GovPay, l'operatore o applicazione ottiene le autorizzazioni che gli sono state concesse puntualmente (vedi sezioni `7.3.2.3 <#anchor-30>`__ e `7.4.2.3 <#anchor-36>`__) in aggiunta a quelle associate ai ruoli posseduti.
 
-La sezione “Configurazioni > Ruoli” mostra l’elenco dei ruoli già
-presenti nel sistema.
+La sezione *Configurazioni > Ruoli* mostra l’elenco dei ruoli già presenti nel sistema.
+
+
+.. figure:: ../_images/46RuoliVistaIniziale.png
+   :align: center
+   :name: RuoliVistaIniziale
+   
+   Vista iniziale dei ruoli censiti
+   
 
 Nuovo Ruolo
 ~~~~~~~~~~~
 
-Utilizzando l'apposito pulsante presente nella pagina di elenco, è
-possibile creare un nuovo ruolo, inserendo nel form di creazione i
-seguenti dati:
+Utilizzando l'apposito pulsante presente nella pagina di elenco, è possibile creare un nuovo ruolo:
 
--  *Identificativo*: identificativo assegnato al ruolo
--  *Descrizione*: testo che descrive il ruolo
--  *Risorsa*: elenco tra cui selezionare la risorsa protetta sulla quale
-   concedere accesso, ad un determinato ruolo, mediante le operazioni
-   indicate al punto successivo
--  *Operazioni*: (selezione multipla) consente di specificare quali
-   operazioni sono consentite sulla risorsa selezionata per un
-   determinato ruolo. Possono essere scelte le seguenti operazioni:
 
-   -  Lettura
-   -  Scrittura
-   -  Esecuzione
+.. figure:: ../_images/47NuovoRuolo.png
+   :align: center
+   :name: NuovoRuolo
+   
+   Definizione di un Nuovo Ruolo
 
+
+.. csv-table:: Informazioni di dettaglio di un nuovo Ruolo
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Identificativo", "Identificativo assegnato al ruolo", "Obbligatorio"
+  "Risorse", "Risorsa protetta cui concedere accesso al ruolo in esame", "Obbligatorio"
+  "Operazioni", "Specifica quali operazioni sono consentite sulla risorsa selezionata", "selezione multipla 
+  * Lettura
+  * Scrittura"
+  
 Dettaglio Ruolo
 ~~~~~~~~~~~~~~~
 
-Selezionando un elemento dall'elenco dei ruoli si accede al suo
-dettaglio. La pagina di dettaglio del ruolo è suddivisa in due aree:
-
--  Riepilogo Informazioni: visualizza i dati identificativi del ruolo:
-   Codice Ruolo e Descrizione.
--  Autorizzazioni: visualizza l'elenco delle autorizzazioni che sono
-   associate al ruolo
-
-Tramite il pulsante di modifica si accede al form che consente di
-aggiornare la descrizione del ruolo.
-
-.. _autorizzazioni-2:
-
-Autorizzazioni
-^^^^^^^^^^^^^^
-
-L'area visualizza le autorizzazioni associate al ruolo. Le
-autorizzazioni visualizzate in elenco possono essere modificate o
-eliminate tramite i pulsanti presenti alla destra di ciascun elemento.
-Il pulsante di creazione consente di aggiungere nuove autorizzazioni. Il
-form di creazione di una autorizzazione deve essere compilato con i
-seguenti dati:
-
--  *Servizio*: indica la specifica funzionalità, entità o gruppo di
-   entità sui quali l'autorizzazione ha effetto (Giornale Eventi,
-   Rendicontazioni, ...). Si seleziona un valore da un elenco
-   predefinito. Obbligatorio.
--  *Operazioni*: indica l'operazione consentita sul servizio sopra
-   selezionato. Si seleziona una o più scelte tra:
-
-   -  Lettura
-   -  Scrittura
-   -  Esecuzione
+In modo del tutto analogo a quanto visto con le altre entità, selezionando un elemento dall'elenco dei ruoli si accede al suo dettaglio. Quest'ultimo è modificabile semplicemente premendo la matita in basso a destra.
