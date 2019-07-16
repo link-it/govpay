@@ -378,38 +378,23 @@ Il sistema mostra la seguente maschera
    
    Modifica *Sanzione Amministrativa*
 
-Da qui possiamo personalizzare **senza modificare le informazioni del tipo Sanzione Amministrativa**.
+Da qui possiamo personalizzare **senza modificare le informazioni standard del tipo Sanzione Amministrativa**.
 
 
 Tipi Pendenze
 -------------
 
-Ogni importo che costituisce un versamento deve essere associato ad una pendenza censita sul sistema. La configurazione di questo oggetto, ne determina quindi le coordinate di pagamento e quelle di rendicontazione. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta si gestisce a livello delle funzionalità della voce *Tipi Pendenze* del menu di configurazione sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
-Ad esempio, in un dominio abbiamo le seguenti tipologie di pendenza già selezionate:
-
-.. figure:: ../_images/25PendenzeSceltePerIlDominio.png
-   :align: center
-   :name: PendenzeRelativeAUnDominio
-   
-   Pendenze associate a un dominio
-   
-A questo punto, sul dominio selezionato, si potrà aggiungere una sola pendenza (quella non ancora selezionata), come mostrato:
-
-.. figure:: ../_images/26PendenzaSelezionabile.png
-   :align: center
-   :name: PendenzaSelezionabilePerAggiunta
-   
-   Pendenza selezionabile per aggiunta al dominio
-
-Risulta possibile, una volta aggiunta una nuova pendenza, personalizzarla per il dominio, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
+Ogni importo che costituisce un versamento deve essere associato ad una pendenza censita sul sistema. La configurazione di questo oggetto ne determina quindi le coordinate di pagamento e quelle di rendicontazione. Si noti come le pendenze siano associate a un dominio, determinando quindi il tipo di pagamenti che ad esso fanno riferimento.
+La gestione dei tipi di pendenza permette la generazione di maschere automatiche per l'immissione dei dati, semplificando in modo notevole lo sviluppo di interfacce e ottimizzando i tempi generali di progetto.
+Le modalità per la creazione di una nuova pendenza sono sempre le medesime (tasto più in basso a destra) e la maschera presentata è la seguente:
 
 .. figure:: ../_images/24NuovaPendenza.png
    :align: center
    :name: CampiPerNuovaPendenza
    
-   Maschera di modifica di pendenza associata al dominio
+   Maschera di modifica di pendenza
    
-Tenendo presente che affronteremo il dettaglio dell'aggiunta di un nuovo Tipo Pendenza nella sezione di dettaglio, vediamo come personalizzare una pendenza già censita rispetto a un Dominio. Selezioniamo la Pendenza *Sanzione Amministrativa*
+Vediamo come modificare una pendenza esistente: selezioniamo quindi la Pendenza *Sanzione Amministrativa*.
 
 .. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
