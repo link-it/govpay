@@ -564,29 +564,67 @@ La sezione *Promemoria Ricevuta Telematica* è del tutto analoga a quella relati
 Applicazioni
 ------------
 
-Le Applicazioni in GovPay rappresentano i portali di pagamento e i
-sistemi applicativi gestionali dei debiti che si interfacciano tramite
-le Web API di integrazione.
+Le Applicazioni in GovPay rappresentano i portali di pagamento e i sistemi applicativi gestionali dei debiti che si interfacciano tramite le Web API di integrazione.
+Accedendo alla sezione *Configurazioni > Applicazioni*, viene visualizzato l'elenco delle applicazioni già censite. Sul lato sinistro
+della pagina è presente un form che consente di filtrare i dati visualizzati nella pagina, come di seguito mostrato:
 
-Accedendo alla sezione “Configurazioni > Applicazioni”, viene
-visualizzato l'elenco delle applicazioni già censite. Sul lato sinistro
-della pagina è presente un form che consente di filtrare i dati
-visualizzati nella pagina.
+.. figure:: ../_images/36Applicazioni.png
+   :align: center
+   :name: Applicazioni
+   
+   Vista generale delle applicazioni censite e criterio di filtro
+
 
 Nuova Applicazione
 ~~~~~~~~~~~~~~~~~~
 
-Utilizzando l'apposito pulsante presente nella pagina di elenco, è
-possibile creare nuove applicazioni, inserendo nel form di creazione i
-seguenti dati:
+Utilizzando l'apposito pulsante presente nella pagina di elenco, posizionato come sempre in basso a destra è
+possibile censire nuove applicazioni:
 
--  *Id A2A*: identificativo dell'applicazione. Obbligatorio, a
-   discrezione del gestore.
--  Principal: identificativo del principal autenticato nelle chiamate
-   alle Web API di integrazione. Obbligatorio, a discrezione del
-   gestore.
--  Abilitato: se disabilitato, tutte le nuove richieste
-   dell'applicazione saranno negate.
+.. figure:: ../_images/37NuovaApplicazioneVistaInsieme.png
+   :align: center
+   :name: NuovaApplicazione
+   
+   Vista generale dei campi di una nuova applicazione
+
+Analizziamo le sottosezioni in cui è strutturata l'applicazione, ovvero:
+* Informazioni di riepilogo
+* Codifica avvisi
+* API integrazione
+* Autorizzazioni API
+
+
+Informazioni di riepilogo
+^^^^^^^^^^^^^^^^^^^^^^^^^
+In questa sottosezione sono contenute le informazioni che identificano l'applicazione 
+.. csv-table:: Dettagli delle informazioni di Testata di una nuova Applicazione
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Id A2A", "identificativo dell'applicazione", "Obbligatorio"
+  "Principal", "Identificativo del principal autenticato nelle chiamate alle Web API di integrazione", ""
+  "Abilitato", "se disabilitato, tutte le nuove richieste all'applicazione saranno negate", ""
+  
+  L'area visualizza l'elenco dei domini su cui l'applicazione può agire.
+Ciascun dominio in elenco può essere rimosso tramite il pulsante
+visibile alla destra dell'elemento. Il pulsante di creazione consente di
+aggiungere nuovi domini tra quelli censiti nel sistema.
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+
+
+
+-  : .
 -  Codifica Avvisi
 
    -  Codifica IUV: numero identificativo dell'applicazione nel prefisso
