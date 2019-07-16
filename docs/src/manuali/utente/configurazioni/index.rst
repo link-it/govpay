@@ -343,6 +343,47 @@ Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata,
 Pendenze
 ^^^^^^^^
 
+Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per il dominio in essere. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta si gestisce a livello delle funzionalità della voce *Tipi Pendenze* del menu di configurazione sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
+Ad esempio, in un dominio abbiamo le seguenti tipologie di pendenza già selezionate:
+
+.. figure:: ../_images/25PendenzeSceltePerIlDominio.png
+   :align: center
+   :name: PendenzeRelativeAUnDominio
+   
+   Pendenze associate a un dominio
+   
+A questo punto, sul dominio selezionato, si potrà aggiungere una sola pendenza (quella non ancora selezionata), come mostrato:
+
+.. figure:: ../_images/26PendenzaSelezionabile.png
+   :align: center
+   :name: PendenzaSelezionabilePerAggiunta
+   
+   Pendenza selezionabile per aggiunta al dominio
+
+Risulta possibile, una volta aggiunta una nuova pendenza, personalizzarla per il dominio, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
+Si tenga presente che si affronterà il dettaglio dei campi delle pendenze nella sezione apposita, cui si fa riferimento. Al momento si noti come una pendenza possa essere completamente personalizzata per un dominio a partire da una *standard* definita nella sezione *Tipi Pendenze* 
+I meccanismi di selezione sono del tutto analoghi a quanto già visto in altre sezioni: selezioniamo la Pendenza *Sanzione Amministrativa*
+
+.. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
+   :align: center
+   :name: SelezionePendenza
+   
+   Selezione della Pendenza *Sanzione Amministrativa*
+
+Il sistema mostra la seguente maschera
+
+.. figure:: ../_images/30ModificaSanzioneAmministrativa.png
+   :align: center
+   :name: ModificaSanzioneAmministrativa
+   
+   Modifica *Sanzione Amministrativa*
+
+Da qui possiamo personalizzare **senza modificare le informazioni del tipo Sanzione Amministrativa**.
+
+
+Tipi Pendenze
+-------------
+
 Ogni importo che costituisce un versamento deve essere associato ad una pendenza censita sul sistema. La configurazione di questo oggetto, ne determina quindi le coordinate di pagamento e quelle di rendicontazione. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta si gestisce a livello delle funzionalità della voce *Tipi Pendenze* del menu di configurazione sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
 Ad esempio, in un dominio abbiamo le seguenti tipologie di pendenza già selezionate:
 
@@ -440,6 +481,7 @@ Vediamo adesso la sezione *Runtime*
   "Tipo contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
   "Codice contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
   "Abilitato", "Indica se l'Entrata è abilitata o meno nel contesto del dominio su cui si opera", ""
+
 
 
 
