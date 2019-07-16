@@ -408,7 +408,7 @@ Il sistema mostra la seguente maschera
    :align: center
    :name: ModificaSanzioneAmministrativa
    
-   Modifica *Sanzione Amministrativa*
+   Modifica del tipo pendenza *Sanzione Amministrativa*
 
 Possiamo identificare i seguenti raggruppamenti di informazioni:
 
@@ -469,7 +469,7 @@ Sono presenti le voci:
 
 * *Carica*: carica un nuovo file di definizione del form
 * *Visualizza*: visualizza la definizione del form
-* *Ripristina*: ripristina la definizione del form in relazione 
+* *Ripristina*: ripristina la definizione originaria del form  
 
 Vediamo un esempio di un file di definizione dell'interfaccia:
 
@@ -512,7 +512,27 @@ Vediamo adesso la sezione *Elaborazione*, che consente a GovPay di descrivere in
 Promemoria Avviso Pagamento
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+La sezione *Avviso di pagamento* permette l'inoltro automatico verso la mail del debitore dell'avviso di pagamento. La tipologia di definizione del *subject* e del corpo della mail è, al momento, basata su `Freemarker <https://freemarker.apache.org/>`_
 
+.. figure:: ../_images/33SezioneElaborazioneDellaModificaPendenze.png
+   :align: center
+   :name: SezioneElaborazioneDellaSanzioneAmministrativa
+   
+   Funzionalità della sezione *Elaborazione*
+   
+
+.. csv-table:: Dettagli della sezione *Elaborazione*
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Validazione", "Selezione delle funzionalità sulla definizione della validazione in formato Json Schema", "* Carica
+  * Visualizza
+  * Ripristina"
+  "Trasformazione: tipo template", "Motore di trasformazione delle informazioni immesse nel Form Dati", "Freemarker"
+  "Trasformazione: Template", "Template di defizione della trasformazione dati", "* Carica
+  * Visualizza
+  * Ripristina"
+  "Applicazione", "Consente di selezionare l'applicazione cui verranno inoltrati i dati", "L'applicazione deve essere censita nella sezione *Applicazioni*"
 
 
 
