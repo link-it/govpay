@@ -561,6 +561,22 @@ La sezione *Promemoria Ricevuta Telematica* è del tutto analoga a quella relati
   "Allega pdf avviso", "Permette di allegare o meno il pdf della Ricevuta Telematica", ""
 
 
+Esempio di scenario di utilizzo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Come esempio di scenario di utilizzo possiamo cercare di mappare, sui componenti presentati, un semplice processo modellato a partire da una situazione generale: si supponga di gestire, infatti, il pagamento spontaneo di dieci buoni pasto elettronici con relativo inoltro della codifica, previo pagamento andato a buon fine, al richiedente.
+
+.. csv-table:: Gestione buoni pasto elettronici
+  :header: "#", "Oggetto della pendenza", "Passo di processo"
+  :widths: 20,40,40
+  
+  "1", "Layout form dati", "Definizione form in cui si chiede il numero di buoni pasto richiesti"
+  "2", "Elaborazione.Validazione", "Gestione delle soglie (es. massimo 20 buoni pasti a richiesta)"
+  "3", "Elaborazione.Trasformazione", "Creazione della pendenza correlata al numero di buoni mensa effettivamente richiesti (es. determinazione del costo finale, con le varie franchigie, aggravi amministrativi e via dicendo)"
+  "4", "Elaborazione.Applicazione", "Interfacciamento con l'applicazione verticale che crea i codici relativi ai buoni mensa richiesti"
+
+E' di tutta evidenza come **questo non sia che uno dei molteplici processi che sono formalmente definibili, quindi implementati direttamente, con i meccanismi appena visti, da GovPay**.
+
+
 Applicazioni
 ------------
 
@@ -596,22 +612,48 @@ Analizziamo le sottosezioni in cui è strutturata l'applicazione, ovvero:
 
 Informazioni di riepilogo
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-In questa sottosezione sono contenute le informazioni che identificano l'applicazione 
-.. csv-table:: Dettagli delle informazioni di Testata di una nuova Applicazione
+In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
+
+.. figure:: ../_images/38ApplicazioneRiepilogoInformazioni.png
+   :align: center
+   :name: ApplicazioneInformazioniDiRiepilogo
+   
+   Informazioni di riepilogo di un'applicazione
+
+Nell'esempio si è selezionata l'autoderminazione delle pendenza e l'abilitazione dell'applicazione su tutti i domini del sistema.
+
+.. csv-table:: Dettagli della sezione *Informazioni di riepilogo* di una nuova Applicazione
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
   "Id A2A", "identificativo dell'applicazione", "Obbligatorio"
   "Principal", "Identificativo del principal autenticato nelle chiamate alle Web API di integrazione", ""
   "Abilitato", "se disabilitato, tutte le nuove richieste all'applicazione saranno negate", ""
+  "Domini", "Elenco dei domini su cui l'applicazione può agire", "Obbligatoria almeno una selezione; esiste l'opzione *Tutti*"
+  "Pendenze", "Elenco delle pendenze che l'applicazione può gestire", "Obbligatoria almeno una selezione; esiste l'opzione *Autodeterminazione tipo pendenze* che lascia all'applicazione la gestione dei tipi di pendenza gestibili"
+
+
+Codifica avvisi
+^^^^^^^^^^^^^^^
+In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
+
+.. figure:: ../_images/38ApplicazioneRiepilogoInformazioni.png
+   :align: center
+   :name: ApplicazioneInformazioniDiRiepilogo
+   
+   Informazioni di riepilogo di un'applicazione
+
+Nell'esempio si è selezionata l'autoderminazione delle pendenza e l'abilitazione dell'applicazione su tutti i domini del sistema.
+
+.. csv-table:: Dettagli della sezione *Informazioni di riepilogo* di una nuova Applicazione
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
   
-  L'area visualizza l'elenco dei domini su cui l'applicazione può agire.
-Ciascun dominio in elenco può essere rimosso tramite il pulsante
-visibile alla destra dell'elemento. Il pulsante di creazione consente di
-aggiungere nuovi domini tra quelli censiti nel sistema.
-
-
-
+  "Id A2A", "identificativo dell'applicazione", "Obbligatorio"
+  "Principal", "Identificativo del principal autenticato nelle chiamate alle Web API di integrazione", ""
+  "Abilitato", "se disabilitato, tutte le nuove richieste all'applicazione saranno negate", ""
+  "Domini", "Elenco dei domini su cui l'applicazione può agire", "Obbligatoria almeno una selezione; esiste l'opzione *Tutti*"
+  "Pendenze", "Elenco delle pendenze che l'applicazione può gestire", "Obbligatoria almeno una selezione; esiste l'opzione *Autodeterminazione tipo pendenze* che lascia all'applicazione la gestione dei tipi di pendenza gestibili"
 
 
   
