@@ -483,31 +483,42 @@ Vediamo un esempio di un file di definizione dell'interfaccia:
    
    Funzionalità selezionabili per la definizione form
 
-Esecuzione
-~~~~~~~~~~~~~~~~
+Elaborazione
+~~~~~~~~~~~~
 
-Vediamo adesso la sezione *Runtime*
+Vediamo adesso la sezione *Elaborazione*, che consente a GovPay di descrivere in modo formale come elaborare quanto immesso nella sezione *Layout Form Dati* al fine di trasformare e inoltrare le informazioni del pagamento alle applicazioni che lo processano ulteriormente.
 
-.. figure:: ../_images/33SezioneRuntimeDellaModificaPendenze.png
+.. figure:: ../_images/33SezioneElaborazioneDellaModificaPendenze.png
    :align: center
-   :name: SezioneRuntimeDellaSanzioneAmministrativa
+   :name: SezioneElaborazioneDellaSanzioneAmministrativa
    
-   Funzionalità della sezione *Runtime* della *Sanzione Amministrativa*
+   Funzionalità della sezione *Elaborazione*
    
 
-.. csv-table:: Dettagli della sezione Runtime
+.. csv-table:: Dettagli della sezione *Elaborazione*
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
   "Validazione", "Selezione delle funzionalità sulla definizione della validazione in formato Json Schema", "* Carica
   * Visualizza
   * Ripristina"
-  "IBAN Appoggio", "utilizzato nelle situazioni in cui il PSP non è in condizioni di accreditare somme sul conto di accredito (si considerino le limitazioni in essere nel circuito postale)", ""
-  "Tipo contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
-  "Codice contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
-  "Abilitato", "Indica se l'Entrata è abilitata o meno nel contesto del dominio su cui si opera", ""
+  "Trasformazione: tipo template", "Motore di trasformazione delle informazioni immesse nel Form Dati", "Freemarker"
+  "Trasformazione: Template", "Template di defizione della trasformazione dati", "* Carica
+  * Visualizza
+  * Ripristina"
+  "Applicazione", "Consente di selezionare l'applicazione cui verranno inoltrati i dati", "L'applicazione deve essere censita nella sezione *Applicazioni*"
+  
+
+Promemoria Avviso Pagamento
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+
+
+
+
+Promemoria Ricevuta Telematica
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
