@@ -3,10 +3,12 @@
 Pagamenti
 =========
 
-La sezione "Pagamenti" è dedicata alla consultazione delle operazioni di
-pagamento che sono state richieste a Govpay in seguito all'interazione
-tra l'utente pagatore e il portale dei servizi di pagamento dell'ente
-creditore.
+La sezione "Pagamenti" è dedicata alla consultazione delle operazioni di pagamento che sono state richieste a Govpay in seguito all'interazione tra l'utente pagatore e il portale dei servizi di pagamento dell'ente creditore.
+Si noti come, all'interno del sistema, il diagramma di stato dei pagamenti sia il seguente:
+
+
+
+
 
 L'area di ricerca è composta dai seguenti elementi:
 
