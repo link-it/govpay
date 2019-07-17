@@ -17,7 +17,7 @@ clean:
 	rm -rf _build
 	rm -rf */_build
 
-pdf: pdf-manuale-installazione pdf-manuale-utente pdf-manuale-integrazione
+pdf: pdf-manuale-utente
 
 pdf-manuale-installazione:
 	@echo "Producing pdf Manuale di Installazione ..."
