@@ -22,6 +22,7 @@
 project = 'GovPay'
 copyright = '2019, Link.it'
 author = 'Link.it'
+numfig = True
 
 # The short X.Y version
 version = '3.1.0'

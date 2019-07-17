@@ -13,7 +13,7 @@ Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i rif
 .. figure:: ../_images/02FunzionalitaPreAutenticazione.png
    :align: center
 
-   Figura 1: Funzionalità disponibili senza autenticazione
+   Funzionalità disponibili senza autenticazione
    
 Sono disponibili le seguenti funzionalità informative, prima dellì'autenticazione:
 
@@ -28,7 +28,7 @@ utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità ch
 .. figure:: ../_images/01PrimoAccesso.png
    :align: center
 
-   Figura 2: Immissione delle credenziali [#]_
+   Immissione delle credenziali [#]_
    
 .. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
    
@@ -39,7 +39,7 @@ Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si acce
 .. figure:: ../_images/03VistaIniziale.png
    :align: center   
 
-   Figura 3: Schermata iniziale
+   Schermata iniziale
 
 
 Funzionalità di profilo
@@ -54,7 +54,7 @@ La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, c
 .. figure:: ../_images/03VistaIniziale.png
    :align: center   
 
-   Figura 4: Cruscotto iniziale [#]_
+   Cruscotto iniziale [#]_
    
 .. [#] Si noti come le funzionalità evidenziali corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
 
@@ -63,7 +63,7 @@ L'area iniziale (primo box in alto a sinistra) mette a disposizione informazioni
 .. figure:: ../_images/05FunzionalitaArchitetturaConEvidenziazione.png
    :align: center
    
-   Figura 5: Funzionalità di profilo
+   Funzionalità di profilo
    
 Si faccia riferimento alle evidenziazioni in rosso: da sinistra verso destra abbiamo:
 * **Identificativo** dell'utente appena autenticatosi
@@ -76,7 +76,7 @@ Cliccando su profilo utente abbiamo, sul riquadro di destra, il dettaglio dell'u
 .. figure:: ../_images/07DettaglioProfiloUtente.png
    :align: center
    
-   Figura 6: Dettaglio del profilo (esempio)
+   Dettaglio del profilo (esempio)
 
 A seguire sono elencate le sezioni del menu di navigazione, che variare in base alle autorizzazioni possedute dall'utente che ha effettuato l'accesso. Le sezioni del menu sono:
 
@@ -98,6 +98,6 @@ Per l'utente che si è autenticato nel nostro caso esemplificativo (gpadmin) avr
 .. figure:: ../_images/06ListaFunzionalita.png
    :align: center
    
-   Figura 7: Lista funzionalità (esempio)
+   Lista funzionalità (esempio)
 
 A ciascuna di queste funzionalità verrà dedicata una sezione di dettaglio esplicativo.
