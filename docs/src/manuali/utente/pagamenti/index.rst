@@ -34,7 +34,7 @@ Area iniziale
    Area iniziale dei Pagamenti
 
 
-L'area di ricerca è composta dai seguenti elementi:
+L'area iniziale è composta dai seguenti elementi:
 
 *  Sulla sinistra è presente il form per impostare i criteri di filtro sui pagamenti che si vuole consultare.
 *  Sulla destra è presente l'elenco dei pagamenti che corrispondono ai criteri di filtro impostati. Di ciascun elemento della lista è
