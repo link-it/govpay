@@ -3,7 +3,7 @@
 Pendenze
 ========
 
-La sezione "Pendenze" è dedicata alla consultazione delle pendenze di pagamento presenti nel repository dei pagamenti in attesa. Le pendenze sono abilitate al modello di pagamento 3 tramite Avviso di pagamento AgID.
+Questa sezione è dedicata alla consultazione delle pendenze di pagamento presenti nel repository dei pagamenti in attesa. Le pendenze sono abilitate al modello di pagamento 3 tramite Avviso di pagamento AgID.
 
 Gli stati del Pagamento
 -----------------------
@@ -16,6 +16,14 @@ Si noti come, all'interno del sistema, il diagramma di stato delle pendenze sia 
    Diagramma degli stati della Pendenza
    
    
+In particolare:
+
+* Si arriva a e si parte da lo stato *annullata* solo a seguito di azioni dell'operatore
+
+
+Area iniziale
+-------------
+
 Inizialmente è necessario selezionare la pendenza di proprio interesse
 effettuandone la ricerca. L'area di ricerca è composta dai seguenti
 elementi:
