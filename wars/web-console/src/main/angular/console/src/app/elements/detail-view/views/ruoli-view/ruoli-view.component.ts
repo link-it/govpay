@@ -5,8 +5,6 @@ import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
 import { UtilService } from '../../../../services/util.service';
 import { GovpayService } from '../../../../services/govpay.service';
 import { Voce } from '../../../../services/voce.service';
-import { Parameters } from '../../../../classes/parameters';
-import { Standard } from '../../../../classes/view/standard';
 import { Dato } from '../../../../classes/view/dato';
 
 @Component({
@@ -19,8 +17,7 @@ export class RuoliViewComponent implements OnInit, IModalDialog {
   @Input() json: any;
   @Input() autorizzazioni = [];
 
-  protected AUTH = UtilService.ACL;
-  protected _OPERAZIONI = Voce.OPERAZIONI;
+  protected voce = Voce;
 
   constructor(public gps: GovpayService, public us: UtilService) { }
 
@@ -42,89 +39,42 @@ export class RuoliViewComponent implements OnInit, IModalDialog {
   }
 
   protected mapAutorizzazioni() {
-    this.autorizzazioni = this.json.acl.map((item) => {
-      let auths = item.autorizzazioni.map((s) => {
-        let codes = UtilService.DIRITTI_CODE.filter((a) => {
-          return (a.code == s);
+    this.autorizzazioni = [];
+    if(this.json.acl.length != 0) {
+      this.json.acl.forEach((item) => {
+        let auths = item.autorizzazioni.map((s) => {
+          const codes = UtilService.DIRITTI_CODE.filter((a) => {
+            return (a.code == s);
+          });
+          return (codes.length!=0)?codes[0].label:'';
         });
-        return (codes.length!=0)?codes[0].label:'';
+        this.autorizzazioni.push(new Dato({ label: this.us.mapACL(item.servizio), value: auths.join(', ') }));
       });
-      auths = (auths.length != 0)?auths.join(', '):'Nessuna.';
-      let _std = new Standard();
-      _std.titolo = new Dato({ label: this.us.mapACL(item.servizio), value: '' });
-      _std.sottotitolo = new Dato({ label: Voce.AUTORIZZAZIONI+': ', value: auths });
-      let p = new Parameters();
-      p.jsonP = item;
-      p.model = _std;
-      return p;
-    });
-
-    // Sort autorizzazioni
-    this.autorizzazioni.sort((item1, item2) => {
-      return (item1.model.titolo.label>item2.model.titolo.label)?1:(item1.model.titolo.label<item2.model.titolo.label)?-1:0;
-    });
+      // Sort Acls
+      this.autorizzazioni.sort((item1, item2) => {
+        return (item1.label>item2.label)?1:(item1.label<item2.label)?-1:0;
+      });
+    }
   }
 
-  protected _iconClick(type: string, ref: any, event: any) {
-    let _json;
-    let _ivm = ref.getItemViewModel();
-    switch(event.type) {
-      case 'edit':
-        console.log('edit');
-        break;
-      case 'delete':
-        switch(type) {
-          case this.AUTH:
-            _json = [ { op: UtilService.PATCH_METHODS.DELETE, path: UtilService.URL_RUOLI, value: _ivm.jsonP } ];
-            break;
-        }
-        if(_json) {
-          this.updateElements(type, _json);
-        }
-        break;
-    }
+
+  protected _editRuolo(event: any) {
+    let _mb = new ModalBehavior();
+    _mb.editMode = true;
+    _mb.info = {
+      viewModel: this.json,
+      dialogTitle: 'Modifica ruolo',
+      templateName: UtilService.RUOLO
+    };
+    _mb.async_callback = this.save.bind(this);
+    _mb.closure = this.refresh.bind(this);
+    UtilService.blueDialogBehavior.next(_mb);
   }
 
   /**
-   * Update json list elements
-   * @param {string} type
-   * @param json
+   * Refresh
+   * @param {ModalBehavior} mb
    */
-  protected updateElements(type: string, json: any) {
-    let _service = UtilService.URL_RUOLI+'/'+encodeURIComponent(this.json['id']);
-    this.gps.saveData(_service, json, null, UtilService.METHODS.PATCH).subscribe(
-      (response) => {
-        this.gps.updateSpinner(false);
-        switch(type) {
-          case this.AUTH:
-            //this.json = response.body;
-            this.dettaglioRuoli();
-            this.us.alert('Operazione completata.');
-            break;
-        }
-      },
-      (error) => {
-        this.gps.updateSpinner(false);
-        this.us.onError(error);
-      });
-  }
-
-  protected _addEdit(type: string, mode: boolean = false) {
-    let _mb: ModalBehavior = new ModalBehavior();
-    _mb.editMode = mode;
-    _mb.async_callback = this.save.bind(this);
-    _mb.closure = this.refresh.bind(this);
-    switch(type) {
-      case this.AUTH:
-        _mb.info.dialogTitle = 'Nuova operazione';
-        _mb.info.viewModel = this.json;
-        _mb.info.templateName = this.AUTH;
-        _mb.operation = UtilService.PATCH_METHODS.ADD;
-        break;
-    }
-    UtilService.dialogBehavior.next(_mb);
-  }
-
   refresh(mb: ModalBehavior) {
     if(mb && mb.info.viewModel) {
       this.dettaglioRuoli();
@@ -132,34 +82,16 @@ export class RuoliViewComponent implements OnInit, IModalDialog {
   }
 
   /**
-   * Save Ruolo|Autorizzazione
+   * Save Ruolo
    * @param {BehaviorSubject<any>} responseService
    * @param {ModalBehavior} mb
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
     if(mb && mb.info.viewModel) {
-      //Non è previsto l'edit di un ruolo
-      let _json;
-      let _query = null;
-      let _method = null;
-      let _service = UtilService.URL_RUOLI+'/';
-      switch(mb.info.templateName) {
-        case UtilService.ACL:
-          _service += encodeURIComponent(this.json.id);
-          //this.json.acl.push(JSON.parse(JSON.stringify(mb.info.viewModel)));
-          _method = UtilService.METHODS.PATCH;
-          _json = [];
-          _json.push({ op: mb.operation, path: UtilService.URL_RUOLI, value: mb.info.viewModel });
-          break;
-        case UtilService.RUOLO:
-          _service += encodeURIComponent(mb.info.viewModel.id);
-          let _tmpAuth = JSON.parse(JSON.stringify(mb.info.viewModel));
-          delete _tmpAuth.id;
-          _json = { acl: [] };
-          _json.acl.push(_tmpAuth);
-          break;
-      }
-      this.gps.saveData(_service, _json, _query, _method).subscribe(
+      let _service = UtilService.URL_RUOLI+'/' + encodeURIComponent(mb.info.viewModel.id);
+      let _json = JSON.parse(JSON.stringify(mb.info.viewModel));
+      delete _json.id;
+      this.gps.saveData(_service, _json).subscribe(
         () => {
           this.gps.updateSpinner(false);
           responseService.next(true);

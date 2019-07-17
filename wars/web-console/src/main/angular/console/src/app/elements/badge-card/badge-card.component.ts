@@ -60,7 +60,7 @@ export class BadgeCardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   protected _loadTimer() {
     //Durata intervallo chiamate del timer
-    let _timerInterval = UtilService.BADGE_TIMER;
+    let _timerInterval = UtilService.BADGE.TIMER;
     if(_timerInterval > 0) {
       if(!window[this.GLOBAL_TIMER]) {
         window[ this.GLOBAL_TIMER ] = [];

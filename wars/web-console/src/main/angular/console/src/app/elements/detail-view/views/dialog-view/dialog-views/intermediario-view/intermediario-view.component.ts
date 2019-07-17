@@ -1,4 +1,4 @@
-import { AfterContentChecked, AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
@@ -10,7 +10,7 @@ import { Voce } from '../../../../../../services/voce.service';
   templateUrl: './intermediario-view.component.html',
   styleUrls: ['./intermediario-view.component.scss']
 })
-export class IntermediarioViewComponent  implements IFormComponent, OnInit, AfterViewInit, AfterContentChecked {
+export class IntermediarioViewComponent  implements IFormComponent, OnInit, AfterViewInit {
 
   @Input() fGroup: FormGroup;
   @Input() json: any;
@@ -34,23 +34,13 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
   ngOnInit() {
     this.fGroup.addControl('denominazione_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('idIntermediario_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('principalPagoPa_ctrl', new FormControl(''));
     this.fGroup.addControl('abilita_ctrl', new FormControl());
     // Connettore SOAP: servizioPagoPa
+    this.fGroup.addControl('principalPagoPa_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('urlRPT_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('urlAvvisatura_ctrl', new FormControl(''));
     // this.fGroup.addControl('versioneApi_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('auth_ctrl', new FormControl(''));
-    // Connettore SFTP: servizioFtp - Lettura
-    this.fGroup.addControl('hostnameL_ctrl', new FormControl(''));
-    this.fGroup.addControl('portaL_ctrl', new FormControl(''));
-    this.fGroup.addControl('usernameL_ctrl', new FormControl(''));
-    this.fGroup.addControl('passwordL_ctrl', new FormControl(''));
-    // Connettore SFTP: servizioFtp - Scrittura
-    this.fGroup.addControl('hostnameS_ctrl', new FormControl(''));
-    this.fGroup.addControl('portaS_ctrl', new FormControl(''));
-    this.fGroup.addControl('usernameS_ctrl', new FormControl(''));
-    this.fGroup.addControl('passwordS_ctrl', new FormControl(''));
   }
 
   ngAfterViewInit() {
@@ -88,28 +78,8 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
             }
           }
         }
-        if(this.json.servizioFtp) {
-          if(this.json.servizioFtp.ftp_lettura) {
-            const _sftpL = this.json.servizioFtp.ftp_lettura;
-            this.fGroup.controls['hostnameL_ctrl'].setValue((_sftpL.host)?_sftpL.host:'');
-            this.fGroup.controls['portaL_ctrl'].setValue((_sftpL.porta)?_sftpL.porta:'');
-            this.fGroup.controls['usernameL_ctrl'].setValue((_sftpL.username)?_sftpL.username:'');
-            this.fGroup.controls['passwordL_ctrl'].setValue((_sftpL.password)?_sftpL.password:'');
-          }
-          if(this.json.servizioFtp.ftp_scrittura) {
-            const _sftpS = this.json.servizioFtp.ftp_scrittura;
-            this.fGroup.controls['hostnameS_ctrl'].setValue((_sftpS.host)?_sftpS.host:'');
-            this.fGroup.controls['portaS_ctrl'].setValue((_sftpS.porta)?_sftpS.porta:'');
-            this.fGroup.controls['usernameS_ctrl'].setValue((_sftpS.username)?_sftpS.username:'');
-            this.fGroup.controls['passwordS_ctrl'].setValue((_sftpS.password)?_sftpS.password:'');
-          }
-        }
       }
     });
-  }
-
-  ngAfterContentChecked() {
-    this._isFtpRequired = this._checkRequiredSFTP();
   }
 
   protected _onAuthChange(target) {
@@ -155,33 +125,6 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     this.fGroup.removeControl('tsPassword_ctrl');
   }
 
-  _checkRequiredSFTP(): boolean {
-    let _required: boolean = false;
-    this.fGroup.controls['hostnameL_ctrl'].setValidators(null);
-    this.fGroup.controls['portaL_ctrl'].setValidators(null);
-    this.fGroup.controls['usernameL_ctrl'].setValidators(null);
-    this.fGroup.controls['passwordL_ctrl'].setValidators(null);
-    this.fGroup.controls['hostnameS_ctrl'].setValidators(null);
-    this.fGroup.controls['portaS_ctrl'].setValidators(null);
-    this.fGroup.controls['usernameS_ctrl'].setValidators(null);
-    this.fGroup.controls['passwordS_ctrl'].setValidators(null);
-    if(this.fGroup.controls['hostnameL_ctrl'].value || this.fGroup.controls['portaL_ctrl'].value ||
-      this.fGroup.controls['usernameL_ctrl'].value || this.fGroup.controls['passwordL_ctrl'].value ||
-      this.fGroup.controls['hostnameS_ctrl'].value || this.fGroup.controls['portaS_ctrl'].value ||
-      this.fGroup.controls['usernameS_ctrl'].value || this.fGroup.controls['passwordS_ctrl'].value) {
-      this.fGroup.controls['hostnameL_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['portaL_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['usernameL_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['passwordL_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['hostnameS_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['portaS_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['usernameS_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['passwordS_ctrl'].setValidators(Validators.required);
-      _required = true;
-    }
-    return _required;
-  }
-
   /**
    * Interface IFormComponent: Form controls to json object
    * @returns {any}
@@ -222,27 +165,6 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     }
     if(_json.servizioPagoPa.auth == null) { delete _json.servizioPagoPa.auth; }
     if(_json.servizioPagoPa.urlAvvisatura == null) { delete _json.servizioPagoPa.urlAvvisatura; }
-
-    // Connettore SFTP: servizioFtp - All fields required
-    _json.servizioFtp = null;
-    if(_info['hostnameL_ctrl'] && _info['hostnameS_ctrl']) {
-      _json.servizioFtp = {};
-      _json.servizioFtp.ftp_lettura = {};
-      _json.servizioFtp.ftp_lettura = {
-        host: _info['hostnameL_ctrl'],
-        porta: _info['portaL_ctrl'],
-        username: _info['usernameL_ctrl'],
-        password: _info['passwordL_ctrl'],
-      };
-      _json.servizioFtp.ftp_scrittura = {};
-      _json.servizioFtp.ftp_scrittura = {
-        host: _info['hostnameS_ctrl'],
-        porta: _info['portaS_ctrl'],
-        username: _info['usernameS_ctrl'],
-        password: _info['passwordS_ctrl'],
-      };
-    }
-    if(_json.servizioFtp == null) { delete _json.servizioFtp; }
 
     return _json;
   }

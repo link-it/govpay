@@ -14,16 +14,20 @@ declare let GovPayConfig: any;
 @Injectable()
 export class UtilService {
 
-  // Config.govpay
-  public static ROOT_SERVICE: string = GovPayConfig.HTTP_ROOT_SERVICE;
-  public static INFORMATION: any = GovPayConfig.INFO;
-  public static BACK_IN_TIME: string = GovPayConfig.BADGE_FILTER.HOUR;
-  public static BADGE_TIMER: number = GovPayConfig.BADGE_FILTER.TIMER;
-  public static JS_URL: string = GovPayConfig.EXTERNAL_JS_PROCEDURE_URL;
-  public static URL_LOGOUT_SERVICE: string = GovPayConfig.HTTP_LOGOUT_SERVICE;
+  // Config.govpay: Autenticazione
+  public static ACCESS_BASIC: string = 'Basic';
+  public static ACCESS_SPID: string = 'Spid';
+  public static BASIC: any = GovPayConfig.BASIC;
+  public static SPID: any = GovPayConfig.SPID;
+  public static TOA: any = { Spid: false, Basic: false };
 
-  // DEBUG VARS
-  public static TEMPORARY_DEPRECATED_CODE: boolean = false;
+  // Config.govpay
+  public static INFORMATION: any = GovPayConfig.INFO;
+  public static BADGE: any = GovPayConfig.BADGE_FILTER;
+  public static JS_URL: string = GovPayConfig.EXTERNAL_JS_PROCEDURE_URL;
+
+
+  public static TEMPORARY_DEPRECATED_CODE: boolean = false; // DEBUG VARS
 
   public static APPLICATION_VERSION: any;
 
@@ -208,6 +212,20 @@ export class UtilService {
   public static AUTODETERMINAZIONE_TIPI_PENDENZA: any = { label: 'Autodeterminazione tipi pendenza', value: 'autodeterminazione'};
   public static TUTTI_TIPI_PENDENZA: any = { label: 'Tutti', value: '*'};
   public static TIPOLOGIA_PENDENZA: any[] = [ { label: 'Spontaneo', value: 'spontaneo'}, { label: 'Dovuto', value: 'dovuto'} ];
+  private static _ID_TIPI_PENDENZA: any[] = [];
+  static set ID_TIPI_PENDENZA(value: any[]) {
+    UtilService._ID_TIPI_PENDENZA = value.map(itp => {
+      return { value: itp.idTipoPendenza, label: itp.descrizione };
+    }).sort((a, b) => {
+      if (a.label > b.label) {
+        return 1;
+      }
+      if (a.label < b.label) {
+        return -1;
+      }
+      return 0;
+    });
+  }
 
   //LISTA OPERAZIONI DOMINI
   public static TUTTI_DOMINI: any = { label: 'Tutti', value: '*'};
@@ -485,6 +503,35 @@ export class UtilService {
     return options.text;
   }
 
+  /**
+   * Set TOA
+   * @param {string} toa: Basic | Spid
+   * @param {boolean} value
+   */
+  public static SetTOA(toa: string, value: boolean = false) {
+    UtilService.TOA[toa] = value;
+  }
+
+  public static ResetTOA() {
+    UtilService.TOA = { Spid: false, Basic: false };
+  }
+
+  public static RootByTOA(): string {
+    let _root = UtilService.BASIC.HTTP_ROOT_SERVICE;
+    if(!UtilService.TOA.Basic && UtilService.TOA.Spid) {
+      _root = UtilService.SPID.HTTPS_ROOT_SERVICE;
+    }
+    return _root;
+  }
+
+  public static LogoutByTOA(): string {
+    let _root = UtilService.BASIC.HTTP_LOGOUT_SERVICE;
+    if(!UtilService.TOA.Basic && UtilService.TOA.Spid) {
+      _root = UtilService.SPID.HTTPS_LOGOUT_SERVICE;
+    }
+    return _root;
+  }
+
   public static cacheUser(profilo: any) {
     UtilService.PROFILO_UTENTE = profilo;
     UtilService.profiloUtenteBehavior.next(profilo);
@@ -501,7 +548,7 @@ export class UtilService {
    * @param {string} customMessage
    */
   onError(error: any, customMessage?: string) {
-    let _msg = '';
+    let _msg = 'Warning: status ' + error.status;
     try {
       switch(error.status) {
         case 401:
@@ -510,6 +557,14 @@ export class UtilService {
             _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
           } else {
             _msg = 'Accesso al servizio non autorizzato. Autenticarsi per avviare la sessione.';
+          }
+          break;
+        case 403:
+          if(!error.error) {
+            UtilService.cleanUser();
+            _msg = 'Accesso non autorizzato. Sessione non valida.';
+          } else {
+            _msg = (!error.error.dettaglio)?error.error.descrizione:error.error.descrizione+': '+error.error.dettaglio;
           }
           break;
         case 404:
@@ -767,10 +822,10 @@ export class UtilService {
       case UtilService.PENDENZE:
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
                    eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
                    eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
                         type: UtilService.INPUT, pattern: FormService.VAL_CODICE_FISCALE }),
@@ -778,7 +833,9 @@ export class UtilService {
                       values: this.statiPendenza() }),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT }),
-          new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA })
+          new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
+          new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_ID_TIPO_PENDENZA, type: UtilService.FILTERABLE, values: UtilService._ID_TIPI_PENDENZA,
+            optionControlValue: true, showTooltip: true }),
           // new FormInput({ id: 'stato2', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza(),
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })
         ];
@@ -824,10 +881,10 @@ export class UtilService {
         _list = [
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-          //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+          //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
           //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
@@ -837,17 +894,17 @@ export class UtilService {
         _list = [
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-          //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+          //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
           //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'tipoEvento', label: FormService.FORM_TIPI_EVENTO, type: UtilService.FILTERABLE, values: UtilService._MAP_TIPI_EVENTO,
             optionControlValue: true, showTooltip: false }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           // new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
               eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'ruolo', label: FormService.FORM_RUOLO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
@@ -855,7 +912,7 @@ export class UtilService {
           new FormInput({ id: 'esito', label: FormService.FORM_ESITO_GDE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             showTooltip: false, values: this.esitiGdE() }),
           new FormInput({ id: 'componente', label: FormService.FORM_COMPONENTE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_COMPONENTI_EVENTO, mapFct: this.asyncComponentiGdE.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_COMPONENTI_EVENTO, mapFct: this.asyncComponentiGdE.bind(this),
               eventType: 'componente-async-load', preventSelection: true }, showTooltip: false }, this.http),
         ];
       break;
@@ -863,14 +920,14 @@ export class UtilService {
         _list = [
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-          //   promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+          //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
           //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           // new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
               eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiRiscossione() }),
@@ -887,7 +944,7 @@ export class UtilService {
       case UtilService.INCASSI:
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
-            promise: { async: true, url: UtilService.ROOT_SERVICE + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http)
         ];
       break;

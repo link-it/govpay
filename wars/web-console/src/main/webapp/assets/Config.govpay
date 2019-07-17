@@ -5,15 +5,15 @@
   }
 
   function httpRootService() {
-    return '/govpay/backend/api/backoffice/rs/form/v1'; // Root URL servizi
+    return '/govpay/backend/api/backoffice/rs/form/v1'; // Root URL servizi pubblici
   }
 
   function httpLogOutService() {
-    return '/govpay/backend/api/backoffice/rs/form/v1/logout'; // URL per il servizio di 'logout'
+    return '/govpay/backend/api/backoffice/rs/form/v1/logout'; // URL per il servizio di 'logout' pubblico
   }
 
   function httpDocumentsRoot() {
-    return hostname() + '/govpay/backend/api/backoffice/public'; // Root URL informazioni
+    return hostname() + '/govpay/backend/api/backoffice/public'; // Root URL informazioni/documenti
   }
 
   // Map key generators
@@ -32,7 +32,7 @@
 
   // Default application name/title
   function _applicationName() {
-    const _NAME = 'GovPay';
+    const _NAME = '${it.govpay.backoffice.gui.appName}';
     document.title = _NAME;
     return _NAME;
   }
@@ -43,27 +43,38 @@
     HOST_NAME: hostname(),
     INFO: {
       DOCUMENTS: {
+        ENABLED: ${it.govpay.backoffice.gui.info.enabled},
         HTTP_DOCUMENTS_ROOT: _HTTP_DOCUMENTS_ROOT,
         LICENSE: _HTTP_DOCUMENTS_ROOT + '/LICENSE',
-        MANUALE_UTENTE: _HTTP_DOCUMENTS_ROOT + '/GovPay-ManualeUtente.pdf',
-        ENABLED: true
+        MANUALE_UTENTE: _HTTP_DOCUMENTS_ROOT + '/GovPay-ManualeUtente.pdf'
       },
       NEWS: {
-        URL: 'https://api.github.com/repos/link-it/GovPay/releases', // URL GovPay Github distribuzioni
-        ENABLED: true
+        ENABLED: ${it.govpay.backoffice.gui.news.enabled},
+        URL: 'https://api.github.com/repos/link-it/GovPay/releases' // URL GovPay Github distribuzioni
       },
       APP_NAME: _applicationName(), // Default application name
       PROGETTO_GOVPAY: 'https://github.com/link-it/GovPay' // URL GovPay Github
     },
-    HTTP_ROOT_SERVICE: httpRootService(),
-    HTTP_LOGOUT_SERVICE: httpLogOutService(),
     BADGE_FILTER: {
       HOUR: 1, // Ore, (filtro badge)
       TIMER: 30000 // Millisecondi, (timer badge)
     },
     GENERATORI: generatori(),
     MGK: _mkg(),
-    EXTERNAL_JS_PROCEDURE_URL: 'Converter.js' //Http URL al file Js per conversioni esterne (caricamento tracciati)
+    EXTERNAL_JS_PROCEDURE_URL: 'Converter.js', //Http URL al file Js per conversioni esterne (caricamento tracciati)
+    BASIC: {
+      ENABLED: ${it.govpay.backoffice.gui.basic.enabled},
+      HTTP_ROOT_SERVICE: httpRootService(),
+      HTTP_LOGOUT_SERVICE: httpLogOutService()
+    },
+    SPID: {
+      ENABLED: ${it.govpay.backoffice.gui.spid.enabled},
+      HTTPS_ROOT_SERVICE: '${it.govpay.backoffice.gui.spid.apibaseurl}',
+      HTTPS_LOGOUT_SERVICE: '${it.govpay.backoffice.gui.spid.logout}',
+      SERVICE_TARGET: '${it.govpay.backoffice.gui.spid.return}',
+      TEST_PROVIDER: '${it.govpay.backoffice.gui.spid.testprovider}',
+      ACTION_FORM_URL: '${it.govpay.backoffice.gui.spid.formaction}'
+    }
   };
 
 })(window);

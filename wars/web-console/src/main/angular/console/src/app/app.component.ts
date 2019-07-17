@@ -87,6 +87,7 @@ export class AppComponent implements AfterContentChecked {
       });
     UtilService.profiloUtenteBehavior.subscribe((_profilo: any) => {
       if(_profilo) {
+        UtilService.ID_TIPI_PENDENZA = _profilo.tipiPendenza || [];
         this.gps.multiGetService([
             UtilService.URL_SERVIZIACL,
             UtilService.URL_TIPI_VERSIONE_API,
@@ -216,7 +217,7 @@ export class AppComponent implements AfterContentChecked {
         let _showExclude = false;
         if(rsc.data.info) {
           if(rsc.data.info['stato'] == this.us.getKeyByValue(UtilService.STATI_PAGAMENTO, UtilService.STATI_PAGAMENTO.IN_CORSO)) {
-            UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BACK_IN_TIME, 'h').format('YYYY-MM-DDTHH:mm');
+            UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BADGE.HOUR, 'h').format('YYYY-MM-DDTHH:mm');
             let dFine = moment(rsc.data.info['dataRichiestaPagamento']);
             let dLimit = moment(UtilService.BACK_IN_TIME_DATE);
             if(dFine < dLimit && !rsc.data.info['verificato']) {
@@ -274,15 +275,16 @@ export class AppComponent implements AfterContentChecked {
         case 'Rendicontazioni e Incassi':
           UtilService.USER_ACL.hasRendiIncassi = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
           this._sideNavSetup.terMenu.push({ link: UtilService.URL_RENDICONTAZIONI, name: UtilService.TXT_RENDICONTAZIONI, xhttp: false, icon: false, sort: 0 });
-          this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 1 });
-          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 2 });
+//          this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 1 });
+          this._sideNavSetup.menu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 3 });
+          this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 1 });
           break;
         case 'Pagamenti':
           UtilService.USER_ACL.hasPagamenti = true;
           this._sideNavSetup.menu.push({ link: UtilService.URL_PAGAMENTI, name: UtilService.TXT_PAGAMENTI, xhttp: false, icon: false, sort: 1 });
           if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
             UtilService.USER_ACL.hasPagamentiePendenze = true;
-            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 3 });
+            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 2 });
           }
           break;
         case 'Pendenze':
@@ -290,12 +292,12 @@ export class AppComponent implements AfterContentChecked {
           this._sideNavSetup.menu.push({ link: UtilService.URL_PENDENZE, name: UtilService.TXT_PENDENZE, xhttp: false, icon: false, sort: 2 });
           if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
             UtilService.USER_ACL.hasPagamentiePendenze = true;
-            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 4 });
+            this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 3 });
           }
           break;
         case 'Giornale degli Eventi':
           UtilService.USER_ACL.hasGdE = true;
-          this._sideNavSetup.menu.push({ link: UtilService.URL_GIORNALE_EVENTI, name: UtilService.TXT_GIORNALE_EVENTI, xhttp: false, icon: false, sort: 3 });
+          this._sideNavSetup.menu.push({ link: UtilService.URL_GIORNALE_EVENTI, name: UtilService.TXT_GIORNALE_EVENTI, xhttp: false, icon: false, sort: 4 });
           break;
         case 'Configurazione e manutenzione':
           UtilService.USER_ACL.hasConfig = true;

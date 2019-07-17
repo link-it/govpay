@@ -13,6 +13,7 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
 import { IExport } from '../../../../classes/interfaces/IExport';
 import { CronoCode } from '../../../../classes/view/crono-code';
+import { TwoCols } from '../../../../classes/view/two-cols';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -27,6 +28,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
 
   @Input() pagamenti = [];
   @Input() informazioni = [];
+  @Input() eventi = [];
 
   @Input() json: any;
   @Input() modified: boolean = false;
@@ -42,6 +44,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
 
   ngOnInit() {
     this.dettaglioPagamento();
+    this.elencoEventi();
   }
 
   ngAfterViewInit() {
@@ -54,6 +57,32 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
       function (_response) {
         this.json = _response.body;
         this.mapJsonDetail(this.json);
+        this.gps.updateSpinner(false);
+      }.bind(this),
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  protected elencoEventi() {
+    let _url = UtilService.URL_GIORNALE_EVENTI;
+    let _query = 'idPagamento='+this.json.id;
+    this.gps.getDataService(_url, _query).subscribe(function (_response) {
+        let _body = _response.body;
+        this.eventi = _body['risultati'].map(function(item) {
+          const _stdTC: TwoCols = new TwoCols();
+          const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
+          const _riferimento = this.us.mapRiferimentoGiornale(item);
+          _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+          _stdTC.sottotitolo = new Dato({ label: _riferimento });
+          _stdTC.stato = item.esito;
+          _stdTC.data = _dataOraEventi;
+          let p = new Parameters();
+          p.model = _stdTC;
+          p.type = UtilService.TWO_COLS;
+          return p;
+        }, this);
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
