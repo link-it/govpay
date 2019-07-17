@@ -3,59 +3,40 @@
 Cruscotto
 =========
 
-La sezione *Cruscotto* mostra le comunicazioni (tecniche e di dettaglio), ed il relativo esito, avvenute con la piattaforma pagoPA secondo quanto previsto dalle specifiche AgID. 
+La sezione *Cruscotto* mira a dare evidenza grafica immediata alla situazione dei pagamenti all'interno dei domini di cui si ha visibilità. 
 
 
 Area iniziale
 -------------
 
-.. figure:: ../_images/GE01AreaGenerale.png
+.. figure:: ../_images/C01AreaGenerale.png
    :align: center
-   :name: AreaInizialeDelGiornaleDegliEventi
+   :name: AreaInizialeCruscotto
 
-   Area iniziale del Giornale degli Eventi
+   Area iniziale Cruscotto
 
-L’elenco degli eventi visualizzati si può filtrare, utilizzando il form presente sulla sinistra.
+Il sistema propone:
+*  in **rosso** gli eventi eccezionali
+*  in **grigio** gli eventi esaminati o corretti
 
-Gli elementi dell'elenco riassumono i dati principali dell'evento e, in caso di evento di errore, risulta evidenziato tale stato.
-
-Dopo aver effettuato una ricerca è possibile ottenere un CSV di esportazione relativo all'elenco degli eventi che soddisfano i criteri di ricerca forniti. L'esportazione dell'elenco si effettua selezionando il collegamento "Esporta" che compare sul menu a discesa azionato con l'icona in alto a destra nella pagina. Il file prodotto con l'esportazione è un tracciato CSV in cui ciascun record contiene i dati dell'evento.
-
-Il csv contiene le seguenti informazioni:
-
-*  Identificatore univoco evento
-*  Componente
-*  Categoria Evento
-*  Ruolo
-*  Tipo Evento
-*  Esito
-*  Data Evento
-*  Durata Evento
-*  Sottotipo Esito
-*  Dettaglio Esito
-*  idDominio
-*  iuv
-*  ccp
-*  idA2A
-*  idPendenza
-*  idPagamento
-*  dati PagoPA
+Selezionando una delle caselle si accede al dettaglio dei pagamenti rifiutati o sospesi.
 
 
-Selezionando uno degli elementi dell'elenco si accede al dettaglio dell'evento, una pagina che visualizza tutte le proprietà dell'evento.
+Pagamenti Rifiutati
+-------------------
 
 
-Dettaglio Evento
-----------------
-
-.. figure:: ../_images/GE02GiornaleEventiDettaglioDiUnEvento.png
+.. figure:: ../_images/C02CruscottoPagamentiRifiutati.png
    :align: center
-   :name: GiornaleEventiDettaglioDiUnEveento
+   :name: CruscottoPagamentiRifiutati
 
-   Dettaglio di un Evento
+   Cruscotto: pagamenti rifiutati
    
+   
+Cliccando sulla casella del cruscotto, il sistema effettua una ricerca sui pagamenti con il filtro sui pagamenti rifiutati, consentendone l'esame. Esaminare i pagamente implica che il colore della segnalazione su cruscotto viri dal rosso al grigio.
 
-Il dettaglio di un evento assiema i seguenti gruppi di informazioni relativi all'evento considerato:
 
-* Le informazioni *interne*, ovvero tutti i puntatori tecnologici e di processo connessi all'evento
-* I dati relativi a PagoPa connessi all'evento
+Pagamenti Sospesi
+-----------------
+
+La logica è identica a quanto visto per i pagamenti rifiutati. Cliccando sulla casella del cruscotto, anche in questo caso  il sistema effettua una ricerca sui pagamenti con il filtro sui pagamenti sospesi, consentendone l'esame. La logica rimane la stessa anche per il viraggio dei colori (rosso -> grigio)
