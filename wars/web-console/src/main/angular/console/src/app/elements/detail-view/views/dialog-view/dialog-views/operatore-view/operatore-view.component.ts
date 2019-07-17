@@ -103,7 +103,7 @@ export class OperatoreViewComponent implements IFormComponent, OnInit, AfterView
     _json.domini = (_info['dominio_ctrl'])?_info['dominio_ctrl']:[];
     _json.tipiPendenza = (_info['tipoPendenza_ctrl'])?_info['tipoPendenza_ctrl']:[];
     _json.ruoli = (_info['ruoli_ctrl'])?_info['ruoli_ctrl']:[];
-    _json.acl =  this.json.acl;
+    _json.acl =  this.json?(this.json.acl || []):[];
 
     return _json;
   }

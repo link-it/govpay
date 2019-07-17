@@ -164,6 +164,7 @@ export class Voce {
   public static TEMPLATE_OGGETTO: string = 'Template oggetto';
   public static TEMPLATE_MESSAGGIO: string = 'Template messaggio';
   public static TERZI: string = 'Pagabile da terzi';
+  public static TIPI_PENDENZA: string = 'Tipi pendenza';
   public static TIPO: string = 'Tipo';
   public static TIPO_ALLEGATO: string = 'Tipo allegato';
   public static TIPO_AUTH: string = 'Tipo autenticazione';

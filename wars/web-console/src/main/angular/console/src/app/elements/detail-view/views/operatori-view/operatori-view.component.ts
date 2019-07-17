@@ -15,6 +15,9 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 export class OperatoriViewComponent implements IModalDialog, OnInit {
 
   @Input() informazioni = [];
+  @Input() domini = [];
+  @Input() tipiPendenza = [];
+  @Input() ruoli = [];
   // @Input() acls = [];
 
   @Input() json: any;
@@ -31,34 +34,37 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
   protected dettaglioOperatore() {
     if(this.json) {
 
-      let _dettaglio = [];
-      _dettaglio.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
-      _dettaglio.push(new Dato({ label: Voce.NOME, value: this.json.ragioneSociale }));
-      _dettaglio.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
+      let _dettaglio = { info: [], domini: [], tipiPendenza: [], ruoli: [] };
+      _dettaglio.info.push(new Dato({ label: Voce.PRINCIPAL, value: this.json.principal }));
+      _dettaglio.info.push(new Dato({ label: Voce.NOME, value: this.json.ragioneSociale }));
+      _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[this.json.abilitato.toString()] }));
 
       if(this.json.domini && this.json.domini.length != 0) {
         this.json.domini.forEach((item, index) => {
-          _dettaglio.push(new Dato({ label: (index != 0)?'':Voce.DOMINI, value: item.ragioneSociale }));
+          _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.DOMINI, value: item.ragioneSociale }));
         });
       } else {
-        _dettaglio.push(new Dato({ label: Voce.DOMINI, value: Voce.NESSUNO }));
+        _dettaglio.domini.push(new Dato({ label: Voce.DOMINI, value: Voce.NESSUNO }));
       }
       if(this.json.tipiPendenza && this.json.tipiPendenza.length != 0) {
         this.json.tipiPendenza.forEach((item, index) => {
-          _dettaglio.push(new Dato({ label: (index != 0)?'':Voce.PENDENZE, value: item.descrizione }));
+          _dettaglio.tipiPendenza.push(new Dato({ label: (index != 0)?'':Voce.TIPI_PENDENZA, value: item.descrizione }));
         });
       } else {
-        _dettaglio.push(new Dato({ label: Voce.PENDENZE, value: Voce.NESSUNA }));
+        _dettaglio.tipiPendenza.push(new Dato({ label: Voce.TIPI_PENDENZA, value: Voce.NESSUNO }));
       }
       if(this.json.ruoli && this.json.ruoli.length != 0) {
         this.json.ruoli.forEach((item, index) => {
-          _dettaglio.push(new Dato({ label: (index != 0)?'':Voce.RUOLI, value: item.id }));
+          _dettaglio.ruoli.push(new Dato({ label: (index != 0)?'':Voce.RUOLI, value: item.id }));
         });
       } else {
-        _dettaglio.push(new Dato({ label: Voce.RUOLI, value: Voce.NESSUNO }));
+        _dettaglio.ruoli.push(new Dato({ label: Voce.RUOLI, value: Voce.NESSUNO }));
       }
 
-      this.informazioni = _dettaglio.slice(0);
+      this.informazioni = _dettaglio.info.slice(0);
+      this.domini = _dettaglio.domini.slice(0);
+      this.tipiPendenza = _dettaglio.tipiPendenza.slice(0);
+      this.ruoli = _dettaglio.ruoli.slice(0);
     }
 
   }

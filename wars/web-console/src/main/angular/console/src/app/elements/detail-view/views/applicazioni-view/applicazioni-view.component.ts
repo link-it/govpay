@@ -73,7 +73,7 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       _dettaglio.serviziApi.push(new Dato({ label: Voce.URL, value: this.json.servizioIntegrazione.url }));
       _dettaglio.serviziApi.push(new Dato({ label: Voce.VERSIONE_API, value: this.json.servizioIntegrazione.versioneApi }));
       if(this.json.servizioIntegrazione.auth) {
-        _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: '' }));
+        _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: this.json.servizioIntegrazione.auth.hasOwnProperty('username')?'HTTP Basic':'SSL' }));
         if(this.json.servizioIntegrazione.auth.username) {
           _dettaglio.serviziApi.push(new Dato({label: Voce.USERNAME, value: this.json.servizioIntegrazione.auth.username }));
           _dettaglio.serviziApi.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioIntegrazione.auth.password }));
@@ -101,10 +101,10 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
     }
     if(this.json.tipiPendenza && this.json.tipiPendenza.length != 0) {
       this.json.tipiPendenza.forEach((item, index) => {
-        _dettaglio.tipiPendenza.push(new Dato({ label: (index != 0)?'':Voce.PENDENZE, value: item.descrizione }));
+        _dettaglio.tipiPendenza.push(new Dato({ label: (index != 0)?'':Voce.TIPI_PENDENZA, value: item.descrizione }));
       });
     } else {
-      _dettaglio.tipiPendenza.push(new Dato({ label: Voce.PENDENZE, value: Voce.NESSUNA }));
+      _dettaglio.tipiPendenza.push(new Dato({ label: Voce.TIPI_PENDENZA, value: Voce.NESSUNO }));
     }
     if(this.json.ruoli && this.json.ruoli.length != 0) {
       this.json.ruoli.forEach((item, index) => {

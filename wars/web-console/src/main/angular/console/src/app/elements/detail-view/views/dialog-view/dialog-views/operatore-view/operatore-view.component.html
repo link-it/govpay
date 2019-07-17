@@ -16,14 +16,15 @@
       <div class="w-100" [formGroup]="fGroup">
         <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
       </div>
-      <div class="w-100 my-4">
+      <p class="color-gray pt-4 mb-2">{{voce.AUTORIZZAZIONI}}</p>
+      <div class="w-100">
         <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
           <mat-select [placeholder]="voce.DOMINI" formControlName="dominio_ctrl" multiple [compareWith]="dominioCmpFn">
             <mat-option *ngFor="let item of domini" [value]="item">{{item.ragioneSociale}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="voce.PENDENZE" formControlName="tipoPendenza_ctrl" multiple [compareWith]="pendenzaCmpFn">
+          <mat-select [placeholder]="voce.TIPI_PENDENZA" formControlName="tipoPendenza_ctrl" multiple [compareWith]="pendenzaCmpFn">
             <mat-option *ngFor="let item of tipiPendenza" [value]="item">{{item.descrizione}}</mat-option>
           </mat-select>
         </mat-form-field>
