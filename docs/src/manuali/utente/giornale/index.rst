@@ -58,4 +58,4 @@ Dettaglio Evento
 Il dettaglio di un evento assiema i seguenti gruppi di informazioni relativi all'evento considerato:
 
 * Le informazioni *interne*, ovvero tutti i puntatori tecnologici e di processo connessi all'evento
-* I dati relativi a PagoPa
+* I dati relativi a PagoPa connessi all'evento
