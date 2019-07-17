@@ -112,7 +112,7 @@ Viene scaricato in questo modo un archivio in formato zip,
 
 .. csv-table:: Contenuto Archivio zip del singolo pagamento
   :header: "File", "Formato", "Significato", "Note"
-  :widths: 40,40,20
+  :widths: 40,40,20, 20
   
   "RPT", "xml", "Richiesta associata al pagamento", ""
   "RT", "xml", "Ricevuta telematica associata al pagamento", ""
