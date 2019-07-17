@@ -22,9 +22,9 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
   protected SERVER = UtilService.TIPI_SSL.server;
 
   protected versioni: any[] = UtilService.TIPI_VERSIONE_API;
-  protected services: any[] = [
-    { title: 'API Integrazione', property: 'servizioIntegrazione', basicAuth: false, sslAuth: false, json: null, required: false }
-  ];
+
+  protected basicAuth: boolean = false;
+  protected sslAuth: boolean = false;
   protected ruoli = [];
   protected domini = [];
   protected tipiPendenza = [];
@@ -43,17 +43,12 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
     this.fGroup.addControl('apiPagamenti_ctrl', new FormControl(false));
     this.fGroup.addControl('apiPendenze_ctrl', new FormControl(false));
     this.fGroup.addControl('apiRagioneria_ctrl', new FormControl(false));
-    this.services.forEach((item, index) => {
-      this.fGroup.addControl('url_ctrl_'+index, new FormControl('', null));
-      this.fGroup.addControl('versioneApi_ctrl_'+index, new FormControl('', null));
-      this.fGroup.addControl('auth_ctrl_'+index, new FormControl(''));
-      if(item.required) {
-        this.fGroup.controls['url_ctrl_'+index].setValidators(Validators.required);
-        this.fGroup.controls['url_ctrl_'+index].updateValueAndValidity();
-        this.fGroup.controls['versioneApi_ctrl_'+index].setValidators(Validators.required);
-        this.fGroup.controls['versioneApi_ctrl_'+index].updateValueAndValidity();
-      }
-    });
+
+      this.fGroup.addControl('url_ctrl', new FormControl('', Validators.required));
+      this.fGroup.addControl('versioneApi_ctrl', new FormControl({ value: '', disabled: true }, null));
+      this.fGroup.addControl('auth_ctrl', new FormControl({ value: '', disabled: true }));
+
+
     this.fGroup.addControl('dominio_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoPendenza_ctrl', new FormControl(''));
     this.fGroup.addControl('ruoli_ctrl', new FormControl(''));
@@ -77,37 +72,40 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
           (this.json.codificaAvvisi.generazioneIuvInterna)?this.fGroup.controls['generazioneIuvInterna_ctrl'].setValue(this.json.codificaAvvisi.generazioneIuvInterna):null;
         }
         if(this.json.servizioIntegrazione) {
-          this.services[0].json = this.json.servizioIntegrazione;
-        }
-        this.services.forEach((item, index) => {
-          if(item.json) {
-            item.sslAuth = false;
-            item.basicAuth = false;
-            (item.json.url)?this.fGroup.controls['url_ctrl_' + index].setValue(item.json.url):null;
-            (item.json.versioneApi)?this.fGroup.controls['versioneApi_ctrl_' + index].setValue(item.json.versioneApi):null;
-            if(item.json.auth) {
-              if(item.json.auth.hasOwnProperty('username')){
-                item.basicAuth = true;
-                this.fGroup.controls['auth_ctrl_' + index].setValue(this.BASIC);
-                this.addBasicControls(index);
-                (item.json.auth.username)?this.fGroup.controls['username_ctrl_' + index].setValue(item.json.auth.username):null;
-                (item.json.auth.password)?this.fGroup.controls['password_ctrl_' + index].setValue(item.json.auth.password):null;
-              }
-              if(item.json.auth.hasOwnProperty('tipo')){
-                item.sslAuth = true;
-                this.fGroup.controls['auth_ctrl_' + index].setValue(this.SSL);
-                this.addSslControls(index);
-                (item.json.auth.tipo)?this.fGroup.controls['ssl_ctrl_' + index].setValue(this.json.auth.tipo):null;
-                (item.json.auth.ksLocation)?this.fGroup.controls['ksLocation_ctrl_' + index].setValue(item.json.auth.ksLocation):null;
-                (item.json.auth.ksPassword)?this.fGroup.controls['ksPassword_ctrl_' + index].setValue(item.json.auth.ksPassword):null;
-                (item.json.auth.tsLocation)?this.fGroup.controls['tsLocation_ctrl_' + index].setValue(item.json.auth.tsLocation):null;
-                (item.json.auth.tsPassword)?this.fGroup.controls['tsPassword_ctrl_' + index].setValue(item.json.auth.tsPassword):null;
-              }
-            } else {
-              this.fGroup.controls['auth_ctrl_' + index].setValue('');
-            }
+          const item = this.json.servizioIntegrazione;
+
+          this.sslAuth = false;
+          this.basicAuth = false;
+          if (item.url) {
+            this.fGroup.controls['url_ctrl'].setValue(item.url);
+            this.fGroup.controls['versioneApi_ctrl'].enable();
+            this.fGroup.controls['auth_ctrl'].enable();
           }
-        });
+          if (item.versioneApi) {
+            this.fGroup.controls['versioneApi_ctrl'].setValue(item.versioneApi);
+          }
+          if(item.auth) {
+            if(item.auth.hasOwnProperty('username')){
+              this.basicAuth = true;
+              this.fGroup.controls['auth_ctrl'].setValue(this.BASIC);
+              this.addBasicControls();
+              (item.auth.username)?this.fGroup.controls['username_ctrl'].setValue(item.auth.username):null;
+              (item.auth.password)?this.fGroup.controls['password_ctrl'].setValue(item.auth.password):null;
+            }
+            if(item.auth.hasOwnProperty('tipo')){
+              this.sslAuth = true;
+              this.fGroup.controls['auth_ctrl'].setValue(this.SSL);
+              this.addSslControls();
+              (item.auth.tipo)?this.fGroup.controls['ssl_ctrl'].setValue(item.auth.tipo):null;
+              (item.auth.ksLocation)?this.fGroup.controls['ksLocation_ctrl'].setValue(item.auth.ksLocation):null;
+              (item.auth.ksPassword)?this.fGroup.controls['ksPassword_ctrl'].setValue(item.auth.ksPassword):null;
+              (item.auth.tsLocation)?this.fGroup.controls['tsLocation_ctrl'].setValue(item.auth.tsLocation):null;
+              (item.auth.tsPassword)?this.fGroup.controls['tsPassword_ctrl'].setValue(item.auth.tsPassword):null;
+            }
+          } else {
+            this.fGroup.controls['auth_ctrl'].setValue('');
+          }
+        }
         if(this.json.domini) {
           this.fGroup.controls['dominio_ctrl'].setValue(this.json.domini);
         }
@@ -156,58 +154,66 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
     return (p1 && p2)?(p1.id === p2.id):(p1 === p2);
   }
 
-  protected _onUrlChange(trigger, target, index) {
-    if(!this.services[index].required) {
-      let _tc = this.fGroup.controls[target + index];
+  protected _onUrlChange(trigger: any, targets: string) {
+    targets.split('|').forEach((_target, _ti) => {
+      const _tc = this.fGroup.controls[_target];
       _tc.clearValidators();
       if(trigger.value.trim() !== '') {
-        _tc.setValidators(Validators.required);
+        _tc.enable();
+        _tc.setValidators((_ti==0)?Validators.required:null);
+      } else {
+        _tc.setValue('');
+        _tc.disable({ onlySelf: true });
+        this.sslAuth = false;
+        this.basicAuth = false;
+        this.removeBasicControls();
+        this.removeSslControls();
       }
       _tc.updateValueAndValidity();
-    }
+    });
   }
 
-  protected _onAuthChange(target, index) {
-    this.removeBasicControls(index);
-    this.removeSslControls(index);
-    this.services[index].sslAuth = false;
-    this.services[index].basicAuth = false;
+  protected _onAuthChange(target: any) {
+    this.removeBasicControls();
+    this.removeSslControls();
+    this.sslAuth = false;
+    this.basicAuth = false;
     switch(target.value) {
       case this.BASIC:
-        this.addBasicControls(index);
-        this.services[index].basicAuth = true;
+        this.addBasicControls();
+        this.basicAuth = true;
         break;
       case this.SSL:
-        this.addSslControls(index);
-        this.services[index].sslAuth = true;
+        this.addSslControls();
+        this.sslAuth = true;
         break;
     }
   }
 
-  protected addBasicControls(index: number) {
-    this.fGroup.addControl('username_ctrl_' + index, new FormControl('', Validators.required));
-    this.fGroup.addControl('password_ctrl_' + index, new FormControl('', Validators.required));
+  protected addBasicControls() {
+    this.fGroup.addControl('username_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('password_ctrl', new FormControl('', Validators.required));
   }
 
-  protected addSslControls(index: number) {
-    this.fGroup.addControl('ssl_ctrl_' + index, new FormControl('', Validators.required));
-    this.fGroup.addControl('ksLocation_ctrl_' + index, new FormControl('', Validators.required));
-    this.fGroup.addControl('ksPassword_ctrl_' + index, new FormControl('', Validators.required));
-    this.fGroup.addControl('tsLocation_ctrl_' + index, new FormControl(''));
-    this.fGroup.addControl('tsPassword_ctrl_' + index, new FormControl(''));
+  protected addSslControls() {
+    this.fGroup.addControl('ssl_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('ksLocation_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('ksPassword_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('tsLocation_ctrl', new FormControl(''));
+    this.fGroup.addControl('tsPassword_ctrl', new FormControl(''));
   }
 
-  protected removeBasicControls(index: number) {
-    this.fGroup.removeControl('username_ctrl_' + index);
-    this.fGroup.removeControl('password_ctrl_' + index);
+  protected removeBasicControls() {
+    this.fGroup.removeControl('username_ctrl');
+    this.fGroup.removeControl('password_ctrl');
   }
 
-  protected removeSslControls(index: number) {
-    this.fGroup.removeControl('ssl_ctrl_' + index);
-    this.fGroup.removeControl('ksLocation_ctrl_' + index);
-    this.fGroup.removeControl('ksPassword_ctrl_' + index);
-    this.fGroup.removeControl('tsLocation_ctrl_' + index);
-    this.fGroup.removeControl('tsPassword_ctrl_' + index);
+  protected removeSslControls() {
+    this.fGroup.removeControl('ssl_ctrl');
+    this.fGroup.removeControl('ksLocation_ctrl');
+    this.fGroup.removeControl('ksPassword_ctrl');
+    this.fGroup.removeControl('tsLocation_ctrl');
+    this.fGroup.removeControl('tsPassword_ctrl');
   }
 
   /**
@@ -228,42 +234,42 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
       regExpIuv: (_info['regExpIuv_ctrl'])?_info['regExpIuv_ctrl']:null,
       generazioneIuvInterna: (_info['generazioneIuvInterna_ctrl'])?_info['generazioneIuvInterna_ctrl']:false
     };
-    this.services.forEach((item, index) => {
-      _json[item.property] = {
+
+      _json.servizioIntegrazione = {
         auth: null,
-        url: _info['url_ctrl_' + index]?_info['url_ctrl_' + index]:null,
-        versioneApi: _info['versioneApi_ctrl_' + index]?_info['versioneApi_ctrl_' + index]:null
+        url: _info['url_ctrl']?_info['url_ctrl']:null,
+        versioneApi: _info['versioneApi_ctrl']?_info['versioneApi_ctrl']:null
       };
-      if(_info.hasOwnProperty('username_ctrl_' + index)) {
-        _json[item.property].auth = {
-          password: _info['username_ctrl_' + index],
-          username: _info['password_ctrl_' + index]
+      if(_info.hasOwnProperty('username_ctrl')) {
+        _json.servizioIntegrazione.auth = {
+          password: _info['username_ctrl'],
+          username: _info['password_ctrl']
         };
       }
-      if(_info.hasOwnProperty('ssl_ctrl_' + index)) {
-        _json[item.property].auth = {
-          tipo: _info['ssl_ctrl_' + index],
-          ksLocation: _info['ksLocation_ctrl_' + index],
-          ksPassword: _info['ksPassword_ctrl_' + index],
+      if(_info.hasOwnProperty('ssl_ctrl')) {
+        _json.servizioIntegrazione.auth = {
+          tipo: _info['ssl_ctrl'],
+          ksLocation: _info['ksLocation_ctrl'],
+          ksPassword: _info['ksPassword_ctrl'],
           tsLocation: '',
           tsPassword: ''
         };
-        if(_info.hasOwnProperty('tsLocation_ctrl_' + index)) {
-          _json[item.property].auth.tsLocation = _info['tsLocation_ctrl_' + index];
+        if(_info.hasOwnProperty('tsLocation_ctrl')) {
+          _json.servizioIntegrazione.auth.tsLocation = _info['tsLocation_ctrl'];
         }
-        if(_info.hasOwnProperty('tsPassword_ctrl_' + index)) {
-          _json[item.property].auth.tsPassword = _info['tsPassword_ctrl_' + index];
+        if(_info.hasOwnProperty('tsPassword_ctrl')) {
+          _json.servizioIntegrazione.auth.tsPassword = _info['tsPassword_ctrl'];
         }
       }
-      if(_json[item.property].auth == null) { delete _json[item.property].auth; }
-      if(_json[item.property].url == null) {
-        _json[item.property] = null;
+      if(_json.servizioIntegrazione.auth == null) { delete _json.servizioIntegrazione.auth; }
+      if(_json.servizioIntegrazione.url == null) {
+        _json.servizioIntegrazione = null;
       }
-    });
+
     _json.domini = (_info['dominio_ctrl'])?_info['dominio_ctrl']:[];
     _json.tipiPendenza = (_info['tipoPendenza_ctrl'])?_info['tipoPendenza_ctrl']:[];
     _json.ruoli = (_info['ruoli_ctrl'])?_info['ruoli_ctrl']:[];
-    _json.acl = this.json.acl;
+    _json.acl = this.json?(this.json.acl || []):[];
 
     return _json;
   }
