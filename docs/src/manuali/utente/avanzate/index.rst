@@ -123,12 +123,6 @@ operazioni possono essere dei seguenti tipi:
 
 Di seguito un esempio di tracciato:
 
-.. figure:: ../_figure_utente/10000201000001840000012DD69258F43EAC4BE9.png
-   :alt: Figura 8: Esempio di tracciato pendenze
-   :width: 10.266cm
-   :height: 7.964cm
-
-   Figura 8: Esempio di tracciato pendenze
 
 È possibile filtrare gli elementi visualizzati nella pagina utilizzando
 il form presente sul lato sinistro.

@@ -17,11 +17,6 @@ tra l'ambiente tecnologico dell'ente ed il Nodo SPC con l'obiettivo di
 abbattere i tempi di realizzazione delle interfacce di colloquio tra
 questi sistemi.
 
-.. figure:: ../_figure_utente/10000000000002CF00000253B67C83F68F49AAF4.jpg
-   :alt: 
-   :width: 17.605cm
-   :height: 14.568cm
-
 Vediamo quali sono gli attori che entrano in gioco nello scenario
 complessivo:
 

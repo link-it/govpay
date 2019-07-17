@@ -33,7 +33,7 @@ Area iniziale
 
 .. figure:: ../_images/PZ02PendenzeAreaIniziale.png
    :align: center
-   :name: AreaInizialeDeiPagamenti
+   :name: AreaInizialeDellePendenze
 
    Area iniziale delle Pendenze
 
@@ -74,7 +74,7 @@ La pagina di dettaglio fornisce una vista delle singole informazioni che compong
 
 .. figure:: ../_images/PZ04DettaglioPendenza.png
    :align: center
-   :name: PendenzeScaricaResoconto
+   :name: PendenzeScaricaResocontoSingolaPendenza
 
    Dettaglio della pendenza
 
