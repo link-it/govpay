@@ -100,7 +100,27 @@ Con la voce di menu in alto a destra (*Scarica Resoconto*), è possibile scarica
    Scarica Resoconto
 
 
-Viene scaricato in questo modo un archivio in formato zip, contenente:
+Viene scaricato in questo modo un archivio in formato zip,
 
-*  RPT e RT, in formato XML, associate all'operazione di pagamento
-*  Il file PDF della ricevuta telematica
+
+.. figure:: ../_images/P07ContenutoResocontoSingoloPagamento.png
+   :align: center
+   :name: ContenutoResocontoSingoloPagamento
+   
+   Contenuto archivio zip di resoconto del Pagamento
+
+
+.. csv-table:: Contenuto Archivio zip del singolo pagamento
+  :header: "File", "Formato", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "RPT", "xml", "Richiesta associata al pagamento", ""
+  "RT", "xml", "Ricevuta telematica associata al pagamento", ""
+  "RT", "pdf", "Ricevuta telematica in formato pdf", ""
+
+
+.. figure:: ../_images/P08RicevutaDiPagamento.png
+   :align: center
+   :name: RicevutaDiPagamentoPdf
+   
+   Ricevuta di Pagamento in formato pdf (esempio)
