@@ -366,7 +366,7 @@ I meccanismi di selezione sono del tutto analoghi a quanto già visto in altre s
 
 .. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
-   :name: SelezionePendenza
+   :name: SelezionePendenzaSanzioneAmministrativa
    
    Selezione della Pendenza *Sanzione Amministrativa*
 
@@ -406,7 +406,7 @@ Il sistema mostra la seguente maschera
 
 .. figure:: ../_images/30ModificaSanzioneAmministrativa.png
    :align: center
-   :name: ModificaSanzioneAmministrativa
+   :name: ModificaTipoPendenzaSanzioneAmministrativa
    
    Modifica del tipo pendenza *Sanzione Amministrativa*
 
