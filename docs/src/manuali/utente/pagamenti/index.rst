@@ -62,7 +62,7 @@ I campi del csv (compresso in formato zip) sono i seguenti:
 * Anagrafica del soggetto versante
 * Conto di addebito
 
-Selezionando uno degli elementi presenti in elenco si procede alla visualizzazione del dettaglio del pagamento.
+Selezionando uno degli elementi presenti in elenco si procede alla visualizzazione del dettaglio del pagamento, abilitando l'eventuale modifica.
 
 Dettaglio Pagamento
 -------------------
