@@ -16,46 +16,54 @@ Si noti come, all'interno del sistema, il diagramma di stato delle pendenze sia 
    Diagramma degli stati della Pendenza
    
    
-In particolare:
-
-* Si arriva a e si parte da lo stato *annullata* solo a seguito di azioni dell'operatore
+Si noti come si arrivi a e si parta da lo stato *annullata* solo a seguito di azioni dell'operatore.
 
 
 Area iniziale
 -------------
 
-Inizialmente è necessario selezionare la pendenza di proprio interesse
-effettuandone la ricerca. L'area di ricerca è composta dai seguenti
-elementi:
+.. figure:: ../_images/PZ02PendenzeAreaIniziale.png
+   :align: center
+   :name: AreaInizialeDeiPagamenti
 
--  Sulla sinistra è presente il form per impostare i criteri di filtro
-   sui dati da mostrare.
--  Sulla destra è presente l'elenco delle pendenze che corrispondono ai
-   criteri di filtro impostati.
+   Area iniziale delle Pendenze
 
-Dopo aver effettuato una ricerca è possibile ottenere un CSV di
-esportazione relativo all'elenco delle pendenze che soddisfano i criteri
-di ricerca forniti. L'esportazione dell'elenco si effettua selezionando
-il collegamento "Esporta" che compare sul menu a discesa azionato con
-l'icona in alto a destra nella pagina. Il file prodotto con
-l'esportazione è un tracciato CSV in cui ciascun record contiene i
-principali dati identificativi di ciascuna pendenza.
 
-.. figure:: ../_figure_utente/100002010000031700000212828B7F50531FFD28.png
-   :alt: Figura 3: Sezione per la consultazione delle pendenze di pagamento
-   :width: 17cm
-   :height: 11.389cm
+L'area iniziale è composta dai seguenti elementi:
 
-   Figura 3: Sezione per la consultazione delle pendenze di pagamento
+*  Sulla sinistra è presente il form per impostare i criteri di filtro sulle pendenze su cui si intende agire.
+*  Sulla destra è presente l'elenco delle pendenze che corrispondono ai criteri di filtro impostati, con un insieme sommario di dati. Oltre al titolo, troviamo la codifica IUV, l'importo complessivo, lo stato e la data.
 
-Selezionando uno degli elementi presenti in elenco si procede alla
-visualizzazione del dettaglio della pendenza.
+Dopo aver effettuato una ricerca è possibile ottenere un CSV di esportazione relativo all'elenco delle pendenze che soddisfano i criteri
+di ricerca forniti. L'esportazione dell'elenco si effettua selezionando il collegamento *Scarica Resoconto* che compare sul menu a discesa in alto a destra, come mostrato in figura:
+
+.. figure:: ../_images/PZ03PendenzeScaricaResoconto.png
+   :align: center
+   :name: PendenzeScaricaResoconto
+
+   Scarica csv delle pendenze trovate
+
+I campi del csv (compresso in formato zip) sono i seguenti:
+
+* Identificativo univoco del pagamento
+* Data richiesta pagamento
+* Importo
+* Stato
+* Identificativo del soggetto versante
+* Anagrafica del soggetto versante
+* Conto di addebito
+
+
+idA2A, "idPendenza", "idDominio", "anagraficaDominio", "numeroAvviso", "importo", "dataCaricamento", "dataValidita", "dataScadenza", "tassonomiaAvviso", "stato"
+
+
+
+Selezionando uno degli elementi presenti in elenco si procede alla visualizzazione del dettaglio della pendenza, abilitando l'eventuale modifica.
 
 Dettaglio Pendenza
 ------------------
 
-La pagina di dettaglio della pendenza fornisce una vista delle singole
-informazioni che la riguardano.
+La pagina di dettaglio della pendenza fornisce una vista delle singole informazioni che la riguardano.
 
 In testa, sulla destra, è presente un menu a discesa che consente, nel
 caso si possiedano le necessarie autorizzazioni, di effettuare le
