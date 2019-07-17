@@ -10,6 +10,7 @@ Guida Utente
         accesso/index
         pendenze/index
         pagamenti/index
+        cruscotto/index
         giornale/index
         configurazioni/index
         avanzate/index
