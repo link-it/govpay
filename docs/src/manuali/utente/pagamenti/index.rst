@@ -76,7 +76,7 @@ La pagina di dettaglio del pagamento comprende:
 
 .. figure:: ../_images/P04DettaglioPagamento.png
    :align: center
-   :name: ScaricaResocontoPagamenti
+   :name: ScaricaResocontoPagamentiSingoloPagamento
    
    Dettaglio del Pagamento
    
