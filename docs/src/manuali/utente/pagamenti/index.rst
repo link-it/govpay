@@ -111,12 +111,15 @@ Viene scaricato in questo modo un archivio in formato zip,
 
 
 .. csv-table:: Contenuto Archivio zip del singolo pagamento
-  :header: "File", "Formato", "Significato", "Note"
-  :widths: 40,40,20, 20
+  :header: "File", "Formato", "Significato"
+  :widths: 40,40,20
   
-  "RPT", "xml", "Richiesta associata al pagamento", ""
-  "RT", "xml", "Ricevuta telematica associata al pagamento", ""
-  "RT", "pdf", "Ricevuta telematica in formato pdf", ""
+  "RPT", "xml", "Richiesta associata al pagamento"
+  "RT", "xml", "Ricevuta telematica associata al pagamento"
+  "RT", "pdf", "Ricevuta telematica in formato pdf"
+
+
+Una ricevuta di pagamento in formato pdf avrebbe il seguente aspetto (si noti la presenza del logo del dominio in alto a destra)
 
 
 .. figure:: ../_images/P08RicevutaDiPagamento.png
