@@ -475,11 +475,11 @@ Vediamo un esempio di un file di definizione dell'interfaccia:
 
 .. figure:: ../_images/28SchemaFormEntrata1.jpg
    :align: center
-   :name: MenuDefinizioneForm
+   :name: MenuDefinizioneForm1
       
 .. figure:: ../_images/29SchemaFormEntrata2.jpg
    :align: center
-   :name: MenuDefinizioneForm
+   :name: MenuDefinizioneForm2
    
    Funzionalità selezionabili per la definizione form
 
@@ -693,7 +693,7 @@ Risulta possibile e, spesso, assai utile, determinare in modo più fine le autor
 
 .. figure:: ../_images/42ApplicazioneAutorizzazioniBackoffice.png
    :align: center
-   :name: ApplicazioneAutorizzazioniAPI
+   :name: ApplicazioneAutorizzazioniAPIBackOffice
    
    Sezione autorizzazione Backoffice di un'applicazione
 
@@ -714,7 +714,7 @@ A ciascun sottosistema si danno le seguenti caratteristiche di integrazione:
 
 .. figure:: ../_images/42ApplicazioneAutorizzazioniBackoffice.png
    :align: center
-   :name: ApplicazioneAutorizzazioniAPI
+   :name: ApplicazioneAutorizzazioniAPISceltaValori
    
    Sezione autorizzazione:scelta valori
 
