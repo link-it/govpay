@@ -1,15 +1,19 @@
-/target/
-/bin/
-/.classpath
-/.project
-/.settings/
+# custom property filters
 /src/main/resources/filters/*.filter.properties
+
+# maven version backups
 pom.xml.versionsBackup
 
 # compiled output
 /dist
 /tmp
 /out-tsc
+/target
+/bin
+_build
+
+# swagger
+.swagger-codegen
 
 # dependencies
 /node_modules
