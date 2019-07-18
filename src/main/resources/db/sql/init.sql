@@ -1,16 +1,8 @@
 -- Censimento dell'utenza amministratore
 
-INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_star) VALUES ('@PRINCIPAL@','@PRINCIPAL@',@BOOLEAN@, @BOOLEAN@);
+INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_stari,ruoli) VALUES ('@PRINCIPAL@','@PRINCIPAL@',@BOOLEAN@, @BOOLEAN@, 'Amministratore');
 INSERT INTO operatori (nome, id_utenza) VALUES ('@RAGIONE_SOCIALE@', (select id from utenze where principal = '@PRINCIPAL@'));
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Applicazioni','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Creditore','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Rendicontazioni e Incassi','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Pagamenti','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Pendenze','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Giornale degli Eventi','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Configurazione e manutenzione','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica PagoPA','RW');
-INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES (null,(select id from utenze where principal = '@PRINCIPAL@'),'Anagrafica Ruoli','RW');
+
 -- Censimento del ruolo amministratore
 
 INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Amministratore',null,'Anagrafica Applicazioni','RW');
