@@ -128,6 +128,8 @@ public class GovpayConfig {
 	private CustomIuv defaultCustomIuvGenerator;
 	private List<String> pspPostali;
 	
+	private String templateProspettoRiscossioni;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -184,6 +186,7 @@ public class GovpayConfig {
 		this.invioPromemoriaEnabled = false;
 		this.invioPromemoriaProperties = new Properties();
 		this.corsProperties = new Properties();
+		this.templateProspettoRiscossioni = null;
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -540,6 +543,8 @@ public class GovpayConfig {
 				this.pspPostali = new ArrayList<>();
 			}
 			
+			this.templateProspettoRiscossioni = getProperty("it.govpay.reportistica.prospettoRiscossione.templateJasper", this.props, false, log);
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -621,7 +626,7 @@ public class GovpayConfig {
 			return null;
 	}
 	
-	private String escape(String string) {
+	public static String escape(String string) {
 		return string.replaceAll("\\\\", "\\\\\\\\");
 	}
 
@@ -844,4 +849,10 @@ public class GovpayConfig {
 	public boolean isCensimentoTipiVersamentoSconosciutiEnabled() {
 		return censimentoTipiVersamentoSconosciutiEnabled;
 	}
+
+	public String getTemplateProspettoRiscossioni() {
+		return templateProspettoRiscossioni;
+	}
+	
+	
 }

@@ -122,6 +122,42 @@ public class RptDAO extends BaseDAO{
 		}
 		return response;
 	}
+	
+	public ListaRptDTOResponse countRpt(ListaRptDTO listaRptDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+
+			RptBD rptBD = new RptBD(bd);
+			RptFilter filter = rptBD.newFilter();
+
+			filter.setOffset(listaRptDTO.getOffset());
+			filter.setLimit(listaRptDTO.getLimit());
+			filter.setDataInizio(listaRptDTO.getDataDa());
+			filter.setDataFine(listaRptDTO.getDataA());
+			filter.setStato(listaRptDTO.getStato());
+			filter.setCcp(listaRptDTO.getCcp());
+			filter.setIuv(listaRptDTO.getIuv());
+			filter.setCodDominio(listaRptDTO.getIdDominio());
+			filter.setIdDomini(listaRptDTO.getCodDomini());
+
+			filter.setCodPagamentoPortale(listaRptDTO.getIdPagamento());
+			filter.setIdPendenza(listaRptDTO.getIdPendenza());
+			filter.setCodApplicazione(listaRptDTO.getIdA2A());
+			filter.setFilterSortList(listaRptDTO.getFieldSortList());
+			filter.setCfCittadinoPagamentoPortale(listaRptDTO.getCfCittadino());
+			filter.setCodApplicazionePagamentoPortale(listaRptDTO.getIdA2APagamentoPortale());
+			filter.setEsitoPagamento(listaRptDTO.getEsitoPagamento());
+
+			long count = rptBD.count(filter);
+
+			return new ListaRptDTOResponse(count, new ArrayList<>());
+		} finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
 
 	public ListaRptDTOResponse listaRpt(ListaRptDTO listaRptDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = null;

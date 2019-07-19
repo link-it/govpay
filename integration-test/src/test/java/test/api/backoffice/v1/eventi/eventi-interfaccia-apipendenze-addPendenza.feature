@@ -85,7 +85,6 @@ And match response.risultati[0] ==
 * json payloadRisposta = decodeBase64(response.risultati[0].parametriRisposta.payload)
 * match payloadRisposta == pendenzaPutResponse
 
-@debug
 Scenario: Evento creazione rifiutata per errore sintassi
 
 * def pendenzaGet = read('classpath:test/api/pendenza/v1/pendenze/get/msg/pendenza-get-dettaglio.json')

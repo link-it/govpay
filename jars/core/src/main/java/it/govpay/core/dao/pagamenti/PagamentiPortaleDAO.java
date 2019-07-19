@@ -504,6 +504,43 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}
 	}
 
+	public ListaPagamentiPortaleDTOResponse countPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+
+			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(bd);
+			PagamentoPortaleFilter filter = pagamentiPortaleBD.newFilter();
+
+			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
+			filter.setLimit(listaPagamentiPortaleDTO.getLimit());
+			filter.setDataInizio(listaPagamentiPortaleDTO.getDataDa());
+			filter.setDataFine(listaPagamentiPortaleDTO.getDataA());
+			filter.setAck(listaPagamentiPortaleDTO.getVerificato());
+			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
+			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
+			filter.setIdSessione(listaPagamentiPortaleDTO.getIdSessione());
+			if(listaPagamentiPortaleDTO.getStato()!=null) {
+				try {
+					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));
+				} catch(Exception e) {
+					return new ListaPagamentiPortaleDTOResponse(0, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
+				}
+			}
+			filter.setVersante(listaPagamentiPortaleDTO.getVersante());
+			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
+			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
+			filter.setCodApplicazione(listaPagamentiPortaleDTO.getCodApplicazione()); 
+
+			long count = pagamentiPortaleBD.count(filter);
+			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
+		}finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
+	
 	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
 		BasicBD bd = null;
 
@@ -520,6 +557,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setAck(listaPagamentiPortaleDTO.getVerificato());
 			filter.setIdSessionePortale(listaPagamentiPortaleDTO.getIdSessionePortale()); 
 			filter.setIdSessionePsp(listaPagamentiPortaleDTO.getIdSessionePsp());
+			filter.setIdSessione(listaPagamentiPortaleDTO.getIdSessione());
 			if(listaPagamentiPortaleDTO.getStato()!=null) {
 				try {
 					filter.setStato(STATO.valueOf(listaPagamentiPortaleDTO.getStato()));

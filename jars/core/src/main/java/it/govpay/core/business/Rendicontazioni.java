@@ -259,7 +259,8 @@ public class Rendicontazioni extends BasicBD {
 									appContext.getRequest().addGenericProperty(new Property("codDominio", "null"));
 								}
 								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoDominioNonCensito");
-								fr.addAnomalia("007109", "L'indentificativo ricevente [" + codDominio + "] del flusso non riferisce un Dominio censito");
+								// 19/07/2019 I flussi di domini esterni non vengono piu' segnalati come anomali.
+								// fr.addAnomalia("007109", "L'indentificativo ricevente [" + codDominio + "] del flusso non riferisce un Dominio censito");
 							}
 
 							BigDecimal totaleImportiRendicontati = BigDecimal.ZERO;
@@ -524,7 +525,7 @@ public class Rendicontazioni extends BasicBD {
 	private boolean isInterno(Dominio dominio, String iuv) {
 
 		if(dominio == null) {
-			// Se il dominio non e' censito, allora sicramente non e' interno
+			// Se il dominio non e' censito, allora sicuramente non e' interno
 			return false;
 		}
 
