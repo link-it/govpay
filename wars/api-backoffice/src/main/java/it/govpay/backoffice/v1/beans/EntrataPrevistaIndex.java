@@ -24,6 +24,10 @@ import it.govpay.core.beans.JSONSerializable;
 "indice",
 "idPendenza",
 "idA2A",
+"idTipoPendenza",
+"idEntrata",
+"identificativoDebitore",
+"anno",
 })
 public class EntrataPrevistaIndex extends JSONSerializable {
   
@@ -68,6 +72,18 @@ public class EntrataPrevistaIndex extends JSONSerializable {
   
   @JsonProperty("idA2A")
   private String idA2A = null;
+  
+  @JsonProperty("idTipoPendenza")
+  private String idTipoPendenza = null;
+  
+  @JsonProperty("idEntrata")
+  private String idEntrata = null;
+  
+  @JsonProperty("identificativoDebitore")
+  private String identificativoDebitore = null;
+  
+  @JsonProperty("anno")
+  private BigDecimal anno = null;
   
   /**
    * Codice fiscale del dominio beneficiario
@@ -293,6 +309,70 @@ public class EntrataPrevistaIndex extends JSONSerializable {
     this.idA2A = idA2A;
   }
 
+  /**
+   * Identificativo della tipologia pendenza
+   **/
+  public EntrataPrevistaIndex idTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+    return this;
+  }
+
+  @JsonProperty("idTipoPendenza")
+  public String getIdTipoPendenza() {
+    return idTipoPendenza;
+  }
+  public void setIdTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+  }
+
+  /**
+   * Identificativo dell'entrata
+   **/
+  public EntrataPrevistaIndex idEntrata(String idEntrata) {
+    this.idEntrata = idEntrata;
+    return this;
+  }
+
+  @JsonProperty("idEntrata")
+  public String getIdEntrata() {
+    return idEntrata;
+  }
+  public void setIdEntrata(String idEntrata) {
+    this.idEntrata = idEntrata;
+  }
+
+  /**
+   * Codice fiscale o partita iva del soggetto
+   **/
+  public EntrataPrevistaIndex identificativoDebitore(String identificativoDebitore) {
+    this.identificativoDebitore = identificativoDebitore;
+    return this;
+  }
+
+  @JsonProperty("identificativoDebitore")
+  public String getIdentificativoDebitore() {
+    return identificativoDebitore;
+  }
+  public void setIdentificativoDebitore(String identificativoDebitore) {
+    this.identificativoDebitore = identificativoDebitore;
+  }
+
+  /**
+   * Anno di riferimento della pendenza
+   **/
+  public EntrataPrevistaIndex anno(BigDecimal anno) {
+    this.anno = anno;
+    return this;
+  }
+
+  @JsonProperty("anno")
+  public BigDecimal getAnno() {
+    return anno;
+  }
+  public void setAnno(BigDecimal anno) {
+    this.anno = anno;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -315,12 +395,16 @@ public class EntrataPrevistaIndex extends JSONSerializable {
         Objects.equals(idVocePendenza, entrataPrevistaIndex.idVocePendenza) &&
         Objects.equals(indice, entrataPrevistaIndex.indice) &&
         Objects.equals(idPendenza, entrataPrevistaIndex.idPendenza) &&
-        Objects.equals(idA2A, entrataPrevistaIndex.idA2A);
+        Objects.equals(idA2A, entrataPrevistaIndex.idA2A) &&
+        Objects.equals(idTipoPendenza, entrataPrevistaIndex.idTipoPendenza) &&
+        Objects.equals(idEntrata, entrataPrevistaIndex.idEntrata) &&
+        Objects.equals(identificativoDebitore, entrataPrevistaIndex.identificativoDebitore) &&
+        Objects.equals(anno, entrataPrevistaIndex.anno);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, iuv, iur, idFlusso, trn, dataRegolamento, numeroPagamenti, importoTotale, importoPagato, dataPagamento, idVocePendenza, indice, idPendenza, idA2A);
+    return Objects.hash(idDominio, iuv, iur, idFlusso, trn, dataRegolamento, numeroPagamenti, importoTotale, importoPagato, dataPagamento, idVocePendenza, indice, idPendenza, idA2A, idTipoPendenza, idEntrata, identificativoDebitore, anno);
   }
 
   public static EntrataPrevistaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException{
@@ -351,6 +435,10 @@ public class EntrataPrevistaIndex extends JSONSerializable {
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
+    sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
+    sb.append("    idEntrata: ").append(toIndentedString(idEntrata)).append("\n");
+    sb.append("    identificativoDebitore: ").append(toIndentedString(identificativoDebitore)).append("\n");
+    sb.append("    anno: ").append(toIndentedString(anno)).append("\n");
     sb.append("}");
     return sb.toString();
   }

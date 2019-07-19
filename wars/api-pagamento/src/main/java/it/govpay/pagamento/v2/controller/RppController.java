@@ -44,7 +44,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v2.beans.EsitoRpt;
+import it.govpay.pagamento.v2.beans.EsitoRpp;
 import it.govpay.pagamento.v2.beans.ListaRppIndex;
 import it.govpay.pagamento.v2.beans.Rpp;
 import it.govpay.pagamento.v2.beans.RppIndex;
@@ -71,7 +71,7 @@ public class RppController extends BaseController {
 			listaRptDTO.setPagina(pagina);
 
 			if(esito != null) {
-				EsitoRpt esitoRPT = EsitoRpt.valueOf(esito);
+				EsitoRpp esitoRPT = EsitoRpp.valueOf(esito);
 
 				EsitoPagamento esitoPagamento = null;
 				if(esitoRPT != null) {

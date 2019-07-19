@@ -2414,6 +2414,20 @@ paths:
           schema:
             type: string
             example: IMU
+        - name: direzione
+          in: query
+          description: Identificativo della direzione interna all'ente creditore
+          required: false
+          schema:
+            type: string
+            example: Direzione ABC
+        - name: divisione
+          in: query
+          description: Identificativo della divisione interna all'ente creditore
+          required: false
+          schema:
+            type: string
+            example: Divisione001
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -3549,6 +3563,12 @@ paths:
         - name: tipoEvento
           in: query
           description: filtro per tipologia evento
+          required: false
+          schema:
+            type: string
+        - name: sottotipoEvento
+          in: query
+          description: filtro per sottotipo evento
           required: false
           schema:
             type: string
@@ -6970,3 +6990,19 @@ components:
           type: string
           description: Identificativo applicazione
           example: "IDA2A"
+        idTipoPendenza:
+          type: string
+          description: Identificativo della tipologia pendenza
+          example: IMU
+        idEntrata:
+          type: string
+          description: Identificativo dell'entrata
+          example: IMU
+        identificativoDebitore:
+          type: string
+          description: Codice fiscale o partita iva del soggetto
+          example: RSSMRA30A01H501I
+        anno:
+          type: number
+          description: Anno di riferimento della pendenza
+          example: 2019

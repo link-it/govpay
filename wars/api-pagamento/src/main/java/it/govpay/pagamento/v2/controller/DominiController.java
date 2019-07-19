@@ -20,22 +20,14 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.DominiDAO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.FindIbanDTO;
-import it.govpay.core.dao.anagrafica.dto.FindIbanDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDominioDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.FindTributiDTO;
-import it.govpay.core.dao.anagrafica.dto.FindTributiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindUnitaOperativeDTO;
 import it.govpay.core.dao.anagrafica.dto.FindUnitaOperativeDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.GetDominioDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.GetIbanDTO;
-import it.govpay.core.dao.anagrafica.dto.GetIbanDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
-import it.govpay.core.dao.anagrafica.dto.GetTributoDTO;
-import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.GetUnitaOperativaDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
@@ -44,11 +36,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.pagamento.v2.beans.ContiAccredito;
-import it.govpay.pagamento.v2.beans.Entrata;
-import it.govpay.pagamento.v2.beans.ListaDominiIndex;
-import it.govpay.pagamento.v2.beans.ListaEntrate;
-import it.govpay.pagamento.v2.beans.ListaIbanAccredito;
+import it.govpay.pagamento.v2.beans.ListaDomini;
 import it.govpay.pagamento.v2.beans.ListaTipiPendenza;
 import it.govpay.pagamento.v2.beans.ListaUnitaOperative;
 import it.govpay.pagamento.v2.beans.TipoPendenza;
@@ -63,47 +51,6 @@ public class DominiController extends BaseController {
      public DominiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
      }
-
-
-
-    public Response dominiIdDominioContiAccreditoIbanGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
-    	String methodName = "dominiIdDominioIbanAccreditoIbanAccreditoGET";  
-		String transactionId = this.context.getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
-			
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
-			validatoreId.validaIdIbanAccredito("ibanAccredito", ibanAccredito);
-			
-			// Parametri - > DTO Input
-			
-			GetIbanDTO getIbanDTO = new GetIbanDTO(user, idDominio, ibanAccredito);
-			
-			// INIT DAO
-			
-			DominiDAO dominiDAO = new DominiDAO();
-			
-			// CHIAMATA AL DAO
-			
-			GetIbanDTOResponse getDominiIbanDTOResponse = dominiDAO.getIban(getIbanDTO);
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
-			ContiAccredito response = DominiConverter.toIbanRsModel(getDominiIbanDTOResponse.getIbanAccredito());
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
-			
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			this.log(this.context);
-		}
-    }
-
 
     public Response dominiIdDominioLogoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
     	String methodName = "getLogo";  
@@ -216,12 +163,12 @@ public class DominiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<it.govpay.pagamento.v2.beans.DominioIndex> results = new ArrayList<>();
+			List<it.govpay.pagamento.v2.beans.Dominio> results = new ArrayList<>();
 			for(it.govpay.bd.model.Dominio dominio: listaDominiDTOResponse.getResults()) {
-				results.add(DominiConverter.toRsModelIndex(dominio));
+				results.add(DominiConverter.toRsModel(dominio));
 			}
 			
-			ListaDominiIndex response = new ListaDominiIndex(results, this.getServicePath(uriInfo),
+			ListaDomini response = new ListaDomini(results, this.getServicePath(uriInfo),
 					listaDominiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
@@ -273,56 +220,6 @@ public class DominiController extends BaseController {
 			this.log(this.context);
 		}
     }
-
-    public Response dominiIdDominioEntrateGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
-    	String methodName = "dominiIdDominioEntrateGET";  
-		String transactionId = this.context.getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
-
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
-			
-			// Parametri - > DTO Input
-			
-			FindTributiDTO listaDominiEntrateDTO = new FindTributiDTO(user, idDominio);
-			
-			listaDominiEntrateDTO.setPagina(pagina);
-			listaDominiEntrateDTO.setLimit(risultatiPerPagina);
-			listaDominiEntrateDTO.setOrderBy(ordinamento);
-			listaDominiEntrateDTO.setAbilitato(abilitato);
-			
-			// INIT DAO
-			
-			DominiDAO dominiDAO = new DominiDAO();
-			
-			// CHIAMATA AL DAO
-			
-			FindTributiDTOResponse listaDominiEntrateDTOResponse = dominiDAO.findTributi(listaDominiEntrateDTO);
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
-			List<it.govpay.pagamento.v2.beans.Entrata> results = new ArrayList<>();
-			for(GetTributoDTOResponse tributo: listaDominiEntrateDTOResponse.getResults()) {
-				results.add(DominiConverter.toEntrataRsModel(tributo.getTributo(), tributo.getIbanAppoggio()));
-			}
-			
-			ListaEntrate response = new ListaEntrate(results, this.getServicePath(uriInfo),
-					listaDominiEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
-			
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			this.log(this.context);
-		}
-    }
-
-
 
     public Response dominiIdDominioTipiPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form) {
     	String methodName = "dominiIdDominioTipiPendenzaGET";  
@@ -496,94 +393,6 @@ public class DominiController extends BaseController {
 			
 			ListaUnitaOperative response = new ListaUnitaOperative(results, this.getServicePath(uriInfo),
 					listaDominiUoDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
-			
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			this.log(this.context);
-		}
-    }
-
-
-
-    public Response dominiIdDominioEntrateIdEntrataGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
-    	String methodName = "dominiIdDominioEntrateIdEntrataGET";  
-		String transactionId = this.context.getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
-
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
-			validatoreId.validaIdEntrata("idEntrata", idEntrata);
-			
-			// Parametri - > DTO Input
-			
-			GetTributoDTO getDominioEntrataDTO = new GetTributoDTO(user, idDominio, idEntrata);
-			
-			// INIT DAO
-			
-			DominiDAO dominiDAO = new DominiDAO();
-			
-			// CHIAMATA AL DAO
-			
-			GetTributoDTOResponse listaDominiEntrateDTOResponse = dominiDAO.getTributo(getDominioEntrataDTO);
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
-			Entrata response = DominiConverter.toEntrataRsModel(listaDominiEntrateDTOResponse.getTributo(), listaDominiEntrateDTOResponse.getIbanAppoggio());
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
-			
-		}catch (Exception e) {
-			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
-		} finally {
-			this.log(this.context);
-		}
-    }
-
-    public Response dominiIdDominioContiAccreditoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento) {
-    	String methodName = "dominiIdDominioIbanAccreditoGET";  
-		String transactionId = this.context.getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
-
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("idDominio", idDominio);
-			
-			// Parametri - > DTO Input
-			
-			FindIbanDTO listaDominiIbanDTO = new FindIbanDTO(user, idDominio);
-			
-			listaDominiIbanDTO.setPagina(pagina);
-			listaDominiIbanDTO.setLimit(risultatiPerPagina);
-			listaDominiIbanDTO.setOrderBy(ordinamento);
-			listaDominiIbanDTO.setAbilitato(abilitato);
-			
-			// INIT DAO
-			
-			DominiDAO dominiDAO = new DominiDAO();
-			
-			// CHIAMATA AL DAO
-			
-			FindIbanDTOResponse listaDominiIbanDTOResponse = dominiDAO.findIban(listaDominiIbanDTO);
-			
-			// CONVERT TO JSON DELLA RISPOSTA
-			
-			List<it.govpay.pagamento.v2.beans.ContiAccredito> results = new ArrayList<>();
-			for(it.govpay.bd.model.IbanAccredito ibanAccredito: listaDominiIbanDTOResponse.getResults()) {
-				results.add(DominiConverter.toIbanRsModel(ibanAccredito));
-			}
-			
-			ListaIbanAccredito response = new ListaIbanAccredito(results, this.getServicePath(uriInfo),
-					listaDominiIbanDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();

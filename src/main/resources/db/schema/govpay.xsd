@@ -1532,7 +1532,7 @@
 			<xsd:element name="dataOraUltimoAggiornamento" type="xsd:dateTime"/>
 			<xsd:element name="causaleVersamento" type="String1024" minOccurs="0"/>
 			<xsd:element name="debitoreTipo" type="String1" minOccurs="0"/>
-			<xsd:element name="debitoreIdentificativo" type="String35"/>
+				<xsd:element name="debitoreIdentificativo" type="String35"/>
 			<xsd:element name="debitoreAnagrafica" type="String70"/>
 			<xsd:element name="debitoreIndirizzo" type="String70" minOccurs="0"/>
 			<xsd:element name="debitoreCivico" type="String16" minOccurs="0"/>
@@ -2328,7 +2328,7 @@
 			<xsd:element name="tipo" type="String16"/>
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
 			<xsd:element name="stato" type="String16"/>
-			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="descrizioneStato" type="String1024" minOccurs="0"/>
 			<xsd:element name="destinatarioTo" type="String256" />
 			<xsd:element name="destinatarioCc" type="String256" minOccurs="0" />
 			<xsd:element name="messaggioContentType" type="String256" minOccurs="0" />
@@ -2990,11 +2990,15 @@
 			<xsd:element name="numeroPagamenti" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="importoTotalePagamenti" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="importoPagato" type="xsd:decimal" minOccurs="0"/>
-			<xsd:element name="data" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="codSingoloVersamentoEnte" type="String70"/>
 			<xsd:element name="indiceDati" type="xsd:positiveInteger"/>
 			<xsd:element name="codVersamentoEnte" type="String35"/>
 			<xsd:element name="codApplicazione" type="String35"/>
+			<xsd:element name="dataPagamento" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="codTipoVersamento" type="String35" minOccurs="0"/>
+			<xsd:element name="codEntrata" type="String35" minOccurs="0"/>
+			<xsd:element name="identificativoDebitore" type="String35" minOccurs="0" />
+			<xsd:element name="anno" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

@@ -112,6 +112,10 @@ public class PromemoriaBD extends BasicBD {
 	public void updateAnnullata(Long id, String message, long tentativi, Date prossima) throws ServiceException {
 		this.update(id, StatoSpedizione.ANNULLATO, message, tentativi, prossima);
 	}
+	
+	public void updateFallita(Long id, String message) throws ServiceException {
+		this.update(id, StatoSpedizione.FALLITO, message, null, null);
+	}
 
 	private void update(long id, StatoSpedizione stato, String descrizione, Long tentativi, Date prossimaSpedizione) throws ServiceException {
 		try {
@@ -120,6 +124,9 @@ public class PromemoriaBD extends BasicBD {
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().STATO, stato.toString()));
 //			if(descrizione != null)
+			if(descrizione != null && descrizione.length() > 1024)
+				descrizione = descrizione.substring(0, 1021)+ "...";
+			
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().DESCRIZIONE_STATO, descrizione));
 			if(tentativi != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Promemoria.model().TENTATIVI_SPEDIZIONE, tentativi));

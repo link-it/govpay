@@ -11,9 +11,11 @@ import java.util.Properties;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.mail.MailAttach;
 import org.openspcoop2.utils.mail.MailBinaryAttach;
 import org.openspcoop2.utils.mail.Sender;
@@ -35,6 +37,7 @@ import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.trasformazioni.Costanti;
@@ -194,8 +197,15 @@ public class Promemoria  extends BasicBD{
 		PromemoriaBD promemoriaBD = new PromemoriaBD(this);
 		Versamento versamento = promemoria.getVersamento(this);
 		TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
-		boolean ok = true;
 		String errore  = "";
+		
+		if(StringUtils.isEmpty(promemoria.getDestinatarioTo())){
+			log.debug("Invio promemoria avviso di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()
+					+" , IdPendenza: "+versamento.getCodVersamentoEnte()+ "]: FALLITO destinatario non specificato]");
+			String messaggio = "La spedizione e' fallita perche' non e' stato definito il destinatario del promemoria.";
+			promemoriaBD.updateFallita(promemoria.getId(), messaggio);
+			return;
+		}
 
 		org.openspcoop2.utils.mail.Mail mail = new org.openspcoop2.utils.mail.Mail();
 
@@ -263,27 +273,29 @@ public class Promemoria  extends BasicBD{
 			log.debug("Spediazione promemoria verso il mail server ["+this.host+"]:["+this.port+"]...");
 			this.senderCommonsMail.send(mail, true);
 			log.debug("Spediazione promemoria verso il mail server ["+this.host+"]:["+this.port+"] completata.");
-		}catch (Exception e) {
+			promemoriaBD.updateSpedito(promemoria.getId());
+		}catch (UtilsException e) {
 			errore = "Errore durante l'invio del promemoria avviso di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()+" , IdPendenza: "+versamento.getCodVersamentoEnte()
 				+ "] al destinatario ["+promemoria.getDestinatarioTo()+"] CC["+(promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")+"]:"+e.getMessage();
 			log.error(errore, e);
-			ok = false;
-		}
-		
-		if(!ok) {
-			log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
-			long tentativi = promemoria.getTentativiSpedizione() + 1;
-			Date today = new Date();
-			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
-			Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
-			
-			// Limito la rispedizione al giorno dopo.
-			if(prossima.after(tomorrow)) prossima = tomorrow;
-			
-			promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
-			log.debug("La spedizione del promemoria schedulata con successo.");
-		} else {
-			promemoriaBD.updateSpedito(promemoria.getId());
+
+			if(ExceptionUtils.existsInnerException(e, javax.mail.internet.AddressException.class)) {
+				log.debug("La spedizione del promemoria si e' conclusa con errore che non prevede la rispedizione...");
+				promemoriaBD.updateFallita(promemoria.getId(), errore);
+				log.debug("Salvataggio stato 'fallito' completato con successo");
+			} else {
+				log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
+				long tentativi = promemoria.getTentativiSpedizione() + 1;
+				Date today = new Date();
+				Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
+				Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
+				
+				// Limito la rispedizione al giorno dopo.
+				if(prossima.after(tomorrow)) prossima = tomorrow;
+				
+				promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
+				log.debug("La spedizione del promemoria schedulata con successo.");
+			}
 		}
 	}
 	
@@ -292,8 +304,15 @@ public class Promemoria  extends BasicBD{
 		Versamento versamento = promemoria.getVersamento(this);
 		TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(this);
 		Rpt rpt = promemoria.getRpt(this);
-		boolean ok = true;
 		String errore  = "";
+		
+		if(StringUtils.isEmpty(promemoria.getDestinatarioTo())){
+			log.debug("Invio promemoria avviso di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()
+					+" , IdPendenza: "+versamento.getCodVersamentoEnte()+ "]: FALLITO destinatario non specificato]");
+			String messaggio = "La spedizione e' fallita perche' non e' stato definito il destinatario del promemoria.";
+			promemoriaBD.updateFallita(promemoria.getId(), messaggio);
+			return;
+		}
 
 		org.openspcoop2.utils.mail.Mail mail = new org.openspcoop2.utils.mail.Mail();
 
@@ -369,27 +388,29 @@ public class Promemoria  extends BasicBD{
 			log.debug("Spediazione promemoria verso il mail server ["+this.host+"]:["+this.port+"]...");
 			this.senderCommonsMail.send(mail, true);
 			log.debug("Spediazione promemoria verso il mail server ["+this.host+"]:["+this.port+"] completata.");
-		}catch (Exception e) {
+			promemoriaBD.updateSpedito(promemoria.getId());
+		}catch (UtilsException e) {
 			errore = "Errore durante l'invio del promemoria ricevuta di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(this).getCodApplicazione()+" , IdPendenza: "+versamento.getCodVersamentoEnte()
 			+ "] al destinatario ["+promemoria.getDestinatarioTo()+"] CC["+(promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")+"]:"+e.getMessage();
 			log.error(errore, e);
-			ok = false;
-		}
-		
-		if(!ok) {
-			log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
-			long tentativi = promemoria.getTentativiSpedizione() + 1;
-			Date today = new Date();
-			Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
-			Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
-			
-			// Limito la rispedizione al giorno dopo.
-			if(prossima.after(tomorrow)) prossima = tomorrow;
-			
-			promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
-			log.debug("La spedizione del promemoria schedulata con successo.");
-		} else {
-			promemoriaBD.updateSpedito(promemoria.getId());
+
+			if(ExceptionUtils.existsInnerException(e, javax.mail.internet.AddressException.class)) {
+				log.debug("La spedizione del promemoria si e' conclusa con errore che non prevede la rispedizione...");
+				promemoriaBD.updateFallita(promemoria.getId(), errore);
+				log.debug("Salvataggio stato 'fallito' completato con successo");
+			} else {
+				log.debug("La spedizione del promemoria si e' conclusa con errore, rischedulo la spedizione...");
+				long tentativi = promemoria.getTentativiSpedizione() + 1;
+				Date today = new Date();
+				Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
+				Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
+				
+				// Limito la rispedizione al giorno dopo.
+				if(prossima.after(tomorrow)) prossima = tomorrow;
+				
+				promemoriaBD.updateDaSpedire(promemoria.getId(), errore, tentativi, prossima);
+				log.debug("La spedizione del promemoria schedulata con successo.");
+			}
 		}
 	}
 }

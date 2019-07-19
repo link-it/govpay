@@ -14,6 +14,8 @@ import it.govpay.core.beans.JSONSerializable;
 "domini",
 "tipiPendenza",
 "acl",
+"anagrafica",
+"identityData",
 })
 public class Profilo extends JSONSerializable {
   
@@ -21,13 +23,13 @@ public class Profilo extends JSONSerializable {
   private String nome = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = new ArrayList<>();
+  private List<Dominio> domini = new ArrayList<>();
   
   @JsonProperty("tipiPendenza")
-  private List<TipoPendenzaIndex> tipiPendenza = new ArrayList<TipoPendenzaIndex>();
+  private List<TipoPendenzaIndex> tipiPendenza = new ArrayList<>();
   
   @JsonProperty("acl")
-  private List<AclPost> acl = new ArrayList<>();
+  private List<Acl> acl = new ArrayList<>();
   
   @JsonProperty("anagrafica")
   private Soggetto anagrafica = null;
@@ -36,7 +38,7 @@ public class Profilo extends JSONSerializable {
   private Object identityData = null;
   
   /**
-   * Nome dell'utenza
+   * Nome o principal dell'utenza
    **/
   public Profilo nome(String nome) {
     this.nome = nome;
@@ -45,7 +47,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("nome")
   public String getNome() {
-    return this.nome;
+    return nome;
   }
   public void setNome(String nome) {
     this.nome = nome;
@@ -54,16 +56,16 @@ public class Profilo extends JSONSerializable {
   /**
    * domini su cui e' abilitato ad operare
    **/
-  public Profilo domini(List<DominioIndex> domini) {
+  public Profilo domini(List<Dominio> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<DominioIndex> getDomini() {
-    return this.domini;
+  public List<Dominio> getDomini() {
+    return domini;
   }
-  public void setDomini(List<DominioIndex> domini) {
+  public void setDomini(List<Dominio> domini) {
     this.domini = domini;
   }
 
@@ -77,7 +79,7 @@ public class Profilo extends JSONSerializable {
 
   @JsonProperty("tipiPendenza")
   public List<TipoPendenzaIndex> getTipiPendenza() {
-    return this.tipiPendenza;
+    return tipiPendenza;
   }
   public void setTipiPendenza(List<TipoPendenzaIndex> tipiPendenza) {
     this.tipiPendenza = tipiPendenza;
@@ -85,16 +87,16 @@ public class Profilo extends JSONSerializable {
 
   /**
    **/
-  public Profilo acl(List<AclPost> acl) {
+  public Profilo acl(List<Acl> acl) {
     this.acl = acl;
     return this;
   }
 
   @JsonProperty("acl")
-  public List<AclPost> getAcl() {
-    return this.acl;
+  public List<Acl> getAcl() {
+    return acl;
   }
-  public void setAcl(List<AclPost> acl) {
+  public void setAcl(List<Acl> acl) {
     this.acl = acl;
   }
 
@@ -133,7 +135,7 @@ public class Profilo extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Profilo profilo = (Profilo) o;

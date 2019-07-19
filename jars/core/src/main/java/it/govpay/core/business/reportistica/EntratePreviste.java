@@ -123,11 +123,11 @@ public class EntratePreviste extends BasicBD{
 			for (EntrataPrevista entrataPrevista : listPerFlusso) {
 				VoceRiscossioneInput voceRiscossione = new VoceRiscossioneInput();
 				
-				voceRiscossione.setData(entrataPrevista.getData() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getData()) : "");
+//				voceRiscossione.setData(entrataPrevista.getData() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getData()) : "");
 				voceRiscossione.setIdPendenza(entrataPrevista.getCodVersamentoEnte());
 				voceRiscossione.setImporto(entrataPrevista.getImportoPagato() != null ? entrataPrevista.getImportoPagato().doubleValue() : 0.0);
 				voceRiscossione.setIuv(entrataPrevista.getIuv());
-				voceRiscossione.setAnno(entrataPrevista.getAnno() != null ? entrataPrevista.getAnno()+"" : "");
+				voceRiscossione.setAnno(entrataPrevista.getAnno());
 				voceRiscossione.setDataPagamento(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
 				voceRiscossione.setIdentificativoDebitore(entrataPrevista.getIdentificativoDebitore());
 				voceRiscossione.setIdEntrata(entrataPrevista.getCodEntrata());
@@ -162,11 +162,11 @@ public class EntratePreviste extends BasicBD{
 					
 					VoceRiscossioneInput voceRiscossione = new VoceRiscossioneInput();
 					
-					voceRiscossione.setData(entrataPrevista.getData() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getData()) : "");
+//					voceRiscossione.setData(entrataPrevista.getData() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getData()) : "");
 					voceRiscossione.setIdPendenza(entrataPrevista.getCodVersamentoEnte());
 					voceRiscossione.setImporto(entrataPrevista.getImportoPagato() != null ? entrataPrevista.getImportoPagato().doubleValue() : 0.0);
 					voceRiscossione.setIuv(entrataPrevista.getIuv());
-					voceRiscossione.setAnno(entrataPrevista.getAnno() != null ? entrataPrevista.getAnno()+"" : "");
+					voceRiscossione.setAnno(entrataPrevista.getAnno());
 					voceRiscossione.setDataPagamento(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
 					voceRiscossione.setIdentificativoDebitore(entrataPrevista.getIdentificativoDebitore());
 					voceRiscossione.setIdEntrata(entrataPrevista.getCodEntrata());

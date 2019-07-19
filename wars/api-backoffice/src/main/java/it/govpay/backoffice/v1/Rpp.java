@@ -100,7 +100,9 @@ public class Rpp extends BaseRsServiceV1{
         this.controller.setContext(this.getContext());
         if(httpHeaders.getRequestHeader("X-HTTP-Method-Override") != null && !httpHeaders.getRequestHeader("X-HTTP-Method-Override").isEmpty() && httpHeaders.getRequestHeader("X-HTTP-Method-Override").get(0).equals("PATCH"))
         	return this.controller.rppIdDominioIuvCcpPATCH(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  ccp);
-        return Response.status(405).build();
+       
+        String transactionId = this.getContext().getTransactionId();
+        return this.controller.handleEventoFail(Response.status(405), transactionId, null, "Operazione non consentita").build();
     }
     
     @POST
@@ -110,7 +112,9 @@ public class Rpp extends BaseRsServiceV1{
         this.controller.setContext(this.getContext());
         if(httpHeaders.getRequestHeader("X-HTTP-Method-Override") != null && !httpHeaders.getRequestHeader("X-HTTP-Method-Override").isEmpty() && httpHeaders.getRequestHeader("X-HTTP-Method-Override").get(0).equals("PATCH"))
         	return this.controller.rppIdDominioIuvCcpPATCH(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  "n/a");
-        return Response.status(405).build();
+      
+        String transactionId = this.getContext().getTransactionId();
+        return this.controller.handleEventoFail(Response.status(405), transactionId, null, "Operazione non consentita").build();
     }
 
     @PATCH

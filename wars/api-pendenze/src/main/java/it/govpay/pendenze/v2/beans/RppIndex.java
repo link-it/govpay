@@ -15,7 +15,6 @@ import it.govpay.core.beans.JSONSerializable;
 "segnalazioni",
 "rpt",
 "rt",
-"href",
 "pendenza",
 })
 public class RppIndex extends JSONSerializable {
@@ -34,9 +33,6 @@ public class RppIndex extends JSONSerializable {
   
   @JsonProperty("rt")
   private Object rt = null;
-  
-  @JsonProperty("href")
-  private String href = null;
   
   @JsonProperty("pendenza")
   private String pendenza = null;
@@ -121,22 +117,6 @@ public class RppIndex extends JSONSerializable {
   }
 
   /**
-   * URL della rpp
-   **/
-  public RppIndex href(String href) {
-    this.href = href;
-    return this;
-  }
-
-  @JsonProperty("href")
-  public String getHref() {
-    return href;
-  }
-  public void setHref(String href) {
-    this.href = href;
-  }
-
-  /**
    * Url alla pendenza oggetto della richiesta di pagamento
    **/
   public RppIndex pendenza(String pendenza) {
@@ -166,13 +146,12 @@ public class RppIndex extends JSONSerializable {
         Objects.equals(segnalazioni, rppIndex.segnalazioni) &&
         Objects.equals(rpt, rppIndex.rpt) &&
         Objects.equals(rt, rppIndex.rt) &&
-        Objects.equals(href, rppIndex.href) &&
         Objects.equals(pendenza, rppIndex.pendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, href, pendenza);
+    return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, pendenza);
   }
 
   public static RppIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -194,7 +173,6 @@ public class RppIndex extends JSONSerializable {
     sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
     sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
     sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
-    sb.append("    href: ").append(toIndentedString(href)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();

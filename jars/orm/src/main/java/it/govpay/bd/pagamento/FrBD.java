@@ -19,22 +19,6 @@
  */
 package it.govpay.bd.pagamento;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.IFilter;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.converter.FrConverter;
-import it.govpay.bd.nativequeries.NativeQueries;
-import it.govpay.bd.pagamento.filters.FrFilter;
-import it.govpay.model.Fr.StatoFr;
-import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.orm.FR;
-import it.govpay.orm.IdFr;
-import it.govpay.orm.IdIncasso;
-import it.govpay.orm.IdVersamento;
-import it.govpay.orm.dao.jdbc.JDBCFRServiceSearch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +34,19 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.IFilter;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.converter.FrConverter;
+import it.govpay.bd.nativequeries.NativeQueries;
+import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.model.Fr.StatoFr;
+import it.govpay.orm.FR;
+import it.govpay.orm.IdFr;
+import it.govpay.orm.dao.jdbc.JDBCFRServiceSearch;
+import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
 
 public class FrBD extends BasicBD {
 

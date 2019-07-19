@@ -12,7 +12,6 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTipoPendenza",
 "descrizione",
-"tipo",
 })
 public class TipoPendenzaIndex extends JSONSerializable {
   
@@ -21,9 +20,6 @@ public class TipoPendenzaIndex extends JSONSerializable {
   
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
-  @JsonProperty("tipo")
-  private TipoPendenzaTipologia tipo = null;
   
   /**
    **/
@@ -55,21 +51,6 @@ public class TipoPendenzaIndex extends JSONSerializable {
     this.descrizione = descrizione;
   }
 
-  /**
-   **/
-  public TipoPendenzaIndex tipo(TipoPendenzaTipologia tipo) {
-    this.tipo = tipo;
-    return this;
-  }
-
-  @JsonProperty("tipo")
-  public TipoPendenzaTipologia getTipo() {
-    return tipo;
-  }
-  public void setTipo(TipoPendenzaTipologia tipo) {
-    this.tipo = tipo;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -80,13 +61,12 @@ public class TipoPendenzaIndex extends JSONSerializable {
     }
     TipoPendenzaIndex tipoPendenzaIndex = (TipoPendenzaIndex) o;
     return Objects.equals(idTipoPendenza, tipoPendenzaIndex.idTipoPendenza) &&
-        Objects.equals(descrizione, tipoPendenzaIndex.descrizione) &&
-        Objects.equals(tipo, tipoPendenzaIndex.tipo);
+        Objects.equals(descrizione, tipoPendenzaIndex.descrizione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, descrizione, tipo);
+    return Objects.hash(idTipoPendenza, descrizione);
   }
 
   public static TipoPendenzaIndex parse(String json) throws ServiceException, ValidationException { 
@@ -105,7 +85,6 @@ public class TipoPendenzaIndex extends JSONSerializable {
     
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("}");
     return sb.toString();
   }

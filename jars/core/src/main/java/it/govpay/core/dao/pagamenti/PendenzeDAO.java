@@ -114,6 +114,77 @@ public class PendenzeDAO extends BaseDAO{
 
 	public PendenzeDAO() {
 	}
+	
+	public ListaPendenzeDTOResponse countPendenze(ListaPendenzeConInformazioniIncassoDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+		BasicBD bd = null;
+
+		try {
+			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaPendenzaDTO.getUser());
+
+			VersamentiIncassiBD versamentiBD = new VersamentiIncassiBD(bd);
+			VersamentoIncassoFilter filter = versamentiBD.newFilter();
+
+			filter.setIdDomini(listaPendenzaDTO.getIdDomini());
+			filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());
+
+			filter.setOffset(listaPendenzaDTO.getOffset());
+			filter.setLimit(listaPendenzaDTO.getLimit());
+			filter.setDataInizio(listaPendenzaDTO.getDataDa());
+			filter.setDataFine(listaPendenzaDTO.getDataA());
+			if(listaPendenzaDTO.getStato()!=null) {
+				try {
+					it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento statoVersamento = null;
+					StatoPendenza statoPendenza = StatoPendenza.valueOf(listaPendenzaDTO.getStato());
+
+					//TODO mapping...piu' stati?
+					switch(statoPendenza) {
+					case ANNULLATA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.ANNULLATO;
+					break;
+					case ESEGUITA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.ESEGUITO;
+					break;
+					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.PARZIALMENTE_ESEGUITO;
+					break;
+					case NON_ESEGUITA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO;
+					break;
+					case SCADUTA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.NON_ESEGUITO; //TODO aggiungere data scadenza < ora
+					break;
+					case INCASSATA: statoVersamento = it.govpay.bd.viste.model.VersamentoIncasso.StatoVersamento.INCASSATO;
+					default:
+						break;
+
+					}
+					filter.setStatoVersamento(statoVersamento);
+				} catch(Exception e) {
+					return new ListaPendenzeDTOResponse(0, new ArrayList<LeggiPendenzaDTOResponse>());
+				}
+			}
+			filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
+			filter.setCodPagamentoPortale(listaPendenzaDTO.getIdPagamento());
+			filter.setCodUnivocoDebitore(listaPendenzaDTO.getIdDebitore());
+			filter.setCodApplicazione(listaPendenzaDTO.getIdA2A());
+			filter.setCodVersamento(listaPendenzaDTO.getIdPendenza());
+			filter.setAbilitaFiltroCittadino(listaPendenzaDTO.isAbilitaFiltroCittadino());
+			filter.setFilterSortList(listaPendenzaDTO.getFieldSortList());
+			if(!listaPendenzaDTO.isOrderEnabled()) {
+				filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
+			}
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				filter.setCfCittadino(userDetails.getIdentificativo()); 
+				filter.setAbilitaFiltroCittadino(true);
+			}
+			filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
+			filter.setDivisione(listaPendenzaDTO.getDivisione());
+			filter.setDirezione(listaPendenzaDTO.getDirezione()); 
+
+			long count = versamentiBD.count(filter);
+			
+			return new ListaPendenzeDTOResponse(count, new ArrayList<>());
+		}finally {
+			if(bd != null)
+				bd.closeConnection();
+		}
+	}
 
 	public ListaPendenzeDTOResponse listaPendenzeConInformazioniIncasso(ListaPendenzeConInformazioniIncassoDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		BasicBD bd = null;
@@ -182,6 +253,8 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setAbilitaFiltroCittadino(true);
 		}
 		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
+		filter.setDivisione(listaPendenzaDTO.getDivisione());
+		filter.setDirezione(listaPendenzaDTO.getDirezione()); 
 
 		long count = versamentiBD.count(filter);
 
@@ -281,6 +354,8 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setCfCittadino(userDetails.getIdentificativo()); 
 		}
 		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
+		filter.setDivisione(listaPendenzaDTO.getDivisione());
+		filter.setDirezione(listaPendenzaDTO.getDirezione()); 
 
 		long count = versamentiBD.count(filter);
 

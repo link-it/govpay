@@ -15,8 +15,8 @@ public class ListaEntratePrevisteDTO extends BasicFindRequestDTO{
 	
 	public ListaEntratePrevisteDTO(Authentication user) {
 		super(user);
-		this.addSortField("data", VistaRiscossioni.model().DATA);
-		this.addDefaultSort(VistaRiscossioni.model().DATA,SortOrder.ASC);
+		this.addSortField("data", VistaRiscossioni.model().DATA_PAGAMENTO);
+		this.addDefaultSort(VistaRiscossioni.model().DATA_PAGAMENTO, SortOrder.ASC);
 	}
 	private Date dataA;
 	private Date dataDa;

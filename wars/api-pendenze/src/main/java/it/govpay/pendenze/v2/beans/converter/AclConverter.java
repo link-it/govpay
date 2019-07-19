@@ -55,6 +55,8 @@ public class AclConverter {
 		if(serv ==null)
 			return null;
 		
+		rsModel.setServizio(serv);
+		
 		if(acl.getListaDiritti() != null) {
 			List<String> autorizzazioni = acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList());
 			Collections.sort(autorizzazioni);

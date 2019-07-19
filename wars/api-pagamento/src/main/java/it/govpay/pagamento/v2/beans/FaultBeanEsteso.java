@@ -35,6 +35,9 @@ public class FaultBeanEsteso extends JSONSerializable {
 	    
 	            
 	    PAGOPA("PAGOPA"),
+
+
+	    EC("EC"),
 	    
 	            
 	    INTERNO("INTERNO");
@@ -66,8 +69,8 @@ public class FaultBeanEsteso extends JSONSerializable {
 
 	    
 	    
-	  @JsonProperty("categoria")
-	  private CategoriaEnum categoria = null;
+  @JsonProperty("categoria")
+  private CategoriaEnum categoria = null;
 	  
   @JsonProperty("codice")
   private String codice = null;
@@ -185,20 +188,21 @@ public class FaultBeanEsteso extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     FaultBeanEsteso faultBeanEsteso = (FaultBeanEsteso) o;
-    return Objects.equals(this.codice, faultBeanEsteso.codice) &&
-        Objects.equals(this.descrizione, faultBeanEsteso.descrizione) &&
-        Objects.equals(this.dettaglio, faultBeanEsteso.dettaglio) &&
-        Objects.equals(this.id, faultBeanEsteso.id) &&
-        Objects.equals(this.location, faultBeanEsteso.location);
+    return Objects.equals(categoria, faultBeanEsteso.categoria) &&
+        Objects.equals(codice, faultBeanEsteso.codice) &&
+        Objects.equals(descrizione, faultBeanEsteso.descrizione) &&
+        Objects.equals(dettaglio, faultBeanEsteso.dettaglio) &&
+        Objects.equals(id, faultBeanEsteso.id) &&
+        Objects.equals(location, faultBeanEsteso.location);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.codice, this.descrizione, this.dettaglio, this.id, this.location);
+    return Objects.hash(categoria, codice, descrizione, dettaglio, id, location);
   }
 
   public static FaultBeanEsteso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -214,12 +218,13 @@ public class FaultBeanEsteso extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FaultBeanEsteso {\n");
-    sb.append("    ").append(this.toIndentedString(super.toString())).append("\n");
-    sb.append("    codice: ").append(this.toIndentedString(this.codice)).append("\n");
-    sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
-    sb.append("    dettaglio: ").append(this.toIndentedString(this.dettaglio)).append("\n");
-    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
-    sb.append("    location: ").append(this.toIndentedString(this.location)).append("\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    categoria: ").append(toIndentedString(categoria)).append("\n");
+    sb.append("    codice: ").append(toIndentedString(codice)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
+    sb.append("    dettaglio: ").append(toIndentedString(dettaglio)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    location: ").append(toIndentedString(location)).append("\n");
     sb.append("}");
     return sb.toString();
   }

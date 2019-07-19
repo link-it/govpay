@@ -50,11 +50,15 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.NUMERO_PAGAMENTI = new Field("numeroPagamenti",long.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.IMPORTO_TOTALE_PAGAMENTI = new Field("importoTotalePagamenti",java.lang.Double.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.IMPORTO_PAGATO = new Field("importoPagato",java.lang.Double.class,"VistaRiscossioni",VistaRiscossioni.class);
-		this.DATA = new Field("data",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new Field("codSingoloVersamentoEnte",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.INDICE_DATI = new Field("indiceDati",java.lang.Integer.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.COD_TIPO_VERSAMENTO = new Field("codTipoVersamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.COD_ENTRATA = new Field("codEntrata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IDENTIFICATIVO_DEBITORE = new Field("identificativoDebitore",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.ANNO = new Field("anno",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
 	}
 	
@@ -71,11 +75,15 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.NUMERO_PAGAMENTI = new ComplexField(father,"numeroPagamenti",long.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.IMPORTO_TOTALE_PAGAMENTI = new ComplexField(father,"importoTotalePagamenti",java.lang.Double.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",java.lang.Double.class,"VistaRiscossioni",VistaRiscossioni.class);
-		this.DATA = new ComplexField(father,"data",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new ComplexField(father,"codSingoloVersamentoEnte",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.lang.Integer.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.COD_TIPO_VERSAMENTO = new ComplexField(father,"codTipoVersamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.COD_ENTRATA = new ComplexField(father,"codEntrata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IDENTIFICATIVO_DEBITORE = new ComplexField(father,"identificativoDebitore",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.ANNO = new ComplexField(father,"anno",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
 	}
 	
@@ -99,8 +107,6 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 	 
 	public IField IMPORTO_PAGATO = null;
 	 
-	public IField DATA = null;
-	 
 	public IField COD_SINGOLO_VERSAMENTO_ENTE = null;
 	 
 	public IField INDICE_DATI = null;
@@ -108,6 +114,16 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 	public IField COD_VERSAMENTO_ENTE = null;
 	 
 	public IField COD_APPLICAZIONE = null;
+	 
+	public IField DATA_PAGAMENTO = null;
+	 
+	public IField COD_TIPO_VERSAMENTO = null;
+	 
+	public IField COD_ENTRATA = null;
+	 
+	public IField IDENTIFICATIVO_DEBITORE = null;
+	 
+	public IField ANNO = null;
 	 
 
 	@Override

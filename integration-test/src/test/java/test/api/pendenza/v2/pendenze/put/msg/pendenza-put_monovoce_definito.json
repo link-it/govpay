@@ -1,4 +1,5 @@
 {
+	"idTipoPendenza" : '#(codEntrataSegreteria)',
  	"causale": '#("Pagamento dovuto n." + idPendenza)',
 	"soggettoPagatore": {
 		"tipo": "F",

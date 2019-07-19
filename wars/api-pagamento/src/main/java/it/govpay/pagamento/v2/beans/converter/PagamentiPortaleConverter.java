@@ -22,19 +22,19 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.ModoAvvisatura;
-import it.govpay.pagamento.v2.beans.ContoAddebito;
+import it.govpay.pagamento.v2.beans.Conto;
 import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
-import it.govpay.pagamento.v2.beans.PagamentiPortaleResponseOk;
+import it.govpay.pagamento.v2.beans.NuovaPendenza;
+import it.govpay.pagamento.v2.beans.NuovaVocePendenza;
+import it.govpay.pagamento.v2.beans.NuovoPagamento;
 import it.govpay.pagamento.v2.beans.Pagamento;
+import it.govpay.pagamento.v2.beans.PagamentoCreato;
 import it.govpay.pagamento.v2.beans.PagamentoIndex;
-import it.govpay.pagamento.v2.beans.PagamentoPost;
-import it.govpay.pagamento.v2.beans.PagamentoPost.AutenticazioneSoggettoEnum;
-import it.govpay.pagamento.v2.beans.PendenzaPost;
 import it.govpay.pagamento.v2.beans.Soggetto;
-import it.govpay.pagamento.v2.beans.Soggetto.TipoEnum;
 import it.govpay.pagamento.v2.beans.StatoPagamento;
 import it.govpay.pagamento.v2.beans.TassonomiaAvviso;
-import it.govpay.pagamento.v2.beans.VocePendenza;
+import it.govpay.pagamento.v2.beans.TipoAutenticazioneSoggetto;
+import it.govpay.pagamento.v2.beans.TipoSoggetto;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class PagamentiPortaleConverter {
@@ -46,8 +46,8 @@ public class PagamentiPortaleConverter {
 	public static final String ID_DOMINIO_KEY = "idDominio";
 	public static final String IUV_KEY = "iuv";
 
-	public static PagamentiPortaleResponseOk getPagamentiPortaleResponseOk(PagamentiPortaleDTOResponse dtoResponse) {
-		PagamentiPortaleResponseOk  json = new PagamentiPortaleResponseOk();
+	public static PagamentoCreato getPagamentiPortaleResponseOk(PagamentiPortaleDTOResponse dtoResponse) {
+		PagamentoCreato  json = new PagamentoCreato();
 
 		json.setId(dtoResponse.getId());
 		json.setLocation(UriBuilderUtils.getFromPagamenti(dtoResponse.getId()));
@@ -57,7 +57,7 @@ public class PagamentiPortaleConverter {
 		return json;
 	}
 
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO(PagamentoPost pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, String idSessionePortale,Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) throws Exception {
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(NuovoPagamento pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, String idSessionePortale,Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) throws Exception {
 
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
 
@@ -74,7 +74,7 @@ public class PagamentiPortaleConverter {
 		if(pagamentiPortaleRequest.getAutenticazioneSoggetto() != null)
 			pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto().toString());
 		else 
-			pagamentiPortaleDTO.setAutenticazioneSoggetto(AutenticazioneSoggettoEnum.N_A.toString());
+			pagamentiPortaleDTO.setAutenticazioneSoggetto(TipoAutenticazioneSoggetto.N_A.toString());
 
 		pagamentiPortaleDTO.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 		pagamentiPortaleDTO.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
@@ -83,9 +83,6 @@ public class PagamentiPortaleConverter {
 			pagamentiPortaleDTO.setBicAddebito(pagamentiPortaleRequest.getContoAddebito().getBic());
 			pagamentiPortaleDTO.setIbanAddebito(pagamentiPortaleRequest.getContoAddebito().getIban());
 		}
-
-		if(pagamentiPortaleRequest.getLingua() != null)
-			pagamentiPortaleDTO.setLingua(pagamentiPortaleRequest.getLingua().toString());
 
 		pagamentiPortaleDTO.setUrlRitorno(pagamentiPortaleRequest.getUrlRitorno());
 
@@ -97,7 +94,7 @@ public class PagamentiPortaleConverter {
 			List<Object> listRefs = new ArrayList<>();
 
 			int i =0;
-			for (PendenzaPost pendenza: pagamentiPortaleRequest.getPendenze()) {
+			for (NuovaPendenza pendenza: pagamentiPortaleRequest.getPendenze()) {
 				
 				if((pendenza.getIdDominio() != null && pendenza.getIdTipoPendenza() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null && pendenza.getNumeroAvviso() == null)) {
 					PagamentiPortaleDTO.RefVersamentoModello4 ref = pagamentiPortaleDTO. new RefVersamentoModello4();
@@ -144,7 +141,7 @@ public class PagamentiPortaleConverter {
 		return pagamentiPortaleDTO;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -162,7 +159,6 @@ public class PagamentiPortaleConverter {
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
-		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
@@ -199,7 +195,7 @@ public class PagamentiPortaleConverter {
 		return versamento;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ValidationException, ServiceException {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza) throws ValidationException, ServiceException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -217,9 +213,6 @@ public class PagamentiPortaleConverter {
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
-
-		versamento.setNome(pendenza.getNome());
-		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
 			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
@@ -264,10 +257,10 @@ public class PagamentiPortaleConverter {
 	}
 
 
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException {
 
 		if(voci != null && voci.size() > 0) {
-			for (VocePendenza vocePendenza : voci) {
+			for (NuovaVocePendenza vocePendenza : voci) {
 				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
 
 				//sv.setCodTributo(value); ??
@@ -325,13 +318,13 @@ public class PagamentiPortaleConverter {
 	public static Pagamento toRsModel(it.govpay.bd.model.PagamentoPortale pagamentoPortale, Authentication user) throws ServiceException {
 		Pagamento rsModel = new Pagamento();
 
-		PagamentoPost pagamentiPortaleRequest = null;
+		NuovoPagamento pagamentiPortaleRequest = null;
 		if(pagamentoPortale.getJsonRequest()!=null)
 			try {
-				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
+				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), NuovoPagamento.class);
 
 				if(pagamentiPortaleRequest.getContoAddebito()!=null) {
-					ContoAddebito contoAddebito = new ContoAddebito();
+					Conto contoAddebito = new Conto();
 					contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBic());
 					contoAddebito.setIban(pagamentiPortaleRequest.getContoAddebito().getIban());
 					rsModel.setContoAddebito(contoAddebito);
@@ -339,7 +332,7 @@ public class PagamentiPortaleConverter {
 				rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 				rsModel.setSoggettoVersante(controlloUtenzaVersante(pagamentiPortaleRequest.getSoggettoVersante(),user));
-				rsModel.setAutenticazioneSoggetto(it.govpay.pagamento.v2.beans.Pagamento.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
+				rsModel.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto());
 			} catch (ServiceException | ValidationException e) {
 
 			}
@@ -358,16 +351,21 @@ public class PagamentiPortaleConverter {
 	}
 	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto, Authentication user) throws ServiceException {
 		it.govpay.bd.model.PagamentoPortale pagamentoPortale = dto.getPagamento();
+		return toRsModelIndex(pagamentoPortale, user);
+
+	}
+
+	public static PagamentoIndex toRsModelIndex(it.govpay.bd.model.PagamentoPortale pagamentoPortale, Authentication user) {
 		PagamentoIndex rsModel = new PagamentoIndex();
 
-		PagamentoPost pagamentiPortaleRequest = null;
+		NuovoPagamento pagamentiPortaleRequest = null;
 
 		if(pagamentoPortale.getJsonRequest()!=null)
 			try {
-				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
+				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), NuovoPagamento.class);
 
 				if(pagamentiPortaleRequest.getContoAddebito()!=null) {
-					ContoAddebito contoAddebito = new ContoAddebito();
+					Conto contoAddebito = new Conto();
 					contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBic());
 					contoAddebito.setIban(pagamentiPortaleRequest.getContoAddebito().getIban());
 					rsModel.setContoAddebito(contoAddebito);
@@ -375,7 +373,7 @@ public class PagamentiPortaleConverter {
 				rsModel.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 				rsModel.setSoggettoVersante(controlloUtenzaVersante(pagamentiPortaleRequest.getSoggettoVersante(),user));
-				rsModel.setAutenticazioneSoggetto(it.govpay.pagamento.v2.beans.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
+				rsModel.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto());
 			} catch (ServiceException | ValidationException e) {
 
 			}
@@ -393,10 +391,9 @@ public class PagamentiPortaleConverter {
 		rsModel.setImporto(pagamentoPortale.getImporto()); 
 
 		return rsModel;
-
 	}
 
-	public static void controlloUtenzaVersante(PagamentoPost pagamentoPost, Authentication user) throws ValidationException {
+	public static void controlloUtenzaVersante(NuovoPagamento pagamentoPost, Authentication user) throws ValidationException {
 		Soggetto versante = pagamentoPost.getSoggettoVersante();
 
 		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
@@ -415,7 +412,7 @@ public class PagamentiPortaleConverter {
 			versante.setAnagrafica(nomeCognome);
 			if(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL) != null)
 				versante.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
-			versante.setTipo(TipoEnum.F);
+			versante.setTipo(TipoSoggetto.F);
 			versante.setCap(null);
 			versante.setCellulare(null);
 			versante.setCivico(null);
@@ -433,7 +430,7 @@ public class PagamentiPortaleConverter {
 
 			versante.setIdentificativo(TIPO_UTENZA.ANONIMO.toString());
 			versante.setAnagrafica(TIPO_UTENZA.ANONIMO.toString());
-			versante.setTipo(TipoEnum.F);
+			versante.setTipo(TipoSoggetto.F);
 			versante.setCap(null);
 			versante.setCellulare(null);
 			versante.setCivico(null);
@@ -464,7 +461,7 @@ public class PagamentiPortaleConverter {
 			soggetto.setAnagrafica(nomeCognome);
 			if(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL) != null)
 				soggetto.setEmail(cittadino.getProprieta(SPIDAuthenticationDetailsSource.SPID_HEADER_EMAIL));
-			soggetto.setTipo(TipoEnum.F);
+			soggetto.setTipo(TipoSoggetto.F);
 			soggetto.setCap(null);
 			soggetto.setCellulare(null);
 			soggetto.setCivico(null);
@@ -480,7 +477,7 @@ public class PagamentiPortaleConverter {
 			}
 			soggetto.setIdentificativo(TIPO_UTENZA.ANONIMO.toString());
 			soggetto.setAnagrafica(TIPO_UTENZA.ANONIMO.toString());
-			soggetto.setTipo(TipoEnum.F);
+			soggetto.setTipo(TipoSoggetto.F);
 			soggetto.setCap(null);
 			soggetto.setCellulare(null);
 			soggetto.setCivico(null);

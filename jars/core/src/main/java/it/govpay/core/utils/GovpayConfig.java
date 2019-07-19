@@ -118,6 +118,7 @@ public class GovpayConfig {
 	
 	private String codTipoVersamentoPendenzeLibere;
 	private String codTipoVersamentoPendenzeNonCensite;
+	private boolean censimentoTipiVersamentoSconosciutiEnabled;
 	
 	private boolean invioPromemoriaEnabled;
 	private Properties invioPromemoriaProperties;
@@ -175,6 +176,7 @@ public class GovpayConfig {
 		
 		this.codTipoVersamentoPendenzeLibere = Versamento.TIPO_VERSAMENTO_LIBERO;
 		this.codTipoVersamentoPendenzeNonCensite = Versamento.TIPO_VERSAMENTO_LIBERO;
+		this.censimentoTipiVersamentoSconosciutiEnabled = false;
 		
 		this.scritturaDiagnosticiFileEnabled = false;
 		this.scritturaDumpFileEnabled = false;
@@ -482,6 +484,10 @@ public class GovpayConfig {
 			
 			this.codTipoVersamentoPendenzeLibere = getProperty("it.govpay.versamenti.codTipoVersamentoPerPagamentiLiberi", this.props, true, log);
 			this.codTipoVersamentoPendenzeNonCensite = getProperty("it.govpay.versamenti.codTipoVersamentoPerTipiPendenzeNonCensiti", this.props, true, log);
+			
+			String censimentoTipiVersamentoSconosciutiEnabledString = getProperty("it.govpay.versamenti.censimentoAutomaticoTipiPendenza.enabled", this.props, false, log);
+			if(censimentoTipiVersamentoSconosciutiEnabledString != null)
+				this.censimentoTipiVersamentoSconosciutiEnabled = Boolean.valueOf(censimentoTipiVersamentoSconosciutiEnabledString);
 			
 			Map<String, String> properties = getProperties("it.govpay.configurazioneFiltroCors.",this.props, false, log);
 			this.corsProperties.putAll(properties);
@@ -833,5 +839,9 @@ public class GovpayConfig {
 
 	public List<String> getPspPostali() {
 		return this.pspPostali;
+	}
+
+	public boolean isCensimentoTipiVersamentoSconosciutiEnabled() {
+		return censimentoTipiVersamentoSconosciutiEnabled;
 	}
 }

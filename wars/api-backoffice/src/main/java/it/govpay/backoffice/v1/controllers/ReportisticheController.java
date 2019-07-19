@@ -101,6 +101,7 @@ public class ReportisticheController extends BaseController {
 					
 				
 				listaEntratePrevisteDTO.setFormato(FormatoRichiesto.JSON);
+				listaEntratePrevisteDTO.setOrderBy("-data");
 
 				ListaEntratePrevisteDTOResponse listaEntratePrevisteDTOResponse = entratePrevisteDAO.listaEntrate(listaEntratePrevisteDTO);
 	

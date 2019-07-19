@@ -30,6 +30,10 @@ import it.govpay.core.dao.eventi.dto.LeggiEventoDTO;
 import it.govpay.core.dao.eventi.dto.LeggiEventoDTOResponse;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
+import it.govpay.core.dao.eventi.dto.ListaEventiDTO.VISTA;
+import it.govpay.core.dao.pagamenti.PendenzeDAO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeConInformazioniIncassoDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaPendenzeDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
@@ -52,7 +56,7 @@ public class EventiController extends BaseController {
 
 	public Response eventiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String idA2A, String idPendenza,
 			String idPagamento, String esito, String dataDa, String dataA, 
-			String categoria, String tipoEvento, String componente, String ruolo, Boolean messaggi) {
+			String categoria, String tipoEvento, String sottotipoEvento, String componente, String ruolo, Boolean messaggi) {
 		String methodName = "eventiGET";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -129,6 +133,7 @@ public class EventiController extends BaseController {
 			
 			listaEventiDTO.setComponente(componente); 
 			listaEventiDTO.setTipoEvento(tipoEvento); 
+			listaEventiDTO.setSottotipoEvento(sottotipoEvento);
 			
 			
 			if(dataDa!=null) {
@@ -140,7 +145,41 @@ public class EventiController extends BaseController {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				listaEventiDTO.setDataA(dataADate);
 			}
-
+			
+			boolean autorizzato = true;
+			if(idA2A != null && idPendenza != null) {
+				listaEventiDTO.setVista(VISTA.VERSAMENTI);
+				
+				//check autorizzazione per la pendenza scelta
+				ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
+				listaPendenzeDTO.setIdA2A(idA2A);
+				listaPendenzeDTO.setIdPendenza(idPendenza);
+				
+				// Autorizzazione sui domini
+				List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+				if(idDomini == null) {
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+				}
+				listaPendenzeDTO.setIdDomini(idDomini);
+				// autorizzazione sui tipi pendenza
+				List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
+				if(idTipiVersamento == null) {
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
+				}
+				listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
+				
+				PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+				
+				ListaPendenzeDTOResponse listaPendenzeDTOResponse = pendenzeDAO.countPendenze(listaPendenzeDTO);
+				
+				if(listaPendenzeDTOResponse.getTotalResults() == 0)
+					autorizzato = false;
+				
+			} else if(idDominio != null && iuv != null) {
+				listaEventiDTO.setVista(VISTA.RPT);
+			} else if(idPagamento != null) {
+				listaEventiDTO.setVista(VISTA.PAGAMENTI);
+			}
 
 			List<String> domini = null;
 			// Autorizzazione sui domini
@@ -154,7 +193,7 @@ public class EventiController extends BaseController {
 
 			// CHIAMATA AL DAO
 
-			ListaEventiDTOResponse listaEventiDTOResponse = domini != null ?  pspDAO.listaEventi(listaEventiDTO) : new ListaEventiDTOResponse(0, new ArrayList<>());
+			ListaEventiDTOResponse listaEventiDTOResponse = (domini != null && autorizzato) ?  pspDAO.listaEventi(listaEventiDTO) : new ListaEventiDTOResponse(0, new ArrayList<>());
 
 			// CONVERT TO JSON DELLA RISPOSTA
 

@@ -1,27 +1,21 @@
 package it.govpay.pagamento.v2.beans.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 
-import it.govpay.bd.model.Tributo;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
-import it.govpay.pagamento.v2.beans.ContiAccredito;
 import it.govpay.pagamento.v2.beans.Dominio;
-import it.govpay.pagamento.v2.beans.DominioIndex;
-import it.govpay.pagamento.v2.beans.Entrata;
-import it.govpay.pagamento.v2.beans.TipoContabilita;
 import it.govpay.pagamento.v2.beans.TipoPendenza;
 import it.govpay.pagamento.v2.beans.TipoPendenzaForm;
 import it.govpay.pagamento.v2.beans.UnitaOperativa;
 
 public class DominiConverter {
 	
-	public static DominioIndex toRsModelIndex(it.govpay.bd.model.Dominio dominio) throws ServiceException {
-		DominioIndex rsModel = new DominioIndex();
+	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) throws ServiceException {
+		Dominio rsModel = new Dominio();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
 		rsModel.setIdDominio(dominio.getCodDominio()); 
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
@@ -36,22 +30,18 @@ public class DominiConverter {
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
-		rsModel.setAuxDigit("" + dominio.getAuxDigit());
-		if(dominio.getSegregationCode() != null)
-			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
-		rsModel.setIuvPrefix(dominio.getIuvPrefix());
-		rsModel.setStazione(dominio.getStazione().getCodStazione());
-		rsModel.setContiAccredito(UriBuilderUtils.getContiAccreditoByDominio(dominio.getCodDominio()));
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
-		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
-		rsModel.setAbilitato(dominio.isAbilitato());
+		rsModel.setTipiPendenza(UriBuilderUtils.getTipiPendenzaByDominio(dominio.getCodDominio()));
 		
 		return rsModel;
 	}
 	
+//	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) throws ServiceException {
+//		return toRsModel(dominio, null, null, null);
+//	}
 	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio, List<it.govpay.bd.model.UnitaOperativa> uoLst, List<it.govpay.bd.model.Tributo> tributoLst, List<it.govpay.bd.model.IbanAccredito> ibanAccreditoLst) throws ServiceException {
 		Dominio rsModel = new Dominio();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
@@ -68,64 +58,46 @@ public class DominiConverter {
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setGln(dominio.getGln());
-		rsModel.setAuxDigit("" + dominio.getAuxDigit());
-		if(dominio.getSegregationCode() != null)
-			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
-		rsModel.setIuvPrefix(dominio.getIuvPrefix());
-		rsModel.setStazione(dominio.getStazione().getCodStazione());
 		
-		if(uoLst != null) {
-			List<UnitaOperativa> unitaOperative = new ArrayList<>();
-			
-			for(it.govpay.bd.model.UnitaOperativa uo: uoLst) {
-				unitaOperative.add(toUnitaOperativaRsModel(uo));
-			}
-			rsModel.setUnitaOperative(unitaOperative);
-		}
-
-		if(ibanAccreditoLst != null) {
-			List<ContiAccredito> contiAccredito = new ArrayList<>();
-			
-			for(it.govpay.bd.model.IbanAccredito iban: ibanAccreditoLst) {
-				contiAccredito.add(toIbanRsModel(iban));
-			}
-			rsModel.setContiAccredito(contiAccredito);
-		}
-
-		if(tributoLst != null) {
-			List<Entrata> entrate = new ArrayList<>();
-			
-			for(Tributo tributo: tributoLst) {
-				entrate.add(toEntrataRsModel(tributo, tributo.getIbanAccredito()));
-			}
-			rsModel.setEntrate(entrate);
-		}
-		rsModel.setAbilitato(dominio.isAbilitato());
+//		if(uoLst != null) {
+//			List<UnitaOperativa> unitaOperative = new ArrayList<>();
+//			
+//			for(it.govpay.bd.model.UnitaOperativa uo: uoLst) {
+//				unitaOperative.add(toUnitaOperativaRsModel(uo));
+//			}
+//			rsModel.setUnitaOperative(unitaOperative);
+//		}
+//
+//		if(ibanAccreditoLst != null) {
+//			List<ContiAccredito> contiAccredito = new ArrayList<>();
+//			
+//			for(it.govpay.bd.model.IbanAccredito iban: ibanAccreditoLst) {
+//				contiAccredito.add(toIbanRsModel(iban));
+//			}
+//			rsModel.setContiAccredito(contiAccredito);
+//		}
+//
+//		if(tributoLst != null) {
+//			List<Entrata> entrate = new ArrayList<>();
+//			
+//			for(Tributo tributo: tributoLst) {
+//				entrate.add(toEntrataRsModel(tributo, tributo.getIbanAccredito()));
+//			}
+//			rsModel.setEntrate(entrate);
+//		}
 		
 		return rsModel;
 	}
-	
-	public static ContiAccredito toIbanRsModel(it.govpay.bd.model.IbanAccredito iban) throws ServiceException {
-		ContiAccredito rsModel = new ContiAccredito();
-		rsModel.abilitato(iban.isAbilitato())
-		.bic(iban.getCodBic())
-		.iban(iban.getCodIban())
-		.mybank(iban.isAttivatoObep())
-		.postale(iban.isPostale());
-		
-		return rsModel;
-	}
-	
 	
 	public static UnitaOperativa toUnitaOperativaRsModel(it.govpay.bd.model.UnitaOperativa uo) throws IllegalArgumentException, ServiceException {
 		UnitaOperativa rsModel = new UnitaOperativa();
 		
 		rsModel.setCap(uo.getAnagrafica().getRagioneSociale());
 		rsModel.setCivico(uo.getAnagrafica().getCivico());
-		rsModel.setIdUnita(uo.getAnagrafica().getCodUnivoco());
+		rsModel.setIdUnitaOperativa(uo.getAnagrafica().getCodUnivoco());
 		rsModel.setIndirizzo(uo.getAnagrafica().getIndirizzo());
 		rsModel.setLocalita(uo.getAnagrafica().getLocalita());
 		rsModel.setRagioneSociale(uo.getAnagrafica().getRagioneSociale());
@@ -141,39 +113,6 @@ public class DominiConverter {
 		return rsModel;
 	}
 	
-	public static Entrata toEntrataRsModel(it.govpay.bd.model.Tributo tributo, it.govpay.model.IbanAccredito ibanAccredito) throws ServiceException {
-		Entrata rsModel = new Entrata();
-		rsModel.codiceContabilita(tributo.getCodContabilita())
-		.abilitato(tributo.isAbilitato())
-		.idEntrata(tributo.getCodTributo())
-		.tipoEntrata(EntrateConverter.toTipoEntrataRsModel(tributo));
-		
-		if(tributo.getTipoContabilita() != null) {
-			switch (tributo.getTipoContabilita()) {
-			case ALTRO:
-				rsModel.tipoContabilita(TipoContabilita.ALTRO);
-				break;
-			case CAPITOLO:
-				rsModel.tipoContabilita(TipoContabilita.CAPITOLO);
-				break;
-			case SIOPE:
-				rsModel.tipoContabilita(TipoContabilita.SIOPE);
-				break;
-			case SPECIALE:
-				rsModel.tipoContabilita(TipoContabilita.SPECIALE);
-				break;
-			}
-		}
-		
-		if(ibanAccredito != null)
-			rsModel.contoAccredito(ibanAccredito.getCodIban());
-
-		if(tributo.getIbanAccredito()!=null)
-			rsModel.contoAppoggio(tributo.getIbanAccredito().getCodIban());
-
-		return rsModel;
-	}
-	
 	public static TipoPendenza toTipoPendenzaRsModel(GetTipoPendenzaDominioDTOResponse response) throws ServiceException {
 		return toTipoPendenzaRsModel(response.getTipoVersamento());
 	}
@@ -182,10 +121,7 @@ public class DominiConverter {
 		TipoPendenza rsModel = new TipoPendenza();
 		
 		rsModel.descrizione(tipoVersamentoDominio.getDescrizione())
-		.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento())
-		.codificaIUV(tipoVersamentoDominio.getCodificaIuv())
-		.abilitato(tipoVersamentoDominio.getAbilitato())
-		.pagaTerzi(tipoVersamentoDominio.getPagaTerzi());
+		.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento());
 		
 		if(tipoVersamentoDominio.getTipo() != null) {
 			switch (tipoVersamentoDominio.getTipo()) {

@@ -164,7 +164,6 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
  			fields.add(VistaRiscossioni.model().COD_FLUSSO);
  			fields.add(VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE);
  			fields.add(VistaRiscossioni.model().COD_VERSAMENTO_ENTE);
- 			fields.add(VistaRiscossioni.model().DATA);
  			fields.add(VistaRiscossioni.model().DATA_REGOLAMENTO);
  			fields.add(VistaRiscossioni.model().FR_IUR);
  			fields.add(VistaRiscossioni.model().IMPORTO_PAGATO);
@@ -173,6 +172,11 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
  			fields.add(VistaRiscossioni.model().IUR);
  			fields.add(VistaRiscossioni.model().IUV);
  			fields.add(VistaRiscossioni.model().NUMERO_PAGAMENTI);
+ 			fields.add(VistaRiscossioni.model().DATA_PAGAMENTO);
+ 			fields.add(VistaRiscossioni.model().COD_TIPO_VERSAMENTO);
+ 			fields.add(VistaRiscossioni.model().COD_ENTRATA);
+ 			fields.add(VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE);
+ 			fields.add(VistaRiscossioni.model().ANNO);
  	
  			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
  	
@@ -498,12 +502,16 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().NUMERO_PAGAMENTI,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IMPORTO_TOTALE_PAGAMENTI,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IMPORTO_PAGATO,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().DATA,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_VERSAMENTO_ENTE,true));
 		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_APPLICAZIONE,true));
-
+		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().DATA_PAGAMENTO,true));
+		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_TIPO_VERSAMENTO,true));
+		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_ENTRATA,true));
+		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE,true));
+		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().ANNO,true));
+		
 		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true) + "=?");
 		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true) + "=?");
 		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true) + "=?");

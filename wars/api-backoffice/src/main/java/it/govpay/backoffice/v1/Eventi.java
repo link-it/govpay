@@ -48,9 +48,9 @@ public class Eventi extends BaseRsServiceV1{
     public Response findEventi(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina,
     		@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, 
     		@QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("idPagamento") String idPagamento, @QueryParam("esito") String esito, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA,
-		@QueryParam("categoriaEvento") String categoriaEvento, @QueryParam("tipoEvento") String tipoEvento, @QueryParam("componente") String componente, @QueryParam("ruolo") String ruolo, @QueryParam("messaggi") Boolean messaggi){
+		@QueryParam("categoriaEvento") String categoriaEvento, @QueryParam("tipoEvento") String tipoEvento, @QueryParam("sottotipoEvento") String sottotipoEvento, @QueryParam("componente") String componente, @QueryParam("ruolo") String ruolo, @QueryParam("messaggi") Boolean messaggi){
         this.controller.setContext(this.getContext());
-        return this.controller.eventiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv, idA2A, idPendenza, idPagamento, esito, dataDa, dataA, categoriaEvento, tipoEvento, componente, ruolo, messaggi);
+        return this.controller.eventiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv, idA2A, idPendenza, idPagamento, esito, dataDa, dataA, categoriaEvento, tipoEvento, sottotipoEvento, componente, ruolo, messaggi);
     }
 
 }

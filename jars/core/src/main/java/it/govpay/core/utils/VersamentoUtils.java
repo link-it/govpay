@@ -50,6 +50,8 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.TipiVersamentoBD;
+import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
@@ -546,14 +548,20 @@ public class VersamentoUtils {
 		try {
 			tipoVersamento = AnagraficaManager.getTipoVersamento(bd, codTipoVersamento);
 		} catch (NotFoundException e) {
-			if(utilizzaTipoPendenzaNonCensito) {
-				try {
-					tipoVersamento = AnagraficaManager.getTipoVersamento(bd, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
-				} catch (NotFoundException e1) {
-					throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
+			if(!GovpayConfig.getInstance().isCensimentoTipiVersamentoSconosciutiEnabled()) {
+				if(utilizzaTipoPendenzaNonCensito) {
+					try {
+						tipoVersamento = AnagraficaManager.getTipoVersamento(bd, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
+					} catch (NotFoundException e1) {
+						throw new ServiceException("Non e' stato censito un tipo pendenza di default valido");
+					}
+				} else {
+					throw new GovPayException(EsitoOperazione.TVR_000, codTipoVersamento);
 				}
 			} else {
-				throw new GovPayException(EsitoOperazione.TVR_000, codTipoVersamento);
+				// censimento del tipo pendenza
+				TipiVersamentoBD tipiVersamentoBD = new TipiVersamentoBD(bd);
+				tipoVersamento = tipiVersamentoBD.autoCensimentoTipoVersamento(codTipoVersamento);
 			}
 		}
 		
@@ -572,7 +580,12 @@ public class VersamentoUtils {
 		try {
 			tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), tipoVersamento.getCodTipoVersamento());
 		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.TVD_000, codTipoVersamento, versamento.getCodDominio());
+			if(!GovpayConfig.getInstance().isCensimentoTipiVersamentoSconosciutiEnabled()) {
+				throw new GovPayException(EsitoOperazione.TVD_000, codTipoVersamento, versamento.getCodDominio());
+			} else {
+				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(bd);
+				tipoVersamentoDominio = tipiVersamentoDominiBD.autoCensimentoTipoVersamentoDominio(tipoVersamento, dominio);
+			}
 //			try {
 //				tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(bd, dominio.getId(), GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
 //			} catch (NotFoundException e1) {

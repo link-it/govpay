@@ -5,9 +5,9 @@ import java.util.List;
 
 import it.govpay.core.beans.Lista;
 
-public class ListaDominiIndex extends Lista<DominioIndex> {
+public class ListaDomini extends Lista<Dominio> {
 	
-	public ListaDominiIndex(List<DominioIndex> domini, URI requestUri, long count, long pagina, long limit) {
+	public ListaDomini(List<Dominio> domini, URI requestUri, long count, long pagina, long limit) {
 		super(domini, requestUri, count, pagina, limit);
 	}
 	

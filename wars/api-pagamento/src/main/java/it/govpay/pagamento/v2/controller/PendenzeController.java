@@ -85,7 +85,7 @@ public class PendenzeController extends BaseController {
 		}
     }
     
-    public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento) {
+    public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataDa, String dataA, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String direzione, String divisione) {
     	String transactionId = this.context.getTransactionId();
 		String methodName = "pendenzeGET"; 
 		try{
@@ -137,6 +137,8 @@ public class PendenzeController extends BaseController {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 			}
 			listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
+			listaPendenzeDTO.setDirezione(direzione);
+			listaPendenzeDTO.setDivisione(divisione);
 			
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 			

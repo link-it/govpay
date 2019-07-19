@@ -16,7 +16,9 @@ import it.govpay.backoffice.v1.beans.converter.ProfiloConverter;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.rs.v1.exception.CodiceEccezione;
 
@@ -34,11 +36,17 @@ public class GovPayAuthenticationSuccessHandler extends org.openspcoop2.utils.se
 				ctx = factory.newContext(request.getRequestURI(), "profilo", "getProfilo", request.getMethod(), 1, user, Componente.API_BACKOFFICE);
 				ContextThreadLocal.set(ctx);
 			}
+			
+			GpContext gpContext = (GpContext) ctx.getApplicationContext();
+			
 			UtentiDAO utentiDAO = new UtentiDAO();
 			
 			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(authentication);
 
 			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
+			
+			gpContext.getEventoCtx().setEsito(Esito.OK);
+			gpContext.getEventoCtx().setIdTransazione(ctx.getTransactionId());
 			
 			return Response.status(Status.OK).entity(profilo.toJSON(null)).header(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, ctx.getTransactionId()).build();
 		}catch (Exception e) {

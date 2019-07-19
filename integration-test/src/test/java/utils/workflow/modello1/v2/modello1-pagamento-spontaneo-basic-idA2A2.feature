@@ -21,6 +21,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def pagamentoBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
 * set pagamentoPost.pendenze[0].idDominio = idDominioPagamento
+* set pagamentoPost.pendenze[0].idTipoPendenza = codTipoPendenzaPagamento
 * set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataPagamento
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A2, password: 'password' } )
 * set pagamentoPost.soggettoVersante = soggettoVersante 

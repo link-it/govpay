@@ -11,15 +11,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
 @JsonPropertyOrder({
+"idTipoPendenza",
 "descrizione",
 "tipo",
-"codificaIUV",
-"pagaTerzi",
-"abilitato",
 "form",
-"idTipoPendenza",
 })
 public class TipoPendenza extends JSONSerializable {
+  
+  @JsonProperty("idTipoPendenza")
+  private String idTipoPendenza = null;
   
   @JsonProperty("descrizione")
   private String descrizione = null;
@@ -27,21 +27,24 @@ public class TipoPendenza extends JSONSerializable {
   @JsonProperty("tipo")
   private TipoPendenzaTipologia tipo = null;
   
-  @JsonProperty("codificaIUV")
-  private String codificaIUV = null;
-  
-  @JsonProperty("pagaTerzi")
-  private Boolean pagaTerzi = false;
-  
-  @JsonProperty("abilitato")
-  private Boolean abilitato = true;
-  
   @JsonProperty("form")
   private TipoPendenzaForm form = null;
   
+  /**
+   **/
+  public TipoPendenza idTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+    return this;
+  }
+
   @JsonProperty("idTipoPendenza")
-  private String idTipoPendenza = null;
-  
+  public String getIdTipoPendenza() {
+    return idTipoPendenza;
+  }
+  public void setIdTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+  }
+
   /**
    **/
   public TipoPendenza descrizione(String descrizione) {
@@ -73,54 +76,6 @@ public class TipoPendenza extends JSONSerializable {
   }
 
   /**
-   * Cifra identificativa negli IUV
-   **/
-  public TipoPendenza codificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-    return this;
-  }
-
-  @JsonProperty("codificaIUV")
-  public String getCodificaIUV() {
-    return codificaIUV;
-  }
-  public void setCodificaIUV(String codificaIUV) {
-    this.codificaIUV = codificaIUV;
-  }
-
-  /**
-   * Indica se la pendenza e' pagabile da soggetti terzi
-   **/
-  public TipoPendenza pagaTerzi(Boolean pagaTerzi) {
-    this.pagaTerzi = pagaTerzi;
-    return this;
-  }
-
-  @JsonProperty("pagaTerzi")
-  public Boolean PagaTerzi() {
-    return pagaTerzi;
-  }
-  public void setPagaTerzi(Boolean pagaTerzi) {
-    this.pagaTerzi = pagaTerzi;
-  }
-
-  /**
-   * Indicazione la tipologia pendenza e' abilitata
-   **/
-  public TipoPendenza abilitato(Boolean abilitato) {
-    this.abilitato = abilitato;
-    return this;
-  }
-
-  @JsonProperty("abilitato")
-  public Boolean Abilitato() {
-    return abilitato;
-  }
-  public void setAbilitato(Boolean abilitato) {
-    this.abilitato = abilitato;
-  }
-
-  /**
    **/
   public TipoPendenza form(TipoPendenzaForm form) {
     this.form = form;
@@ -135,21 +90,6 @@ public class TipoPendenza extends JSONSerializable {
     this.form = form;
   }
 
-  /**
-   **/
-  public TipoPendenza idTipoPendenza(String idTipoPendenza) {
-    this.idTipoPendenza = idTipoPendenza;
-    return this;
-  }
-
-  @JsonProperty("idTipoPendenza")
-  public String getIdTipoPendenza() {
-    return idTipoPendenza;
-  }
-  public void setIdTipoPendenza(String idTipoPendenza) {
-    this.idTipoPendenza = idTipoPendenza;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -159,18 +99,15 @@ public class TipoPendenza extends JSONSerializable {
       return false;
     }
     TipoPendenza tipoPendenza = (TipoPendenza) o;
-    return Objects.equals(descrizione, tipoPendenza.descrizione) &&
+    return Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza) &&
+        Objects.equals(descrizione, tipoPendenza.descrizione) &&
         Objects.equals(tipo, tipoPendenza.tipo) &&
-        Objects.equals(codificaIUV, tipoPendenza.codificaIUV) &&
-        Objects.equals(pagaTerzi, tipoPendenza.pagaTerzi) &&
-        Objects.equals(abilitato, tipoPendenza.abilitato) &&
-        Objects.equals(form, tipoPendenza.form) &&
-        Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza);
+        Objects.equals(form, tipoPendenza.form);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, idTipoPendenza);
+    return Objects.hash(idTipoPendenza, descrizione, tipo, form);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -186,14 +123,11 @@ public class TipoPendenza extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenza {\n");
-    
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
-    sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
-    sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
-    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    form: ").append(toIndentedString(form)).append("\n");
-    sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("}");
     return sb.toString();
   }

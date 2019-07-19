@@ -316,7 +316,7 @@ public abstract class BaseController {
 		return responseBuilder;
 	}
 	
-	protected ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito) {
+	public ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito) {
 		GpContext ctx = (GpContext) this.context.getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.FAIL);
 		if(transactionId != null)

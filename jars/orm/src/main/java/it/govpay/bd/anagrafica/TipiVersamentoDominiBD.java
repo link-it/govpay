@@ -35,8 +35,10 @@ import org.openspcoop2.utils.UtilsException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.converter.TipoVersamentoDominioConverter;
+import it.govpay.model.TipoVersamento;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTipoVersamento;
 import it.govpay.orm.IdTipoVersamentoDominio;
@@ -124,6 +126,21 @@ public class TipiVersamentoDominiBD extends BasicBD {
 
 	}
 	
+	/**
+	 * Crea un nuovo tipoVersamento
+	 * @param ente
+	 * @throws NotPermittedException
+	 * @throws ServiceException
+	 */
+	public TipoVersamentoDominio autoCensimentoTipoVersamentoDominio(TipoVersamento tipoVersamento, Dominio dominio) throws ServiceException {
+		TipoVersamentoDominio tipoVersamentoDominio = new TipoVersamentoDominio();
+		tipoVersamentoDominio.setCodTipoVersamento(tipoVersamento.getCodTipoVersamento());
+		tipoVersamentoDominio.setIdTipoVersamento(tipoVersamento.getId());
+		tipoVersamentoDominio.setDescrizione(tipoVersamento.getDescrizione());
+		tipoVersamentoDominio.setIdDominio(dominio.getId());
+		this.insertTipoVersamentoDominio(tipoVersamentoDominio);
+		return tipoVersamentoDominio;
+	}
 	
 	/**
 	 * Crea un nuovo tipoVersamento
