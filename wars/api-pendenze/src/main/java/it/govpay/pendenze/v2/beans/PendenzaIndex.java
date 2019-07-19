@@ -35,7 +35,6 @@ import it.govpay.core.beans.JSONSerializable;
 "tassonomiaAvviso",
 "direzione",
 "divisione",
-"href",
 "rpp",
 "pagamenti",
 })
@@ -112,9 +111,6 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("divisione")
   private String divisione = null;
-  
-  @JsonProperty("href")
-  private String href = null;
   
   @JsonProperty("rpp")
   private String rpp = null;
@@ -501,22 +497,6 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
-   * Url della pendenza
-   **/
-  public PendenzaIndex href(String href) {
-    this.href = href;
-    return this;
-  }
-
-  @JsonProperty("href")
-  public String getHref() {
-    return href;
-  }
-  public void setHref(String href) {
-    this.href = href;
-  }
-
-  /**
    * Url per l'elenco delle rpp emesse per la pendenza
    **/
   public PendenzaIndex rpp(String rpp) {
@@ -581,14 +561,13 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(tassonomiaAvviso, pendenzaIndex.tassonomiaAvviso) &&
         Objects.equals(direzione, pendenzaIndex.direzione) &&
         Objects.equals(divisione, pendenzaIndex.divisione) &&
-        Objects.equals(href, pendenzaIndex.href) &&
         Objects.equals(rpp, pendenzaIndex.rpp) &&
         Objects.equals(pagamenti, pendenzaIndex.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomiaAvviso, direzione, divisione, href, rpp, pagamenti);
+    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomiaAvviso, direzione, divisione, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -629,7 +608,6 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
-    sb.append("    href: ").append(toIndentedString(href)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");
     sb.append("}");

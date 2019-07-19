@@ -1,5 +1,8 @@
 package it.govpay.core.business.reportistica;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +18,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.viste.model.EntrataPrevista;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.stampe.model.ProspettoRiscossioneDominioInput;
@@ -83,8 +87,16 @@ public class EntratePreviste extends BasicBD{
 			
 			ProspettoRiscossioniProperties prospettoRiscossioniProperties = ProspettoRiscossioniProperties.getInstance();
 			
+			InputStream isTemplate = null; 
 			
-			return ProspettoRiscossioniPdf.getInstance().creaProspettoRiscossioni(log, input, prospettoRiscossioniProperties );
+			if(GovpayConfig.getInstance().getTemplateProspettoRiscossioni() != null) {
+				File resourceDirFile = new File(GovpayConfig.escape(GovpayConfig.getInstance().getTemplateProspettoRiscossioni()));
+				if(resourceDirFile.exists()) {
+					isTemplate = new FileInputStream(resourceDirFile);
+				}
+			}
+			
+			return ProspettoRiscossioniPdf.getInstance().creaProspettoRiscossioni(log, input, prospettoRiscossioniProperties, isTemplate);
 		}catch (Exception e) {
 			throw new ServiceException(e);
 		}
@@ -123,11 +135,11 @@ public class EntratePreviste extends BasicBD{
 			for (EntrataPrevista entrataPrevista : listPerFlusso) {
 				VoceRiscossioneInput voceRiscossione = new VoceRiscossioneInput();
 				
-				voceRiscossione.setData(entrataPrevista.getData() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getData()) : "");
+				voceRiscossione.setData(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
 				voceRiscossione.setIdPendenza(entrataPrevista.getCodVersamentoEnte());
 				voceRiscossione.setImporto(entrataPrevista.getImportoPagato() != null ? entrataPrevista.getImportoPagato().doubleValue() : 0.0);
 				voceRiscossione.setIuv(entrataPrevista.getIuv());
-				voceRiscossione.setAnno(entrataPrevista.getAnno() != null ? entrataPrevista.getAnno()+"" : "");
+				voceRiscossione.setAnno(entrataPrevista.getAnno());
 				voceRiscossione.setDataPagamento(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
 				voceRiscossione.setIdentificativoDebitore(entrataPrevista.getIdentificativoDebitore());
 				voceRiscossione.setIdEntrata(entrataPrevista.getCodEntrata());
@@ -162,11 +174,11 @@ public class EntratePreviste extends BasicBD{
 					
 					VoceRiscossioneInput voceRiscossione = new VoceRiscossioneInput();
 					
-					voceRiscossione.setData(entrataPrevista.getData() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getData()) : "");
+					voceRiscossione.setData(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
 					voceRiscossione.setIdPendenza(entrataPrevista.getCodVersamentoEnte());
 					voceRiscossione.setImporto(entrataPrevista.getImportoPagato() != null ? entrataPrevista.getImportoPagato().doubleValue() : 0.0);
 					voceRiscossione.setIuv(entrataPrevista.getIuv());
-					voceRiscossione.setAnno(entrataPrevista.getAnno() != null ? entrataPrevista.getAnno()+"" : "");
+					voceRiscossione.setAnno(entrataPrevista.getAnno());
 					voceRiscossione.setDataPagamento(entrataPrevista.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(entrataPrevista.getDataPagamento()) : "");
 					voceRiscossione.setIdentificativoDebitore(entrataPrevista.getIdentificativoDebitore());
 					voceRiscossione.setIdEntrata(entrataPrevista.getCodEntrata());

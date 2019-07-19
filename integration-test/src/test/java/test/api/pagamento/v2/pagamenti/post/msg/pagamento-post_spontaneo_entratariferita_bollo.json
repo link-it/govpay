@@ -1,6 +1,7 @@
 {
 	"pendenze": [
 		{
+			"idTipoPendenza" : '#(codEntrataSegreteria)',
 			"idA2A": "#(idA2A)",
 			"idPendenza": '#(idPendenza)',		
 			"idDominio": "#(idDominio)",

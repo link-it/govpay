@@ -31,6 +31,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentoPatchDTO;
+import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -170,6 +171,13 @@ public class PagamentiController extends BaseController {
 				}
 			} catch (ServiceException e) {
 				lstOp = JSONSerializable.parse(jsonRequest, List.class);
+			}
+			
+			for(PatchOp op : lstOp) {
+				if(op.getPath().contains(PagamentiPortaleDAO.PATH_NOTA)) {
+					this.setSottotipoEvento(EventoContext.SOTTOTIPO_EVENTO_NOTA);
+					break;
+				}
 			}
 			
 			verificaPagamentoDTO.setOp(PatchOpConverter.toModel(lstOp));

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
-import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 /**
  * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
@@ -18,7 +18,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "iban",
 "bic",
 })
-public class ContoAddebito extends JSONSerializable implements IValidable {
+public class Conto extends JSONSerializable implements IValidable {
   
   @JsonProperty("iban")
   private String iban = null;
@@ -27,32 +27,30 @@ public class ContoAddebito extends JSONSerializable implements IValidable {
   private String bic = null;
   
   /**
-   * Iban di addebito del pagatore.
    **/
-  public ContoAddebito iban(String iban) {
+  public Conto iban(String iban) {
     this.iban = iban;
     return this;
   }
 
   @JsonProperty("iban")
   public String getIban() {
-    return this.iban;
+    return iban;
   }
   public void setIban(String iban) {
     this.iban = iban;
   }
 
   /**
-   * Bic della banca di addebito del pagatore.
    **/
-  public ContoAddebito bic(String bic) {
+  public Conto bic(String bic) {
     this.bic = bic;
     return this;
   }
 
   @JsonProperty("bic")
   public String getBic() {
-    return this.bic;
+    return bic;
   }
   public void setBic(String bic) {
     this.bic = bic;
@@ -63,35 +61,35 @@ public class ContoAddebito extends JSONSerializable implements IValidable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ContoAddebito contoAddebito = (ContoAddebito) o;
-    return Objects.equals(this.iban, contoAddebito.iban) &&
-        Objects.equals(this.bic, contoAddebito.bic);
+    Conto conto = (Conto) o;
+    return Objects.equals(iban, conto.iban) &&
+        Objects.equals(bic, conto.bic);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.iban, this.bic);
+    return Objects.hash(iban, bic);
   }
 
-  public static ContoAddebito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
-    return parse(json, ContoAddebito.class);
+  public static Conto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+    return parse(json, Conto.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "contoAddebito";
+    return "conto";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ContoAddebito {\n");
+    sb.append("class Conto {\n");
     
-    sb.append("    iban: ").append(this.toIndentedString(this.iban)).append("\n");
-    sb.append("    bic: ").append(this.toIndentedString(this.bic)).append("\n");
+    sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
+    sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -109,9 +107,11 @@ public class ContoAddebito extends JSONSerializable implements IValidable {
   
   @Override
 public void validate() throws ValidationException {
-	  ValidatorFactory vf = ValidatorFactory.newInstance();
-	  vf.getValidator("iban", this.iban).notNull().pattern("[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}");
-	  vf.getValidator("bic", this.bic).pattern("[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}");
+	  
+	  ValidatoreIdentificativi vf = new ValidatoreIdentificativi();
+	  vf.validaIdIbanAccredito("iban", this.iban);
+	  if(this.bic != null)
+		  vf.validaBicAccredito("bic", this.bic);
   }
   
 }

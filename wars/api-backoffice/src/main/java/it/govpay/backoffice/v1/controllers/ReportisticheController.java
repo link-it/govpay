@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -14,6 +15,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -55,10 +57,12 @@ public class ReportisticheController extends BaseController {
 			// Parametri - > DTO Input
 
 			ListaEntratePrevisteDTO listaEntratePrevisteDTO = new ListaEntratePrevisteDTO(user);
-
-			if(dataDa != null) {
+			
+			Date dataDaDate = null;
+			if(dataDa!=null) {
+				dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				Calendar c = Calendar.getInstance();
-				c.setTime(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataDa));
+				c.setTime(dataDaDate);
 				c.set(Calendar.HOUR_OF_DAY, 0);
 				c.set(Calendar.MINUTE, 0);
 				c.set(Calendar.SECOND, 0);
@@ -66,16 +70,20 @@ public class ReportisticheController extends BaseController {
 				
 				listaEntratePrevisteDTO.setDataDa(c.getTime());
 			}
-			if(dataA != null) {
+			
+			Date dataADate = null;
+			if(dataA!=null) {
+				dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				Calendar c = Calendar.getInstance();
-				c.setTime(SimpleDateFormatUtils.newSimpleDateFormatSoloData().parse(dataA));
-				c.set(Calendar.HOUR_OF_DAY, 25);
+				c.setTime(dataADate);
+				c.set(Calendar.HOUR_OF_DAY, 25); 
 				c.set(Calendar.MINUTE, 59);
 				c.set(Calendar.SECOND, 59);
 				c.set(Calendar.MILLISECOND, 999);
 				
 				listaEntratePrevisteDTO.setDataA(c.getTime());
 			}
+
 			if(idDominio != null)
 				listaEntratePrevisteDTO.setIdDominio(idDominio);
 		 
@@ -101,6 +109,7 @@ public class ReportisticheController extends BaseController {
 					
 				
 				listaEntratePrevisteDTO.setFormato(FormatoRichiesto.JSON);
+				listaEntratePrevisteDTO.setOrderBy("-data");
 
 				ListaEntratePrevisteDTOResponse listaEntratePrevisteDTOResponse = entratePrevisteDAO.listaEntrate(listaEntratePrevisteDTO);
 	
@@ -122,8 +131,8 @@ public class ReportisticheController extends BaseController {
 				
 				ListaEntratePrevisteDTOResponse listaEntratePrevisteDTOResponse = entratePrevisteDAO.listaEntrate(listaEntratePrevisteDTO);
 				
-				String dDa = dataDa != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataDa) : "";
-				String dA = dataA != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataA) : "";
+				String dDa = dataDaDate != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataDaDate) : "";
+				String dA = dataADate != null ? SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(dataADate) : "";
 				
 				StringBuilder sb = new StringBuilder();
 				sb.append("Prospetto_Riscossioni");

@@ -59,7 +59,7 @@ public class ProspettoRiscossioniPdf {
 
 	}
 	
-	public byte[] creaProspettoRiscossioni(Logger log, ProspettoRiscossioniInput input, ProspettoRiscossioniProperties prospettoRiscossioniProperties) throws Exception {
+	public byte[] creaProspettoRiscossioni(Logger log, ProspettoRiscossioniInput input, ProspettoRiscossioniProperties prospettoRiscossioniProperties, InputStream isTemplate) throws Exception {
 		
 		// utilizzo le properties di default per caricare i loghi pagopa e dominio di default
 		Properties propertiesProspettoRiscossioniDefault = prospettoRiscossioniProperties.getPropertiesPerDominio(ProspettoRiscossioniProperties.DEFAULT_PROPS, log);
@@ -70,15 +70,18 @@ public class ProspettoRiscossioniPdf {
 		}
 
 		// leggo il template file jasper da inizializzare 
-		String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
+		if(isTemplate == null) { // se non l'ho ricevuto dall'esterno carico quello di default
+			String jasperTemplateFilename = propertiesProspettoRiscossioniDefault.getProperty(ProspettoRiscossioniCostanti.PROSPETTO_RISCOSSIONI_TEMPLATE_JASPER);
 
-		if(!jasperTemplateFilename.startsWith("/"))
-			jasperTemplateFilename = "/" + jasperTemplateFilename; 
+			if(!jasperTemplateFilename.startsWith("/"))
+				jasperTemplateFilename = "/" + jasperTemplateFilename; 
 
-		InputStream is = ProspettoRiscossioniPdf.class.getResourceAsStream(jasperTemplateFilename);
+			isTemplate = ProspettoRiscossioniPdf.class.getResourceAsStream(jasperTemplateFilename);
+		}
+
 		Map<String, Object> parameters = new HashMap<>();
 		JRDataSource dataSource = this.creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = this.creaJasperPrintProspettoRiscossioni(log, input, is, dataSource,parameters);
+		JasperPrint jasperPrint = this.creaJasperPrintProspettoRiscossioni(log, input, isTemplate, dataSource, parameters);
 
 		return JasperExportManager.exportReportToPdf(jasperPrint);
 	}

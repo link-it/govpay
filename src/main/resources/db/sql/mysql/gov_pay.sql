@@ -731,7 +731,7 @@ CREATE TABLE promemoria
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di creazione del promemoria',
 	stato VARCHAR(16) NOT NULL COMMENT 'Stato di comunicazione del promemoria',
-	descrizione_stato VARCHAR(255) COMMENT 'Descrizione dello stato di comunicazione del promemoria',
+	descrizione_stato VARCHAR(1024) COMMENT 'Descrizione dello stato di comunicazione del promemoria',
 	destinatario_to VARCHAR(256) NOT NULL COMMENT 'Indirizzo email al quale spedire il promemoria',
 	destinatario_cc VARCHAR(256) COMMENT 'Indirizzo email CC al quale spedire il promemoria',
 	messaggio_content_type VARCHAR(256) COMMENT 'Content/Type messaggio da spedire',
@@ -1168,11 +1168,15 @@ SELECT fr.cod_dominio AS cod_dominio,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     rendicontazioni.importo_pagato AS importo_pagato,
-    rendicontazioni.data AS data,
+    rendicontazioni.data AS data_pagamento,
     singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
     rendicontazioni.indice_dati AS indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
-    versamenti.id_applicazione AS id_applicazione
+    versamenti.id_applicazione AS id_applicazione,
+    versamenti.debitore_identificativo AS debitore_identificativo,
+    versamenti.id_tipo_versamento AS id_tipo_versamento,
+    versamenti.cod_anno_tributario AS cod_anno_tributario,
+    singoli_versamenti.id_tributo AS id_tributo
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
@@ -1190,11 +1194,15 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
     fr.importo_totale_pagamenti AS importo_totale_pagamenti,
     fr.numero_pagamenti AS numero_pagamenti,
     pagamenti.importo_pagato AS importo_pagato,
-    pagamenti.data_pagamento AS data,
+    pagamenti.data_pagamento AS data_pagamento,
     singoli_versamenti.cod_singolo_versamento_ente AS cod_singolo_versamento_ente,
     singoli_versamenti.indice_dati AS indice_dati,
     versamenti.cod_versamento_ente AS cod_versamento_ente,
-    versamenti.id_applicazione AS id_applicazione
+    versamenti.id_applicazione AS id_applicazione,
+    versamenti.debitore_identificativo AS debitore_identificativo,
+    versamenti.id_tipo_versamento AS id_tipo_versamento,
+    versamenti.cod_anno_tributario AS cod_anno_tributario,
+    singoli_versamenti.id_tributo AS id_tributo
    FROM pagamenti
      LEFT JOIN rendicontazioni ON rendicontazioni.id_pagamento = pagamenti.id
      LEFT JOIN fr ON rendicontazioni.id_fr = fr.id
@@ -1202,7 +1210,7 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
      JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id; 
 
 CREATE VIEW v_riscossioni AS
-        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id
+        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id JOIN tipi_versamento ON v_riscossioni_con_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_con_rpt.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id           
         UNION
-        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id;
+        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id JOIN tipi_versamento ON v_riscossioni_senza_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_senza_rpt.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
 

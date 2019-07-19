@@ -46,8 +46,8 @@ import it.govpay.pagamento.v2.beans.FaultBeanEsteso;
 import it.govpay.pagamento.v2.beans.FaultBeanEsteso.CategoriaEnum;
 import it.govpay.pagamento.v2.beans.ListaPagamentiIndex;
 import it.govpay.pagamento.v2.beans.ModalitaAvvisaturaDigitale;
-import it.govpay.pagamento.v2.beans.PagamentiPortaleResponseOk;
-import it.govpay.pagamento.v2.beans.PagamentoPost;
+import it.govpay.pagamento.v2.beans.PagamentoCreato;
+import it.govpay.pagamento.v2.beans.NuovoPagamento;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
 import it.govpay.pagamento.v2.beans.RppIndex;
 import it.govpay.pagamento.v2.beans.converter.PagamentiPortaleConverter;
@@ -80,7 +80,7 @@ public class PagamentiController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.SCRITTURA));
 
 			String jsonRequest = baos.toString();
-			PagamentoPost pagamentiPortaleRequest= JSONSerializable.parse(jsonRequest, PagamentoPost.class);
+			NuovoPagamento pagamentiPortaleRequest= JSONSerializable.parse(jsonRequest, NuovoPagamento.class);
 			pagamentiPortaleRequest.validate();
 			
 			
@@ -98,7 +98,7 @@ public class PagamentiController extends BaseController {
 			
 			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);
 						
-			PagamentiPortaleResponseOk responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
+			PagamentoCreato responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();

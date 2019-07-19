@@ -15,7 +15,7 @@ Scenario: Pagamento ad iniziativa PSP
 * def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
 * def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
-* call read('classpath:utils/pa-carica-avviso.feature')
+* call read('classpath:utils/v2/pa-carica-avviso.feature')
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def ccp = getCurrentTimeMillis()

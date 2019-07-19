@@ -63,6 +63,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
+* def codTipoPendenzaPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-spid.feature')
 * def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA = idPagamento 
 * def rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA = rptNotificaTerminazione
@@ -75,6 +76,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
+* def codTipoPendenzaPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic.feature')
 * def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A = idPagamento 
 * def rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A = rptNotificaTerminazione
@@ -87,6 +89,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
+* def codTipoPendenzaPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic-idA2A2.feature')
 * def idPagamentoVerdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = idPagamento 
 * def rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione
@@ -98,6 +101,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
+* def codTipoPendenzaPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-spid.feature')
 * def idPagamentoVerdi_NONESEGUITO_DOM1_SEGRETERIA = idPagamento 
 * def rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA = rptNotificaTerminazione
@@ -109,6 +113,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
+* def codTipoPendenzaPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic.feature')
 * def idPagamentoVerdi_NONESEGUITO_DOM1_SEGRETERIA_A2A = idPagamento 
 * def rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A = rptNotificaTerminazione
@@ -120,6 +125,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
+* def codTipoPendenzaPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic-idA2A2.feature')
 * def idPagamentoVerdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 = idPagamento 
 * def rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 = rptNotificaTerminazione
@@ -131,6 +137,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-spid.feature')
 * def idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE = idPagamento 
 * def rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE = rptNotificaTerminazione
@@ -142,6 +149,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic.feature')
 * def idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = idPagamento 
 * def rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = rptNotificaTerminazione
@@ -153,6 +161,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic-idA2A2.feature')
 * def idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = idPagamento
 * def rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = rptNotificaTerminazione
@@ -164,6 +173,7 @@ Scenario: Pagamento ad iniziativa Ente
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-spid.feature')
 * def idPagamentoVerdi_NONESEGUITO_DOM2_ENTRATASIOPE = idPagamento 
 * def rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE = rptNotificaTerminazione
@@ -220,6 +230,7 @@ Then status 200
 * def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita.json')
 * set pagamentoPost.pendenze[0].idDominio = idDominioPagamento
+* set pagamentoPost.pendenze[0].idTipoPendenza = codTipoPendenzaPagamento
 * set pagamentoPost.pendenze[0].voci[0].codEntrata = codEntrataPagamento
 
 Given url pagamentoBaseurl
@@ -247,6 +258,7 @@ And match response == { id: '#notnull', location: '#notnull', redirect: '#notnul
 
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codEntrataSegreteria
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -283,6 +295,7 @@ Then status 200
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
+* def codTipoPendenzaPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-spid.feature')
 * def idPagamentoRossi_ESEGUITO_DOM1_SEGRETERIA = idPagamento 
 * def rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA = rptNotificaTerminazione
@@ -294,6 +307,7 @@ Then status 200
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio
 * def codEntrataPagamento = codEntrataSegreteria
+* def codTipoPendenzaPagamento = codEntrataSegreteria
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-spid.feature')
 * def idPagamentoRossi_NONESEGUITO_DOM1_SEGRETERIA = idPagamento 
 * def rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA = rptNotificaTerminazione
@@ -305,6 +319,7 @@ Then status 200
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-spid.feature')
 * def idPagamentoRossi_ESEGUITO_DOM2_ENTRATASIOPE = idPagamento 
 * def rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE = rptNotificaTerminazione
@@ -316,6 +331,7 @@ Then status 200
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-spid.feature')
 * def idPagamentoRossi_NONESEGUITO_DOM2_ENTRATASIOPE = idPagamento 
 * def rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE = rptNotificaTerminazione
@@ -327,6 +343,7 @@ Then status 200
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic.feature')
 * def idPagamentoRossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = idPagamento 
 * def rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A = rptNotificaTerminazione
@@ -338,6 +355,7 @@ Then status 200
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic-idA2A2.feature')
 * def idPagamentoRossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = idPagamento 
 * def rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 = rptNotificaTerminazione
@@ -349,6 +367,7 @@ Then status 200
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic.feature')
 * def idPagamentoRossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A = idPagamento 
 * def rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A = rptNotificaTerminazione
@@ -360,6 +379,7 @@ Then status 200
 * def cumulativo = "1"
 * def idDominioPagamento = idDominio_2
 * def codEntrataPagamento = codEntrataSiope
+* def codTipoPendenzaPagamento = codEntrataSiope
 * call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo-basic-idA2A2.feature')
 * def idPagamentoRossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2 = idPagamento 
 * def rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2 = rptNotificaTerminazione

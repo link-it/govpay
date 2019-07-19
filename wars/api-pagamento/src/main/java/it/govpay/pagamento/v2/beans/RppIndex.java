@@ -29,12 +29,10 @@ public class RppIndex extends JSONSerializable {
   private List<Segnalazione> segnalazioni = null;
   
   @JsonProperty("rpt")
-  @JsonRawValue
-  private String rpt = null;
+  private Object rpt = null;
   
   @JsonProperty("rt")
-  @JsonRawValue
-  private String rt = null;
+  private Object rt = null;
   
   @JsonProperty("pendenza")
   private String pendenza = null;
@@ -49,7 +47,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("stato")
   public String getStato() {
-    return this.stato;
+    return stato;
   }
   public void setStato(String stato) {
     this.stato = stato;
@@ -65,7 +63,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("dettaglioStato")
   public String getDettaglioStato() {
-    return this.dettaglioStato;
+    return dettaglioStato;
   }
   public void setDettaglioStato(String dettaglioStato) {
     this.dettaglioStato = dettaglioStato;
@@ -80,7 +78,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("segnalazioni")
   public List<Segnalazione> getSegnalazioni() {
-    return this.segnalazioni;
+    return segnalazioni;
   }
   public void setSegnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
@@ -89,37 +87,37 @@ public class RppIndex extends JSONSerializable {
   /**
    * Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico
    **/
-  public RppIndex rpt(String rpt) {
+  public RppIndex rpt(Object rpt) {
     this.rpt = rpt;
     return this;
   }
 
   @JsonProperty("rpt")
-  public String getRpt() {
-    return this.rpt;
+  public Object getRpt() {
+    return rpt;
   }
-  public void setRpt(String rpt) {
+  public void setRpt(Object rpt) {
     this.rpt = rpt;
   }
 
   /**
    * Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica
    **/
-  public RppIndex rt(String rt) {
+  public RppIndex rt(Object rt) {
     this.rt = rt;
     return this;
   }
 
   @JsonProperty("rt")
-  public String getRt() {
-    return this.rt;
+  public Object getRt() {
+    return rt;
   }
-  public void setRt(String rt) {
+  public void setRt(Object rt) {
     this.rt = rt;
   }
 
   /**
-   * Url al dettaglio della pendenza
+   * Url alla pendenza oggetto della richiesta di pagamento
    **/
   public RppIndex pendenza(String pendenza) {
     this.pendenza = pendenza;
@@ -128,7 +126,7 @@ public class RppIndex extends JSONSerializable {
 
   @JsonProperty("pendenza")
   public String getPendenza() {
-    return this.pendenza;
+    return pendenza;
   }
   public void setPendenza(String pendenza) {
     this.pendenza = pendenza;
@@ -139,21 +137,21 @@ public class RppIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     RppIndex rppIndex = (RppIndex) o;
-    return Objects.equals(this.stato, rppIndex.stato) &&
-        Objects.equals(this.dettaglioStato, rppIndex.dettaglioStato) &&
-        Objects.equals(this.segnalazioni, rppIndex.segnalazioni) &&
-        Objects.equals(this.rpt, rppIndex.rpt) &&
-        Objects.equals(this.rt, rppIndex.rt) &&
-        Objects.equals(this.pendenza, rppIndex.pendenza);
+    return Objects.equals(stato, rppIndex.stato) &&
+        Objects.equals(dettaglioStato, rppIndex.dettaglioStato) &&
+        Objects.equals(segnalazioni, rppIndex.segnalazioni) &&
+        Objects.equals(rpt, rppIndex.rpt) &&
+        Objects.equals(rt, rppIndex.rt) &&
+        Objects.equals(pendenza, rppIndex.pendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.stato, this.dettaglioStato, this.segnalazioni, this.rpt, this.rt, this.pendenza);
+    return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, pendenza);
   }
 
   public static RppIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -169,13 +167,13 @@ public class RppIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RppIndex {\n");
-    
-    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
-    sb.append("    dettaglioStato: ").append(this.toIndentedString(this.dettaglioStato)).append("\n");
-    sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
-    sb.append("    rpt: ").append(this.toIndentedString(this.rpt)).append("\n");
-    sb.append("    rt: ").append(this.toIndentedString(this.rt)).append("\n");
-    sb.append("    pendenza: ").append(this.toIndentedString(this.pendenza)).append("\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    dettaglioStato: ").append(toIndentedString(dettaglioStato)).append("\n");
+    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
+    sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
+    sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
+    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -7,13 +7,13 @@ Background:
 * configure followRedirects = false
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
-* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Scenario: Iban appoggio in tributo precaricato iniziativa ente
 
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 * def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
@@ -99,7 +99,7 @@ And match response.rpp[0].rpt.datiVersamento.datiSingoloVersamento[0].bicAppoggi
 Scenario: Iban appoggio in pendenza precaricato iniziativa ente
 
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 * def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenza.voci[0].codEntrata = null
@@ -150,7 +150,7 @@ Scenario: Iban appoggio in pendenza non precaricato iniziativa ente
 * call read('classpath:utils/pa-prepara-avviso.feature')
 
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 
@@ -202,7 +202,7 @@ And match response.rpp[0].rpt.datiVersamento.datiSingoloVersamento[0].bicAppoggi
 Scenario: Iban appoggio in tributo precaricato iniziativa psp
 
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 * def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
@@ -273,7 +273,7 @@ Scenario: Iban appoggio in tributo non precaricato iniziativa psp
 Scenario: Iban appoggio in pendenza precaricato iniziativa psp
 
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v1', autenticazione: 'basic'})
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 * def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenza.voci[0].codEntrata = null

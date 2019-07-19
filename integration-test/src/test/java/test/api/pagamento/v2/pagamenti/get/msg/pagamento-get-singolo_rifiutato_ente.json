@@ -8,7 +8,6 @@
    "pspRedirectUrl":"##null",
    "soggettoVersante": "#notnull",
    "autenticazioneSoggetto":"N/A",
-   "lingua":"IT",
    "rpp":[
       {
          "stato":"RPT_RIFIUTATA_NODO",

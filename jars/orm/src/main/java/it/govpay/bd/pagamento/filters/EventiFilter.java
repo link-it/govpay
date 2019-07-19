@@ -34,6 +34,7 @@ public class EventiFilter extends AbstractFilter{
 	private String esito;
 	private String componente;
 	private String tipoEvento;
+	private String sottotipoEvento;
 	private String categoria;
 	private String ruolo;
 	
@@ -182,6 +183,13 @@ public class EventiFilter extends AbstractFilter{
 				addAnd = true;
 			}
 			
+			if(this.sottotipoEvento != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Evento.model().SOTTOTIPO_EVENTO, this.sottotipoEvento);
+				addAnd = true;
+			}
 
 			return newExpression;
 		}  catch (NotImplementedException e) {
@@ -311,6 +319,14 @@ public class EventiFilter extends AbstractFilter{
 
 	public void setRuolo(String ruolo) {
 		this.ruolo = ruolo;
+	}
+
+	public String getSottotipoEvento() {
+		return sottotipoEvento;
+	}
+
+	public void setSottotipoEvento(String sottotipoEvento) {
+		this.sottotipoEvento = sottotipoEvento;
 	}
 	
 }

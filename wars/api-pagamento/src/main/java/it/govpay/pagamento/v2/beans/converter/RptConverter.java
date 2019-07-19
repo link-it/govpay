@@ -1,6 +1,7 @@
 package it.govpay.pagamento.v2.beans.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.jaxrs.RawObject;
 import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaFG;
@@ -84,7 +85,7 @@ public class RptConverter {
 					ctRpt.setSoggettoPagatore(null);
 				}
 				
-				rsModel.setRpt(ConverterUtils.getRptJson(ctRpt));
+				rsModel.setRpt(new RawObject(ConverterUtils.getRptJson(ctRpt)));
 			}
 		} catch (Exception e) {
 			throw new ServiceException(e);
@@ -94,7 +95,7 @@ public class RptConverter {
 		try {
 			if(rpt.getXmlRt() != null) {
 				CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
-				rsModel.setRt(ConverterUtils.getRtJson(ctRt));
+				rsModel.setRt(new RawObject(ConverterUtils.getRtJson(ctRt)));
 			}
 		} catch (Exception e) {
 			throw new ServiceException(e);
@@ -166,7 +167,7 @@ public class RptConverter {
 					ctRpt.setSoggettoPagatore(null);
 				}
 				
-				rsModel.setRpt(ConverterUtils.getRptJson(ctRpt));
+				rsModel.setRpt(new RawObject(ConverterUtils.getRptJson(ctRpt)));
 			}
 		} catch (Exception e) {
 			throw new ServiceException(e);
@@ -176,7 +177,7 @@ public class RptConverter {
 		try {
 			if(rpt.getXmlRt() != null) {
 				CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
-				rsModel.setRt(ConverterUtils.getRtJson(ctRt));
+				rsModel.setRt(new RawObject(ConverterUtils.getRtJson(ctRt)));
 			}
 		} catch (Exception e) {
 			throw new ServiceException(e);

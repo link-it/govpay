@@ -19,18 +19,19 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.beans.Avviso;
-import it.govpay.pagamento.v2.beans.Avviso.StatoEnum;
-import it.govpay.pagamento.v2.beans.Pagamento;
+import it.govpay.pagamento.v2.beans.PagamentoIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
-import it.govpay.pagamento.v2.beans.Rpp;
+import it.govpay.pagamento.v2.beans.RppIndex;
 import it.govpay.pagamento.v2.beans.Segnalazione;
 import it.govpay.pagamento.v2.beans.Soggetto;
+import it.govpay.pagamento.v2.beans.StatoAvviso;
 import it.govpay.pagamento.v2.beans.StatoPendenza;
+import it.govpay.pagamento.v2.beans.StatoVocePendenza;
 import it.govpay.pagamento.v2.beans.TassonomiaAvviso;
+import it.govpay.pagamento.v2.beans.TipoContabilita;
 import it.govpay.pagamento.v2.beans.VocePendenza;
 import it.govpay.pagamento.v2.beans.VocePendenza.TipoBolloEnum;
-import it.govpay.pagamento.v2.beans.VocePendenza.TipoContabilitaEnum;
 
 public class PendenzeConverter {
 	
@@ -55,12 +56,12 @@ public class PendenzeConverter {
 		rsModel.setDataPagamento(versamento.getDataPagamento());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
-		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
+		rsModel.setDominio(DominiConverter.toRsModel(versamento.getDominio(null)));
 		rsModel.setIdTipoPendenza(versamento.getTipoVersamentoDominio(null).getCodTipoVersamento());
 		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
-		rsModel.setNome(versamento.getNome());
+//		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(controlloUtenzaPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()),user));
 		if(versamento.getDatiAllegati() != null)
@@ -85,7 +86,7 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setStato(statoPendenza);
-		rsModel.setTassonomia(versamento.getTassonomia());
+//		rsModel.setTassonomia(versamento.getTassonomia());
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setDirezione(versamento.getDirezione());
@@ -103,19 +104,19 @@ public class PendenzeConverter {
 		}
 		rsModel.setVoci(v);
 		
-		List<Pagamento> listaPagamentoIndex = new ArrayList<>();
+		List<PagamentoIndex> listaPagamentoIndex = new ArrayList<>();
 		
 		if(pagamenti != null && pagamenti.size() > 0) {
 			for (PagamentoPortale pagamento : pagamenti) {
-				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModel(pagamento,user));
+				listaPagamentoIndex.add(PagamentiPortaleConverter.toRsModelIndex(pagamento,user));
 			}
 		}
 		rsModel.setPagamenti(listaPagamentoIndex);
 		
-		List<Rpp> rpps = new ArrayList<>();
+		List<RppIndex> rpps = new ArrayList<>();
 		if(rpts != null && rpts.size() > 0) {
 			for (Rpt rpt : rpts) {
-				rpps.add(RptConverter.toRsModel(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null), user));
+				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null), user));
 			} 
 		}
 		rsModel.setRpp(rpps); 
@@ -157,13 +158,13 @@ public class PendenzeConverter {
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		
-		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(null)));
+		rsModel.setDominio(DominiConverter.toRsModel(versamento.getDominio(null)));
 		rsModel.setIdTipoPendenza(versamento.getTipoVersamentoDominio(null).getCodTipoVersamento());
 		rsModel.setIdA2A(versamento.getApplicazione(null).getCodApplicazione());
 		
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
-		rsModel.setNome(versamento.getNome());
+//		rsModel.setNome(versamento.getNome());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(controlloUtenzaPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()),user));
 		if(versamento.getDatiAllegati() != null)
@@ -188,7 +189,7 @@ public class PendenzeConverter {
 		}
 
 		rsModel.setStato(statoPendenza);
-		rsModel.setTassonomia(versamento.getTassonomia());
+//		rsModel.setTassonomia(versamento.getTassonomia());
 		rsModel.setTassonomiaAvviso(TassonomiaAvviso.fromValue(versamento.getTassonomiaAvviso()));
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setDirezione(versamento.getDirezione());
@@ -214,9 +215,9 @@ public class PendenzeConverter {
 		rsModel.setIndice(new BigDecimal(indice));
 		
 		switch(singoloVersamento.getStatoSingoloVersamento()) {
-		case ESEGUITO:rsModel.setStato(VocePendenza.StatoEnum.ESEGUITO);
+		case ESEGUITO:rsModel.setStato(StatoVocePendenza.ESEGUITO);
 			break;
-		case NON_ESEGUITO:rsModel.setStato(VocePendenza.StatoEnum.NON_ESEGUITO);
+		case NON_ESEGUITO:rsModel.setStato(StatoVocePendenza.NON_ESEGUITO);
 			break;
 		default:
 			break;}
@@ -233,7 +234,7 @@ public class PendenzeConverter {
 			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(null).getCodIban());
 			if(singoloVersamento.getIbanAppoggio(null) != null)
 				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(null).getCodIban());
-			rsModel.setTipoContabilita(TipoContabilitaEnum.fromValue(singoloVersamento.getTipoContabilita().name()));
+			rsModel.setTipoContabilita(TipoContabilita.fromValue(singoloVersamento.getTipoContabilita().name()));
 		}
 		
 		
@@ -261,18 +262,18 @@ public class PendenzeConverter {
 		rsModel.setBarcode(barCode);
 		rsModel.setQrcode(qrCode);
 		
-		StatoEnum statoPendenza = null;
+		StatoAvviso statoPendenza = null;
 
 		switch(versamento.getStatoVersamento()) {
-		case ANNULLATO: statoPendenza = StatoEnum.ANNULLATO;
+		case ANNULLATO: statoPendenza = StatoAvviso.ANNULLATA;
 			break;
-		case ESEGUITO: statoPendenza = StatoEnum.PAGATO;
+		case ESEGUITO: statoPendenza = StatoAvviso.DUPLICATA;
 			break;
-		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoEnum.PAGATO;
+		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoAvviso.DUPLICATA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoAvviso.SCADUTA;} else { statoPendenza = StatoAvviso.NON_ESEGUITA;}
 			break;
-		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoEnum.PAGATO;
+		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoAvviso.DUPLICATA;
 			break;
 		default:
 			break;

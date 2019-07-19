@@ -37,6 +37,8 @@ public class ListaPendenzeConInformazioniIncassoDTO extends BasicFindRequestDTO{
 	private String iuv;
 	private boolean abilitaFiltroCittadino;
 	private String idTipoVersamento;
+	private String divisione;
+	private String direzione;
 	
 	public Date getDataA() {
 		return this.dataA;
@@ -126,4 +128,19 @@ public class ListaPendenzeConInformazioniIncassoDTO extends BasicFindRequestDTO{
 		this.idTipoVersamento = idTipoVersamento;
 	}
 	
+	public String getDivisione() {
+		return divisione;
+	}
+
+	public void setDivisione(String divisione) {
+		this.divisione = divisione;
+	}
+
+	public String getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
+	}
 }

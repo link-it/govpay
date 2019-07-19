@@ -25,7 +25,14 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	private String idSessionePsp;
 	private String cfCittadino;
 	private String codApplicazione;
+	private String idSessione;
 	
+	public String getIdSessione() {
+		return idSessione;
+	}
+	public void setIdSessione(String idSessione) {
+		this.idSessione = idSessione;
+	}
 	public Date getDataA() {
 		return this.dataA;
 	}

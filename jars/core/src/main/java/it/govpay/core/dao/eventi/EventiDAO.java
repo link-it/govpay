@@ -77,6 +77,7 @@ public class EventiDAO extends BaseDAO {
 			filter.setRuolo(listaEventiDTO.getRuolo().toString());
 		filter.setComponente(listaEventiDTO.getComponente());
 		filter.setTipoEvento(listaEventiDTO.getTipoEvento());
+		filter.setSottotipoEvento(listaEventiDTO.getSottotipoEvento());
 
 		long count = eventiBD.count(filter);
 

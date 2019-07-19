@@ -439,8 +439,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		validatoreId.validaIdDominio("idDominio", this.idDominio);
 		if(this.idUnitaOperativa != null)
 			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa);
-		if(this.idTipoPendenza != null)
-			validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
+		
+		validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
 		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(140);
 		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
 		vf.getValidator("importo", this.importo).notNull().minOrEquals(BigDecimal.ZERO).maxOrEquals(BigDecimal.valueOf(999999.99)).checkDecimalDigits();

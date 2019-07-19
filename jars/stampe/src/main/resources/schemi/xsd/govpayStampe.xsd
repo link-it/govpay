@@ -132,12 +132,12 @@
 			<xsd:element name="iuv" type="xsd:string"/>
 			<xsd:element name="id_pendenza" type="xsd:string"/>
 			<xsd:element name="importo" type="xsd:double"/>
-			<xsd:element name="data" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="identificativo_debitore" type="xsd:string"/>
 			<xsd:element name="id_tipo_pendenza" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="id_entrata" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="anno" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="data_pagamento" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="data" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

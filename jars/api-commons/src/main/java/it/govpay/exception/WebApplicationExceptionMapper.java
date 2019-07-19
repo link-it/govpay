@@ -11,6 +11,7 @@ import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.ExceptionUtils;
 
 /**
  * Gestione automatica delle eccezioni lanciate dal DAO V1 in Problem V2.
@@ -23,8 +24,8 @@ public class WebApplicationExceptionMapper extends org.openspcoop2.utils.service
 
 	@Override
 	public Response toResponse(javax.ws.rs.WebApplicationException e) {
-		if(WebApplicationExceptionMapper.existsInnerException(e, RedirectException.class)) {
-			RedirectException innerException = (RedirectException) WebApplicationExceptionMapper.getInnerException(e, RedirectException.class);
+		if(ExceptionUtils.existsInnerException(e, RedirectException.class)) {
+			RedirectException innerException = (RedirectException) ExceptionUtils.getInnerException(e, RedirectException.class);
 			return Response.seeOther(innerException.getURILocation()).build();
 		}else {
 			return super.toResponse(e);
@@ -34,21 +35,21 @@ public class WebApplicationExceptionMapper extends org.openspcoop2.utils.service
 	@Override
 	public void updateProblem(org.openspcoop2.utils.service.fault.jaxrs.Problem problem, WebApplicationException e) {
 		
-		if(WebApplicationExceptionMapper.existsInnerException(e, UnprocessableEntityException.class)) {
-			UnprocessableEntityException innerException = (UnprocessableEntityException) WebApplicationExceptionMapper.getInnerException(e, UnprocessableEntityException.class);
+		if(ExceptionUtils.existsInnerException(e, UnprocessableEntityException.class)) {
+			UnprocessableEntityException innerException = (UnprocessableEntityException) ExceptionUtils.getInnerException(e, UnprocessableEntityException.class);
 			int statusCode = 422;
 			problem.setStatus(statusCode);
 			problem.setDetail(innerException.getMessage());
 		}
 	
-		if(WebApplicationExceptionMapper.existsInnerException(e, BaseExceptionV1.class)) {
-			BaseExceptionV1 innerException = (BaseExceptionV1) WebApplicationExceptionMapper.getInnerException(e, BaseExceptionV1.class);
+		if(ExceptionUtils.existsInnerException(e, BaseExceptionV1.class)) {
+			BaseExceptionV1 innerException = (BaseExceptionV1) ExceptionUtils.getInnerException(e, BaseExceptionV1.class);
 			problem.setStatus(innerException.getTransportErrorCode());
 			problem.setDetail(innerException.getMessage());
 		} 
 		
-		if(WebApplicationExceptionMapper.existsInnerException(e, GovPayException.class)) {
-			GovPayException innerException = (GovPayException) WebApplicationExceptionMapper.getInnerException(e, GovPayException.class);
+		if(ExceptionUtils.existsInnerException(e, GovPayException.class)) {
+			GovPayException innerException = (GovPayException) ExceptionUtils.getInnerException(e, GovPayException.class);
 			int statusCode = innerException.getStatusCode();
 			if(innerException.getFaultBean()!=null) {
 				statusCode = 502;
@@ -58,8 +59,8 @@ public class WebApplicationExceptionMapper extends org.openspcoop2.utils.service
 			}
 			problem.setStatus(statusCode);
 		} 
-		if(WebApplicationExceptionMapper.existsInnerException(e, ValidationException.class)) {
-			ValidationException innerException = (ValidationException) WebApplicationExceptionMapper.getInnerException(e, ValidationException.class);
+		if(ExceptionUtils.existsInnerException(e, ValidationException.class)) {
+			ValidationException innerException = (ValidationException) ExceptionUtils.getInnerException(e, ValidationException.class);
 			int statusCode = 400;
 			problem.setStatus(statusCode);
 			problem.setDetail(innerException.getMessage());
@@ -74,31 +75,5 @@ public class WebApplicationExceptionMapper extends org.openspcoop2.utils.service
 		}
 
 		return FaultCode.ERRORE_INTERNO.toException(e);
-	}
-	
-	public static boolean existsInnerException(Throwable e,Class<?> found){
-		if(found.isAssignableFrom(e.getClass())){
-			return true;
-		}else{
-			if(e.getCause()!=null){
-				return existsInnerException(e.getCause(), found);
-			}
-			else{
-				return false;
-			}
-		}
-	}
-
-	public static Throwable getInnerException(Throwable e,Class<?> found){
-		if(found.isAssignableFrom(e.getClass())){
-			return e;
-		}else{
-			if(e.getCause()!=null){
-				return getInnerException(e.getCause(), found);
-			}
-			else{
-				return null;
-			}
-		}
 	}
 }

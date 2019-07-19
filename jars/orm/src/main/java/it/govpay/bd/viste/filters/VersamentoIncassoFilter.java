@@ -66,6 +66,8 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 	private List<Long> idTipiVersamento = null;
 	private String codTipoVersamento = null;
 	private boolean abilitaFiltroCittadino = false;
+	private String divisione;
+	private String direzione;
 	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
@@ -293,6 +295,22 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.ilike(VersamentoIncasso.model().ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.direzione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(VersamentoIncasso.model().DIREZIONE, this.direzione, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.divisione != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(VersamentoIncasso.model().DIVISIONE, this.divisione, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			
@@ -530,6 +548,22 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 
 	public void setAbilitaFiltroCittadino(boolean abilitaFiltroCittadino) {
 		this.abilitaFiltroCittadino = abilitaFiltroCittadino;
+	}
+
+	public String getDivisione() {
+		return divisione;
+	}
+
+	public void setDivisione(String divisione) {
+		this.divisione = divisione;
+	}
+
+	public String getDirezione() {
+		return direzione;
+	}
+
+	public void setDirezione(String direzione) {
+		this.direzione = direzione;
 	}
 	
 }

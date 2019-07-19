@@ -30,7 +30,7 @@ public class Promemoria extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
 	public enum TipoPromemoria { AVVISO, RICEVUTA}
-	public enum StatoSpedizione {DA_SPEDIRE, SPEDITO, ANNULLATO}
+	public enum StatoSpedizione {DA_SPEDIRE, SPEDITO, ANNULLATO, FALLITO}
 	
 	private Long id;
 	private long idVersamento;

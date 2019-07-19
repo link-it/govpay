@@ -96,7 +96,7 @@ public class PendenzeConverter {
 				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null)));
 			} 
 		}
-		rsModel.setRpps(rpps); 
+		rsModel.setRpp(rpps); 
 
 		rsModel.setDescrizioneStato(versamento.getDescrizioneStato());
 		rsModel.setSegnalazioni(unmarshall(versamento.getAnomalie()));
@@ -147,7 +147,7 @@ public class PendenzeConverter {
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
 		if(versamento.getDatiAllegati() != null)
-			rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
+			rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati())); 
 
 		StatoPendenza statoPendenza = null;
 
@@ -175,7 +175,6 @@ public class PendenzeConverter {
 			rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(versamento.getUo(null)));
 
 		rsModel.setRpp(UriBuilderUtils.getRppsByIdA2AIdPendenza(versamento.getApplicazione(null).getCodApplicazione(),versamento.getCodVersamentoEnte()));
-		
 		rsModel.setDescrizioneStato(versamento.getDescrizioneStato());
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 

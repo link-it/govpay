@@ -40,6 +40,8 @@ paths:
         - $ref: '#/components/parameters/idDebitore'
         - $ref: '#/components/parameters/statoPendenza'
         - $ref: '#/components/parameters/idPagamento'
+        - $ref: '#/components/parameters/direzione'
+        - $ref: '#/components/parameters/divisione'
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -176,10 +178,10 @@ paths:
           $ref: '#/components/responses/404NotFound'
         '500':
           $ref: '#/components/responses/500ServiceUnavailable'          
-  '/rpps':
+  '/rpp':
     get:  
       summary: Lista delle richieste di pagamento pendenza
-      operationId: findRpps
+      operationId: findRpp
       tags:
         - Transazioni
       parameters:
@@ -210,7 +212,7 @@ paths:
           $ref: '#/components/responses/403NotAuthorized'
         '500':
           $ref: '#/components/responses/500ServiceUnavailable'
-  '/rpps/{idDominio}/{iuv}/{ccp}':
+  '/rpp/{idDominio}/{iuv}/{ccp}':
     get:
       summary: Dettaglio di una richiesta di pagamento pendenza
       operationId: getRpp
@@ -250,7 +252,7 @@ paths:
           $ref: '#/components/responses/404NotFound'
         '500':
           $ref: '#/components/responses/500ServiceUnavailable'           
-  '/rpps/{idDominio}/{iuv}/{ccp}/rpt':
+  '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
     get:
       summary: Acquisizione della richiesta di pagamento pagopa
       operationId: getRpt
@@ -295,7 +297,7 @@ paths:
           $ref: '#/components/responses/404NotFound'
         '503':
           $ref: '#/components/responses/500ServiceUnavailable'                    
-  '/rpps/{idDominio}/{iuv}/{ccp}/rt':
+  '/rpp/{idDominio}/{iuv}/{ccp}/rt':
     get:
       operationId: getRt
       summary: Acquisizione della ricevuta di pagamento
@@ -465,7 +467,7 @@ components:
         type: string
       example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
     statoPendenza:
-      name: statoPendenza
+      name: stato
       in: query
       description: Filtro sullo stato del pendenza
       required: false
@@ -513,6 +515,22 @@ components:
       schema:
         type: string
         example: +name
+    direzione:
+      name: direzione
+      in: query
+      description: Identificativo della direzione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Direzione ABC
+    divisione:
+      name: divisione
+      in: query
+      description: Identificativo della divisione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Divisione001
     Etag:
       name: Etag
       description: |
@@ -617,7 +635,7 @@ components:
     Acl:
       type: object
       required:
-        - servizi
+        - servizio
         - autorizzazioni
       properties:
         ruolo:
@@ -628,7 +646,7 @@ components:
           type: string
           description: principal a cui si applica l'acl
           example: user001
-        servizi:
+        servizio:
           $ref: "#/components/schemas/TipoServizio"
         autorizzazioni:
           $ref: "#/components/schemas/TipoAutorizzazione"  
@@ -835,6 +853,7 @@ components:
     NuovaPendenza:  
       type: object
       required:
+        - idTipoPendenza
         - idDominio
         - causale
         - soggettoPagatore
@@ -983,7 +1002,7 @@ components:
         - type: object
           required:
             - voci
-            - rpps
+            - rpp
           properties:
             voci:
               type: array
@@ -991,7 +1010,7 @@ components:
               maxItems: 5
               items:
                 $ref: '#/components/schemas/VocePendenza' 
-            rpps:
+            rpp:
               type: array
               items:
                 $ref: '#/components/schemas/RppIndex'   
@@ -1127,13 +1146,9 @@ components:
         - $ref: '#/components/schemas/PendenzaBase'   
         - type: object
           required:
-            - href
             - rpp
             - pagamenti
           properties:
-            href: 
-              type: string
-              description: Url della pendenza
             rpp:
               type: string
               description: Url per l'elenco delle rpp emesse per la pendenza
@@ -1370,13 +1385,8 @@ components:
         - $ref: '#/components/schemas/RppBase'
         - type: object
           required:
-            - href
             - pendenza
           properties:
-            href:
-              type: string
-              description: URL della rpp
-              example: "/rpps/01234567890/154340602921782/281120181253443049"
             pendenza:
               type: string
               description: Url alla pendenza oggetto della richiesta di pagamento    

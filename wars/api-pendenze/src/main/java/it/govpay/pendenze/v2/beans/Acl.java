@@ -11,7 +11,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ruolo",
 "principal",
-"servizi",
+"servizio",
 "autorizzazioni",
 })
 public class Acl extends JSONSerializable {
@@ -22,8 +22,8 @@ public class Acl extends JSONSerializable {
   @JsonProperty("principal")
   private String principal = null;
   
-  @JsonProperty("servizi")
-  private TipoServizio servizi = null;
+  @JsonProperty("servizio")
+  private TipoServizio servizio = null;
   
   @JsonProperty("autorizzazioni")
   private List<String> autorizzazioni = null;
@@ -62,17 +62,17 @@ public class Acl extends JSONSerializable {
 
   /**
    **/
-  public Acl servizi(TipoServizio servizi) {
-    this.servizi = servizi;
+  public Acl servizi(TipoServizio servizio) {
+    this.servizio = servizio;
     return this;
   }
 
-  @JsonProperty("servizi")
-  public TipoServizio getServizi() {
-    return servizi;
+  @JsonProperty("servizio")
+  public TipoServizio getServizio() {
+    return servizio;
   }
-  public void setServizi(TipoServizio servizi) {
-    this.servizi = servizi;
+  public void setServizio(TipoServizio servizio) {
+    this.servizio = servizio;
   }
 
   /**
@@ -101,13 +101,13 @@ public class Acl extends JSONSerializable {
     Acl acl = (Acl) o;
     return Objects.equals(ruolo, acl.ruolo) &&
         Objects.equals(principal, acl.principal) &&
-        Objects.equals(servizi, acl.servizi) &&
+        Objects.equals(servizio, acl.servizio) &&
         Objects.equals(autorizzazioni, acl.autorizzazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ruolo, principal, servizi, autorizzazioni);
+    return Objects.hash(ruolo, principal, servizio, autorizzazioni);
   }
 
   public static Acl parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -126,7 +126,7 @@ public class Acl extends JSONSerializable {
     
     sb.append("    ruolo: ").append(toIndentedString(ruolo)).append("\n");
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
-    sb.append("    servizi: ").append(toIndentedString(servizi)).append("\n");
+    sb.append("    servizi: ").append(toIndentedString(servizio)).append("\n");
     sb.append("    autorizzazioni: ").append(toIndentedString(autorizzazioni)).append("\n");
     sb.append("}");
     return sb.toString();

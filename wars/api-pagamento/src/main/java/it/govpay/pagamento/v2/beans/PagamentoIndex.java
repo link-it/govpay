@@ -11,56 +11,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"id",
-"nome",
-"dataRichiestaPagamento",
-"idSessionePortale",
-"idSessionePsp",
-"importo",
-"stato",
-"pspRedirectUrl",
 "urlRitorno",
 "contoAddebito",
 "dataEsecuzionePagamento",
 "credenzialiPagatore",
 "soggettoVersante",
 "autenticazioneSoggetto",
-"lingua",
+"id",
+"nome",
+"stato",
+"importo",
+"idSessionePortale",
+"idSessionePsp",
+"pspRedirectUrl",
+"dataRichiestaPagamento",
 "pendenze",
 "rpp",
 })
 public class PagamentoIndex extends JSONSerializable {
   
-  @JsonProperty("id")
-  private String id = null;
-  
-  @JsonProperty("nome")
-  private String nome = null;
-  
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-  @JsonProperty("dataRichiestaPagamento")
-  private Date dataRichiestaPagamento = null;
-  
-  @JsonProperty("idSessionePortale")
-  private String idSessionePortale = null;
-  
-  @JsonProperty("idSessionePsp")
-  private String idSessionePsp = null;
-  
-  @JsonProperty("importo")
-  private BigDecimal importo = null;
-  
-  @JsonProperty("stato")
-  private StatoPagamento stato = null;
-  
-  @JsonProperty("pspRedirectUrl")
-  private String pspRedirectUrl = null;
-  
   @JsonProperty("urlRitorno")
   private String urlRitorno = null;
   
   @JsonProperty("contoAddebito")
-  private ContoAddebito contoAddebito = null;
+  private Conto contoAddebito = null;
   
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
@@ -71,108 +45,33 @@ public class PagamentoIndex extends JSONSerializable {
   @JsonProperty("soggettoVersante")
   private Soggetto soggettoVersante = null;
   
-    
-  /**
-   * modalita' di autenticazione del soggetto versante
-   */
-  public enum AutenticazioneSoggettoEnum {
-    
-    
-        
-            
-    CNS("CNS"),
-    
-            
-    USR("USR"),
-    
-            
-    OTH("OTH"),
-    
-            
-    N_A("N/A");
-            
-        
-    
-
-    private String value;
-
-    AutenticazioneSoggettoEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(this.value);
-    }
-
-    public static AutenticazioneSoggettoEnum fromValue(String text) {
-      for (AutenticazioneSoggettoEnum b : AutenticazioneSoggettoEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("autenticazioneSoggetto")
-  private AutenticazioneSoggettoEnum autenticazioneSoggetto = null;
+  private TipoAutenticazioneSoggetto autenticazioneSoggetto = null;
   
-    
-  /**
-   * Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
-   */
-  public enum LinguaEnum {
-    
-    
-        
-            
-    IT("IT"),
-    
-            
-    EN("EN"),
-    
-            
-    FR("FR"),
-    
-            
-    DE("DE"),
-    
-            
-    SL("SL");
-            
-        
-    
-
-    private String value;
-
-    LinguaEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(this.value);
-    }
-
-    public static LinguaEnum fromValue(String text) {
-      for (LinguaEnum b : LinguaEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  @JsonProperty("lingua")
-  private LinguaEnum lingua = LinguaEnum.IT;
+  @JsonProperty("id")
+  private String id = null;
+  
+  @JsonProperty("nome")
+  private String nome = null;
+  
+  @JsonProperty("stato")
+  private StatoPagamento stato = null;
+  
+  @JsonProperty("importo")
+  private BigDecimal importo = null;
+  
+  @JsonProperty("idSessionePortale")
+  private String idSessionePortale = null;
+  
+  @JsonProperty("idSessionePsp")
+  private String idSessionePsp = null;
+  
+  @JsonProperty("pspRedirectUrl")
+  private String pspRedirectUrl = null;
+  
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+  @JsonProperty("dataRichiestaPagamento")
+  private Date dataRichiestaPagamento = null;
   
   @JsonProperty("pendenze")
   private String pendenze = null;
@@ -180,133 +79,6 @@ public class PagamentoIndex extends JSONSerializable {
   @JsonProperty("rpp")
   private String rpp = null;
   
-  /**
-   * Identificativo del pagamento assegnato da GovPay
-   **/
-  public PagamentoIndex id(String id) {
-    this.id = id;
-    return this;
-  }
-
-  @JsonProperty("id")
-  public String getId() {
-    return this.id;
-  }
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  /**
-   * Identificativo del pagamento assegnato da GovPay
-   **/
-  public PagamentoIndex nome(String nome) {
-    this.nome = nome;
-    return this;
-  }
-
-  @JsonProperty("nome")
-  public String getNome() {
-    return this.nome;
-  }
-  public void setNome(String nome) {
-    this.nome = nome;
-  }
-
-  /**
-   * Data di richiesta del pagamento
-   **/
-  public PagamentoIndex dataRichiestaPagamento(Date dataRichiestaPagamento) {
-    this.dataRichiestaPagamento = dataRichiestaPagamento;
-    return this;
-  }
-
-  @JsonProperty("dataRichiestaPagamento")
-  public Date getDataRichiestaPagamento() {
-    return this.dataRichiestaPagamento;
-  }
-  public void setDataRichiestaPagamento(Date dataRichiestaPagamento) {
-    this.dataRichiestaPagamento = dataRichiestaPagamento;
-  }
-
-  /**
-   * Identificativo del pagamento assegnato dal portale chiamante
-   **/
-  public PagamentoIndex idSessionePortale(String idSessionePortale) {
-    this.idSessionePortale = idSessionePortale;
-    return this;
-  }
-
-  @JsonProperty("idSessionePortale")
-  public String getIdSessionePortale() {
-    return this.idSessionePortale;
-  }
-  public void setIdSessionePortale(String idSessionePortale) {
-    this.idSessionePortale = idSessionePortale;
-  }
-
-  /**
-   * Identificativo del pagamento assegnato dal psp utilizzato
-   **/
-  public PagamentoIndex idSessionePsp(String idSessionePsp) {
-    this.idSessionePsp = idSessionePsp;
-    return this;
-  }
-
-  @JsonProperty("idSessionePsp")
-  public String getIdSessionePsp() {
-    return this.idSessionePsp;
-  }
-  public void setIdSessionePsp(String idSessionePsp) {
-    this.idSessionePsp = idSessionePsp;
-  }
-
-  /**
-   * Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
-   **/
-  public PagamentoIndex importo(BigDecimal importo) {
-    this.importo = importo;
-    return this;
-  }
-
-  @JsonProperty("importo")
-  public BigDecimal getImporto() {
-    return this.importo;
-  }
-  public void setImporto(BigDecimal importo) {
-    this.importo = importo;
-  }
-
-  /**
-   **/
-  public PagamentoIndex stato(StatoPagamento stato) {
-    this.stato = stato;
-    return this;
-  }
-
-  @JsonProperty("stato")
-  public StatoPagamento getStato() {
-    return this.stato;
-  }
-  public void setStato(StatoPagamento stato) {
-    this.stato = stato;
-  }
-
-  /**
-   * Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
-   **/
-  public PagamentoIndex pspRedirectUrl(String pspRedirectUrl) {
-    this.pspRedirectUrl = pspRedirectUrl;
-    return this;
-  }
-
-  @JsonProperty("pspRedirectUrl")
-  public String getPspRedirectUrl() {
-    return this.pspRedirectUrl;
-  }
-  public void setPspRedirectUrl(String pspRedirectUrl) {
-    this.pspRedirectUrl = pspRedirectUrl;
-  }
-
   /**
    * url di ritorno al portale al termine della sessione di pagamento
    **/
@@ -317,7 +89,7 @@ public class PagamentoIndex extends JSONSerializable {
 
   @JsonProperty("urlRitorno")
   public String getUrlRitorno() {
-    return this.urlRitorno;
+    return urlRitorno;
   }
   public void setUrlRitorno(String urlRitorno) {
     this.urlRitorno = urlRitorno;
@@ -325,16 +97,16 @@ public class PagamentoIndex extends JSONSerializable {
 
   /**
    **/
-  public PagamentoIndex contoAddebito(ContoAddebito contoAddebito) {
+  public PagamentoIndex contoAddebito(Conto contoAddebito) {
     this.contoAddebito = contoAddebito;
     return this;
   }
 
   @JsonProperty("contoAddebito")
-  public ContoAddebito getContoAddebito() {
-    return this.contoAddebito;
+  public Conto getContoAddebito() {
+    return contoAddebito;
   }
-  public void setContoAddebito(ContoAddebito contoAddebito) {
+  public void setContoAddebito(Conto contoAddebito) {
     this.contoAddebito = contoAddebito;
   }
 
@@ -348,7 +120,7 @@ public class PagamentoIndex extends JSONSerializable {
 
   @JsonProperty("dataEsecuzionePagamento")
   public Date getDataEsecuzionePagamento() {
-    return this.dataEsecuzionePagamento;
+    return dataEsecuzionePagamento;
   }
   public void setDataEsecuzionePagamento(Date dataEsecuzionePagamento) {
     this.dataEsecuzionePagamento = dataEsecuzionePagamento;
@@ -364,7 +136,7 @@ public class PagamentoIndex extends JSONSerializable {
 
   @JsonProperty("credenzialiPagatore")
   public String getCredenzialiPagatore() {
-    return this.credenzialiPagatore;
+    return credenzialiPagatore;
   }
   public void setCredenzialiPagatore(String credenzialiPagatore) {
     this.credenzialiPagatore = credenzialiPagatore;
@@ -379,46 +151,156 @@ public class PagamentoIndex extends JSONSerializable {
 
   @JsonProperty("soggettoVersante")
   public Soggetto getSoggettoVersante() {
-    return this.soggettoVersante;
+    return soggettoVersante;
   }
   public void setSoggettoVersante(Soggetto soggettoVersante) {
     this.soggettoVersante = soggettoVersante;
   }
 
   /**
-   * modalita' di autenticazione del soggetto versante
    **/
-  public PagamentoIndex autenticazioneSoggetto(AutenticazioneSoggettoEnum autenticazioneSoggetto) {
+  public PagamentoIndex autenticazioneSoggetto(TipoAutenticazioneSoggetto autenticazioneSoggetto) {
     this.autenticazioneSoggetto = autenticazioneSoggetto;
     return this;
   }
 
   @JsonProperty("autenticazioneSoggetto")
-  public AutenticazioneSoggettoEnum getAutenticazioneSoggetto() {
-    return this.autenticazioneSoggetto;
+  public TipoAutenticazioneSoggetto getAutenticazioneSoggetto() {
+    return autenticazioneSoggetto;
   }
-  public void setAutenticazioneSoggetto(AutenticazioneSoggettoEnum autenticazioneSoggetto) {
+  public void setAutenticazioneSoggetto(TipoAutenticazioneSoggetto autenticazioneSoggetto) {
     this.autenticazioneSoggetto = autenticazioneSoggetto;
   }
 
   /**
-   * Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
+   * Identificativo del pagamento assegnato da GovPay
    **/
-  public PagamentoIndex lingua(LinguaEnum lingua) {
-    this.lingua = lingua;
+  public PagamentoIndex id(String id) {
+    this.id = id;
     return this;
   }
 
-  @JsonProperty("lingua")
-  public LinguaEnum getLingua() {
-    return this.lingua;
+  @JsonProperty("id")
+  public String getId() {
+    return id;
   }
-  public void setLingua(LinguaEnum lingua) {
-    this.lingua = lingua;
+  public void setId(String id) {
+    this.id = id;
   }
 
   /**
-   * Url per le pendenze oggetto del Pagamento
+   * Identificativo del pagamento assegnato da GovPay
+   **/
+  public PagamentoIndex nome(String nome) {
+    this.nome = nome;
+    return this;
+  }
+
+  @JsonProperty("nome")
+  public String getNome() {
+    return nome;
+  }
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  /**
+   **/
+  public PagamentoIndex stato(StatoPagamento stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoPagamento getStato() {
+    return stato;
+  }
+  public void setStato(StatoPagamento stato) {
+    this.stato = stato;
+  }
+
+  /**
+   * Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
+   **/
+  public PagamentoIndex importo(BigDecimal importo) {
+    this.importo = importo;
+    return this;
+  }
+
+  @JsonProperty("importo")
+  public BigDecimal getImporto() {
+    return importo;
+  }
+  public void setImporto(BigDecimal importo) {
+    this.importo = importo;
+  }
+
+  /**
+   * Identificativo della sessione di pagamento assegnato dall'EC
+   **/
+  public PagamentoIndex idSessionePortale(String idSessionePortale) {
+    this.idSessionePortale = idSessionePortale;
+    return this;
+  }
+
+  @JsonProperty("idSessionePortale")
+  public String getIdSessionePortale() {
+    return idSessionePortale;
+  }
+  public void setIdSessionePortale(String idSessionePortale) {
+    this.idSessionePortale = idSessionePortale;
+  }
+
+  /**
+   * Identificativo del pagamento assegnato dal psp utilizzato
+   **/
+  public PagamentoIndex idSessionePsp(String idSessionePsp) {
+    this.idSessionePsp = idSessionePsp;
+    return this;
+  }
+
+  @JsonProperty("idSessionePsp")
+  public String getIdSessionePsp() {
+    return idSessionePsp;
+  }
+  public void setIdSessionePsp(String idSessionePsp) {
+    this.idSessionePsp = idSessionePsp;
+  }
+
+  /**
+   * Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
+   **/
+  public PagamentoIndex pspRedirectUrl(String pspRedirectUrl) {
+    this.pspRedirectUrl = pspRedirectUrl;
+    return this;
+  }
+
+  @JsonProperty("pspRedirectUrl")
+  public String getPspRedirectUrl() {
+    return pspRedirectUrl;
+  }
+  public void setPspRedirectUrl(String pspRedirectUrl) {
+    this.pspRedirectUrl = pspRedirectUrl;
+  }
+
+  /**
+   * Data in cui e' stato inserito il pagamento.
+   **/
+  public PagamentoIndex dataRichiestaPagamento(Date dataRichiestaPagamento) {
+    this.dataRichiestaPagamento = dataRichiestaPagamento;
+    return this;
+  }
+
+  @JsonProperty("dataRichiestaPagamento")
+  public Date getDataRichiestaPagamento() {
+    return dataRichiestaPagamento;
+  }
+  public void setDataRichiestaPagamento(Date dataRichiestaPagamento) {
+    this.dataRichiestaPagamento = dataRichiestaPagamento;
+  }
+
+  /**
+   * URL della lista delle pendenze oggetto del pagamento
    **/
   public PagamentoIndex pendenze(String pendenze) {
     this.pendenze = pendenze;
@@ -427,14 +309,14 @@ public class PagamentoIndex extends JSONSerializable {
 
   @JsonProperty("pendenze")
   public String getPendenze() {
-    return this.pendenze;
+    return pendenze;
   }
   public void setPendenze(String pendenze) {
     this.pendenze = pendenze;
   }
 
   /**
-   * Url per le richieste di pagamento oggetto del Pagamento
+   * URL della lista delle richieste di pagamento attivate
    **/
   public PagamentoIndex rpp(String rpp) {
     this.rpp = rpp;
@@ -443,7 +325,7 @@ public class PagamentoIndex extends JSONSerializable {
 
   @JsonProperty("rpp")
   public String getRpp() {
-    return this.rpp;
+    return rpp;
   }
   public void setRpp(String rpp) {
     this.rpp = rpp;
@@ -454,32 +336,31 @@ public class PagamentoIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     PagamentoIndex pagamentoIndex = (PagamentoIndex) o;
-    return Objects.equals(this.id, pagamentoIndex.id) &&
-        Objects.equals(this.nome, pagamentoIndex.nome) &&
-        Objects.equals(this.dataRichiestaPagamento, pagamentoIndex.dataRichiestaPagamento) &&
-        Objects.equals(this.idSessionePortale, pagamentoIndex.idSessionePortale) &&
-        Objects.equals(this.idSessionePsp, pagamentoIndex.idSessionePsp) &&
-        Objects.equals(this.importo, pagamentoIndex.importo) &&
-        Objects.equals(this.stato, pagamentoIndex.stato) &&
-        Objects.equals(this.pspRedirectUrl, pagamentoIndex.pspRedirectUrl) &&
-        Objects.equals(this.urlRitorno, pagamentoIndex.urlRitorno) &&
-        Objects.equals(this.contoAddebito, pagamentoIndex.contoAddebito) &&
-        Objects.equals(this.dataEsecuzionePagamento, pagamentoIndex.dataEsecuzionePagamento) &&
-        Objects.equals(this.credenzialiPagatore, pagamentoIndex.credenzialiPagatore) &&
-        Objects.equals(this.soggettoVersante, pagamentoIndex.soggettoVersante) &&
-        Objects.equals(this.autenticazioneSoggetto, pagamentoIndex.autenticazioneSoggetto) &&
-        Objects.equals(this.lingua, pagamentoIndex.lingua) &&
-        Objects.equals(this.pendenze, pagamentoIndex.pendenze) &&
-        Objects.equals(this.rpp, pagamentoIndex.rpp);
+    return Objects.equals(urlRitorno, pagamentoIndex.urlRitorno) &&
+        Objects.equals(contoAddebito, pagamentoIndex.contoAddebito) &&
+        Objects.equals(dataEsecuzionePagamento, pagamentoIndex.dataEsecuzionePagamento) &&
+        Objects.equals(credenzialiPagatore, pagamentoIndex.credenzialiPagatore) &&
+        Objects.equals(soggettoVersante, pagamentoIndex.soggettoVersante) &&
+        Objects.equals(autenticazioneSoggetto, pagamentoIndex.autenticazioneSoggetto) &&
+        Objects.equals(id, pagamentoIndex.id) &&
+        Objects.equals(nome, pagamentoIndex.nome) &&
+        Objects.equals(stato, pagamentoIndex.stato) &&
+        Objects.equals(importo, pagamentoIndex.importo) &&
+        Objects.equals(idSessionePortale, pagamentoIndex.idSessionePortale) &&
+        Objects.equals(idSessionePsp, pagamentoIndex.idSessionePsp) &&
+        Objects.equals(pspRedirectUrl, pagamentoIndex.pspRedirectUrl) &&
+        Objects.equals(dataRichiestaPagamento, pagamentoIndex.dataRichiestaPagamento) &&
+        Objects.equals(pendenze, pagamentoIndex.pendenze) &&
+        Objects.equals(rpp, pagamentoIndex.rpp);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.nome, this.dataRichiestaPagamento, this.idSessionePortale, this.idSessionePsp, this.importo, this.stato, this.pspRedirectUrl, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua, this.pendenze, this.rpp);
+    return Objects.hash(urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, id, nome, stato, importo, idSessionePortale, idSessionePsp, pspRedirectUrl, dataRichiestaPagamento, pendenze, rpp);
   }
 
   public static PagamentoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -495,24 +376,23 @@ public class PagamentoIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PagamentoIndex {\n");
-    
-    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
-    sb.append("    nome: ").append(this.toIndentedString(this.nome)).append("\n");
-    sb.append("    dataRichiestaPagamento: ").append(this.toIndentedString(this.dataRichiestaPagamento)).append("\n");
-    sb.append("    idSessionePortale: ").append(this.toIndentedString(this.idSessionePortale)).append("\n");
-    sb.append("    idSessionePsp: ").append(this.toIndentedString(this.idSessionePsp)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
-    sb.append("    pspRedirectUrl: ").append(this.toIndentedString(this.pspRedirectUrl)).append("\n");
-    sb.append("    urlRitorno: ").append(this.toIndentedString(this.urlRitorno)).append("\n");
-    sb.append("    contoAddebito: ").append(this.toIndentedString(this.contoAddebito)).append("\n");
-    sb.append("    dataEsecuzionePagamento: ").append(this.toIndentedString(this.dataEsecuzionePagamento)).append("\n");
-    sb.append("    credenzialiPagatore: ").append(this.toIndentedString(this.credenzialiPagatore)).append("\n");
-    sb.append("    soggettoVersante: ").append(this.toIndentedString(this.soggettoVersante)).append("\n");
-    sb.append("    autenticazioneSoggetto: ").append(this.toIndentedString(this.autenticazioneSoggetto)).append("\n");
-    sb.append("    lingua: ").append(this.toIndentedString(this.lingua)).append("\n");
-    sb.append("    pendenze: ").append(this.toIndentedString(this.pendenze)).append("\n");
-    sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    urlRitorno: ").append(toIndentedString(urlRitorno)).append("\n");
+    sb.append("    contoAddebito: ").append(toIndentedString(contoAddebito)).append("\n");
+    sb.append("    dataEsecuzionePagamento: ").append(toIndentedString(dataEsecuzionePagamento)).append("\n");
+    sb.append("    credenzialiPagatore: ").append(toIndentedString(credenzialiPagatore)).append("\n");
+    sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");
+    sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    idSessionePortale: ").append(toIndentedString(idSessionePortale)).append("\n");
+    sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
+    sb.append("    pspRedirectUrl: ").append(toIndentedString(pspRedirectUrl)).append("\n");
+    sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");
+    sb.append("    pendenze: ").append(toIndentedString(pendenze)).append("\n");
+    sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -526,8 +406,7 @@ public class PagamentoIndex extends JSONSerializable {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
-}
-
+  }
 }
 
 

@@ -191,6 +191,8 @@ paths:
         - $ref: '#/components/parameters/idDebitore'
         - $ref: '#/components/parameters/statoPendenza'
         - $ref: '#/components/parameters/idPagamento'
+        - $ref: '#/components/parameters/direzione'
+        - $ref: '#/components/parameters/divisione'
       responses:
         '200':
           description: Elenco delle pendenze che rispettano i filtri di ricerca
@@ -244,7 +246,7 @@ paths:
   '/rpp':
     get:
       summary: Lista delle richieste di pagamento pendenza
-      operationId: findRpps
+      operationId: findRpp
       tags:
         - Transazioni
       parameters:
@@ -473,6 +475,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Domini'
+  '/domini/{idDominio}/tipiPendenza':
+    get:
+      summary: Lista delle tipologie pendenza associate al dominio
+      tags:
+        - Anagrafica
+      operationId: findTipiPendenzaDominio
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/ordinamento'
+        - $ref: '#/components/parameters/tipologiaTipoPendenza'
+        - $ref: '#/components/parameters/formTipoPendenza'
+      responses:
+        '200':
+          description: Elenco delle tipologie pendenza associate al dominio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TipiPendenza'
+  '/domini/{idDominio}/unitaOperative':
+    get:
+      summary: Lista delle unità operative associate al dominio
+      tags:
+        - Anagrafica
+      operationId: findUnitaOperative
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/ordinamento'
+      responses:
+        '200':
+          description: Elenco delle unità operative associate al dominio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitaOperative'
   '/profilo':
     get:
       summary: Profilo di autorizzazione dell'utente
@@ -588,14 +640,14 @@ components:
         type: string
       example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
     statoPagamento:
-      name: statoPagamento
+      name: stato
       in: query
       description: Filtro sullo stato del pagamento
       required: false
       schema:
         $ref: '#/components/schemas/StatoPagamento'
     statoPendenza:
-      name: statoPendenza
+      name: stato
       in: query
       description: Filtro sullo stato del pendenza
       required: false
@@ -636,7 +688,38 @@ components:
       description: How many items to return at one time (max 100)
       required: false
       schema:
-        $ref: '#/components/schemas/RisultatiPerPagina'              
+        $ref: '#/components/schemas/RisultatiPerPagina'
+    tipologiaTipoPendenza:
+      name: tipo
+      in: query
+      description: Tipologia di Pendenza 
+      required: false
+      schema:
+        $ref: '#/components/schemas/TipoPendenzaTipologia'
+    formTipoPendenza:
+      name: form
+      in: query
+      description: Restrizione sulle tipologie di Pendenza che definiscono il form di inserimento
+      required: false
+      schema:
+        type: boolean
+        example: false
+    direzione:
+      name: direzione
+      in: query
+      description: Identificativo della direzione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Direzione ABC
+    divisione:
+      name: divisione
+      in: query
+      description: Identificativo della divisione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Divisione001
   headers:
     # Headers conform to http://zalando.github.io/restful-api-guidelines/index.html#132
     X-RateLimit-Limit:
@@ -703,7 +786,7 @@ components:
     Acl:
       type: object
       required:
-        - servizi
+        - servizio
         - autorizzazioni
       properties:
         ruolo:
@@ -714,7 +797,7 @@ components:
           type: string
           description: principal a cui si applica l'acl
           example: user001
-        servizi:
+        servizio:
           $ref: "#/components/schemas/TipoServizio"
         autorizzazioni:
           $ref: "#/components/schemas/TipoAutorizzazione"
@@ -746,6 +829,11 @@ components:
           type: string
           format: date
           description: Data di scadenza dell'avviso, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        dataPagamento:
+          type: string
+          format: date
+          description: Data di pagamento dell'avviso.
           example: '2020-12-31'
         descrizione:
           type: string
@@ -886,6 +974,14 @@ components:
           type: string
           description: URL del logo
           example: http://.../domini/01234567890/logo
+        unitaOperative:
+          type: string
+          description: Url alle unità operative censite per il dominio
+          example: /domini/01234567890/unitaOperative
+        tipiPendenza:
+          type: string
+          description: Url alle tipologie di pendenze censite per il dominio
+          example: /domini/01234567890/tipiPendenza
     Entrata:
       description: Definisce i dettagli di una entrata.
       type: object
@@ -997,8 +1093,9 @@ components:
         - $ref: "#/components/schemas/RiferimentoPendenza"
         - type: object
           required:
+            - idTipoPendenza
             - idDominio
-            - descrizione
+            - causale
             - soggettoPagatore
             - importo
             - voci
@@ -1021,7 +1118,7 @@ components:
               example: IMU
               minLength: 1
               maxLength: 35
-            descrizione:
+            causale:
               type: string
               description: Descrizione della pendenza
               example: 'Sanzione CdS n. abc00000'
@@ -1086,50 +1183,40 @@ components:
     NuovaVocePendenza:
       type: object
       allOf:
-        - $ref: "#/components/schemas/NuovaVocePendenzaBase"
         - type: object
           required:
-            - dettaglioVoce
+          - idVocePendenza
+          - importo
+          - descrizione
           properties:
-            dettaglioVoce:
+            idVocePendenza:
+              type: string
+              description: Identificativo della voce di pendenza nel gestionale proprietario
+              example: abcdef12345_1
+              minLength: 1
+              maxLength: 35
+            importo:
+              type: number
+              description: Importo della voce
+              example: 10.01
+              minimum: 0.00
+              maximum: 99999999.99
+            descrizione:
+              type: string
+              description: descrizione della voce di pagamento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 140
+            datiAllegati:
               type: object
-              description: x-gov4j-commons-json-deserializer#it.govpay.pagamento.v2.beans.deserializer.TipoRiferimentoVocePendenzaDeserializer
-              oneOf:
-                - $ref: '#/components/schemas/RiferimentoEntrata'
-                - $ref: '#/components/schemas/Entrata'
-                - $ref: '#/components/schemas/Bollo'
-    NuovaVocePendenzaBase:
-      type: object
-      required:
-      - idVocePendenza
-      - importo
-      - descrizione
-      properties:
-        idVocePendenza:
-          type: string
-          description: Identificativo della voce di pendenza nel gestionale proprietario
-          example: abcdef12345_1
-          minLength: 1
-          maxLength: 35
-        importo:
-          type: number
-          description: Importo della voce
-          example: 10.01
-          minimum: 0.00
-          maximum: 99999999.99
-        descrizione:
-          type: string
-          description: descrizione della voce di pagamento
-          example: Sanzione CdS n. abc00000
-          minLength: 1
-          maxLength: 140
-        datiAllegati:
-          type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        - oneOf:
+          - $ref: '#/components/schemas/RiferimentoEntrata'
+          - $ref: '#/components/schemas/Entrata'
+          - $ref: '#/components/schemas/Bollo'
     NuovoPagamento:
       type: object
       allOf:
-        - $ref: '#/components/schemas/NuovoPagamentoBase'
         - type: object
           required:
             - pendenze
@@ -1137,7 +1224,6 @@ components:
             pendenze:
               type: array
               description: pendenze o riferimenti alle pendenze oggetto del pagamento
-              title: x-gov4j-commons-json-deserializer#it.govpay.pagamento.v2.beans.deserializer.CustomPendenzeDeserializer
               minItems: 1
               items:
                 anyOf:
@@ -1145,8 +1231,11 @@ components:
                   - $ref: '#/components/schemas/RiferimentoAvviso'
                   - $ref: '#/components/schemas/NuovaPendenza'
                   - $ref: '#/components/schemas/PagamentoSpontaneo'
+        - $ref: '#/components/schemas/NuovoPagamentoBase'
     NuovoPagamentoBase:
       type: object
+      required:
+        - pendenze
       properties:
         urlRitorno:
           type: string
@@ -1223,14 +1312,23 @@ components:
               type: number
               description: >-
                 Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
+            idSessionePortale:
+              type: string
+              example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+              description: Identificativo della sessione di pagamento assegnato dall'EC
             idSessionePsp:
               type: string
               example: '7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
               description: Identificativo del pagamento assegnato dal psp utilizzato
-            redirect:
+            pspRedirectUrl:
               type: string
               example: 'https://www.agid.wisp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
               description: Url di redirect al psp inviata al versante per perfezionare il pagamento, se previsto dal modello
+            dataRichiestaPagamento:
+              type: string
+              format: date
+              example: '2018-12-31'
+              description: Data in cui e' stato inserito il pagamento.
     PagamentoCreato:
       type: object
       required:
@@ -1260,22 +1358,17 @@ components:
         - $ref: '#/components/schemas/PagamentoBase'
         - type: object
           required:
-            - href
             - pendenze
-            - rpps
+            - rpp
           properties:
-            href:
-              type: string
-              description: URL del pagamento
-              example: /pagamenti/f9866575-e255-4d10-9845-57ba88bec136
             pendenze:
               type: string
               description: URL della lista delle pendenze oggetto del pagamento
               example: /pendenze?idPagamento=f9866575-e255-4d10-9845-57ba88bec136
-            rpps:
+            rpp:
               type: string
               description: URL della lista delle richieste di pagamento attivate
-              example: /rpps?idPagamento=f9866575-e255-4d10-9845-57ba88bec136
+              example: /rpp?idPagamento=f9866575-e255-4d10-9845-57ba88bec136
     PagamentoSpontaneo:
       type: object
       required:
@@ -1304,7 +1397,7 @@ components:
         - $ref: '#/components/schemas/PendenzaBase'
         - type: object
           required:
-            - rpps
+            - rpp
             - pagamenti
           properties:
             voci:
@@ -1313,7 +1406,7 @@ components:
               maxItems: 5
               items:
                 $ref: '#/components/schemas/VocePendenza'
-            rpps:
+            rpp:
               type: array
               items:
                 $ref: '#/components/schemas/RppIndex'
@@ -1328,7 +1421,7 @@ components:
         - idPendenza
         - dominio
         - stato
-        - descrizione
+        - causale
         - soggettoPagatore
         - importo
         - dataCaricamento
@@ -1343,7 +1436,7 @@ components:
           example: abcdef12345
         idTipoPendenza:
           type: string
-          description: Identificativo della tipologia pendenza
+          description: Codice identificativo del tipo di pendenz
           example: IMU
         dominio:
           $ref: '#/components/schemas/Dominio'
@@ -1351,10 +1444,6 @@ components:
           $ref: '#/components/schemas/UnitaOperativa'
         stato:
           $ref: '#/components/schemas/StatoPendenza'
-        tipoPendenza:
-          type: string
-          description: Codice identificativo del tipo di pendenza
-          example: abcdef12345
         segnalazioni:
           type: array
           items:
@@ -1372,7 +1461,7 @@ components:
           format: date
           description: Data di pagamento della pendenza
           example: '2018-12-31'
-        descrizione:
+        causale:
           type: string
           description: Descrizione da inserire nell'avviso di pagamento
           example: 'Sanzione CdS n. abc00000'
@@ -1432,14 +1521,10 @@ components:
         - $ref: '#/components/schemas/PendenzaBase'
         - type: object
           required:
-            - href
-            - rpps
+            - rpp
             - pagamenti
           properties:
-            href:
-              type: string
-              description: Url della pendenza
-            rpps:
+            rpp:
               type: string
               description: Url per l'elenco delle rpp emesse per la pendenza
             pagamenti:
@@ -1475,7 +1560,7 @@ components:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
           items:
-            $ref: '#/components/schemas/TipoPendenza'
+            $ref: '#/components/schemas/TipoPendenzaIndex'
         acl:
           type: array
           items:
@@ -1501,7 +1586,7 @@ components:
             pagabile da psp
           example: 123456789012345678
           pattern: "[0-9]{18}"
-        idPagatore:
+        idDebitore:
           type: string
           description: >-
             Identificativo del soggetto debitore
@@ -1716,13 +1801,8 @@ components:
         - $ref: '#/components/schemas/RppBase'
         - type: object
           required:
-            - href
             - pendenza
           properties:
-            href:
-              type: string
-              description: URL della rpp
-              example: "/rpps/01234567890/154340602921782/281120181253443049"
             pendenza:
               type: string
               description: Url alla pendenza oggetto della richiesta di pagamento
@@ -1878,7 +1958,7 @@ components:
             risultati:
               type: array
               items:
-                $ref: '#/components/schemas/TipoPendenzaIndex'        
+                $ref: '#/components/schemas/TipoPendenza'        
     TipoAutorizzazione:
       type: array
       items:
@@ -1910,6 +1990,27 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/TipoPendenzaIndex'
+        - type: object
+          required:
+           - tipo
+          properties:
+            tipo:
+              $ref: '#/components/schemas/TipoPendenzaTipologia'
+            form:
+              $ref: '#/components/schemas/TipoPendenzaForm'
+    TipoPendenzaForm:
+      type: object
+      required:
+        - tipo
+        - definizione
+      properties:
+        tipo:
+          type: string
+          description: Indica il linguaggio da utilizzare per il disegno della form di inserimento della pendenza
+          example: 'AngularJS v6'
+        definizione:
+          type: object
+          description: Definizione della form nel linguaggio indicato nel field tipo       
     TipoPendenzaIndex:
       type: object
       required:
@@ -1922,6 +2023,12 @@ components:
         descrizione:
           type: string
           example: Refezione scolastica Asilo Nido
+    TipoPendenzaTipologia:
+      type: string
+      enum:
+        - spontaneo
+        - dovuto
+      example: spontaneo
     TipoRiferimentoVocePendenza:
       type: object
       oneOf:
@@ -2023,6 +2130,16 @@ components:
           type: string
           description: Nome dell'area di competenza
           example: Affari generali e istituzionali
+    UnitaOperative:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Lista'
+        - type: object
+          properties:
+            risultati:
+              type: array
+              items:
+                $ref: '#/components/schemas/UnitaOperativa'
     VocePendenza:
       allOf:
         - $ref: "#/components/schemas/NuovaVocePendenza"

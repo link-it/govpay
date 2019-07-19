@@ -29,12 +29,10 @@ public class Rpp extends JSONSerializable {
   private List<Segnalazione> segnalazioni = null;
   
   @JsonProperty("rpt")
-  @JsonRawValue
-  private String rpt = null;
+  private Object rpt = null;
   
   @JsonProperty("rt")
-  @JsonRawValue
-  private String rt = null;
+  private Object rt = null;
   
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
@@ -49,7 +47,7 @@ public class Rpp extends JSONSerializable {
 
   @JsonProperty("stato")
   public String getStato() {
-    return this.stato;
+    return stato;
   }
   public void setStato(String stato) {
     this.stato = stato;
@@ -65,7 +63,7 @@ public class Rpp extends JSONSerializable {
 
   @JsonProperty("dettaglioStato")
   public String getDettaglioStato() {
-    return this.dettaglioStato;
+    return dettaglioStato;
   }
   public void setDettaglioStato(String dettaglioStato) {
     this.dettaglioStato = dettaglioStato;
@@ -80,7 +78,7 @@ public class Rpp extends JSONSerializable {
 
   @JsonProperty("segnalazioni")
   public List<Segnalazione> getSegnalazioni() {
-    return this.segnalazioni;
+    return segnalazioni;
   }
   public void setSegnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
@@ -89,32 +87,32 @@ public class Rpp extends JSONSerializable {
   /**
    * Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico
    **/
-  public Rpp rpt(String rpt) {
+  public Rpp rpt(Object rpt) {
     this.rpt = rpt;
     return this;
   }
 
   @JsonProperty("rpt")
-  public String getRpt() {
-    return this.rpt;
+  public Object getRpt() {
+    return rpt;
   }
-  public void setRpt(String rpt) {
+  public void setRpt(Object rpt) {
     this.rpt = rpt;
   }
 
   /**
    * Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica
    **/
-  public Rpp rt(String rt) {
+  public Rpp rt(Object rt) {
     this.rt = rt;
     return this;
   }
 
   @JsonProperty("rt")
-  public String getRt() {
-    return this.rt;
+  public Object getRt() {
+    return rt;
   }
-  public void setRt(String rt) {
+  public void setRt(Object rt) {
     this.rt = rt;
   }
 
@@ -127,7 +125,7 @@ public class Rpp extends JSONSerializable {
 
   @JsonProperty("pendenza")
   public PendenzaIndex getPendenza() {
-    return this.pendenza;
+    return pendenza;
   }
   public void setPendenza(PendenzaIndex pendenza) {
     this.pendenza = pendenza;
@@ -138,21 +136,21 @@ public class Rpp extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Rpp rpp = (Rpp) o;
-    return Objects.equals(this.stato, rpp.stato) &&
-        Objects.equals(this.dettaglioStato, rpp.dettaglioStato) &&
-        Objects.equals(this.segnalazioni, rpp.segnalazioni) &&
-        Objects.equals(this.rpt, rpp.rpt) &&
-        Objects.equals(this.rt, rpp.rt) &&
-        Objects.equals(this.pendenza, rpp.pendenza);
+    return Objects.equals(stato, rpp.stato) &&
+        Objects.equals(dettaglioStato, rpp.dettaglioStato) &&
+        Objects.equals(segnalazioni, rpp.segnalazioni) &&
+        Objects.equals(rpt, rpp.rpt) &&
+        Objects.equals(rt, rpp.rt) &&
+        Objects.equals(pendenza, rpp.pendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.stato, this.dettaglioStato, this.segnalazioni, this.rpt, this.rt, this.pendenza);
+    return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, pendenza);
   }
 
   public static Rpp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -168,13 +166,13 @@ public class Rpp extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Rpp {\n");
-    
-    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
-    sb.append("    dettaglioStato: ").append(this.toIndentedString(this.dettaglioStato)).append("\n");
-    sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
-    sb.append("    rpt: ").append(this.toIndentedString(this.rpt)).append("\n");
-    sb.append("    rt: ").append(this.toIndentedString(this.rt)).append("\n");
-    sb.append("    pendenza: ").append(this.toIndentedString(this.pendenza)).append("\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    dettaglioStato: ").append(toIndentedString(dettaglioStato)).append("\n");
+    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
+    sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
+    sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
+    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();
   }

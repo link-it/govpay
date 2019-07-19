@@ -146,11 +146,11 @@ public class JDBCVistaEventiVersamentoServiceImpl extends JDBCVistaEventiVersame
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObjectDelete.newSQLQueryObject();
 		ISQLQueryObject sqlQueryObjectUpdate = sqlQueryObjectGet.newSQLQueryObject();
 		
-		boolean setIdMappingResolutionBehaviour = 
-			(idMappingResolutionBehaviour==null) ||
-			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
-			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
-			
+//		boolean setIdMappingResolutionBehaviour = 
+//			(idMappingResolutionBehaviour==null) ||
+//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
+//			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
+//			
 
 
 		// Object vistaEventiVersamento

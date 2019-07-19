@@ -60,30 +60,12 @@ public class Domini extends BaseRsServiceV2{
     }
 
     @GET
-    @Path("/{idDominio}/contiAccredito")
-    
-    @Produces({ "application/json" })
-    public Response findContiAccredito(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("ordinamento") String ordinamento){
-        this.controller.setContext(this.getContext());
-        return this.controller.dominiIdDominioContiAccreditoGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, campi, abilitato, ordinamento);
-    }
-
-    @GET
     @Path("/{idDominio}")
     
     @Produces({ "application/json" })
     public Response getDominio(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
         this.controller.setContext(this.getContext());
         return this.controller.dominiIdDominioGET(this.getUser(), uriInfo, httpHeaders,  idDominio);
-    }
-
-    @GET
-    @Path("/{idDominio}/entrate")
-    
-    @Produces({ "application/json" })
-    public Response findEntrate(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25")Integer risultatiPerPagina, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("ordinamento") String ordinamento){
-        this.controller.setContext(this.getContext());
-        return this.controller.dominiIdDominioEntrateGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato);
     }
 
     @GET
@@ -96,30 +78,12 @@ public class Domini extends BaseRsServiceV2{
     }
 
     @GET
-    @Path("/{idDominio}/entrate/{idEntrata}")
-    
-    @Produces({ "application/json" })
-    public Response getEntrata(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idEntrata") String idEntrata){
-        this.controller.setContext(this.getContext());
-        return this.controller.dominiIdDominioEntrateIdEntrataGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  idEntrata);
-    }
-
-    @GET
     @Path("/{idDominio}/tipiPendenza")
     
     @Produces({ "application/json" })
     public Response findTipiPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("tipo") String tipo, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form){
     	this.controller.setContext(this.getContext());
         return this.controller.dominiIdDominioTipiPendenzaGET(this.getUser(), uriInfo, httpHeaders,  idDominio, pagina, risultatiPerPagina, ordinamento, campi, abilitato, tipo, associati, form);
-    }
-
-    @GET
-    @Path("/{idDominio}/contiAccredito/{iban}")
-    
-    @Produces({ "application/json" })
-    public Response getContiAccredito(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iban") String iban){
-        this.controller.setContext(this.getContext());
-        return this.controller.dominiIdDominioContiAccreditoIbanGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iban);
     }
     
     @GET

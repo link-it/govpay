@@ -118,6 +118,7 @@ public class GovpayConfig {
 	
 	private String codTipoVersamentoPendenzeLibere;
 	private String codTipoVersamentoPendenzeNonCensite;
+	private boolean censimentoTipiVersamentoSconosciutiEnabled;
 	
 	private boolean invioPromemoriaEnabled;
 	private Properties invioPromemoriaProperties;
@@ -126,6 +127,8 @@ public class GovpayConfig {
 	
 	private CustomIuv defaultCustomIuvGenerator;
 	private List<String> pspPostali;
+	
+	private String templateProspettoRiscossioni;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -175,6 +178,7 @@ public class GovpayConfig {
 		
 		this.codTipoVersamentoPendenzeLibere = Versamento.TIPO_VERSAMENTO_LIBERO;
 		this.codTipoVersamentoPendenzeNonCensite = Versamento.TIPO_VERSAMENTO_LIBERO;
+		this.censimentoTipiVersamentoSconosciutiEnabled = false;
 		
 		this.scritturaDiagnosticiFileEnabled = false;
 		this.scritturaDumpFileEnabled = false;
@@ -182,6 +186,7 @@ public class GovpayConfig {
 		this.invioPromemoriaEnabled = false;
 		this.invioPromemoriaProperties = new Properties();
 		this.corsProperties = new Properties();
+		this.templateProspettoRiscossioni = null;
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -483,6 +488,10 @@ public class GovpayConfig {
 			this.codTipoVersamentoPendenzeLibere = getProperty("it.govpay.versamenti.codTipoVersamentoPerPagamentiLiberi", this.props, true, log);
 			this.codTipoVersamentoPendenzeNonCensite = getProperty("it.govpay.versamenti.codTipoVersamentoPerTipiPendenzeNonCensiti", this.props, true, log);
 			
+			String censimentoTipiVersamentoSconosciutiEnabledString = getProperty("it.govpay.versamenti.censimentoAutomaticoTipiPendenza.enabled", this.props, false, log);
+			if(censimentoTipiVersamentoSconosciutiEnabledString != null)
+				this.censimentoTipiVersamentoSconosciutiEnabled = Boolean.valueOf(censimentoTipiVersamentoSconosciutiEnabledString);
+			
 			Map<String, String> properties = getProperties("it.govpay.configurazioneFiltroCors.",this.props, false, log);
 			this.corsProperties.putAll(properties);
 			
@@ -533,6 +542,8 @@ public class GovpayConfig {
 				log.info("Proprieta \"psp.postali\" impostata com valore di default (vuota)");
 				this.pspPostali = new ArrayList<>();
 			}
+			
+			this.templateProspettoRiscossioni = getProperty("it.govpay.reportistica.prospettoRiscossione.templateJasper", this.props, false, log);
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -615,7 +626,7 @@ public class GovpayConfig {
 			return null;
 	}
 	
-	private String escape(String string) {
+	public static String escape(String string) {
 		return string.replaceAll("\\\\", "\\\\\\\\");
 	}
 
@@ -834,4 +845,14 @@ public class GovpayConfig {
 	public List<String> getPspPostali() {
 		return this.pspPostali;
 	}
+
+	public boolean isCensimentoTipiVersamentoSconosciutiEnabled() {
+		return censimentoTipiVersamentoSconosciutiEnabled;
+	}
+
+	public String getTemplateProspettoRiscossioni() {
+		return templateProspettoRiscossioni;
+	}
+	
+	
 }

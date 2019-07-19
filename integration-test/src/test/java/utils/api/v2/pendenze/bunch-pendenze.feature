@@ -33,6 +33,7 @@ Scenario: Caricamento pendenze
 
 # riscaldamento
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codEntrataSegreteria
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -43,6 +44,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codEntrataSegreteria
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -51,6 +53,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codEntrataSegreteria
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -61,6 +64,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codLibero
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -69,6 +73,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codLibero
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -79,6 +84,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codSpontaneo
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -87,6 +93,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codSpontaneo
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -97,6 +104,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio_2
+* def idTipoPendenzaPendenza = codLibero
 * def soggettoPagatore = { tipo: "F", identificativo: "VRDGPP65B03A112N", anagrafica: "Giuseppe Verdi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito_2)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -105,6 +113,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio_2
+* def idTipoPendenzaPendenza = codLibero
 * def soggettoPagatore = { tipo: "F", identificativo: "VRDGPP65B03A112N", anagrafica: "Giuseppe Verdi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito_2)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -115,6 +124,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codSpontaneo
 * def soggettoPagatore = { tipo: "F", identificativo: "VRDGPP65B03A112N", anagrafica: "Giuseppe Verdi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -123,6 +133,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codSpontaneo
 * def soggettoPagatore = { tipo: "F", identificativo: "VRDGPP65B03A112N", anagrafica: "Giuseppe Verdi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -138,6 +149,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codEntrataSegreteria
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -146,6 +158,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codEntrataSegreteria
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codEntrataSegreteria)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -156,6 +169,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codLibero
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -164,6 +178,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codLibero
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -174,6 +189,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_SPONTANEO_NONESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codSpontaneo
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -182,6 +198,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codSpontaneo
 * def soggettoPagatore = { tipo: "F", identificativo: "RSSMRA30A01H501I", anagrafica: "Mario Rossi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -192,6 +209,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Verdi_DOM2_LIBERO_NONESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio_2
+* def idTipoPendenzaPendenza = codLibero
 * def soggettoPagatore = { tipo: "F", identificativo: "VRDGPP65B03A112N", anagrafica: "Giuseppe Verdi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito_2)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -200,6 +218,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Verdi_DOM2_LIBERO_ESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio_2
+* def idTipoPendenzaPendenza = codLibero
 * def soggettoPagatore = { tipo: "F", identificativo: "VRDGPP65B03A112N", anagrafica: "Giuseppe Verdi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito_2)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -211,6 +230,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Verdi_DOM1_SPONTANEO_NONESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codSpontaneo
 * def soggettoPagatore = { tipo: "F", identificativo: "VRDGPP65B03A112N", anagrafica: "Giuseppe Verdi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -219,6 +239,7 @@ Scenario: Caricamento pendenze
 # idPendenza_Verdi_DOM1_SPONTANEO_ESEGUITO_idA2A2
 
 * def idDominioPendenza = idDominio
+* def idTipoPendenzaPendenza = codSpontaneo
 * def soggettoPagatore = { tipo: "F", identificativo: "VRDGPP65B03A112N", anagrafica: "Giuseppe Verdi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Diritti e segreteria", codEntrata: "#(codSpontaneo)" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')
@@ -236,6 +257,7 @@ Scenario: Caricamento pendenze
 
 # rilassamento
 * def idDominioPendenza = idDominio_2
+* def idTipoPendenzaPendenza = codLibero
 * def soggettoPagatore = { tipo: "F", identificativo: "VRDGPP65B03A112N", anagrafica: "Giuseppe Verdi" }
 * def vociPendenza = { idVocePendenza: 1, importo: 100.99, descrizione: "Servizio spontaneo", ibanAccredito: "#(ibanAccredito_2)", tipoContabilita: "ALTRO", codiceContabilita: "CodiceContabilita" }
 * call read('classpath:utils/api/v2/pendenze/caricamento-pendenza-generico.feature')

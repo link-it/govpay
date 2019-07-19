@@ -87,6 +87,14 @@ public class ValidatoreIdentificativi {
 		this.validaId(fieldName, ibanAccredito, CostantiValidazione.PATTERN_IBAN_ACCREDITO, 1, 255);
 	}
 	
+	public void validaBicAccredito(String bicAccredito) throws ValidationException {
+		this.validaIdIbanAccredito("bicAccredito", bicAccredito);
+	}
+	
+	public void validaBicAccredito(String fieldName, String bicAccredito) throws ValidationException {
+		this.validaId(fieldName, bicAccredito, CostantiValidazione.PATTERN_BIC_1, 1, 255);
+	}
+	
 	public void validaIdOperatore(String principal) throws ValidationException {
 		this.validaIdOperatore("principal", principal);
 	}

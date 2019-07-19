@@ -24,7 +24,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.beans.Avviso;
-import it.govpay.pagamento.v2.beans.Avviso.StatoEnum;
+import it.govpay.pagamento.v2.beans.StatoAvviso;
 import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 
 public class AvvisiController extends BaseController {
@@ -76,7 +76,7 @@ public class AvvisiController extends BaseController {
 					avviso = PendenzeConverter.toAvvisoRsModel(getAvvisoDTOResponse.getVersamento(), getAvvisoDTOResponse.getDominio(), getAvvisoDTOResponse.getBarCode(), getAvvisoDTOResponse.getQrCode());
 				} catch (PendenzaNonTrovataException pnte) {
 					avviso = new Avviso();
-					avviso.setStato(StatoEnum.SCONOSCIUTO);
+					avviso.setStato(StatoAvviso.SCONOSCIUTA);
 					avviso.setNumeroAvviso(numeroAvviso);
 					avviso.setIdDominio(idDominio);
 				}

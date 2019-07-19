@@ -44,11 +44,15 @@ import java.io.Serializable;
  * 			&lt;element name="numeroPagamenti" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importoTotalePagamenti" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codEntrata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="identificativoDebitore" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="anno" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -72,11 +76,15 @@ import java.io.Serializable;
   	"numeroPagamenti",
   	"importoTotalePagamenti",
   	"importoPagato",
-  	"data",
   	"codSingoloVersamentoEnte",
   	"indiceDati",
   	"codVersamentoEnte",
-  	"codApplicazione"
+  	"codApplicazione",
+  	"dataPagamento",
+  	"codTipoVersamento",
+  	"codEntrata",
+  	"identificativoDebitore",
+  	"anno"
   }
 )
 
@@ -172,14 +180,6 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
     this.importoPagato = importoPagato;
   }
 
-  public java.util.Date getData() {
-    return this.data;
-  }
-
-  public void setData(java.util.Date data) {
-    this.data = data;
-  }
-
   public java.lang.String getCodSingoloVersamentoEnte() {
     return this.codSingoloVersamentoEnte;
   }
@@ -210,6 +210,46 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
 
   public void setCodApplicazione(java.lang.String codApplicazione) {
     this.codApplicazione = codApplicazione;
+  }
+
+  public java.util.Date getDataPagamento() {
+    return this.dataPagamento;
+  }
+
+  public void setDataPagamento(java.util.Date dataPagamento) {
+    this.dataPagamento = dataPagamento;
+  }
+
+  public java.lang.String getCodTipoVersamento() {
+    return this.codTipoVersamento;
+  }
+
+  public void setCodTipoVersamento(java.lang.String codTipoVersamento) {
+    this.codTipoVersamento = codTipoVersamento;
+  }
+
+  public java.lang.String getCodEntrata() {
+    return this.codEntrata;
+  }
+
+  public void setCodEntrata(java.lang.String codEntrata) {
+    this.codEntrata = codEntrata;
+  }
+
+  public java.lang.String getIdentificativoDebitore() {
+    return this.identificativoDebitore;
+  }
+
+  public void setIdentificativoDebitore(java.lang.String identificativoDebitore) {
+    this.identificativoDebitore = identificativoDebitore;
+  }
+
+  public java.lang.String getAnno() {
+    return this.anno;
+  }
+
+  public void setAnno(java.lang.String anno) {
+    this.anno = anno;
   }
 
   private static final long serialVersionUID = 1L;
@@ -268,11 +308,6 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
   @XmlElement(name="importoPagato",required=false,nillable=false)
   protected java.lang.Double importoPagato;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="data",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date data;
-
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codSingoloVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codSingoloVersamentoEnte;
@@ -288,5 +323,26 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codApplicazione",required=true,nillable=false)
   protected java.lang.String codApplicazione;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataPagamento",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codTipoVersamento",required=false,nillable=false)
+  protected java.lang.String codTipoVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codEntrata",required=false,nillable=false)
+  protected java.lang.String codEntrata;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="identificativoDebitore",required=false,nillable=false)
+  protected java.lang.String identificativoDebitore;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="anno",required=false,nillable=false)
+  protected java.lang.String anno;
 
 }

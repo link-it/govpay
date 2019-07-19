@@ -8,6 +8,7 @@ Scenario: Pagamento ad iniziativa PSP
 * set pendenzaPut.idDominio = idDominioPendenza
 * set pendenzaPut.soggettoPagatore = soggettoPagatore
 * set pendenzaPut.voci[0] = vociPendenza
+* set pendenzaPut.idTipoPendenza = idTipoPendenzaPendenza
 
 Given url pendenzeBasicBaseurl
 And path 'pendenze', idA2APendenza, idPendenza

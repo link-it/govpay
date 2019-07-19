@@ -18,7 +18,6 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private long numeroPagamenti;
 	private BigDecimal importoTotalePagamenti;
 	private BigDecimal importoPagato;
-	private Date data;
 	private String codSingoloVersamentoEnte;
 	private Integer indiceDati;
 	private String codVersamentoEnte;
@@ -27,7 +26,7 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private String codTipoVersamento;
 	private String codEntrata;
 	private String identificativoDebitore;
-	private Integer anno; 
+	private String anno; 
 	
 	public String getCodDominio() {
 		return codDominio;
@@ -83,12 +82,6 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	public void setImportoPagato(BigDecimal importoPagato) {
 		this.importoPagato = importoPagato;
 	}
-	public Date getData() {
-		return data;
-	}
-	public void setData(Date data) {
-		this.data = data;
-	}
 	public String getCodSingoloVersamentoEnte() {
 		return codSingoloVersamentoEnte;
 	}
@@ -137,10 +130,10 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	public void setIdentificativoDebitore(String identificativoDebitore) {
 		this.identificativoDebitore = identificativoDebitore;
 	}
-	public Integer getAnno() {
+	public String getAnno() {
 		return anno;
 	}
-	public void setAnno(Integer anno) {
+	public void setAnno(String anno) {
 		this.anno = anno;
 	}
 
