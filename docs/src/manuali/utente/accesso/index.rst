@@ -3,8 +3,7 @@
 Accesso al cruscotto e profilo
 ==============================
 
-Una volta completata con successo la procedura di installazione
-sarà possibile procedere con la configurazione accedendo al **Cruscotto di Gestione** al seguente indirizzo:
+Una volta completata con successo la procedura di installazione sarà possibile procedere con la configurazione accedendo al **Cruscotto di Gestione** al seguente indirizzo:
 
 http://<hostname>:<port>/backend/gui/backoffice
 
@@ -56,7 +55,7 @@ La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, c
 
    Cruscotto iniziale [#]_
    
-.. [#] Si noti come le funzionalità evidenziali corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
+.. [#] Si noti come le funzionalità evidenziate corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
 
 L'area iniziale (primo box in alto a sinistra) mette a disposizione informazioni sul profilo e permette di effettuare il logut dalla piattaforma.
 
