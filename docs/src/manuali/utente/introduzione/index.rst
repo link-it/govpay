@@ -3,9 +3,7 @@
 Introduzione
 ============
 
-Il presente documento ha lo scopo di fornire le istruzioni operative per
-procedere, dopo l'installazione di GovPay, alla configurazione e
-manutenzione dell'infrastruttura di pagamento.
+Questo documento ha lo scopo di fornire le istruzioni operative per procedere, dopo l'installazione di GovPay, alla configurazione e manutenzione dell'infrastruttura di pagamento.
 
 Glossario
 ---------
@@ -24,24 +22,18 @@ Glossario
    RPT
       Richiesta Pagamento Telematico.
       
+   RT
+      Ricevuta Telematica.
       
-+------+----------------------------------+
-| NDP  | Nodo dei Pagamenti SPC           |
-+------+----------------------------------+
-| SPC  | Sistema Pubblico di Connettività |
-+------+----------------------------------+
-| AgID | Agenzia per l'Italia Digitale    |
-+------+----------------------------------+
-| RPT  | Richiesta Pagamento Telematico   |
-+------+----------------------------------+
-| RT   | Ricevuta Telematica              |
-+------+----------------------------------+
-| IUV  | Identificativo Unico Pagamento   |
-+------+----------------------------------+
-| CCP  | Codice Contesto Pagamento        |
-+------+----------------------------------+
-| PSP  | Prestatori Servizi Pagamento     |
-+------+----------------------------------+
+   IUV
+      Identificativo Unico Pagamento.
+      
+   CCP
+      Codice Contesto Pagamento.   
+      
+   PSP
+      Prestatori Servizi Pagamento.    
+
 
 Documentazione
 --------------
