@@ -1,14 +1,10 @@
 
 <project name="setup-sql" basedir=".">
-	
 	<description>
         	SETUP SQL
 	</description>
-
 	<import file="utils.xml" />
-
 	<target name="sql_settings">
-
 		<antcall target="replace_token">
 		    <param name="file" value="${file}"/>
 			<param name="token" value="@RAGIONE_SOCIALE@"/>
@@ -20,11 +16,36 @@
 			<param name="value" value="${antinstaller_cod_univoco}"/>
 		</antcall>
 		<antcall target="replace_token">
+            <param name="file" value="${file}"/>
+            <param name="token" value="@PRINCIPAL@"/>
+            <param name="value" value="${antinstaller_principal}"/>
+        </antcall>
+        <if>
+    		<equals arg1="${antinstaller_tipo_database}" arg2="oracle"/>
+    		<then>
+                <antcall target="replace_token">
                     <param name="file" value="${file}"/>
-                        <param name="token" value="@PRINCIPAL@"/>
-                        <param name="value" value="${antinstaller_principal}"/>
-                </antcall>
-	
+                    <param name="token" value="@BOOLEAN-TRUE@"/>
+                    <param name="value" value="1"/>
+            	</antcall>
+                <antcall target="replace_token">
+                    <param name="file" value="${file}"/>
+                    <param name="token" value="@BOOLEAN-FALSE@"/>
+                    <param name="value" value="0"/>
+            	</antcall>
+    		</then>
+    		<else>
+                <antcall target="replace_token">
+                    <param name="file" value="${file}"/>
+                    <param name="token" value="@BOOLEAN-TRUE@"/>
+                    <param name="value" value="true"/>
+            	</antcall>
+                <antcall target="replace_token">
+                    <param name="file" value="${file}"/>
+                    <param name="token" value="@BOOLEAN-FALSE@"/>
+                    <param name="value" value="false"/>
+            	</antcall>
+		    </else>
+		</if>
 	</target>
-	
 </project>

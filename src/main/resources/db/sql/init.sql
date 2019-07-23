@@ -1,6 +1,6 @@
 -- Censimento dell'utenza amministratore
 
-INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_stari,ruoli) VALUES ('@PRINCIPAL@','@PRINCIPAL@',@BOOLEAN@, @BOOLEAN@, 'Amministratore');
+INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_stari,ruoli) VALUES ('@PRINCIPAL@','@PRINCIPAL@',@BOOLEAN-TRUE@, @BOOLEAN-TRUE@, 'Amministratore');
 INSERT INTO operatori (nome, id_utenza) VALUES ('@RAGIONE_SOCIALE@', (select id from utenze where principal = '@PRINCIPAL@'));
 
 -- Censimento del ruolo amministratore
@@ -27,10 +27,10 @@ INSERT INTO acl(ruolo,id_utenza,servizio,diritti) VALUES ('Operatore',null,'Gior
 INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, descrizione) VALUES ('BOLLOT', '9', 'MBT', 'Marca da Bollo Telematica');
 
 -- Censimento Tipo Pendenza Libera
-INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi, abilitato) VALUES ('LIBERO', 'Pendenza libera', 'DOVUTO', false, true);
+INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi, abilitato) VALUES ('LIBERO', 'Pendenza libera', 'DOVUTO', @BOOLEAN-FALSE@, @BOOLEAN-TRUE@);
 
 -- Censimento Tipo Pendenza Bollo
-INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi, abilitato) VALUES ('BOLLOT', 'Marca da Bollo Telematica', 'DOVUTO', false, true);
+INSERT INTO tipi_versamento (cod_tipo_versamento, descrizione, tipo, paga_terzi, abilitato) VALUES ('BOLLOT', 'Marca da Bollo Telematica', 'DOVUTO', @BOOLEAN-FALSE@, @BOOLEAN-TRUE@);
 
 -- Configurazione delle sonde
 
