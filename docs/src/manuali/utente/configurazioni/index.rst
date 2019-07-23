@@ -3,14 +3,9 @@
 Configurazioni del Sistema
 ==========================
 
-La sezione di configurazione, visibile solo agli amministratori del
-sistema, consente il censimento e manutenzione delle entità logiche
-coinvolte nel processo di pagamento. 
+La sezione di configurazione, visibile solo agli amministratori del sistema, consente il censimento e la manutenzione delle entità logiche (operatori, ruoli, domini, abilitazioni e quant'altro) coinvolte nel processo di pagamento. 
 
-.. figure:: ../_images/08Configurazioni.png
-   :align: center
-
-   Lista delle funzionalità di configurazione
+La lista degli oggetti che è possibile configurare comprende i seguenti elementi:
 
 
 -  *Intermediari*: rappresentano le entità “Intermediario” o “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
