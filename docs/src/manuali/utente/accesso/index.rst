@@ -31,6 +31,13 @@ utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità ch
    
 .. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
    
+I metodi di autenticazione al sistema sono:
+
+*  Username / password
+*  `SPID <https://www.spid.gov.it//>`_
+
+Si noti che il sistema abilita l'accesso tramite SPID se l'Ente ha effettuato tutti i necessari passi per accreditarsi all'uso di SPID stesso (certificazioni, test e via dicendo).
+
 Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si accede a tutte le funzionalità descritte nelle corrispondenti sezioni di questo documento. La schermata dovrebbe presentarsi in questo modo [#]_
    
 .. [#] Si tenga sempre presente che la propria schermata dipende dai ruoli cui si è associati
