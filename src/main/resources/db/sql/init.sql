@@ -1,6 +1,6 @@
 -- Censimento dell'utenza amministratore
 
-INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_stari,ruoli) VALUES ('@PRINCIPAL@','@PRINCIPAL@',@BOOLEAN-TRUE@, @BOOLEAN-TRUE@, 'Amministratore');
+INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_star,ruoli) VALUES ('@PRINCIPAL@','@PRINCIPAL@',@BOOLEAN-TRUE@, @BOOLEAN-TRUE@, 'Amministratore');
 INSERT INTO operatori (nome, id_utenza) VALUES ('@RAGIONE_SOCIALE@', (select id from utenze where principal = '@PRINCIPAL@'));
 
 -- Censimento del ruolo amministratore
