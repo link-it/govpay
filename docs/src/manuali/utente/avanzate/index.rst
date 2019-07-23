@@ -3,40 +3,6 @@
 Funzioni Avanzate
 =================
 
-Riscossioni
------------
-
-La sezione “Funzioni Avanzate > Riscossioni” è dedicata alla
-consultazione delle somme che sono state correttamente riscosse tramite
-i versamenti operati dai debitori.
-
-È possibile filtrare gli elementi presenti nella pagina tramite il form
-presente sul lato sinistro. Di rilevante importanza è la possibilità di
-filtrare in base allo stato della riscossione:
-
--  *Riscossa* - è lo stato iniziale relativo agli importi riversati ma
-   non ancora riconciliati.
--  *Incassata* - è lo stato finale che indica che tutti gli importi di
-   una determina pendenza sono stati già riconciliati con le somme
-   riversate.
-
-È inoltre possibile selezionare le riscossioni in base al tipo. Esistono
-due tipi di riscossione:
-
--  *Entrata in Tesoreria*: Sono cifre riscosse dai PSP che verranno
-   riversate sul conto della banca tesoriera dell'ente creditore. Si
-   tratta di somme soggette a riconciliazione.
--  *Marca da Bollo Telematica*: Sono cifre riscosse dai PSP per il
-   rilascio di una marca da bollo. Tali importi non saranno accreditati
-   all'ente e quindi non sono soggetti a riconciliazione.
-
-È possibile scaricare un file CSV con i dati delle riscossioni,
-visualizzate con il criterio di ricerca impostato, utilizzando la voce
-"Esporta" presente nel menu sulla testata della pagina.
-
-Selezionando il singolo elemento dall’elenco si accede alla pagina di
-dettaglio.
-
 Rendicontazioni
 ---------------
 
@@ -72,35 +38,58 @@ sezioni:
 -  *Segnalazioni*: L'elenco delle eventuali segnalazioni che sono state
    sollevate dal sistema durante la gestione del flusso di
    rendicontazione.
+   
+   
+Riscossioni
+-----------
+
+La sezione “Funzioni Avanzate > Riscossioni” è dedicata alla
+consultazione delle somme che sono state correttamente riscosse tramite
+i versamenti operati dai debitori.
+
+È possibile filtrare gli elementi presenti nella pagina tramite il form
+presente sul lato sinistro. Di rilevante importanza è la possibilità di
+filtrare in base allo stato della riscossione:
+
+-  *Riscossa* - è lo stato iniziale relativo agli importi riversati ma
+   non ancora riconciliati.
+-  *Incassata* - è lo stato finale che indica che tutti gli importi di
+   una determina pendenza sono stati già riconciliati con le somme
+   riversate.
+
+È inoltre possibile selezionare le riscossioni in base al tipo. Esistono
+due tipi di riscossione:
+
+-  *Entrata in Tesoreria*: Sono cifre riscosse dai PSP che verranno
+   riversate sul conto della banca tesoriera dell'ente creditore. Si
+   tratta di somme soggette a riconciliazione.
+-  *Marca da Bollo Telematica*: Sono cifre riscosse dai PSP per il
+   rilascio di una marca da bollo. Tali importi non saranno accreditati
+   all'ente e quindi non sono soggetti a riconciliazione.
+
+È possibile scaricare un file CSV con i dati delle riscossioni,
+visualizzate con il criterio di ricerca impostato, utilizzando la voce
+"Esporta" presente nel menu sulla testata della pagina.
+
+Selezionando il singolo elemento dall’elenco si accede alla pagina di
+dettaglio.
+
 
 Caricamento Pendenze
 --------------------
 
-La sezione “Funzioni Avanzate > Caricamento Pendenze” è dedicata alla
-consultazione dei tracciati di pendenze caricati nel sistema. Tali
-tracciati vengono caricati dagli utenti del cruscotto utilizzando il
-pulsante di aggiunta. Il form di caricamento permette di selezionare il
-file da caricare che deve essere in formato JSON e rispettare la
-sintassi descritta nel manuale di integrazione. All’interno di un
-tracciato si definiscono le operazioni da eseguire sulle pendenze, le
-operazioni possono essere dei seguenti tipi:
+La sezione “Funzioni Avanzate > Caricamento Pendenze” è dedicata all'immissione batch delle pendenze nel sistema. Tali
+tracciati vengono caricati dagli utenti del cruscotto utilizzando il pulsante di aggiunta. Il form di caricamento permette di selezionare il file da caricare che deve essere in formato JSON e rispettare la sintassi descritta nel manuale di integrazione. All’interno di un tracciato si definiscono le operazioni da eseguire sulle pendenze, che possono essere dei seguenti tipi:
 
 -  inserimento;
 -  annullamento.
 
-Di seguito un esempio di tracciato:
+È possibile filtrare gli elementi, in base al proprio stato di elaborazione, utilizzando il form presente sul lato sinistro, .
 
-
-È possibile filtrare gli elementi visualizzati nella pagina utilizzando
-il form presente sul lato sinistro.
-
-L'elenco sul lato destro riporta gli elementi, in sintesi,
-visualizzandone i principali dati identificativi (identificativo del
+L'elenco sul lato destro riporta gli elementi, in sintesi, visualizzandone i principali dati identificativi (identificativo del
 tracciato, data di caricamento e stato dell’elaborazione).
 
-È possibile scaricare un file CSV con i dati di riepilogo dei tracciati,
-visualizzati con il criterio di ricerca impostato, utilizzando la voce
-"Esporta" presente nel menu sulla testata della pagina.
+È possibile scaricare un file CSV con i dati di riepilogo dei tracciati, visualizzati con il criterio di ricerca impostato, utilizzando la voce "Esporta" presente nel menu sulla testata della pagina.
 
 Dettaglio Tracciato
 ~~~~~~~~~~~~~~~~~~~
