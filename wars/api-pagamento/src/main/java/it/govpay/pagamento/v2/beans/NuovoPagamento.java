@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
+
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "urlRitorno",
 "contoAddebito",
@@ -132,13 +133,22 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
   }
 
   @JsonProperty("autenticazioneSoggetto")
-  public TipoAutenticazioneSoggetto getAutenticazioneSoggetto() {
-    return autenticazioneSoggetto;
+  public String getAutenticazioneSoggetto() {
+    if(this.autenticazioneSoggetto != null) {
+      return this.autenticazioneSoggetto.toString();
+    } else {
+      return null;
+    }
   }
-  public void setAutenticazioneSoggetto(TipoAutenticazioneSoggetto autenticazioneSoggetto) {
-    this.autenticazioneSoggetto = autenticazioneSoggetto;
+  
+  public void setAutenticazioneSoggetto(String autenticazioneSoggetto) throws ValidationException{
+    if(autenticazioneSoggetto != null) {
+      this.autenticazioneSoggetto = TipoAutenticazioneSoggetto.fromValue(autenticazioneSoggetto);
+      if(this.autenticazioneSoggetto == null)
+        throw new ValidationException("valore ["+autenticazioneSoggetto+"] non ammesso per la property autenticazioneSoggetto");
+    }
   }
-
+  
   /**
    * pendenze o riferimenti alle pendenze oggetto del pagamento
    **/

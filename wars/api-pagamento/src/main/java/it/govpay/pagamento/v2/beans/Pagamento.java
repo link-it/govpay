@@ -169,11 +169,20 @@ public class Pagamento extends JSONSerializable {
   }
 
   @JsonProperty("autenticazioneSoggetto")
-  public TipoAutenticazioneSoggetto getAutenticazioneSoggetto() {
-    return autenticazioneSoggetto;
+  public String getAutenticazioneSoggetto() {
+    if(this.autenticazioneSoggetto != null) {
+      return this.autenticazioneSoggetto.toString();
+    } else {
+      return null;
+    }
   }
-  public void setAutenticazioneSoggetto(TipoAutenticazioneSoggetto autenticazioneSoggetto) {
-    this.autenticazioneSoggetto = autenticazioneSoggetto;
+  
+  public void setAutenticazioneSoggetto(String autenticazioneSoggetto) throws ValidationException{
+    if(autenticazioneSoggetto != null) {
+      this.autenticazioneSoggetto = TipoAutenticazioneSoggetto.fromValue(autenticazioneSoggetto);
+      if(this.autenticazioneSoggetto == null)
+        throw new ValidationException("valore ["+autenticazioneSoggetto+"] non ammesso per la property autenticazioneSoggetto");
+    }
   }
 
   /**
