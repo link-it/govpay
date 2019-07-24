@@ -48,10 +48,6 @@ Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si acce
    Schermata iniziale
 
 
-Funzionalità di profilo
------------------------
-
-
 Menu di navigazione
 -------------------
 
