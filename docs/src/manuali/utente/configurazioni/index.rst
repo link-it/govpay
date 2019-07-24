@@ -366,7 +366,7 @@ Le modalità per la creazione di una nuova pendenza sono sempre le medesime (tas
    
    Maschera di creazione di una Nuova Pendenza
    
-Vediamo come modificare una pendenza esistente; ciò ci permetterà di illustrare il dettaglio dei campi presenti. Sslezioniamo quindi la Pendenza *Sanzione Amministrativa*.
+Vediamo come modificare una pendenza esistente; ciò ci permetterà di illustrare il dettaglio dei campi presenti. Selezioniamo, ad esempio, la Pendenza *Sanzione Amministrativa*.
 
 .. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
@@ -428,7 +428,7 @@ Layout form dati
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Tipo layout", "Indica il motore di interpretazione della descrizione formale della maschera di immissione del pagamento da parte del debitore", " Al momento solo Angular Json schema form"
+  "Tipo layout", "Indica il motore di interpretazione della descrizione formale della maschera di immissione del pagamento da parte del debitore", " Al momento solo *Angular Json schema form*"
   "Definizione", "Mostra il menu di caricamento e visualizzazione della descrizione formale dell'interfaccia di pagamento", ""
 
 .. figure:: ../_images/32MenuDefinizioneForm.png
@@ -458,7 +458,7 @@ Vediamo un esempio di un file di definizione dell'interfaccia:
 Elaborazione
 ~~~~~~~~~~~~
 
-Vediamo adesso la sezione *Elaborazione*, che consente a GovPay di descrivere in modo formale come elaborare quanto immesso nella sezione *Layout Form Dati* al fine di trasformare e inoltrare le informazioni del pagamento alle applicazioni che lo processano ulteriormente.
+La sezione *Elaborazione* consente a GovPay di descrivere in modo formale come elaborare quanto immesso nella sezione `Layout Form Dati`_ al fine di trasformare e inoltrare le informazioni del pagamento alle applicazioni (anche esterne) che ne abbisognino. Si pensi a uno scenario in cui, ad esempio, sia necessario informare un sistema di recupero crediti del fatto che una pendenza abbia superato la data di scadenza.
 
 .. figure:: ../_images/33SezioneElaborazioneDellaModificaPendenze.png
    :align: center
@@ -478,7 +478,7 @@ Vediamo adesso la sezione *Elaborazione*, che consente a GovPay di descrivere in
   "Trasformazione: Template", "Template di defizione della trasformazione dati", "* Carica
   * Visualizza
   * Ripristina"
-  "Applicazione", "Consente di selezionare l'applicazione cui verranno inoltrati i dati", "L'applicazione deve essere censita nella sezione *Applicazioni*"
+  "Inoltro", "Consente di selezionare l'applicazione cui verranno inoltrati i dati", "L'applicazione deve essere censita nella sezione *Applicazioni*"
   
 
 Promemoria Avviso Pagamento
@@ -535,7 +535,7 @@ La sezione *Promemoria Ricevuta Telematica* è del tutto analoga a quella relati
 
 Esempio di scenario di utilizzo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Come esempio di scenario di utilizzo possiamo cercare di mappare, sui componenti presentati, un semplice processo modellato a partire da una situazione generale: si supponga di gestire, infatti, il pagamento spontaneo di dieci buoni pasto elettronici con relativo inoltro della codifica, previo pagamento andato a buon fine, al richiedente.
+Come esempio di scenario di utilizzo possiamo cercare di mappare, sui componenti presentati, un semplice processo reale: si supponga di gestire, infatti, il pagamento spontaneo di dieci buoni pasto elettronici con relativo inoltro della codifica elettronica univoca, previo pagamento andato a buon fine, al richiedente.
 
 .. csv-table:: Gestione buoni pasto elettronici
   :header: "#", "Oggetto della pendenza", "Passo di processo"
@@ -546,7 +546,7 @@ Come esempio di scenario di utilizzo possiamo cercare di mappare, sui componenti
   "3", "Elaborazione.Trasformazione", "Creazione della pendenza correlata al numero di buoni mensa effettivamente richiesti (es. determinazione del costo finale, con le varie franchigie, aggravi amministrativi e via dicendo)"
   "4", "Elaborazione.Applicazione", "Interfacciamento con l'applicazione verticale che crea i codici relativi ai buoni mensa richiesti"
 
-E' di tutta evidenza come **questo non sia che uno dei molteplici processi che sono formalmente definibili, quindi implementati direttamente, con i meccanismi appena visti, da GovPay**.
+E' di tutta evidenza come **questo non sia che uno dei molteplici processi che sono formalmente definibili, quindi implementabili direttamente, con i meccanismi appena visti, da GovPay**.
 
 
 Applicazioni
@@ -566,9 +566,9 @@ della pagina è presente un form che consente di filtrare i dati visualizzati ne
 Nuova Applicazione
 ~~~~~~~~~~~~~~~~~~
 
-Utilizzando l'apposito pulsante presente nella pagina di elenco, posizionato come sempre in basso a destra è possibile censire nuove applicazioni. Analizzeremo questa funzionalità che è del tutto analoga, dal punto di vista delle informazioni richieste, a quella della modifica di un'applicazione già censita nel sistema.
+Per aggiungere una nuova applicazione, premere il pulsante posizionato, come sempre, in basso a destra. Analizzeremo questa funzionalità che è del tutto analoga, dal punto di vista delle informazioni richieste, a quella della modifica di un'applicazione già censita nel sistema.
 
-.. figure:: ../_images/37NuovaApplicazioneVistaInsieme.png
+.. figure:: ../_images/37NuovaApplicazioneVistaDiInsieme.png
    :align: center
    :name: NuovaApplicazione
    
@@ -586,14 +586,12 @@ Informazioni di riepilogo
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
 
-.. figure:: ../_images/38ApplicazioneRiepilogoInformazioni.png
+.. figure:: ../_images/38ApplicazioneRiepilogoDelleInformazioni.png
    :align: center
    :name: ApplicazioneInformazioniDiRiepilogo
    
    Informazioni di riepilogo di un'applicazione
 
-
-Nell'esempio si è selezionata l'autoderminazione delle pendenza e l'abilitazione dell'applicazione su tutti i domini del sistema.
 
 .. csv-table:: Dettagli della sezione *Informazioni di riepilogo* di una nuova Applicazione
   :header: "Campo", "Significato", "Note"
@@ -602,8 +600,6 @@ Nell'esempio si è selezionata l'autoderminazione delle pendenza e l'abilitazion
   "Id A2A", "identificativo dell'applicazione", "Obbligatorio"
   "Principal", "Identificativo del principal autenticato nelle chiamate alle Web API di integrazione", ""
   "Abilitato", "se disabilitato, tutte le nuove richieste all'applicazione saranno negate", ""
-  "Domini", "Elenco dei domini su cui l'applicazione può agire", "Obbligatoria almeno una selezione; esiste l'opzione *Tutti*"
-  "Pendenze", "Elenco delle pendenze che l'applicazione può gestire", "Obbligatoria almeno una selezione; esiste l'opzione *Autodeterminazione tipo pendenze* che lascia all'applicazione la gestione dei tipi di pendenza gestibili"
 
 
 Codifica avvisi
@@ -646,49 +642,22 @@ In questa sottosezione sono contenute le informazioni che definiscono un'applica
   "Tipo Autenticazione", "selezione a scelta tra: Nessuna, Http-Basic e SSL", "In base al valore selezionato sarà necessario inserire i conseguenti dati di configurazione della specifica modalità di autenticazione"
    
 
-Autorizzazione API
-^^^^^^^^^^^^^^^^^^
+Autorizzazioni
+^^^^^^^^^^^^^^
 
-GovPay espone tre API (Pagamenti, Pendenze e Ragioneria): in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con ciascuna di essa.
+In questa sezione il sistema permette di autorizzare:
 
-.. figure:: ../_images/41ApplicazioneAutorizzazioniAPI.png
+*  Specifici (o tutti) `Domini`_ all'utilizzo dell'applicazione
+*  Specifici (o tutti) `Tipi Pendenze`_ ad essere elaborate attraverso l'applicazione
+*  Specifici `Ruoli`_ all'utilizzo dell'applicazione
+
+Inoltre in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con le tre API (Pagamenti, Pendenze e Ragioneria) messe a disposizione da GovPay.
+
+.. figure:: ../_images/41ApplicazioneAutorizzazioni.png
    :align: center
-   :name: ApplicazioneAutorizzazioniAPI
+   :name: ApplicazioneAutorizzazioni
    
-   Sezione autorizzazione API di un'applicazione
-
-
-Autorizzazioni Backoffice
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Risulta possibile e, spesso, assai utile, determinare in modo più fine le autorizzazioni, da parte dell'applicazione, all'utilizzo delle API esposte da GovPay. Questa sezione incorpora questo comportamento:
-
-.. figure:: ../_images/42ApplicazioneAutorizzazioniBackoffice.png
-   :align: center
-   :name: ApplicazioneAutorizzazioniAPIBackOffice
-   
-   Sezione autorizzazione Backoffice di un'applicazione
-
-I sottosistemi integrabili sono i seguenti:
-
-* Anagrafica Applicazioni
-* Anagrafica Enti
-* Anagrafica Operatori
-* Anagrafica PagoPA
-* Backoffice Pagamenti
-* Backoffice Pendenze
-* Backoffice Ragioneria
-* Gestione Batch
-* Giornale degli eventi
-
-
-A ciascun sottosistema si danno le seguenti caratteristiche di integrazione:
-
-.. figure:: ../_images/42ApplicazioneAutorizzazioniBackoffice.png
-   :align: center
-   :name: ApplicazioneAutorizzazioniAPISceltaValori
-   
-   Sezione autorizzazione:scelta valori
+   Sezione Autorizzazioni di un'applicazione
 
 
 Dettaglio Applicazione
@@ -718,7 +687,7 @@ Nuovo Operatore
 Tramite il pulsante presente nella pagina di elenco è possibile aprire il form di creazione di un operatore:
 
 
-.. figure:: ../_images/44NuovoOperatore.png
+.. figure:: ../_images/44Nuovo1Operatore.png
    :align: center
    :name: NuovoOperatore
    
