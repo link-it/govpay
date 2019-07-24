@@ -41,10 +41,10 @@ export class OperatoriViewComponent implements IModalDialog, OnInit {
 
       if(this.json.domini && this.json.domini.length != 0) {
         this.json.domini.forEach((item, index) => {
-          _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.DOMINI, value: item.ragioneSociale }));
+          _dettaglio.domini.push(new Dato({ label: (index != 0)?'':Voce.ENTI_CREDITORI, value: item.ragioneSociale }));
         });
       } else {
-        _dettaglio.domini.push(new Dato({ label: Voce.DOMINI, value: Voce.NESSUNO }));
+        _dettaglio.domini.push(new Dato({ label: Voce.ENTI_CREDITORI, value: Voce.NESSUNO }));
       }
       if(this.json.tipiPendenza && this.json.tipiPendenza.length != 0) {
         this.json.tipiPendenza.forEach((item, index) => {

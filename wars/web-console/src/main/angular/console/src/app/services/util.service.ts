@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
+import { Voce } from './voce.service';
 
 declare let GovPayConfig: any;
 
@@ -345,7 +346,7 @@ export class UtilService {
   public static TXT_REGISTRO_INTERMEDIARI: string = 'Intermediari';
   public static TXT_RPPS: string = 'Richieste di pagamento';
   public static TXT_APPLICAZIONI: string = 'Applicazioni';
-  public static TXT_DOMINI: string = 'Domini';
+  public static TXT_DOMINI: string = Voce.ENTI_CREDITORI;
   public static TXT_TIPI_PENDENZA: string = 'Tipi pendenza';
   public static TXT_ENTRATE: string = 'Entrate';
   public static TXT_RUOLI: string = 'Ruoli';

@@ -6,7 +6,7 @@
     "ng": "ng",
     "lock modules": "npm shrinkwrap",
     "proxy-start": "ng serve --proxy-config proxy.config.json",
-    "proxy-start-ip-wifi": "ng serve --proxy-config proxy.config.json --host 192.168.2.120",
+    "proxy-start-ip-wifi": "ng serve --proxy-config proxy.config.json --host 192.168.2.133",
     "build": "ng build --prod --aot false --output-hashing=none",
     "test": "ng test",
     "lint": "ng lint",

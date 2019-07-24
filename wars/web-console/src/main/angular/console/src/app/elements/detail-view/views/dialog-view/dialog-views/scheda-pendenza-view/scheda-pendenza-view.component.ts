@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ModalBehavior } from '../../../../../../classes/modal-behavior';
 import { GovpayService } from '../../../../../../services/govpay.service';
 import { GeneratorsEntryPointList } from '../../../../../../classes/generators-entry-point-list';
+import { Voce } from '../../../../../../services/voce.service';
 
 @Component({
   selector: 'link-scheda-pendenza-view',
@@ -18,6 +19,8 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
 
   @Input() fGroup: FormGroup;
   @Input() json: any;
+
+  protected _voce = Voce;
 
   protected _domini: any[];
   protected _tipiPendenzaDominio: any[];
@@ -61,12 +64,25 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
     }
   }
 
+  protected dominioCmpFn(d1: any, d2: any): boolean {
+    return (d1 && d2)?(d1.idDominio === d2.idDominio):(d1 === d2);
+  }
+
+  protected tipoPendenzaDominioCmpFn(p1: any, p2: any): boolean {
+    return (p1 && p2)?(p1.idTipoPendenza === p2.idTipoPendenza):(p1 === p2);
+  }
+
   protected _loadDomini() {
     const _service = UtilService.URL_DOMINI;
     this.gps.getDataService(_service).subscribe(
     (response) => {
       this.gps.updateSpinner(false);
       this._domini = (response && response.body)?response.body['risultati']:[];
+      if(this._domini.length == 1) {
+        const _fdom = this._domini[0];
+        this.fGroup.controls['domini_ctrl'].setValue(_fdom);
+        this._dominiChangeSelection({ value: _fdom });
+      }
     },
     (error) => {
       this.gps.updateSpinner(false);
@@ -88,6 +104,11 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
         this.gps.updateSpinner(false);
         this.fGroup.controls['tipiPendenzaDominio_ctrl'].enable();
         this._tipiPendenzaDominio = (response && response.body)?response.body['risultati']:[];
+        if(this._tipiPendenzaDominio.length == 1) {
+          const _ftpdom = this._tipiPendenzaDominio[0];
+          this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue(_ftpdom);
+          this._tipiPendenzaDominioChangeSelection({ value: _ftpdom });
+        }
       },
       (error) => {
         this.gps.updateSpinner(false);
@@ -145,6 +166,9 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
 
   protected _createJsForm() {
     const componentType = GeneratorsEntryPointList.getComponentByName(this._componentRefType);
+    this._formOptions['defautWidgetOptions'] = {
+      validationMessages: Voce.VALIDATION_IT_MESSAGES
+    };
     this._mapByComponentType(componentType);
   }
 

@@ -33,7 +33,7 @@ export class ProfiloComponent implements OnInit {
     if(profilo.domini) {
       this.info.domini = profilo.domini.map((item, index) => {
         if(index === 0) {
-          return new Dato({ label: 'Domini', value:  item.ragioneSociale });
+          return new Dato({ label: Voce.ENTI_CREDITORI, value:  item.ragioneSociale });
         }
         return new Dato({ value:  item.ragioneSociale });
       });
