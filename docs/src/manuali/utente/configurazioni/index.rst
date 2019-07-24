@@ -197,7 +197,7 @@ Selezionando uno dei domini presenti nella pagina di elenco si accede alla pagin
   
   "*Riepilogo Informazioni*", "Dati che caratterizzano il dominio, appena visti nella sezione `Nuovo Dominio`_"
   "*Unità Operative*", "Uffici di gestione dei pagamenti in cui è suddiviso il dominio dell’ente creditore."
-  "*Iban*", "Codici IBAN dei conti correnti su cui l’ente creditore riceve gli accrediti in banca tesoriera. Tali Iban sono quelli già comunicati ad AgID in fase di accreditamento."
+  "*Iban*", "Codici IBAN dei conti correnti su cui l’ente creditore riceve gli accrediti in banca tesoriera. Tali IBAN sono quelli già comunicati ad AgID in fase di accreditamento."
   "*Entrate*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
   "*Pendenze*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
 
@@ -222,7 +222,7 @@ Unità Operative
 ^^^^^^^^^^^^^^^
 
 La specifica pagoPA consente di indicare l'anagrafica dell'Unità operativa titolare del credito, qualora sia diversa da quella dell'Ente
-Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay da utilizzare poi in fase di pagamento.
+Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay al fine di utilizzarle in fase di pagamento.
 
 .. figure:: ../_images/21NuovaUnitaOperativa.png
    :align: center
@@ -239,13 +239,12 @@ Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay
   "Sezione Anagrafica", "Riferimenti anagrafici dell'unità forniti dal Referente dei Pagamenti", ""
   "Abilitato", "Indica se l'unità operativa è abilitata o meno nel contesto del dominio su cui si opera", ""
 
-Tornando all'elenco delle unità operative, è possibile scegliere le operazioni di modifica degli elementi precedentemente associati al dominio.
+Ovviamente dall'elenco delle unità operative associate a un dominio, è possibile modificarne le informazioni associate.
 
 Iban
 ^^^^
 
-Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPay.
-Esiste quindi una maschera di definizione degli IBAN associati al dominio.
+Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPay. Esiste quindi una maschera di definizione degli IBAN associati al dominio.
 
 .. figure:: ../_images/22NuovoIBAN.png
    :align: center
@@ -260,7 +259,7 @@ seguenti:
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "IBAN Accredito", "Codice iban del conto di accredito", "Obbligatorio, fornito dal referente dei Pagamenti"
+  "IBAN Accredito", "Codice IBAN del conto di accredito", "Obbligatorio, fornito dal referente dei Pagamenti"
   "BIC Accredito", "BIC del conto di accredito", "Obbligatorio"
   "Postale", "Indica se l'iban di accredito è riferito ad un conto corrente postale", ""
   "My Bank", "Indica se l'iban di accredito è è abilitato alle transazioni MyBank", ""
@@ -274,7 +273,7 @@ Entrate
 
 Ogni importo che costituisce un versamento deve essere associato ad una entrata censita sul sistema. L'entrata associata al versamento ne determina l'iban di accredito dell'importo e le coordinate di rendicontazione.
 
-.. note:: **Si noti come la gestione delle Entrate è stata sostituita da quella delle Pendenze, assai più flessibile e che consente anche la generazione di interfacce automatiche per la riscossione, semplificando quindi grandemente l'implementazione effettiva di queste modalità di pagamento verso l'Utente finale. Si decide di lasciare questa tipologia di oggetti per meri scopi di ereditarietà. Le nuove configurazioni dovrebbero pertanto utilizzare la Gestione delle Pendenze.**
+.. note:: **Si noti come la gestione delle Entrate sia stata sostituita da quella delle Pendenze, assai più flessibile e con in più la possibilità di generazione automatica delle interfacce per la riscossione: ciò semplifica grandemente l'implementazione effettiva di queste modalità di pagamento verso l'Utente finale, fornendogli al contempo un'interfaccia omogenea e consistente. Si decide di lasciare questa tipologia di oggetti per meri scopi di ereditarietà. Le nuove configurazioni dovrebbero pertanto utilizzare la Gestione delle Pendenze.**
 
 
 .. figure:: ../_images/23NuovaEntrata.png
@@ -283,8 +282,7 @@ Ogni importo che costituisce un versamento deve essere associato ad una entrata 
    
    Maschera di creazione nuova entrata associata al dominio
 
-Il form di creazione di un'entrata va compilato con i seguenti
-dati:
+Il form di creazione di un'entrata va compilato con le seguenti informazioni:
 
 .. csv-table:: Dettagli di una nuova entrata
   :header: "Campo", "Significato", "Note"
@@ -317,7 +315,7 @@ Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata,
 Pendenze
 ^^^^^^^^
 
-Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per il dominio in essere. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta si gestisce a livello delle funzionalità della voce *Tipi Pendenze* del menu di configurazione sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
+Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per il dominio in essere. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta di un nuovo tipo di pendenza viene gestita nella funzionalità associata alla voce `Tipi Pendenze`_ del menu sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
 Ad esempio, in un dominio abbiamo le seguenti tipologie di pendenza già selezionate:
 
 .. figure:: ../_images/25PendenzeSceltePerIlDominio.png
@@ -334,9 +332,9 @@ A questo punto, sul dominio selezionato, si potrà aggiungere una sola pendenza 
    
    Pendenza selezionabile per aggiunta al dominio
 
-Risulta possibile, una volta aggiunta una nuova pendenza, personalizzarla per il dominio, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
-Si tenga presente che si affronterà il dettaglio dei campi delle pendenze nella sezione apposita, cui si fa riferimento. Al momento si noti come una pendenza possa essere completamente personalizzata per un dominio a partire da una *standard* definita nella sezione *Tipi Pendenze* 
-I meccanismi di selezione sono del tutto analoghi a quanto già visto in altre sezioni: selezioniamo la Pendenza *Sanzione Amministrativa*
+Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, di personalizzarla per il dominio, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
+Si tenga presente che si affronterà il dettaglio dei campi delle pendenze nella sezione apposita, cui si fa riferimento. Al momento si noti come una pendenza possa essere completamente personalizzata per un dominio a partire da una *standard* definita nella sezione *`Tipi Pendenze`_*.
+I meccanismi di selezione sono del tutto analoghi a quanto già visto in altri contesti del sistema: selezioniamo la Pendenza *Sanzione Amministrativa*
 
 .. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
@@ -358,7 +356,7 @@ Da qui possiamo personalizzare **senza modificare le informazioni standard del t
 Tipi Pendenze
 -------------
 
-Ogni importo che costituisce un versamento deve essere associato ad una pendenza censita sul sistema. La configurazione di questo oggetto ne determina quindi le coordinate di pagamento e quelle di rendicontazione. Si noti come le pendenze siano associate a un dominio, determinando quindi il tipo di pagamenti che ad esso fanno riferimento.
+Ogni importo che costituisce un versamento deve essere associato ad una pendenza censita sul sistema. La configurazione di questo oggetto determina quindi le coordinate di pagamento e quelle di rendicontazione. Si noti come le pendenze siano associate a un dominio, determinando quindi il tipo di pagamenti che ad esso fanno riferimento.
 La gestione dei tipi di pendenza permette la generazione di maschere automatiche per l'immissione dei dati, semplificando in modo notevole lo sviluppo di interfacce e ottimizzando i tempi generali di progetto.
 Le modalità per la creazione di una nuova pendenza sono sempre le medesime (tasto più in basso a destra) e la maschera presentata è la seguente:
 
