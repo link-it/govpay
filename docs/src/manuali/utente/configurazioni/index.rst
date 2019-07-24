@@ -146,20 +146,12 @@ Accedendo alla sezione *Configurazioni > Domini*, viene visualizzato l'elenco de
    Parametri di filtro per la ricerca dominio
 
 
-Ciascun dominio presente in elenco è identificato tramite denominazione
-e codice identificativo.
+Ciascun dominio presente in elenco è identificato tramite denominazione e codice identificativo.
 
 Nuovo Dominio
 ~~~~~~~~~~~~~
 
-Utilizzando il pulsante di creazione, presente nella pagina di elenco, è possibile procedere con la creazione di un nuovo dominio. 
-
-.. figure:: ../_images/17FilttroSuDomini.png
-   :align: center
-   
-   Parametri di filtro per la ricerca dominio
-
-È necessario compilare il seguente form di creazione:
+Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di elenco, è possibile procedere con la creazione di un nuovo dominio, compilando il seguente form di creazione:
 
 .. figure:: ../_images/18ParametriDominio.png
    :align: center
@@ -191,21 +183,19 @@ I seguenti sono i placeholder di sistema, sovrascrivibili dall'applicazione chia
 
 * a: codice IUV assegnato all'applicazione che gestisce il debito
 * t: codice IUV assegnato al tributo
-* y: anno di emissione dello iuv, due cifre
-* Y: anno di emissione dello iuv, quattro cifre
+* y: anno di emissione dello IUV, due cifre
+* Y: anno di emissione dello IUV, quattro cifre
 
 Dettaglio Dominio
 ~~~~~~~~~~~~~~~~~
 
-Selezionando uno dei domini presenti nella pagina di elenco si accede
-alla pagina di dettaglio. La pagina di dettaglio di un dominio è
-ripartita nelle seguenti distinte aree:
+Selezionando uno dei domini presenti nella pagina di elenco si accede alla pagina di dettaglio, che si compone a partire dalle seguenti aree:
 
 .. csv-table:: Aree del dettaglio dominio
   :header: "Area", "Descrizione"
   :widths: 40,40
   
-  "*Riepilogo Informazioni*", "Dati che caratterizzano il dominio, appena visti nella sezione di creazione del dominio"
+  "*Riepilogo Informazioni*", "Dati che caratterizzano il dominio, appena visti nella sezione `Nuovo Dominio`_"
   "*Unità Operative*", "Uffici di gestione dei pagamenti in cui è suddiviso il dominio dell’ente creditore."
   "*Iban*", "Codici IBAN dei conti correnti su cui l’ente creditore riceve gli accrediti in banca tesoriera. Tali Iban sono quelli già comunicati ad AgID in fase di accreditamento."
   "*Entrate*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
