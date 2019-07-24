@@ -37,7 +37,7 @@ Glossario
 
 
 Storia delle modifiche del documento
-====================================
+------------------------------------
 
 .. csv-table:: 
   :header: "Data","Versione", "Modifiche", "Note"
