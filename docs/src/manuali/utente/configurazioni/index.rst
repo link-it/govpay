@@ -712,14 +712,14 @@ Dettaglio Operatore
 Dalla pagina elenco degli operatori, selezionando uno degli elementi, si giunge alla relativa pagina con le informazioni di sintesi. 
 
 
-.. figure:: ../_images/45OperatoreVistaDiSintesi.png
+.. figure:: ../_images/45OperatoreVistaSintesi.png
    :align: center
    :name: OperatoreVistaDiSintesi
    
    Vista di sintesi di un Operatore
    
 
-Da quest'ultima è possibile, con l'uso delle solite metafore (matita su cerchio verde), accedere alle modifiche puntuali della definizione di un operatore. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione, con una sola informazione non modificabile, ovvero *principal*.
+Da quest'ultima è possibile, con l'uso delle solite metafore (matita su cerchio verde in basso a destra), accedere alle modifiche puntuali della definizione di un operatore. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione, con una sola informazione non modificabile, ovvero *principal*.
 
 
 Ruoli
@@ -744,7 +744,7 @@ Nuovo Ruolo
 Utilizzando l'apposito pulsante presente nella pagina di elenco, è possibile creare un nuovo ruolo:
 
 
-.. figure:: ../_images/47NuovoRuolo.png
+.. figure:: ../_images/47NewRuolo.png
    :align: center
    :name: NuovoRuolo
    
@@ -756,10 +756,8 @@ Utilizzando l'apposito pulsante presente nella pagina di elenco, è possibile cr
   :widths: 40,40,20
   
   "Identificativo", "Identificativo assegnato al ruolo", "Obbligatorio"
-  "Risorse", "Risorsa protetta cui concedere accesso al ruolo in esame", "Obbligatorio"
-  "Operazioni", "Specifica quali operazioni sono consentite sulla risorsa selezionata", "selezione multipla 
-  * Lettura
-  * Scrittura"
+  "Lista risorse", "Lista delle risorse su cui il ruolo ha accesso in *Lettura* o *Scrittura*", ""
+  
   
 Dettaglio Ruolo
 ~~~~~~~~~~~~~~~
