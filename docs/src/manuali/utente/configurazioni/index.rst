@@ -31,7 +31,7 @@ Gli intermediari o partner tecnologici sono entità censite da AgID sul circuito
    Vista di dettaglio intermediari
 
 Accedendo alla sezione corrispondente (*Configurazioni > Intermediari*), viene visualizzato l'elenco degli intermediari censiti
-sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, con una funzionalità di filtro disponibile sulla sinistra del box di dettaglio, come di seguito mostrato:
+sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, impostandolo nella casella di selezione posta a sinistra, come di seguito mostrato:
 
 .. figure:: ../_images/10FiltroSuIntermediari.png
    :align: center
@@ -62,10 +62,9 @@ Le informazioni contenute nel form sono le seguenti:
   "Principal", "identificativo (subject certificato o principal) corrispondente alle credenziali con cui Govpay riceve le chiamate in entrata da pagoPA", ""
   "Abilitato/Non Abilitato", "Stato del nuovo intermediario: indica se l'intermediario è usabile da GovPay per gestire nuovi pagamenti o se impedire nuove richieste.", ""
   "Servizio RPT", "Riferimenti utilizzati da Govpay per comunicare con il Nodo SPC: Endpoint per le chiamate in uscita verso il Nodo SPC", ""
-  "Tipo Autenticazione", "Lista a discesa per selezionare il tipo di autenticazione adottata per le comunicazioni con il Nodo SPC. Si sceglie tra: Nessuna e HTTP-Basic. Nel caso si scelga una modalità di autenticazione, dovranno essere inserite i relativi dati di configurazione (userid/password)", ""  
+  "Tipo Autenticazione", "Lista a discesa per selezionare il tipo di autenticazione adottata per le comunicazioni con il Nodo SPC. Si può scegliere, al momento, tra *Nessuna e HTTP-Basic*. Nel caso si scelga quest'ultima modalità di autenticazione, dovranno essere inserite i relativi dati di configurazione (userid/password)", ""  
 
-Selezionando un intermediario dalla pagina che li elenca si accede alla
-pagina di dettaglio.
+Selezionando un intermediario dalla pagina che li elenca si accede alla pagina di dettaglio.
 
 Dettaglio Intermediario
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -111,14 +110,14 @@ Per definire una stazione connessa all'intermediario occorre immettere le seguen
   
   "IdStazione", "Identificativo della stazione, fornito da AgID", "Obbligatorio"
   "Password", "Chiave segreta, fornita da AgID", "Obbligatorio"
-  "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
+  "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato)
+  o se si vogliono impedire nuove richieste (disabilitato)", ""
 
-.. note:: Si noti come le stazioni sono connesse univocamente a ciascun intermediario, non è quindi possibile avere una stessa stazione connessa a due intermediari
+.. note:: Si noti come le stazioni siano connesse univocamente a ciascun intermediario, non è quindi possibile avere una stessa stazione connessa a due intermediari
 
 È possibile visualizzare il dettaglio di una stazione selezionandola dall’elenco, avendo il dettaglio dei campi appena visti.
 
-In corrispondenza di ciascuna stazione presente in elenco sono presenti
-i pulsanti per la modifica delle informazioni:
+In corrispondenza di ciascuna stazione in elenco si evidenzia il pulsante per la modifica delle informazioni:
 
 .. figure:: ../_images/15ModificaStazione1.png
    :align: center
@@ -153,8 +152,7 @@ e codice identificativo.
 Nuovo Dominio
 ~~~~~~~~~~~~~
 
-Utilizzando il pulsante di creazione, presente nella pagina di elenco, è
-possibile procedere con la creazione di un nuovo dominio. 
+Utilizzando il pulsante di creazione, presente nella pagina di elenco, è possibile procedere con la creazione di un nuovo dominio. 
 
 .. figure:: ../_images/17FilttroSuDomini.png
    :align: center
