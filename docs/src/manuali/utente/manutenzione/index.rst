@@ -3,7 +3,7 @@
 Manutenzione
 ============
 
-Accedendo alla sezione "Manutenzione" si ha la possibilità di effettuare
+Accedendo alla sezione *Manutenzione* si ha la possibilità di effettuare
 in modalità immediata alcune operazioni solitamente effettuate in
 modalità temporizzata dagli schedulatori interni di GovPay.
 
