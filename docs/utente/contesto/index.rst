@@ -1,6 +1,6 @@
 .. _utente_contesto:
 
-Il contesto
+Contesto
 ===========
 
 Il contesto in cui si colloca GovPay è quello della riscossione dei

@@ -14,4 +14,5 @@ Guida Utente
         giornale/index
         configurazioni/index
         avanzate/index
+        riconciliazioni/index
         manutenzione/index

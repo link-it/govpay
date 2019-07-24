@@ -3,41 +3,27 @@
 Configurazioni del Sistema
 ==========================
 
-La sezione di configurazione, visibile solo agli amministratori del
-sistema, consente il censimento e manutenzione delle entità logiche
-coinvolte nel processo di pagamento. 
+La sezione di configurazione, visibile solo agli amministratori del sistema, consente il censimento e la manutenzione delle entità logiche (operatori, ruoli, domini, abilitazioni e quant'altro) coinvolte nel processo di pagamento. 
 
-.. figure:: ../_images/08Configurazioni.png
-   :align: center
-
-   Lista delle funzionalità di configurazione
+La lista degli oggetti che è possibile configurare comprende i seguenti elementi:
 
 
 -  *Intermediari*: rappresentano le entità “Intermediario” o “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
    fase di adesione dagli Enti Creditore per l'accesso al sistema pagoPA.
 -  *Domini*: corrispondono agli enti creditori aderenti al sistema pagoPA.
--  *Tipi Pendenza*: rappresentano le esigenze dell'ente creditore dalle quali
-   scaturiscono le tipologie di pagamenti che possono essere gestiti dal
-   sistema (tassa rifiuti, licenza di caccia, bollo auto, ...).
--  *Applicazioni*: rappresentano i portali di pagamento e i gestionali
-   delle posizioni debitorie degli enti Creditori integrati con GovPay
-   tramite gli appositi servizi.
+-  *Tipi Pendenza*: rappresentano le esigenze dell'ente creditore dalle quali scaturiscono le tipologie di pagamenti che possono essere gestiti dal sistema (ad esempiotassa rifiuti, licenza di caccia, bollo auto e via dicendo).
+-  *Applicazioni*: rappresentano i portali di pagamento e i gestionali delle posizioni debitorie degli enti Creditori integrati con GovPay tramite gli appositi servizi.
 -  *Operatori*: sono le utenze del cruscotto di gestione GovPay.
--  *Ruoli*: definizione dei ruoli, in termini di autorizzazioni
-   consentite sulle entità dati, che saranno assegnati agli utenti del
+-  *Ruoli*: rappresentano l'insieme delle autorizzazioni consentite sulle entità dati, da assegnarsi agli utenti del
    cruscotto.
 
 .. note:: Nell'analisi delle funzionalità di configurazione, le immagini esemplificative mostrate mancheranno della
-   sezione di sinistra (*Lista funzionalità*) al fine di permettere la concentrazione sulla sola parte importante, una volta
-   che si sia selezionata la funzionalità, ovvero il suo dettaglio, posto a destra.
+   sezione di sinistra (*Lista funzionalità*) al fine di agevolare la focalizzazione sulla parte important della funzionalità, ovvero il suo dettaglio posto a destra.
 
 Intermediari
 ------------
 
-Gli intermediari o partner tecnologici sono entità censite da AgID sul
-circuito pagoPA al momento dell'adesione di un Ente Creditore. Per il
-corretto funzionamento di GovPay, gli intermediari di interesse devono
-essere censiti con le informazioni di corredo necessarie.
+Gli intermediari o partner tecnologici sono entità censite da AgID sul circuito pagoPA al momento dell'adesione di un Ente Creditore. Per il corretto funzionamento di GovPay, gli intermediari di interesse devono essere censiti con le informazioni di corredo necessarie.
 
 .. figure:: ../_images/09Intermediari.png
    :align: center
@@ -45,7 +31,7 @@ essere censiti con le informazioni di corredo necessarie.
    Vista di dettaglio intermediari
 
 Accedendo alla sezione corrispondente (*Configurazioni > Intermediari*), viene visualizzato l'elenco degli intermediari censiti
-sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, con una funzionalità di filtro disponibile sulla sinistra del box di dettaglio, come di seguito mostrato:
+sul sistema. È possibile filtrare gli intermediari in relazione al loro stato, impostandolo nella casella di selezione posta a sinistra, come di seguito mostrato:
 
 .. figure:: ../_images/10FiltroSuIntermediari.png
    :align: center
@@ -76,10 +62,9 @@ Le informazioni contenute nel form sono le seguenti:
   "Principal", "identificativo (subject certificato o principal) corrispondente alle credenziali con cui Govpay riceve le chiamate in entrata da pagoPA", ""
   "Abilitato/Non Abilitato", "Stato del nuovo intermediario: indica se l'intermediario è usabile da GovPay per gestire nuovi pagamenti o se impedire nuove richieste.", ""
   "Servizio RPT", "Riferimenti utilizzati da Govpay per comunicare con il Nodo SPC: Endpoint per le chiamate in uscita verso il Nodo SPC", ""
-  "Tipo Autenticazione", "Lista a discesa per selezionare il tipo di autenticazione adottata per le comunicazioni con il Nodo SPC. Si sceglie tra: Nessuna e HTTP-Basic. Nel caso si scelga una modalità di autenticazione, dovranno essere inserite i relativi dati di configurazione", ""  
+  "Tipo Autenticazione", "Lista a discesa per selezionare il tipo di autenticazione adottata per le comunicazioni con il Nodo SPC. Si può scegliere, al momento, tra *Nessuna e HTTP-Basic*. Nel caso si scelga quest'ultima modalità di autenticazione, dovranno essere inserite i relativi dati di configurazione (userid/password)", ""  
 
-Selezionando un intermediario dalla pagina che li elenca si accede alla
-pagina di dettaglio.
+Selezionando un intermediario dalla pagina che li elenca si accede alla pagina di dettaglio.
 
 Dettaglio Intermediario
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,14 +110,14 @@ Per definire una stazione connessa all'intermediario occorre immettere le seguen
   
   "IdStazione", "Identificativo della stazione, fornito da AgID", "Obbligatorio"
   "Password", "Chiave segreta, fornita da AgID", "Obbligatorio"
-  "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
+  "Abilitato", "indica se la stazione è usabile da GovPay per gestire nuovi pagamenti (abilitato)
+  o se si vogliono impedire nuove richieste (disabilitato)", ""
 
-.. note:: Si noti come le stazioni sono connesse univocamente a ciascun intermediario, non è quindi possibile avere una stessa stazione connessa a due intermediari
+.. note:: Si noti come le stazioni siano connesse univocamente a ciascun intermediario, non è quindi possibile avere una stessa stazione connessa a due intermediari
 
 È possibile visualizzare il dettaglio di una stazione selezionandola dall’elenco, avendo il dettaglio dei campi appena visti.
 
-In corrispondenza di ciascuna stazione presente in elenco sono presenti
-i pulsanti per la modifica delle informazioni:
+In corrispondenza di ciascuna stazione in elenco si evidenzia il pulsante per la modifica delle informazioni:
 
 .. figure:: ../_images/15ModificaStazione1.png
    :align: center
@@ -161,21 +146,12 @@ Accedendo alla sezione *Configurazioni > Domini*, viene visualizzato l'elenco de
    Parametri di filtro per la ricerca dominio
 
 
-Ciascun dominio presente in elenco è identificato tramite denominazione
-e codice identificativo.
+Ciascun dominio presente in elenco è identificato tramite denominazione e codice identificativo.
 
 Nuovo Dominio
 ~~~~~~~~~~~~~
 
-Utilizzando il pulsante di creazione, presente nella pagina di elenco, è
-possibile procedere con la creazione di un nuovo dominio. 
-
-.. figure:: ../_images/17FilttroSuDomini.png
-   :align: center
-   
-   Parametri di filtro per la ricerca dominio
-
-È necessario compilare il seguente form di creazione:
+Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di elenco, è possibile procedere con la creazione di un nuovo dominio, compilando il seguente form di creazione:
 
 .. figure:: ../_images/18ParametriDominio.png
    :align: center
@@ -207,23 +183,21 @@ I seguenti sono i placeholder di sistema, sovrascrivibili dall'applicazione chia
 
 * a: codice IUV assegnato all'applicazione che gestisce il debito
 * t: codice IUV assegnato al tributo
-* y: anno di emissione dello iuv, due cifre
-* Y: anno di emissione dello iuv, quattro cifre
+* y: anno di emissione dello IUV, due cifre
+* Y: anno di emissione dello IUV, quattro cifre
 
 Dettaglio Dominio
 ~~~~~~~~~~~~~~~~~
 
-Selezionando uno dei domini presenti nella pagina di elenco si accede
-alla pagina di dettaglio. La pagina di dettaglio di un dominio è
-ripartita nelle seguenti distinte aree:
+Selezionando uno dei domini presenti nella pagina di elenco si accede alla pagina di dettaglio, che si compone a partire dalle seguenti aree:
 
 .. csv-table:: Aree del dettaglio dominio
   :header: "Area", "Descrizione"
   :widths: 40,40
   
-  "*Riepilogo Informazioni*", "Dati che caratterizzano il dominio, appena visti nella sezione di creazione del dominio"
+  "*Riepilogo Informazioni*", "Dati che caratterizzano il dominio, appena visti nella sezione `Nuovo Dominio`_"
   "*Unità Operative*", "Uffici di gestione dei pagamenti in cui è suddiviso il dominio dell’ente creditore."
-  "*Iban*", "Codici IBAN dei conti correnti su cui l’ente creditore riceve gli accrediti in banca tesoriera. Tali Iban sono quelli già comunicati ad AgID in fase di accreditamento."
+  "*Iban*", "Codici IBAN dei conti correnti su cui l’ente creditore riceve gli accrediti in banca tesoriera. Tali IBAN sono quelli già comunicati ad AgID in fase di accreditamento."
   "*Entrate*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
   "*Pendenze*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
 
@@ -248,7 +222,7 @@ Unità Operative
 ^^^^^^^^^^^^^^^
 
 La specifica pagoPA consente di indicare l'anagrafica dell'Unità operativa titolare del credito, qualora sia diversa da quella dell'Ente
-Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay da utilizzare poi in fase di pagamento.
+Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay al fine di utilizzarle in fase di pagamento.
 
 .. figure:: ../_images/21NuovaUnitaOperativa.png
    :align: center
@@ -265,13 +239,12 @@ Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay
   "Sezione Anagrafica", "Riferimenti anagrafici dell'unità forniti dal Referente dei Pagamenti", ""
   "Abilitato", "Indica se l'unità operativa è abilitata o meno nel contesto del dominio su cui si opera", ""
 
-Tornando all'elenco delle unità operative, è possibile scegliere le operazioni di modifica degli elementi precedentemente associati al dominio.
+Ovviamente dall'elenco delle unità operative associate a un dominio, è possibile modificarne le informazioni associate.
 
 Iban
 ^^^^
 
-Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPay.
-Esiste quindi una maschera di definizione degli IBAN associati al dominio.
+Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPay. Esiste quindi una maschera di definizione degli IBAN associati al dominio.
 
 .. figure:: ../_images/22NuovoIBAN.png
    :align: center
@@ -286,7 +259,7 @@ seguenti:
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "IBAN Accredito", "Codice iban del conto di accredito", "Obbligatorio, fornito dal referente dei Pagamenti"
+  "IBAN Accredito", "Codice IBAN del conto di accredito", "Obbligatorio, fornito dal referente dei Pagamenti"
   "BIC Accredito", "BIC del conto di accredito", "Obbligatorio"
   "Postale", "Indica se l'iban di accredito è riferito ad un conto corrente postale", ""
   "My Bank", "Indica se l'iban di accredito è è abilitato alle transazioni MyBank", ""
@@ -300,7 +273,7 @@ Entrate
 
 Ogni importo che costituisce un versamento deve essere associato ad una entrata censita sul sistema. L'entrata associata al versamento ne determina l'iban di accredito dell'importo e le coordinate di rendicontazione.
 
-.. note:: **Si noti come la gestione delle Entrate è stata sostituita da quella delle Pendenze, assai più flessibile e che consente anche la generazione di interfacce automatiche per la riscossione, semplificando quindi grandemente l'implementazione effettiva di queste modalità di pagamento verso l'Utente finale. Si decide di lasciare questa tipologia di oggetti per meri scopi di ereditarietà. Le nuove configurazioni dovrebbero pertanto utilizzare la Gestione delle Pendenze.**
+.. note:: **Si noti come la gestione delle Entrate sia stata sostituita da quella delle Pendenze, assai più flessibile e con in più la possibilità di generazione automatica delle interfacce per la riscossione: ciò semplifica grandemente l'implementazione effettiva di queste modalità di pagamento verso l'Utente finale, fornendogli al contempo un'interfaccia omogenea e consistente. Si decide di lasciare questa tipologia di oggetti per meri scopi di ereditarietà. Le nuove configurazioni dovrebbero pertanto utilizzare la Gestione delle Pendenze.**
 
 
 .. figure:: ../_images/23NuovaEntrata.png
@@ -309,8 +282,7 @@ Ogni importo che costituisce un versamento deve essere associato ad una entrata 
    
    Maschera di creazione nuova entrata associata al dominio
 
-Il form di creazione di un'entrata va compilato con i seguenti
-dati:
+Il form di creazione di un'entrata va compilato con le seguenti informazioni:
 
 .. csv-table:: Dettagli di una nuova entrata
   :header: "Campo", "Significato", "Note"
@@ -343,7 +315,7 @@ Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata,
 Pendenze
 ^^^^^^^^
 
-Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per il dominio in essere. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta si gestisce a livello delle funzionalità della voce *Tipi Pendenze* del menu di configurazione sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
+Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per il dominio in essere. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta di un nuovo tipo di pendenza viene gestita nella funzionalità associata alla voce `Tipi Pendenze`_ del menu sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
 Ad esempio, in un dominio abbiamo le seguenti tipologie di pendenza già selezionate:
 
 .. figure:: ../_images/25PendenzeSceltePerIlDominio.png
@@ -360,9 +332,9 @@ A questo punto, sul dominio selezionato, si potrà aggiungere una sola pendenza 
    
    Pendenza selezionabile per aggiunta al dominio
 
-Risulta possibile, una volta aggiunta una nuova pendenza, personalizzarla per il dominio, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
-Si tenga presente che si affronterà il dettaglio dei campi delle pendenze nella sezione apposita, cui si fa riferimento. Al momento si noti come una pendenza possa essere completamente personalizzata per un dominio a partire da una *standard* definita nella sezione *Tipi Pendenze* 
-I meccanismi di selezione sono del tutto analoghi a quanto già visto in altre sezioni: selezioniamo la Pendenza *Sanzione Amministrativa*
+Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, di personalizzarla per il dominio, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
+Si tenga presente che si affronterà il dettaglio dei campi delle pendenze nella sezione apposita, cui si fa riferimento. Al momento si noti come una pendenza possa essere completamente personalizzata per un dominio a partire da una *standard* definita nella sezione *`Tipi Pendenze`_*.
+I meccanismi di selezione sono del tutto analoghi a quanto già visto in altri contesti del sistema: selezioniamo la Pendenza *Sanzione Amministrativa*
 
 .. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
@@ -384,7 +356,7 @@ Da qui possiamo personalizzare **senza modificare le informazioni standard del t
 Tipi Pendenze
 -------------
 
-Ogni importo che costituisce un versamento deve essere associato ad una pendenza censita sul sistema. La configurazione di questo oggetto ne determina quindi le coordinate di pagamento e quelle di rendicontazione. Si noti come le pendenze siano associate a un dominio, determinando quindi il tipo di pagamenti che ad esso fanno riferimento.
+Ogni importo che costituisce un versamento deve essere associato ad una pendenza censita sul sistema. La configurazione di questo oggetto determina quindi le coordinate di pagamento e quelle di rendicontazione. Si noti come le pendenze siano associate a un dominio, determinando quindi il tipo di pagamenti che ad esso fanno riferimento.
 La gestione dei tipi di pendenza permette la generazione di maschere automatiche per l'immissione dei dati, semplificando in modo notevole lo sviluppo di interfacce e ottimizzando i tempi generali di progetto.
 Le modalità per la creazione di una nuova pendenza sono sempre le medesime (tasto più in basso a destra) e la maschera presentata è la seguente:
 
@@ -394,7 +366,7 @@ Le modalità per la creazione di una nuova pendenza sono sempre le medesime (tas
    
    Maschera di creazione di una Nuova Pendenza
    
-Vediamo come modificare una pendenza esistente; ciò ci permetterà di illustrare il dettaglio dei campi presenti. Sslezioniamo quindi la Pendenza *Sanzione Amministrativa*.
+Vediamo come modificare una pendenza esistente; ciò ci permetterà di illustrare il dettaglio dei campi presenti. Selezioniamo, ad esempio, la Pendenza *Sanzione Amministrativa*.
 
 .. figure:: ../_images/27SelezioneDellaPendenzaPerModifica.png
    :align: center
@@ -456,7 +428,7 @@ Layout form dati
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Tipo layout", "Indica il motore di interpretazione della descrizione formale della maschera di immissione del pagamento da parte del debitore", " Al momento solo Angular Json schema form"
+  "Tipo layout", "Indica il motore di interpretazione della descrizione formale della maschera di immissione del pagamento da parte del debitore", " Al momento solo *Angular Json schema form*"
   "Definizione", "Mostra il menu di caricamento e visualizzazione della descrizione formale dell'interfaccia di pagamento", ""
 
 .. figure:: ../_images/32MenuDefinizioneForm.png
@@ -486,7 +458,7 @@ Vediamo un esempio di un file di definizione dell'interfaccia:
 Elaborazione
 ~~~~~~~~~~~~
 
-Vediamo adesso la sezione *Elaborazione*, che consente a GovPay di descrivere in modo formale come elaborare quanto immesso nella sezione *Layout Form Dati* al fine di trasformare e inoltrare le informazioni del pagamento alle applicazioni che lo processano ulteriormente.
+La sezione *Elaborazione* consente a GovPay di descrivere in modo formale come elaborare quanto immesso nella sezione `Layout Form Dati`_ al fine di trasformare e inoltrare le informazioni del pagamento alle applicazioni (anche esterne) che ne abbisognino. Si pensi a uno scenario in cui, ad esempio, sia necessario informare un sistema di recupero crediti del fatto che una pendenza abbia superato la data di scadenza.
 
 .. figure:: ../_images/33SezioneElaborazioneDellaModificaPendenze.png
    :align: center
@@ -506,7 +478,7 @@ Vediamo adesso la sezione *Elaborazione*, che consente a GovPay di descrivere in
   "Trasformazione: Template", "Template di defizione della trasformazione dati", "* Carica
   * Visualizza
   * Ripristina"
-  "Applicazione", "Consente di selezionare l'applicazione cui verranno inoltrati i dati", "L'applicazione deve essere censita nella sezione *Applicazioni*"
+  "Inoltro", "Consente di selezionare l'applicazione cui verranno inoltrati i dati", "L'applicazione deve essere censita nella sezione *Applicazioni*"
   
 
 Promemoria Avviso Pagamento
@@ -563,7 +535,7 @@ La sezione *Promemoria Ricevuta Telematica* è del tutto analoga a quella relati
 
 Esempio di scenario di utilizzo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Come esempio di scenario di utilizzo possiamo cercare di mappare, sui componenti presentati, un semplice processo modellato a partire da una situazione generale: si supponga di gestire, infatti, il pagamento spontaneo di dieci buoni pasto elettronici con relativo inoltro della codifica, previo pagamento andato a buon fine, al richiedente.
+Come esempio di scenario di utilizzo possiamo cercare di mappare, sui componenti presentati, un semplice processo reale: si supponga di gestire, infatti, il pagamento spontaneo di dieci buoni pasto elettronici con relativo inoltro della codifica elettronica univoca, previo pagamento andato a buon fine, al richiedente.
 
 .. csv-table:: Gestione buoni pasto elettronici
   :header: "#", "Oggetto della pendenza", "Passo di processo"
@@ -574,7 +546,7 @@ Come esempio di scenario di utilizzo possiamo cercare di mappare, sui componenti
   "3", "Elaborazione.Trasformazione", "Creazione della pendenza correlata al numero di buoni mensa effettivamente richiesti (es. determinazione del costo finale, con le varie franchigie, aggravi amministrativi e via dicendo)"
   "4", "Elaborazione.Applicazione", "Interfacciamento con l'applicazione verticale che crea i codici relativi ai buoni mensa richiesti"
 
-E' di tutta evidenza come **questo non sia che uno dei molteplici processi che sono formalmente definibili, quindi implementati direttamente, con i meccanismi appena visti, da GovPay**.
+E' di tutta evidenza come **questo non sia che uno dei molteplici processi che sono formalmente definibili, quindi implementabili direttamente, con i meccanismi appena visti, da GovPay**.
 
 
 Applicazioni
@@ -594,9 +566,9 @@ della pagina è presente un form che consente di filtrare i dati visualizzati ne
 Nuova Applicazione
 ~~~~~~~~~~~~~~~~~~
 
-Utilizzando l'apposito pulsante presente nella pagina di elenco, posizionato come sempre in basso a destra è possibile censire nuove applicazioni. Analizzeremo questa funzionalità che è del tutto analoga, dal punto di vista delle informazioni richieste, a quella della modifica di un'applicazione già censita nel sistema.
+Per aggiungere una nuova applicazione, premere il pulsante posizionato, come sempre, in basso a destra. Analizzeremo questa funzionalità che è del tutto analoga, dal punto di vista delle informazioni richieste, a quella della modifica di un'applicazione già censita nel sistema.
 
-.. figure:: ../_images/37NuovaApplicazioneVistaInsieme.png
+.. figure:: ../_images/37NuovaApplicazioneVistaDiInsieme.png
    :align: center
    :name: NuovaApplicazione
    
@@ -614,14 +586,12 @@ Informazioni di riepilogo
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
 
-.. figure:: ../_images/38ApplicazioneRiepilogoInformazioni.png
+.. figure:: ../_images/38ApplicazioneRiepilogoDelleInformazioni.png
    :align: center
    :name: ApplicazioneInformazioniDiRiepilogo
    
    Informazioni di riepilogo di un'applicazione
 
-
-Nell'esempio si è selezionata l'autoderminazione delle pendenza e l'abilitazione dell'applicazione su tutti i domini del sistema.
 
 .. csv-table:: Dettagli della sezione *Informazioni di riepilogo* di una nuova Applicazione
   :header: "Campo", "Significato", "Note"
@@ -630,8 +600,6 @@ Nell'esempio si è selezionata l'autoderminazione delle pendenza e l'abilitazion
   "Id A2A", "identificativo dell'applicazione", "Obbligatorio"
   "Principal", "Identificativo del principal autenticato nelle chiamate alle Web API di integrazione", ""
   "Abilitato", "se disabilitato, tutte le nuove richieste all'applicazione saranno negate", ""
-  "Domini", "Elenco dei domini su cui l'applicazione può agire", "Obbligatoria almeno una selezione; esiste l'opzione *Tutti*"
-  "Pendenze", "Elenco delle pendenze che l'applicazione può gestire", "Obbligatoria almeno una selezione; esiste l'opzione *Autodeterminazione tipo pendenze* che lascia all'applicazione la gestione dei tipi di pendenza gestibili"
 
 
 Codifica avvisi
@@ -674,49 +642,22 @@ In questa sottosezione sono contenute le informazioni che definiscono un'applica
   "Tipo Autenticazione", "selezione a scelta tra: Nessuna, Http-Basic e SSL", "In base al valore selezionato sarà necessario inserire i conseguenti dati di configurazione della specifica modalità di autenticazione"
    
 
-Autorizzazione API
-^^^^^^^^^^^^^^^^^^
+Autorizzazioni
+^^^^^^^^^^^^^^
 
-GovPay espone tre API (Pagamenti, Pendenze e Ragioneria): in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con ciascuna di essa.
+In questa sezione il sistema permette di autorizzare:
 
-.. figure:: ../_images/41ApplicazioneAutorizzazioniAPI.png
+*  Specifici (o tutti) `Domini`_ all'utilizzo dell'applicazione
+*  Specifici (o tutti) `Tipi Pendenze`_ ad essere elaborate attraverso l'applicazione
+*  Specifici `Ruoli`_ all'utilizzo dell'applicazione
+
+Inoltre in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con le tre API (Pagamenti, Pendenze e Ragioneria) messe a disposizione da GovPay.
+
+.. figure:: ../_images/41ApplicazioneAutorizzazioni.png
    :align: center
-   :name: ApplicazioneAutorizzazioniAPI
+   :name: ApplicazioneAutorizzazioni
    
-   Sezione autorizzazione API di un'applicazione
-
-
-Autorizzazioni Backoffice
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Risulta possibile e, spesso, assai utile, determinare in modo più fine le autorizzazioni, da parte dell'applicazione, all'utilizzo delle API esposte da GovPay. Questa sezione incorpora questo comportamento:
-
-.. figure:: ../_images/42ApplicazioneAutorizzazioniBackoffice.png
-   :align: center
-   :name: ApplicazioneAutorizzazioniAPIBackOffice
-   
-   Sezione autorizzazione Backoffice di un'applicazione
-
-I sottosistemi integrabili sono i seguenti:
-
-* Anagrafica Applicazioni
-* Anagrafica Enti
-* Anagrafica Operatori
-* Anagrafica PagoPA
-* Backoffice Pagamenti
-* Backoffice Pendenze
-* Backoffice Ragioneria
-* Gestione Batch
-* Giornale degli eventi
-
-
-A ciascun sottosistema si danno le seguenti caratteristiche di integrazione:
-
-.. figure:: ../_images/42ApplicazioneAutorizzazioniBackoffice.png
-   :align: center
-   :name: ApplicazioneAutorizzazioniAPISceltaValori
-   
-   Sezione autorizzazione:scelta valori
+   Sezione Autorizzazioni di un'applicazione
 
 
 Dettaglio Applicazione
@@ -746,7 +687,7 @@ Nuovo Operatore
 Tramite il pulsante presente nella pagina di elenco è possibile aprire il form di creazione di un operatore:
 
 
-.. figure:: ../_images/44NuovoOperatore.png
+.. figure:: ../_images/44Nuovo1Operatore.png
    :align: center
    :name: NuovoOperatore
    
@@ -760,25 +701,25 @@ Tramite il pulsante presente nella pagina di elenco è possibile aprire il form 
   "Principal", "Identificativo dell'operatore dato da PagoPa", "Obbligatorio"
   "Nome", "Nome e cognome dell'operatore", "Obbligatorio"
   "Abilitato", "Indica se l'operatore ha o meno l'accesso al Cruscotto di gestione", ""
-  "Domini", "Indica i domini su cui può svolgere compiti l'Operatore", "E' presente l'opzione *tutti* che permette a una sola utenza di operare trasversalmente a più domini"
-  "Pendenze", "Area che elenca le pendenze sulle quali l'operatore ha giurisdizione", "Presente l'opzione *Tutte*"
-  "Area autorizzativa", "Sistemi (e relativi permessi) o ruoli cui l'utente è abilitato", ""
+  "Domini", "Indica i domini su cui può svolgere compiti l'Operatore", "E' presente l'opzione *Tutti* che permette a una sola utenza di operare trasversalmente a più domini"
+  "Tipi pendenza", "Selezione dei domini su cui l'operatore può operare", "Presente l'opzione *Tutti*"
+  "Ruoli", "Ruoli cui l'utente è abilitato: ogni ruolo ha un perimetro autorizzativo che l'operatore eredita", ""
 
 
 Dettaglio Operatore
 ~~~~~~~~~~~~~~~~~~~
 
-Dalla pagina elenco degli operatori, selezionando uno degli elementi, si giunge alla relativa pagina di sintesi. 
+Dalla pagina elenco degli operatori, selezionando uno degli elementi, si giunge alla relativa pagina con le informazioni di sintesi. 
 
 
-.. figure:: ../_images/45OperatoreVistaDiSintesi.png
+.. figure:: ../_images/45OperatoreVistaSintesi.png
    :align: center
    :name: OperatoreVistaDiSintesi
    
    Vista di sintesi di un Operatore
    
 
-Da quest'ultima è possibile, con l'uso delle solite metafore (matita su cerchio verde), accedere alle modifiche puntuali della definizione di un operatore. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione, con una sola informazione non modificabile, ovvero *principal*.
+Da quest'ultima è possibile, con l'uso delle solite metafore (matita su cerchio verde in basso a destra), accedere alle modifiche puntuali della definizione di un operatore. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione, con una sola informazione non modificabile, ovvero *principal*.
 
 
 Ruoli
@@ -803,7 +744,7 @@ Nuovo Ruolo
 Utilizzando l'apposito pulsante presente nella pagina di elenco, è possibile creare un nuovo ruolo:
 
 
-.. figure:: ../_images/47NuovoRuolo.png
+.. figure:: ../_images/47NewRuolo.png
    :align: center
    :name: NuovoRuolo
    
@@ -815,10 +756,8 @@ Utilizzando l'apposito pulsante presente nella pagina di elenco, è possibile cr
   :widths: 40,40,20
   
   "Identificativo", "Identificativo assegnato al ruolo", "Obbligatorio"
-  "Risorse", "Risorsa protetta cui concedere accesso al ruolo in esame", "Obbligatorio"
-  "Operazioni", "Specifica quali operazioni sono consentite sulla risorsa selezionata", "selezione multipla 
-  * Lettura
-  * Scrittura"
+  "Lista risorse", "Lista delle risorse su cui il ruolo ha accesso in *Lettura* o *Scrittura*", ""
+  
   
 Dettaglio Ruolo
 ~~~~~~~~~~~~~~~

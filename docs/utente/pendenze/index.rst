@@ -5,8 +5,8 @@ Pendenze
 
 Questa sezione è dedicata alla consultazione delle pendenze di pagamento presenti nel repository dei pagamenti in attesa. Le pendenze sono abilitate al modello di pagamento 3 tramite Avviso di pagamento AgID.
 
-Gli stati del Pagamento
------------------------
+Gli stati della Pendenza
+------------------------
 Si noti come, all'interno del sistema, il diagramma di stato delle pendenze sia il seguente:
 
 .. figure:: ../_images/PZ01StatiPendenza.png
@@ -25,7 +25,7 @@ Si noti come si arrivi a e si parta da lo stato *annullata* solo a seguito di az
   "Da pagare", "Stato iniziale della pendenza", ""
   "Pagata", "Stato che indica il regolare pagamento della pendenza", ""
   "Riconciliata", "Stato che indica il completamento del processo di riconciliazione della pendenza con la somma incassata", ""
-  "Annullato", "Stato assegnato alla pendenza dopo che ne è stato richiesto l'annullamento", ""
+  "Annullata", "Stato assegnato alla pendenza dopo che ne è stato richiesto l'annullamento", ""
 
 
 Area iniziale

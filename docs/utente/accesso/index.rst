@@ -3,8 +3,7 @@
 Accesso al cruscotto e profilo
 ==============================
 
-Una volta completata con successo la procedura di installazione
-sarà possibile procedere con la configurazione accedendo al **Cruscotto di Gestione** al seguente indirizzo:
+Una volta completata con successo la procedura di installazione sarà possibile procedere con la configurazione accedendo al **Cruscotto di Gestione** al seguente indirizzo:
 
 http://<hostname>:<port>/backend/gui/backoffice
 
@@ -32,6 +31,13 @@ utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità ch
    
 .. [#] Ovviamente le credenziali evidenziate in figura sono a puro scopo esemplificativo
    
+I metodi di autenticazione al sistema sono:
+
+*  Username / password
+*  `SPID <https://www.spid.gov.it//>`_
+
+Si noti che il sistema abilita l'accesso tramite SPID se l'Ente ha effettuato tutti i necessari passi per accreditarsi all'uso di SPID stesso (certificazioni, test e via dicendo).
+
 Dopo aver effettuato l’accesso con le credenziali in proprio possesso, si accede a tutte le funzionalità descritte nelle corrispondenti sezioni di questo documento. La schermata dovrebbe presentarsi in questo modo [#]_
    
 .. [#] Si tenga sempre presente che la propria schermata dipende dai ruoli cui si è associati
@@ -56,7 +62,7 @@ La colonna posta sinistra nell'interfaccia rappresenta il menu di navigazione, c
 
    Cruscotto iniziale [#]_
    
-.. [#] Si noti come le funzionalità evidenziali corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
+.. [#] Si noti come le funzionalità evidenziate corrispondono a un ruolo particolare: l'utente che si autentica, a seconda dei ruoli cui è associato, potrà vedere tutte o parte delle funzionalità in figura
 
 L'area iniziale (primo box in alto a sinistra) mette a disposizione informazioni sul profilo e permette di effettuare il logut dalla piattaforma.
 
@@ -78,22 +84,18 @@ Cliccando su profilo utente abbiamo, sul riquadro di destra, il dettaglio dell'u
    
    Dettaglio del profilo (esempio)
 
-A seguire sono elencate le sezioni del menu di navigazione, che variare in base alle autorizzazioni possedute dall'utente che ha effettuato l'accesso. Le sezioni del menu sono:
+A seguire sono elencate le sezioni del menu di navigazione, che possono variare in base alle autorizzazioni possedute dall'utente che ha effettuato l'accesso. Le sezioni del menu sono:
 
-1. *Pendenze*: sezione di consultazione delle pendenze di pagamento in
-   carico ai debitori.
-2. *Pagamenti*: sezione di consultazione delle operazioni di pagamento
-   effettuate dai debitori.
-3. *Giornale degli eventi*: sezione di consultazione del Giornale Eventi
-   previsto dalla specifica pagoPA.
-4. *Configurazioni:* raccoglie gli strumenti per la consultazione,
-   censimento e modifica delle entità alla base della configurazione del
+1. *Cruscotto*: sezione iniziale che evidenzia in modo immediato la situazione generale di pagamenti e pendenze.
+2. *Pagamenti*: sezione di consultazione delle operazioni di pagamento effettuate dai debitori.
+3. *Pendenze*: sezione di consultazione delle pendenze di pagamento in carico ai debitori.
+4. *Giornale degli eventi*: sezione di consultazione del Giornale Eventi previsto dalla specifica pagoPA.
+5. *Configurazioni:* raccoglie gli strumenti per la consultazione, censimento e modifica delle entità alla base della configurazione del
    prodotto (Psp, Domini, Tributi, Applicazioni, ecc.).
-5. *Funzioni Avanzate*: sezione dedicata alla consultazione di entità
-   avanzate (rendicontazioni, riscossioni, ecc.).
-6. *Manutenzione*: Accesso a funzionalità di manutenzione straordinaria.
+6. *Funzioni Avanzate*: sezione dedicata alla consultazione di entità avanzate (rendicontazioni, riscossioni, ecc.).
+7. *Manutenzione*: Accesso a funzionalità di manutenzione straordinaria.
 
-Per l'utente che si è autenticato nel nostro caso esemplificativo (gpadmin) avremo la seguente lista funzionalità:
+Ade esempio, per l'utente che si è autenticato nel nostro caso esemplificativo (gpadmin) avremo la seguente lista funzionalità:
 
 .. figure:: ../_images/06ListaFunzionalita.png
    :align: center
