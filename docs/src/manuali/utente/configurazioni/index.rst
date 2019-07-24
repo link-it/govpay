@@ -701,15 +701,15 @@ Tramite il pulsante presente nella pagina di elenco è possibile aprire il form 
   "Principal", "Identificativo dell'operatore dato da PagoPa", "Obbligatorio"
   "Nome", "Nome e cognome dell'operatore", "Obbligatorio"
   "Abilitato", "Indica se l'operatore ha o meno l'accesso al Cruscotto di gestione", ""
-  "Domini", "Indica i domini su cui può svolgere compiti l'Operatore", "E' presente l'opzione *tutti* che permette a una sola utenza di operare trasversalmente a più domini"
-  "Pendenze", "Area che elenca le pendenze sulle quali l'operatore ha giurisdizione", "Presente l'opzione *Tutte*"
-  "Area autorizzativa", "Sistemi (e relativi permessi) o ruoli cui l'utente è abilitato", ""
+  "Domini", "Indica i domini su cui può svolgere compiti l'Operatore", "E' presente l'opzione *Tutti* che permette a una sola utenza di operare trasversalmente a più domini"
+  "Tipi pendenza", "Selezione dei domini su cui l'operatore può operare", "Presente l'opzione *Tutti*"
+  "Ruoli", "Ruoli cui l'utente è abilitato: ogni ruolo ha un perimetro autorizzativo che l'operatore eredita", ""
 
 
 Dettaglio Operatore
 ~~~~~~~~~~~~~~~~~~~
 
-Dalla pagina elenco degli operatori, selezionando uno degli elementi, si giunge alla relativa pagina di sintesi. 
+Dalla pagina elenco degli operatori, selezionando uno degli elementi, si giunge alla relativa pagina con le informazioni di sintesi. 
 
 
 .. figure:: ../_images/45OperatoreVistaDiSintesi.png
