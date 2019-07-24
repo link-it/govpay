@@ -6,7 +6,6 @@ Guida Utente
         :maxdepth: 2
 
         introduzione/index
-        contesto/index
         accesso/index
         pendenze/index
         pagamenti/index
