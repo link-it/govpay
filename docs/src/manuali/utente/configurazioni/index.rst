@@ -11,28 +11,19 @@ La lista degli oggetti che è possibile configurare comprende i seguenti element
 -  *Intermediari*: rappresentano le entità “Intermediario” o “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
    fase di adesione dagli Enti Creditore per l'accesso al sistema pagoPA.
 -  *Domini*: corrispondono agli enti creditori aderenti al sistema pagoPA.
--  *Tipi Pendenza*: rappresentano le esigenze dell'ente creditore dalle quali
-   scaturiscono le tipologie di pagamenti che possono essere gestiti dal
-   sistema (tassa rifiuti, licenza di caccia, bollo auto, ...).
--  *Applicazioni*: rappresentano i portali di pagamento e i gestionali
-   delle posizioni debitorie degli enti Creditori integrati con GovPay
-   tramite gli appositi servizi.
+-  *Tipi Pendenza*: rappresentano le esigenze dell'ente creditore dalle quali scaturiscono le tipologie di pagamenti che possono essere gestiti dal sistema (ad esempiotassa rifiuti, licenza di caccia, bollo auto e via dicendo).
+-  *Applicazioni*: rappresentano i portali di pagamento e i gestionali delle posizioni debitorie degli enti Creditori integrati con GovPay tramite gli appositi servizi.
 -  *Operatori*: sono le utenze del cruscotto di gestione GovPay.
--  *Ruoli*: definizione dei ruoli, in termini di autorizzazioni
-   consentite sulle entità dati, che saranno assegnati agli utenti del
+-  *Ruoli*: rappresentano l'insieme delle autorizzazioni consentite sulle entità dati, da assegnarsi agli utenti del
    cruscotto.
 
 .. note:: Nell'analisi delle funzionalità di configurazione, le immagini esemplificative mostrate mancheranno della
-   sezione di sinistra (*Lista funzionalità*) al fine di permettere la concentrazione sulla sola parte importante, una volta
-   che si sia selezionata la funzionalità, ovvero il suo dettaglio, posto a destra.
+   sezione di sinistra (*Lista funzionalità*) al fine di agevolare la focalizzazione sulla parte important della funzionalità, ovvero il suo dettaglio posto a destra.
 
 Intermediari
 ------------
 
-Gli intermediari o partner tecnologici sono entità censite da AgID sul
-circuito pagoPA al momento dell'adesione di un Ente Creditore. Per il
-corretto funzionamento di GovPay, gli intermediari di interesse devono
-essere censiti con le informazioni di corredo necessarie.
+Gli intermediari o partner tecnologici sono entità censite da AgID sul circuito pagoPA al momento dell'adesione di un Ente Creditore. Per il corretto funzionamento di GovPay, gli intermediari di interesse devono essere censiti con le informazioni di corredo necessarie.
 
 .. figure:: ../_images/09Intermediari.png
    :align: center
