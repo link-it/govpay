@@ -75,14 +75,13 @@ Cliccando su profilo utente abbiamo, sul riquadro di destra, il dettaglio dell'u
 
 A seguire sono elencate le sezioni del menu di navigazione, che possono variare in base alle autorizzazioni possedute dall'utente che ha effettuato l'accesso. Le sezioni del menu sono:
 
-1. *Cruscotto*: sezione iniziale che evidenzia in modo immediato la situazione generale di pagamenti e pendenze.
-2. *Pagamenti*: sezione di consultazione delle operazioni di pagamento effettuate dai debitori.
-3. *Pendenze*: sezione di consultazione delle pendenze di pagamento in carico ai debitori.
-4. *Giornale degli eventi*: sezione di consultazione del Giornale Eventi previsto dalla specifica pagoPA.
-5. *Configurazioni:* raccoglie gli strumenti per la consultazione, censimento e modifica delle entità alla base della configurazione del
-   prodotto (Psp, Domini, Tributi, Applicazioni, ecc.).
-6. *Funzioni Avanzate*: sezione dedicata alla consultazione di entità avanzate (rendicontazioni, riscossioni, ecc.).
-7. *Manutenzione*: Accesso a funzionalità di manutenzione straordinaria.
+* *Cruscotto*: sezione iniziale che evidenzia in modo immediato la situazione generale di pagamenti e pendenze.
+* *Pagamenti*: sezione di consultazione delle operazioni di pagamento effettuate dai debitori.
+* *Pendenze*: sezione di consultazione delle pendenze di pagamento in carico ai debitori.
+* *Giornale degli eventi*: sezione di consultazione del Giornale Eventi previsto dalla specifica pagoPA.
+* *Configurazioni:* raccoglie gli strumenti per la consultazione, censimento e modifica delle entità alla base della configurazione del prodotto (Psp, Domini, Tributi, Applicazioni, ecc.).
+* *Funzioni Avanzate*: sezione dedicata alla consultazione di entità avanzate (rendicontazioni, riscossioni, ecc.).
+* *Manutenzione*: Accesso a funzionalità di manutenzione straordinaria.
 
 Ad esempio, per l'utente che si è autenticato nel nostro caso esemplificativo (gpadmin) avremo la seguente lista funzionalità:
 
