@@ -61,6 +61,7 @@ export class Voce {
   public static ELABORAZIONE: string = 'Elaborazione';
   public static EMAIL: string = 'Email';
   public static ENTE_CREDITORE: string = 'Ente creditore';
+  public static ENTI_CREDITORI: string = 'Enti creditori';
   public static EROGATORE: string = 'Erogatore';
   public static ESITO: string = 'Esito';
 
@@ -112,6 +113,8 @@ export class Voce {
 
   public static MODULO: string = 'Modulo interno che ha emesso l\'evento';
   public static MODELLO_PAGAMENTO: string = 'Modello pagamento';
+  public static MODIFICA_DOMINIO: string = 'Modifica dominio';
+  public static MODIFICA_ENTE_CREDITORE: string = 'Modifica Ente creditore';
   public static MY_BANK: string = 'My Bank';
 
   public static NAZIONE: string = 'Nazione';
@@ -122,6 +125,8 @@ export class Voce {
   public static NESSUNA: string = 'Nessuna';
   public static NESSUNO: string = 'Nessuno';
   public static NON_CONFIGURATO: string = 'Non configurato';
+  public static NUOVO_DOMINIO: string = 'Nuovo dominio';
+  public static NUOVO_ENTE_CREDITORE: string = 'Nuovo Ente creditore';
 
   public static OPERATORE_MITTENTE: string = 'Operatore mittente';
   public static OPERAZIONI: string = 'Operazioni';
@@ -191,5 +196,68 @@ export class Voce {
   public static VERSIONE_API: string = 'Versione API';
 
   public static WEB: string = 'Sito web';
+
+
+  //Validation Error Messages
+  public static VALIDATION_IT_MESSAGES: any = {
+    // Italian error messages
+    required: 'Campo obbligatorio.',
+    minLength: 'Numero minimo di caratteri richiesti: {{minimumLength}} (valore corrente: {{currentLength}})',
+    maxLength: 'Numero massimo di caratteri: {{maximumLength}} (valore corrente: {{currentLength}})',
+    pattern: 'Schema non corrispondente: {{requiredPattern}}',
+    format: function (error) {
+      switch (error.requiredFormat) {
+        case 'date':
+          return 'Formato data non corrispondente';
+        case 'time':
+          return 'Formato orario non corrispondente';
+        case 'date-time':
+          return 'Formato data/ora non corrispondente';
+        case 'email':
+          return 'Indirizzo email nonvalido, es. "name@example.com"';
+        case 'hostname':
+          return 'Hostname non valido, es. "example.com"';
+        case 'ipv4':
+          return 'Indirizzo IPv4 non valido, es. "127.0.0.1"';
+        case 'ipv6':
+          return 'Indirizzo IPv6 non valido, es. "1234:5678:9ABC:DEF0:1234:5678:9ABC:DEF0"';
+        // Add examples for 'uri', 'uri-reference', and 'uri-template'
+        // case 'uri': case 'uri-reference': case 'uri-template':
+        case 'url':
+          return 'Url non valido, es. "http://www.example.com/page.html"';
+        case 'uuid':
+          return 'UUID non valido, es. "12345678-9ABC-DEF0-1234-56789ABCDEF0"';
+        case 'color':
+          return 'Colore no valido, es. "#FFFFFF" or "rgb(255, 255, 255)"';
+        case 'json-pointer':
+          return 'Puntatore JSON non valido, es. "/pointer/to/something"';
+        case 'relative-json-pointer':
+          return 'Puntatore JSON relativo non valido, es. "2/pointer/to/something"';
+        case 'regex':
+          return 'Espressione regolare no valida, es. "(1-)?\\d{3}-\\d{3}-\\d{4}"';
+        default:
+          return 'Valore non correttamente formattato ' + error.requiredFormat;
+      }
+    },
+    minimum: 'Valore minimo {{minimumValue}} o maggiore',
+    exclusiveMinimum: 'Valore minimo richiesto almeno {{exclusiveMinimumValue}}',
+    maximum: 'Valore massimo {{maximumValue}} o inferiore',
+    exclusiveMaximum: 'Valore massimo richiesto al più {{exclusiveMaximumValue}}',
+    multipleOf: function (error) {
+      if ((1 / error.multipleOfValue) % 10 === 0) {
+        const decimals = Math.log10(1 / error.multipleOfValue);
+        return `Numero decimali richiesti ${decimals} o meno.`;
+      } else {
+        return `Deve essere un multiplo di ${error.multipleOfValue}.`;
+      }
+    },
+    minProperties: 'Proprietà richieste: {{minimumProperties}} o più (proprietà correnti: {{currentProperties}})',
+    maxProperties: 'Proprietà richieste: {{maximumProperties}} o meno (proprietà correnti: {{currentProperties}})',
+    minItems: 'Elementi richiesti: {{minimumItems}} o più (elementi correnti: {{currentItems}})',
+    maxItems: 'Elementi richiesti: {{maximumItems}} or meno (elementi correnti: {{currentItems}})',
+    uniqueItems: 'Ogni elemento deve essere unico',
+    // Note: No default error messages for 'type', 'const', 'enum', or 'dependencies'
+  };
+
 
 }

@@ -142,7 +142,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
       case UtilService.URL_DOMINI:
         _mb.info = {
-          dialogTitle: 'Nuovo dominio',
+          dialogTitle: Voce.NUOVO_ENTE_CREDITORE,
           templateName: UtilService.DOMINIO
         };
         _component = this.ls.componentRefByName(UtilService.DOMINI);
@@ -432,7 +432,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         tmpValue.push(item.ragioneSocialeDominio?item.ragioneSocialeDominio:item.idDominio);
         tmpValue.push(item.ragioneSocialePsp?item.ragioneSocialePsp:item.idPsp);
         _st = Dato.arraysToDato(
-          [ Voce.DATA, Voce.DOMINIO, Voce.PSP ],
+          [ Voce.DATA, Voce.ENTE_CREDITORE, Voce.PSP ],
           tmpValue,
           ', '
         );

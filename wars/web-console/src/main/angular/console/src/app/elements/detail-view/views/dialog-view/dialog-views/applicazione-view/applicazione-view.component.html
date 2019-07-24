@@ -74,7 +74,7 @@
       <p class="color-gray pt-2 mt-3 mb-2">{{voce.AUTORIZZAZIONI}}</p>
       <div class="w-100 my-4">
         <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="voce.DOMINI" formControlName="dominio_ctrl" multiple [compareWith]="dominioCmpFn">
+          <mat-select [placeholder]="voce.ENTI_CREDITORI" formControlName="dominio_ctrl" multiple [compareWith]="dominioCmpFn">
             <mat-option *ngFor="let item of domini" [value]="item">{{item.ragioneSociale}}</mat-option>
           </mat-select>
         </mat-form-field>
