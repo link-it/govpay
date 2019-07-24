@@ -8,7 +8,7 @@ Rendicontazioni
 
 La sezione “Funzioni Avanzate > Rendicontazioni” è dedicata alla
 consultazione dei flussi di rendicontazione acquisiti da pagoPA. La
-pagina principale della sezione mostra l’elenco dei flussi di
+pagina iniziale mostra l’elenco dei flussi di
 rendicontazione presenti nel repository.
 
 Per ciascun flusso in elenco, oltre ai riferimenti identificativi
@@ -20,7 +20,7 @@ presente sul lato sinistro.
 
 È possibile scaricare un file CSV con i dati delle rendicontazioni,
 visualizzate con il criterio di ricerca impostato, utilizzando la voce
-"Esporta" presente nel menu sulla testata della pagina.
+"Esporta" presente nel menu a sinistra sulla testata della pagina.
 
 La selezione di un elemento dell’elenco ne visualizza il dettaglio.
 
@@ -43,7 +43,7 @@ sezioni:
 Riscossioni
 -----------
 
-La sezione “Funzioni Avanzate > Riscossioni” è dedicata alla
+La sezione *Funzioni Avanzate > Riscossioni* è dedicata alla
 consultazione delle somme che sono state correttamente riscosse tramite
 i versamenti operati dai debitori.
 
@@ -69,7 +69,7 @@ due tipi di riscossione:
 
 È possibile scaricare un file CSV con i dati delle riscossioni,
 visualizzate con il criterio di ricerca impostato, utilizzando la voce
-"Esporta" presente nel menu sulla testata della pagina.
+"Esporta" presente nel menu a destra sulla testata della pagina.
 
 Selezionando il singolo elemento dall’elenco si accede alla pagina di
 dettaglio.
@@ -78,11 +78,11 @@ dettaglio.
 Caricamento Pendenze
 --------------------
 
-La sezione “Funzioni Avanzate > Caricamento Pendenze” è dedicata all'immissione batch delle pendenze nel sistema. Tali
-tracciati vengono caricati dagli utenti del cruscotto utilizzando il pulsante di aggiunta. Il form di caricamento permette di selezionare il file da caricare che deve essere in formato JSON e rispettare la sintassi descritta nel manuale di integrazione. All’interno di un tracciato si definiscono le operazioni da eseguire sulle pendenze, che possono essere dei seguenti tipi:
+La sezione *Funzioni Avanzate > Caricamento Pendenze* è dedicata all'immissione batch delle pendenze nel sistema. Tali
+tracciati vengono caricati dagli utenti del cruscotto utilizzando il pulsante di aggiunta. Il form di caricamento permette di selezionare il file da caricare che deve essere in formato JSON e rispettare la sintassi descritta nel manuale di integrazione. All’interno di un tracciato si definiscono le operazioni da eseguire sulle pendenze, che possono essere:
 
--  inserimento;
--  annullamento.
+-  Inserimento di una nuova pendenza
+-  Annullamento di pendenza esistente
 
 È possibile filtrare gli elementi, in base al proprio stato di elaborazione, utilizzando il form presente sul lato sinistro, .
 
@@ -106,6 +106,5 @@ comprende le seguenti informazioni:
    tracciato (tipo operazione, esito esecuzione, applicazione,
    identificativo pendenza, ... ).
 
-È possibile scaricare un file ZIP contentente il tracciato originale, il
-tracciato di esito generato dall’elaborazione e gli avvisi di pagamento
-per le pendenze caricate.
+È possibile scaricare un file compresso in formato *zip* contentente il tracciato originale, il
+tracciato di esito generato dall’elaborazione e gli avvisi di pagamento per le pendenze caricate.
