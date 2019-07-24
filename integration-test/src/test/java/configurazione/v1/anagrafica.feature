@@ -32,6 +32,14 @@ Background:
 
 Scenario: configurazione anagrafica base
 
+#### configurazione del giornale degli eventi
+Given url backofficeBaseurl
+And path 'configurazioni', 'giornale'
+And headers gpAdminBasicAutenticationHeader
+And request read('classpath:configurazione/v1/msg/configurazione_giornale.json')
+When method POST
+Then assert responseStatus == 200 || responseStatus == 201
+
 #### creazione operatore spid
 * def operatoreSpid = read('classpath:configurazione/v1/msg/operatore.json')
 
