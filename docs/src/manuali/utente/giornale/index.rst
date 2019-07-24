@@ -1,9 +1,9 @@
 .. _utente_giornale:
 
-Giornale Eventi
-===============
+Giornale degli Eventi
+=====================
 
-La sezione *Giornale Eventi* mostra le comunicazioni (tecniche e di dettaglio), ed il relativo esito, avvenute con la piattaforma pagoPA secondo quanto previsto dalle specifiche AgID. 
+La sezione *Giornale degli Eventi* mostra le comunicazioni (tecniche e di dettaglio), ed il relativo esito, avvenute con la piattaforma pagoPA secondo quanto previsto dalle specifiche AgID. 
 
 
 Area iniziale
