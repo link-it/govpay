@@ -39,7 +39,7 @@ Glossario
 Storia delle modifiche del documento
 ====================================
 
-.. csv-table:: Storia delle modifiche
+.. csv-table:: 
   :header: "Data","Versione", "Modifiche", "Note"
   :widths: 30,30,30,10
   
