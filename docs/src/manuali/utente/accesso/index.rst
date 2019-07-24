@@ -9,17 +9,10 @@ http://<hostname>:<port>/backend/gui/backoffice
 
 Dove al posto dei placeholder <hostname> e <port> dovranno essere inseriti i riferimenti al proprio ambiente di installazione (nome host o indirizzo IP e relativa porta).
 
-.. figure:: ../_images/02FunzionalitaPreAutenticazione.png
-   :align: center
+Sono disponibili le seguenti funzionalità informative, liberamente consultabili prima dell'autenticazione:
 
-   Funzionalità disponibili senza autenticazione
-   
-Sono disponibili le seguenti funzionalità informative, prima dellì'autenticazione:
-
-*  **Manuale Utente**, che permette di accedere alla versione più recente di questo manuale
-*  **Licenza**, che mostra gli estremi della licenza cui fa riferimento l'istanza
+*  **Manuale Utente**, che permette di accedere alla versione più recente di questo manuale in formato liberamente 
 *  **Progetto GovPay**, che illustra le caratteristiche salienti del prodotto e le sue novità
-
 
 Per l'accesso al cruscotto viene presentata la maschera per l'immissione delle credenziali. Si noti come ad ogni 
 utente sia associato un *ruolo* che rappresenta l'insieme delle funzionalità che sono destinate all'utente stesso. Questo meccanismo, che verrà maggiormente dettagliato in seguito, permette di *ritagliare* in modo assolutamente generico il giusto profilo funzionale per tutte le classi di utente abilitati all'uso della piattaforma.
