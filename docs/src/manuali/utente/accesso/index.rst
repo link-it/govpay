@@ -1,7 +1,7 @@
 .. _utente_accesso:
 
-Accesso al cruscotto e profilo
-==============================
+Accesso al cruscotto
+====================
 
 Una volta completata con successo la procedura di installazione sarà possibile procedere con la configurazione accedendo al **Cruscotto di Gestione** al seguente indirizzo:
 
