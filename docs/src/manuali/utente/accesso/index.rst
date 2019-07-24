@@ -84,7 +84,7 @@ A seguire sono elencate le sezioni del menu di navigazione, che possono variare 
 6. *Funzioni Avanzate*: sezione dedicata alla consultazione di entità avanzate (rendicontazioni, riscossioni, ecc.).
 7. *Manutenzione*: Accesso a funzionalità di manutenzione straordinaria.
 
-Ade esempio, per l'utente che si è autenticato nel nostro caso esemplificativo (gpadmin) avremo la seguente lista funzionalità:
+Ad esempio, per l'utente che si è autenticato nel nostro caso esemplificativo (gpadmin) avremo la seguente lista funzionalità:
 
 .. figure:: ../_images/06ListaFunzionalita.png
    :align: center
