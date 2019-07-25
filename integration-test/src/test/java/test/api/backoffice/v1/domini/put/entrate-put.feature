@@ -20,7 +20,7 @@ Background:
 Scenario: Aggiunta di una entrata
 
 Given url backofficeBaseurl
-And path 'domini', idDominio, 'entrate', 'SIOPE-3321'
+And path 'domini', idDominio, 'entrate', codEntrataSiope
 And headers basicAutenticationHeader
 And request entrata
 When method put
@@ -32,14 +32,14 @@ Scenario Outline: Modifica di una entrata (<field>)
 * def checkValue = <value> != null ? <value> : '#notpresent'
 
 Given url backofficeBaseurl
-And path 'domini', idDominio, 'entrate', 'SIOPE-3321'
+And path 'domini', idDominio, 'entrate', codEntrataSiope
 And headers basicAutenticationHeader
 And request entrata
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
-And path 'domini', idDominio, 'entrate', 'SIOPE-3321'
+And path 'domini', idDominio, 'entrate', codEntrataSiope
 And headers basicAutenticationHeader
 When method get
 Then status 200
