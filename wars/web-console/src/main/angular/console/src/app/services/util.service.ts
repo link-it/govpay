@@ -106,7 +106,7 @@ export class UtilService {
     ESEGUITA_PARZIALE: 'Pagata parzialmente',
     ANNULLATA: 'Annullata',
     SCADUTA: 'Scaduta',
-    INCASSATA: 'Incassata'
+    INCASSATA: 'Riconciliata'
   };
 
   //STATI RPP PAGAMENTI
@@ -119,7 +119,7 @@ export class UtilService {
   //STATI RISCOSSIONE
   public static STATI_RISCOSSIONE: any = {
     RISCOSSA: 'Riscossa',
-    INCASSATA: 'Incassata'
+    INCASSATA: 'Riconciliata'
   };
 
   //STATI ESITO PAGAMENTO

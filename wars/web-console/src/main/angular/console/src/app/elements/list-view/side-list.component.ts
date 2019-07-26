@@ -29,6 +29,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   @Input('list-data') listResults = [];
   @Input('enable-over-actions') iconOverActions: boolean = false;
   @Input('enable-fab-actions') fabAction: boolean = false;
+  @Input('enable-multi-fab-actions') multiFabAction: boolean = false;
   @Input('is-loading-progress') _isLoading: boolean = false;
   @Output() _isLoadingChange: EventEmitter<boolean> = new EventEmitter();
 
@@ -49,7 +50,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     });
     this.rsc = this.ls.getRouterStateConfig();
     this.iconOverActions = this.showIconOverActions();
-    this.fabAction = this.showFabAction();
+    const _statusFab = this.showFabAction();
+    this.fabAction = _statusFab.single;
+    this.multiFabAction = _statusFab.multi;
     let _service: string = UtilService.DASHBOARD_LINKS_PARAMS.method;
     let _dashboard_link_query = UtilService.DASHBOARD_LINKS_PARAMS.params.map((item) => {
       return item.controller + '=' + item.value;
@@ -306,31 +309,32 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     return _icons;
   }
 
-  protected showFabAction(): boolean {
-    let _fabAction: boolean = false;
+  protected showFabAction(): any {
+    let _fabAction: any = { single: false, multi: false };
     switch(this.rsc.fullPath) { // ROUTING - fullPath
       case UtilService.URL_REGISTRO_INTERMEDIARI:
-        _fabAction = UtilService.USER_ACL.hasPagoPA;
+        _fabAction.single = UtilService.USER_ACL.hasPagoPA;
         break;
       case UtilService.URL_TRACCIATI:
-        _fabAction = UtilService.USER_ACL.hasPagamentiePendenze;
+        _fabAction.single = UtilService.USER_ACL.hasPagamentiePendenze;
         break;
       case UtilService.URL_APPLICAZIONI:
-        _fabAction = UtilService.USER_ACL.hasApplicazioni;
+        _fabAction.single = UtilService.USER_ACL.hasApplicazioni;
         break;
       case UtilService.URL_OPERATORI:
       case UtilService.URL_RUOLI:
-        _fabAction = UtilService.USER_ACL.hasRuoli;
+        _fabAction.single = UtilService.USER_ACL.hasRuoli;
         break;
       case UtilService.URL_DOMINI:
       case UtilService.URL_TIPI_PENDENZA:
-        _fabAction = UtilService.USER_ACL.hasCreditore;
+        _fabAction.single = UtilService.USER_ACL.hasCreditore;
         break;
       case UtilService.URL_PENDENZE:
-        _fabAction = UtilService.USER_ACL.hasPendenze;
+        _fabAction.single = UtilService.USER_ACL.hasPendenze && !UtilService.USER_ACL.hasPagamentiePendenze;
+        _fabAction.multi = UtilService.USER_ACL.hasPendenze && UtilService.USER_ACL.hasPagamentiePendenze;
         break;
       case UtilService.URL_INCASSI:
-        _fabAction = UtilService.USER_ACL.hasRendiIncassi;
+        _fabAction.single = UtilService.USER_ACL.hasRendiIncassi;
         break;
       default:
     }
@@ -353,6 +357,34 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       }
     } else {
       this.us.alert('Servizio non disponibile');
+    }
+  }
+
+  protected _multiFabAction(event: any) {
+    let _mb = new ModalBehavior();
+    let _component;
+    if(event.value === 'add') {
+      _mb.info = {
+        dialogTitle: 'Nuova pendenza',
+        templateName: UtilService.SCHEDA_PENDENZA
+      };
+      _component = this.ls.componentRefByName(UtilService.SCHEDA_PENDENZA);
+    }
+    if(event.value === 'playlist_add') {
+      _mb.info = {
+        dialogTitle: 'Nuovo tracciato',
+        templateName: UtilService.TRACCIATO
+      };
+      _component = this.ls.componentRefByName(UtilService.TRACCIATI);
+    }
+    _mb.closure = this.refresh.bind(this);
+    _mb.async_callback = _component.instance.save.bind(_component.instance);
+
+    if(event.value === 'playlist_add') {
+      UtilService.dialogBehavior.next(_mb);
+    }
+    if(event.value === 'add') {
+      UtilService.blueDialogBehavior.next(_mb);
     }
   }
 
