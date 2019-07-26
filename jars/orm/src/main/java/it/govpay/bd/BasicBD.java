@@ -73,6 +73,7 @@ import it.govpay.orm.dao.IDBUtenzaDominioService;
 import it.govpay.orm.dao.IDBUtenzaService;
 import it.govpay.orm.dao.IDBUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IDBVersamentoService;
+import it.govpay.orm.dao.IDBVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEsitoAvvisaturaService;
 import it.govpay.orm.dao.IEventoService;
@@ -106,6 +107,7 @@ import it.govpay.orm.dao.IUtenzaService;
 import it.govpay.orm.dao.IUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
+import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
@@ -143,6 +145,7 @@ public class BasicBD {
 	private IPagamentoService pagamentoService;
 	private IRendicontazioneService rendicontazioneService;
 	private IEventoService eventoService;
+	private IVistaEventiVersamentoServiceSearch vistaEventiVersamentoService;
 	private IBatchService batchService;
 	private ITracciatoService tracciatoService;
 	private IEsitoAvvisaturaService esitoAvvisaturaService;
@@ -233,6 +236,7 @@ public class BasicBD {
 				this.pagamentoService = this.serviceManager.getPagamentoService();
 				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
 				this.eventoService = this.serviceManager.getEventoService();
+				this.vistaEventiVersamentoService = this.serviceManager.getVistaEventiVersamentoServiceSearch();
 				this.batchService = this.serviceManager.getBatchService();
 				this.tracciatoService = this.serviceManager.getTracciatoService();
 				this.esitoAvvisaturaService = this.serviceManager.getEsitoAvvisaturaService();
@@ -287,6 +291,7 @@ public class BasicBD {
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
 			((IDBRendicontazioneService)this.rendicontazioneService).enableSelectForUpdate();
 			((IDBEventoService)this.eventoService).enableSelectForUpdate();
+			((IDBVistaEventiVersamentoServiceSearch)this.vistaEventiVersamentoService).enableSelectForUpdate();
 			((IDBBatchService)this.batchService).enableSelectForUpdate();
 			((IDBTracciatoService)this.tracciatoService).enableSelectForUpdate();
 			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).enableSelectForUpdate();
@@ -336,6 +341,7 @@ public class BasicBD {
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
 			((IDBRendicontazioneService)this.rendicontazioneService).disableSelectForUpdate();
 			((IDBEventoService)this.eventoService).disableSelectForUpdate();
+			((IDBVistaEventiVersamentoServiceSearch)this.vistaEventiVersamentoService).disableSelectForUpdate();
 			((IDBBatchService)this.batchService).disableSelectForUpdate();
 			((IDBTracciatoService)this.tracciatoService).disableSelectForUpdate();
 			((IDBEsitoAvvisaturaService)this.esitoAvvisaturaService).disableSelectForUpdate();
@@ -560,6 +566,13 @@ public class BasicBD {
 			return this.father.getEventoService();
 		}
 		return this.eventoService;
+	}
+	
+	public IVistaEventiVersamentoServiceSearch getVistaEventiVersamentoService() {
+		if(this.father != null) {
+			return this.father.getVistaEventiVersamentoService();
+		}
+		return this.vistaEventiVersamentoService;
 	}
 	
 	public IBatchService getBatchService() {

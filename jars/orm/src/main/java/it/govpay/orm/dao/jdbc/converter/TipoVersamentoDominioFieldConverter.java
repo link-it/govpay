@@ -207,6 +207,13 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "promemoria_ricevuta_messaggio";
 			}
 		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".visualizzazione_definizione";
+			}else{
+				return "visualizzazione_definizione";
+			}
+		}
 		if(field.equals(TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -340,6 +347,13 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 				return "promemoria_ricevuta_messaggio";
 			}
 		}
+		if(field.equals(TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".visualizzazione_definizione";
+			}else{
+				return "visualizzazione_definizione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -413,6 +427,9 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.PROMEMORIA_RICEVUTA_MESSAGGIO)){
 			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(TipoVersamentoDominio.model().ID_DOMINIO, returnAlias);
 		}
@@ -468,6 +485,9 @@ public class TipoVersamentoDominioFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO)){
+			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE)){
 			return this.toTable(TipoVersamentoDominio.model(), returnAlias);
 		}
 

@@ -5,6 +5,7 @@ import java.util.Date;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.pagamento.filters.EventiFilter.VISTA;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
@@ -13,8 +14,6 @@ import it.govpay.orm.Evento;
 
 public class ListaEventiDTO extends BasicFindRequestDTO{
 
-	public enum VISTA { VERSAMENTI, PAGAMENTI, RPT};
-	
 	public ListaEventiDTO(Authentication user) {
 		super(user);
 		this.addDefaultSort(Evento.model().DATA, SortOrder.DESC);

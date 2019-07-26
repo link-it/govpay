@@ -23,6 +23,7 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	private Boolean promemoriaRicevutaPdfCustom;
 	private String promemoriaRicevutaOggettoCustom;
 	private String promemoriaRicevutaMessaggioCustom;
+	private String visualizzazioneDefinizioneCustom;
 	
 	public String getPromemoriaAvvisoTipoCustom() {
 		return promemoriaAvvisoTipoCustom;
@@ -144,5 +145,11 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	}
 	public void setAbilitatoCustom(Boolean abilitatoCustom) {
 		this.abilitatoCustom = abilitatoCustom;
+	}
+	public String getVisualizzazioneDefinizioneCustom() {
+		return visualizzazioneDefinizioneCustom;
+	}
+	public void setVisualizzazioneDefinizioneCustom(String visualizzazioneDefinizioneCustom) {
+		this.visualizzazioneDefinizioneCustom = visualizzazioneDefinizioneCustom;
 	}
 }

@@ -359,6 +359,7 @@ CREATE TABLE tipi_versamento
 	promemoria_ricevuta_pdf BOOLEAN NOT NULL DEFAULT false,
 	promemoria_ricevuta_oggetto TEXT,
 	promemoria_ricevuta_messaggio TEXT,
+	visualizzazione_definizione TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_versamento') NOT NULL,
 	-- unique constraints
@@ -392,6 +393,7 @@ CREATE TABLE tipi_vers_domini
 	promemoria_ricevuta_pdf BOOLEAN,
 	promemoria_ricevuta_oggetto TEXT,
 	promemoria_ricevuta_messaggio TEXT,
+	visualizzazione_definizione TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_vers_domini') NOT NULL,
 	id_tipo_versamento BIGINT NOT NULL,
@@ -1280,5 +1282,34 @@ CREATE VIEW v_riscossioni AS
      JOIN tipi_versamento ON a.id_tipo_versamento = tipi_versamento.id 
      LEFT JOIN tributi ON a.id_tributo = tributi.id JOIN tipi_tributo 
      ON tributi.id_tipo_tributo = tipi_tributo.id;
+
+
+CREATE VIEW v_eventi_vers AS (
+	SELECT eventi.componente, 
+	       eventi.ruolo,
+               eventi.categoria_evento, 
+               eventi.tipo_evento, 
+               eventi.sottotipo_evento, 
+               eventi.data, 
+               eventi.intervallo, 
+               eventi.esito, 
+               eventi.sottotipo_esito, 
+               eventi.dettaglio_esito, 
+               eventi.parametri_richiesta, 
+               eventi.parametri_risposta, 
+               eventi.dati_pago_pa, 
+               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente, 
+               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione, 
+               eventi.iuv, 
+               eventi.cod_dominio, 
+               eventi.ccp, 
+               eventi.id_sessione, 
+               eventi.id 
+               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione 
+               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
+               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento 
+               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+         );
+
 
 

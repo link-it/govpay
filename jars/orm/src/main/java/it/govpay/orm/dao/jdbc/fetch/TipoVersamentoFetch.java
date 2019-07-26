@@ -94,6 +94,8 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_oggetto", TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO.getFieldType()));
 				setParameter(object, "setPromemoriaRicevutaMessaggio", TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "promemoria_ricevuta_messaggio", TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType()));
+				setParameter(object, "setVisualizzazioneDefinizione", TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "visualizzazione_definizione", TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE.getFieldType()));
 				return object;
 			}
 			
@@ -156,6 +158,8 @@ public class TipoVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"promemoriaRicevutaOggetto"));
 				setParameter(object, "setPromemoriaRicevutaMessaggio", TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType(),
 					this.getObjectFromMap(map,"promemoriaRicevutaMessaggio"));
+				setParameter(object, "setVisualizzazioneDefinizione", TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"visualizzazioneDefinizione"));
 				return object;
 			}
 			

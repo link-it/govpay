@@ -207,6 +207,13 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "promemoria_ricevuta_messaggio";
 			}
 		}
+		if(field.equals(TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".visualizzazione_definizione";
+			}else{
+				return "visualizzazione_definizione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -278,6 +285,9 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 

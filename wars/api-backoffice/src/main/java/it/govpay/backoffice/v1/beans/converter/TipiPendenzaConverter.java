@@ -14,6 +14,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
@@ -101,6 +102,9 @@ public class TipiPendenzaConverter {
 		if(entrataPost.getInoltro() != null)
 			tipoVersamento.setCodApplicazioneDefault(entrataPost.getInoltro());
 		
+		if(entrataPost.getVisualizzazione() != null)
+			tipoVersamento.setVisualizzazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getVisualizzazione(),null));
+		
 		return entrataDTO;		
 	}
 	
@@ -162,17 +166,20 @@ public class TipiPendenzaConverter {
 		
 		rsModel.setInoltro(tipoVersamento.getCodApplicazioneDefault());
 		
+		if(tipoVersamento.getVisualizzazioneDefinizioneDefault() != null)
+			rsModel.setVisualizzazione(new RawObject(tipoVersamento.getVisualizzazioneDefinizioneDefault()));
+		
 		return rsModel;
 	}
 	
-	public static TipoPendenzaIndex toTipoPendenzaRsModelIndex(it.govpay.model.TipoVersamento tipoVersamento) {
+	public static TipoPendenzaIndex toTipoPendenzaRsModelIndex(TipoVersamentoDominio tipoVersamentoDominio) {
 		TipoPendenzaIndex rsModel = new TipoPendenzaIndex();
 		
-		rsModel.descrizione(tipoVersamento.getDescrizione())
-		.idTipoPendenza(tipoVersamento.getCodTipoVersamento());
+		rsModel.descrizione(tipoVersamentoDominio.getDescrizione())
+		.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento());
 		
-		if(tipoVersamento.getTipoDefault() != null) {
-			switch (tipoVersamento.getTipoDefault()) {
+		if(tipoVersamentoDominio.getTipo() != null) {
+			switch (tipoVersamentoDominio.getTipo()) {
 			case DOVUTO:
 				rsModel.setTipo(it.govpay.backoffice.v1.beans.TipoPendenzaTipologia.DOVUTO);
 				break;
@@ -181,6 +188,8 @@ public class TipiPendenzaConverter {
 				break;
 			}
 		}
+		
+		rsModel.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizione()));
 		
 		return rsModel;
 	}

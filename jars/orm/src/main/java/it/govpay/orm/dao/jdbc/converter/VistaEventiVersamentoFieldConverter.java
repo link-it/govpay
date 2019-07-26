@@ -284,7 +284,7 @@ public class VistaEventiVersamentoFieldConverter extends AbstractSQLFieldConvert
 		// the full definition of the table containing the alias
 		
 		if(model.equals(Evento.model())){
-			return "eventi";
+			return "v_eventi_vers";
 		}
 
 

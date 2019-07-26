@@ -204,10 +204,11 @@ public class ApplicazioniConverter {
 		rsModel.apiPendenze(false);
 		rsModel.apiRagioneria(false);
 		
-		if(applicazione.getUtenza().getAcls()!=null) {
+		List<Acl> acls = applicazione.getUtenza().getAcls();
+		if(acls!=null) {
 			List<AclPost> aclList = new ArrayList<>();
 			
-			for(Acl acl: applicazione.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				AclPost aclRsModel = AclConverter.toRsModel(acl);
 				if(aclRsModel != null)
 					aclList.add(aclRsModel);
@@ -216,21 +217,21 @@ public class ApplicazioniConverter {
 			rsModel.setAcl(aclList);
 
 			// ACL sulle API
-			for(Acl acl: applicazione.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				if(acl.getServizio() != null && acl.getServizio().equals(Servizio.API_PAGAMENTI)) {
 					rsModel.apiPagamenti(true);
 					break;
 				}
 			}
 			
-			for(Acl acl: applicazione.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				if(acl.getServizio() != null && acl.getServizio().equals(Servizio.API_PENDENZE)) {
 					rsModel.apiPendenze(true);
 					break;
 				}
 			}
 			
-			for(Acl acl: applicazione.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				if(acl.getServizio() != null && acl.getServizio().equals(Servizio.API_RAGIONERIA)) {
 					rsModel.apiRagioneria(true);
 					break;

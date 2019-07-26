@@ -204,7 +204,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 					String codApplicazione = tipoVersamentoDominio.getCodApplicazione();
 					if(codApplicazione != null) {
-						versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, idTipoVersamento, dati, bd, codApplicazione);
+						versamentoModel = VersamentoUtils.inoltroInputVersamentoModello4(log, idDominio, idTipoVersamento, dati, bd, codApplicazione);
 					} else {
 						try {
 							PendenzaPost pendenzaPost = PendenzaPost.parse(dati);

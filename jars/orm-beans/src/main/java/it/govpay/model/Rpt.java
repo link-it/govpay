@@ -47,6 +47,7 @@ public class Rpt extends BasicModel{
 	
 	static {
 		stati_pendenti = new ArrayList<Rpt.StatoRpt>();
+		stati_pendenti.add(StatoRpt.RPT_PARCHEGGIATA_NODO);
 		stati_pendenti.add(StatoRpt.RPT_ATTIVATA);
 		stati_pendenti.add(StatoRpt.RPT_RICEVUTA_NODO);
 		stati_pendenti.add(StatoRpt.RPT_ACCETTATA_NODO);
@@ -127,6 +128,7 @@ public class Rpt extends BasicModel{
 	}
 	
 	public enum StatoRpt {
+		RPT_PARCHEGGIATA_NODO,
 		RPT_ATTIVATA,
 		RPT_ERRORE_INVIO_A_NODO, 
 		RPT_RICEVUTA_NODO, 

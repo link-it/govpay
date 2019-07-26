@@ -32,9 +32,10 @@ public class ProfiloConverter {
 		Profilo profilo = new Profilo();
 		
 		Utenza user = leggiProfilo.getUtente();
-		if(user.getAcls()!=null) {
+		List<Acl> aclsProfilo = user.getAclsProfilo();
+		if(aclsProfilo!=null) {
 			List<AclPost> aclLst = new ArrayList<>();
-			for(Acl acl: user.getAcls()) {
+			for(Acl acl: aclsProfilo) {
 				AclPost aclRsModel = AclConverter.toRsModel(acl);
 				if(aclRsModel != null)
 					aclLst.add(aclRsModel);
@@ -57,21 +58,6 @@ public class ProfiloConverter {
 			}
 			profilo.setTipiPendenza(tipiPendenzaLst);
 		}
-		
-		// Workaround doppie ACL:
-		// Scorro la lista delle acl. In caso di duplicati, tengo il primo.
-		List<AclPost> aclLstSet = new ArrayList<>();
-		for(AclPost acl: profilo.getAcl()) {
-			boolean exist = false;
-			for(AclPost aclx: aclLstSet) {
-				if(aclx.getServizio().equals(acl.getServizio())) {
-					exist = true;
-				}
-			}
-			if(!exist) aclLstSet.add(acl);
-		}
-		profilo.setAcl(aclLstSet);
-		// Fine workaround
 		
 		return profilo;
 	}

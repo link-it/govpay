@@ -180,7 +180,7 @@ public class PendenzeConverter {
 			} 
 		}
 		rsModel.setRpp(rpps); 
-		rsModel.setTipoPendenza(TipiPendenzaConverter.toTipoPendenzaRsModelIndex(versamento.getTipoVersamento(null)));
+		rsModel.setTipoPendenza(TipiPendenzaConverter.toTipoPendenzaRsModelIndex(versamento.getTipoVersamentoDominio(null)));
 		
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 
@@ -305,7 +305,7 @@ public class PendenzeConverter {
 		rsModel.setVerificato(versamento.isAck());
 		rsModel.setAnomalo(versamento.isAnomalo());
 
-		rsModel.setTipoPendenza(TipiPendenzaConverter.toTipoPendenzaRsModelIndex(versamento.getTipoVersamento(null)));
+		rsModel.setTipoPendenza(TipiPendenzaConverter.toTipoPendenzaRsModelIndex(versamento.getTipoVersamentoDominio(null)));
 		
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione()); 

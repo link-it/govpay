@@ -174,4 +174,11 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		else 
 			return this.getTrasformazioneTipoDefault();
 	}
+	
+	public String getVisualizzazioneDefinizione() {
+		if(this.getVisualizzazioneDefinizioneCustom() != null)
+			return this.getVisualizzazioneDefinizioneCustom();
+		else 
+			return this.getVisualizzazioneDefinizioneDefault();
+	}
 }

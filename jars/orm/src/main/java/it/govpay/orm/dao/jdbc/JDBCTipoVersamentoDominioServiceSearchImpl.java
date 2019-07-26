@@ -190,6 +190,7 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO);
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO);
 			fields.add(TipoVersamentoDominio.model().COD_APPLICAZIONE);
+			fields.add(TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE);
 
 			AliasField tipoTributoId = new AliasField(new CustomField("tipoVersamento.id", Long.class, "id", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)),
 					this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)+"_id");
@@ -230,9 +231,13 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(promemoriaRicevutaOggettoAlias);
 			AliasField codApplicazioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_APPLICAZIONE);
 			fields.add(codApplicazioneAlias);
+			AliasField visualizzazioneDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE);
+			fields.add(visualizzazioneDefinizioneAlias);
+			
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
 			
+
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model())));
 			
 			sqlQueryObject.setANDLogicOperator(true);

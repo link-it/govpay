@@ -2,6 +2,7 @@ package it.govpay.bd.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
 
 public class Utenza extends it.govpay.model.Utenza {
@@ -41,6 +43,31 @@ public class Utenza extends it.govpay.model.Utenza {
 			collect.addAll(this.aclRuoliUtenza);
 		return collect;
 	}
+	
+	public List<Acl> getAclsProfilo() {
+		List<Acl> collect = new ArrayList<>();
+		
+		Map<Servizio, List<Acl>> mapServizio = new HashMap<Acl.Servizio, List<Acl>>();
+		
+		List<Acl> acls = this.getAcls();
+		for (Acl acl : acls) {
+			
+			List<Acl> remove = mapServizio.remove(acl.getServizio());
+			
+			if(remove == null)
+				remove = new ArrayList<Acl>();
+			
+			remove.add(acl);
+			mapServizio.put(acl.getServizio(), remove);
+		}
+		
+		Map<Servizio,Acl> sorted = mapServizio.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toMap(e -> e.getKey(), e -> Acl.mergeAcls(e.getValue()), (e1, e2) -> e2, LinkedHashMap::new));
+		
+		collect.addAll(sorted.values());
+		
+		return collect;
+	}
+	
 
 	public List<String> getIdDominio() {
 		return this.domini != null ? this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList()) : null;

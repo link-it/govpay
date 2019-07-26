@@ -63,6 +63,7 @@ public class TipoVersamentoConverter {
 		dto.setPromemoriaRicevutaPdfDefault(vo.getPromemoriaRicevutaPdf());
 		dto.setPromemoriaRicevutaMessaggioDefault(vo.getPromemoriaRicevutaMessaggio());
 		dto.setPromemoriaRicevutaOggettoDefault(vo.getPromemoriaRicevutaOggetto());
+		dto.setVisualizzazioneDefinizioneDefault(vo.getVisualizzazioneDefinizione());
 		
 		return dto;
 	}
@@ -91,6 +92,7 @@ public class TipoVersamentoConverter {
 		vo.setPromemoriaRicevutaPdf(dto.getPromemoriaRicevutaPdfDefault());
 		vo.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioDefault());
 		vo.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoDefault());
+		vo.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneDefault());
 		return vo;
 	}
 

@@ -19,42 +19,37 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.util.List;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import java.sql.Connection;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithoutId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithoutId;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-import it.govpay.orm.dao.jdbc.converter.VistaEventiPagamentoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.VistaEventiPagamentoFetch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
 import it.govpay.orm.Evento;
+import it.govpay.orm.dao.jdbc.converter.VistaEventiPagamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.VistaEventiPagamentoFetch;
 
 /**     
  * JDBCVistaEventiPagamentoServiceSearchImpl
@@ -110,19 +105,38 @@ public class JDBCVistaEventiPagamentoServiceSearchImpl implements IJDBCServiceSe
 
         List<Evento> list = new ArrayList<Evento>();
         
-        // TODO: implementazione non efficente. 
-		// Per ottenere una implementazione efficente:
-		// 1. Usare metodo select di questa classe indirizzando esattamente i field necessari
-		// 2. Usare metodo getVistaEventiPagamentoFetch() sul risultato della select per ottenere un oggetto VistaEventiPagamento
-		//	  La fetch con la map inserirà nell'oggetto solo i valori estratti 
+        try{
+			List<IField> fields = new ArrayList<>();
+			fields.add(new CustomField("id", Long.class, "id", this.getVistaEventiPagamentoFieldConverter().toTable(Evento.model())));
+			fields.add(Evento.model().CATEGORIA_EVENTO);
+			fields.add(Evento.model().COMPONENTE);
+			fields.add(Evento.model().DATA);
+			fields.add(Evento.model().DATI_PAGO_PA);
+			fields.add(Evento.model().DETTAGLIO_ESITO);
+			fields.add(Evento.model().ESITO);
+			fields.add(Evento.model().INTERVALLO);
+			fields.add(Evento.model().PARAMETRI_RICHIESTA);
+			fields.add(Evento.model().PARAMETRI_RISPOSTA);
+			fields.add(Evento.model().RUOLO);
+			fields.add(Evento.model().SOTTOTIPO_ESITO);
+			fields.add(Evento.model().SOTTOTIPO_EVENTO);
+			fields.add(Evento.model().TIPO_EVENTO);
+			fields.add(Evento.model().COD_VERSAMENTO_ENTE);
+			fields.add(Evento.model().COD_APPLICAZIONE);
+			fields.add(Evento.model().IUV);
+			fields.add(Evento.model().CCP);
+			fields.add(Evento.model().COD_DOMINIO);
+			fields.add(Evento.model().ID_SESSIONE);
+		
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
-        List<Long> ids = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, expression);
-        
-        for(Long id: ids) {
-        	list.add(this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour));
-        }
+			for(Map<String, Object> map: returnMap) {
+				Evento evento = (Evento)this.getVistaEventiPagamentoFetch().fetch(jdbcProperties.getDatabase(), Evento.model(), map);
+				list.add(evento);
+			}
+		} catch(NotFoundException e) {}
 
-        return list;      
+        return list;     
 		
 	}
 	
@@ -255,8 +269,8 @@ public class JDBCVistaEventiPagamentoServiceSearchImpl implements IJDBCServiceSe
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
 		
-		List<Object> listaQuery = new ArrayList<Object>();
-		List<JDBCObject> listaParams = new ArrayList<JDBCObject>();
+		List<Object> listaQuery = new ArrayList<>();
+		List<JDBCObject> listaParams = new ArrayList<>();
 		List<Object> returnField = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSelect(jdbcProperties, log, connection, sqlQueryObject, 
         						expression, this.getVistaEventiPagamentoFieldConverter(), Evento.model(), 
         						listaQuery,listaParams);
@@ -279,8 +293,8 @@ public class JDBCVistaEventiPagamentoServiceSearchImpl implements IJDBCServiceSe
 	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
 		
-		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
-		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<>();
+		List<JDBCObject> jdbcObjects = new ArrayList<>();
 		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
         						this.getVistaEventiPagamentoFieldConverter(), Evento.model(), 
         						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
@@ -386,53 +400,20 @@ public class JDBCVistaEventiPagamentoServiceSearchImpl implements IJDBCServiceSe
 	
 	private Evento _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Evento.model()));
+
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
+
+		expression.equals(idField, tableId);
+		List<Evento> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
+
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
-		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-				
-		Evento vistaEventiPagamento = new Evento();
-		
-
-		// Object vistaEventiPagamento
-		ISQLQueryObject sqlQueryObjectGet_vistaEventiPagamento = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_vistaEventiPagamento.setANDLogicOperator(true);
-		sqlQueryObjectGet_vistaEventiPagamento.addFromTable(this.getVistaEventiPagamentoFieldConverter().toTable(Evento.model()));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField("id");
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().COMPONENTE,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().RUOLO,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().CATEGORIA_EVENTO,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().TIPO_EVENTO,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().SOTTOTIPO_EVENTO,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().DATA,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().INTERVALLO,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().ESITO,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().SOTTOTIPO_ESITO,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().DETTAGLIO_ESITO,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().PARAMETRI_RICHIESTA,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().PARAMETRI_RISPOSTA,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().DATI_PAGO_PA,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().COD_VERSAMENTO_ENTE,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().COD_APPLICAZIONE,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().IUV,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().CCP,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().COD_DOMINIO,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addSelectField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().ID_SESSIONE,true));
-		sqlQueryObjectGet_vistaEventiPagamento.addWhereCondition("id=?");
-
-		// Get vistaEventiPagamento
-		vistaEventiPagamento = (Evento) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_vistaEventiPagamento.createSQLQuery(), jdbcProperties.isShowSql(), Evento.model(), this.getVistaEventiPagamentoFetch(),
-			new JDBCObject(tableId,Long.class));
-
-
-
-		
-        return vistaEventiPagamento;  
+		return lst.get(0);
 	
 	} 
 	
@@ -467,57 +448,12 @@ public class JDBCVistaEventiPagamentoServiceSearchImpl implements IJDBCServiceSe
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 	
-		/* 
-		 * TODO: implement code that implement the join condition
-		*/
-		/*
-		if(expression.inUseModel(Evento.model().XXXX,false)){
-			String tableName1 = this.getEventoFieldConverter().toAliasTable(Evento.model());
-			String tableName2 = this.getEventoFieldConverter().toAliasTable(Evento.model().XXX);
-			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_table1");
-		}
-		*/
-		
-		/* 
-         * TODO: implementa il codice che aggiunge la condizione FROM Table per le condizioni di join di oggetti annidati dal secondo livello in poi 
-         *       La addFromTable deve essere aggiunta solo se l'oggetto del livello precedente non viene utilizzato nella espressione 
-         *		 altrimenti il metodo sopra 'toSqlForPreparedStatementWithFromCondition' si occupa gia' di aggiungerla
-        */
-        /*
-        if(expression.inUseModel(Evento.model().LEVEL1.LEVEL2,false)){
-			if(expression.inUseModel(Evento.model().LEVEL1,false)==false){
-				sqlQueryObject.addFromTable(this.getEventoFieldConverter().toTable(Evento.model().LEVEL1));
-			}
-		}
-		...
-		if(expression.inUseModel(Evento.model()....LEVELN.LEVELN+1,false)){
-			if(expression.inUseModel(Evento.model().LEVELN,false)==false){
-				sqlQueryObject.addFromTable(this.getEventoFieldConverter().toTable(Evento.model().LEVELN));
-			}
-		}
-		*/
-		
-		// Delete this line when you have implemented the join condition
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the join condition
-        
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Evento vistaEventiPagamento) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-        // TODO: Define the column values used to identify the primary key
 		rootTableIdValues.add(vistaEventiPagamento.getId());
-        
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
         
         return rootTableIdValues;
 	}
@@ -528,7 +464,6 @@ public class JDBCVistaEventiPagamentoServiceSearchImpl implements IJDBCServiceSe
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
-		// TODO: Define the columns used to identify the primary key
 		//		  If a table doesn't have a primary key, don't add it to this map
 
 		// Evento.model()
@@ -536,15 +471,6 @@ public class JDBCVistaEventiPagamentoServiceSearchImpl implements IJDBCServiceSe
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Evento.model()))
 			));
-
-
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
-        
         return mapTableToPKColumn;		
 	}
 	
@@ -606,10 +532,6 @@ public class JDBCVistaEventiPagamentoServiceSearchImpl implements IJDBCServiceSe
 
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
-		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
 		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
