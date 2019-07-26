@@ -61,6 +61,7 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.PROMEMORIA_RICEVUTA_PDF = new Field("promemoriaRicevutaPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_OGGETTO = new Field("promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new Field("promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.VISUALIZZAZIONE_DEFINIZIONE = new Field("visualizzazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 	
 	}
 	
@@ -88,6 +89,7 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 		this.PROMEMORIA_RICEVUTA_PDF = new ComplexField(father,"promemoriaRicevutaPdf",boolean.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_OGGETTO = new ComplexField(father,"promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new ComplexField(father,"promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
+		this.VISUALIZZAZIONE_DEFINIZIONE = new ComplexField(father,"visualizzazioneDefinizione",java.lang.String.class,"TipoVersamento",TipoVersamento.class);
 	
 	}
 	
@@ -132,6 +134,8 @@ public class TipoVersamentoModel extends AbstractModel<TipoVersamento> {
 	public IField PROMEMORIA_RICEVUTA_OGGETTO = null;
 	 
 	public IField PROMEMORIA_RICEVUTA_MESSAGGIO = null;
+	 
+	public IField VISUALIZZAZIONE_DEFINIZIONE = null;
 	 
 
 	@Override

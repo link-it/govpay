@@ -27,12 +27,14 @@ Then assert responseStatus == 200 || responseStatus == 201
   	definizione: null
   },
   validazione: null,
-  abilitato: true
+  abilitato: true,
+  visualizzazione: null
 }
 """          
 * set tipoPendenzaDominio.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-form.json.payload'))
 * set tipoPendenzaDominio.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-freemarker.ftl'))
 * set tipoPendenzaDominio.validazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-validazione-form.json.payload'))
+* set tipoPendenzaDominio.visualizzazione = encodeBase64InputStream(read('msg/tipoPendenza-spontanea-visualizzazione.json.payload'))
 
 Given url backofficeBasicBaseurl
 And path 'domini', idDominio, 'tipiPendenza', codSpontaneo

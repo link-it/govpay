@@ -55,6 +55,7 @@ import java.io.Serializable;
  * 			&lt;element name="promemoriaRicevutaPdf" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaRicevutaOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaRicevutaMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="visualizzazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -88,7 +89,8 @@ import java.io.Serializable;
   	"promemoriaRicevutaTipo",
   	"promemoriaRicevutaPdf",
   	"promemoriaRicevutaOggetto",
-  	"promemoriaRicevutaMessaggio"
+  	"promemoriaRicevutaMessaggio",
+  	"visualizzazioneDefinizione"
   }
 )
 
@@ -272,6 +274,14 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
     this.promemoriaRicevutaMessaggio = promemoriaRicevutaMessaggio;
   }
 
+  public java.lang.String getVisualizzazioneDefinizione() {
+    return this.visualizzazioneDefinizione;
+  }
+
+  public void setVisualizzazioneDefinizione(java.lang.String visualizzazioneDefinizione) {
+    this.visualizzazioneDefinizione = visualizzazioneDefinizione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -368,5 +378,9 @@ public class TipoVersamentoDominio extends org.openspcoop2.utils.beans.BaseBean 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="promemoriaRicevutaMessaggio",required=false,nillable=false)
   protected java.lang.String promemoriaRicevutaMessaggio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="visualizzazioneDefinizione",required=false,nillable=false)
+  protected java.lang.String visualizzazioneDefinizione;
 
 }

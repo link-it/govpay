@@ -141,7 +141,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			}
 		} catch(NotFoundException e) {}
 
-        return list;     
+        return list;
 		
 	}
 	

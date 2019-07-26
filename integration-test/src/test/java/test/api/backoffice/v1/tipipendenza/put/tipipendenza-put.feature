@@ -21,12 +21,14 @@ Background:
   	tipo: "freemarker",
   	definizione: null
   },
-  validazione: null;
+  validazione: null,
+  visualizzazione: null;
 }
 """          
 * set tipoPendenza.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenza.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
 * set tipoPendenza.validazione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-validazione-form.json'))
+* set tipoPendenza.visualizzazione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-visualizzazione.json.payload'))
 
 Scenario: Aggiunta di un tipoPendenza
 
@@ -77,4 +79,4 @@ Examples:
 | promemoriaRicevuta | { "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": true } |
 | promemoriaRicevuta | { "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": false } |
 | promemoriaRicevuta | null |
-
+| visualizzazione | null |

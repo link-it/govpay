@@ -141,6 +141,8 @@ public class DominiConverter {
 			rsModel.setForm(form);
 		}
 		
+		rsModel.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizione()));
+		
 		return rsModel;
 	}
 	

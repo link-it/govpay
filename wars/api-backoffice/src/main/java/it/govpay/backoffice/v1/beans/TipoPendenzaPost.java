@@ -26,6 +26,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "inoltro",
 "promemoriaAvviso",
 "promemoriaRicevuta",
+"visualizzazione",
 })
 public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
@@ -63,6 +64,9 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
   @JsonProperty("promemoriaRicevuta")
   private TipoPendenzaPromemoria promemoriaRicevuta = null;
+  
+  @JsonProperty("visualizzazione")
+  private Object visualizzazione = null;
   
   /**
    **/
@@ -247,6 +251,22 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     this.promemoriaRicevuta = promemoriaRicevuta;
   }
 
+  /**
+   * Definisce come visualizzare la pendenza
+   **/
+  public TipoPendenzaPost visualizzazione(Object visualizzazione) {
+    this.visualizzazione = visualizzazione;
+    return this;
+  }
+
+  @JsonProperty("visualizzazione")
+  public Object getVisualizzazione() {
+    return visualizzazione;
+  }
+  public void setVisualizzazione(Object visualizzazione) {
+    this.visualizzazione = visualizzazione;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -266,12 +286,13 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
         Objects.equals(trasformazione, tipoPendenzaPost.trasformazione) &&
         Objects.equals(inoltro, tipoPendenzaPost.inoltro) &&
         Objects.equals(promemoriaAvviso, tipoPendenzaPost.promemoriaAvviso) &&
-        Objects.equals(promemoriaRicevuta, tipoPendenzaPost.promemoriaRicevuta);
+        Objects.equals(promemoriaRicevuta, tipoPendenzaPost.promemoriaRicevuta) &&
+        Objects.equals(visualizzazione, tipoPendenzaPost.visualizzazione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione);
   }
 
   public static TipoPendenzaPost parse(String json) throws ServiceException, ValidationException  {
@@ -299,6 +320,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     sb.append("    inoltro: ").append(toIndentedString(inoltro)).append("\n");
     sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
+    sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
     sb.append("}");
     return sb.toString();
   }

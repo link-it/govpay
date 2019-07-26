@@ -3,7 +3,7 @@ Feature: Censimento entrate
 Background:
 
 * callonce read('classpath:utils/common-utils.feature')
-* callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 * def entrata = 

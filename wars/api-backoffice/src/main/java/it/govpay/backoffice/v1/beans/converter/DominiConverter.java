@@ -430,6 +430,9 @@ public class DominiConverter {
 		
 		rsModel.setInoltro(tipoVersamentoDominio.getCodApplicazioneDefault());
 		
+		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault() != null)
+			rsModel.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault()));
+		
 		TipoPendenzaDominioPost valori = new TipoPendenzaDominioPost();
 		
 		valori.codificaIUV(tipoVersamentoDominio.getCodificaIuvCustom())
@@ -473,6 +476,9 @@ public class DominiConverter {
 			valori.setValidazione(new RawObject(tipoVersamentoDominio.getValidazioneDefinizioneCustom()));
 		
 		valori.setInoltro(tipoVersamentoDominio.getCodApplicazioneCustom());
+		
+		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom() != null)
+			valori.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom()));
 		
 		rsModel.setValori(valori);
 		
@@ -533,6 +539,9 @@ public class DominiConverter {
 		
 		if(tipoPendenzaRequest.getInoltro() != null)
 			tipoVersamentoDominio.setCodApplicazioneCustom(tipoPendenzaRequest.getInoltro());
+		
+		if(tipoPendenzaRequest.getVisualizzazione() != null)
+			tipoVersamentoDominio.setVisualizzazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getVisualizzazione(),null));
 		
 		tipoPendenzaDTO.setTipoVersamentoDominio(tipoVersamentoDominio);
 		tipoPendenzaDTO.setIdDominio(idDominio);

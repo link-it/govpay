@@ -51,6 +51,7 @@ public class TipoVersamento extends BasicModel {
 	private boolean promemoriaRicevutaPdfDefault;
 	private String promemoriaRicevutaOggettoDefault;
 	private String promemoriaRicevutaMessaggioDefault;
+	private String visualizzazioneDefinizioneDefault;
 
 	public String getCodificaIuvDefault() {
 		return codificaIuvDefault;
@@ -178,6 +179,12 @@ public class TipoVersamento extends BasicModel {
 	}
 	public void setPromemoriaRicevutaTipoDefault(String promemoriaRicevutaTipoDefault) {
 		this.promemoriaRicevutaTipoDefault = promemoriaRicevutaTipoDefault;
+	}
+	public String getVisualizzazioneDefinizioneDefault() {
+		return visualizzazioneDefinizioneDefault;
+	}
+	public void setVisualizzazioneDefinizioneDefault(String visualizzazioneDefinizioneDefault) {
+		this.visualizzazioneDefinizioneDefault = visualizzazioneDefinizioneDefault;
 	}
 
 }

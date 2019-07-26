@@ -178,6 +178,7 @@ public class JDBCTipoVersamentoServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(TipoVersamento.model().PROMEMORIA_RICEVUTA_MESSAGGIO);
 			fields.add(TipoVersamento.model().PROMEMORIA_RICEVUTA_OGGETTO);
 			fields.add(TipoVersamento.model().COD_APPLICAZIONE);
+			fields.add(TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         

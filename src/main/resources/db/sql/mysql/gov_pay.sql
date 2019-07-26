@@ -356,6 +356,7 @@ CREATE TABLE tipi_versamento
 	promemoria_ricevuta_pdf BOOLEAN NOT NULL DEFAULT false COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
 	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
 	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
+	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -389,6 +390,7 @@ CREATE TABLE tipi_vers_domini
 	promemoria_ricevuta_pdf BOOLEAN COMMENT 'Indica se inserire la ricevuta di pagamento come allegato alla mail',
 	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
 	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
+	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',
@@ -1213,4 +1215,34 @@ CREATE VIEW v_riscossioni AS
         SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id JOIN tipi_versamento ON v_riscossioni_con_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_con_rpt.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id           
         UNION
         SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id JOIN tipi_versamento ON v_riscossioni_senza_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_senza_rpt.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
+
+
+CREATE VIEW v_eventi_vers AS (
+	SELECT eventi.componente, 
+	       eventi.ruolo,
+               eventi.categoria_evento, 
+               eventi.tipo_evento, 
+               eventi.sottotipo_evento, 
+               eventi.data, 
+               eventi.intervallo, 
+               eventi.esito, 
+               eventi.sottotipo_esito, 
+               eventi.dettaglio_esito, 
+               eventi.parametri_richiesta, 
+               eventi.parametri_risposta, 
+               eventi.dati_pago_pa, 
+               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente, 
+               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione, 
+               eventi.iuv, 
+               eventi.cod_dominio, 
+               eventi.ccp, 
+               eventi.id_sessione, 
+               eventi.id 
+               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione 
+               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
+               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento 
+               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+         );
+
+
 

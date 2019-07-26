@@ -131,10 +131,11 @@ public class OperatoriConverter {
 		
 		rsModel.setTipiPendenza(idTipiPendenza);
 		
-		if(operatore.getUtenza().getAcls()!=null) {
+		List<Acl> acls = operatore.getUtenza().getAcls();
+		if(acls!=null) {
 			List<AclPost> aclList = new ArrayList<>();
 			
-			for(Acl acl: operatore.getUtenza().getAcls()) {
+			for(Acl acl: acls) {
 				AclPost aclRsModel = AclConverter.toRsModel(acl);
 				if(aclRsModel != null)
 					aclList.add(aclRsModel);

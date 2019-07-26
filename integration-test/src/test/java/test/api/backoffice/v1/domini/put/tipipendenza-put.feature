@@ -17,7 +17,8 @@ Background:
 	"trasformazione": null,
 	"inoltro": null,
 	"promemoriaAvviso": null,
-	"promemoriaRicevuta": null
+	"promemoriaRicevuta": null,
+  "visualizzazione": null
 }
 """
 
@@ -63,4 +64,5 @@ Examples:
 | promemoriaAvviso | { "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "allegaPdf": false } |
 | promemoriaRicevuta | { "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": true } |
 | promemoriaRicevuta | { "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": false } |
-
+| visualizzazione | "eyAidHlwZSI6ICJvYmplY3QiIH0=" |
+| visualizzazione | null |

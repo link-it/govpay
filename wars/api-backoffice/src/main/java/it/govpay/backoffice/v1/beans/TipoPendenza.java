@@ -22,6 +22,7 @@ import it.govpay.core.beans.JSONSerializable;
 "inoltro",
 "promemoriaAvviso",
 "promemoriaRicevuta",
+"visualizzazione",
 "idTipoPendenza",
 })
 public class TipoPendenza extends JSONSerializable {
@@ -58,6 +59,9 @@ public class TipoPendenza extends JSONSerializable {
   
   @JsonProperty("promemoriaRicevuta")
   private TipoPendenzaPromemoria promemoriaRicevuta = null;
+  
+  @JsonProperty("visualizzazione")
+  private Object visualizzazione = null;
   
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
@@ -233,6 +237,22 @@ public class TipoPendenza extends JSONSerializable {
   }
 
   /**
+   * Definisce come visualizzare la pendenza
+   **/
+  public TipoPendenza visualizzazione(Object visualizzazione) {
+    this.visualizzazione = visualizzazione;
+    return this;
+  }
+
+  @JsonProperty("visualizzazione")
+  public Object getVisualizzazione() {
+    return visualizzazione;
+  }
+  public void setVisualizzazione(Object visualizzazione) {
+    this.visualizzazione = visualizzazione;
+  }
+
+  /**
    **/
   public TipoPendenza idTipoPendenza(String idTipoPendenza) {
     this.idTipoPendenza = idTipoPendenza;
@@ -267,12 +287,13 @@ public class TipoPendenza extends JSONSerializable {
         Objects.equals(inoltro, tipoPendenza.inoltro) &&
         Objects.equals(promemoriaAvviso, tipoPendenza.promemoriaAvviso) &&
         Objects.equals(promemoriaRicevuta, tipoPendenza.promemoriaRicevuta) &&
+        Objects.equals(visualizzazione, tipoPendenza.visualizzazione) &&
         Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, idTipoPendenza);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, idTipoPendenza);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -300,6 +321,7 @@ public class TipoPendenza extends JSONSerializable {
     sb.append("    inoltro: ").append(toIndentedString(inoltro)).append("\n");
     sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
+    sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -126,6 +126,7 @@ public class JDBCTipoVersamentoDominioServiceImpl extends JDBCTipoVersamentoDomi
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_PDF,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
@@ -150,6 +151,7 @@ public class JDBCTipoVersamentoDominioServiceImpl extends JDBCTipoVersamentoDomi
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getPromemoriaRicevutaPdf(),TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_PDF.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getPromemoriaRicevutaOggetto(),TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getPromemoriaRicevutaMessaggio(),TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tipoVersamentoDominio.getVisualizzazioneDefinizione(),TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
@@ -275,6 +277,8 @@ public class JDBCTipoVersamentoDominioServiceImpl extends JDBCTipoVersamentoDomi
 		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getPromemoriaRicevutaOggetto(), TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO,false), "?");
 		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getPromemoriaRicevutaMessaggio(), TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_MESSAGGIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTipoVersamentoDominioFieldConverter().toColumn(TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE,false), "?");
+		lstObjects_tipoVersamentoDominio.add(new JDBCObject(tipoVersamentoDominio.getVisualizzazioneDefinizione(), TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento","?");
 		}

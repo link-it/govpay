@@ -31,6 +31,8 @@ public class TipiPendenzaConverter {
 			rsModel.setForm(form);
 		}
 		
+		rsModel.setVisualizzazione(new RawObject(tipoVersamento.getVisualizzazioneDefinizioneDefault()));
+		
 		
 		return rsModel;
 	}

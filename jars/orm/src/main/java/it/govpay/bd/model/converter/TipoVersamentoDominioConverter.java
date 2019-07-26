@@ -65,6 +65,7 @@ public class TipoVersamentoDominioConverter {
 		dto.setPromemoriaRicevutaPdfCustom(vo.getPromemoriaRicevutaPdf());
 		dto.setPromemoriaRicevutaMessaggioCustom(vo.getPromemoriaRicevutaMessaggio());
 		dto.setPromemoriaRicevutaOggettoCustom(vo.getPromemoriaRicevutaOggetto());
+		dto.setVisualizzazioneDefinizioneCustom(vo.getVisualizzazioneDefinizione());
 		
 		dto.setCodTipoVersamento(vo.getTipoVersamento().getCodTipoVersamento());
 		dto.setDescrizione(vo.getTipoVersamento().getDescrizione());
@@ -87,6 +88,7 @@ public class TipoVersamentoDominioConverter {
 		dto.setPromemoriaRicevutaPdfDefault(vo.getTipoVersamento().getPromemoriaRicevutaPdf());
 		dto.setPromemoriaRicevutaMessaggioDefault(vo.getTipoVersamento().getPromemoriaRicevutaMessaggio());
 		dto.setPromemoriaRicevutaOggettoDefault(vo.getTipoVersamento().getPromemoriaRicevutaOggetto());
+		dto.setVisualizzazioneDefinizioneDefault(vo.getTipoVersamento().getVisualizzazioneDefinizione());
 		
 		return dto;
 	}
@@ -118,6 +120,7 @@ public class TipoVersamentoDominioConverter {
 		tipoVersamento.setPromemoriaRicevutaPdf(dto.getPromemoriaRicevutaPdfDefault());
 		tipoVersamento.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioDefault());
 		tipoVersamento.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoDefault());
+		tipoVersamento.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
 		if(dto.getTipoCustom() != null)
@@ -139,6 +142,7 @@ public class TipoVersamentoDominioConverter {
 		vo.setPromemoriaRicevutaPdf(dto.getPromemoriaRicevutaPdfCustom());
 		vo.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioCustom());
 		vo.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoCustom());
+		vo.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneCustom());
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

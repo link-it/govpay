@@ -4865,6 +4865,9 @@ components:
           example: Imposta municipale urbana
         tipo:
           $ref: '#/components/schemas/tipoPendenzaTipologia'
+        visualizzazione:
+          type: object
+          description: Definisce come visualizzare la pendenza
     tipoPendenzaPost:
       type: object
       required:
@@ -4906,6 +4909,9 @@ components:
           $ref: '#/components/schemas/tipoPendenzaPromemoria'
         promemoriaRicevuta:
           $ref: '#/components/schemas/tipoPendenzaPromemoria'
+        visualizzazione:
+          type: object
+          description: Definisce come visualizzare la pendenza 
     tipoPendenza:
       type: object
       allOf:
@@ -5007,6 +5013,9 @@ components:
           $ref: '#/components/schemas/tipoPendenzaPromemoria'
         promemoriaRicevuta:
           $ref: '#/components/schemas/tipoPendenzaPromemoria'
+        visualizzazione:
+          type: object
+          description: Definisce come visualizzare la pendenza
     tipoPendenzaDominio:
       type: object
       allOf:
