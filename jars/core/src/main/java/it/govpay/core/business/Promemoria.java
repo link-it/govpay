@@ -1,6 +1,7 @@
 package it.govpay.core.business;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -21,6 +22,7 @@ import org.openspcoop2.utils.mail.MailBinaryAttach;
 import org.openspcoop2.utils.mail.Sender;
 import org.openspcoop2.utils.mail.SenderFactory;
 import org.openspcoop2.utils.mail.SenderType;
+import org.openspcoop2.utils.resources.Charset;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
@@ -150,10 +152,15 @@ public class Promemoria  extends BasicBD{
 			byte[] templateBytes = Base64.getDecoder().decode(template.getBytes());
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			TrasformazioniUtils.convertFreeMarkerTemplate(nomeTrasformazione, templateBytes , dynamicMap , baos );
+			log.debug("Risultato trasformazione: " + baos.toString());
+			log.debug("Risultato trasformazione UTF-8: " + baos.toString(Charset.UTF_8.getValue()));
 			return baos.toString();
 		} catch (TrasformazioneException e) {
 			log.error("Trasformazione tramite template Freemarker completata con errore: " + e.getMessage(), e);
 			throw e;
+		} catch (UnsupportedEncodingException e) {
+			log.error("Trasformazione tramite template Freemarker completata con errore: " + e.getMessage(), e);
+			throw new ServiceException(e);
 		}
 	}
 

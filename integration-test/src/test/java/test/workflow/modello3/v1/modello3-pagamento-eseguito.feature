@@ -3,7 +3,7 @@ Feature: Pagamento eseguito ad iniziativa PSP
 Background:
 
 * call read('classpath:utils/common-utils.feature')
-* call read('classpath:configurazione/v1/anagrafica.feature')
+* call read('classpath:configurazione/v1/anagrafica_estesa.feature')
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 * def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')

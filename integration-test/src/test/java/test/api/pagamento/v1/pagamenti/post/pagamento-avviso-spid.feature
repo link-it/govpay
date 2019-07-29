@@ -77,7 +77,7 @@ And match response.rpp[0].rpt.soggettoVersante ==
 	localitaVersante: null, 
 	provinciaVersante: null, 
 	nazioneVersante: null,
-	e-mailVersante: 'mrossi@mailserver.host.it'
+	e-mailVersante: 'mario.rossi@host.eu'
 }
 """
 

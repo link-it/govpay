@@ -69,12 +69,31 @@ And match response ==
          "fax":"00 1234 5678",
          "web":"http://www.entecreditore.it",
          "gln":"8088888000000",
-         "logo":"/domini/12345678901/logo"
+         "logo":"/domini/12345678901/logo",
+         "unitaOperative":"/domini/12345678901/unitaOperative",
+         "tipiPendenza":"/domini/12345678901/tipiPendenza"
+      },
+      {
+         "idDominio":"12345678902",
+         "ragioneSociale":"Ente Creditore Test",
+         "indirizzo":"Piazzale Paolino Paperino",
+         "civico":"1",
+         "cap":"00000",
+         "localita":"Roma",
+         "provincia":"RO",
+         "nazione":"IT",
+         "email":"info@entecreditore.it",
+         "pec":"protocollo.generale@pec.entecreditore.it",
+         "tel":"00 1234 5678",
+         "fax":"00 1234 5678",
+         "web":"http://www.entecreditore.it",
+         "gln":"8088888000000",
+         "logo":"/domini/12345678902/logo",
+         "unitaOperative":"/domini/12345678902/unitaOperative",
+         "tipiPendenza":"/domini/12345678902/tipiPendenza"
       }
    ],
-   "tipiPendenza":[
-
-   ],
+   "tipiPendenza":[],
    "acl":[]
 }
 """

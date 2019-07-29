@@ -44,10 +44,152 @@ tags:
   - name: Reportistica
     description: Reportistica sulle operazioni di pagamento effettuate con GovPay
   - name: Configurazioni
-    description: Servizi di configurazione della piattafomra
+    description: Servizi di configurazione della piattaforma
+  - name: Promemoria
+    description: Gestione dei Promemoria inviati dalla piattaforma
+  - name: Notifiche
+    description: Gestione delle Notifiche inviate dalla piattaforma
 security:
   - basicAuth: []
 paths:
+  '/promemoria':
+    get:
+      tags:
+        - Promemoria
+      summary: Elenco dei promemoria gestiti dal sistema
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            maximum: 5000
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di creazione del promemoria
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di creazione del promemoria
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: stato
+          in: query
+          description: filtro sullo stato del promemoria
+          required: false
+          schema:
+            $ref: '#/components/schemas/statoPromemoria'
+        - name: tipo
+          in: query
+          description: filtro sul tipo del promemoria
+          required: false
+          schema:
+            $ref: '#/components/schemas/tipoPromemoria'
+      responses:
+        '200':
+          description: Lista paginata dei promemoria ricercati
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/promemoriaIndex'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+  '/notifiche':
+    get:
+      tags:
+        - Notifiche
+      summary: Elenco delle notifiche gestite dal sistema
+      parameters:
+        - in: query
+          name: pagina
+          description: Numero di pagina dei risultati
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: risultatiPerPagina
+          description: Numero massimo di risultati nella risposta
+          required: false
+          schema:
+            type: integer
+            maximum: 5000
+        - in: query
+          name: dataDa
+          description: Filtro sulla data di creazione della notifica
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dataA
+          description: Filtro sulla data di creazione della notifica
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: stato
+          in: query
+          description: filtro sullo stato della notifica
+          required: false
+          schema:
+            $ref: '#/components/schemas/statoNotifica'
+        - name: tipo
+          in: query
+          description: filtro sul tipo della notifica
+          required: false
+          schema:
+            $ref: '#/components/schemas/tipoNotifica'
+      responses:
+        '200':
+          description: Lista paginata delle notifiche ricercate
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/listaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/notificaIndex'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
   '/reportistiche/entrate-previste':
     get:
       tags:
@@ -7015,3 +7157,104 @@ components:
           type: number
           description: Anno di riferimento della pendenza
           example: 2019
+    statoNotifica:
+      example: SPEDITA
+      type: string
+      enum:
+        - SPEDITA
+        - DA_SPEDIRE
+        - ANNULLATA
+    tipoNotifica:
+      example: ATTIVAZIONE
+      type: string
+      enum:
+        - ATTIVAZIONE
+        - RICEVUTA
+        - ANNULLAMENTO
+        - FALLIMENTO
+    statoPromemoria:
+      example: SPEDITO
+      type: string
+      enum:
+        - SPEDITO
+        - DA_SPEDIRE
+        - ANNULLATO
+        - FALLITO
+    tipoPromemoria:
+      example: AVVISO_PAGAMENTO
+      type: string
+      enum:
+        - AVVISO_PAGAMENTO
+        - RICEVUTA_TELEMATICA
+    notificaIndex:
+      type: object
+      required:
+        - tipo
+        - dataCreazione
+        - stato
+      properties:
+        tipo:
+          $ref: '#/components/schemas/tipoNotifica'
+        dataCreazione:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data di creazione della notifica
+        stato:
+          $ref: '#/components/schemas/statoNotifica'
+        descrizioneStato:
+          type: string
+          description: Descrizione estesa dello stato
+          example: "Operazione Completata con successo"
+        dataUltimoAggiornamento:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data ultimo aggiornamento della notifica
+        dataProssimaSpedizione:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data di prossima spedizione della notifica
+        numeroTentativi:
+          type: number
+          description: Numero di tentativi di spedizione della notifica
+          example: 1
+        idA2A:
+          type: string
+          description: Identificativo applicazione
+          example: "IDA2A"
+    promemoriaIndex:
+      type: object
+      required:
+        - tipo
+        - dataCreazione
+        - stato
+      properties:
+        tipo:
+          $ref: '#/components/schemas/tipoPromemoria'
+        dataCreazione:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data di creazione del promemoria
+        stato:
+          $ref: '#/components/schemas/statoPromemoria'
+        descrizioneStato:
+          type: string
+          description: Descrizione estesa dello stato
+          example: "Operazione Completata con successo"
+        dataUltimoAggiornamento:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data ultimo aggiornamento del promemoria
+        dataProssimaSpedizione:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:00'
+          description: Data di prossima spedizione del promemoria
+        numeroTentativi:
+          type: number
+          description: Numero di tentativi di spedizione del promemoria
+          example: 1

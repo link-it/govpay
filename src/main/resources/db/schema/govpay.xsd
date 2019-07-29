@@ -2314,7 +2314,7 @@
 					<linkit:interface crud="true" id="id-promemoria"/>
 					<linkit:sql-table-mapping generate-sql="true" name="promemoria"
 						on-delete-cascade="false">
-						<linkit:sql-table-constraint foreign-key="fk_ntf"/>
+						<linkit:sql-table-constraint foreign-key="fk_prm"/>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>

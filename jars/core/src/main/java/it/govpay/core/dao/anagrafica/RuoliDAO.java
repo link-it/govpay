@@ -75,6 +75,7 @@ public class RuoliDAO extends BaseDAO{
 			filter.setOffset(listaRuoliDTO.getOffset());
 			filter.setLimit(listaRuoliDTO.getLimit());
 			filter.setForceRuolo(true);
+			filter.getFilterSortList().addAll(listaRuoliDTO.getFieldSortList());
 			
 			long count = rptBD.countRuoli(filter);
 	
