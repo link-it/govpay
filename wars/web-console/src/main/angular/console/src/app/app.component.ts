@@ -1,4 +1,4 @@
-import { AfterContentChecked, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterContentChecked, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material';
 
 import { LinkService } from './services/link.service';
@@ -17,7 +17,7 @@ import { ModalBehavior } from './classes/modal-behavior';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterContentChecked {
+export class AppComponent implements OnInit, AfterContentChecked {
   @HostListener('window:resize') onResize() {
     let sub = this.ls.getRouterStateConfig();
     this._headerMenuIcon = UtilService.PROFILO_UTENTE && (!this.ls.checkLargeMediaMatch().matches && !this._headerBackIcon);
