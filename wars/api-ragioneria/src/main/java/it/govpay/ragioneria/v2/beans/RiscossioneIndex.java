@@ -10,25 +10,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"idDominio",
+"dominio",
 "iuv",
 "iur",
 "indice",
-"pendenza",
-"vocePendenza",
-"rpp",
 "stato",
 "tipo",
 "importo",
 "data",
-"commissioni",
-"allegato",
-"incasso",
+"vocePendenza",
+"riconciliazione",
 })
 public class RiscossioneIndex extends JSONSerializable {
   
-  @JsonProperty("idDominio")
-  private String idDominio = null;
+  @JsonProperty("dominio")
+  private Dominio dominio = null;
   
   @JsonProperty("iuv")
   private String iuv = null;
@@ -38,15 +34,6 @@ public class RiscossioneIndex extends JSONSerializable {
   
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
-  @JsonProperty("pendenza")
-  private String pendenza = null;
-  
-  @JsonProperty("vocePendenza")
-  private VocePendenza vocePendenza = null;
-  
-  @JsonProperty("rpp")
-  private String rpp = null;
   
   @JsonProperty("stato")
   private StatoRiscossione stato = null;
@@ -60,28 +47,25 @@ public class RiscossioneIndex extends JSONSerializable {
   @JsonProperty("data")
   private Date data = null;
   
-  @JsonProperty("commissioni")
-  private BigDecimal commissioni = null;
+  @JsonProperty("vocePendenza")
+  private VocePendenza vocePendenza = null;
   
-  @JsonProperty("allegato")
-  private Allegato allegato = null;
-  
-  @JsonProperty("incasso")
-  private String incasso = null;
+  @JsonProperty("riconciliazione")
+  private String riconciliazione = null;
   
   /**
    **/
-  public RiscossioneIndex idDominio(String idDominio) {
-    this.idDominio = idDominio;
+  public RiscossioneIndex dominio(Dominio dominio) {
+    this.dominio = dominio;
     return this;
   }
 
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return this.idDominio;
+  @JsonProperty("dominio")
+  public Dominio getDominio() {
+    return dominio;
   }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
+  public void setDominio(Dominio dominio) {
+    this.dominio = dominio;
   }
 
   /**
@@ -94,7 +78,7 @@ public class RiscossioneIndex extends JSONSerializable {
 
   @JsonProperty("iuv")
   public String getIuv() {
-    return this.iuv;
+    return iuv;
   }
   public void setIuv(String iuv) {
     this.iuv = iuv;
@@ -110,7 +94,7 @@ public class RiscossioneIndex extends JSONSerializable {
 
   @JsonProperty("iur")
   public String getIur() {
-    return this.iur;
+    return iur;
   }
   public void setIur(String iur) {
     this.iur = iur;
@@ -126,57 +110,10 @@ public class RiscossioneIndex extends JSONSerializable {
 
   @JsonProperty("indice")
   public BigDecimal getIndice() {
-    return this.indice;
+    return indice;
   }
   public void setIndice(BigDecimal indice) {
     this.indice = indice;
-  }
-
-  /**
-   * Url della pendenza oggetto della riscossione
-   **/
-  public RiscossioneIndex pendenza(String pendenza) {
-    this.pendenza = pendenza;
-    return this;
-  }
-
-  @JsonProperty("pendenza")
-  public String getPendenza() {
-    return this.pendenza;
-  }
-  public void setPendenza(String pendenza) {
-    this.pendenza = pendenza;
-  }
-
-  /**
-   **/
-  public RiscossioneIndex vocePendenza(VocePendenza vocePendenza) {
-    this.vocePendenza = vocePendenza;
-    return this;
-  }
-
-  @JsonProperty("vocePendenza")
-  public VocePendenza getVocePendenza() {
-    return this.vocePendenza;
-  }
-  public void setVocePendenza(VocePendenza vocePendenza) {
-    this.vocePendenza = vocePendenza;
-  }
-
-  /**
-   * Url richiesta di pagamento che ha realizzato la riscossione. Se non valorizzato, si tratta di un pagamento senza RPT
-   **/
-  public RiscossioneIndex rpp(String rpp) {
-    this.rpp = rpp;
-    return this;
-  }
-
-  @JsonProperty("rpp")
-  public String getRpp() {
-    return this.rpp;
-  }
-  public void setRpp(String rpp) {
-    this.rpp = rpp;
   }
 
   /**
@@ -188,7 +125,7 @@ public class RiscossioneIndex extends JSONSerializable {
 
   @JsonProperty("stato")
   public StatoRiscossione getStato() {
-    return this.stato;
+    return stato;
   }
   public void setStato(StatoRiscossione stato) {
     this.stato = stato;
@@ -203,7 +140,7 @@ public class RiscossioneIndex extends JSONSerializable {
 
   @JsonProperty("tipo")
   public TipoRiscossione getTipo() {
-    return this.tipo;
+    return tipo;
   }
   public void setTipo(TipoRiscossione tipo) {
     this.tipo = tipo;
@@ -219,7 +156,7 @@ public class RiscossioneIndex extends JSONSerializable {
 
   @JsonProperty("importo")
   public BigDecimal getImporto() {
-    return this.importo;
+    return importo;
   }
   public void setImporto(BigDecimal importo) {
     this.importo = importo;
@@ -235,57 +172,41 @@ public class RiscossioneIndex extends JSONSerializable {
 
   @JsonProperty("data")
   public Date getData() {
-    return this.data;
+    return data;
   }
   public void setData(Date data) {
     this.data = data;
   }
 
   /**
-   * Importo delle commissioni applicate al pagamento dal PSP
    **/
-  public RiscossioneIndex commissioni(BigDecimal commissioni) {
-    this.commissioni = commissioni;
+  public RiscossioneIndex vocePendenza(VocePendenza vocePendenza) {
+    this.vocePendenza = vocePendenza;
     return this;
   }
 
-  @JsonProperty("commissioni")
-  public BigDecimal getCommissioni() {
-    return this.commissioni;
+  @JsonProperty("vocePendenza")
+  public VocePendenza getVocePendenza() {
+    return vocePendenza;
   }
-  public void setCommissioni(BigDecimal commissioni) {
-    this.commissioni = commissioni;
+  public void setVocePendenza(VocePendenza vocePendenza) {
+    this.vocePendenza = vocePendenza;
   }
 
   /**
+   * Riferimento all'operazione di riconciliazione, se avvenuta
    **/
-  public RiscossioneIndex allegato(Allegato allegato) {
-    this.allegato = allegato;
+  public RiscossioneIndex riconciliazione(String riconciliazione) {
+    this.riconciliazione = riconciliazione;
     return this;
   }
 
-  @JsonProperty("allegato")
-  public Allegato getAllegato() {
-    return this.allegato;
+  @JsonProperty("riconciliazione")
+  public String getRiconciliazione() {
+    return riconciliazione;
   }
-  public void setAllegato(Allegato allegato) {
-    this.allegato = allegato;
-  }
-
-  /**
-   * Riferimento all'operazione di incasso
-   **/
-  public RiscossioneIndex incasso(String incasso) {
-    this.incasso = incasso;
-    return this;
-  }
-
-  @JsonProperty("incasso")
-  public String getIncasso() {
-    return this.incasso;
-  }
-  public void setIncasso(String incasso) {
-    this.incasso = incasso;
+  public void setRiconciliazione(String riconciliazione) {
+    this.riconciliazione = riconciliazione;
   }
 
   @Override
@@ -293,29 +214,25 @@ public class RiscossioneIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     RiscossioneIndex riscossioneIndex = (RiscossioneIndex) o;
-    return Objects.equals(this.idDominio, riscossioneIndex.idDominio) &&
-        Objects.equals(this.iuv, riscossioneIndex.iuv) &&
-        Objects.equals(this.iur, riscossioneIndex.iur) &&
-        Objects.equals(this.indice, riscossioneIndex.indice) &&
-        Objects.equals(this.pendenza, riscossioneIndex.pendenza) &&
-        Objects.equals(this.vocePendenza, riscossioneIndex.vocePendenza) &&
-        Objects.equals(this.rpp, riscossioneIndex.rpp) &&
-        Objects.equals(this.stato, riscossioneIndex.stato) &&
-        Objects.equals(this.tipo, riscossioneIndex.tipo) &&
-        Objects.equals(this.importo, riscossioneIndex.importo) &&
-        Objects.equals(this.data, riscossioneIndex.data) &&
-        Objects.equals(this.commissioni, riscossioneIndex.commissioni) &&
-        Objects.equals(this.allegato, riscossioneIndex.allegato) &&
-        Objects.equals(this.incasso, riscossioneIndex.incasso);
+    return Objects.equals(dominio, riscossioneIndex.dominio) &&
+        Objects.equals(iuv, riscossioneIndex.iuv) &&
+        Objects.equals(iur, riscossioneIndex.iur) &&
+        Objects.equals(indice, riscossioneIndex.indice) &&
+        Objects.equals(stato, riscossioneIndex.stato) &&
+        Objects.equals(tipo, riscossioneIndex.tipo) &&
+        Objects.equals(importo, riscossioneIndex.importo) &&
+        Objects.equals(data, riscossioneIndex.data) &&
+        Objects.equals(vocePendenza, riscossioneIndex.vocePendenza) &&
+        Objects.equals(riconciliazione, riscossioneIndex.riconciliazione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.idDominio, this.iuv, this.iur, this.indice, this.pendenza, this.vocePendenza, this.rpp, this.stato, this.tipo, this.importo, this.data, this.commissioni, this.allegato, this.incasso);
+    return Objects.hash(dominio, iuv, iur, indice, stato, tipo, importo, data, vocePendenza, riconciliazione);
   }
 
   public static RiscossioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -332,20 +249,16 @@ public class RiscossioneIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class RiscossioneIndex {\n");
     
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
-    sb.append("    iur: ").append(this.toIndentedString(this.iur)).append("\n");
-    sb.append("    indice: ").append(this.toIndentedString(this.indice)).append("\n");
-    sb.append("    pendenza: ").append(this.toIndentedString(this.pendenza)).append("\n");
-    sb.append("    vocePendenza: ").append(this.toIndentedString(this.vocePendenza)).append("\n");
-    sb.append("    rpp: ").append(this.toIndentedString(this.rpp)).append("\n");
-    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
-    sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    data: ").append(this.toIndentedString(this.data)).append("\n");
-    sb.append("    commissioni: ").append(this.toIndentedString(this.commissioni)).append("\n");
-    sb.append("    allegato: ").append(this.toIndentedString(this.allegato)).append("\n");
-    sb.append("    incasso: ").append(this.toIndentedString(this.incasso)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
+    sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
+    sb.append("    iur: ").append(toIndentedString(iur)).append("\n");
+    sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
+    sb.append("    vocePendenza: ").append(toIndentedString(vocePendenza)).append("\n");
+    sb.append("    riconciliazione: ").append(toIndentedString(riconciliazione)).append("\n");
     sb.append("}");
     return sb.toString();
   }

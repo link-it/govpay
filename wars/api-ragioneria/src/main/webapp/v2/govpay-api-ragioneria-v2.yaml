@@ -330,13 +330,6 @@ components:
       schema:
         type: string
         example: Divisione001               
-    esitoPagamento:
-      name: esitoPagamento
-      in: query
-      description: Filtro sullo stato del pendenza
-      required: false
-      schema:
-        $ref: '#/components/schemas/EsitoRpp'
     campi:
       name: campi
       in: query
@@ -468,36 +461,10 @@ components:
           type: string
           description: principal a cui si applica l'acl
           example: user001
-        servizi:
+        servizio:
           $ref: "#/components/schemas/TipoServizio"
         autorizzazioni:
           $ref: "#/components/schemas/TipoAutorizzazione"  
-    Allegato:
-      type: object
-      required:
-        - tipo
-        - testo
-      properties:
-        tipo:
-          description: Tipologia di allegato
-          type: string
-          example: Marca da bollo
-          enum:
-            - Esito pagamento
-            - Marca da bollo
-        testo:
-          type: object
-          example: 
-            marcaDaBollo:
-            PSP:
-              CodiceFiscale: 99999999999
-              Denominazione: Banco di Ponzi S.p.A.
-            IUBD: 5563448914138
-            OraAcquisto: 2018-12-31T14:56:42+0200
-            Importo: 10.01
-            TipoBollo: 01
-            ImprontaDocumento: ...
-            Signature: ...
     Dominio:
       type: object
       required:
@@ -516,17 +483,6 @@ components:
           example: Ufficio due
           minLength: 1
           maxLength: 70
-    EsitoRpp:
-      example: Eseguito
-      type: string
-      enum:
-        - In corso
-        - Rifiutata
-        - Eseguita
-        - Non eseguita
-        - Parzialmente eseguita
-        - Decorsa
-        - Parzialmente decorsa     
     FaultBean:
       type: object
       required:
@@ -591,6 +547,7 @@ components:
         - idDominio
         - numeroPagamenti
         - importoTotale
+        - stato
       properties:
         idFlusso:
           type: string
@@ -630,7 +587,13 @@ components:
           type: number
           description: somma degli importi rendicontati
           format: double
-          example: 100.01                
+          example: 100.01      
+        stato:
+          $ref: '#/components/schemas/StatoFlussoRendicontazione'
+        segnalazioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/Segnalazione'
     Limit:     
       type: integer
       format: int32
@@ -660,12 +623,6 @@ components:
           type: string
           format: integer
           example: '/risorsa?pagina=2' 
-    ModalitaAvvisaturaDigitale:
-      example: Batch
-      type: string
-      enum:
-        - Batch
-        - Immediata    
     NuovaRiconciliazione:
       allOf:
         - type: object
@@ -726,13 +683,82 @@ components:
       minimum: 0    
     Pagina:
       type: integer
-      default: 1                             
+      default: 1
+    Pendenza:
+      type: object
+      description: Dati della pendenza
+      required:
+        - idA2A
+        - idPendenza
+        - dataCaricamento
+      properties:
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: A2A-12345
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: abcdef12345
+        idDominio:
+          type: string
+          description: Identificativo del dominio creditore
+          example: 1234567890
+        idUnitaOperativa:
+          type: string
+          description: Identificativo dell'unita' operativa
+          example: UO33132
+        idTipoPendenza:
+          type: string
+          description: Identificativo della tipologia pendenza
+          example: IMU
+        causale:
+          type: string
+          description: Descrizione da inserire nell'avviso di pagamento
+          example: 'Sanzione CdS n. abc00000'
+          maxLength: 140     
+        dataCaricamento:
+          type: string
+          format: date
+          description: Data di emissione della pendenza
+          example: '2010-12-31'
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+          example: '2019-12-31'
+        dataScadenza:
+          type: string
+          format: date
+          description: Data di scadenza della pendenza, decorsa la quale non è più pagabile.
+          example: '2020-12-31'
+        annoRiferimento:
+          type: number
+          description: Anno di riferimento della pendenza
+          example: 2020
+        cartellaPagamento:
+          type: string
+          description: Identificativo della cartella di pagamento a cui afferisce la pendenza
+          example: ABC00000001
+        datiAllegati:
+          type: object
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+        tassonomiaAvviso:
+          $ref: '#/components/schemas/TassonomiaAvviso'
+        direzione:
+          type: string
+          description: Identificativo della direzione interna all'ente creditore
+          example: Direzione ABC
+        divisione:
+          type: string
+          description: Identificativo della divisione interna all'ente creditore
+          example: Divisione001
     Profilo:
       type: object
       required: 
         - nome
         - domini
-        - entrate
+        - tipiPendenza
         - acl
       properties:
         nome:
@@ -743,11 +769,11 @@ components:
           description: domini su cui e' abilitato ad operare
           items: 
             $ref: '#/components/schemas/Dominio'
-        entrate:
+        tipiPendenza:
           type: array
-          description: entrate su cui e' abilitato ad operare
-          items: 
-            $ref: '#/components/schemas/TipoEntrata'
+          description: tipologie di pendenza su cui e' abilitato ad operare
+          items:
+            $ref: '#/components/schemas/TipoPendenza'
         acl:
           type: array
           items:
@@ -800,22 +826,7 @@ components:
           items:
             $ref: '#/components/schemas/Segnalazione'
         riscossione:
-          type: object
-          properties:
-            tipo:
-              $ref: '#/components/schemas/TipoRiscossione'
-            importo:
-              type: number
-              description: >-
-                Importo riscosso. 
-              example: 10.01
-            data:
-              type: string
-              format: date
-              description: Data di esecuzione della riscossione
-              example: '2020-12-31'
-            vocePendenza:
-              $ref: '#/components/schemas/VocePendenza'                 
+          $ref: '#/components/schemas/RiscossioneIndex'
     Riconciliazione:
       type: object
       allOf:
@@ -1077,22 +1088,6 @@ components:
         - Acquisito
         - Anomalo
         - Rifiutato          
-    StatoPendenza:
-      example: NON_ESEGUITO
-      type: string
-      enum:
-        - ESEGUITA
-        - NON_ESEGUITA
-        - ESEGUITA_PARZIALE
-        - ANNULLATA
-        - SCADUTA
-      description: >-
-        Stato della pendenza: 
-         * ESEGUITA: Pagata
-         * NON_ESEGUITA: Da pagare
-         * ESEGUITA_PARZIALE: Pagata parzialmente
-         * ANNULLATA: Annullata
-         * SCADUTA: Scaduta
     StatoRiscossione:
       description: Stato della riscossione
       example: RISCOSSA
@@ -1100,6 +1095,25 @@ components:
       enum:
         - RISCOSSA
         - INCASSATA
+    TassonomiaAvviso:
+      description: Macro categoria della pendenza Agid
+      type: string
+      enum:
+        - Cartelle esattoriali
+        - Diritti e concessioni
+        - Imposte e tasse
+        - IMU, TASI e altre tasse comunali
+        - Ingressi a mostre e musei
+        - Multe e sanzioni amministrative
+        - Previdenza e infortuni
+        - Servizi erogati dal comune
+        - Servizi erogati da altri enti
+        - Servizi scolastici
+        - Tassa automobilistica
+        - Ticket e prestazioni sanitarie
+        - Trasporti, mobilità e parcheggi
+      example: 
+        Ticket e prestazioni sanitarie 
     TipoAutorizzazione:
       type: array
       items:
@@ -1110,33 +1124,18 @@ components:
       example:
         - Lettura
         - Scrittura 
-    TipoContabilita:
-      description: Tipologia di codifica del capitolo di bilancio
-      type: string
-      enum:
-        - CAPITOLO
-        - SPECIALE
-        - SIOPE
-        - ALTRO
-      example: SIOPE                            
-    TipoEntrata:
+    TipoPendenza:
       type: object
       required:
-       - idEntrata
-       - tipoContabilita
-       - codiceContabilita
+        - idTipoPendenza
+        - descrizione
       properties:
-        idEntrata:
+        idTipoPendenza:
           type: string
-          example: IMU
-        tipoContabilita:
-          $ref: '#/components/schemas/TipoContabilita'
-        codiceContabilita:
-          description: Codifica del capitolo di bilancio
+          example: REFNIDO
+        descrizione:
           type: string
-          example: 3321
-          minLength: 1
-          maxLength: 135          
+          example: Refezione scolastica Asilo Nido         
     TipoRiscossione:
       description: > 
         Tipologia della voce riscossa
@@ -1172,38 +1171,30 @@ components:
     VocePendenza:
       type: object
       required:
-        - idA2A
-        - idPendenza
-        - descrizionePendenza
         - idVocePendenza
-        - descrizioneVocePendenza
+        - pendenza
       properties:
-        idA2A:
-          type: string
-          description: Identificativo del gestionale responsabile della pendenza
-          example: A2A-12345
-        idPendenza:
-          type: string
-          description: Identificativo della pendenza nel gestionale responsabile
-          example: abcdef12345
-        descrizionePendenza:
-          type: string
-          description: Descrizione da inserire nell'avviso di pagamento
-          example: 'Sanzione CdS n. abc00000'
-          maxLength: 140     
+        indice:
+          type: number
+          description: indice di voce all'interno della pendenza
+          example: 1
         idVocePendenza:
           type: string
           description: Identificativo della voce di pedenza nel gestionale proprietario
-          example: abcdef12345_1           
-        descrizioneVocePendenza:
+          example: abcdef12345_1   
+        importo:
+          type: number
+          description: Importo della voce
+          example: 10.01
+        descrizione:
           type: string
           description: descrizione della voce di pagamento
           example: Sanzione CdS n. abc00000
           minLength: 1
           maxLength: 140  
-        datiAllegatiPendenza:                
+        datiAllegati:
           type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
-        datiAllegatiVocePendenza:
-          type: object
-          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.      
+          description: Dati applicativi allegati dal gestionale secondo un formato proprietario.  
+        pendenza:
+          $ref: '#/components/schemas/Pendenza'
+            

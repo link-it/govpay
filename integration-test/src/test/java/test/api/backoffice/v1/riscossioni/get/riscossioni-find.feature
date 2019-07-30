@@ -2,7 +2,7 @@ Feature: Ricerca delle riscossioni
 
 Background:
 
-* callonce read('classpath:utils/api/ragioneria/bunch-riconciliazioni-v2.feature')
+* callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
 
 Scenario Outline: Ricerca riscossioni da applicazione <applicazione>.
 

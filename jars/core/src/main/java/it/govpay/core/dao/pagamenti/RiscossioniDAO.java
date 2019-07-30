@@ -103,6 +103,8 @@ public class RiscossioniDAO extends BaseDAO{
 		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
 		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
 		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(bd);
 		pagamento.getSingoloVersamento(bd).getTributo(bd);
 		pagamento.getSingoloVersamento(bd).getCodContabilita(bd);
 		pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);

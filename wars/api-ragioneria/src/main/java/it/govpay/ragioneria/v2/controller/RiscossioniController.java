@@ -28,7 +28,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.ragioneria.v2.beans.ListaRiscossioni;
+import it.govpay.ragioneria.v2.beans.Riscossioni;
 import it.govpay.ragioneria.v2.beans.Riscossione;
 import it.govpay.ragioneria.v2.beans.RiscossioneIndex;
 import it.govpay.ragioneria.v2.beans.StatoRiscossione;
@@ -45,8 +45,8 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response riscossioniIdDominioIuvIurIndiceGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String iur, Integer indice) {
-    	String methodName = "riscossioniIdDominioIuvIurIndiceGET";  
+    public Response getRiscossione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String iur, Integer indice) {
+    	String methodName = "getRiscossione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -89,8 +89,8 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response riscossioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
-    	String methodName = "riscossioniGET";  
+    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo) {
+    	String methodName = "findRiscossioni";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -156,7 +156,7 @@ public class RiscossioniController extends BaseController {
 			}
 			
 
-			ListaRiscossioni response = new ListaRiscossioni(lst, 
+			Riscossioni response = new Riscossioni(lst, 
 					uriInfo.getRequestUri(), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 

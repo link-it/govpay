@@ -4,33 +4,19 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
-* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+* callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Scenario: Riconciliazione singola IUV non ISO
 
-* def tipoRicevuta = "R01"
-* def riversamentoCumulativo = "false"
-* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 
-* def importo = response.response.rh[0].importo
-* def causale = response.response.rh[0].causale
+* call sleep(1000)
+* def dataInizio = getDateTime()
+* call sleep(1000)
 
-* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
-Given url ragioneriaBaseurl
-And path '/riconciliazioni', idDominio
-And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
-When method post
-Then status 201
-And match response == read('msg/riconciliazione-singola-response.json')
-
-Scenario: Idempotenza riconciliazione singola IUV non ISO
+## idRiconciliazioneSin_DOM1_A2A
 
 * def tipoRicevuta = "R01"
 * def riversamentoCumulativo = "false"
@@ -41,33 +27,54 @@ Scenario: Idempotenza riconciliazione singola IUV non ISO
 * def causale = response.response.rh[0].causale
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
-* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
-And headers basicAutenticationHeader
+And headers idA2ABasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' }
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-singola-response.json')
 
-* def response1 = response
+* def idRiconciliazioneSin_DOM1_A2A = response.idRiconciliazione
+* def riconciliazioneSin_DOM1_A2A = response
+
+## idRiconciliazioneSin_DOM1_A2A2
+
+* def tipoRicevuta = "R01"
+* def riversamentoCumulativo = "false"
+* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+
+* def importo = response.response.rh[0].importo
+* def causale = response.response.rh[0].causale
+
+* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
-And headers basicAutenticationHeader
+And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' }
 When method post
-Then status 200
-And match response == response1
+Then status 201
 
-Scenario: Riconciliazione singola IUV ISO
+* def idRiconciliazioneSin_DOM1_A2A2 = response.idRiconciliazione
+* def riconciliazioneSin_DOM1_A2A2 = response
+
+## idRiconciliazioneCum_DOM1_A2A
 
 * def tipoRicevuta = "R01"
-* def cumulativo = "0"
-* call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo.feature')
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* def riversamentoCumulativo = "true"
 
+* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* def iuv1 = iuv
+* def importo1 = importo
+
+* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* def iuv2 = iuv
+* def importo2 = importo
+
+* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * def importo = response.response.rh[0].importo
 * def causale = response.response.rh[0].causale
 
@@ -77,19 +84,28 @@ Scenario: Riconciliazione singola IUV ISO
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
-And headers basicAutenticationHeader
+And headers idA2ABasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' }
 When method post
 Then status 201
-And match response == read('msg/riconciliazione-singola-response.json')
 
-Scenario: Idempotenza riconciliazione singola IUV ISO
+* def idRiconciliazioneCum_DOM1_A2A = response.idRiconciliazione
+* def riconciliazioneCum_DOM1_A2A = response
+
+## idRiconciliazioneCum_DOM1_A2A2
 
 * def tipoRicevuta = "R01"
-* def cumulativo = "0"
-* call read('classpath:utils/workflow/modello1/v2/modello1-pagamento-spontaneo.feature')
-* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* def riversamentoCumulativo = "true"
 
+* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* def iuv1 = iuv
+* def importo1 = importo
+
+* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* def iuv2 = iuv
+* def importo2 = importo
+
+* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * def importo = response.response.rh[0].importo
 * def causale = response.response.rh[0].causale
 
@@ -99,19 +115,15 @@ Scenario: Idempotenza riconciliazione singola IUV ISO
 
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
-And headers basicAutenticationHeader
+And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' }
 When method post
 Then status 201
-And match response == read('msg/riconciliazione-singola-response.json')
 
-* def response1 = response
+* def idRiconciliazioneCum_DOM1_A2A2 = response.idRiconciliazione
+* def riconciliazioneSin_DOM1_A2A2 = response
 
-Given url ragioneriaBaseurl
-And path '/riconciliazioni', idDominio
-And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
-When method post
-Then status 200
-And match response == response1
+* call sleep(1000)
+* def dataFine = getDateTime()
+* call sleep(1000)
 

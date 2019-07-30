@@ -42,7 +42,7 @@ Then assert responseStatus == 200
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Given url ragioneriaBaseurl
-And path '/incassi', idDominio
+And path '/riconciliazioni', idDominio
 And headers basicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' }
 When method post

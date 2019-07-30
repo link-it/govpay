@@ -51,9 +51,8 @@
         
    	<!-- JAX-RS Service Impl -->
 
-  	<b:bean id="dominiV2" class="it.govpay.ragioneria.v2.Domini"/>
    	<b:bean id="flussiRendicontazioneV2" class="it.govpay.ragioneria.v2.FlussiRendicontazione"/>
-   	<b:bean id="incassiV2" class="it.govpay.ragioneria.v2.Incassi"/>
+   	<b:bean id="riconciliazioniV2" class="it.govpay.ragioneria.v2.Riconciliazioni"/>
    	<b:bean id="profiloV2" class="it.govpay.ragioneria.v2.Profilo"/>
    	<b:bean id="riscossioniV2" class="it.govpay.ragioneria.v2.Riscossioni"/>
        
@@ -62,9 +61,8 @@
    <!-- BASIC_START -->
     <jaxrs:server id="apiRagioneriaBasicV2" address="/basic/v2/">
         <jaxrs:serviceBeans>
-               	<ref bean="dominiV2" />
 			   	<ref bean="flussiRendicontazioneV2" />
-			   	<ref bean="incassiV2" />
+			   	<ref bean="riconciliazioniV2" />
 			   	<ref bean="profiloV2" />
 			   	<ref bean="riscossioniV2" />
         </jaxrs:serviceBeans>
@@ -85,9 +83,8 @@
    <!-- SSL_START -->
     <jaxrs:server id="apiRagioneriaSSLV2" address="/ssl/v2/">
         <jaxrs:serviceBeans>
-               	<ref bean="dominiV2" />
 			   	<ref bean="flussiRendicontazioneV2" />
-			   	<ref bean="incassiV2" />
+			   	<ref bean="riconciliazioniV2" />
 			   	<ref bean="profiloV2" />
 			   	<ref bean="riscossioniV2" />
         </jaxrs:serviceBeans>
@@ -108,9 +105,8 @@
     <!-- HEADER_START -->
     <jaxrs:server id="apiRagioneriaHeaderV2" address="/header/v2/">
         <jaxrs:serviceBeans>
-               	<ref bean="dominiV2" />
 			   	<ref bean="flussiRendicontazioneV2" />
-			   	<ref bean="incassiV2" />
+			   	<ref bean="riconciliazioniV2" />
 			   	<ref bean="profiloV2" />
 			   	<ref bean="riscossioniV2" />
         </jaxrs:serviceBeans>

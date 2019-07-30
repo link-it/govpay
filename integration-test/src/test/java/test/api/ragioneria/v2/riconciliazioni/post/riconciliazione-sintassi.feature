@@ -13,7 +13,7 @@ Scenario Outline: Errore di validazione della richiesta: <scenario>
 * set <fieldRequest> = <fieldValue>
 
 Given url ragioneriaBaseurl
-And path '/incassi', idDominio
+And path '/riconciliazioni', idDominio
 And headers basicAutenticationHeader
 And request incassoPost
 When method post

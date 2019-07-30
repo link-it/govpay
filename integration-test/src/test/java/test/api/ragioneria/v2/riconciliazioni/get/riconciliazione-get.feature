@@ -2,7 +2,7 @@ Feature: Errori di validazione sintattica della richiesta di riconciliazione
 
 Background:
 
-* callonce read('classpath:utils/api/ragioneria/bunch-riconciliazioni.feature')
+* callonce read('classpath:utils/api/v2/ragioneria/bunch-riconciliazioni.feature')
 * def errore_auth = read('msg/errore_auth.json')
 
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della riconciliazione [<idRiconciliazione>]
@@ -21,7 +21,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 
 Given url ragioneriaBaseurl
-And path '/incassi', idDominio, <idRiconciliazione>
+And path '/riconciliazioni', idDominio, <idRiconciliazione>
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status <httpStatus>

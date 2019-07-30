@@ -1,5 +1,9 @@
 package it.govpay.ragioneria.v2.beans;
 
+/**
+ * Stato della riscossione
+ **/
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -29,7 +33,7 @@ public enum StatoRiscossione {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(this.value);
+    return String.valueOf(value);
   }
 
   @JsonCreator

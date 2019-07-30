@@ -13,24 +13,16 @@ import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"causale",
-"iuv",
-"idFlusso",
 "importo",
 "dataValuta",
 "dataContabile",
-"ibanAccredito",
+"contoAccredito",
+"sct",
+"causale",
+"iuv",
+"idFlusso",
 })
-public class IncassoPost extends JSONSerializable  implements IValidable {
-  
-  @JsonProperty("causale")
-  private String causale = null;
-  
-  @JsonProperty("iuv")
-  private String iuv = null;
-  
-  @JsonProperty("idFlusso")
-  private String idFlusso = null;
+public class NuovaRiconciliazione extends JSONSerializable  implements IValidable {
   
   @JsonProperty("importo")
   private BigDecimal importo = null;
@@ -41,16 +33,104 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
   
-  @JsonProperty("ibanAccredito")
-  private String ibanAccredito = null;
-
+  @JsonProperty("contoAccredito")
+  private String contoAccredito = null;
+  
   @JsonProperty("sct")
   private String sct = null;
+
+  @JsonProperty("causale")
+  private String causale = null;
   
+  @JsonProperty("iuv")
+  private String iuv = null;
+  
+  @JsonProperty("idFlusso")
+  private String idFlusso = null;
+  
+  /**
+   **/
+  public NuovaRiconciliazione importo(BigDecimal importo) {
+    this.importo = importo;
+    return this;
+  }
+
+  @JsonProperty("importo")
+  public BigDecimal getImporto() {
+    return importo;
+  }
+  public void setImporto(BigDecimal importo) {
+    this.importo = importo;
+  }
+
+  /**
+   * Data di valuta dell'incasso
+   **/
+  public NuovaRiconciliazione dataValuta(Date dataValuta) {
+    this.dataValuta = dataValuta;
+    return this;
+  }
+
+  @JsonProperty("dataValuta")
+  public Date getDataValuta() {
+    return dataValuta;
+  }
+  public void setDataValuta(Date dataValuta) {
+    this.dataValuta = dataValuta;
+  }
+
+  /**
+   * Data di contabile dell'incasso
+   **/
+  public NuovaRiconciliazione dataContabile(Date dataContabile) {
+    this.dataContabile = dataContabile;
+    return this;
+  }
+
+  @JsonProperty("dataContabile")
+  public Date getDataContabile() {
+    return dataContabile;
+  }
+  public void setDataContabile(Date dataContabile) {
+    this.dataContabile = dataContabile;
+  }
+
+  /**
+   * Identificativo del conto di tesoreria su cui sono stati incassati i fondi
+   **/
+  public NuovaRiconciliazione contoAccredito(String contoAccredito) {
+    this.contoAccredito = contoAccredito;
+    return this;
+  }
+
+  @JsonProperty("contoAccredito")
+  public String getContoAccredito() {
+    return contoAccredito;
+  }
+  public void setContoAccredito(String contoAccredito) {
+    this.contoAccredito = contoAccredito;
+  }
+
+  /**
+   * Identificativo Sepa Credit Transfer
+   **/
+  public NuovaRiconciliazione sct(String sct) {
+    this.sct = sct;
+    return this;
+  }
+
+  @JsonProperty("sct")
+  public String getSct() {
+    return sct;
+  }
+  public void setSct(String sct) {
+    this.sct = sct;
+  }
+
   /**
    * Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera
    **/
-  public IncassoPost causale(String causale) {
+  public NuovaRiconciliazione causale(String causale) {
     this.causale = causale;
     return this;
   }
@@ -66,7 +146,7 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
   /**
    * Identificativo univoco di riscossione.
    **/
-  public IncassoPost iuv(String iuv) {
+  public NuovaRiconciliazione iuv(String iuv) {
     this.iuv = iuv;
     return this;
   }
@@ -82,7 +162,7 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
   /**
    * Identificativo del flusso di rendicontazione.
    **/
-  public IncassoPost idFlusso(String idFlusso) {
+  public NuovaRiconciliazione idFlusso(String idFlusso) {
     this.idFlusso = idFlusso;
     return this;
   }
@@ -95,131 +175,52 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
     this.idFlusso = idFlusso;
   }
 
-  /**
-   **/
-  public IncassoPost importo(BigDecimal importo) {
-    this.importo = importo;
-    return this;
-  }
-
-  @JsonProperty("importo")
-  public BigDecimal getImporto() {
-    return this.importo;
-  }
-  public void setImporto(BigDecimal importo) {
-    this.importo = importo;
-  }
-
-  /**
-   * Data di valuta dell'incasso
-   **/
-  public IncassoPost dataValuta(Date dataValuta) {
-    this.dataValuta = dataValuta;
-    return this;
-  }
-
-  @JsonProperty("dataValuta")
-  public Date getDataValuta() {
-    return this.dataValuta;
-  }
-  public void setDataValuta(Date dataValuta) {
-    this.dataValuta = dataValuta;
-  }
-
-  /**
-   * Data di contabile dell'incasso
-   **/
-  public IncassoPost dataContabile(Date dataContabile) {
-    this.dataContabile = dataContabile;
-    return this;
-  }
-
-  @JsonProperty("dataContabile")
-  public Date getDataContabile() {
-    return this.dataContabile;
-  }
-  public void setDataContabile(Date dataContabile) {
-    this.dataContabile = dataContabile;
-  }
-
-  /**
-   * Identificativo del conto di tesoreria su cui sono stati incassati i fondi
-   **/
-  public IncassoPost ibanAccredito(String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
-    return this;
-  }
-
-  @JsonProperty("ibanAccredito")
-  public String getIbanAccredito() {
-    return this.ibanAccredito;
-  }
-  public void setIbanAccredito(String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
-  }
-
-  /**
-   * Identificativo Sepa Credit Transfer
-   **/
-  public IncassoPost sct(String sct) {
-    this.sct = sct;
-    return this;
-  }
-
-  @JsonProperty("sct")
-  public String getSct() {
-    return sct;
-  }
-  public void setSct(String sct) {
-    this.sct = sct;
-  }
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    IncassoPost incassoPost = (IncassoPost) o;
-    return Objects.equals(this.causale, incassoPost.causale) &&
-		Objects.equals(this.iuv, incassoPost.iuv) &&
-    	Objects.equals(this.idFlusso, incassoPost.idFlusso) &&
-        Objects.equals(this.importo, incassoPost.importo) &&
-        Objects.equals(this.dataValuta, incassoPost.dataValuta) &&
-        Objects.equals(this.dataContabile, incassoPost.dataContabile) &&
-        Objects.equals(this.ibanAccredito, incassoPost.ibanAccredito) &&
-        Objects.equals(sct, incassoPost.sct);
+    NuovaRiconciliazione nuovaRiconciliazione = (NuovaRiconciliazione) o;
+    return Objects.equals(importo, nuovaRiconciliazione.importo) &&
+        Objects.equals(dataValuta, nuovaRiconciliazione.dataValuta) &&
+        Objects.equals(dataContabile, nuovaRiconciliazione.dataContabile) &&
+        Objects.equals(contoAccredito, nuovaRiconciliazione.contoAccredito) &&
+        Objects.equals(sct, nuovaRiconciliazione.sct) &&
+	    Objects.equals(this.causale, nuovaRiconciliazione.causale) &&
+	    Objects.equals(this.iuv, nuovaRiconciliazione.iuv) &&
+    	Objects.equals(this.idFlusso, nuovaRiconciliazione.idFlusso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.causale, iuv, idFlusso, this.importo, this.dataValuta, this.dataContabile, this.ibanAccredito, this.sct);
+    return Objects.hash(importo, dataValuta, dataContabile, contoAccredito, sct, causale, iuv, idFlusso);
   }
 
-  public static IncassoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return parse(json, IncassoPost.class);
+  public static NuovaRiconciliazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+    return parse(json, NuovaRiconciliazione.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "incassoPost";
+    return "nuovaRiconciliazione";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class IncassoPost {\n");
+    sb.append("class NuovaRiconciliazione {\n");
     
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
+    sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
+    sb.append("    contoAccredito: ").append(toIndentedString(contoAccredito)).append("\n");
+    sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
     sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
     sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
     sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    dataValuta: ").append(this.toIndentedString(this.dataValuta)).append("\n");
-    sb.append("    dataContabile: ").append(this.toIndentedString(this.dataContabile)).append("\n");
-    sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
-    sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -252,9 +253,9 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
 	vf.getValidator("importo", this.importo).notNull().checkDecimalDigits();
 	vf.getValidator("dataValuta", this.dataValuta);
 	vf.getValidator("dataContabile", this.dataContabile);
-	if(this.ibanAccredito != null) {
+	if(this.contoAccredito != null) {
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-		validatoreId.validaIdIbanAccredito("ibanAccredito", this.ibanAccredito);
+		validatoreId.validaIdIbanAccredito("contoAccredito", this.contoAccredito);
 	}
 	vf.getValidator("sct", this.sct).minLength(1).maxLength(35);
   }

@@ -68,7 +68,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("idFlusso")
   public String getIdFlusso() {
-    return this.idFlusso;
+    return idFlusso;
   }
   public void setIdFlusso(String idFlusso) {
     this.idFlusso = idFlusso;
@@ -84,7 +84,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("dataFlusso")
   public Date getDataFlusso() {
-    return this.dataFlusso;
+    return dataFlusso;
   }
   public void setDataFlusso(Date dataFlusso) {
     this.dataFlusso = dataFlusso;
@@ -100,7 +100,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("trn")
   public String getTrn() {
-    return this.trn;
+    return trn;
   }
   public void setTrn(String trn) {
     this.trn = trn;
@@ -116,7 +116,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("dataRegolamento")
   public Date getDataRegolamento() {
-    return this.dataRegolamento;
+    return dataRegolamento;
   }
   public void setDataRegolamento(Date dataRegolamento) {
     this.dataRegolamento = dataRegolamento;
@@ -132,7 +132,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("idPsp")
   public String getIdPsp() {
-    return this.idPsp;
+    return idPsp;
   }
   public void setIdPsp(String idPsp) {
     this.idPsp = idPsp;
@@ -148,7 +148,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("bicRiversamento")
   public String getBicRiversamento() {
-    return this.bicRiversamento;
+    return bicRiversamento;
   }
   public void setBicRiversamento(String bicRiversamento) {
     this.bicRiversamento = bicRiversamento;
@@ -157,14 +157,14 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   /**
    * Identificativo dominio destinatario
    **/
-  public FlussoRendicontazioneIndex dominio(String idDominio) {
+  public FlussoRendicontazioneIndex idDominio(String idDominio) {
     this.idDominio = idDominio;
     return this;
   }
 
   @JsonProperty("idDominio")
   public String getIdDominio() {
-    return this.idDominio;
+    return idDominio;
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
@@ -180,7 +180,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("numeroPagamenti")
   public BigDecimal getNumeroPagamenti() {
-    return this.numeroPagamenti;
+    return numeroPagamenti;
   }
   public void setNumeroPagamenti(BigDecimal numeroPagamenti) {
     this.numeroPagamenti = numeroPagamenti;
@@ -196,7 +196,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("importoTotale")
   public Double getImportoTotale() {
-    return this.importoTotale;
+    return importoTotale;
   }
   public void setImportoTotale(Double importoTotale) {
     this.importoTotale = importoTotale;
@@ -226,7 +226,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @JsonProperty("segnalazioni")
   public List<Segnalazione> getSegnalazioni() {
-    return this.segnalazioni;
+    return segnalazioni;
   }
   public void setSegnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
@@ -237,7 +237,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     FlussoRendicontazioneIndex flussoRendicontazioneIndex = (FlussoRendicontazioneIndex) o;

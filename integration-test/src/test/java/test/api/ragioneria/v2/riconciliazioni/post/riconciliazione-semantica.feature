@@ -23,7 +23,7 @@ Scenario Outline: Errore semantico nella richiesta di riconciliazione: <scenario
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Given url ragioneriaBaseurl
-And path '/incassi', idDominio
+And path '/riconciliazioni', idDominio
 And headers basicAutenticationHeader
 And request incassoPost
 When method post
@@ -46,7 +46,7 @@ Scenario: Errore semantico nella richiesta di riconciliazione: Dominio inesisten
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Given url ragioneriaBaseurl
-And path '/incassi', '00000000000'
+And path '/riconciliazioni', '00000000000'
 And headers basicAutenticationHeader
 And request incassoPost
 When method post

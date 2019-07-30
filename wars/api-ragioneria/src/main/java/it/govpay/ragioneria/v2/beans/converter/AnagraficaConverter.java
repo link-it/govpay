@@ -1,7 +1,7 @@
 package it.govpay.ragioneria.v2.beans.converter;
 
 import it.govpay.ragioneria.v2.beans.Soggetto;
-import it.govpay.ragioneria.v2.beans.Soggetto.TipoEnum;
+import it.govpay.ragioneria.v2.beans.TipoSoggetto;
 
 public class AnagraficaConverter {
 
@@ -10,7 +10,7 @@ public class AnagraficaConverter {
 		Soggetto rsModel = new Soggetto();
 
 		if(anagrafica.getTipo() != null)
-			rsModel.setTipo(TipoEnum.fromValue(anagrafica.getTipo().toString()));
+			rsModel.setTipo(TipoSoggetto.fromValue(anagrafica.getTipo().toString()));
 
 		rsModel.setIdentificativo(anagrafica.getCodUnivoco());
 		rsModel.setAnagrafica(anagrafica.getRagioneSociale());

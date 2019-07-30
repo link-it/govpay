@@ -29,7 +29,7 @@ import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v2.beans.FlussoRendicontazione;
 import it.govpay.ragioneria.v2.beans.FlussoRendicontazioneIndex;
-import it.govpay.ragioneria.v2.beans.ListaFlussiRendicontazione;
+import it.govpay.ragioneria.v2.beans.FlussiRendicontazione;
 import it.govpay.ragioneria.v2.beans.StatoFlussoRendicontazione;
 import it.govpay.ragioneria.v2.beans.converter.FlussiRendicontazioneConverter;
 
@@ -42,8 +42,8 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response flussiRendicontazioneIdFlussoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
-    	String methodName = "flussiRendicontazioneIdFlussoGET";  
+    public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
+    	String methodName = "getFlussoRendicontazione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -92,8 +92,8 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-    public Response flussiRendicontazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, String stato) {
-    	String methodName = "flussiRendicontazioneGET";  
+    public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, String stato) {
+    	String methodName = "findFlussiRendicontazione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -152,7 +152,7 @@ public class FlussiRendicontazioneController extends BaseController {
 				collect.add(FlussiRendicontazioneConverter.toRsIndexModel(res.getFr()));
 			}
 			
-			ListaFlussiRendicontazione response = new ListaFlussiRendicontazione(collect, 
+			FlussiRendicontazione response = new FlussiRendicontazione(collect, 
 					uriInfo.getRequestUri(), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 

@@ -1,60 +1,82 @@
 {
    "idDominio":"#(idDominio)",
-   "idIncasso":"#notnull",
+   "idRiconciliazione":"#notnull",
    "causale":"#(causale)",
    "importo":"#(importo)",
    "riscossioni":[
       {
-         "idDominio":"#(idDominio)",
+         "dominio": {
+         	"idDominio":"#(idDominio)",
+         	"ragioneSociale": "#notnull"
+         },
          "iuv":"#(iuv1)",
          "iur":"#notnull",
          "indice":1,
-         "pendenza":"#notnull",
-         "vocePendenza":{
-            "indice":1,
-            "idVocePendenza":"1",
-            "importo":"#(importo1)",
-            "descrizione":"Diritti e segreteria",
-            "stato":"Eseguito",
-            "codEntrata":"SEGRETERIA"
-         },
-         "rpp":"#notnull",
          "stato":"INCASSATA",
          "tipo":"ENTRATA",
          "importo":"#(importo1)",
-         "data":"#notnull",
-         "incasso":{
-            "causale":"#(causale)",
-            "importo":"#(importo)",
-            "idDominio":"#(idDominio)",
-            "idIncasso":"#notnull"
-         }
+         "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "vocePendenza": {
+			"indice":1,
+			"idVocePendenza":"1",
+			"importo": "#(importo1)",
+			"datiAllegati": "##object",
+			"pendenza": {
+				"idA2A":"#string",
+				"idPendenza":"#string",
+				"idDominio":"#string",
+				"idUnitaOperativa":"##string",
+				"idTipoPendenza":"#string",
+				"causale":"##string",
+				"dataCaricamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataValidita": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataScadenza": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"annoRiferimento": "##number",
+				"cartellaPagamento":"##string",
+				"datiAllegati": "##object",
+				"tassonomiaAvviso":"##string",
+				"direzione":"##string",
+				"divisione":"##string"
+					}
+				},
+         "riconciliazione":"##string"
       },
       {
-         "idDominio":"#(idDominio)",
+         "dominio": {
+         	"idDominio":"#(idDominio)",
+         	"ragioneSociale": "#notnull"
+         },
          "iuv":"#(iuv2)",
          "iur":"#notnull",
          "indice":1,
-         "pendenza":"#notnull",
-         "vocePendenza":{
-            "indice":1,
-            "idVocePendenza":"1",
-            "importo":"#(importo2)",
-            "descrizione":"Diritti e segreteria",
-            "stato":"Eseguito",
-            "codEntrata":"SEGRETERIA"
-         },
-         "rpp":"#notnull",
          "stato":"INCASSATA",
          "tipo":"ENTRATA",
          "importo":"#(importo2)",
-         "data":"#notnull",
-         "incasso":{
-            "causale":"#(causale)",
-            "importo":"#(importo)",
-            "idDominio":"#(idDominio)",
-            "idIncasso":"#notnull"
-         }
+         "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "vocePendenza": {
+			"indice":1,
+			"idVocePendenza":"1",
+			"importo": "#(importo2)",
+			"datiAllegati": "##object",
+			"pendenza": {
+				"idA2A":"#string",
+				"idPendenza":"#string",
+				"idDominio":"#string",
+				"idUnitaOperativa":"##string",
+				"idTipoPendenza":"#string",
+				"causale":"##string",
+				"dataCaricamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataValidita": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataScadenza": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"annoRiferimento": "##number",
+				"cartellaPagamento":"##string",
+				"datiAllegati": "##object",
+				"tassonomiaAvviso":"##string",
+				"direzione":"##string",
+				"divisione":"##string"
+					}
+				},
+         "riconciliazione":"##string"
       }
    ]
 }

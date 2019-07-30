@@ -32,23 +32,23 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.ragioneria.v2.beans.Incasso;
-import it.govpay.ragioneria.v2.beans.IncassoIndex;
-import it.govpay.ragioneria.v2.beans.IncassoPost;
-import it.govpay.ragioneria.v2.beans.ListaIncassiIndex;
-import it.govpay.ragioneria.v2.beans.converter.IncassiConverter;
+import it.govpay.ragioneria.v2.beans.Riconciliazione;
+import it.govpay.ragioneria.v2.beans.RiconciliazioneIndex;
+import it.govpay.ragioneria.v2.beans.NuovaRiconciliazione;
+import it.govpay.ragioneria.v2.beans.Riconciliazioni;
+import it.govpay.ragioneria.v2.beans.converter.RiconciliazioniConverter;
 
 
 
-public class IncassiController extends BaseController {
+public class RiconciliazioniController extends BaseController {
 	
-	public IncassiController(String nomeServizio,Logger log) {
+	public RiconciliazioniController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
 	}
 
 
-    public Response incassiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio) {
-    	String methodName = "incassiGET";  
+    public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio) {
+    	String methodName = "findRiconciliazioni";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		String campi = null;
@@ -83,12 +83,12 @@ public class IncassiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			List<IncassoIndex> listaIncassi = new ArrayList<>();
+			List<RiconciliazioneIndex> listaIncassi = new ArrayList<>();
 			for(it.govpay.bd.model.Incasso i : listaIncassiDTOResponse.getResults()) {
-				listaIncassi.add(IncassiConverter.toRsIndexModel(i));
+				listaIncassi.add(RiconciliazioniConverter.toRsIndexModel(i));
 			}
 			
-			ListaIncassiIndex response = new ListaIncassiIndex(listaIncassi, this.getServicePath(uriInfo),
+			Riconciliazioni response = new Riconciliazioni(listaIncassi, this.getServicePath(uriInfo),
 					listaIncassiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
@@ -102,8 +102,8 @@ public class IncassiController extends BaseController {
     }
 
 
-    public Response incassiIdDominioIdIncassoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
-    	String methodName = "incassiIdDominioIdIncassoGET";  
+    public Response getRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
+    	String methodName = "getRiconciliazione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -136,7 +136,7 @@ public class IncassiController extends BaseController {
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Incasso response = IncassiConverter.toRsModel(leggiIncassoDTOResponse.getIncasso());
+			Riconciliazione response = RiconciliazioniConverter.toRsModel(leggiIncassoDTOResponse.getIncasso());
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
@@ -148,8 +148,8 @@ public class IncassiController extends BaseController {
 		}
     }
 
-    public Response incassiIdDominioPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
-    	String methodName = "incassiIdDominioPOST"; 
+    public Response addRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+    	String methodName = "addRiconciliazione"; 
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos = new ByteArrayOutputStream();){
@@ -162,16 +162,16 @@ public class IncassiController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			
-			IncassoPost incasso = JSONSerializable.parse(baos.toString(), IncassoPost.class);
+			NuovaRiconciliazione incasso = JSONSerializable.parse(baos.toString(), NuovaRiconciliazione.class);
 			incasso.validate();
 			
-			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
+			RichiestaIncassoDTO richiestaIncassoDTO = RiconciliazioniConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
 			
 			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.richiestaIncasso(richiestaIncassoDTO);
 			
-			Incasso incassoExt = IncassiConverter.toRsModel(richiestaIncassoDTOResponse.getIncasso());
+			Riconciliazione incassoExt = RiconciliazioniConverter.toRsModel(richiestaIncassoDTOResponse.getIncasso());
 			
 			Status responseStatus = richiestaIncassoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 			

@@ -2,7 +2,7 @@ Feature: Errori di validazione sintattica della richiesta di riconciliazione
 
 Background:
 
-* callonce read('classpath:utils/api/ragioneria/bunch-riconciliazioni-v2.feature')
+* callonce read('classpath:utils/api/v2/ragioneria/bunch-riconciliazioni-v2.feature')
 
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] della riscossione autorizzata
 
@@ -27,19 +27,20 @@ Then status 200
 And match response == 
 """
 {
-	idDominio:'#(<riscossione>.idDominio)', 
+	dominio:'#notnull', 
 	iuv:'#(<riscossione>.iuv)', 
 	iur:'#(<riscossione>.iur)', 
 	indice:'#(<riscossione>.indice)', 
-	pendenza:'#notnull',
+	riconciliazione:'##string',
 	vocePendenza:'#notnull',
-	rpp:'#notnull',
+	rt:'#notnull',
 	stato:'RISCOSSA', 
 	tipo:'ENTRATA', 
 	importo:'#(<riscossione>.importo)', 
 	data:'#(<riscossione>.data)'
 }
 """
+And match response.dominio.idDominio == '#(<riscossione>.idDominio)'
 
 Examples:
 | applicazione | riscossione | 

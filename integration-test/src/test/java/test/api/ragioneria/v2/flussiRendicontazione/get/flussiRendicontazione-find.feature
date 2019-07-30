@@ -2,7 +2,7 @@ Feature: Errori di validazione sintattica della richiesta di riconciliazione
 
 Background:
 
-* callonce read('classpath:utils/api/ragioneria/bunch-riconciliazioni-v2.feature')
+* callonce read('classpath:utils/api/v2/ragioneria/bunch-riconciliazioni-v2.feature')
 
 Scenario Outline: Ricerca rendicontazioni da applicazione <applicazione>.
 

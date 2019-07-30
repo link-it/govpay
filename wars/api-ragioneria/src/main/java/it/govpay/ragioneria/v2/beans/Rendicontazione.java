@@ -56,7 +56,7 @@ public class Rendicontazione extends JSONSerializable {
 
   @JsonProperty("iuv")
   public String getIuv() {
-    return this.iuv;
+    return iuv;
   }
   public void setIuv(String iuv) {
     this.iuv = iuv;
@@ -72,7 +72,7 @@ public class Rendicontazione extends JSONSerializable {
 
   @JsonProperty("iur")
   public String getIur() {
-    return this.iur;
+    return iur;
   }
   public void setIur(String iur) {
     this.iur = iur;
@@ -88,7 +88,7 @@ public class Rendicontazione extends JSONSerializable {
 
   @JsonProperty("indice")
   public BigDecimal getIndice() {
-    return this.indice;
+    return indice;
   }
   public void setIndice(BigDecimal indice) {
     this.indice = indice;
@@ -104,7 +104,7 @@ public class Rendicontazione extends JSONSerializable {
 
   @JsonProperty("importo")
   public BigDecimal getImporto() {
-    return this.importo;
+    return importo;
   }
   public void setImporto(BigDecimal importo) {
     this.importo = importo;
@@ -120,7 +120,7 @@ public class Rendicontazione extends JSONSerializable {
 
   @JsonProperty("esito")
   public BigDecimal getEsito() {
-    return this.esito;
+    return esito;
   }
   public void setEsito(BigDecimal esito) {
     this.esito = esito;
@@ -136,7 +136,7 @@ public class Rendicontazione extends JSONSerializable {
 
   @JsonProperty("data")
   public Date getData() {
-    return this.data;
+    return data;
   }
   public void setData(Date data) {
     this.data = data;
@@ -151,7 +151,7 @@ public class Rendicontazione extends JSONSerializable {
 
   @JsonProperty("segnalazioni")
   public List<Segnalazione> getSegnalazioni() {
-    return this.segnalazioni;
+    return segnalazioni;
   }
   public void setSegnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
@@ -166,7 +166,7 @@ public class Rendicontazione extends JSONSerializable {
 
   @JsonProperty("riscossione")
   public RiscossioneIndex getRiscossione() {
-    return this.riscossione;
+    return riscossione;
   }
   public void setRiscossione(RiscossioneIndex riscossione) {
     this.riscossione = riscossione;
@@ -177,23 +177,23 @@ public class Rendicontazione extends JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Rendicontazione rendicontazione = (Rendicontazione) o;
-    return Objects.equals(this.iuv, rendicontazione.iuv) &&
-        Objects.equals(this.iur, rendicontazione.iur) &&
-        Objects.equals(this.indice, rendicontazione.indice) &&
-        Objects.equals(this.importo, rendicontazione.importo) &&
-        Objects.equals(this.esito, rendicontazione.esito) &&
-        Objects.equals(this.data, rendicontazione.data) &&
-        Objects.equals(this.segnalazioni, rendicontazione.segnalazioni) &&
-        Objects.equals(this.riscossione, rendicontazione.riscossione);
+    return Objects.equals(iuv, rendicontazione.iuv) &&
+        Objects.equals(iur, rendicontazione.iur) &&
+        Objects.equals(indice, rendicontazione.indice) &&
+        Objects.equals(importo, rendicontazione.importo) &&
+        Objects.equals(esito, rendicontazione.esito) &&
+        Objects.equals(data, rendicontazione.data) &&
+        Objects.equals(segnalazioni, rendicontazione.segnalazioni) &&
+        Objects.equals(riscossione, rendicontazione.riscossione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.iuv, this.iur, this.indice, this.importo, this.esito, this.data, this.segnalazioni, this.riscossione);
+    return Objects.hash(iuv, iur, indice, importo, esito, data, segnalazioni, riscossione);
   }
 
   public static Rendicontazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -210,14 +210,14 @@ public class Rendicontazione extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class Rendicontazione {\n");
     
-    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
-    sb.append("    iur: ").append(this.toIndentedString(this.iur)).append("\n");
-    sb.append("    indice: ").append(this.toIndentedString(this.indice)).append("\n");
-    sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
-    sb.append("    esito: ").append(this.toIndentedString(this.esito)).append("\n");
-    sb.append("    data: ").append(this.toIndentedString(this.data)).append("\n");
-    sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
-    sb.append("    riscossione: ").append(this.toIndentedString(this.riscossione)).append("\n");
+    sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
+    sb.append("    iur: ").append(toIndentedString(iur)).append("\n");
+    sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
+    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
+    sb.append("    riscossione: ").append(toIndentedString(riscossione)).append("\n");
     sb.append("}");
     return sb.toString();
   }

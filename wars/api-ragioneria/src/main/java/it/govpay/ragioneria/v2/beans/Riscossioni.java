@@ -5,9 +5,9 @@ import java.util.List;
 
 import it.govpay.core.beans.Lista;
 
-public class ListaRiscossioni extends Lista<RiscossioneIndex> {
+public class Riscossioni extends Lista<RiscossioneIndex> {
 	
-	public ListaRiscossioni(List<RiscossioneIndex> riscossioni, URI requestUri, long count, long pagina, long limit) {
+	public Riscossioni(List<RiscossioneIndex> riscossioni, URI requestUri, long count, long pagina, long limit) {
 		super(riscossioni, requestUri, count, pagina, limit);
 	}
 	

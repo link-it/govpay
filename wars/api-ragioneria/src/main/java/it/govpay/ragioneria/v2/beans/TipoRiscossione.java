@@ -1,5 +1,9 @@
 package it.govpay.ragioneria.v2.beans;
 
+
+/**
+ * Tipologia della voce riscossa  * ENTRATA: Entrata in tesoreria  * MBT: Marca da bollo telematica 
+ **/
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -29,7 +33,7 @@ public enum TipoRiscossione {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(this.value);
+    return String.valueOf(value);
   }
 
   @JsonCreator

@@ -11,15 +11,15 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
-import it.govpay.ragioneria.v2.beans.Incasso;
-import it.govpay.ragioneria.v2.beans.IncassoIndex;
-import it.govpay.ragioneria.v2.beans.IncassoPost;
-import it.govpay.ragioneria.v2.beans.Riscossione;
+import it.govpay.ragioneria.v2.beans.NuovaRiconciliazione;
+import it.govpay.ragioneria.v2.beans.Riconciliazione;
+import it.govpay.ragioneria.v2.beans.RiconciliazioneIndex;
+import it.govpay.ragioneria.v2.beans.RiscossioneIndex;
 
-public class IncassiConverter {
+public class RiconciliazioniConverter {
 
 	
-	public static RichiestaIncassoDTO toRichiestaIncassoDTO(IncassoPost incassoPost, String idDominio, Authentication user) {
+	public static RichiestaIncassoDTO toRichiestaIncassoDTO(NuovaRiconciliazione incassoPost, String idDominio, Authentication user) {
 		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
 		dto.setCausale(incassoPost.getCausale());
 		dto.setDataValuta(incassoPost.getDataValuta());
@@ -36,22 +36,22 @@ public class IncassiConverter {
 	}
 	
 	
-	public static Incasso toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, NotFoundException {
-		Incasso rsModel = new Incasso();
+	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, NotFoundException {
+		Riconciliazione rsModel = new Riconciliazione();
 		
 		rsModel.setCausale(i.getCausale());
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
 		rsModel.setImporto(i.getImporto());
-		rsModel.setIdIncasso(i.getTrn());
+		rsModel.setIdRiconciliazione(i.getTrn());
 		rsModel.setIdDominio(i.getCodDominio());
 		rsModel.setSct(i.getSct());
-		rsModel.setIbanAccredito(i.getIbanAccredito());
+		rsModel.setContoAccredito(i.getIbanAccredito());
 		if(i.getPagamenti(null)!= null) {
-			List<Riscossione> riscossioni = new ArrayList<>();
+			List<RiscossioneIndex> riscossioni = new ArrayList<>();
 			for (Pagamento pagamento : i.getPagamenti(null)) {
-				riscossioni.add(RiscossioniConverter.toRsModel(pagamento));
-			}
+				riscossioni.add(RiscossioniConverter.toRsModelIndex(pagamento));
+			} 
 			
 			rsModel.setRiscossioni(riscossioni);
 		}
@@ -59,17 +59,17 @@ public class IncassiConverter {
 		return rsModel;
 	}
 	
-	public static IncassoIndex toRsIndexModel(it.govpay.bd.model.Incasso i) throws ServiceException {
-		IncassoIndex rsModel = new IncassoIndex();
+	public static RiconciliazioneIndex toRsIndexModel(it.govpay.bd.model.Incasso i) throws ServiceException {
+		RiconciliazioneIndex rsModel = new RiconciliazioneIndex();
 		
 		rsModel.setCausale(i.getCausale());
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
 		rsModel.setImporto(i.getImporto());
-		rsModel.setIdIncasso(i.getTrn());
+		rsModel.setIdRiconciliazione(i.getTrn());
 		rsModel.setIdDominio(i.getCodDominio());
 		rsModel.setSct(i.getSct());
-		rsModel.setIbanAccredito(i.getIbanAccredito());
+		rsModel.setContoAccredito(i.getIbanAccredito());
 		
 		return rsModel;
 	}

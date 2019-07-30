@@ -31,7 +31,7 @@ Scenario: Riconciliazione cumulativa
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Given url ragioneriaBaseurl
-And path '/incassi', idDominio
+And path '/riconciliazioni', idDominio
 And headers basicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' }
 When method post
@@ -60,7 +60,7 @@ Scenario: Idempotenza riconciliazione cumulativa
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: 'password' } )
 
 Given url ragioneriaBaseurl
-And path '/incassi', idDominio
+And path '/riconciliazioni', idDominio
 And headers basicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' }
 When method post
@@ -70,7 +70,7 @@ And match response == read('msg/riconciliazione-cumulativa-response.json')
 * def response1 = response
 
 Given url ragioneriaBaseurl
-And path '/incassi', idDominio
+And path '/riconciliazioni', idDominio
 And headers basicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' }
 When method post

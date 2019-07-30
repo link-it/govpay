@@ -108,13 +108,7 @@ public class IncassiDAO extends BaseDAO{
 
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
-					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
-					pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
-					pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
-					pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
-					pagamento.getDominio(bd);
-					pagamento.getRpt(bd);
-					pagamento.getIncasso(bd);
+					this.populatePagamento(pagamento, bd);
 				}
 			}
 
@@ -166,13 +160,11 @@ public class IncassiDAO extends BaseDAO{
 
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
-					pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
-					pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
-					pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
-					pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
-					pagamento.getDominio(bd);
-					pagamento.getRpt(bd);
-					pagamento.getIncasso(bd);
+					try {
+						this.populatePagamento(pagamento, bd);
+					} catch (NotFoundException e) { 
+						
+					}
 				}
 			}
 
@@ -184,5 +176,23 @@ public class IncassiDAO extends BaseDAO{
 				bd.closeConnection();
 		}
 		return richiestaIncassoDTOResponse;
+	}
+	
+	private void populatePagamento(Pagamento pagamento, BasicBD bd)
+			throws ServiceException, NotFoundException {
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getUo(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getDominio(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamento(bd);
+		pagamento.getSingoloVersamento(bd).getVersamento(bd).getTipoVersamentoDominio(bd);
+		pagamento.getSingoloVersamento(bd).getTributo(bd);
+		pagamento.getSingoloVersamento(bd).getCodContabilita(bd);
+		pagamento.getSingoloVersamento(bd).getIbanAccredito(bd);
+		pagamento.getSingoloVersamento(bd).getIbanAppoggio(bd);
+		pagamento.getSingoloVersamento(bd).getTipoContabilita(bd);
+		pagamento.getRpt(bd);
+		pagamento.getDominio(bd);
+		pagamento.getRendicontazioni(bd);
+		pagamento.getIncasso(bd);
 	}
 }

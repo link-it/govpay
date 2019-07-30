@@ -2,7 +2,7 @@ Feature: Errori di validazione sintattica della richiesta di riconciliazione
 
 Background:
 
-* callonce read('classpath:utils/api/ragioneria/bunch-riconciliazioni.feature')
+* callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni.feature')
 
 Scenario: Verifico che la find restituisca tutti e sole le riconciliazioni caricate dal verticale
 

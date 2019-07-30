@@ -2,7 +2,7 @@ Feature: Ricerca delle riconciliazioni
 
 Background:
 
-* callonce read('classpath:utils/api/ragioneria/bunch-riconciliazioni-v3.feature')
+* callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v3.feature')
 
 Scenario: Riconciliazioni da applicazione autorizzata per dominio_1
 
