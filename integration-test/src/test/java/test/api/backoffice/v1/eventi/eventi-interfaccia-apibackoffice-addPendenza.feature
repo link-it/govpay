@@ -6,6 +6,25 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'operatori', 'gpadmin'
+And headers gpAdminBasicAutenticationHeader
+And request 
+"""
+{
+  "ragioneSociale": "Amministratore",
+  "domini": ["*"],
+  "tipiPendenza": ["*"],
+  "ruoli": ["Amministratore"],
+  "abilitato": true
+}
+"""
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 Scenario: Evento creazione da operatore basic in api Backoffice
 

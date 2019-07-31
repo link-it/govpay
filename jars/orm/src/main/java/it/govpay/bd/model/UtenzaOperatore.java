@@ -42,7 +42,7 @@ public class UtenzaOperatore extends Utenza {
 	public TIPO_UTENZA getTipoUtenza() {
 		return TIPO_UTENZA.OPERATORE;
 	}
-
+	
 	public String getNome() {
 		return nome;
 	}

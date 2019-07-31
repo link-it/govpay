@@ -12,6 +12,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenza;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.model.TipoVersamento;
 
@@ -44,6 +45,17 @@ public class ProfiloConverter {
 			profilo.setAcl(aclLst);
 		}
 		profilo.setNome(leggiProfilo.getNome());
+		
+		switch(user.getTipoUtenza()) {
+		case ANONIMO:
+		case APPLICAZIONE:
+		case CITTADINO:
+			break;
+		case OPERATORE:
+			profilo.setNome(((UtenzaOperatore) user).getNome());
+			break;
+		}
+		
 		if(leggiProfilo.getDomini()!=null) {
 			List<DominioIndex> dominiLst = new ArrayList<>();
 			for(Dominio dominio: leggiProfilo.getDomini()) {

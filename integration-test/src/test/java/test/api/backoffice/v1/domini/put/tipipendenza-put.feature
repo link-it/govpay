@@ -22,6 +22,25 @@ Background:
 }
 """
 
+Given url backofficeBaseurl
+And path 'tipiPendenza', 'SCDS'
+And headers basicAutenticationHeader
+And request 
+"""
+{
+  descrizione: "Sanzione codice della strada",
+  tipo: "dovuto",
+  codificaIUV: "030",
+  pagaTerzi: true,
+  form: null,
+  trasformazione: null,
+  validazione: null,
+  visualizzazione: null;
+}
+"""  
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 Scenario: Aggiunta di un tipoPendenza
 
 Given url backofficeBaseurl

@@ -377,17 +377,19 @@ public class UtenzeBD extends BasicBD {
 			}
 			
 			// inserimento nuove acl
-			for(Acl acl: utenza.getAclPrincipal()) {
-				acl.setIdUtenza(vo.getId());
-				
-				AclFilter filter2 = aclBD.newFilter();
-				filter2.setPrincipal(utenza.getPrincipalOriginale());
-				filter2.setServizio(acl.getServizio().getCodifica());
-				
-				if(aclBD.count(filter2) > 0) {
-					aclBD.updateAcl(acl);
-				} else {
-					aclBD.insertAcl(acl);
+			if(utenza.getAclPrincipal() != null) {
+				for(Acl acl: utenza.getAclPrincipal()) {
+					acl.setIdUtenza(vo.getId());
+					
+					AclFilter filter2 = aclBD.newFilter();
+					filter2.setPrincipal(utenza.getPrincipalOriginale());
+					filter2.setServizio(acl.getServizio().getCodifica());
+					
+					if(aclBD.count(filter2) > 0) {
+						aclBD.updateAcl(acl);
+					} else {
+						aclBD.insertAcl(acl);
+					}
 				}
 			}
 			
