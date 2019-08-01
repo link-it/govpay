@@ -3,7 +3,7 @@
 L'architettura della piattaforma di pagamento
 =============================================
 
-In `Figura 1 <#anchor-3>`__ è descritto lo scenario architetturale di
+Nella figura seguente è sintetizzato lo scenario architetturale di
 riferimento, evidenziando il ruolo di GovPay, dei sistemi dell'Ente
 Creditore e dei servizi centrali del progetto pagoPA.
 
