@@ -55,7 +55,7 @@ paths:
           $ref: '#/components/responses/500'
   '/pendenze/{idA2A}/{idPendenza}':
     get:
-      operationId: getPendenza
+      operationId: verifyPendenza
       summary: Verifica di una pendenza da avviso
       tags:
         - Verifica
@@ -91,7 +91,7 @@ paths:
           $ref: '#/components/responses/500'
   '/pendenze/{idDomino}/{idTipoPendenza}':
     post:
-      operationId: verificaPendenza
+      operationId: verifyPendenzaMod4
       summary: Verifica di una pendenza definita con dati custom
       tags:
         - Verifica
@@ -131,7 +131,7 @@ paths:
           $ref: '#/components/responses/500'
   '/pagamenti/{idDominio}/{iuv}':
     post:
-      operationId: addPagamento
+      operationId: notifyPagamento
       summary: Notifica di un pagamento
       tags:
         - Notifica

@@ -24,6 +24,12 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def spidHeaders = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
 Given url backofficeBaseurl
+And path '/logout'
+And headers spidHeaders
+When method get
+Then status 200
+
+Given url backofficeBaseurl
 And path '/pagamenti', <idPagamento>
 And headers spidHeaders
 When method get

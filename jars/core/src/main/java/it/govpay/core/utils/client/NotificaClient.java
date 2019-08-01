@@ -154,7 +154,7 @@ public class NotificaClient extends BasicClient {
 			break;
 		case ATTIVAZIONE:
 		case RICEVUTA:
-			swaggerOperationID = "addPagamento";
+			swaggerOperationID = "notifyPagamento";
 			break;
 		}
 		

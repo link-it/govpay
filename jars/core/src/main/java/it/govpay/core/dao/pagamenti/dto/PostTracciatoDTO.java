@@ -16,6 +16,7 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	}
 	
 	private String idDominio;
+	private String idTipoPendenza;
 	private String nomeFile;
 	private byte [] contenuto;
 	private List<Versamento> inserimenti;
@@ -71,5 +72,11 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	}
 	public void setOperatore(Operatore operatore) {
 		this.operatore = operatore;
+	}
+	public String getIdTipoPendenza() {
+		return idTipoPendenza;
+	}
+	public void setIdTipoPendenza(String idTipoPendenza) {
+		this.idTipoPendenza = idTipoPendenza;
 	}
 }

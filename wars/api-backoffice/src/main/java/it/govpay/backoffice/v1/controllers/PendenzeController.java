@@ -416,6 +416,8 @@ public class PendenzeController extends BaseController {
 		}
     }
 	
+
+	
     public Response pendenzeIdDominioIdTipoPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
     	String methodName = "pendenzeIdDominioIdTipoPendenzaPOST";  
 		String transactionId = this.context.getTransactionId();
@@ -565,7 +567,105 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
+    public Response pendenzeTracciatiIdDominioIdTipoPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+    	String methodName = "pendenzeTracciatiIdDominioIdTipoPendenzaPOST";  
+		String transactionId = this.context.getTransactionId();
 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+    	
+		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
+
+			String contentTypeBody = null;
+			if(httpHeaders.getRequestHeaders().containsKey("Content-Type")) {
+				contentTypeBody = httpHeaders.getRequestHeaders().get("Content-Type").get(0);
+			}
+
+			this.log.debug(MessageFormat.format("Content-Type della richiesta: {0}.", contentTypeBody));
+
+
+			String fileName = null;
+			InputStream fileInputStream = null;
+			try{
+				// controllo se sono in una richiesta multipart
+				if(contentTypeBody != null && contentTypeBody.startsWith("multipart")) {
+					javax.mail.internet.ContentType cType = new javax.mail.internet.ContentType(contentTypeBody);
+					this.log.debug(MessageFormat.format("Content-Type Boundary: [{0}]", cType.getParameter("boundary")));
+
+					MimeMultipart mimeMultipart = new MimeMultipart(is,contentTypeBody);
+
+					for(int i = 0 ; i < mimeMultipart.countBodyParts() ;  i ++) {
+						BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+						fileName = getBodyPartFileName(bodyPart);
+
+						if(fileName != null) {
+							fileInputStream = bodyPart.getInputStream();
+							break;
+						}
+					}
+
+					if(fileInputStream != null) {
+						IOUtils.copy(fileInputStream, baos);
+					}
+				}
+			}catch(Exception e) {
+				this.log.error(e.getMessage(),e);
+			}
+
+			if(fileInputStream == null) {
+				// salvo il json ricevuto
+				IOUtils.copy(is, baos);
+			}
+			
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
+			
+			// controllo che il dominio e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
+				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idTipoPendenza);
+			}
+
+//			String jsonRequest = baos.toString();
+//			TracciatoPendenzePost tracciatoPendenzeRequest = JSONSerializable.parse(jsonRequest, TracciatoPendenzePost.class);
+//
+//			tracciatoPendenzeRequest.validate();
+
+			TracciatiDAO tracciatiDAO = new TracciatiDAO();
+
+			PostTracciatoDTO postTracciatoDTO = new PostTracciatoDTO(user);
+
+			postTracciatoDTO.setIdDominio(idDominio);
+			postTracciatoDTO.setIdTipoPendenza(idTipoPendenza);
+			postTracciatoDTO.setNomeFile(idDominio + "_" + idTipoPendenza);
+			postTracciatoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
+			if(modalitaAvvisaturaDigitale != null) {
+				ModoAvvisatura modoAvvisatura = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
+				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura );
+			}
+			postTracciatoDTO.setContenuto(baos.toByteArray());
+			
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+			Operatore operatore = userDetails.getOperatore();
+			postTracciatoDTO.setOperatore(operatore);
+
+			PostTracciatoDTOResponse postTracciatoDTOResponse = tracciatiDAO.create(postTracciatoDTO);
+			
+			TracciatoPendenzeIndex rsModel = TracciatiConverter.toTracciatoPendenzeRsModelIndex(postTracciatoDTOResponse.getTracciato());
+
+			Status responseStatus = Status.CREATED;
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(responseStatus),transactionId).entity(rsModel.toJSON(null,this.serializationConfig)).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(this.context);
+		}
+    }
+    
+    
 
 	public Response pendenzeTracciatiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
 		String methodName = "pendenzeTracciatiGET";
@@ -801,7 +901,6 @@ public class PendenzeController extends BaseController {
 			this.log(this.context);
 		}
     }
-
 
 
 	public Response pendenzeTracciatiIdStampeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {

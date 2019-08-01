@@ -112,7 +112,7 @@ public class VerificaClient extends BasicClient {
 
 			if(iuv == null) {
 				path = "/pendenze/" + this.codApplicazione + "/" + codVersamentoEnte;
-				swaggerOperationID = "getPendenza";
+				swaggerOperationID = "verifyPendenza";
 			} else {
 				path = "/avvisi/" + codDominio + "/" + iuv;
 			}
@@ -229,7 +229,7 @@ public class VerificaClient extends BasicClient {
 			List<Property> headerProperties = new ArrayList<>();
 			headerProperties.add(new Property("Accept", "application/json"));
 			String jsonResponse = "";
-			String swaggerOperationID = "verificaPendenza";
+			String swaggerOperationID = "verifyPendenzaMod4";
 			String path = "/pendenze/" + codDominio + "/" + codTipoVersamento;
 
 			PendenzaVerificata pendenzaVerificata = null;
