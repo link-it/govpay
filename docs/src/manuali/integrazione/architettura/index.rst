@@ -25,18 +25,18 @@ AgID, sono:
 
 Gli attori che interagiscono nell'ambito del progetto sono:
 
--  l'*Ente Creditore*, aderente a pagoPA e interessato alla
+*  l'*Ente Creditore*, aderente a pagoPA e interessato alla
    pubblicazione sulla piattaforma delle proprie posizioni debitorie, a
    governare l'iter del loro pagamento ed alla successiva gestione
    dell'incassato.
--  i *Soggetti Debitori*: cittadini, o altri soggetti, che detengono
+*  i *Soggetti Debitori*: cittadini, o altri soggetti, che detengono
    posizioni pendenti o richiedono servizi soggetti a pagamento verso
    l'Ente Creditore;
--  i *PSP*: i Prestatori di Servizi di Pagamento aderenti a pagoPA.
+*  i *PSP*: i Prestatori di Servizi di Pagamento aderenti a pagoPA.
    Ciascun PSP espone un'interfaccia web, il Portale PSP, per permettere
    al cittadino di perfezionare i pagamenti delle posizioni presenti su
    pagoPA;
--  la *Banca Tesoriera*: Istituti gestori dei conti di accredito
+*  la *Banca Tesoriera*: Istituti gestori dei conti di accredito
    dell'Ente Creditore.
 
 I principali attori interni all'Ente Creditore
