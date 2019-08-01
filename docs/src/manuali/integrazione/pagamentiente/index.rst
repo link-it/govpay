@@ -5,10 +5,13 @@ Pagamenti ad iniziativa ente
 
 In questo scenario il Soggetto Debitore utilizza il Portale dei
 Pagamenti dell’Ente Creditore per effettuare i pagamenti dovuti. Il
-flusso di pagamento è illustrato in `Figura 2 <#anchor-11>`__:
+flusso di pagamento è illustrato nella figura seguente
 
-.. figure:: ../_figure_integrazione/100002010000022600000192C7342CEDBB4934F5.png
-    Figura 2 - Pagamento ad iniziativa ente
+.. figure:: ../_images/INT02_PagamentoAdIniziativaEnte.png
+   :align: center
+   :name: CampiDelDominio
+   
+   Pagamento ad iniziativa Ente
 
 1. L'utente debitore utilizza gli strumenti offerti dal Portale dei
    Pagamenti dell’Ente per giungere alla formalizzazione di una
@@ -29,8 +32,12 @@ Il flusso descritto si realizza integrando il Portale dei Pagamenti a
 GovPay e implementando le interazioni individuate dal seguente sequence
 diagram:
 
-.. figure:: ../_figure_integrazione/100002010000022600000192C7342CFDBB4934E5.png
-    Didascalia
+.. figure:: ../_images/18ParametriDominio.png
+   :align: center
+   :name: CampiDelDominio
+   
+   Squence Diagram del pagamento
+
 
 Predisposizione del pagamento
 -----------------------------
