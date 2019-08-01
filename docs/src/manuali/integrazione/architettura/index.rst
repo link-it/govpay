@@ -90,19 +90,11 @@ Nel seguito saranno descritte le modalità di integrazione richieste ai
 sistemi applicativi dell'Ente Creditore, facendo riferimento a diverse
 varianti dei seguenti casi d'uso:
 
-1. Pagamenti ad iniziativa ente
 
-Gli scenari d’utilizzo in cui il soggetto debitore utilizza il portale
-dei pagamenti dell’ente per effettuare uno o più pagamenti
-
-1. Pagamenti ad iniziativa PSP
-
-Gli scenari d’utilizzo in cui l’utente effettua uno o più pagamenti
-presso il PSP tramite gli avvisi di pagamento.
-
-1. Riconciliazione dei pagamenti
-
-Gli scenari di utilizzo di GovPay che coinvolgono i sistemi contabili
-dell’ente, responsabili della riconciliazione dei pagamenti realizzati
-da pagoPA con le entrate in tesoreria.
-
+.. csv-table:: Varianti dei casi d'uso
+  :header: "Sintesi", "Descrizione"
+  :widths: 30,70
+  
+  "Pagamenti ad iniziativa Ente", "Scenari d’utilizzo in cui il soggetto debitore utilizza il portale dei pagamenti dell’ente per effettuare uno o più pagamenti"
+  "Pagamenti ad iniziativa PSP", "Scenari d’utilizzo in cui l’utente effettua uno o più pagamenti presso il PSP tramite gli avvisi di pagamento"  
+  "Riconciliazione dei pagamenti", "Scenari di utilizzo di GovPay che coinvolgono i sistemi contabili dell’ente, responsabili della riconciliazione dei pagamenti realizzati da pagoPA con le entrate in tesoreria"  
