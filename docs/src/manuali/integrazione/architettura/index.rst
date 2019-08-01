@@ -8,7 +8,7 @@ riferimento, evidenziando il ruolo di GovPay, dei sistemi dell'Ente
 Creditore e dei servizi centrali del progetto pagoPA.
 
 .. figure:: ../_images/INT01_Architettura.png
-    Figura 1 - Architettura della piattaforma di pagamento
+   Architettura della piattaforma di pagamento
 
 Gli Attori principali del Progetto pagoPA
 -----------------------------------------
