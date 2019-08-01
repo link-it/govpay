@@ -9,6 +9,7 @@ Creditore e dei servizi centrali del progetto pagoPA.
 
 .. figure:: ../_images/INT01_Architettura.png
    :align: center
+   :name: ArchitetturaPiattaforma
 
    Architettura della piattaforma di pagamento
 
