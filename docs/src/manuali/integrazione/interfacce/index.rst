@@ -13,11 +13,11 @@ Nel seguito della sezione si affronterà un caso pratico di definizione di intef
 Personalizzazione del tipo pendenza
 -----------------------------------
 
-.. figure:: ../_images/INT01_Architettura.png
+.. figure:: ../_images/INT06_CaratteristichePendenzaConInterfacceAutomatiche.png
    :align: center
-   :name: ArchitetturaPiattaforma
+   :name: Interfaccepersonalizzabilineltipopendenza
 
-   Architettura della piattaforma di pagamento
+   Interfacce personalizzabili attraverso script nel Tipo Pendenza
 
 
 
