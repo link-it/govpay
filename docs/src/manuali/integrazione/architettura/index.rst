@@ -7,7 +7,7 @@ In `Figura 1 <#anchor-3>`__ è descritto lo scenario architetturale di
 riferimento, evidenziando il ruolo di GovPay, dei sistemi dell'Ente
 Creditore e dei servizi centrali del progetto pagoPA.
 
-.. figure:: ../_figure_integrazione/100002010000022600000192C7342CEDBB4934E6.png
+.. figure:: ../_Images/INT01_Architettura.png
     Figura 1 - Architettura della piattaforma di pagamento
 
 Gli Attori principali del Progetto pagoPA
