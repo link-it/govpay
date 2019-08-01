@@ -23,6 +23,12 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
 Given url backofficeBaseurl
+And path '/logout'
+And headers spidHeadersRossi
+When method get
+Then status 200
+
+Given url backofficeBaseurl
 And path '/pagamenti'
 And param dataDa = dataInizio
 And param dataA = dataFine
@@ -84,6 +90,12 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
 Given url backofficeBaseurl
+And path '/logout'
+And headers spidHeadersRossi
+When method get
+Then status 200
+
+Given url backofficeBaseurl
 And path '/pagamenti'
 And headers spidHeadersRossi
 When method get
@@ -108,6 +120,12 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
 Given url backofficeBaseurl
+And path '/logout'
+And headers spidHeadersRossi
+When method get
+Then status 200
+
+Given url backofficeBaseurl
 And path '/pagamenti'
 And headers spidHeadersRossi
 When method get
@@ -118,6 +136,12 @@ Scenario: Ricerca pagamenti operatore non censito
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'XXXYYY30A01H501I','X-SPID-NAME': 'John','X-SPID-FAMILYNAME': 'Doe','X-SPID-EMAIL': 'jdoe@mailserver.host.it'}
+
+Given url backofficeBaseurl
+And path '/logout'
+And headers spidHeadersRossi
+When method get
+Then status 200
 
 Given url backofficeBaseurl
 And path '/pagamenti'

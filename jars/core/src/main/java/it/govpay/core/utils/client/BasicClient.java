@@ -644,7 +644,8 @@ public abstract class BasicClient {
 			try {
 				responseCode = connection.getResponseCode();
 			} catch (Exception e) {
-				throw new ClientException(e);
+				responseCode = 500;
+				throw new ClientException(e, responseCode);
 			}
 
 			dumpResponse.getHeaders().put("HTTP-Method", httpMethod.name());

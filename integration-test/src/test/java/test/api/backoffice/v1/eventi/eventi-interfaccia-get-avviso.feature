@@ -343,7 +343,7 @@ And match response.risultati[0] ==
 	"tipoEvento": "getAvviso",
 	"sottotipoEvento": "##null",
 	"esito": "FAIL",
-	"sottotipoEsito": "403",
+	"sottotipoEsito": "500",
 	"dettaglioEsito": "#notnull",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
@@ -357,15 +357,14 @@ And match response.risultati[0] ==
 	},
 	"parametriRisposta": {
 		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
-		"status": 403,
+		"status": 500,
 		"headers": "#array",
-		"payload": "#notnull"
+		"payload": "##null"
 	}
 }
 """
 
-* def payloadRisposta = decodeBase64(response.risultati[0].parametriRisposta.payload)
-* match payloadRisposta contains "UnknownHostException"
+* match response.risultati[0].dettaglioEsito contains "UnknownHostException"
 
 Scenario: Evento verifica pendenza applicazione risposta errata
 

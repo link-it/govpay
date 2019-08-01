@@ -288,3 +288,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+#### reset simulatore
+
+Given url ndpsym_url + '/pagopa/rs/dars/manutenzione/trash' 
+When method get
+Then assert responseStatus == 200
+
