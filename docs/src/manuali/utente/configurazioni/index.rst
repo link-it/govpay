@@ -280,7 +280,7 @@ Ogni importo che costituisce un versamento deve essere associato ad una entrata 
    :align: center
    :name: CampiPerNuovaEntrata
    
-   Maschera di creazione nuova entrata associata al dominio
+   Maschera di creazione nuova entrata associata all'Ente Creditore
 
 Il form di creazione di un'entrata va compilato con le seguenti informazioni:
 
@@ -307,7 +307,7 @@ Il form di creazione di un'entrata va compilato con le seguenti informazioni:
   "Codice contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
   "Abilitato", "Indica se l'Entrata è abilitata o meno nel contesto del dominio su cui si opera", ""
 
-.. note:: I campi *Tipo Contabilità e Codice Contabilità* rappresentano i valori di default per il tipo entrata e saranno attualizzabili nel contesto di ciascun dominio.
+.. note:: I campi *Tipo Contabilità e Codice Contabilità* rappresentano i valori di default per il tipo entrata e saranno attualizzabili nel contesto di ciascun Ente Creditore.
 
 Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata, con il campo *Codice Entrata* non modificabile. Fa eccezione l'entrata preconfigurata “Marca da Bollo Telematica” per la quale si ha la sola possibilità di modificare i parametri di contabilizzazione.
 
@@ -315,24 +315,24 @@ Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata,
 Pendenze
 ^^^^^^^^
 
-Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per il dominio in essere. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta di un nuovo tipo di pendenza viene gestita nella funzionalità associata alla voce `Tipi Pendenze`_ del menu sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
-Ad esempio, in un dominio abbiamo le seguenti tipologie di pendenza già selezionate:
+Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per l'Ente Creditore in essere. Si noti come le pendenze possano essere associate all'Ente selezionandole da quelle censite (l'aggiunta di un nuovo tipo di pendenza viene gestita nella funzionalità associata alla voce `Tipi Pendenze`_ del menu sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per l'Ente, non siano state già scelte.
+Ad esempio, in un Ente Creditore abbiamo le seguenti tipologie di pendenza già selezionate:
 
 .. figure:: ../_images/25PendenzeSceltePerIlDominio.png
    :align: center
    :name: PendenzeRelativeAUnDominio
    
-   Pendenze associate a un dominio
+   Pendenze associate a un Ente Creditore
    
-A questo punto, sul dominio selezionato, si potrà aggiungere una sola pendenza (quella non ancora selezionata), come mostrato:
+A questo punto, sull'Ente Creditore selezionato, si potrà aggiungere una sola pendenza (quella non ancora selezionata), come mostrato:
 
 .. figure:: ../_images/26PendenzaSelezionabile.png
    :align: center
    :name: PendenzaSelezionabilePerAggiunta
    
-   Pendenza selezionabile per aggiunta al dominio
+   Pendenza selezionabile per aggiunta all'Ente Creditore
 
-Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, di personalizzarla per il dominio, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
+Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, di personalizzarla per l'Ente Creditore, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
 Si tenga presente che si affronterà il dettaglio dei campi delle pendenze nella sezione apposita, cui si fa riferimento. Al momento si noti come una pendenza possa essere completamente personalizzata per un dominio a partire da una *standard* definita nella sezione *`Tipi Pendenze`_*.
 I meccanismi di selezione sono del tutto analoghi a quanto già visto in altri contesti del sistema: selezioniamo la Pendenza *Sanzione Amministrativa*
 
