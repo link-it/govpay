@@ -44,9 +44,8 @@ I principali attori interni all'Ente Creditore
 
 Questo documento si concentra sull'organizzazione interna dell'Ente
 Creditore, al fine di focalizzare le esigenze di integrazione dei
-diversi software applicativi dell'Ente. A tal fine in `Figura
-1 <#anchor-3>`__ sono descritti i principali attori interni all'Ente
-Creditore:
+diversi software applicativi dell'Ente. A tal fine nella figura appema vista sono stati introdotti i principali attori interni all'Ente
+Creditore, ovvero:
 
 -  *Helpdesk*: Personale dedicato ai servizi di helpdesk di primo o
    secondo livello inerenti ai pagamenti pagoPA.
