@@ -32,9 +32,9 @@ Il flusso descritto si realizza integrando il Portale dei Pagamenti a
 GovPay e implementando le interazioni individuate dal seguente sequence
 diagram:
 
-.. figure:: ../_images/18ParametriDominio.png
+.. figure:: ../_images/INT03_SequenceDiagramDeiFlussiDiPagamento.png
    :align: center
-   :name: CampiDelDominio
+   :name: SequenceDiagramDelPagamento
    
    Squence Diagram del pagamento
 
