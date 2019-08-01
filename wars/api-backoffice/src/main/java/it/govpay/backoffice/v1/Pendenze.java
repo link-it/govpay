@@ -104,8 +104,17 @@ public class Pendenze extends BaseRsServiceV1{
     }
 
     @GET
+    @Path("/tracciati/{id}/richiesta")
+    
+    @Produces({ "application/json", "text/csv" })
+    public Response getRichiestaTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
+         this.controller.setContext(this.getContext());
+        return this.controller.pendenzeTracciatiIdRichiestaGET(this.getUser(), uriInfo, httpHeaders,  id);
+    }
+
+    @GET
     @Path("/tracciati/{id}/esito")
-    @Produces({ "application/json" })
+    @Produces({ "application/json", "text/csv" })
     public Response getEsitoTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
         this.controller.setContext(this.getContext());
         return this.controller.pendenzeTracciatiIdEsitoGET(this.getUser(), uriInfo, httpHeaders,  id);

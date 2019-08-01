@@ -375,6 +375,36 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  '/pendenze/tracciati/{id}/richiesta':
+    get:
+      tags:
+        - Pendenze
+      summary: Tracciato di richiesta
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tracciato di richiesta
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/tracciatoPendenzePost'
+            text/csv:
+              schema:
+               type: object
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   '/pendenze/tracciati/{id}/esito':
     get:
       tags:
@@ -394,6 +424,9 @@ paths:
             application/json:
               schema:
                $ref: '#/components/schemas/tracciatoPendenzeEsito'
+            text/csv:
+              schema:
+               type: object
         '401':
           $ref: '#/components/responses/401'
         '403':

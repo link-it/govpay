@@ -66,6 +66,7 @@ Then status 200
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
+* set pendenzaPutMono.idTipoPendenza = codLibero
 * set pendenzaPutMono.voci = 
 """
 [

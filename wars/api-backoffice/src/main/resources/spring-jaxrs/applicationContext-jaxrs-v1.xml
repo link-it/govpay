@@ -64,11 +64,13 @@
    	<b:bean id="incassi" class="it.govpay.backoffice.v1.Incassi"/>
    	<b:bean id="info" class="it.govpay.backoffice.v1.Info"/>
    	<b:bean id="intermediari" class="it.govpay.backoffice.v1.Intermediari"/>
+   	<b:bean id="notifiche" class="it.govpay.backoffice.v1.Notifiche"/>
    	<b:bean id="operatori" class="it.govpay.backoffice.v1.Operatori"/>
    	<b:bean id="operazioni" class="it.govpay.backoffice.v1.Operazioni"/>
    	<b:bean id="pagamenti" class="it.govpay.backoffice.v1.Pagamenti"/>
    	<b:bean id="pendenze" class="it.govpay.backoffice.v1.Pendenze"/>
    	<b:bean id="profilo" class="it.govpay.backoffice.v1.Profilo"/>
+    <b:bean id="promemoria" class="it.govpay.backoffice.v1.Promemoria"/>
    	<b:bean id="reportistiche" class="it.govpay.backoffice.v1.Reportistiche"/>
    	<b:bean id="riscossioni" class="it.govpay.backoffice.v1.Riscossioni"/>
    	<b:bean id="rpp" class="it.govpay.backoffice.v1.Rpp"/>
@@ -97,9 +99,11 @@
 			   	<ref bean="intermediari" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
+			   	<ref bean="notifiche" />
 			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
+			   	<ref bean="promemoria" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -136,11 +140,13 @@
 			   	<ref bean="incassi" />
 			   	<ref bean="info" />
 			   	<ref bean="intermediari" />
+			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
 			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
+			   	<ref bean="promemoria" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -177,11 +183,13 @@
 			   	<ref bean="incassi" />
 			   	<ref bean="info" />
 			   	<ref bean="intermediari" />
+			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
 			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
+			   	<ref bean="promemoria" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -218,11 +226,13 @@
 			   	<ref bean="incassi" />
 			   	<ref bean="info" />
 			   	<ref bean="intermediari" />
+			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
 			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
+			   	<ref bean="promemoria" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />
@@ -259,11 +269,13 @@
 			   	<ref bean="incassi" />
 			   	<ref bean="info" />
 			   	<ref bean="intermediari" />
+			   	<ref bean="notifiche" />
 			   	<ref bean="operatori" />
 			   	<ref bean="operazioni" />
 			   	<ref bean="pagamenti" />
 			   	<ref bean="pendenze" />
 			   	<ref bean="profilo" />
+			   	<ref bean="promemoria" />
 			   	<ref bean="reportistiche" />
 			   	<ref bean="riscossioni" />
 			   	<ref bean="rpp" />

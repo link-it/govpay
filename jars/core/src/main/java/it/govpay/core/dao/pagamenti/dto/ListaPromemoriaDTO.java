@@ -18,8 +18,8 @@ public class ListaPromemoriaDTO extends BasicFindRequestDTO{
 	}
 	private Date dataA;
 	private Date dataDa;
-	private String stato;
-	private String tipo;
+	private it.govpay.model.Promemoria.StatoSpedizione stato;
+	private it.govpay.model.Promemoria.TipoPromemoria tipo;
 	private String idDominio;
 	private String idPagamento;
 	private String idDebitore;
@@ -38,12 +38,6 @@ public class ListaPromemoriaDTO extends BasicFindRequestDTO{
 	}
 	public void setDataDa(Date dataDa) {
 		this.dataDa = dataDa;
-	}
-	public String getStato() {
-		return this.stato;
-	}
-	public void setStato(String stato) {
-		this.stato = stato;
 	}
 	public String getIdDominio() {
 		return this.idDominio;
@@ -81,10 +75,16 @@ public class ListaPromemoriaDTO extends BasicFindRequestDTO{
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
-	public String getTipo() {
+	public it.govpay.model.Promemoria.StatoSpedizione getStato() {
+		return stato;
+	}
+	public void setStato(it.govpay.model.Promemoria.StatoSpedizione stato) {
+		this.stato = stato;
+	}
+	public it.govpay.model.Promemoria.TipoPromemoria getTipo() {
 		return tipo;
 	}
-	public void setTipo(String tipo) {
+	public void setTipo(it.govpay.model.Promemoria.TipoPromemoria tipo) {
 		this.tipo = tipo;
 	}
 }

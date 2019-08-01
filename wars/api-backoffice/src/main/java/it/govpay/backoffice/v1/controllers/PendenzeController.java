@@ -657,8 +657,12 @@ public class PendenzeController extends BaseController {
 				throw new NonTrovataException("Tracciato di Esito non presente: elaborazione ancora in corso");
 
 			TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
+			String resFileName = tracciato.getFileNameEsito();
+			if(!resFileName.endsWith(".json"))
+				resFileName = resFileName.concat(".json");
+			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).entity(rsModel.toJSON(null,this.serializationConfig)),transactionId).build();
+			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rsModel.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -756,6 +760,47 @@ public class PendenzeController extends BaseController {
 			this.log(this.context);
 		}
 	}
+
+    public Response pendenzeTracciatiIdRichiestaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+    	String methodName = "pendenzeTracciatiIdRichiestaGET";  
+		String transactionId = this.context.getTransactionId();
+
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+
+		try{
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
+
+			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
+			leggiTracciatoDTO.setId((long) id);
+			
+			// Autorizzazione sui domini
+			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			if(idDomini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+
+			TracciatiDAO tracciatiDAO = new TracciatiDAO();
+			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
+			
+			// check dominio
+			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
+			}
+
+			TracciatoPendenzePost response = TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta()));
+			String reqFileName = tracciato.getFileNameRichiesta();
+			if(!reqFileName.endsWith(".json"))
+				reqFileName = reqFileName.concat(".json");
+			
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(response.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.log(this.context);
+		}
+    }
 
 
 

@@ -19,12 +19,6 @@
  */
 package it.govpay.bd.pagamento;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.converter.NotificaConverter;
-import it.govpay.model.Notifica.StatoSpedizione;
-import it.govpay.orm.dao.jdbc.JDBCNotificaService;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +31,13 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.converter.NotificaConverter;
+import it.govpay.bd.pagamento.filters.NotificaFilter;
+import it.govpay.model.Notifica.StatoSpedizione;
+import it.govpay.orm.dao.jdbc.JDBCNotificaService;
 
 public class NotificheBD extends BasicBD {
 
@@ -131,6 +132,35 @@ public class NotificheBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public NotificaFilter newFilter() throws ServiceException {
+		return new NotificaFilter(this.getNotificaService());
+	}
+
+	public NotificaFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new NotificaFilter(this.getNotificaService(),simpleSearch);
+	}
+
+	public long count(NotificaFilter filter) throws ServiceException {
+		try {
+			return this.getNotificaService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public List<Notifica> findAll(NotificaFilter filter) throws ServiceException {
+		try {
+			List<Notifica> notificaLst = new ArrayList<>();
+			List<it.govpay.orm.Notifica> notificaVOLst = this.getNotificaService().findAll(filter.toPaginatedExpression()); 
+			for(it.govpay.orm.Notifica notificaVO: notificaVOLst) {
+				notificaLst.add(NotificaConverter.toDTO(notificaVO));
+			}
+			return notificaLst;
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}

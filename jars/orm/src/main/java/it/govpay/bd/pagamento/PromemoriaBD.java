@@ -19,12 +19,6 @@
  */
 package it.govpay.bd.pagamento;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Promemoria;
-import it.govpay.bd.model.converter.PromemoriaConverter;
-import it.govpay.model.Promemoria.StatoSpedizione;
-import it.govpay.orm.dao.jdbc.JDBCPromemoriaService;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +31,13 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Promemoria;
+import it.govpay.bd.model.converter.PromemoriaConverter;
+import it.govpay.bd.pagamento.filters.PromemoriaFilter;
+import it.govpay.model.Promemoria.StatoSpedizione;
+import it.govpay.orm.dao.jdbc.JDBCPromemoriaService;
 
 public class PromemoriaBD extends BasicBD {
 
@@ -158,6 +159,36 @@ public class PromemoriaBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	
+	public PromemoriaFilter newFilter() throws ServiceException {
+		return new PromemoriaFilter(this.getPromemoriaService());
+	}
+
+	public PromemoriaFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new PromemoriaFilter(this.getPromemoriaService(),simpleSearch);
+	}
+
+	public long count(PromemoriaFilter filter) throws ServiceException {
+		try {
+			return this.getPromemoriaService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public List<Promemoria> findAll(PromemoriaFilter filter) throws ServiceException {
+		try {
+			List<Promemoria> notificaLst = new ArrayList<>();
+			List<it.govpay.orm.Promemoria> notificaVOLst = this.getPromemoriaService().findAll(filter.toPaginatedExpression()); 
+			for(it.govpay.orm.Promemoria notificaVO: notificaVOLst) {
+				notificaLst.add(PromemoriaConverter.toDTO(notificaVO));
+			}
+			return notificaLst;
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
