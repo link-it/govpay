@@ -1,0 +1,21 @@
+.mini-fabs-group {
+  position: absolute;
+  opacity: 0;
+  bottom: 0;
+  transition: all .250s;
+}
+
+.open {
+  opacity: 1;
+  bottom: 64px;
+  transition: all .250s;
+}
+
+button.fab-dial {
+  margin: 0 8px;
+  transition: all .250s;
+}
+
+.mini-fabs-group.open button.fab-dial {
+  margin: 8px;
+}

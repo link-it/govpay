@@ -1,0 +1,25 @@
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+  <mat-select [placeholder]="_voce.ENTE_CREDITORE" formControlName="dominio_ctrl">
+    <mat-option *ngFor="let item of _domini" [value]="item">{{item.ragioneSociale}}</mat-option>
+  </mat-select>
+</mat-form-field>
+<div class="row">
+  <div class="col-12 col-sm-6">
+    <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+      <input matInput [matDatepicker]="dataDa" placeholder="Data inizio" formControlName="dataDa_ctrl"
+             autocomplete="off" (dateChange)="_compareDatesStart($event)">
+      <mat-datepicker-toggle matSuffix [for]="dataDa"></mat-datepicker-toggle>
+      <mat-datepicker #dataDa></mat-datepicker>
+      <mat-hint *ngIf="invalidRange.start">{{invalidDateRangeError.start}}</mat-hint>
+    </mat-form-field>
+  </div>
+  <div class="col-12 col-sm-6">
+    <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+      <input matInput [matDatepicker]="dataA" placeholder="Data fine" formControlName="dataA_ctrl"
+             autocomplete="off" (dateChange)="_compareDatesEnd($event)">
+      <mat-datepicker-toggle matSuffix [for]="dataA"></mat-datepicker-toggle>
+      <mat-datepicker #dataA></mat-datepicker>
+      <mat-hint *ngIf="invalidRange.end">{{invalidDateRangeError.end}}</mat-hint>
+    </mat-form-field>
+  </div>
+</div>

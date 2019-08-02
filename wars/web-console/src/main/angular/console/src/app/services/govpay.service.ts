@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-  import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class GovpayService {
@@ -86,15 +86,20 @@ export class GovpayService {
    * @param {string} query: query string
    * @param {string} method: POST/PUT
    * @param {boolean} autoHeaders: true|false
+   * @param {HttpHeaders} customHeaders
+   * @param {string} responseDataType
    * @returns {Observable<any>}
    */
-  saveData(service: string, body: any, query?: string, method?: string, autoHeaders: boolean = false): Observable<any> {
+  saveData(service: string, body: any, query?: string, method?: string, autoHeaders: boolean = false, customHeaders: HttpHeaders = null, responseDataType = 'json'): Observable<any> {
     method = (method || UtilService.METHODS.PUT);
     let url = UtilService.RootByTOA() + service;
     let headers = new HttpHeaders();
     if(!autoHeaders) {
       headers = headers.set('Content-Type', 'application/json');
       headers = headers.set('Accept', '*/*');
+    }
+    if(customHeaders) {
+      headers = customHeaders;
     }
     let _params = null;
     if(query) {
@@ -106,10 +111,15 @@ export class GovpayService {
       });
     }
     this.updateSpinner(true);
-
-    return this.http.request(method, url, { body: body, headers: headers, observe: 'response', params: _params })
-      .timeout(UtilService.TIMEOUT)
-      .map((response) => { return response; });
+    let _request;
+    switch(responseDataType) {
+      case 'blob':
+        _request = this.http.request(method, url, { body: body, headers: headers, observe: 'response', params: _params, responseType: 'blob' });
+        break;
+      default:
+        _request = this.http.request(method, url, { body: body, headers: headers, observe: 'response', params: _params });
+    }
+    return _request.timeout(UtilService.TIMEOUT).map((response) => { return response; });
   }
 
   multiGetService(services: string[], properties: any[], content: any) {

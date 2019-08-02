@@ -32,6 +32,7 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
     this.fGroup.addControl('abilitato_ctrl', new FormControl(false));
     this.fGroup.addControl('pagaTerzi_ctrl', new FormControl(false));
 
+    this.fGroup.addControl('visualizzazione_ctrl', new FormControl(''));
     this.fGroup.addControl('generatore_ctrl', new FormControl(''));
     this.fGroup.addControl('schema_ctrl', new FormControl(''));
 
@@ -62,6 +63,7 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
         this.fGroup.controls['pagaTerzi_ctrl'].setValue(this.json.pagaTerzi);
         this.fGroup.controls['abilitato_ctrl'].setValue(this.json.abilitato);
 
+        this.fGroup.controls['visualizzazione_ctrl'].setValue((this.json.visualizzazione)?(this.json.visualizzazione || ''):'');
         this.fGroup.controls['generatore_ctrl'].setValue((this.json.form)?(this.json.form.tipo || ''):'');
         this.fGroup.controls['schema_ctrl'].setValue((this.json.form)?(this.json.form.definizione || ''):'');
 
@@ -151,6 +153,7 @@ export class TipoPendenzaViewComponent implements IFormComponent, OnInit, AfterV
     _json.pagaTerzi = _info['pagaTerzi_ctrl'];
     _json.abilitato = _info['abilitato_ctrl'];
 
+    _json.visualizzazione = _info['visualizzazione_ctrl'] || null;
     _json.form = {
       tipo: _info['generatore_ctrl'] || null,
       definizione: _info['schema_ctrl'] || null

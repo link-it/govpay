@@ -59,6 +59,8 @@ import { JsonSchemaFormModule, MaterialDesignFrameworkModule } from 'angular2-js
 import { GeneratorsEntryListComponents } from "./classes/generators-entry-point-list";
 import { TipoPendenzaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
 import { FileSelectorViewComponent } from './elements/file-selector-view/file-selector-view.component';
+import { FabGroupComponent } from './elements/fab-group/fab-group.component';
+import { ReportProspettoRiscossioniViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/report-prospetto-riscossioni-view/report-prospetto-riscossioni-view.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +90,9 @@ import { FileSelectorViewComponent } from './elements/file-selector-view/file-se
     NotaViewComponent,
     TwoColsViewComponent,
     TipoPendenzaViewComponent,
-    FileSelectorViewComponent
+    FileSelectorViewComponent,
+    FabGroupComponent,
+    ReportProspettoRiscossioniViewComponent
   ],
   imports: [
     BrowserModule,

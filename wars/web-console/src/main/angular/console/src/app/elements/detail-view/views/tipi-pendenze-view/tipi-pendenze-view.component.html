@@ -7,6 +7,16 @@
     </div>
   </mat-card>
   <mat-card class="shadow no-border-radius mb-4">
+    <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.VISUALIZZAZIONE}}</p>
+    <p class="d-block matcard-title pb-3 color-gray regular-16" *ngIf="!_jsonVisualizzazione">{{_voce.NON_CONFIGURATO}}</p>
+    <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="_jsonVisualizzazione">
+      <div class="col-12 col-sm-4 color-gray lh-130">Configurazione:</div>
+      <button mat-icon-button class="action pl-2" type="button" (click)="_showTextContent(_jsonVisualizzazione, 'Configurazione')" [disabled]="!_jsonVisualizzazione">
+        <mat-icon aria-label="Open Definizione">open_in_new</mat-icon>
+      </button>
+    </div>
+  </mat-card>
+  <mat-card class="shadow no-border-radius mb-4">
     <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.LAYOUT_FORM_DATI}}</p>
     <p class="d-block matcard-title pb-3 color-gray regular-16" *ngIf="!_jsonSchemaSelected">{{_voce.NON_CONFIGURATO}}</p>
     <div class="row align-items-center lh-130 regular-16 mb-2 break-all" *ngIf="_jsonSchemaSelected">

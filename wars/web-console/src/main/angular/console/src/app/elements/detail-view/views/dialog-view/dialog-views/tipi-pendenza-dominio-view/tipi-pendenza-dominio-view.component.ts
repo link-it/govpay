@@ -29,6 +29,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
   protected _generatori: any[] = UtilService.GENERATORI;
   protected _applicazioni: any[] = [];
   protected _doubleSet: any = {
+    visualizzazione: false,
     schema: false,
     validazione: false,
     definizione: false,
@@ -36,6 +37,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     messaggio: false,
     oggettoRicevuta: false,
     messaggioRicevuta: false,
+    shadow_visualizzazione_ctrl: new FormControl(''),
     shadow_schema_ctrl: new FormControl(''),
     shadow_validazione_ctrl: new FormControl(''),
     shadow_definizione_ctrl: new FormControl(''),
@@ -56,6 +58,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     this.fGroup.addControl('abilita_ctrl', new FormControl(null));
     this.fGroup.addControl('pagaTerzi_ctrl', new FormControl(null));
 
+    this.fGroup.addControl('visualizzazione_ctrl', new FormControl(''));
     this.fGroup.addControl('generatore_ctrl', new FormControl(''));
     this.fGroup.addControl('schema_ctrl', new FormControl(''));
 
@@ -197,6 +200,11 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
   }
 
   protected _updateValues(json: any) {
+    if(json.valori && json.valori.visualizzazione) {
+      this._doubleSet.visualizzazione = false;
+    } else {
+      this._doubleSet.visualizzazione = true;
+    }
     if(json.valori && json.valori.form && json.valori.form.definizione) {
       this._doubleSet.schema = false;
     } else {
@@ -232,6 +240,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
     } else {
       this._doubleSet.messaggioRicevuta = true;
     }
+    this._doubleSet[ 'shadow_visualizzazione_ctrl' ].setValue(json.visualizzazione?json.visualizzazione:'');
     this._doubleSet[ 'shadow_schema_ctrl' ].setValue(json.form?json.form.definizione:'');
     this._doubleSet[ 'shadow_validazione_ctrl' ].setValue(json.validazione || '');
     this._doubleSet[ 'shadow_definizione_ctrl' ].setValue(json.trasformazione?json.trasformazione.definizione:'');
@@ -252,6 +261,11 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
       }
       if (json.valori && json.valori.form && json.valori.form.tipo) {
         this.fGroup.controls[ 'generatore_ctrl' ].setValue(json.valori.form.tipo || '');
+      }
+      if (json.valori && json.valori.visualizzazione) {
+        this.fGroup.controls[ 'visualizzazione_ctrl' ].setValue(json.valori.visualizzazione || '');
+      } else {
+        this.fGroup.controls[ 'visualizzazione_ctrl' ].setValue(json.visualizzazione?json.visualizzazione:'');
       }
       if (json.valori && json.valori.form && json.valori.form.definizione) {
         this.fGroup.controls[ 'schema_ctrl' ].setValue(json.valori.form.definizione || '');
@@ -327,6 +341,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
       pagaTerzi: (_info['pagaTerzi_ctrl'] !== undefined)?_info['pagaTerzi_ctrl']:null,
       abilitato: (_info['abilita_ctrl'] !== undefined)?_info['abilita_ctrl']:null,
       codificaIUV: _info['codificaIUV_ctrl'],
+      visualizzazione: _info['visualizzazione_ctrl'] || null,
       form: {
         tipo: _info['generatore_ctrl'] || null,
         definizione: _info['schema_ctrl'] || null

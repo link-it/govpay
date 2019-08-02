@@ -28,6 +28,13 @@
       </mat-form-field>
     </mat-card>
     <mat-card class="shadow no-border-radius mb-4">
+      <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.VISUALIZZAZIONE}}</p>
+      <div class="row">
+        <link-file-selector-view class="col-12 col-sm-6 mb-3" [fControlName]="'visualizzazione_ctrl'" [doubleSet]="_doubleSet.visualizzazione"
+                                 [fGroup]="fGroup" placeholder="JSON visualizzazione" (fileSelectorReset)="_lfsReset($event, 'visualizzazione_ctrl')"></link-file-selector-view>
+      </div>
+    </mat-card>
+    <mat-card class="shadow no-border-radius mb-4">
       <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.LAYOUT_FORM_DATI}}</p>
       <div class="row">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">

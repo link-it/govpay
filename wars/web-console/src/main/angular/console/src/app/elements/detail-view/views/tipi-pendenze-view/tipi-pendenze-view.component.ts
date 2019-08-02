@@ -12,7 +12,7 @@ import { Voce } from '../../../../services/voce.service';
   templateUrl: './tipi-pendenze-view.component.html',
   styleUrls: ['./tipi-pendenze-view.component.scss']
 })
-export class TipiPendenzeViewComponent implements IModalDialog,  OnInit, AfterViewInit {
+export class TipiPendenzeViewComponent implements IModalDialog, OnInit, AfterViewInit {
   @ViewChild('iSchemaBrowse') _iSchemaBrowse: ElementRef;
 
   @Input() informazioni = [];
@@ -25,6 +25,7 @@ export class TipiPendenzeViewComponent implements IModalDialog,  OnInit, AfterVi
 
   protected _voce = Voce;
   protected _jsonSchemaSelected: any;
+  protected _jsonVisualizzazione: any;
 
   constructor(public gps: GovpayService, public us: UtilService) { }
 
@@ -101,6 +102,10 @@ export class TipiPendenzeViewComponent implements IModalDialog,  OnInit, AfterVi
     } else {
       this.promemoriaRicevuta.noconfig = true;
     }
+
+    if(this.json.visualizzazione) {
+      this._jsonVisualizzazione = this.json.visualizzazione;
+    }
   }
 
   protected _showTextContent(value: string, title: string) {
@@ -130,7 +135,6 @@ export class TipiPendenzeViewComponent implements IModalDialog,  OnInit, AfterVi
       console.log(e);
     }
   }
-
 
   protected _editTipoPendenza() {
     let _mb = new ModalBehavior();

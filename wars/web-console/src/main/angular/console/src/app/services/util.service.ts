@@ -37,6 +37,7 @@ export class UtilService {
   public static TIMEOUT: number = 30000; //30 seconds
   public static PROFILO_UTENTE: any;
   public static METHODS: any = {
+    GET: 'get',
     POST: 'post',
     PUT: 'put',
     PATCH: 'patch',
@@ -106,7 +107,7 @@ export class UtilService {
     ESEGUITA_PARZIALE: 'Pagata parzialmente',
     ANNULLATA: 'Annullata',
     SCADUTA: 'Scaduta',
-    INCASSATA: 'Incassata'
+    INCASSATA: 'Riconciliata'
   };
 
   //STATI RPP PAGAMENTI
@@ -119,7 +120,7 @@ export class UtilService {
   //STATI RISCOSSIONE
   public static STATI_RISCOSSIONE: any = {
     RISCOSSA: 'Riscossa',
-    INCASSATA: 'Incassata'
+    INCASSATA: 'Riconciliata'
   };
 
   //STATI ESITO PAGAMENTO
@@ -322,9 +323,13 @@ export class UtilService {
   public static URL_UNITA_OPERATIVE: string = '/unitaOperative';
   public static URL_IBAN_ACCREDITI: string = '/contiAccredito';
   public static URL_RUOLI: string = '/ruoli';
+  //Operazioni
   public static URL_OPERAZIONI: string = '/operazioni';
   public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
   public static URL_RECUPERO_RPT_PENDENTI: string = '/recuperoRptPendenti';
+  //Reportistiche
+  public static URL_REPORTISTICHE: string = '/reportistiche';
+  public static URL_PROSPETTO_RISCOSSIONI: string = '/entrate-previste';
 
   public static URL_TRACCIATI: string = '/pendenze/tracciati';
   public static URL_AVVISI: string = '/avvisi';
@@ -362,6 +367,7 @@ export class UtilService {
   public static TXT_MAN_RENDICONTAZIONI: string = 'Acquisisci rendicontazioni';
   public static TXT_MAN_PAGAMENTI: string = 'Recupera pagamenti';
   public static TXT_MAN_CACHE: string = 'Resetta la cache';
+  public static TXT_MAN_PROSPETTO_RISCOSSIONI: string = 'Prospetto riscossioni';
 
 
   //Types
@@ -423,6 +429,7 @@ export class UtilService {
   public static IBAN_ACCREDITO: string = 'iban_accredito';
   public static PENDENZA: string = 'pendenza';
   public static SCHEDA_PENDENZA: string = 'scheda_pendenza';
+  public static REPORT_PROSPETTO_RISCOSSIONI: string = 'report_prospetto_riscossioni';
   public static NO_TYPE: string = '-';
   //Json schema generators
   public static GENERATORI: any[] = GovPayConfig.GENERATORI;
@@ -750,6 +757,24 @@ export class UtilService {
     return (item && item[0].label) || '';
   }
 
+  /**
+   * Get property value by path
+   * @param path {string}
+   * @param stack {string}
+   * @returns any
+   */
+  searchPropertyByPathString(path: string, stack: any): any {
+    try {
+      path.split('.').forEach((property) => {
+        stack = stack[property];
+      });
+    } catch (e) {
+      console.warn('Stack error', stack, path);
+      return 'Percorso non valido.';
+    }
+    return stack || 'Valore non presente.';
+  }
+
   desaturateColor(_color: string): string {
     let col = this.hexToRgb(_color);
     let sat = 0;
@@ -834,8 +859,8 @@ export class UtilService {
                       values: this.statiPendenza() }),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT }),
-          new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
-          new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_ID_TIPO_PENDENZA, type: UtilService.FILTERABLE, values: UtilService._ID_TIPI_PENDENZA,
+          // new FormInput({ id: 'tipo', label: FormService.FORM_TIPOLOGIA, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: UtilService.TIPOLOGIA_PENDENZA }),
+          new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_TIPO_PENDENZA, type: UtilService.FILTERABLE, values: UtilService._ID_TIPI_PENDENZA,
             optionControlValue: true, showTooltip: true }),
           // new FormInput({ id: 'stato2', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPendenza(),
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })

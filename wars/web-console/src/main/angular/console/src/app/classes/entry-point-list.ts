@@ -51,6 +51,7 @@ import { TracciatoViewComponent } from '../elements/detail-view/views/dialog-vie
 import { NotaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/nota-view/nota-view.component';
 import { TipiPendenzeViewComponent } from '../elements/detail-view/views/tipi-pendenze-view/tipi-pendenze-view.component';
 import { TipoPendenzaViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
+import { ReportProspettoRiscossioniViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/report-prospetto-riscossioni-view/report-prospetto-riscossioni-view.component';
 
 export class EntryPointList {
 
@@ -71,6 +72,7 @@ export class EntryPointList {
     TracciatiViewComponent,
     TracciatoViewComponent,
     NotaViewComponent,
+    ReportProspettoRiscossioniViewComponent,
     OperatoriViewComponent,
     StandardViewComponent,
     StandardCollapseViewComponent,
@@ -231,6 +233,9 @@ export class EntryPointList {
       case UtilService.NOTA:
         _type = NotaViewComponent;
         break;
+      case UtilService.REPORT_PROSPETTO_RISCOSSIONI:
+        _type = ReportProspettoRiscossioniViewComponent;
+        break;
       //Material Lib
       case UtilService.INPUT:
         _type = InputViewComponent;
@@ -383,6 +388,9 @@ export class EntryPointList {
         break;
       case 'NotaViewComponent':
         _name = UtilService.NOTA;
+        break;
+      case 'ReportProspettoRiscossioniViewComponent':
+        _name = UtilService.REPORT_PROSPETTO_RISCOSSIONI;
         break;
       //Material Lib
       case 'InputViewComponent':

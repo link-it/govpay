@@ -2,6 +2,8 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
+import { Voce } from '../../../../../../services/voce.service';
+import { GovpayService } from '../../../../../../services/govpay.service';
 
 declare let Converter: any;
 declare let Papa: any;
@@ -17,19 +19,29 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   @Input() json: any;
   @Input() fGroup: FormGroup;
 
-  protected doc: any = { file: null, filename: '', json: '' };
-  protected conversioneCtrl: FormControl = new FormControl();
+  protected _voce = Voce;
+  protected _domini = [];
+  protected _tipiPendenzaDominio = [];
+
+  protected doc: any = { auto: false, file: null, filename: '', name: 'Standard JSON', method: null, json: '', mimeType: 'application/json' };
 
   //External Conversion Configuration
   protected _externalConverters: any[] = [];
   protected _methodSelected: any;
 
-  constructor(private us: UtilService) {
+  constructor(public gps: GovpayService, private us: UtilService) {
   }
 
   ngOnInit() {
+    this._externalConverters.push({ id: 1, auto: false, file: null, filename: '', name: 'Standard JSON', method: null, mimeType: 'application/json' });
+    this._externalConverters.push({ id: 2, auto: false, file: null, filename: '', name: 'Standard CSV', method: null, mimeType: 'text/csv' });
+
+    this._domini = UtilService.PROFILO_UTENTE?UtilService.PROFILO_UTENTE.domini:[];
+
     this.fGroup.addControl('tracciato_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('conversione_ctrl', this.conversioneCtrl);
+    this.fGroup.addControl('conversione_ctrl', new FormControl(''));
+    this.fGroup.addControl('domini_ctrl', new FormControl(''));
+    this.fGroup.addControl('tipiPendenzaDominio_ctrl', new FormControl(''));
     this._checkForExternalScript();
   }
 
@@ -44,27 +56,21 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
   protected _handleFileSelect(event) {
     if(event.currentTarget.files.length != 0) {
       let _file = event.currentTarget.files[0];
-      this.doc = { file: _file, filename: _file.name, json: '' };
+      this.doc.file = _file;
+      this.doc.filename = _file.name;
+      this.doc.json = '';
       this.fGroup.controls.tracciato_ctrl.setValue(_file.name);
 
-      if(this._methodSelected && this._externalConverters && this._externalConverters.length != 0) {
+      if(this._methodSelected && this._methodSelected.method) {
         this._doParse();
-      }
-
-      if(_file.type != 'application/json' && (!this._externalConverters || this._externalConverters.length == 0)) {
-        this._notAllowed();
-        this._resetSelection();
       }
     }
   }
 
-  protected _notAllowed() {
-    this.us.alert('Documento non corretto, selezionare un formato Json.');
-  }
-
   protected _resetSelection(event?: any) {
     if(this.iBrowse) {
-      this.doc = { file: null, filename: '', json: '' };
+      this.doc.file = null;
+      this.doc.filename = null;
       this.iBrowse.nativeElement.value = '';
       this.fGroup.controls.tracciato_ctrl.setValue('');
     }
@@ -101,17 +107,14 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
 
   protected _initConverter() {
     if(window['Converter'] && Converter.methods && (typeof Converter.methods) === 'function') {
-      this._externalConverters = Converter.methods();
-      this._externalConverters.forEach((ec) => {
+      this._externalConverters = this._externalConverters.concat(Converter.methods() || []);
+      this._externalConverters.forEach((ec, idx) => {
+        ec['id'] = idx + 1;
         if(ec.auto) {
           this._methodSelected = ec;
           this.fGroup.controls['conversione_ctrl'].setValue(this._methodSelected);
         }
       }, this);
-      this.conversioneCtrl.setValidators(null);
-      if(this._externalConverters && this._externalConverters.length != 0) {
-        this.conversioneCtrl.setValidators(Validators.required);
-      }
     }
   }
 
@@ -127,15 +130,27 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
     return (selection && option.id == selection.id);
   }
 
-  protected _onChangeConversion() {
+  protected _onChangeConversion(event: any) {
+    this._resetSelection();
+    this.fGroup.controls['domini_ctrl'].clearValidators();
+    this.fGroup.controls['tipiPendenzaDominio_ctrl'].clearValidators();
+    this.fGroup.controls['domini_ctrl'].reset();
+    this.fGroup.controls['tipiPendenzaDominio_ctrl'].reset();
+    this.doc = event.value;
     if(this.doc && this.doc.file && this._methodSelected && this._methodSelected.method) {
       this._doParse();
+    } else {
+      if(this.doc.mimeType === 'text/csv') {
+        this.fGroup.controls['domini_ctrl'].setValidators([Validators.required]);
+        this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValidators([Validators.required]);
+      }
     }
+    this.fGroup.updateValueAndValidity();
   }
 
   protected _doParse() {
     if(this._methodSelected.method && (typeof this._methodSelected.method === 'function')) {
-      Converter.filename = this.doc.filename + '.json';
+      Converter.filename = this.doc.filename.indexOf('.json')!=-1?this.doc.filename:this.doc.filename + '.json';
       let _config = Converter.config;
       delete _config.error;
       _config.complete = this._papaParseComplete.bind(this);
@@ -156,6 +171,38 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
     }
   }
 
+  protected _dominiChangeSelection(event: any) {
+    this._tipiPendenzaDominio = [];
+    this.fGroup.controls['tipiPendenzaDominio_ctrl'].disable();
+    const _url = event.value.tipiPendenza + '?abilitato=true&tipo=dovuto';
+    this._loadTipiPendenzaDominio(_url);
+  }
+
+  protected _loadTipiPendenzaDominio(_dominioRef: string) {
+    this.gps.getDataService(_dominioRef).subscribe(
+      (response) => {
+        this.gps.updateSpinner(false);
+        this.fGroup.controls['tipiPendenzaDominio_ctrl'].enable();
+        this._tipiPendenzaDominio = (response && response.body)?response.body['risultati']:[];
+        if(this._tipiPendenzaDominio.length == 1) {
+          const _ftpdom = this._tipiPendenzaDominio[0];
+          this.fGroup.controls['tipiPendenzaDominio_ctrl'].setValue(_ftpdom);
+        }
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  protected dominioCmpFn(d1: any, d2: any): boolean {
+    return (d1 && d2)?(d1.idDominio === d2.idDominio):(d1 === d2);
+  }
+
+  protected tipoPendenzaDominioCmpFn(p1: any, p2: any): boolean {
+    return (p1 && p2)?(p1.idTipoPendenza === p2.idTipoPendenza):(p1 === p2);
+  }
+
   /**
    * Interface IFormComponent: Form controls to json object
    * @returns {any}
@@ -168,6 +215,10 @@ export class TracciatoViewComponent implements OnInit, IFormComponent {
     if (this.doc.json) {
       _json.json = this.doc.json;
     }
+    _json.mimeType = this.doc.mimeType;
+    _json.idDominio = this.fGroup.controls['domini_ctrl'].value?this.fGroup.controls['domini_ctrl'].value.idDominio:null;
+    _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value?this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza:null;
+
 
     return _json;
   }
