@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { FormInput } from '../../../../../../classes/view/form-input';
-
+//TODO - NON PIU' USATO
 @Component({
   selector: 'link-tipi-pendenza-view',
   templateUrl: './tipi-pendenza-view.component.html',

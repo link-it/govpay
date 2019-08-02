@@ -498,9 +498,8 @@
   /** Converter **/
   function _methods() {
     return [
-    //{ id: #i, name: 'Method name', method: function, [ auto?: true ] }
-      { id: 1, name: 'CSV v1', method: _standard, auto: true },
-      { id: 2, name: 'Standard JSON', method: null }
+    //{ name: 'Method name', method: function, [ auto?: true ], mimeType: 'Content-type di invio a Govpay' }
+      { name: 'CSV v1', method: _standard, auto: true, mimeType: 'application/json' }
     ];
   }
 

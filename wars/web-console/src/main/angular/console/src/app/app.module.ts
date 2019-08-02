@@ -60,6 +60,7 @@ import { GeneratorsEntryListComponents } from "./classes/generators-entry-point-
 import { TipoPendenzaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
 import { FileSelectorViewComponent } from './elements/file-selector-view/file-selector-view.component';
 import { FabGroupComponent } from './elements/fab-group/fab-group.component';
+import { ReportProspettoRiscossioniViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/report-prospetto-riscossioni-view/report-prospetto-riscossioni-view.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { FabGroupComponent } from './elements/fab-group/fab-group.component';
     TwoColsViewComponent,
     TipoPendenzaViewComponent,
     FileSelectorViewComponent,
-    FabGroupComponent
+    FabGroupComponent,
+    ReportProspettoRiscossioniViewComponent
   ],
   imports: [
     BrowserModule,

@@ -10,14 +10,21 @@ import { NavigationEnd, Router } from '@angular/router';
 import * as moment from 'moment';
 import 'rxjs/add/operator/filter';
 import { DialogViewComponent } from './elements/detail-view/views/dialog-view/dialog-view.component';
+
+import { IModalDialog } from './classes/interfaces/IModalDialog';
 import { ModalBehavior } from './classes/modal-behavior';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { HttpHeaders } from '@angular/common/http';
+
+declare let JSZip: any;
+declare let FileSaver: any;
 
 @Component({
   selector: 'link-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, AfterContentChecked {
+export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
   @HostListener('window:resize') onResize() {
     let sub = this.ls.getRouterStateConfig();
     this._headerMenuIcon = UtilService.PROFILO_UTENTE && (!this.ls.checkLargeMediaMatch().matches && !this._headerBackIcon);
@@ -52,11 +59,14 @@ export class AppComponent implements OnInit, AfterContentChecked {
   _showBlueDialog: boolean = false;
   _blueDialogData: ModalBehavior;
 
-  protected _sideNavSetup: any = { menu: [], secMenu: [], terMenu: [], quaMenu: [], utenteConnesso: '' };
+  protected _sideNavSetup: any = { menu: [], secMenu: [], terMenu: [], quaMenu: [], pentaMenu: [], utenteConnesso: '' };
   protected _preventSideNav: boolean = true;
   protected _appName: string = UtilService.INFORMATION.APP_NAME;
   protected _applicationVersion: string;
   protected _once: boolean = false;
+
+  //IModalDialog implementation
+  json: any;
 
   constructor(public router: Router, public ls: LinkService, public gps: GovpayService, private us: UtilService) {
     this._extraSideNavQueryMatches = this.ls.checkLargeMediaMatch();
@@ -255,7 +265,8 @@ export class AppComponent implements OnInit, AfterContentChecked {
       ],
       secMenu: [],
       terMenu: [],
-      quaMenu: []
+      quaMenu: [],
+      pentaMenu: []
     };
     this._sideNavSetup.utenteConnesso = UtilService.PROFILO_UTENTE.nome;
     Object.keys(UtilService.USER_ACL).forEach((key) => { UtilService.USER_ACL[key] = false; });
@@ -278,6 +289,9 @@ export class AppComponent implements OnInit, AfterContentChecked {
 //          this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 1 });
           this._sideNavSetup.menu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 3 });
           this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 1 });
+          if (acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) !== -1) {
+            this._sideNavSetup.quaMenu.push({ link: UtilService.URL_PROSPETTO_RISCOSSIONI, name: UtilService.TXT_MAN_PROSPETTO_RISCOSSIONI, xhttp: true, icon: false, sort: 0 });
+          }
           break;
         case 'Pagamenti':
           UtilService.USER_ACL.hasPagamenti = true;
@@ -301,15 +315,15 @@ export class AppComponent implements OnInit, AfterContentChecked {
           break;
         case 'Configurazione e manutenzione':
           UtilService.USER_ACL.hasConfig = true;
-          // this._sideNavSetup.quaMenu.push({ link: '#', name: UtilService.TXT_MAN_NOTIFICHE, xhttp: true, icon: false });
-          this._sideNavSetup.quaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false });
-          this._sideNavSetup.quaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false });
-          // this._sideNavSetup.quaMenu.push({ link: '#', name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false });
+          // this._sideNavSetup.pentaMenu.push({ link: '#', name: UtilService.TXT_MAN_NOTIFICHE, xhttp: true, icon: false, sort: # });
+          this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI, name: UtilService.TXT_MAN_RENDICONTAZIONI, xhttp: true, icon: false, sort: 0 });
+          this._sideNavSetup.pentaMenu.push({ link: UtilService.URL_RECUPERO_RPT_PENDENTI, name: UtilService.TXT_MAN_PAGAMENTI, xhttp: true, icon: false, sort: 1 });
+          // this._sideNavSetup.pentaMenu.push({ link: '#', name: UtilService.TXT_MAN_CACHE, xhttp: true, icon: false, sort: # });
           break;
         case 'Anagrafica PagoPA':
           UtilService.USER_ACL.hasPagoPA = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
           this._sideNavSetup.secMenu.push({ link: UtilService.URL_REGISTRO_INTERMEDIARI, name: UtilService.TXT_REGISTRO_INTERMEDIARI, xhttp: false, icon: false, sort: 0 });
-          //this._sideNavSetup.secMenu.push({ link: UtilService.URL_RPPS, name: UtilService.TXT_RPPS, xhttp: false, icon: false, sort: -1 });
+          //this._sideNavSetup.secMenu.push({ link: UtilService.URL_RPPS, name: UtilService.TXT_RPPS, xhttp: false, icon: false, sort: # });
           break;
         case 'Anagrafica Ruoli':
           UtilService.USER_ACL.hasRuoli = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
@@ -322,6 +336,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
     this._sideNavSetup.secMenu.sort(UtilService.SortMenu);
     this._sideNavSetup.terMenu.sort(UtilService.SortMenu);
     this._sideNavSetup.quaMenu.sort(UtilService.SortMenu);
+    this._sideNavSetup.pentaMenu.sort(UtilService.SortMenu);
   }
 
   /**
@@ -375,34 +390,19 @@ export class AppComponent implements OnInit, AfterContentChecked {
    * @private
    */
   protected _onMenuNavigation(event) {
+    let _keepOpen = this.ls.checkLargeMediaMatch().matches;
     if(event.target.xhttp) {
-      let _service = UtilService.URL_OPERAZIONI+event.target.link;
-      this.gps.getDataService(_service).subscribe(
-        (response) => {
-          this.gps.updateSpinner(false);
-          if(response && response.status) {
-            let _msg = 'Processo di acquisizione fallito';
-            switch(_service) {
-              case UtilService.URL_OPERAZIONI+UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI:
-                if(response.status == 200) {
-                  _msg = 'Processo di acquisizione rendicontazioni completato.';
-                }
-                break;
-              case UtilService.URL_OPERAZIONI+UtilService.URL_RECUPERO_RPT_PENDENTI:
-                if(response.status == 200) {
-                  _msg = 'Processo di acquisizione pagamenti completato.';
-                }
-                break;
-            }
-            this.us.alert(_msg);
-          }
-        },
-        (error) => {
-          this.gps.updateSpinner(false);
-          this.us.onError(error);
-        });
+      switch(event.target.link) {
+        case UtilService.URL_RECUPERO_RPT_PENDENTI:
+        case UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI:
+          this._instantService(event.target.link);
+          break;
+        case UtilService.URL_PROSPETTO_RISCOSSIONI:
+          (this.matS && !_keepOpen)?this.matS.close():null;
+          this._openReportConfig(UtilService.REPORT_PROSPETTO_RISCOSSIONI);
+          break;
+      }
     } else {
-      let _keepOpen = this.ls.checkLargeMediaMatch().matches;
       (this.matS && !_keepOpen)?this.matS.close():null;
       this.ls.resetRouteReuseStrategy();
       this.ls.resetRouteHistory();
@@ -480,6 +480,99 @@ export class AppComponent implements OnInit, AfterContentChecked {
     if(event.closure) {
       event.closure(event);
     }
+  }
+
+  /**
+   * Instant service from menu
+   * @param {string} link
+   * @private
+   */
+  protected _instantService(link: string) {
+    let _service = UtilService.URL_OPERAZIONI+link;
+    this.gps.getDataService(_service).subscribe(
+      (response) => {
+        this.gps.updateSpinner(false);
+        if(response && response.status) {
+          let _msg = 'Processo di acquisizione fallito';
+          switch(_service) {
+            case UtilService.URL_OPERAZIONI+UtilService.URL_ACQUISIZIONE_RENDICONTAZIONI:
+              if(response.status == 200) {
+                _msg = 'Processo di acquisizione rendicontazioni completato.';
+              }
+              break;
+            case UtilService.URL_OPERAZIONI+UtilService.URL_RECUPERO_RPT_PENDENTI:
+              if(response.status == 200) {
+                _msg = 'Processo di acquisizione pagamenti completato.';
+              }
+              break;
+          }
+          this.us.alert(_msg);
+        }
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  /**
+   * Modal dialog implementation
+   */
+  protected _openReportConfig(type: string) {
+    let _mb = new ModalBehavior();
+    _mb.editMode = true;
+    _mb.info = {
+      viewModel: null,
+      dialogTitle: 'Parametri Report',
+      templateName: type
+    };
+    _mb.async_callback = this.save.bind(this);
+    UtilService.dialogBehavior.next(_mb);
+  }
+
+  refresh(mb: ModalBehavior) {}
+
+  /**
+   * Save report
+   * @param {BehaviorSubject<any>} responseService
+   * @param {ModalBehavior} mb
+   */
+  save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
+    let _service = UtilService.URL_REPORTISTICHE;
+    let headers;
+    switch(mb.info.templateName) {
+      case UtilService.REPORT_PROSPETTO_RISCOSSIONI:
+        _service += UtilService.URL_PROSPETTO_RISCOSSIONI;
+        headers = new HttpHeaders();
+        headers = headers.set('Content-Type', 'application/pdf');
+        headers = headers.set('Accept', 'application/pdf');
+        break;
+    }
+    const json = mb.info.viewModel;
+    let query = [];
+    if(json.idDominio) {
+      query.push('idDominio='+json.idDominio);
+    }
+    if(json.dataDa) {
+      query.push('dataDa='+json.dataDa);
+    }
+    if(json.dataA) {
+      query.push('dataA='+json.dataA);
+    }
+    this.gps.saveData(_service, null, query.join('&'), UtilService.METHODS.GET, true, headers, 'blob').subscribe(
+      (response) => {
+          const name = 'Report_' + json.idDominio;
+          let zip = new JSZip();
+          zip.file(name + '.pdf', response.body);
+          zip.generateAsync({type: 'blob'}).then(function (zipData) {
+            FileSaver(zipData, name + '.zip');
+            this.gps.updateSpinner(false);
+          }.bind(this));
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
   }
 
 }

@@ -75,5 +75,6 @@ export class FormService {
   public static FORM_TIPOLOGIA: string = 'Tipologia';
   public static FORM_DESCRIZIONE: string = 'Descrizione';
   public static FORM_ID_TIPO_PENDENZA: string = 'Id tipo pendenza';
+  public static FORM_TIPO_PENDENZA: string = 'Tipo pendenza';
 
 }

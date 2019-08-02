@@ -15,7 +15,7 @@
       <mat-icon>open_in_new</mat-icon>
       Visualizza
     </button>
-    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button" (click)="_clear(iBrowse)" [disabled]="!_selected || (_selected && _doubleSet)">
+    <button class="dropdown-item d-flex align-items-center flex-nowrap" type="button" (click)="_clear(iBrowse)" [disabled]="!_selected || (_selected && _doubleSet && !_userSelected)">
       <mat-icon>restore</mat-icon>
       Ripristina
     </button>

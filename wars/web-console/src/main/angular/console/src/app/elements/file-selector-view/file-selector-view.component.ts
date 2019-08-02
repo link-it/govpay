@@ -23,6 +23,7 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
 
   protected _fcs: Subscription;
   protected _name: string = '';
+  protected _userSelected: boolean = false;
 
   constructor() { }
 
@@ -46,12 +47,12 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
         this._iBrowse.nativeElement.value = '';
         this._name = '';
       } else {
-        if(!this._doubleSet) {
+        if(!this._doubleSet || (this._doubleSet && this._userSelected)) {
           this._btn.nativeElement.classList.remove('has-no-settings');
           this._btn.nativeElement.querySelector('mat-icon').classList.remove('has-no-settings');
           this._btn.nativeElement.classList.remove('double-set');
           this._btn.nativeElement.querySelector('mat-icon').classList.remove('double-set');
-        } else {
+        } else if(!this._userSelected) {
           this._btn.nativeElement.classList.add('double-set');
           this._btn.nativeElement.querySelector('mat-icon').classList.add('double-set');
         }
@@ -72,15 +73,18 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
             const encoded = btoa(reader.result.toString());
             this._name = _name;
             this._selected = true;
+            this._userSelected = true;
             this._formGroup.controls[this._fControlName].setValue(encoded);
           } else {
             ct.value = '';
             this._selected = false;
+            this._userSelected = false;
             this._name = 'Il contenuto del documento non è compatibile.';
           }
         } catch (e) {
           ct.value = '';
           this._selected = false;
+          this._userSelected = false;
         }
       }.bind(this);
       reader.readAsBinaryString(event.currentTarget.files[0]);
@@ -90,6 +94,7 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
   protected _clear(el: any) {
     el.value = '';
     this._name = '';
+    this._userSelected = false;
     this._formGroup.controls[this._fControlName].setValue('');
     this._reset.emit({type: 'file-selector-reset', value: ''});
   };
