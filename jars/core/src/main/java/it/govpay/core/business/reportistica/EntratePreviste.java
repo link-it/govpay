@@ -1,8 +1,6 @@
 package it.govpay.core.business.reportistica;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,37 +64,31 @@ public class EntratePreviste extends BasicBD{
 			DominiBD dominiBD = new DominiBD(this);
 			Collections.sort(codDomini);
 			
+			ElencoProspettiDominio elencoProspettiDominio = new ElencoProspettiDominio();
 			for (String codDominio :codDomini) {
 				ProspettoRiscossioneDominioInput prospRiscDominio = new ProspettoRiscossioneDominioInput();
 				if(dataA != null)
 					prospRiscDominio.setDataA(this.sdfData.format(dataA));
+				else
+					prospRiscDominio.setDataA(this.sdfData.format(new Date()));
 				if(dataDa != null)
-				prospRiscDominio.setDataDa(this.sdfData.format(dataDa));
-				
+					prospRiscDominio.setDataDa(this.sdfData.format(dataDa));
+				else
+					prospRiscDominio.setDataDa("01/01/2015");
 				Dominio dominio = this.impostaAnagraficaEnteCreditore(dominiBD, codDominio, prospRiscDominio);
-				
 				List<EntrataPrevista> listPerDomini = mapDomini.get(codDominio);
-				
 				this.popolaProspettoDominio(dominio, listPerDomini, prospRiscDominio);				
-				
-				ElencoProspettiDominio elencoProspettiDominio = new ElencoProspettiDominio();
 				elencoProspettiDominio.getProspettoDominio().add(prospRiscDominio);
-				
-				input.setElencoProspettiDominio(elencoProspettiDominio);
 			}
-			
+			input.setElencoProspettiDominio(elencoProspettiDominio);
 			ProspettoRiscossioniProperties prospettoRiscossioniProperties = ProspettoRiscossioniProperties.getInstance();
 			
-			InputStream isTemplate = null; 
-			
+			File jasperFile = null; 
 			if(GovpayConfig.getInstance().getTemplateProspettoRiscossioni() != null) {
-				File resourceDirFile = new File(GovpayConfig.escape(GovpayConfig.getInstance().getTemplateProspettoRiscossioni()));
-				if(resourceDirFile.exists()) {
-					isTemplate = new FileInputStream(resourceDirFile);
-				}
+				jasperFile = new File(GovpayConfig.escape(GovpayConfig.getInstance().getTemplateProspettoRiscossioni()));
 			}
 			
-			return ProspettoRiscossioniPdf.getInstance().creaProspettoRiscossioni(log, input, prospettoRiscossioniProperties, isTemplate);
+			return ProspettoRiscossioniPdf.getInstance().creaProspettoRiscossioni(log, input, prospettoRiscossioniProperties, jasperFile);
 		}catch (Exception e) {
 			throw new ServiceException(e);
 		}
