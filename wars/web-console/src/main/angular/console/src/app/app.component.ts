@@ -561,9 +561,15 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
     }
     this.gps.saveData(_service, null, query.join('&'), UtilService.METHODS.GET, true, headers, 'blob').subscribe(
       (response) => {
-          const name = 'Report_' + json.idDominio;
+          let name = 'Report_' + moment().format('YYYY-MM-DDTHH:mm:ss').toString() + '.pdf';
+          let _cd = response.headers.get("content-disposition");
+          let _re = /(?:filename=['"](.*\.pdf)['"])/gm;
+          let _results = _re.exec(_cd);
+          if(_results && _results.length == 2) {
+            name = _results[1];
+          }
           let zip = new JSZip();
-          zip.file(name + '.pdf', response.body);
+          zip.file(name, response.body);
           zip.generateAsync({type: 'blob'}).then(function (zipData) {
             FileSaver(zipData, name + '.zip');
             this.gps.updateSpinner(false);
