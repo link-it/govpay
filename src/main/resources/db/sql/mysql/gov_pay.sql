@@ -4,13 +4,18 @@
 
 CREATE TABLE configurazione
 (
-	giornale_eventi LONGTEXT,
+	nome VARCHAR(255) NOT NULL,
+	valore LONGTEXT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
+	-- unique constraints
+	CONSTRAINT unique_configurazione_1 UNIQUE (nome),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_configurazione PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
+-- index
+CREATE UNIQUE INDEX index_configurazione_1 ON configurazione (nome);
 
 
 
@@ -311,6 +316,8 @@ CREATE TABLE acl
 CREATE TABLE tracciati
 (
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificativo del dominio a cui si riferisce il tracciato',
+	cod_tipo_versamento VARCHAR(35) COMMENT 'Identificativo del tipo versamento',
+	formato VARCHAR(10) NOT NULL COMMENT 'tipo formato del tracciato CSV/JSON',
 	tipo VARCHAR(10) NOT NULL COMMENT 'Tipologia di tracciato',
 	stato VARCHAR(12) NOT NULL COMMENT 'Stato di lavorazione del tracciato',
 	descrizione_stato VARCHAR(256) COMMENT 'Descrizione dello stato di lavorazione del tracciato',

@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Versamento;
+import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Versamento.ModoAvvisatura;
 
 public class PostTracciatoDTO extends BasicCreateRequestDTO  {
@@ -24,6 +25,7 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	private Boolean avvisaturaDigitale;
 	private ModoAvvisatura avvisaturaModalita;
 	private Operatore operatore;
+	private FORMATO_TRACCIATO formato;
 	
 	public List<Versamento> getInserimenti() {
 		return this.inserimenti;
@@ -78,5 +80,11 @@ public class PostTracciatoDTO extends BasicCreateRequestDTO  {
 	}
 	public void setIdTipoPendenza(String idTipoPendenza) {
 		this.idTipoPendenza = idTipoPendenza;
+	}
+	public FORMATO_TRACCIATO getFormato() {
+		return formato;
+	}
+	public void setFormato(FORMATO_TRACCIATO formato) {
+		this.formato = formato;
 	}
 }

@@ -20,7 +20,8 @@
 package it.govpay.orm.dao;
 
 import it.govpay.orm.Configurazione;
-import org.openspcoop2.generic_project.dao.IDBServiceSearchSingleObject;
+import org.openspcoop2.generic_project.dao.IDBServiceSearchWithId;
+import it.govpay.orm.IdConfigurazione;
 
 
 /** 
@@ -32,5 +33,5 @@ import org.openspcoop2.generic_project.dao.IDBServiceSearchSingleObject;
  * @version $Rev$, $Date$
  */
 
-public interface IDBConfigurazioneServiceSearch extends IConfigurazioneServiceSearch,IDBServiceSearchSingleObject<Configurazione> {
+public interface IDBConfigurazioneServiceSearch extends IConfigurazioneServiceSearch,IDBServiceSearchWithId<Configurazione, IdConfigurazione> {
 }

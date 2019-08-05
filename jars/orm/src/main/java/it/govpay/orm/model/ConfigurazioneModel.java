@@ -41,7 +41,8 @@ public class ConfigurazioneModel extends AbstractModel<Configurazione> {
 	
 		super();
 	
-		this.GIORNALE_EVENTI = new Field("giornaleEventi",java.lang.String.class,"Configurazione",Configurazione.class);
+		this.NOME = new Field("nome",java.lang.String.class,"Configurazione",Configurazione.class);
+		this.VALORE = new Field("valore",java.lang.String.class,"Configurazione",Configurazione.class);
 	
 	}
 	
@@ -49,13 +50,16 @@ public class ConfigurazioneModel extends AbstractModel<Configurazione> {
 	
 		super(father);
 	
-		this.GIORNALE_EVENTI = new ComplexField(father,"giornaleEventi",java.lang.String.class,"Configurazione",Configurazione.class);
+		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"Configurazione",Configurazione.class);
+		this.VALORE = new ComplexField(father,"valore",java.lang.String.class,"Configurazione",Configurazione.class);
 	
 	}
 	
 	
 
-	public IField GIORNALE_EVENTI = null;
+	public IField NOME = null;
+	 
+	public IField VALORE = null;
 	 
 
 	@Override

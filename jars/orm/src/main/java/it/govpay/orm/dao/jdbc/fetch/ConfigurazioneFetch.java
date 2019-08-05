@@ -54,8 +54,10 @@ public class ConfigurazioneFetch extends AbstractJDBCFetch {
 				Configurazione object = new Configurazione();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setGiornaleEventi", Configurazione.model().GIORNALE_EVENTI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "giornale_eventi", Configurazione.model().GIORNALE_EVENTI.getFieldType()));
+				setParameter(object, "setNome", Configurazione.model().NOME.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "nome", Configurazione.model().NOME.getFieldType()));
+				setParameter(object, "setValore", Configurazione.model().VALORE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "valore", Configurazione.model().VALORE.getFieldType()));
 				return object;
 			}
 			
@@ -78,8 +80,10 @@ public class ConfigurazioneFetch extends AbstractJDBCFetch {
 				Configurazione object = new Configurazione();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setGiornaleEventi", Configurazione.model().GIORNALE_EVENTI.getFieldType(),
-					this.getObjectFromMap(map,"giornaleEventi"));
+				setParameter(object, "setNome", Configurazione.model().NOME.getFieldType(),
+					this.getObjectFromMap(map,"nome"));
+				setParameter(object, "setValore", Configurazione.model().VALORE.getFieldType(),
+					this.getObjectFromMap(map,"valore"));
 				return object;
 			}
 			

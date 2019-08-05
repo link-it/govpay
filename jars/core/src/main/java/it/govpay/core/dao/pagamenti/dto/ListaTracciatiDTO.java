@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.StatoTracciatoPendenza;
+import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.orm.Tracciato;
@@ -21,6 +22,8 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	private StatoTracciatoPendenza statoTracciatoPendenza = null;
 	private String idDominio;
 	private String dettaglioStato = null;
+	private FORMATO_TRACCIATO formatoTracciato = null;
+	private String idTipoPendenza = null;
 	
 	public ListaTracciatiDTO(Authentication user) {
 		super(user);
@@ -104,4 +107,22 @@ public class ListaTracciatiDTO extends BasicFindRequestDTO{
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;
 	}
+
+	public FORMATO_TRACCIATO getFormatoTracciato() {
+		return formatoTracciato;
+	}
+
+	public void setFormatoTracciato(FORMATO_TRACCIATO formatoTracciato) {
+		this.formatoTracciato = formatoTracciato;
+	}
+
+	public String getIdTipoPendenza() {
+		return idTipoPendenza;
+	}
+
+	public void setIdTipoPendenza(String idTipoPendenza) {
+		this.idTipoPendenza = idTipoPendenza;
+	}
+	
+	
 }

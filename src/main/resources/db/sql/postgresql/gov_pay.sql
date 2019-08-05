@@ -2,9 +2,12 @@ CREATE SEQUENCE seq_configurazione start 1 increment 1 maxvalue 9223372036854775
 
 CREATE TABLE configurazione
 (
-	giornale_eventi TEXT,
+	nome VARCHAR(255) NOT NULL,
+	valore TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_configurazione') NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_configurazione_1 UNIQUE (nome),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_configurazione PRIMARY KEY (id)
 );
@@ -314,6 +317,8 @@ CREATE SEQUENCE seq_tracciati start 1 increment 1 maxvalue 9223372036854775807 m
 CREATE TABLE tracciati
 (
 	cod_dominio VARCHAR(35) NOT NULL,
+	cod_tipo_versamento VARCHAR(35),
+	formato VARCHAR(10) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
 	stato VARCHAR(12) NOT NULL,
 	descrizione_stato VARCHAR(256),

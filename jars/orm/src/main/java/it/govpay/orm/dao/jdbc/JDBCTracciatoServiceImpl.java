@@ -90,6 +90,8 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		// Object tracciato
 		sqlQueryObjectInsert.addInsertTable(this.getTracciatoFieldConverter().toTable(Tracciato.model()));
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().COD_DOMINIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().COD_TIPO_VERSAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().FORMATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().DESCRIZIONE_STATO,false),"?");
@@ -106,6 +108,8 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getTracciatoFetch().getKeyGeneratorObject(Tracciato.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getCodDominio(),Tracciato.model().COD_DOMINIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getCodTipoVersamento(),Tracciato.model().COD_TIPO_VERSAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getFormato(),Tracciato.model().FORMATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getTipo(),Tracciato.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getStato(),Tracciato.model().STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getDescrizioneStato(),Tracciato.model().DESCRIZIONE_STATO.getFieldType()),
@@ -189,6 +193,10 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		java.util.List<JDBCObject> lstObjects_tracciato = new java.util.ArrayList<>();
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().COD_DOMINIO,false), "?");
 		lstObjects_tracciato.add(new JDBCObject(tracciato.getCodDominio(), Tracciato.model().COD_DOMINIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().COD_TIPO_VERSAMENTO,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getCodTipoVersamento(), Tracciato.model().COD_TIPO_VERSAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().FORMATO,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getFormato(), Tracciato.model().FORMATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().TIPO,false), "?");
 		lstObjects_tracciato.add(new JDBCObject(tracciato.getTipo(), Tracciato.model().TIPO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().STATO,false), "?");

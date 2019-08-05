@@ -357,7 +357,18 @@ CREATE VIEW v_eventi_vers AS (
 ALTER TABLE tipi_versamento ADD COLUMN visualizzazione_definizione CLOB;
 ALTER TABLE tipi_vers_domini ADD COLUMN visualizzazione_definizione CLOB;
 
+-- 05/08/2019 modifica alla struttura della tabella delle configurazioni
+ALTER TABLE configurazione ADD COLUMN nome VARCHAR2(255 CHAR);
+ALTER TABLE configurazione RENAME COLUMN giornale_eventi TO valore;
+UPDATE configurazione SET nome = 'giornale_eventi';
+ALTER TABLE configurazione MODIFY (nome NOT NULL);
+ALTER TABLE configurazione ADD CONSTRAINT unique_configurazione_1 UNIQUE (nome);
 
+-- 05/08/2019 aggiunti nuovi campi alla tabella tracciati per gestire il formato csv
+ALTER TABLE tracciati ADD COLUMN cod_tipo_versamento VARCHAR2(35 CHAR);
+ALTER TABLE tracciati ADD COLUMN formato VARCHAR2(10 CHAR);
+UPDATE tracciati SET formato = 'JSON';
+ALTER TABLE tracciati MODIFY (formato NOT NULL);
 
 
 

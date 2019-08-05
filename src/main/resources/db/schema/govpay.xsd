@@ -412,6 +412,12 @@
 			<xsd:element name="idRpt" type="id-rpt"/>
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:complexType name="id-configurazione">
+		<xsd:sequence>
+			<xsd:element name="nome" type="String255"/>
+		</xsd:sequence>
+	</xsd:complexType>
 
 	<xsd:complexType name="id-rpt">
 		<xsd:sequence>
@@ -537,15 +543,19 @@
 		<xsd:annotation>
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true" single-instance="true" />
-					<linkit:sql-table-mapping generate-sql="true" name="configurazione"
+					<linkit:interface crud="true" id="id-configurazione"/>
+					<linkit:sql-table-mapping generate-sql="true" name="configurazione" 
 						on-delete-cascade="false">
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="nome"/>
+						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="giornaleEventi" type="xsd:string" minOccurs="0">
+			<xsd:element name="nome" type="String255"/>
+			<xsd:element name="valore" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -2649,6 +2659,8 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="codDominio" type="String35"/>
+			<xsd:element name="codTipoVersamento" type="String35" minOccurs="0"/>
+			<xsd:element name="formato" type="String10"/>
 			<xsd:element name="tipo" type="String10"/>
 			<xsd:element name="stato" type="String12"/>
 			<xsd:element name="descrizioneStato" type="String256" minOccurs="0"/>

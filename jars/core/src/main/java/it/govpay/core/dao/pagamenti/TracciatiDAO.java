@@ -160,6 +160,8 @@ public class TracciatiDAO extends BaseDAO{
 		filter.setOperatore(listaTracciatiDTO.getOperatore());
 		filter.setStato(listaTracciatiDTO.getStatoTracciato()); 
 		filter.setDettaglioStato(listaTracciatiDTO.getDettaglioStato()); 
+		filter.setCodTipoVersamento(listaTracciatiDTO.getIdTipoPendenza());
+		filter.setFormato(listaTracciatiDTO.getFormatoTracciato());
 		
 		List<FilterSortWrapper> filterSortList = new ArrayList<>();
 		FilterSortWrapper fsw = new FilterSortWrapper();
@@ -221,6 +223,8 @@ public class TracciatiDAO extends BaseDAO{
 			tracciato.setIdOperatore(postTracciatoDTO.getOperatore().getId());
 			tracciato.setTipo(TIPO_TRACCIATO.PENDENZA);
 			tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+			tracciato.setFormato(postTracciatoDTO.getFormato());
+			tracciato.setCodTipoVersamento(postTracciatoDTO.getIdTipoPendenza());
 			
 			tracciatoBD.insertTracciato(tracciato);
 			

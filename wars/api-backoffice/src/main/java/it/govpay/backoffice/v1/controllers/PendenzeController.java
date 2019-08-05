@@ -92,6 +92,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.TipoVersamento;
+import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -548,6 +549,7 @@ public class PendenzeController extends BaseController {
 				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura );
 			}
 			postTracciatoDTO.setContenuto(baos.toByteArray());
+			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.JSON);
 			
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();
@@ -628,11 +630,6 @@ public class PendenzeController extends BaseController {
 				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idTipoPendenza);
 			}
 
-//			String jsonRequest = baos.toString();
-//			TracciatoPendenzePost tracciatoPendenzeRequest = JSONSerializable.parse(jsonRequest, TracciatoPendenzePost.class);
-//
-//			tracciatoPendenzeRequest.validate();
-
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 
 			PostTracciatoDTO postTracciatoDTO = new PostTracciatoDTO(user);
@@ -646,6 +643,8 @@ public class PendenzeController extends BaseController {
 				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura );
 			}
 			postTracciatoDTO.setContenuto(baos.toByteArray());
+			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.CSV);
+			postTracciatoDTO.setIdTipoPendenza(idTipoPendenza);
 			
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();

@@ -93,13 +93,30 @@ public class Tracciato extends BasicModel {
 	public void setIdOperatore(Long idOperatore) {
 		this.idOperatore = idOperatore;
 	}
+	
+	public FORMATO_TRACCIATO getFormato() {
+		return formato;
+	}
+	public void setFormato(FORMATO_TRACCIATO formato) {
+		this.formato = formato;
+	}
+	public String getCodTipoVersamento() {
+		return codTipoVersamento;
+	}
+	public void setCodTipoVersamento(String codTipoVersamento) {
+		this.codTipoVersamento = codTipoVersamento;
+	}
 
 	public enum STATO_ELABORAZIONE {ELABORAZIONE, COMPLETATO, SCARTATO}
 	
 	public enum TIPO_TRACCIATO {AV, AV_ESITO, PENDENZA}
 	
+	public enum FORMATO_TRACCIATO { CSV, JSON, XML};
+	
 	private TIPO_TRACCIATO tipo;
 	private STATO_ELABORAZIONE stato;
+	private FORMATO_TRACCIATO formato;
+	private String codTipoVersamento;
 	private String descrizioneStato;
 	private String codDominio;
 	private Date dataCaricamento;

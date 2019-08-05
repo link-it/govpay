@@ -20,9 +20,14 @@
 package it.govpay.orm.dao.jdbc;
 
 import org.openspcoop2.generic_project.dao.IDBServiceUtilities;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchSingleObject;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import it.govpay.orm.IdConfigurazione;
 import org.openspcoop2.generic_project.beans.InUse;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -65,7 +70,7 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 	protected JDBCServiceManagerProperties jdbcProperties = null;
 	protected JDBCServiceManager jdbcServiceManager = null;
 	protected Logger log = null;
-	protected IJDBCServiceSearchSingleObject<Configurazione, JDBCServiceManager> serviceSearch = null;
+	protected IJDBCServiceSearchWithId<Configurazione, IdConfigurazione, JDBCServiceManager> serviceSearch = null;
 	protected JDBC_SQLObjectFactory jdbcSqlObjectFactory = null;
 	public JDBCConfigurazioneServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		this.jdbcServiceManager = jdbcServiceManager;
@@ -94,13 +99,17 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 		return this.serviceSearch.getFieldConverter();
 	}
 	
-		
 	@Override
-	public Configurazione get() throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
-    
+	public IdConfigurazione convertToId(Configurazione obj)
+			throws ServiceException, NotImplementedException {
+		
 		Connection connection = null;
 		try{
 			
+			// check parameters
+			if(obj==null){
+				throw new Exception("Parameter (type:"+Configurazione.class.getName()+") 'obj' is null");
+			}
 			
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -108,7 +117,40 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 			// Connection sql
 			connection = this.jdbcServiceManager.getConnection();
 		
-			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,null);	
+			return this.serviceSearch.convertToId(this.jdbcProperties,this.log,connection,sqlQueryObject,obj);
+		
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("ConvertToId not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+		
+	@Override
+	public Configurazione get(IdConfigurazione id) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+    
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdConfigurazione.class.getName()+") 'id' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+		
+			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,id,null);
 		
 		}catch(ServiceException e){
 			this.log.error(e.getMessage(),e); throw e;
@@ -129,10 +171,14 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 	}
 
 	@Override
-	public Configurazione get(org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public Configurazione get(IdConfigurazione id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
 		Connection connection = null;
 		try{
 			
+			// check parameters
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdConfigurazione.class.getName()+") 'id' is null");
+			}
 			if(idMappingResolutionBehaviour==null){
 				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
 			}
@@ -143,7 +189,7 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 			// Connection sql
 			connection = this.jdbcServiceManager.getConnection();
 		
-			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,idMappingResolutionBehaviour);	
+			return this.serviceSearch.get(this.jdbcProperties,this.log,connection,sqlQueryObject,id,idMappingResolutionBehaviour);
 		
 		}catch(ServiceException e){
 			this.log.error(e.getMessage(),e); throw e;
@@ -164,11 +210,15 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 	}
 
 	@Override
-	public boolean exists() throws MultipleResultException,ServiceException,NotImplementedException {
+	public boolean exists(IdConfigurazione id) throws MultipleResultException,ServiceException,NotImplementedException {
 
 		Connection connection = null;
 		try{
 			
+			// check parameters
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdConfigurazione.class.getName()+") 'id' is null");
+			}
 
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -176,7 +226,7 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 			// Connection sql
 			connection = this.jdbcServiceManager.getConnection();
 
-			return this.serviceSearch.exists(this.jdbcProperties,this.log,connection,sqlQueryObject);
+			return this.serviceSearch.exists(this.jdbcProperties,this.log,connection,sqlQueryObject,id);
 	
 		}catch(MultipleResultException e){
 			this.log.error(e.getMessage(),e); throw e;
@@ -194,16 +244,266 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 		
 	}
 	
-
-
-
-
 	@Override
-	public InUse inUse() throws ServiceException, NotFoundException,NotImplementedException {
+	public List<IdConfigurazione> findAllIds(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
 			
+			// check parameters
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCPaginatedExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+			}
+			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
+			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+			
+			return this.serviceSearch.findAllIds(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,null);
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("FindAllIds not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+	
+	@Override
+	public List<IdConfigurazione> findAllIds(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(idMappingResolutionBehaviour==null){
+				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+			}
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCPaginatedExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+			}
+			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
+			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+			
+			return this.serviceSearch.findAllIds(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,idMappingResolutionBehaviour);
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("FindAllIds not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+
+	@Override
+	public List<Configurazione> findAll(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCPaginatedExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+			}
+			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
+			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.findAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,null);			
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+	
+	@Override
+	public List<Configurazione> findAll(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(idMappingResolutionBehaviour==null){
+				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+			}
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCPaginatedExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+			}
+			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) expression;
+			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.findAll(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,idMappingResolutionBehaviour);			
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("FindAll not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+
+	@Override
+	public Configurazione find(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+			}
+			JDBCExpression jdbcExpression = (JDBCExpression) expression;
+			this.log.debug("sql = "+jdbcExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.find(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,null);			
+
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(MultipleResultException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+	
+	@Override
+	public Configurazione find(IExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(idMappingResolutionBehaviour==null){
+				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
+			}
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+			}
+			JDBCExpression jdbcExpression = (JDBCExpression) expression;
+			this.log.debug("sql = "+jdbcExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.find(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,idMappingResolutionBehaviour);			
+
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(MultipleResultException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("Find not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+
+	@Override
+	public NonNegativeNumber count(IExpression expression) throws ServiceException, NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+			}
+			JDBCExpression jdbcExpression = (JDBCExpression) expression;
+			this.log.debug("sql = "+jdbcExpression.toSql());
 			
 			// ISQLQueryObject
 			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
@@ -211,7 +511,40 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 			// Connection sql
 			connection = this.jdbcServiceManager.getConnection();
 
-			return this.serviceSearch.inUse(this.jdbcProperties,this.log,connection,sqlQueryObject);	
+			return this.serviceSearch.count(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression);
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("Count not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+
+	@Override
+	public InUse inUse(IdConfigurazione id) throws ServiceException, NotFoundException,NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdConfigurazione.class.getName()+") 'id' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.inUse(this.jdbcProperties,this.log,connection,sqlQueryObject,id);	
 	
 		}catch(ServiceException e){
 			this.log.error(e.getMessage(),e); throw e;
@@ -388,11 +721,235 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 		
 	}
 	
+	@Override
+	public Object aggregate(IExpression expression, FunctionField functionField) throws ServiceException,NotFoundException,NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+			}
+			JDBCExpression jdbcExpression = (JDBCExpression) expression;
+			this.log.debug("sql = "+jdbcExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.aggregate(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
 	
+	@Override
+	public Map<String,Object> aggregate(IExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+			}
+			JDBCExpression jdbcExpression = (JDBCExpression) expression;
+			this.log.debug("sql = "+jdbcExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.aggregate(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("Aggregate not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
 	
+	@Override
+	public List<Map<String,Object>> groupBy(IExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(expression==null){
+				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'expression' is null");
+			}
+			if( ! (expression instanceof JDBCExpression) ){
+				throw new Exception("Parameter (type:"+expression.getClass().getName()+") 'expression' has wrong type, expect "+JDBCExpression.class.getName());
+			}
+			JDBCExpression jdbcExpression = (JDBCExpression) expression;
+			this.log.debug("sql = "+jdbcExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.groupBy(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcExpression,functionField);			
 	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+	
+	@Override
+	public List<Map<String,Object>> groupBy(IPaginatedExpression paginatedExpression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(paginatedExpression==null){
+				throw new Exception("Parameter (type:"+IPaginatedExpression.class.getName()+") 'paginatedExpression' is null");
+			}
+			if( ! (paginatedExpression instanceof JDBCPaginatedExpression) ){
+				throw new Exception("Parameter (type:"+paginatedExpression.getClass().getName()+") 'paginatedExpression' has wrong type, expect "+JDBCPaginatedExpression.class.getName());
+			}
+			JDBCPaginatedExpression jdbcPaginatedExpression = (JDBCPaginatedExpression) paginatedExpression;
+			this.log.debug("sql = "+jdbcPaginatedExpression.toSql());
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.groupBy(this.jdbcProperties,this.log,connection,sqlQueryObject,jdbcPaginatedExpression,functionField);			
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("GroupBy not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+	
+	@Override
+	public List<Map<String,Object>> union(Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(unionExpression==null){
+				throw new Exception("Parameter (type:"+UnionExpression.class.getName()+") 'unionExpression' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.union(this.jdbcProperties,this.log,connection,sqlQueryObject,union,unionExpression);			
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("Union not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+	
+	@Override
+	public NonNegativeNumber unionCount(Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException {
+
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(unionExpression==null){
+				throw new Exception("Parameter (type:"+UnionExpression.class.getName()+") 'unionExpression' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.unionCount(this.jdbcProperties,this.log,connection,sqlQueryObject,union,unionExpression);			
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("UnionCount not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
 
 	@Override
 	public IExpression newExpression() throws ServiceException,NotImplementedException {
@@ -426,11 +983,14 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 	// -- DB
 	
 	@Override
-	public void mappingTableIds(Configurazione obj) throws ServiceException,NotFoundException,NotImplementedException{
+	public void mappingTableIds(IdConfigurazione id, Configurazione obj) throws ServiceException,NotFoundException,NotImplementedException{
 		Connection connection = null;
 		try{
 			
 			// check parameters
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdConfigurazione.class.getName()+") 'id' is null");
+			}
 			if(obj==null){
 				throw new Exception("Parameter (type:"+Configurazione.class.getName()+") 'obj' is null");
 			}
@@ -441,7 +1001,7 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 			// Connection sql
 			connection = this.jdbcServiceManager.getConnection();
 		
-			this.serviceSearch.mappingTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,obj);
+			this.serviceSearch.mappingTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,id,obj);
 		
 		}catch(ServiceException e){
 			this.log.error(e.getMessage(),e); throw e;
@@ -450,7 +1010,43 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 		}catch(NotImplementedException e){
 			this.log.error(e.getMessage(),e); throw e;
 		}catch(Exception e){
-			this.log.error(e.getMessage(),e); throw new ServiceException("mappingIds not completed: "+e.getMessage(),e);
+			this.log.error(e.getMessage(),e); throw new ServiceException("mappingIds(IdObject) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	}
+	
+	@Override
+	public void mappingTableIds(long tableId, Configurazione obj) throws ServiceException,NotFoundException,NotImplementedException{
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(tableId<=0){
+				throw new Exception("Parameter (type:"+IdConfigurazione.class.getName()+") 'tableId' is lessEquals 0");
+			}
+			if(obj==null){
+				throw new Exception("Parameter (type:"+Configurazione.class.getName()+") 'obj' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+		
+			this.serviceSearch.mappingTableIds(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,obj);
+		
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("mappingIds(tableId) not completed: "+e.getMessage(),e);
 		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
@@ -685,6 +1281,76 @@ public class JDBCConfigurazioneServiceSearch implements IDBConfigurazioneService
 	
 	}
 	
+	@Override
+	public IdConfigurazione findId(long tableId, boolean throwNotFound)
+			throws NotFoundException, ServiceException, NotImplementedException {
+		
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(tableId<=0){
+				throw new Exception("Parameter 'tableId' is less equals 0");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.findId(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,throwNotFound);		
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("findId(tableId,throwNotFound) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+		
+	}
+
+	@Override
+	public Long findTableId(IdConfigurazione id, boolean throwNotFound)
+			throws NotFoundException, ServiceException, NotImplementedException {
+		
+		Connection connection = null;
+		try{
+			
+			// check parameters
+			if(id==null){
+				throw new Exception("Parameter 'id' is null");
+			}
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return this.serviceSearch.findTableId(this.jdbcProperties,this.log,connection,sqlQueryObject,id,throwNotFound);		
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("findId(tableId,throwNotFound) not completed: "+e.getMessage(),e);
+		}finally{
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	}
 	
 	@Override
 	public void disableSelectForUpdate() throws ServiceException,NotImplementedException {

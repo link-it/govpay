@@ -8,9 +8,12 @@ CREATE SEQUENCE seq_configurazione MINVALUE 1 MAXVALUE 9223372036854775807 START
 
 CREATE TABLE configurazione
 (
-	giornale_eventi CLOB,
+	nome VARCHAR2(255 CHAR) NOT NULL,
+	valore CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_configurazione_1 UNIQUE (nome),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_configurazione PRIMARY KEY (id)
 );
@@ -481,7 +484,9 @@ CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 
 CREATE TABLE tracciati
 (
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL
+	cod_tipo_versamento VARCHAR2(35 CHAR),
+	formato VARCHAR2(10 CHAR) NOT NULL,
 	tipo VARCHAR2(10 CHAR) NOT NULL,
 	stato VARCHAR2(12 CHAR) NOT NULL,
 	descrizione_stato VARCHAR2(256 CHAR),

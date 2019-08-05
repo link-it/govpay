@@ -10,6 +10,7 @@ public class Configurazione extends BasicModel {
 	
 	private Long id;
 	private String giornaleEventi;
+	private String tracciatoCSV;
 	
 	public Long getId() {
 		return id;
@@ -22,6 +23,12 @@ public class Configurazione extends BasicModel {
 	}
 	public void setGiornaleEventi(String giornaleEventi) {
 		this.giornaleEventi = giornaleEventi;
+	}
+	public String getTracciatoCSV() {
+		return tracciatoCSV;
+	}
+	public void setTracciatoCSV(String tracciatoCSV) {
+		this.tracciatoCSV = tracciatoCSV;
 	}
 
 }

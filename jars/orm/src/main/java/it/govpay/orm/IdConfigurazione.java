@@ -28,15 +28,14 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for Configurazione complex type.
+/** <p>Java class for id-configurazione complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Configurazione">
+ * &lt;complexType name="id-configurazione">
  * 		&lt;sequence>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="valore" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -49,17 +48,16 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Configurazione", 
+@XmlType(name = "id-configurazione", 
   propOrder = {
-  	"nome",
-  	"valore"
+  	"nome"
   }
 )
 
-@XmlRootElement(name = "Configurazione")
+@XmlRootElement(name = "id-configurazione")
 
-public class Configurazione extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public Configurazione() {
+public class IdConfigurazione extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public IdConfigurazione() {
   }
 
   public Long getId() {
@@ -84,39 +82,15 @@ public class Configurazione extends org.openspcoop2.utils.beans.BaseBean impleme
     this.nome = nome;
   }
 
-  public java.lang.String getValore() {
-    return this.valore;
-  }
-
-  public void setValore(java.lang.String valore) {
-    this.valore = valore;
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
   private Long id;
 
-  private static it.govpay.orm.model.ConfigurazioneModel modelStaticInstance = null;
-  private static synchronized void initModelStaticInstance(){
-	  if(it.govpay.orm.Configurazione.modelStaticInstance==null){
-  			it.govpay.orm.Configurazione.modelStaticInstance = new it.govpay.orm.model.ConfigurazioneModel();
-	  }
-  }
-  public static it.govpay.orm.model.ConfigurazioneModel model(){
-	  if(it.govpay.orm.Configurazione.modelStaticInstance==null){
-	  		initModelStaticInstance();
-	  }
-	  return it.govpay.orm.Configurazione.modelStaticInstance;
-  }
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nome",required=true,nillable=false)
   protected java.lang.String nome;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="valore",required=false,nillable=false)
-  protected java.lang.String valore;
 
 }

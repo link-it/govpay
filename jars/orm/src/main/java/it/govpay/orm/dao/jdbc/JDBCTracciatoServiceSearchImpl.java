@@ -155,6 +155,8 @@ public class JDBCTracciatoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getTracciatoFieldConverter().toTable(Tracciato.model())));
 			fields.add(Tracciato.model().COD_DOMINIO);
+			fields.add(Tracciato.model().COD_TIPO_VERSAMENTO);
+			fields.add(Tracciato.model().FORMATO);
 			fields.add(Tracciato.model().TIPO);
 			fields.add(Tracciato.model().STATO);
 			fields.add(Tracciato.model().DESCRIZIONE_STATO);

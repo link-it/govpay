@@ -43,6 +43,7 @@ import it.govpay.orm.IdAnagrafica;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdBatch;
 import it.govpay.orm.IdCarrello;
+import it.govpay.orm.IdConfigurazione;
 import it.govpay.orm.IdConnettore;
 import it.govpay.orm.IdContoAccredito;
 import it.govpay.orm.IdDominio;
@@ -3824,6 +3825,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public Connettore readConnettoreFromString(String in) throws DeserializerException {
 		return (Connettore) this.xmlToObj(in.getBytes(), Connettore.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: id-configurazione
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IdConfigurazione}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdConfigurazione}
+	 * @return Object type {@link it.govpay.orm.IdConfigurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdConfigurazione readIdConfigurazione(String fileName) throws DeserializerException {
+		return (IdConfigurazione) this.xmlToObj(fileName, IdConfigurazione.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IdConfigurazione}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdConfigurazione}
+	 * @return Object type {@link it.govpay.orm.IdConfigurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdConfigurazione readIdConfigurazione(File file) throws DeserializerException {
+		return (IdConfigurazione) this.xmlToObj(file, IdConfigurazione.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IdConfigurazione}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IdConfigurazione}
+	 * @return Object type {@link it.govpay.orm.IdConfigurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdConfigurazione readIdConfigurazione(InputStream in) throws DeserializerException {
+		return (IdConfigurazione) this.xmlToObj(in, IdConfigurazione.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IdConfigurazione}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IdConfigurazione}
+	 * @return Object type {@link it.govpay.orm.IdConfigurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdConfigurazione readIdConfigurazione(byte[] in) throws DeserializerException {
+		return (IdConfigurazione) this.xmlToObj(in, IdConfigurazione.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IdConfigurazione}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IdConfigurazione}
+	 * @return Object type {@link it.govpay.orm.IdConfigurazione}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdConfigurazione readIdConfigurazioneFromString(String in) throws DeserializerException {
+		return (IdConfigurazione) this.xmlToObj(in.getBytes(), IdConfigurazione.class);
 	}	
 	
 	

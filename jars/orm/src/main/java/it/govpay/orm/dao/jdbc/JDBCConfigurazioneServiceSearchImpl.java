@@ -19,37 +19,38 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.util.List;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import java.sql.Connection;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchSingleObject;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import it.govpay.orm.Configurazione;
+import it.govpay.orm.IdConfigurazione;
 import it.govpay.orm.dao.jdbc.converter.ConfigurazioneFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.ConfigurazioneFetch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-
-import it.govpay.orm.Configurazione;
 
 /**     
  * JDBCConfigurazioneServiceSearchImpl
@@ -59,7 +60,7 @@ import it.govpay.orm.Configurazione;
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSingleObject<Configurazione, JDBCServiceManager> {
+public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchWithId<Configurazione, IdConfigurazione, JDBCServiceManager> {
 
 	private ConfigurazioneFieldConverter _configurazioneFieldConverter = null;
 	public ConfigurazioneFieldConverter getConfigurazioneFieldConverter() {
@@ -96,29 +97,115 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 	}
 	
 
+	@Override
+	public IdConfigurazione convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Configurazione configurazione) throws NotImplementedException, ServiceException, Exception{
+	
+		IdConfigurazione idConfigurazione = new IdConfigurazione();
+		idConfigurazione.setNome(configurazione.getNome());
+		return idConfigurazione;
+	}
 	
 	@Override
-	public Configurazione get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
-		return this._get(jdbcProperties, log, connection, sqlQueryObject, null, idMappingResolutionBehaviour);
+	public Configurazione get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdConfigurazione id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
+		Long id_configurazione = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdConfigurazione(jdbcProperties, log, connection, sqlQueryObject, id, true));
+		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_configurazione,idMappingResolutionBehaviour);
 		
 		
 	}
 	
 	@Override
-	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
+	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdConfigurazione id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
 
-		return this._exists(jdbcProperties, log, connection, sqlQueryObject, null);
+		Long id_configurazione = this.findIdConfigurazione(jdbcProperties, log, connection, sqlQueryObject, id, false);
+		return id_configurazione != null && id_configurazione > 0;
 		
 	}
 	
+	@Override
+	public List<IdConfigurazione> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
+
+		
+        // default behaviour (id-mapping)
+        if(idMappingResolutionBehaviour==null){
+                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+        }
+        List<IdConfigurazione> list = new ArrayList<IdConfigurazione>();
+
+		try{
+			List<IField> fields = new ArrayList<>();
+			fields.add(Configurazione.model().NOME);
+
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+        
+			for(Map<String, Object> map: returnMap) {
+				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Configurazione)this.getConfigurazioneFetch().fetch(jdbcProperties.getDatabase(), Configurazione.model(), map)));
+	        }
+		} catch(NotFoundException e) {}
+
+        return list;
+		
+	}
 	
+	@Override
+	public List<Configurazione> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
+
+        List<Configurazione> list = new ArrayList<Configurazione>();
+        // default behaviour (id-mapping)
+        if(idMappingResolutionBehaviour==null){
+                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+        }
+
+		try{
+			List<IField> fields = new ArrayList<>();
+			fields.add(new CustomField("id", Long.class, "id", this.getConfigurazioneFieldConverter().toTable(Configurazione.model())));
+			fields.add(Configurazione.model().NOME);
+			fields.add(Configurazione.model().VALORE);
+
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+
+			for(Map<String, Object> map: returnMap) {
+
+				Configurazione configurazione = (Configurazione)this.getConfigurazioneFetch().fetch(jdbcProperties.getDatabase(), Configurazione.model(), map);
+
+				list.add(configurazione);
+			}
+		} catch(NotFoundException e) {}
+
+        return list; 
+	}
 	
+	@Override
+	public Configurazione find(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) 
+		throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
+
+        long id = this.findTableId(jdbcProperties, log, connection, sqlQueryObject, expression);
+        if(id>0){
+        	return this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour);
+        }else{
+        	throw new NotFoundException("Entry with id["+id+"] not found");
+        }
+		
+	}
 	
+	@Override
+	public NonNegativeNumber count(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCExpression expression) throws NotImplementedException, ServiceException,Exception {
+		
+		List<Object> listaQuery = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareCount(jdbcProperties, log, connection, sqlQueryObject, expression,
+												this.getConfigurazioneFieldConverter(), Configurazione.model());
+		
+		sqlQueryObject.addSelectCountField(this.getConfigurazioneFieldConverter().toTable(Configurazione.model())+".id","tot",true);
+		
+		_join(expression,sqlQueryObject);
+		
+		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
+																			this.getConfigurazioneFieldConverter(), Configurazione.model(),listaQuery);
+	}
 
 	@Override
-	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject) throws NotFoundException, NotImplementedException, ServiceException,Exception {
+	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdConfigurazione id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
 		
-        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, null);
+		Long id_configurazione = this.findIdConfigurazione(jdbcProperties, log, connection, sqlQueryObject, id, true);
+        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_configurazione);
 		
 	}
 
@@ -162,6 +249,59 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 		}
 	}
 
+	@Override
+	public Object aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+													JDBCExpression expression, FunctionField functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
+		Map<String,Object> map = 
+			this.aggregate(jdbcProperties, log, connection, sqlQueryObject, expression, new FunctionField[]{functionField});
+		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.selectAggregateObject(map,functionField);
+	}
+	
+	@Override
+	public Map<String,Object> aggregate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+													JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {													
+		
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
+		try{
+			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return list.get(0);
+		}finally{
+			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
+		}
+	}
+
+	@Override
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+													JDBCExpression expression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
+		
+		if(expression.getGroupByFields().size()<=0){
+			throw new ServiceException("GroupBy conditions not found in expression");
+		}
+		
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
+		try{
+			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
+		}finally{
+			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
+		}
+	}
+	
+
+	@Override
+	public List<Map<String,Object>> groupBy(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+													JDBCPaginatedExpression paginatedExpression, FunctionField ... functionField) throws ServiceException,NotFoundException,NotImplementedException,Exception {
+		
+		if(paginatedExpression.getGroupByFields().size()<=0){
+			throw new ServiceException("GroupBy conditions not found in expression");
+		}
+		
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
+		try{
+			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+		}finally{
+			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
+		}
+	}
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
@@ -190,6 +330,63 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 		}
 	}
 	
+	@Override
+	public List<Map<String,Object>> union(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
+		
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
+		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnion(jdbcProperties, log, connection, sqlQueryObject, 
+        						this.getConfigurazioneFieldConverter(), Configurazione.model(), 
+        						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
+		
+		if(unionExpression!=null){
+			for (int i = 0; i < unionExpression.length; i++) {
+				UnionExpression ue = unionExpression[i];
+				IExpression expression = ue.getExpression();
+				_join(expression,sqlQueryObjectInnerList.get(i));
+			}
+		}
+        
+        List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.union(jdbcProperties, log, connection, sqlQueryObject, 
+        								this.getConfigurazioneFieldConverter(), Configurazione.model(), 
+        								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
+        if(list!=null && list.size()>0){
+			return list;
+		}
+		else{
+			throw new NotFoundException("Not Found");
+		}								
+	}
+	
+	@Override
+	public NonNegativeNumber unionCount(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
+												Union union, UnionExpression ... unionExpression) throws ServiceException,NotFoundException,NotImplementedException,Exception {		
+		
+		List<ISQLQueryObject> sqlQueryObjectInnerList = new ArrayList<ISQLQueryObject>();
+		List<JDBCObject> jdbcObjects = new ArrayList<JDBCObject>();
+		List<Class<?>> returnClassTypes = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareUnionCount(jdbcProperties, log, connection, sqlQueryObject, 
+        						this.getConfigurazioneFieldConverter(), Configurazione.model(), 
+        						sqlQueryObjectInnerList, jdbcObjects, union, unionExpression);
+		
+		if(unionExpression!=null){
+			for (int i = 0; i < unionExpression.length; i++) {
+				UnionExpression ue = unionExpression[i];
+				IExpression expression = ue.getExpression();
+				_join(expression,sqlQueryObjectInnerList.get(i));
+			}
+		}
+        
+        NonNegativeNumber number = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.unionCount(jdbcProperties, log, connection, sqlQueryObject, 
+        								this.getConfigurazioneFieldConverter(), Configurazione.model(), 
+        								sqlQueryObjectInnerList, jdbcObjects, returnClassTypes, union, unionExpression);
+        if(number!=null && number.longValue()>=0){
+			return number;
+		}
+		else{
+			throw new NotFoundException("Not Found");
+		}
+	}
 
 
 
@@ -237,9 +434,15 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 	// -- DB
 
 	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Configurazione obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdConfigurazione id, Configurazione obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
-				this.get(jdbcProperties,log,connection,sqlQueryObject,null));
+				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
+	}
+	
+	@Override
+	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Configurazione obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
+		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
 	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Configurazione obj, Configurazione imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
 		if(imgSaved==null){
@@ -256,35 +459,20 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 	
 	private Configurazione _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		IField idField = new CustomField("id", Long.class, "id", this.getConfigurazioneFieldConverter().toTable(Configurazione.model()));
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
+		expression.equals(idField, tableId);
+		List<Configurazione> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
 				
-		Configurazione configurazione = new Configurazione();
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 		
 
-		// Object configurazione
-		ISQLQueryObject sqlQueryObjectGet_configurazione = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_configurazione.setANDLogicOperator(true);
-		sqlQueryObjectGet_configurazione.addFromTable(this.getConfigurazioneFieldConverter().toTable(Configurazione.model()));
-		sqlQueryObjectGet_configurazione.addSelectField("id");
-		sqlQueryObjectGet_configurazione.addSelectField(this.getConfigurazioneFieldConverter().toColumn(Configurazione.model().GIORNALE_EVENTI,true));
-		// Parameter 'tableId' unused in single instance
-
-		// Get configurazione
-		configurazione = (Configurazione) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_configurazione.createSQLQuery(), jdbcProperties.isShowSql(), Configurazione.model(), this.getConfigurazioneFetch());
-
-
-
-		
-        return configurazione;  
-	
+		return lst.get(0);
 	} 
 	
 	@Override
@@ -303,11 +491,13 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getConfigurazioneFieldConverter().toTable(Configurazione.model()));
-		sqlQueryObject.addSelectField(this.getConfigurazioneFieldConverter().toColumn(Configurazione.model().GIORNALE_EVENTI,true));
-		// Parameter 'tableId' unused in single instance
+		sqlQueryObject.addSelectField(this.getConfigurazioneFieldConverter().toColumn(Configurazione.model().NOME,true));
+		sqlQueryObject.addWhereCondition("id=?");
+
 
 		// Exists configurazione
-		existsConfigurazione = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql());
+		existsConfigurazione = jdbcUtilities.exists(sqlQueryObject.createSQLQuery(), jdbcProperties.isShowSql(),
+			new JDBCObject(tableId,Long.class));
 
 		
         return existsConfigurazione;
@@ -317,10 +507,13 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 	}
 	
-	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject) throws NotFoundException, ServiceException, NotImplementedException, Exception{
+	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdConfigurazione id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-	return rootTableIdValues;
+		Long longId = this.findIdConfigurazione(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
+		rootTableIdValues.add(longId);
+
+		return rootTableIdValues;
 	}
 	
 	protected Map<String, List<IField>> _getMapTableToPKColumn() throws NotImplementedException, Exception{
@@ -335,7 +528,7 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 				new CustomField("id", Long.class, "id", converter.toTable(Configurazione.model()))
 			));
 
-		return mapTableToPKColumn;		
+	return mapTableToPKColumn;		
 	}
 	
 	@Override
@@ -396,12 +589,63 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
+		
+		// Delete this line when you have implemented the method
+		int throwNotImplemented = 1;
+		if(throwNotImplemented==1){
+		        throw new NotImplementedException("NotImplemented");
+		}
+		// Delete this line when you have implemented the method
 
         return inUse;
 
 	}
 	
+	@Override
+	public IdConfigurazione findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
+			throws NotFoundException, ServiceException, NotImplementedException, Exception {
+		
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
+		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+
+		// Object _configurazione
+		sqlQueryObjectGet.addFromTable(this.getConfigurazioneFieldConverter().toTable(Configurazione.model()));
+		sqlQueryObjectGet.addSelectField(this.getConfigurazioneFieldConverter().toColumn(Configurazione.model().NOME,true));
+		sqlQueryObjectGet.setANDLogicOperator(true);
+		sqlQueryObjectGet.addWhereCondition("id=?");
+
+		// Recupero _configurazione
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_configurazione = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
+		};
+		List<Class<?>> listaFieldIdReturnType_configurazione = new ArrayList<Class<?>>();
+		listaFieldIdReturnType_configurazione.add(Configurazione.model().NOME.getFieldType());
+		it.govpay.orm.IdConfigurazione id_configurazione = null;
+		List<Object> listaFieldId_configurazione = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+				listaFieldIdReturnType_configurazione, searchParams_configurazione);
+		if(listaFieldId_configurazione==null || listaFieldId_configurazione.size()<=0){
+			if(throwNotFound){
+				throw new NotFoundException("Not Found");
+			}
+		}
+		else{
+			id_configurazione = new it.govpay.orm.IdConfigurazione();
+			id_configurazione.setNome((String) listaFieldId_configurazione.get(0));
+		}
+		
+		return id_configurazione;
+		
+	}
+
+	@Override
+	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdConfigurazione id, boolean throwNotFound)
+			throws NotFoundException, ServiceException, NotImplementedException, Exception {
+	
+		return this.findIdConfigurazione(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
+			
+	}
 	
 	@Override
 	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
@@ -412,4 +656,38 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchSi
 														
 	}
 	
+	protected Long findIdConfigurazione(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdConfigurazione id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
+
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+
+		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+		// Object _configurazione
+		sqlQueryObjectGet.addFromTable(this.getConfigurazioneFieldConverter().toTable(Configurazione.model()));
+		sqlQueryObjectGet.addSelectField("id");
+		sqlQueryObjectGet.setANDLogicOperator(true);
+//		sqlQueryObjectGet.setSelectDistinct(true);
+		sqlQueryObjectGet.addWhereCondition(this.getConfigurazioneFieldConverter().toColumn(Configurazione.model().NOME,true)+"=?");
+
+		// Recupero _configurazione
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_configurazione = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getNome(),Configurazione.model().NOME.getFieldType())
+		};
+		Long id_configurazione = null;
+		try{
+			id_configurazione = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
+						Long.class, searchParams_configurazione);
+		}catch(NotFoundException notFound){
+			if(throwNotFound){
+				throw new NotFoundException(notFound);
+			}
+		}
+		if(id_configurazione==null || id_configurazione<=0){
+			if(throwNotFound){
+				throw new NotFoundException("Not Found");
+			}
+		}
+		
+		return id_configurazione;
+	}
 }

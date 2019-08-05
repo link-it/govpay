@@ -273,6 +273,20 @@ ALTER TABLE tipi_versamento ADD COLUMN visualizzazione_definizione LONGTEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN visualizzazione_definizione LONGTEXT;
 
 
+-- 05/08/2019 modifica alla struttura della tabella delle configurazioni
+ALTER TABLE configurazione ADD COLUMN nome VARCHAR(255);
+ALTER TABLE configurazione CHANGE COLUMN giornale_eventi valore LONGTEXT;
+UPDATE configurazione SET nome = 'giornale_eventi';
+ALTER TABLE configurazione MODIFY COLUMN nome VARCHAR(255) NOT NULL;
+ALTER TABLE configurazione ADD CONSTRAINT unique_configurazione_1 UNIQUE (nome);
+CREATE UNIQUE INDEX index_configurazione_1 ON configurazione (nome);
+
+-- 05/08/2019 aggiunti nuovi campi alla tabella tracciati per gestire il formato csv
+ALTER TABLE tracciati ADD COLUMN cod_tipo_versamento VARCHAR(35);
+ALTER TABLE tracciati ADD COLUMN formato VARCHAR(10);
+UPDATE tracciati SET formato = 'JSON';
+ALTER TABLE tracciati MODIFY COLUMN formato VARCHAR(10) NOT NULL;
+
 
 
 

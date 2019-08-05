@@ -56,7 +56,11 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				this.setParameter(object, "setCodDominio", Tracciato.model().COD_DOMINIO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Tracciato.model().COD_DOMINIO.getFieldType()));
-				this.setParameter(object, "setTipo", Tracciato.model().TIPO.getFieldType(),
+				setParameter(object, "setCodTipoVersamento", Tracciato.model().COD_TIPO_VERSAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_tipo_versamento", Tracciato.model().COD_TIPO_VERSAMENTO.getFieldType()));
+				setParameter(object, "setFormato", Tracciato.model().FORMATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "formato", Tracciato.model().FORMATO.getFieldType()));
+				setParameter(object, "setTipo", Tracciato.model().TIPO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo", Tracciato.model().TIPO.getFieldType()));
 				this.setParameter(object, "setStato", Tracciato.model().STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "stato", Tracciato.model().STATO.getFieldType()));
@@ -100,7 +104,11 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				this.setParameter(object, "setCodDominio", Tracciato.model().COD_DOMINIO.getFieldType(),
 					this.getObjectFromMap(map,"codDominio"));
-				this.setParameter(object, "setTipo", Tracciato.model().TIPO.getFieldType(),
+				setParameter(object, "setCodTipoVersamento", Tracciato.model().COD_TIPO_VERSAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"codTipoVersamento"));
+				setParameter(object, "setFormato", Tracciato.model().FORMATO.getFieldType(),
+					this.getObjectFromMap(map,"formato"));
+				setParameter(object, "setTipo", Tracciato.model().TIPO.getFieldType(),
 					this.getObjectFromMap(map,"tipo"));
 				this.setParameter(object, "setStato", Tracciato.model().STATO.getFieldType(),
 					this.getObjectFromMap(map,"stato"));

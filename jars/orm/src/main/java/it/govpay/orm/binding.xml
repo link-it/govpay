@@ -237,6 +237,10 @@
     <value name="codCarrello" field="codCarrello" usage="required"/>
     <structure name="idRpt" field="idRpt" usage="required" map-as="_IdRpt_Type"/>
   </mapping>
+  <mapping name="id-configurazione" class="it.govpay.orm.IdConfigurazione">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="nome" field="nome" usage="required"/>
+  </mapping>
   <mapping name="idRPT" class="it.govpay.orm.IdRpt" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codMsgRichiesta" field="codMsgRichiesta" usage="required"/>
@@ -337,7 +341,8 @@
   </mapping>
   <mapping name="Configurazione" class="it.govpay.orm.Configurazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="giornaleEventi" field="giornaleEventi" usage="optional"/>
+    <value name="nome" field="nome" usage="required"/>
+    <value name="valore" field="valore" usage="optional"/>
   </mapping>
   <mapping name="Dominio" class="it.govpay.orm.Dominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -475,7 +480,7 @@
     <value name="abilitato" field="abilitato" default="true" usage="required"/>
     <value name="autorizzazione_domini_star" field="autorizzazioneDominiStar" default="false" usage="required"/>
     <value name="autorizzazione_tipi_vers_star" field="autorizzazioneTipiVersStar" default="false" usage="required"/>
-    <value name="ruoli" field="ruoli" usage="required"/>
+    <value name="ruoli" field="ruoli" usage="optional"/>
   </mapping>
   <mapping name="Operatore" class="it.govpay.orm.Operatore">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -516,6 +521,7 @@
     <value name="promemoriaRicevutaPdf" field="promemoriaRicevutaPdf" default="false" usage="required"/>
     <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
     <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
+    <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
   </mapping>
   <mapping name="TipoVersamentoDominio" class="it.govpay.orm.TipoVersamentoDominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -539,6 +545,7 @@
     <value name="promemoriaRicevutaPdf" field="promemoriaRicevutaPdf" usage="optional"/>
     <value name="promemoriaRicevutaOggetto" field="promemoriaRicevutaOggetto" usage="optional"/>
     <value name="promemoriaRicevutaMessaggio" field="promemoriaRicevutaMessaggio" usage="optional"/>
+    <value name="visualizzazioneDefinizione" field="visualizzazioneDefinizione" usage="optional"/>
   </mapping>
   <mapping name="Versamento" class="it.govpay.orm.Versamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -790,10 +797,11 @@
     <value name="dataCreazione" field="dataCreazione" usage="required"/>
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
-    <value name="debitoreEmail" field="debitoreEmail" usage="required"/>
-    <value name="messaggioContentType" field="messaggioContentType" usage="required"/>
-    <value name="oggetto" field="oggetto" usage="required"/>
-    <value name="messaggio" field="messaggio" usage="required"/>
+    <value name="destinatarioTo" field="destinatarioTo" usage="required"/>
+    <value name="destinatarioCc" field="destinatarioCc" usage="optional"/>
+    <value name="messaggioContentType" field="messaggioContentType" usage="optional"/>
+    <value name="oggetto" field="oggetto" usage="optional"/>
+    <value name="messaggio" field="messaggio" usage="optional"/>
     <value name="allegaPdf" field="allegaPdf" default="false" usage="required"/>
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
     <value name="dataProssimaSpedizione" field="dataProssimaSpedizione" usage="required"/>
@@ -872,6 +880,8 @@
   <mapping name="Tracciato" class="it.govpay.orm.Tracciato">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codDominio" field="codDominio" usage="required"/>
+    <value name="codTipoVersamento" field="codTipoVersamento" usage="optional"/>
+    <value name="formato" field="formato" usage="required"/>
     <value name="tipo" field="tipo" usage="required"/>
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
@@ -960,6 +970,8 @@
     <value name="importoIncassato" field="importoIncassato" usage="optional"/>
     <value name="statoPagamento" field="statoPagamento" usage="optional"/>
     <value name="iuvPagamento" field="iuvPagamento" usage="optional"/>
+    <value name="divisione" field="divisione" usage="optional"/>
+    <value name="direzione" field="direzione" usage="optional"/>
     <value name="smartOrderDate" field="smartOrderDate" usage="optional"/>
     <value name="smartOrderRank" field="smartOrderRank" usage="optional"/>
   </mapping>
@@ -980,10 +992,14 @@
     <value name="numeroPagamenti" field="numeroPagamenti" usage="optional"/>
     <value name="importoTotalePagamenti" field="importoTotalePagamenti" usage="optional"/>
     <value name="importoPagato" field="importoPagato" usage="optional"/>
-    <value name="data" field="data" usage="optional"/>
     <value name="codSingoloVersamentoEnte" field="codSingoloVersamentoEnte" usage="required"/>
     <value name="indiceDati" field="indiceDati" usage="required"/>
     <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
     <value name="codApplicazione" field="codApplicazione" usage="required"/>
+    <value name="dataPagamento" field="dataPagamento" usage="optional"/>
+    <value name="codTipoVersamento" field="codTipoVersamento" usage="optional"/>
+    <value name="codEntrata" field="codEntrata" usage="optional"/>
+    <value name="identificativoDebitore" field="identificativoDebitore" usage="optional"/>
+    <value name="anno" field="anno" usage="optional"/>
   </mapping>
 </binding>

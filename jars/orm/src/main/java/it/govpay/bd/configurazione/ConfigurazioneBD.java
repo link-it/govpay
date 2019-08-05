@@ -1,7 +1,7 @@
 package it.govpay.bd.configurazione;
 
-import org.openspcoop2.generic_project.exception.MultipleResultException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IOException;
@@ -12,6 +12,7 @@ import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
 import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
 import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.converter.ConfigurazioneConverter;
 
@@ -23,17 +24,22 @@ public class ConfigurazioneBD extends BasicBD {
 
 	public Configurazione getConfigurazione() {
 		try {
-			it.govpay.orm.Configurazione configurazioneVO = this.getConfigurazioneService().get();
-			return ConfigurazioneConverter.toDTO(configurazioneVO);
-		} catch (NotImplementedException | MultipleResultException | ServiceException | NotFoundException e) {
+			List<it.govpay.orm.Configurazione> voList = this.getConfigurazioneService().findAll(this.getConfigurazioneService().newPaginatedExpression());
+			return ConfigurazioneConverter.toDTO(voList);
+		} catch (NotImplementedException | ServiceException e) {
 			return this.getConfigurazioneDefault();  
 		}
 	}
 	
 	public void salvaConfigurazione(Configurazione configurazione) throws ServiceException {
 		try {
-			it.govpay.orm.Configurazione configurazioneVO = ConfigurazioneConverter.toVO(configurazione);
-			this.getConfigurazioneService().updateOrCreate(configurazioneVO);
+			this.getConfigurazioneService().deleteAll();
+			
+			List<it.govpay.orm.Configurazione> voList = ConfigurazioneConverter.toVOList(configurazione);
+			
+			for (it.govpay.orm.Configurazione vo : voList) {
+				this.getConfigurazioneService().create(vo);
+			}
 		} catch (NotImplementedException | IOException e) {
 			throw new ServiceException(e);
 		}
@@ -42,7 +48,13 @@ public class ConfigurazioneBD extends BasicBD {
 	public Configurazione getConfigurazioneDefault() {
 		Configurazione configurazione = new Configurazione();
 		configurazione.setGiornale(this.getGiornaleDefault());
+		configurazione.setTracciatoCsv(this.getTracciatoCsvDefault());
 		return configurazione;
+	}
+
+	public TracciatoCsv getTracciatoCsvDefault() {
+		TracciatoCsv tracciato = new TracciatoCsv();
+		return tracciato;
 	}
 
 	public Giornale getGiornaleDefault() {

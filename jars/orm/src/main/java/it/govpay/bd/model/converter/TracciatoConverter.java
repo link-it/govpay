@@ -1,6 +1,7 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Tracciato;
+import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.orm.IdOperatore;
@@ -24,6 +25,9 @@ public class TracciatoConverter {
 		if(vo.getIdOperatore() != null) {
 			dto.setIdOperatore(vo.getIdOperatore().getId());
 		}
+		
+		dto.setFormato(FORMATO_TRACCIATO.valueOf(vo.getFormato()));
+		dto.setCodTipoVersamento(vo.getCodTipoVersamento());
 
 		return dto;
 	}
@@ -50,6 +54,9 @@ public class TracciatoConverter {
 			vo.setIdOperatore(idOperatore);
 		}
 
+		vo.setFormato(dto.getFormato().name());
+		vo.setCodTipoVersamento(dto.getCodTipoVersamento());
+		
 
 		return vo;
 	}

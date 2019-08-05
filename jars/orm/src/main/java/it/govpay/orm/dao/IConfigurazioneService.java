@@ -20,7 +20,8 @@
 package it.govpay.orm.dao;
 
 import it.govpay.orm.Configurazione;
-import org.openspcoop2.generic_project.dao.IServiceSingleObject;
+import org.openspcoop2.generic_project.dao.IServiceWithId;
+import it.govpay.orm.IdConfigurazione;
 
 /**     
  * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.Configurazione 
@@ -31,6 +32,6 @@ import org.openspcoop2.generic_project.dao.IServiceSingleObject;
  * @version $Rev$, $Date$
  */
 
-public interface IConfigurazioneService extends IServiceSingleObject<Configurazione> {
+public interface IConfigurazioneService extends IServiceWithId<Configurazione, IdConfigurazione> {
 
 }
