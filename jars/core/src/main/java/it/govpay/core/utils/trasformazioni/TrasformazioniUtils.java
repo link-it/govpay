@@ -211,4 +211,40 @@ public class TrasformazioniUtils {
 			dynamicMap.put(Costanti.MAP_RPT, rpt);
 		}
 	}
+	
+	public static void fillDynamicMapRichiestaTracciatoCSV(Logger log, Map<String, Object> dynamicMap, IContext context, String linea, String codDominio, String codTipoVersamento) {
+		
+		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
+			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
+		}
+
+		if(context !=null) {
+			if(dynamicMap.containsKey(Costanti.MAP_CTX_OBJECT)==false) {
+				dynamicMap.put(Costanti.MAP_CTX_OBJECT, context);
+			}
+			if(dynamicMap.containsKey(Costanti.MAP_TRANSACTION_ID_OBJECT)==false) {
+				String idTransazione = context.getTransactionId();
+				dynamicMap.put(Costanti.MAP_TRANSACTION_ID_OBJECT, idTransazione);
+			}
+
+			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
+			if(ctx !=null && ctx.getEventoCtx()!=null && ctx.getEventoCtx().getUrl() != null) {
+				URLRegExpExtractor urle = new URLRegExpExtractor(ctx.getEventoCtx().getUrl(), log);
+				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP, urle);
+				dynamicMap.put(Costanti.MAP_ELEMENT_URL_REGEXP.toLowerCase(), urle);
+			}
+		}
+
+		if(dynamicMap.containsKey(Costanti.MAP_ID_TIPO_VERSAMENTO)==false && codTipoVersamento !=null) {
+			dynamicMap.put(Costanti.MAP_ID_TIPO_VERSAMENTO, codTipoVersamento);
+		}
+
+		if(dynamicMap.containsKey(Costanti.MAP_ID_DOMINIO)==false && codDominio !=null) {
+			dynamicMap.put(Costanti.MAP_ID_DOMINIO, codDominio);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_LINEA_CSV_RICHIESTA)==false && linea !=null) {
+			dynamicMap.put(Costanti.MAP_LINEA_CSV_RICHIESTA, linea);
+		}
+	}
 }

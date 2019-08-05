@@ -32,7 +32,8 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 	private byte[] qrCode;
 	private byte[] barCode;
 	private Avviso avviso;
-
+	private String jsonRichiesta;
+	
 	public String getIuv() {
 		return this.iuv;
 	}
@@ -71,5 +72,11 @@ public class CaricamentoResponse extends AbstractOperazioneResponse {
 		}
 		
 		return null;
+	}
+	public String getJsonRichiesta() {
+		return jsonRichiesta;
+	}
+	public void setJsonRichiesta(String jsonRichiesta) {
+		this.jsonRichiesta = jsonRichiesta;
 	}
 }

@@ -30,4 +30,6 @@ public class Costanti {
     
     public final static String MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA = "contentTypePromemoria";
     public final static String MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA_DEFAULT_VALUE = "text/html";
+    
+    public final static String MAP_LINEA_CSV_RICHIESTA = "lineaCsvRichiesta";
 }
