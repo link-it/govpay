@@ -40,6 +40,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
   protected NOTA = UtilService.NOTA;
   protected ADD = UtilService.PATCH_METHODS.ADD;
   protected info: Riepilogo;
+  protected infoVisualizzazione: any = { visible: false, titolo: '', campi: [] };
   protected _paymentsSum: number = 0;
   protected _importiOverIcons: string[] = ['file_download'];
   protected _tentativiOverIcons: string[] = ['file_download'];
@@ -109,6 +110,23 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     }
     if(_json.dataUltimoAggiornamento) {
       this.info.extraInfo.push({ label: Voce.DATA_ULTIMO_AGGIORNAMENTO+': ', value: moment(_json.dataUltimoAggiornamento).format('DD/MM/YYYY') });
+    }
+    //Json Visualizzazione
+    if(_json.tipoPendenza && _json.tipoPendenza.visualizzazione) {
+      try {
+        const _vis = JSON.parse(decodeURIComponent(atob(_json.tipoPendenza.visualizzazione).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join('')));
+        this.infoVisualizzazione.visible = !!(_vis.vistaDettaglio.titolo && _vis.vistaDettaglio.campi.length);
+        if (_vis.vistaDettaglio) {
+          this.infoVisualizzazione.titolo = _vis.vistaDettaglio.titolo || '';
+          this.infoVisualizzazione.campi = _vis.vistaDettaglio.campi.map((field) => {
+            return new Dato({label: field.label, value: this.us.searchPropertyByPathString(field.path, _json)});
+          });
+        }
+      } catch (e) {
+        console.warn(e);
+      }
     }
     //Dettaglio importi
     this._paymentsSum = 0;
@@ -361,7 +379,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
           contents.push('application/pdf');
           names.push('Rt.pdf'+_folder);
           types.push('blob');
-          urls.push(UtilService.URL_GIORNALE_EVENTI+'?idA2A='+encodeURIComponent(this.json.idA2A)+'&idPendenza='+encodeURIComponent(this.json.idPendenza));
+          urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idA2A='+encodeURIComponent(this.json.idA2A)+'&idPendenza='+encodeURIComponent(this.json.idPendenza));
           contents.push('application/json');
           names.push('Eventi.csv'+_folder);
           types.push('json');
@@ -371,7 +389,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
         if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
           folders.push(UtilService.ROOT_ZIP_FOLDER);
         }
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?idA2A='+encodeURIComponent(this.json.idA2A)+'&idPendenza='+encodeURIComponent(this.json.idPendenza));
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idA2A='+encodeURIComponent(this.json.idA2A)+'&idPendenza='+encodeURIComponent(this.json.idPendenza));
         contents.push('application/json');
         names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
         types.push('json');
@@ -419,6 +437,10 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
             //root
             o = this._elaborate(structure.names[ref].split(folder)[0], file);
             zroot.file(o['name'], o['zdata']);
+            if(o['name'].indexOf('csv') != -1) {
+              o = this.createJsonCopy(o['name'], file);
+              zroot.file(o['name'], o['zdata']);
+            }
           }
         }
       });
@@ -427,6 +449,13 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       FileSaver(zipData, zipname);
       this.gps.updateSpinner(false);
     }.bind(this));
+  }
+
+  createJsonCopy(name: string, jsonData: any): any {
+    return {
+      zdata: JSON.stringify(jsonData.body.risultati),
+      name: name.split('.csv').join('.json')
+    };
   }
 
   jsonToCsv(name: string, jsonData: any): string {
@@ -468,6 +497,5 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       zdata = this.jsonToCsv(name, file.body);
     }
     return { zdata: zdata, name: name };
-
   }
 }

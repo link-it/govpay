@@ -71,10 +71,14 @@ DROP VIEW versamenti_incassi;
 
 ALTER TABLE versamenti ADD COLUMN id_tipo_versamento BIGINT;
 
-UPDATE versamenti SET id_tipo_versamento = a.id_tipo_versamento FROM (SELECT versamenti.id as id_versamento, 
- tipi_versamento.id as id_tipo_versamento FROM versamenti JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento 
- AND singoli_versamenti.indice_dati=1 JOIN tributi ON singoli_versamenti.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id 
- JOIN tipi_versamento ON tipi_versamento.cod_tipo_versamento = tipi_tributo.cod_tributo) a WHERE a.id_versamento = versamenti.id;
+UPDATE versamenti, (SELECT versamenti.id as id_versamento,
+ tipi_versamento.id as id_tipo_versamento FROM versamenti
+ JOIN singoli_versamenti ON versamenti.id = singoli_versamenti.id_versamento AND singoli_versamenti.indice_dati=1
+ JOIN tributi ON singoli_versamenti.id_tributo = tributi.id
+ JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id
+ JOIN tipi_versamento ON tipi_versamento.cod_tipo_versamento = tipi_tributo.cod_tributo) a 
+ SET versamenti.id_tipo_versamento = a.id_tipo_versamento
+ WHERE a.id_versamento = versamenti.id;
 
 UPDATE versamenti SET id_tipo_versamento = (SELECT id FROM tipi_versamento WHERE cod_tipo_versamento = 'LIBERO') WHERE id_tipo_versamento IS NULL;
 
@@ -278,8 +282,8 @@ UPDATE tipi_versamento SET abilitato = true;
 ALTER TABLE tipi_versamento MODIFY COLUMN abilitato BOOLEAN NOT NULL;
 
 ALTER TABLE tipi_vers_domini ADD COLUMN abilitato BOOLEAN;
-UPDATE tipi_vers_domini SET abilitato = tributi.abilitato FROM tributi, tipi_tributo, tipi_versamento WHERE tributi.id_tipo_tributo = tipi_tributo.id AND tipi_tributo.cod_tributo = tipi_versamento.cod_tipo_versamento AND tipi_versamento.id = tipi_vers_domini.id_tipo_versamento;
-UPDATE tipi_vers_domini SET abilitato = true FROM tipi_versamento WHERE tipi_versamento.id = tipi_vers_domini.id_tipo_versamento AND tipi_versamento.cod_tipo_versamento = 'LIBERO';
+UPDATE tipi_vers_domini, tributi, tipi_tributo, tipi_versamento SET tipi_vers_domini.abilitato = tributi.abilitato  WHERE tributi.id_tipo_tributo = tipi_tributo.id AND tipi_tributo.cod_tributo = tipi_versamento.cod_tipo_versamento AND tipi_versamento.id = tipi_vers_domini.id_tipo_versamento;
+UPDATE tipi_vers_domini, tipi_versamento SET tipi_vers_domini.abilitato = true WHERE tipi_versamento.id = tipi_vers_domini.id_tipo_versamento AND tipi_versamento.cod_tipo_versamento = 'LIBERO';
 ALTER TABLE tipi_vers_domini MODIFY COLUMN abilitato BOOLEAN NOT NULL;
 
 
@@ -387,6 +391,7 @@ ALTER TABLE tipi_vers_domini MODIFY COLUMN abilitato BOOLEAN NULL;
 
 -- 30/04/2019 eliminazione foreign key id_applicazione dalla tabella RPT
 
+ALTER TABLE rpt DROP FOREIGN KEY fk_rpt_id_applicazione;
 ALTER TABLE rpt DROP COLUMN id_applicazione;
 
 

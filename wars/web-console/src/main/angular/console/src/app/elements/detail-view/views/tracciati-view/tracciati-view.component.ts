@@ -12,6 +12,7 @@ import * as moment from 'moment';
 import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
+import { HttpHeaders } from '@angular/common/http';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -177,6 +178,9 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
       _data = new FormData();
       _data.append('file', mb.info.viewModel.file);
     }
+    if(mb.info.viewModel.mimeType === 'text/csv') {
+      _service += '/' + mb.info.viewModel.idDominio + '/' +mb.info.viewModel.idTipoPendenza;
+    }
 
     this.gps.saveData(_service, _data, null, UtilService.METHODS.POST, _autoHeaders).subscribe(
       () => {
@@ -201,14 +205,14 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
     contents.push('application/zip');
     types.push('blob');
 
-    urls.push(UtilService.URL_TRACCIATI+'/'+this.json.id);
-    names.push(this.json.nomeFile+'.json');
+    urls.push(UtilService.URL_TRACCIATI+'/'+this.json.id+'/richiesta');
+    names.push(this.json.nomeFile+'_richiesta.txt');
     contents.push('application/json');
     types.push('text');
 
     urls.push(UtilService.URL_TRACCIATI+'/'+this.json.id+'/esito');
     contents.push('application/json');
-    names.push(this.json.nomeFile+'_esito.json');
+    names.push(this.json.nomeFile+'_esito.txt');
     types.push('text');
 
     this.gps.multiExportService(urls, contents, types).subscribe(function (_response) {
@@ -238,9 +242,9 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
           }
         } else {
           let _cd = file.headers.get("content-disposition");
-          let _re = /(?:filename=['"](.*\.zip)['"])/gm;
+          let _re = /(?:filename=['"](.*(\.zip|\.csv|\.json))['"])/gm;
           let _results = _re.exec(_cd);
-          if(_results && _results.length == 2) {
+          if(_results && _results.length == 3) {
             _name = _results[1];
           }
         }

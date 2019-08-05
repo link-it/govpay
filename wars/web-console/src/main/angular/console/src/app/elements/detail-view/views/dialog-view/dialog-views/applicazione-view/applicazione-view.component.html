@@ -8,7 +8,7 @@
           <input matInput placeholder="Id A2A" formControlName="idA2A_ctrl" autocomplete="off" required>
         </mat-form-field>
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <input matInput placeholder="Principal" formControlName="principal_ctrl" autocomplete="off">
+          <input matInput placeholder="Principal" formControlName="principal_ctrl" autocomplete="off" required>
         </mat-form-field>
       </div>
       <div class="w-100" [formGroup]="fGroup">
@@ -79,7 +79,7 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="voce.PENDENZE" formControlName="tipoPendenza_ctrl" multiple [compareWith]="pendenzaCmpFn">
+          <mat-select [placeholder]="voce.TIPI_PENDENZA" formControlName="tipoPendenza_ctrl" multiple [compareWith]="pendenzaCmpFn">
             <mat-option *ngFor="let item of tipiPendenza" [value]="item">{{item.descrizione}}</mat-option>
           </mat-select>
         </mat-form-field>

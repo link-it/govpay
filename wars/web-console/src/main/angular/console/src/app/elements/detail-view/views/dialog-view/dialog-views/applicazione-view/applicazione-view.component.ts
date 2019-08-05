@@ -35,7 +35,7 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
     this.elencoDominiPendenzeRuoli();
 
     this.fGroup.addControl('idA2A_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('principal_ctrl', new FormControl(''));
+    this.fGroup.addControl('principal_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('abilita_ctrl', new FormControl(false));
     this.fGroup.addControl('codificaIuv_ctrl', new FormControl(''));
     this.fGroup.addControl('regExpIuv_ctrl', new FormControl(''));
@@ -44,10 +44,9 @@ export class ApplicazioneViewComponent implements IFormComponent, OnInit, AfterV
     this.fGroup.addControl('apiPendenze_ctrl', new FormControl(false));
     this.fGroup.addControl('apiRagioneria_ctrl', new FormControl(false));
 
-      this.fGroup.addControl('url_ctrl', new FormControl('', Validators.required));
-      this.fGroup.addControl('versioneApi_ctrl', new FormControl({ value: '', disabled: true }, null));
-      this.fGroup.addControl('auth_ctrl', new FormControl({ value: '', disabled: true }));
-
+    this.fGroup.addControl('url_ctrl', new FormControl(''));
+    this.fGroup.addControl('versioneApi_ctrl', new FormControl({ value: '', disabled: true }, null));
+    this.fGroup.addControl('auth_ctrl', new FormControl({ value: '', disabled: true }));
 
     this.fGroup.addControl('dominio_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoPendenza_ctrl', new FormControl(''));

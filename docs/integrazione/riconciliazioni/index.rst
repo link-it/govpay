@@ -10,8 +10,11 @@ ciclo di vita del pagamento verificando che gli importi riscossi dai PSP
 vengano correttamente riversati nei propri conti di accredito, gestiti
 dalla Banca Tesoriera.
 
-.. figure:: ../_figure_integrazione/100002010000022602000192C7342CEDBB4934E5.png
-    Figura 4 - Riconciliazione degli incassi
+.. figure:: ../_images/INT05_RiconciliazioneIncassi.png
+   :align: center
+   :name: RiconciliazioneIncassi
+   
+   Riconciliazione degli incassi
 
 Il flusso di questo scenario è il seguente:
 

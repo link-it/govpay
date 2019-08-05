@@ -1,3 +1,4 @@
+<!-- TODO - NON PIU' USATO -->
 <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_jsonFormInput">
   <mat-select placeholder="Tipo pendenza" formControlName="idTipoPendenza_ctrl" multiple required>
     <mat-option *ngFor="let item of json.values" [value]="item">{{item.label}}</mat-option>

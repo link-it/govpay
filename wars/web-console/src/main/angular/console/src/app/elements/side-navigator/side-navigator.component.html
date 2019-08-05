@@ -41,11 +41,21 @@
       </mat-expansion-panel>
       <mat-expansion-panel *ngIf="quaMenu.length != 0">
         <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
-          <mat-panel-title>Manutenzione</mat-panel-title>
+          <mat-panel-title>Reportistica</mat-panel-title>
         </mat-expansion-panel-header>
         <mat-list>
           <mat-list-item class="action" *ngFor="let quaSection of quaMenu" (click)="_menuRoute(quaSection)">
             <h4 mat-line>{{quaSection.name}}</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+      <mat-expansion-panel *ngIf="pentaMenu.length != 0">
+        <mat-expansion-panel-header expandedHeight="48px" collapsedHeight="48px">
+          <mat-panel-title>Manutenzione</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item class="action" *ngFor="let pentaSection of pentaMenu" (click)="_menuRoute(pentaSection)">
+            <h4 mat-line>{{pentaSection.name}}</h4>
           </mat-list-item>
         </mat-list>
       </mat-expansion-panel>

@@ -8,9 +8,12 @@ AgID relativo ad una pendenza. Egli si reca presso le strutture del PSP
 (sportello, ATM, Home banking, Mobile APP, etc...) per l’esecuzione del
 versamento.
 
-.. figure:: ../_figure_integrazione/100002010001022600000192C7342CEDBB4934E5.png
-    Figura 3 - Pagamento ad iniziativa PSP
-
+.. figure:: ../_images/INT04_PagamentiAdIniziativaPSP.png
+   :align: center
+   :name: CampiDelDominio
+   
+   Pagamento ad iniziativa PSP
+   
 Il flusso di questo scenario è il seguente:
 
 1. L’Ente Creditore, alla predisposizione di una nuova pendenza, stampa

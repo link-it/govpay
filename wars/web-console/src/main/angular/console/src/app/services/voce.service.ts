@@ -194,6 +194,7 @@ export class Voce {
   public static VALIDITA: string = 'Validità';
   public static VALORE_PREDEFINITO: string = 'valore predefinito';
   public static VERSIONE_API: string = 'Versione API';
+  public static VISUALIZZAZIONE: string = 'Visualizzazione';
 
   public static WEB: string = 'Sito web';
 
