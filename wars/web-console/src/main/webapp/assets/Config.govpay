@@ -61,7 +61,7 @@
     },
     GENERATORI: generatori(),
     MGK: _mkg(),
-    EXTERNAL_JS_PROCEDURE_URL: 'Converter.js', //Http URL al file Js per conversioni esterne (caricamento tracciati)
+    EXTERNAL_JS_PROCEDURE_URL: '${it.govpay.backoffice.gui.transformerJS}', //Http URL al file Js per conversioni esterne (caricamento tracciati)
     BASIC: {
       ENABLED: ${it.govpay.backoffice.gui.basic.enabled},
       HTTP_ROOT_SERVICE: httpRootService(),
