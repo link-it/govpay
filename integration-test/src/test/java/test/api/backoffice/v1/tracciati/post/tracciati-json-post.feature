@@ -9,6 +9,7 @@ Background:
 Scenario: Pagamento pendenza precaricata anonimo
 
 * def idPendenza = getCurrentTimeMillis()
+* def tracciato = read('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze.json')
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati'

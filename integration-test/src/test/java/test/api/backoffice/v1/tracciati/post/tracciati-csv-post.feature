@@ -7,13 +7,11 @@ Background:
 
 * def freemarker_request = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
 * def freemarker_response = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
-* def response_csv_header = 
-
 
 Given url backofficeBaseurl
-And path 'configurazione', 
+And path 'configurazione' 
 And headers basicAutenticationHeader
-And request 
+And request =
 """
 [
 	{
