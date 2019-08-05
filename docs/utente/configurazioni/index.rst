@@ -10,7 +10,7 @@ La lista degli oggetti che è possibile configurare comprende i seguenti element
 
 -  *Intermediari*: rappresentano le entità “Intermediario” o “Partner Tecnologico” censiti presso il Nodo dei Pagamenti scelti in
    fase di adesione dagli Enti Creditore per l'accesso al sistema pagoPA.
--  *Domini*: corrispondono agli enti creditori aderenti al sistema pagoPA.
+-  *Enti Creditori*: corrispondono agli enti creditori aderenti al sistema pagoPA.
 -  *Tipi Pendenza*: rappresentano le esigenze dell'ente creditore dalle quali scaturiscono le tipologie di pagamenti che possono essere gestiti dal sistema (ad esempiotassa rifiuti, licenza di caccia, bollo auto e via dicendo).
 -  *Applicazioni*: rappresentano i portali di pagamento e i gestionali delle posizioni debitorie degli enti Creditori integrati con GovPay tramite gli appositi servizi.
 -  *Operatori*: sono le utenze del cruscotto di gestione GovPay.
@@ -133,33 +133,33 @@ I dati modificabili della stazione saranno la sola password e lo stato; l'identi
 
 Una volta terminata la modifica è necessaria la pressione della voce *Salva* per renderla effettiva.
 
-Domini
-------
+Enti Creditori
+--------------
 
-Ogni Ente Creditore su pagoPA corrisponde ad un Dominio da registrare nell'anagrafica di GovPay.
+Ogni Ente Creditore su pagoPA va registrato nell'anagrafica di GovPay.
 
-Accedendo alla sezione *Configurazioni > Domini*, viene visualizzato l'elenco dei domini già censiti. Sul lato sinistro è presente il form per filtrare i domini visualizzati in elenco, con i possibili parametri di ricerca, ovvero:
+Accedendo alla sezione *Configurazioni > Enti Creditori*, viene visualizzato l'elenco degli enti già censiti. Sul lato sinistro è presente il form per filtrare i domini visualizzati in elenco, con i possibili parametri di ricerca, ovvero:
 
 .. figure:: ../_images/17FilttroSuDomini.png
    :align: center
    
-   Parametri di filtro per la ricerca dominio
+   Parametri di filtro per la ricerca di un Ente Creditore
 
 
-Ciascun dominio presente in elenco è identificato tramite denominazione e codice identificativo.
+Ciascun Ente Creditore presente in elenco è identificato tramite denominazione e codice identificativo.
 
-Nuovo Dominio
-~~~~~~~~~~~~~
+Nuovo Ente Creditore
+~~~~~~~~~~~~~~~~~~~~
 
-Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di elenco, è possibile procedere con la creazione di un nuovo dominio, compilando il seguente form di creazione:
+Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di elenco, è possibile procedere con la creazione di un nuovo Ente Creditore, compilando il seguente form di creazione:
 
 .. figure:: ../_images/18ParametriDominio.png
    :align: center
    :name: CampiDelDominio
    
-   Campi del form di inserimento Nuovo Dominio
+   Campi del form di inserimento Nuovo Ente Creditore
 
-.. csv-table:: Dettagli di un Nuovo Dominio
+.. csv-table:: Dettagli di un Nuovo Ente Creditore
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
@@ -186,16 +186,16 @@ I seguenti sono i placeholder di sistema, sovrascrivibili dall'applicazione chia
 * y: anno di emissione dello IUV, due cifre
 * Y: anno di emissione dello IUV, quattro cifre
 
-Dettaglio Dominio
-~~~~~~~~~~~~~~~~~
+Dettaglio Ente Creditore
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Selezionando uno dei domini presenti nella pagina di elenco si accede alla pagina di dettaglio, che si compone a partire dalle seguenti aree:
+Selezionando uno degli enti creditori presenti nella pagina di elenco si accede alla pagina di dettaglio, che si compone a partire dalle seguenti aree:
 
-.. csv-table:: Aree del dettaglio dominio
+.. csv-table:: Aree del dettaglio Ente Creditore
   :header: "Area", "Descrizione"
   :widths: 40,40
   
-  "*Riepilogo Informazioni*", "Dati che caratterizzano il dominio, appena visti nella sezione `Nuovo Dominio`_"
+  "*Riepilogo Informazioni*", "Dati che caratterizzano l'ente creditore, appena visti nella sezione `Nuovo Ente Creditore`_"
   "*Unità Operative*", "Uffici di gestione dei pagamenti in cui è suddiviso il dominio dell’ente creditore."
   "*Iban*", "Codici IBAN dei conti correnti su cui l’ente creditore riceve gli accrediti in banca tesoriera. Tali IBAN sono quelli già comunicati ad AgID in fase di accreditamento."
   "*Entrate*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
@@ -207,15 +207,15 @@ Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile 
    :align: center
    :name: CampiDelDettaglioDominio
    
-   Campi del dettaglio del Dominio
+   Campi del dettaglio dell'Ente Creditore
 
 Le aree seguenti contengono i relativi pulsanti di creazione e modifica dei rispettivi elementi, con le solite, naturali, uniformi convenzioni grafiche.
 
 .. figure:: ../_images/20DettaglioDominio2.png
    :align: center
-   :name: CampiDegliOggettiDelDominio
+   :name: CampiDegliOggettiDiEnteCreditore
    
-   Campi degli oggetti correlati al Dominio
+   Campi degli oggetti correlati all'Ente Creditore
 
 
 Unità Operative
@@ -239,18 +239,18 @@ Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay
   "Sezione Anagrafica", "Riferimenti anagrafici dell'unità forniti dal Referente dei Pagamenti", ""
   "Abilitato", "Indica se l'unità operativa è abilitata o meno nel contesto del dominio su cui si opera", ""
 
-Ovviamente dall'elenco delle unità operative associate a un dominio, è possibile modificarne le informazioni associate.
+Ovviamente dall'elenco delle unità operative associate a un Ente Creditore, è possibile modificarne le informazioni associate.
 
 Iban
 ^^^^
 
-Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPay. Esiste quindi una maschera di definizione degli IBAN associati al dominio.
+Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPay. Esiste quindi una maschera di definizione degli IBAN associati all'Ente Creditore.
 
 .. figure:: ../_images/22NuovoIBAN.png
    :align: center
    :name: CampiPerNuovoIBAN
    
-   Maschera di creazione IBAN associato al dominio
+   Maschera di creazione IBAN associato all'Ente Creditore
 
 Il form di creazione di un Iban deve essere compilato con i dati
 seguenti:
@@ -280,7 +280,7 @@ Ogni importo che costituisce un versamento deve essere associato ad una entrata 
    :align: center
    :name: CampiPerNuovaEntrata
    
-   Maschera di creazione nuova entrata associata al dominio
+   Maschera di creazione nuova entrata associata all'Ente Creditore
 
 Il form di creazione di un'entrata va compilato con le seguenti informazioni:
 
@@ -307,7 +307,7 @@ Il form di creazione di un'entrata va compilato con le seguenti informazioni:
   "Codice contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
   "Abilitato", "Indica se l'Entrata è abilitata o meno nel contesto del dominio su cui si opera", ""
 
-.. note:: I campi *Tipo Contabilità e Codice Contabilità* rappresentano i valori di default per il tipo entrata e saranno attualizzabili nel contesto di ciascun dominio.
+.. note:: I campi *Tipo Contabilità e Codice Contabilità* rappresentano i valori di default per il tipo entrata e saranno attualizzabili nel contesto di ciascun Ente Creditore.
 
 Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata, con il campo *Codice Entrata* non modificabile. Fa eccezione l'entrata preconfigurata “Marca da Bollo Telematica” per la quale si ha la sola possibilità di modificare i parametri di contabilizzazione.
 
@@ -315,24 +315,24 @@ Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata,
 Pendenze
 ^^^^^^^^
 
-Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per il dominio in essere. Si noti come le pendenze possano essere associate al dominio selezionandole da quelle censite (l'aggiunta di un nuovo tipo di pendenza viene gestita nella funzionalità associata alla voce `Tipi Pendenze`_ del menu sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per il dominio, non siano state già scelte.
-Ad esempio, in un dominio abbiamo le seguenti tipologie di pendenza già selezionate:
+Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per l'Ente Creditore in essere. Si noti come le pendenze possano essere associate all'Ente selezionandole da quelle censite (l'aggiunta di un nuovo tipo di pendenza viene gestita nella funzionalità associata alla voce `Tipi Pendenze`_ del menu sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per l'Ente, non siano state già scelte.
+Ad esempio, in un Ente Creditore abbiamo le seguenti tipologie di pendenza già selezionate:
 
 .. figure:: ../_images/25PendenzeSceltePerIlDominio.png
    :align: center
    :name: PendenzeRelativeAUnDominio
    
-   Pendenze associate a un dominio
+   Pendenze associate a un Ente Creditore
    
-A questo punto, sul dominio selezionato, si potrà aggiungere una sola pendenza (quella non ancora selezionata), come mostrato:
+A questo punto, sull'Ente Creditore selezionato, si potrà aggiungere una sola pendenza (quella non ancora selezionata), come mostrato:
 
 .. figure:: ../_images/26PendenzaSelezionabile.png
    :align: center
    :name: PendenzaSelezionabilePerAggiunta
    
-   Pendenza selezionabile per aggiunta al dominio
+   Pendenza selezionabile per aggiunta all'Ente Creditore
 
-Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, di personalizzarla per il dominio, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
+Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, di personalizzarla per l'Ente Creditore, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
 Si tenga presente che si affronterà il dettaglio dei campi delle pendenze nella sezione apposita, cui si fa riferimento. Al momento si noti come una pendenza possa essere completamente personalizzata per un dominio a partire da una *standard* definita nella sezione *`Tipi Pendenze`_*.
 I meccanismi di selezione sono del tutto analoghi a quanto già visto in altri contesti del sistema: selezioniamo la Pendenza *Sanzione Amministrativa*
 
