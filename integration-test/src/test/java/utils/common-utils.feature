@@ -117,3 +117,10 @@ Scenario:
 		return Base64.getEncoder().encodeToString(IOUtils.toByteArray(inputstream));
 	}
 	"""
+	
+  * def replace =
+  """
+	function(text,placeholder,value) {
+	  return text.replace(placeholder,value)
+	}
+  """

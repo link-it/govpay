@@ -6,8 +6,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 
 public class CSVUtils {
 	
@@ -49,5 +56,38 @@ public class CSVUtils {
 			}
 		}
 		return lst;
+	}
+	
+	public static CSVRecord getCSVRecord(String csvEntry) {
+		try {
+			CSVParser p = CSVParser.parse(csvEntry, CSVFormat.RFC4180);
+			return p.getRecords().get(0);
+		} catch (IOException ioe) {
+			return null;
+		}
+	}
+	
+	public static boolean isEmpty(CSVRecord record, int position) {
+		try {
+			return record.get(position).isEmpty(); 
+		} catch (Throwable t) {
+			return true;
+		}
+	}
+	
+	public static String toJsonValue(CSVRecord record, int position) {
+		if(isEmpty(record, position)) 
+			return "null";
+		else
+			return "\"" + record.get(position) +  "\"";
+	}
+	
+	public static String toCsv(String ...strings) throws IOException {
+		StringWriter writer = new StringWriter();
+		CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
+		printer.printRecord(Arrays.asList(strings));
+		printer.flush();
+		printer.close();
+		return writer.toString();
 	}
 }
