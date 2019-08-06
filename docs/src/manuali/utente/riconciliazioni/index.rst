@@ -1,21 +1,18 @@
 .. _utente_riconciliazioni:
 
 Riconciliazioni
-=================
+===============
 
 Area Generale
 -------------
 
-La sezione “Funzioni Avanzate > Riconciliazioni” è dedicata alla
-consultazione delle voci di riconciliazione delle riscossioni notificate
-dalla banca tesoriera. Tali informazioni vengono registrate sulla
-piattaforma dagli applicativi che gestiscono il processo di
+La sezione “Riconciliazioni” è dedicata alla consultazione delle voci di riconciliazione delle riscossioni notificate
+dalla banca tesoriera. Tali informazioni vengono registrate sulla piattaforma dagli applicativi che gestiscono il processo di
 riconciliazione con la Banca Tesoriera.
 
-È possibile filtrare gli elementi visualizzati nella pagina utilizzando
-il form presente sul lato sinistro.
+È possibile filtrare gli elementi visualizzati nella pagina utilizzando il form presente sul lato sinistro in cui si seleziona l'ente creditore su cui si intende agire.
 
-L'elenco sul lato destro riporta gli elementi, in sintesi,
+L'elenco sul lato destro riporta gli elementi
 visualizzandone i principali dati identificativi (identificativo di
 riversamento, ente creditore, importo, stato,...).
 
