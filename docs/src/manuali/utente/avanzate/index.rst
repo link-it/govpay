@@ -6,10 +6,15 @@ Funzioni Avanzate
 Rendicontazioni
 ---------------
 
-La sezione “Funzioni Avanzate > Rendicontazioni” è dedicata alla
-consultazione dei flussi di rendicontazione acquisiti da pagoPA. La
-pagina iniziale mostra l’elenco dei flussi di
-rendicontazione presenti nel repository.
+La sezione “Funzioni Avanzate > Rendicontazioni” è dedicata alla consultazione dei flussi di rendicontazione acquisiti da pagoPA. La
+pagina iniziale mostra l’elenco dei flussi di rendicontazione presenti nel repository.
+
+.. figure:: ../_images/AV01AreaGeneraleRendicontazioni.png
+   :align: center
+   :name: AreaGeneraleRendicontazioni
+   
+   Area Generale Rendicontazioni
+
 
 Per ciascun flusso in elenco, oltre ai riferimenti identificativi
 (identificativo, psp, ente creditore, ...), sono segnalati, con
@@ -84,12 +89,12 @@ tracciati vengono caricati dagli utenti del cruscotto utilizzando il pulsante di
 -  Inserimento di una nuova pendenza
 -  Annullamento di pendenza esistente
 
-È possibile filtrare gli elementi, in base al proprio stato di elaborazione, utilizzando il form presente sul lato sinistro, .
+È possibile filtrare gli elementi, in base al proprio stato di elaborazione, utilizzando il form presente sul lato sinistro.
 
-L'elenco sul lato destro riporta gli elementi, in sintesi, visualizzandone i principali dati identificativi (identificativo del
+L'elenco a destra riporta gli elementi, visualizzandone i principali dati identificativi (identificativo del
 tracciato, data di caricamento e stato dell’elaborazione).
 
-È possibile scaricare un file CSV con i dati di riepilogo dei tracciati, visualizzati con il criterio di ricerca impostato, utilizzando la voce "Esporta" presente nel menu sulla testata della pagina.
+È possibile scaricare un file CSV con i dati di riepilogo dei tracciati, visualizzati con il criterio di ricerca impostato, utilizzando la voce "Scarica Resoconto" presente, a destra, nel menu sulla testata della pagina.
 
 Dettaglio Tracciato
 ~~~~~~~~~~~~~~~~~~~
