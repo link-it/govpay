@@ -173,10 +173,10 @@ public class UtenzeBD extends BasicBD {
 		AclFilter filter = aclDB.newFilter();
 		filter.setIdUtenza(utenza.getId());
 
-		List<Acl> findAll = aclDB.findAll(filter);
+		List<Acl> findAllPrincipal = aclDB.findAll(filter);
 		
-		if(findAll != null && findAll.size() > 0) {
-			for (Acl acl : findAll) {
+		if(findAllPrincipal != null && findAllPrincipal.size() > 0) {
+			for (Acl acl : findAllPrincipal) {
 				acl.setUtenza(utenza);
 			} 
 		}
@@ -187,15 +187,15 @@ public class UtenzeBD extends BasicBD {
 				filter = aclDB.newFilter();
 				filter.setRuolo(idRuolo);
 				
-				findAll = aclDB.findAll(filter);
-				if(findAll != null && findAll.size() > 0) {
-					findAllRuoli.addAll(findAll);
+				List<Acl> findAllRuolo = aclDB.findAll(filter);
+				if(findAllRuolo != null && findAllRuolo.size() > 0) {
+					findAllRuoli.addAll(findAllRuolo);
 				}
 			}
 			utenza.setAclRuoliUtenza(findAllRuoli);
 		}
 		
-		utenza.setAclPrincipal(findAll);
+		utenza.setAclPrincipal(findAllPrincipal);
 		return utenza;
 	}
 	
