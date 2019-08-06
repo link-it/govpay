@@ -16,45 +16,39 @@ pagina iniziale mostra l’elenco dei flussi di rendicontazione presenti nel rep
    Area Generale Rendicontazioni
 
 
-Per ciascun flusso in elenco, oltre ai riferimenti identificativi
-(identificativo, psp, ente creditore, ...), sono segnalati, con
-indicazione dello stato, i casi di errore.
+Per ciascuna rendicontazione in elenco, oltre ai riferimenti identificativi (identificativo, psp, ente creditore, ...), sono segnalati, con indicazione dello stato, i casi di errore.
 
-È possibile filtrare gli elementi visualizzati utilizzando il form
-presente sul lato sinistro.
+È possibile filtrare gli elementi visualizzati utilizzando il form presente sul lato sinistro.
 
-È possibile scaricare un file CSV con i dati delle rendicontazioni,
-visualizzate con il criterio di ricerca impostato, utilizzando la voce
-"Esporta" presente nel menu a sinistra sulla testata della pagina.
+È possibile scaricare un file CSV con i dati delle rendicontazioni, visualizzate con il criterio di ricerca impostato, utilizzando la voce "Scarica Resoconto" presente nel menu a destra sulla testata della pagina.
 
-La selezione di un elemento dell’elenco ne visualizza il dettaglio.
+La selezione di un elemento dell’elenco ne visualizza il dettaglio, come mostrato:
+
+.. figure:: ../_images/AV01AreaGeneraleRendicontazioni.png
+   :align: center
+   :name: DettaglioRendicontazione
+   
+   Dettaglio Rendicontazione
 
 Dettaglio Rendicontazione
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-La pagina di dettaglio della rendicontazione si compone delle seguenti
-sezioni:
+La pagina di dettaglio della rendicontazione si compone delle seguenti sezioni:
 
--  *Riepilogo Informazioni*: riporta i dati identificativi della
-   rendicontazione (identificativo flusso, psp, ente creditore, importo,
+-  *Riepilogo Informazioni*: riporta i dati identificativi della rendicontazione (identificativo flusso, psp, ente creditore, importo,
    ...)
--  *Pagamenti Rendicontati*: Le singole voci di rendicontazione che
-   riguardano ciascun pagamento rendicontato (voce, importo, stato, ...)
--  *Segnalazioni*: L'elenco delle eventuali segnalazioni che sono state
-   sollevate dal sistema durante la gestione del flusso di
+-  *Pagamenti Rendicontati*: Le singole voci di rendicontazione che riguardano ciascun pagamento rendicontato (voce, importo, stato, ...)
+-  *Segnalazioni*: L'elenco delle eventuali segnalazioni che sono state sollevate dal sistema durante la gestione del flusso di
    rendicontazione.
    
    
 Riscossioni
 -----------
 
-La sezione *Funzioni Avanzate > Riscossioni* è dedicata alla
-consultazione delle somme che sono state correttamente riscosse tramite
+La sezione *Funzioni Avanzate > Riscossioni* è dedicata alla consultazione delle somme che sono state correttamente riscosse tramite
 i versamenti operati dai debitori.
 
-È possibile filtrare gli elementi presenti nella pagina tramite il form
-presente sul lato sinistro. Di rilevante importanza è la possibilità di
-filtrare in base allo stato della riscossione:
+Anche in questo caso risulta possibile filtrare gli elementi presenti nella pagina tramite il form presente sul lato sinistro. Di rilevante importanza è la possibilità di filtrare in base allo stato della riscossione:
 
 -  *Riscossa* - è lo stato iniziale relativo agli importi riversati ma
    non ancora riconciliati.
