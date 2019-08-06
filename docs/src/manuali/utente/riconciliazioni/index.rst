@@ -12,13 +12,20 @@ riconciliazione con la Banca Tesoriera.
 
 È possibile filtrare gli elementi visualizzati nella pagina utilizzando il form presente sul lato sinistro in cui si seleziona l'ente creditore su cui si intende agire.
 
-L'elenco sul lato destro riporta gli elementi
-visualizzandone i principali dati identificativi (identificativo di
-riversamento, ente creditore, importo, stato,...).
+L'elenco sul lato destro riporta gli elementi visualizzandone i principali dati identificativi:
 
-È possibile scaricare un file CSV con i dati delle riconciliazioni,
-visualizzate con il criterio di ricerca impostato, utilizzando la voce
-"Esporta" presente nel menu sulla testata della pagina.
+.. figure:: ../_images/R01AreaGeneraleRiconciliazioni.png
+   :align: center
+   :name: AreaInizialeRiconciliazioni
+
+   Area iniziale Riconciliazioni
+
+È possibile scaricare un file CSV con i dati delle riconciliazioni, visualizzate con il criterio di ricerca impostato, utilizzando la voce "Scarica Resoconto" presente nel menu sulla testata della pagina a destra. Il sistema permetterà il download di un file in formato zip che contiene un file riassuntivo in formato csv, con le informazioni tecniche relative a:
+-  idDominio
+-  idIncasso
+-  causale
+-  importo
+-  sct
 
 Dettaglio Riconciliazione
 -------------------------
