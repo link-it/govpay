@@ -30,17 +30,31 @@ L'elenco sul lato destro riporta gli elementi visualizzandone i principali dati 
 Dettaglio Riconciliazione
 -------------------------
 
-La selezione di un elemento dell’elenco ne visualizza il dettaglio, che
-comprende le seguenti informazioni:
+La selezione di un elemento dell’elenco ne visualizza il dettaglio, che comprende le seguenti informazioni:
 
 -  *Riepilogo Informazioni* – dati generali della riscossione con i
    riferimenti del movimento bancario che lo ha determinato.
 -  *Riscossioni* – elenco delle riscossioni riconciliate con le pendenze
    di origine.
--  *Note* - le eventuali segnalazioni che sono state sollevate dal
-   sistema durante la gestione dell'operazione di riconciliazione.
+   
+.. figure:: ../_images/R02DettaglioRiconciliazione.png
+   :align: center
+   :name: DettaglioRiconciliazione
+
+   Dettaglio Riconciliazione
    
 
 Nuova Riconciliazione
 ---------------------
+Il sistema permette la creazione di una nuovo riconciliazione con le abituali metafore grafiche (tasto + in basso a destra):
+
+.. figure:: ../_images/R03NuovaRiconciliazione.png
+   :align: center
+   :name: NuovaRinciliazione
+
+   Nuova Riconciliazione
+   
+Il sistema permette la selezione di un Ente Creditore e, iniziata la scrittura dei primi caratteri del identificativo IUV ne permette la selezione a partire da quanto effettivamente presente in termini di pagamenti e pendenze. Una volta selezionato il corretto identificativo IUV occorre immettere il codice SCT e salvare.
+   
+
 
