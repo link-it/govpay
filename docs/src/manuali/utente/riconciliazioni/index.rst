@@ -39,3 +39,8 @@ comprende le seguenti informazioni:
    di origine.
 -  *Note* - le eventuali segnalazioni che sono state sollevate dal
    sistema durante la gestione dell'operazione di riconciliazione.
+   
+
+Nuova Riconciliazione
+---------------------
+
