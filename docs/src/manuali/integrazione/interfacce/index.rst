@@ -26,9 +26,9 @@ Selezionando questa modifica, il sistema propone
 
    Interfacce personalizzabili attraverso script nel Tipo Pendenza
 
-Analizziamo quali siano le interfacce personalizzabili
+Le interfacce personalizzabili sono
 
-.. csv-table:: Dettagli di un nuovo intermediario
+.. csv-table:: 
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
@@ -40,26 +40,4 @@ Analizziamo quali siano le interfacce personalizzabili
   "Promemoria ricevuta telematica: oggetto", "Definizione dell'oggetto della mail del promemoria ricevuta telematica", "Freemarker"
   "Promemoria ricevuta telematica: messaggio", "Definizione del messaggio della mail del promemoria ricevuta telematica", "Freemarker"
 
-.. csv-table:: Dettagli di una nuova Unità Operativa
-   :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
-  
-  "Layout Form Dati", "Definizione dell'nterfaccia di caricamento dei dati dell'istanza della pendenza", "Angular Json"
-  
-  
-
-.. csv-table:: Interfaccre personalizzabili
-
-   :header: "Sintesi", "Descrizione", "Tipo
-   :widths: 30,70, 10
-  
-   "Layout Form Dati", "Definizione dell'nterfaccia di caricamento dei dati dell'istanza della pendenza", "Angular Json"
-   "Validazione", "Interfaccia di validazione dei dati dell'istanza della pendenza", "Angular Json"
-   "Trasformazione", "Motore di traformazione dei dati dell'istanza della pendenza", "Freemarker"
-   "Promemoria avviso di pagamento: oggetto", "Definizione dell'oggetto della mail del promemoria avviso di pagamento", "Freemarker"
-   "Promemoria avviso di pagamento: messaggio", "Definizione del messaggio della mail del promemoria avviso di pagamento", "Freemarker"
-   "Promemoria ricevuta telematica: oggetto", "Definizione dell'oggetto della mail del promemoria ricevuta telematica", "Freemarker"
-   "Promemoria ricevuta telematica: messaggio", "Definizione del messaggio della mail del promemoria ricevuta telematica", "Freemarker"
-  
-  
   
