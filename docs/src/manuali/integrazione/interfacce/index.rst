@@ -30,16 +30,16 @@ Analizziamo quali siano le interfacce personalizzabili
 
 
 .. csv-table:: Dettagli di una nuova Unità Operativa
-  :header: "Campo", "Significato", "Note"
-  :widths: 40,40,20
+   :header: "Campo", "Significato", "Note"
+   :widths: 40,40,20
   
  "Layout Form Dati", "Definizione dell'nterfaccia di caricamento dei dati dell'istanza della pendenza", "Angular Json"
   
   
 
 .. csv-table:: Interfaccre personalizzabili
-  :header: "Sintesi", "Descrizione", "Tipo
-  :widths: 30,70, 10
+   :header: "Sintesi", "Descrizione", "Tipo
+   :widths: 30,70, 10
   
   "Layout Form Dati", "Definizione dell'nterfaccia di caricamento dei dati dell'istanza della pendenza", "Angular Json"
   "Validazione", "Interfaccia di validazione dei dati dell'istanza della pendenza", "Angular Json"
