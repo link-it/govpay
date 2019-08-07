@@ -15,7 +15,7 @@ La definizione delle interfacce e dei processi di elaborazione e validazione si 
 * `Freemarker <https://freemarker.apache.org/>`_
 
 Nel primo caso (Angular) esiste una `risorsa web <https://hamidihamza.com/Angular6-json-schema-form/>`_ che consente di verificare online il form che si sta definendo.
-.. note: jfjdjjd
+Si noti come le sezioni seguenti non possano né vogliano sostituirsi a manualistica e tutorial per i *framework* prima citati: l'intento è solo quello di presentare alcuni casi d'uso frequenti nell'utilizzo e di semplice estensione.
 
 
 Personalizzazione del tipo pendenza
@@ -54,7 +54,35 @@ Le interfacce personalizzabili sono
 Layout Forma Dati
 ~~~~~~~~~~~~~~~~~
 
-            
+Tramite lo script citato a seguire viene implementata un'interfaccia con i seguenti campi:
+
+.. csv-table:: 
+  :header: "Campo", "Note"
+  :widths: 50,50
+  
+  "Numero verbale", "Campo libero per l'immissione del numero verbale"
+  "Anagrafica Debitore", "Campo libero per l'immissione di nome e congnome del debitore, come evidenziato anche dall'etichetta"
+  "Codice Fiscale Debitore", "Campo validato formalmente per l'immissione del codice fiscale del debitore"
+  "eMail Debitore", "Campo validato formalmente (dev'essere un'email) per l'immissione della mail del debitore"
+  "Tipo Violazione", "Campo a selezione in cui il debitore deve scegliere il tipo di violazione"
+
+A titolo di esempio si consideri il campo di selezione, i cui valori sono stati inseriti nel json nella seguente sezione:
+
+"tipoSanzione": {
+		"type": "string",
+		"enum": ["Violazione art. 123", "Violazione art. 456", "Violazione art. 789"]
+		}
+
+Il risultato è il seguente
+
+.. figure:: ../_images/INT09_FormDiImmissione datiConEvidenzaCombo..png
+   :align: center
+   :name: SceltaTipoViolazione
+
+   Selezione del tipo di violazione
+
+Lo script completo è (si noti le parti di definizione dei pattern di email e codice fiscale)
+
 {
 	"schema": {
 		   "type": "object",
@@ -122,7 +150,9 @@ Layout Forma Dati
 
             
             
-
+.. figure:: ../_images/INT08_FormDiImmissione .png
+   :align: center
+   :name: Interfaccepersonalizzabilineltipopendenza
 
 
 
