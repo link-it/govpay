@@ -29,6 +29,14 @@ Selezionando questa modifica, il sistema propone
 Analizziamo quali siano le interfacce personalizzabili
 
 
+.. csv-table:: Dettagli di una nuova Unità Operativa
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Id unità", "Codice identificativo, ad uso interno, dell'unità operativa", "Obbligatorio"
+  
+  
+
 .. csv-table:: Interfaccre personalizzabili
   :header: "Sintesi", "Descrizione", "Tipo
   :widths: 30,70, 10
