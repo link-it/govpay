@@ -75,12 +75,12 @@ Selezionando il singolo elemento dall’elenco si accede alla pagina di dettagli
    :align: center
    :name: DettealioRiscossioni
    
-   DettaglioRiscossione
+   Dettaglio Riscossione
 
 Caricamento Pendenze
 --------------------
 
-La sezione *Funzioni Avanzate > Caricamento Pendenze* è dedicata all'immissione batch delle pendenze nel sistema. Tali
+La sezione *Funzioni Avanzate > Caricamento Pendenze* è dedicata all'immissione massiva delle pendenze nel sistema. Tali
 tracciati vengono caricati dagli utenti del cruscotto utilizzando il pulsante di aggiunta. Il form di caricamento permette di selezionare il file da caricare che deve essere in formato JSON e rispettare la sintassi descritta nel manuale di integrazione. All’interno di un tracciato si definiscono le operazioni da eseguire sulle pendenze, che possono essere:
 
 -  Inserimento di una nuova pendenza
@@ -92,6 +92,13 @@ L'elenco a destra riporta gli elementi, visualizzandone i principali dati identi
 tracciato, data di caricamento e stato dell’elaborazione).
 
 È possibile scaricare un file CSV con i dati di riepilogo dei tracciati, visualizzati con il criterio di ricerca impostato, utilizzando la voce "Scarica Resoconto" presente, a destra, nel menu sulla testata della pagina.
+
+.. figure:: ../_images/AV05CaricamentoMassivPendenze.png
+   :align: center
+   :name: AreaGeneraleCaricamentoMassivoPendenze
+   
+   Caricamento massivo pendenze
+   
 
 Dettaglio Tracciato
 ~~~~~~~~~~~~~~~~~~~
