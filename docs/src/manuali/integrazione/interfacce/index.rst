@@ -32,11 +32,6 @@ Analizziamo quali siano le interfacce personalizzabili
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Denominazione", "Nome associato all'Intermediario o al Partner Tecnologico", "Obbligatorio"
-  "Id Intermediario", "Identificativo dell'intermediario o Partner Tecnologico, fornito da AgID, corrisponde alla Partita IVA del soggetto", "Obbligatorio"
-  "Principal", "identificativo (subject certificato o principal) corrispondente alle credenziali con cui Govpay riceve le chiamate in entrata da pagoPA", ""
-  "Abilitato/Non Abilitato", "Stato del nuovo intermediario: indica se l'intermediario è usabile da GovPay per gestire nuovi pagamenti o se impedire nuove richieste.", ""
-  "Servizio RPT", "Riferimenti utilizzati da Govpay per comunicare con il Nodo SPC: Endpoint per le chiamate in uscita verso il Nodo SPC", ""
   "Layout Form Dati", "Definizione dell'nterfaccia di caricamento dei dati dell'istanza della pendenza", "Angular Json"
   "Validazione", "Interfaccia di validazione dei dati dell'istanza della pendenza", "Angular Json"
   "Trasformazione", "Motore di traformazione dei dati dell'istanza della pendenza", "Freemarker"
