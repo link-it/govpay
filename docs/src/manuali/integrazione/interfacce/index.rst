@@ -15,7 +15,6 @@ La definizione delle interfacce e dei processi di elaborazione e validazione si 
 * `Freemarker <https://freemarker.apache.org/>`_
 
 
-
 Personalizzazione del tipo pendenza
 -----------------------------------
 
@@ -52,7 +51,74 @@ Le interfacce personalizzabili sono
 Layout Forma Dati
 ~~~~~~~~~~~~~~~~~
 
+            
+              {
+	"schema": {
+		"type": "object",
+		"required": [
+			"idPendenza",
+			"soggettoPagatore",
+			"tipoSanzione"
+		],
+		"properties": {
+			"idPendenza": {
+				"type": "string",
+				"pattern": "[A-Za-z0-9\\-_]{1,35}"
+			},
+			"soggettoPagatore": {
+				"type": "object",
+				"required": [
+					"identificativo",
+					"anagrafica"
+				],
+				"properties": {
+					"identificativo": {
+						"type": "string",
+						"pattern": "[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]"
+					},
+					"anagrafica": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string",
+						"pattern": "[A-Za-z0-9_]+([\\-\\+\\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*\\.[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*"
+					}
+				}
+			},
+			"tipoSanzione": {
+				"type": "string",
+				"enum": ["Violazione art. 123", "Violazione art. 456", "Violazione art. 789"]
+			}
+		}
+	},
+	"layout": [
+		{
+			"key": "idPendenza",
+			"title": "Numero verbale"
+		},
+		{
+			"key": "soggettoPagatore.anagrafica",
+			"title": "Anagrafica debitore",
+			"placeholder": "Nome e cognome"
+		},
+		{
+			"key": "soggettoPagatore.identificativo",
+			"title": "Codice fiscale debitore"
+		},
+		{
+			"key": "soggettoPagatore.email",
+			"title": "E-Mail debitore",
+			"placeholder": "Se indicato riceverà l'avviso di pagamento"
+		},
+		{
+			"key": "tipoSanzione",
+			"title": "Tipo di violazione"
+		}
+	]
+}
 
+            
+            
 
 
 
