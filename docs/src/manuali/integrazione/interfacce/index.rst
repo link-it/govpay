@@ -7,6 +7,13 @@ Gestione automatica delle interfacce
 Una delle caratteristiche più interessanti di GovPay è quella di poter essere personalizzato tramite linguaggi formali atti a descrivere le interefacce verso il debitore: è possibile quindi definire le interfacce di pagamento (e anche quelle di inoltro, ad esempio, via mail della ricevuta telematica) attraverso file di testo con sintassi standard (Angular e Freemarker).
 Nel seguito della sezione si affronterà un caso pratico di definizione di intefaccia di una pendenza caricata su un Ente Creditore.
 
+I Linguaggi di definizione utilizzati
+-------------------------------------
+La definizione delle interfacce e dei processi di elaborazione e validazione si appoggia ai seguenti standard industriali:
+
+* Angular Json
+* Freemarker
+
 Personalizzazione del tipo pendenza
 -----------------------------------
 
