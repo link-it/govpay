@@ -14,6 +14,8 @@ La definizione delle interfacce e dei processi di elaborazione e validazione si 
 * `Angular Json <https://angular.io/>`_
 * `Freemarker <https://freemarker.apache.org/>`_
 
+Nel primo caso (Angular) esiste una `risorsa web <https://hamidihamza.com/Angular6-json-schema-form/>`_ che consente di verificare online il form che si sta definendo.
+
 
 Personalizzazione del tipo pendenza
 -----------------------------------
