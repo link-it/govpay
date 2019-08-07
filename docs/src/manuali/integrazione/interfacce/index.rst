@@ -28,6 +28,16 @@ Selezionando questa modifica, il sistema propone
 
 Analizziamo quali siano le interfacce personalizzabili
 
+.. csv-table:: Dettagli di un nuovo intermediario
+  :header: "Campo", "Significato", "Note"
+  :widths: 40,40,20
+  
+  "Denominazione", "Nome associato all'Intermediario o al Partner Tecnologico", "Obbligatorio"
+  "Id Intermediario", "Identificativo dell'intermediario o Partner Tecnologico, fornito da AgID, corrisponde alla Partita IVA del soggetto", "Obbligatorio"
+  "Principal", "identificativo (subject certificato o principal) corrispondente alle credenziali con cui Govpay riceve le chiamate in entrata da pagoPA", ""
+  "Abilitato/Non Abilitato", "Stato del nuovo intermediario: indica se l'intermediario è usabile da GovPay per gestire nuovi pagamenti o se impedire nuove richieste.", ""
+  "Servizio RPT", "Riferimenti utilizzati da Govpay per comunicare con il Nodo SPC: Endpoint per le chiamate in uscita verso il Nodo SPC", ""
+
 
 .. csv-table:: Dettagli di una nuova Unità Operativa
    :header: "Campo", "Significato", "Note"
