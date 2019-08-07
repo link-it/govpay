@@ -49,4 +49,38 @@ Le interfacce personalizzabili sono
   "Promemoria ricevuta telematica: oggetto", "Definizione dell'oggetto della mail del promemoria ricevuta telematica", "Freemarker"
   "Promemoria ricevuta telematica: messaggio", "Definizione del messaggio della mail del promemoria ricevuta telematica", "Freemarker"
 
+Layout Forma Dati
+~~~~~~~~~~~~~~~~~
+
+
+
+
+
+
+Validazione
+~~~~~~~~~~~
+
+
+
+
+
+
+Trasformazione
+~~~~~~~~~~~~~~
+
+
+
+
+
+
+Promemoria avviso di pagamento
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  
+  
+  
+  
+  
+Promemoria ricevuta telematica
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
