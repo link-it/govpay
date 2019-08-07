@@ -33,7 +33,7 @@ Analizziamo quali siano le interfacce personalizzabili
   :header: "Campo", "Significato", "Note"
   :widths: 40,40,20
   
-  "Id unità", "Codice identificativo, ad uso interno, dell'unità operativa", "Obbligatorio"
+ "Layout Form Dati", "Definizione dell'nterfaccia di caricamento dei dati dell'istanza della pendenza", "Angular Json"
   
   
 
