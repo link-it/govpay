@@ -9,10 +9,10 @@ Nel seguito della sezione si affronterà un caso pratico di definizione di intef
 
 I Linguaggi di definizione utilizzati
 -------------------------------------
-La definizione delle interfacce e dei processi di elaborazione e validazione si appoggia ai seguenti standard industriali:
+La definizione delle interfacce e dei processi di elaborazione e validazione si appoggia ai seguenti standard industriali assai consolidati:
 
-* Angular Json
-* Freemarker
+* `Angular Json <https://angular.io/>`_
+* `Freemarker <https://freemarker.apache.org/>`_
 
 Personalizzazione del tipo pendenza
 -----------------------------------
