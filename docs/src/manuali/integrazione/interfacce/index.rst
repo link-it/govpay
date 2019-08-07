@@ -32,4 +32,13 @@ Analizziamo quali siano le interfacce personalizzabili
   :header: "Sintesi", "Descrizione", "Tipo
   :widths: 30,70, 10
   
-  "ssss", "kkkkk"
+  "Layout Form Dati", "Definizione dell'nterfaccia di caricamento dei dati dell'istanza della pendenza", "Angular Json"
+  "Validazione", "Interfaccia di validazione dei dati dell'istanza della pendenza", "Angular Json"
+  "Trasformazione", "Motore di traformazione dei dati dell'istanza della pendenza", "Freemarker"
+  "Promemoria avviso di pagamento: oggetto", "Definizione dell'oggetto della mail del promemoria avviso di pagamento", "Freemarker"
+  "Promemoria avviso di pagamento: messaggio", "Definizione del messaggio della mail del promemoria avviso di pagamento", "Freemarker"
+  "Promemoria ricevuta telematica: oggetto", "Definizione dell'oggetto della mail del promemoria ricevuta telematica", "Freemarker"
+  "Promemoria ricevuta telematica: messaggio", "Definizione del messaggio della mail del promemoria ricevuta telematica", "Freemarker"
+  
+  
+  
