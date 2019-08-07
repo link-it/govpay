@@ -10,16 +10,26 @@ Nel seguito della sezione si affronterà un caso pratico di definizione di intef
 Personalizzazione del tipo pendenza
 -----------------------------------
 
+La pendenza può essere personalizzata, ad esempio, in relazione alla sua instanza per l'Ente Creditore. Cerchiamo di modificare la sezione della Pendenza Sanzione Amministrativa in relazione a un Ente Creditore. Andando sull'Ente creditore:
+
+.. figure:: ../_images/INT07_ModificaSanzioneAmministrativaDiComuneDimostrativo.png
+   :align: center
+   :name: ModificaLayoutPendenza
+
+   Modifica del Tipo Pendenza all'interno di un Ente Ceditore
+
+Selezionando questa modifica, il sistema propone
+
 .. figure:: ../_images/INT06_CaratteristichePendenzaConInterfacceAutomatiche.png
    :align: center
    :name: Interfaccepersonalizzabilineltipopendenza
 
    Interfacce personalizzabili attraverso script nel Tipo Pendenza
 
-
+Analizziamo quali siano le interfacce personalizzabili
 
 .. csv-table:: Interfaccre personalizzabili
-  :header: "Sintesi", "Descrizione"
-  :widths: 30,70
+  :header: "Sintesi", "Descrizione", "Tipo
+  :widths: 30,70, 10
   
   "ssss", "kkkkk"
