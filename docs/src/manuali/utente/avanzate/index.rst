@@ -24,7 +24,7 @@ Per ciascuna rendicontazione in elenco, oltre ai riferimenti identificativi (ide
 
 La selezione di un elemento dell’elenco ne visualizza il dettaglio, come mostrato:
 
-.. figure:: ../_images/AV01AreaGeneraleRendicontazioni.png
+.. figure:: ../_images/AV02DettaglioRendicontazione.png
    :align: center
    :name: DettaglioRendicontazione
    
