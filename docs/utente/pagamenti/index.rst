@@ -62,12 +62,12 @@ I campi del csv (compresso in formato zip) sono i seguenti:
 * Anagrafica del soggetto versante
 * Conto di addebito
 
-Selezionando uno degli elementi presenti in elenco si procede alla visualizzazione del dettaglio del pagamento, abilitando l'eventuale modifica.
+Selezionando uno degli elementi presenti in elenco si procede alla visualizzazione del dettaglio del pagamento, abilitando l'eventuale modifica: si noti come sia presente una sezione dedicata agli eventi di dettaglio del pagamento stesso.
 
-Dettaglio Pagamento
--------------------
+Dati Pagamento
+--------------
 
-La pagina di dettaglio del pagamento comprende:
+La pagina dei dati di dettaglio del pagamento comprende:
 
 *  Sezione di riepilogo dei dati che caratterizzano l'operazione di pagamento in questione (banca, importo, tipo di pagamento, ...)
 *  Sezione che elenca le pendenze che compongono il carrello associato all'operazione di pagamento. Per ciascuna pendenza in elenco sono
@@ -127,3 +127,16 @@ Una ricevuta di pagamento in formato pdf avrebbe il seguente aspetto (si noti la
    :name: RicevutaDiPagamentoPdf
    
    Ricevuta di Pagamento in formato pdf (esempio)
+   
+   
+Eventi
+------
+Il sistema presenta, associato al dettaglio del pagamento, anche tutti gli eventi intercorsi relativi al pagamento stesso, come mostrato in figura:
+
+.. figure:: ../_images/P09EventiDelPagamento.png
+   :align: center
+   :name: EventiDiPagamento
+   
+   Eventi associati a un pagamento
+
+Gli eventi non sono modificabili né ulteriormente espandibile (non è presente un dettaglio ulteriore).
