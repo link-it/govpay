@@ -54,15 +54,15 @@ Layout Forma Dati
 ~~~~~~~~~~~~~~~~~
 
             
-              {
+{
 	"schema": {
-		"type": "object",
-		"required": [
+		   "type": "object",
+		   "required": [
 			"idPendenza",
 			"soggettoPagatore",
 			"tipoSanzione"
-		],
-		"properties": {
+		    ],
+		   "properties": {
 			"idPendenza": {
 				"type": "string",
 				"pattern": "[A-Za-z0-9\\-_]{1,35}"
