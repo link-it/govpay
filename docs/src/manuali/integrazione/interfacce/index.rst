@@ -66,6 +66,12 @@ Tramite lo script citato a seguire viene implementata un'interfaccia con i segue
   "eMail Debitore", "Campo validato formalmente (dev'essere un'email) per l'immissione della mail del debitore"
   "Tipo Violazione", "Campo a selezione in cui il debitore deve scegliere il tipo di violazione"
 
+Il risultato finale è il seguente:
+
+.. figure:: ../_images/INT08_FormDiImmissioneDati..png
+   :align: center
+   :name: FormLayoutCompleto
+
 A titolo di esempio si consideri il campo di selezione, i cui valori sono stati inseriti nel json nella seguente sezione:
 
 "tipoSanzione": {
@@ -75,7 +81,7 @@ A titolo di esempio si consideri il campo di selezione, i cui valori sono stati 
 
 Il risultato è il seguente
 
-.. figure:: ../_images/INT09_FormDiImmissione datiConEvidenzaCombo..png
+.. figure:: ../_images/INT09_FormDiImmissionedatiConEvidenzaCombo..png
    :align: center
    :name: SceltaTipoViolazione
 
