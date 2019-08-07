@@ -8,7 +8,7 @@ Una delle caratteristiche più interessanti di GovPay è quella di poter essere 
 Nel seguito della sezione si affronterà un caso pratico di definizione di intefaccia di una pendenza caricata su un Ente Creditore.
 
 I Linguaggi di definizione utilizzati
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 La definizione delle interfacce e dei processi di elaborazione e validazione si appoggia ai seguenti standard industriali assai consolidati:
 
 * `Angular Json <https://angular.io/>`_
