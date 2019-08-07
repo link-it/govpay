@@ -68,7 +68,7 @@ Tramite lo script citato a seguire viene implementata un'interfaccia con i segue
 
 Il risultato finale è il seguente:
 
-.. figure:: ../_images/INT08_FormDiImmissioneDati..png
+.. figure:: ../_images/INT08_FormDiImmissioneDati.png
    :align: center
    :name: FormLayoutCompleto
 
@@ -81,7 +81,7 @@ A titolo di esempio si consideri il campo di selezione, i cui valori sono stati 
 
 Il risultato è il seguente
 
-.. figure:: ../_images/INT09_FormDiImmissionedatiConEvidenzaCombo..png
+.. figure:: ../_images/INT09_FormDiImmissionedatiConEvidenzaCombo.png
    :align: center
    :name: SceltaTipoViolazione
 
