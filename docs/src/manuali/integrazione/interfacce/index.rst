@@ -28,6 +28,7 @@ Selezionando questa modifica, il sistema propone
 
 Analizziamo quali siano le interfacce personalizzabili
 
+
 .. csv-table:: Interfaccre personalizzabili
   :header: "Sintesi", "Descrizione", "Tipo
   :widths: 30,70, 10
