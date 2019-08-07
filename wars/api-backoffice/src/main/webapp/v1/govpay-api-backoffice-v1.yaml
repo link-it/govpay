@@ -4160,18 +4160,18 @@ paths:
                   example: { "paaAttivaRPT" : "Attiva pagamento" }
         '500':
           $ref: '#/components/responses/500'
-  '/configurazioni/giornale':
+  '/configurazioni':
     get:
       tags:
         - Configurazioni
-      summary: Legge la configurazione del giornale degli eventi
+      summary: Legge la configurazione generale del sistema
       responses:
         '200':
-          description: Configurazione del giornale degli eventi
+          description: Configurazione generale del sistema
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/giornale'
+                $ref: '#/components/schemas/configurazione'
         '401':
           $ref: '#/components/responses/401'
         '403':
@@ -4181,27 +4181,47 @@ paths:
     post:
       tags:
         - Configurazioni
-      summary: Aggiorna la configurazione del giornale degli eventi
+      summary: Aggiorna la configurazione generale del sistema
       requestBody:
         description: Configurazione aggiornata
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/giornale'
+              $ref: '#/components/schemas/configurazione'
       responses:
         '200':
           description: Configurazione aggiornata con successo
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/giornale'
         '401':
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '500':
           $ref: '#/components/responses/500'
-
+    patch:
+      tags:
+        - Configurazioni
+      summary: Modifica puntuale di una parte della configurazione
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/patchOp'
+              description: Lista di oggetti da aggiornare
+      responses:
+        '200':
+          description: Configurazione aggiornata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configurazione'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
 components:
   responses:
     '400':
@@ -4257,6 +4277,33 @@ components:
       type: http
       scheme: basic
   schemas:
+    configurazione:
+      type: object
+      required:
+        - giornaleEventi
+        - tracciatoCsv
+      properties:
+        giornaleEventi:
+          $ref: '#/components/schemas/giornale'
+        tracciatoCsv:
+          $ref: '#/components/schemas/tracciatoCsv'
+    tracciatoCsv:
+      type: object
+      required:
+        - responseHeader
+        - freemarkerRequest
+        - freemarkerResponse
+      properties:
+        responseHeader:
+          type: string
+          description: intestazione del file CSV di risposta
+          example: 'idPendenza,idA2A,idDominio,...'
+        freemarkerRequest:
+          type: object
+          description: Template freemarker per la trasformazione di un record da CSV a JSON
+        freemarkerResponse:
+          type: object
+          description: Template freemarker per la trasformazione di un record da JSON a CSV
     giornale:
       type: object
       required:
@@ -5149,6 +5196,8 @@ components:
         visualizzazione:
           type: object
           description: Definisce come visualizzare la pendenza 
+        tracciatoCsv:
+          $ref: '#/components/schemas/tracciatoCsv'
     tipoPendenza:
       type: object
       allOf:
@@ -5253,6 +5302,8 @@ components:
         visualizzazione:
           type: object
           description: Definisce come visualizzare la pendenza
+        tracciatoCsv:
+          $ref: '#/components/schemas/tracciatoCsv'
     tipoPendenzaDominio:
       type: object
       allOf:

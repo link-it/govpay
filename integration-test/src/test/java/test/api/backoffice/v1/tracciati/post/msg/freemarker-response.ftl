@@ -2,7 +2,7 @@
 <#assign idA2A = applicazione.getCodApplicazione() />
 <#assign idPendenza = versamento.getCodVersamentoEnte() />
 <#assign idDominio = dominio.getCodDominio() />
-<#assign tipoPendenza = versamento.getIdTipoPendenza() />
+<#assign tipoPendenza = idTipoVersamento />
 <#assign numeroAvviso = versamento.getNumeroAvviso()! />
 <#if numeroAvviso?has_content>
 	<#assign pdfAvviso = idDominio + "_" + numeroAvviso + ".pdf" />

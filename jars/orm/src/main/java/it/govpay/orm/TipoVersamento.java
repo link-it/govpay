@@ -56,6 +56,9 @@ import java.io.Serializable;
  * 			&lt;element name="promemoriaRicevutaOggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="promemoriaRicevutaMessaggio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="visualizzazioneDefinizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tracCsvHeaderRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tracCsvTemplateRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tracCsvTemplateRisposta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -90,7 +93,10 @@ import java.io.Serializable;
   	"promemoriaRicevutaPdf",
   	"promemoriaRicevutaOggetto",
   	"promemoriaRicevutaMessaggio",
-  	"visualizzazioneDefinizione"
+  	"visualizzazioneDefinizione",
+  	"tracCsvHeaderRisposta",
+  	"tracCsvTemplateRichiesta",
+  	"tracCsvTemplateRisposta"
   }
 )
 
@@ -298,6 +304,30 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
     this.visualizzazioneDefinizione = visualizzazioneDefinizione;
   }
 
+  public java.lang.String getTracCsvHeaderRisposta() {
+    return this.tracCsvHeaderRisposta;
+  }
+
+  public void setTracCsvHeaderRisposta(java.lang.String tracCsvHeaderRisposta) {
+    this.tracCsvHeaderRisposta = tracCsvHeaderRisposta;
+  }
+
+  public java.lang.String getTracCsvTemplateRichiesta() {
+    return this.tracCsvTemplateRichiesta;
+  }
+
+  public void setTracCsvTemplateRichiesta(java.lang.String tracCsvTemplateRichiesta) {
+    this.tracCsvTemplateRichiesta = tracCsvTemplateRichiesta;
+  }
+
+  public java.lang.String getTracCsvTemplateRisposta() {
+    return this.tracCsvTemplateRisposta;
+  }
+
+  public void setTracCsvTemplateRisposta(java.lang.String tracCsvTemplateRisposta) {
+    this.tracCsvTemplateRisposta = tracCsvTemplateRisposta;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -400,5 +430,17 @@ public class TipoVersamento extends org.openspcoop2.utils.beans.BaseBean impleme
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="visualizzazioneDefinizione",required=false,nillable=false)
   protected java.lang.String visualizzazioneDefinizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tracCsvHeaderRisposta",required=false,nillable=false)
+  protected java.lang.String tracCsvHeaderRisposta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tracCsvTemplateRichiesta",required=false,nillable=false)
+  protected java.lang.String tracCsvTemplateRichiesta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tracCsvTemplateRisposta",required=false,nillable=false)
+  protected java.lang.String tracCsvTemplateRisposta;
 
 }

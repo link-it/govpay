@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.cxf.ext.logging.event.DefaultLogEventMapper;
 import org.apache.cxf.ext.logging.event.LogEvent;
 import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
@@ -45,7 +46,12 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 				IContext context = ContextThreadLocal.get();
 				GpContext appContext = (GpContext) context.getApplicationContext();
 				EventoContext eventoCtx = appContext.getEventoCtx();
-				String httpMethodS = eventoCtx.getMethod();
+				
+				Exchange exchange = message.getExchange();
+				Message inMessage = exchange.getInMessage();
+				final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
+				String url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
+				String httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
 				Date dataUscita = new Date();
 
 				Integer responseCode = 200;
@@ -54,7 +60,7 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 					responseCode = (Integer)message.get(Message.RESPONSE_CODE);
 				}
 
-				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+eventoCtx.getUrl()+"], StatusCode ["+responseCode+"]");
+				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], StatusCode ["+responseCode+"]");
 
 				// informazioni gia' calcolate nell'interceptor di dump
 				if(eventoCtx.isRegistraEvento()) {

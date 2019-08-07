@@ -24,6 +24,9 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	private String promemoriaRicevutaOggettoCustom;
 	private String promemoriaRicevutaMessaggioCustom;
 	private String visualizzazioneDefinizioneCustom;
+	private String tracciatoCsvHeaderRispostaCustom;
+	private String tracciatoCsvFreemarkerRichiestaCustom;
+	private String tracciatoCsvFreemarkerRispostaCustom;
 	
 	public String getPromemoriaAvvisoTipoCustom() {
 		return promemoriaAvvisoTipoCustom;
@@ -151,5 +154,23 @@ public class TipoVersamentoDominio extends TipoVersamento {
 	}
 	public void setVisualizzazioneDefinizioneCustom(String visualizzazioneDefinizioneCustom) {
 		this.visualizzazioneDefinizioneCustom = visualizzazioneDefinizioneCustom;
+	}
+	public String getTracciatoCsvHeaderRispostaCustom() {
+		return tracciatoCsvHeaderRispostaCustom;
+	}
+	public void setTracciatoCsvHeaderRispostaCustom(String tracciatoCsvHeaderRispostaCustom) {
+		this.tracciatoCsvHeaderRispostaCustom = tracciatoCsvHeaderRispostaCustom;
+	}
+	public String getTracciatoCsvFreemarkerRichiestaCustom() {
+		return tracciatoCsvFreemarkerRichiestaCustom;
+	}
+	public void setTracciatoCsvFreemarkerRichiestaCustom(String tracciatoCsvFreemarkerRichiestaCustom) {
+		this.tracciatoCsvFreemarkerRichiestaCustom = tracciatoCsvFreemarkerRichiestaCustom;
+	}
+	public String getTracciatoCsvFreemarkerRispostaCustom() {
+		return tracciatoCsvFreemarkerRispostaCustom;
+	}
+	public void setTracciatoCsvFreemarkerRispostaCustom(String tracciatoCsvFreemarkerRispostaCustom) {
+		this.tracciatoCsvFreemarkerRispostaCustom = tracciatoCsvFreemarkerRispostaCustom;
 	}
 }

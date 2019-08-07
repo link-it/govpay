@@ -46,9 +46,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.TracciatoCsv;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.OperazioneAnnullamento;
 import it.govpay.bd.model.OperazioneCaricamento;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.OperazioniBD;
@@ -304,9 +307,9 @@ public class Tracciati extends BasicBD {
 		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.NUOVO.getValue())) {
 			log.debug("Cambio stato del tracciato da NUOVO a IN_CARICAMENTO");
 			beanDati.setStepElaborazione(StatoTracciatoType.IN_CARICAMENTO.getValue());
-			beanDati.setLineaElaborazioneAdd(0);
+			beanDati.setLineaElaborazioneAdd(1); // skip intestazione file csv
 			beanDati.setLineaElaborazioneDel(0);
-			beanDati.setNumAddTotali(CSVUtils.countLines(tracciato.getRawRichiesta()));
+			beanDati.setNumAddTotali(CSVUtils.countLines(tracciato.getRawRichiesta()) -1);
 			beanDati.setNumDelTotali(0);
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			tracciatiBD.update(tracciato);
@@ -321,7 +324,27 @@ public class Tracciati extends BasicBD {
 		List<byte[]> lst = CSVUtils.splitCSV(tracciato.getRawRichiesta(), numLinea);
 		log.debug("Lette " + lst.size() + " linee");
 
-		TracciatoCsv tracciatoCsv = AnagraficaManager.getConfigurazione(tracciatiBD).getTracciatoCsv();
+		TipoVersamentoDominio tipoVersamentoDominio = null;
+		Dominio dominio = null;
+		try {
+			dominio = AnagraficaManager.getDominio(tracciatiBD, codDominio);
+			tipoVersamentoDominio = AnagraficaManager.getTipoVersamentoDominio(tracciatiBD, dominio.getId(), codTipoVersamento);
+		} catch (NotFoundException e) {	}
+
+		TracciatoCsv tracciatoCsv = null;
+		if(tipoVersamentoDominio != null) {
+			if(tipoVersamentoDominio.getTracciatoCsvHeaderRisposta() != null && tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiesta() != null
+					&& tipoVersamentoDominio.getTracciatoCsvFreemarkerRisposta() != null) {
+				tracciatoCsv = new TracciatoCsv();
+				tracciatoCsv.setHeaderRisposta(tipoVersamentoDominio.getTracciatoCsvHeaderRisposta());
+				tracciatoCsv.setTrasformazioneRichiesta(tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiesta());
+				tracciatoCsv.setTrasformazioneRisposta(tipoVersamentoDominio.getTracciatoCsvFreemarkerRisposta());
+			}
+		}
+
+		// configurazione di sistema
+		if(tracciatoCsv == null)
+			tracciatoCsv = AnagraficaManager.getConfigurazione(tracciatiBD).getTracciatoCsv();
 
 		for(byte[] linea: lst) {
 
@@ -413,7 +436,12 @@ public class Tracciati extends BasicBD {
 
 		// Elaborazione completata. Processamento tracciato di esito
 		this.setStatoDettaglioTracciato(beanDati);
-		tracciato.setRawEsito(this.getEsitoElaborazioneTracciatoCSV(tracciato, operazioniBD, codDominio, codTipoVersamento, tracciatoCsv.getHeaderRisposta(), tracciatoCsv.getTrasformazioneRisposta()).getBytes());
+		String esitoElaborazioneTracciatoCSV = this.getEsitoElaborazioneTracciatoCSV(tracciato, operazioniBD, dominio, codTipoVersamento, tracciatoCsv.getHeaderRisposta(), tracciatoCsv.getTrasformazioneRisposta());
+
+		//TODO togliere
+		log.debug(esitoElaborazioneTracciatoCSV);
+
+		tracciato.setRawEsito(esitoElaborazioneTracciatoCSV.getBytes());
 		tracciato.setFileNameEsito("esito_" + tracciato.getFileNameRichiesta()); 
 		this.setStatoTracciato(tracciato, beanDati);
 		tracciato.setDataCompletamento(new Date());
@@ -519,8 +547,8 @@ public class Tracciati extends BasicBD {
 		esitoElaborazioneTracciato.setInserimenti(esitiInserimenti);
 		return esitoElaborazioneTracciato;
 	}
-	
-	public String getEsitoElaborazioneTracciatoCSV(Tracciato tracciato, OperazioniBD operazioniBD, String codDominio, String codTipoVersamento, String headerRisposta, String trasformazioneRisposta) throws ServiceException, ValidationException, java.io.IOException {
+
+	public String getEsitoElaborazioneTracciatoCSV(Tracciato tracciato, OperazioniBD operazioniBD, Dominio dominio, String codTipoVersamento, String headerRisposta, String trasformazioneRisposta) throws ServiceException, ValidationException, java.io.IOException {
 		OperazioneFilter filter = operazioniBD.newFilter();
 		filter.setIdTracciato(tracciato.getId());
 		filter.setLimit(500);
@@ -531,11 +559,12 @@ public class Tracciati extends BasicBD {
 		fsw.setField(it.govpay.orm.Operazione.model().LINEA_ELABORAZIONE); 
 		fsl.add(fsw );
 		filter.setFilterSortList(fsl );
-		
+
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-		
+
 		baos.write(headerRisposta.getBytes());
-		
+		baos.write("\n".getBytes());
+
 		if(trasformazioneRisposta.startsWith("\""))
 			trasformazioneRisposta = trasformazioneRisposta.substring(1);
 
@@ -544,15 +573,30 @@ public class Tracciati extends BasicBD {
 
 		byte[] template = Base64.getDecoder().decode(trasformazioneRisposta.getBytes());
 
+		VersamentiBD versamentiBD = new VersamentiBD(operazioniBD);
 		while(true) {
 			// Ciclo finche' non mi ritorna meno record del limit. Altrimenti esco perche' ho finito
 			List<Operazione> findAll = operazioniBD.findAll(filter);
 			for(Operazione operazione : findAll) {
 				switch (operazione.getTipoOperazione()) {
 				case ADD:
+					EsitoOperazionePendenza risposta = null;
+					Applicazione applicazione =null;
+					Versamento versamento = null;
+					try {
+						risposta = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
+						applicazione = AnagraficaManager.getApplicazione(operazioniBD,risposta.getIdA2A());
+						versamento = versamentiBD.getVersamento(applicazione.getId(), risposta.getIdPendenza());					
+					} catch(NotFoundException e) {
+					} catch(Exception e) {
+
+					}
+
+
 					// trasformare il json in csv
 					try {
-						trasformazioneOutputCSV(log, baos, codDominio, codTipoVersamento, new String(operazione.getDatiRisposta()), template, headerRisposta);
+						baos.write(trasformazioneOutputCSV(log, dominio.getCodDominio(), codTipoVersamento, new String(operazione.getDatiRisposta()), template, headerRisposta, dominio, applicazione, versamento));
+						baos.write("\n".getBytes());
 					} catch (GovPayException e) {
 						throw new ServiceException(e);
 					}
@@ -571,7 +615,7 @@ public class Tracciati extends BasicBD {
 				break;
 			}
 		}
-		
+
 		return baos.toString();
 	}
 
@@ -630,7 +674,7 @@ public class Tracciati extends BasicBD {
 	}
 
 
-	public static String trasformazioneInputCSV(Logger log, String codDominio, String codTipoVersamento,	String lineaCSV, String trasformazioneRichiesta) throws GovPayException {
+	public static String trasformazioneInputCSV(Logger log, String codDominio, String codTipoVersamento, String lineaCSV, String trasformazioneRichiesta) throws GovPayException {
 		log.debug("Trasformazione Pendenza in formato CSV -> JSON tramite template freemarker ...");
 		String name = "TrasformazionePendenzaCSVtoJSON";
 		try {
@@ -647,27 +691,35 @@ public class Tracciati extends BasicBD {
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			log.debug("Trasformazione Pendenza in formato CSV -> JSON tramite template freemarker completata con successo.");
+
+			// TODO togliere
+			log.debug(baos.toString());
+
 			return baos.toString();
 		} catch (TrasformazioneException e) {
 			log.error("Trasformazione Pendenza in formato CSV -> JSON tramite template freemarker completata con errore: " + e.getMessage(), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());
 		}
 	}
-	
-	public static String trasformazioneOutputCSV(Logger log, ByteArrayOutputStream baos, String codDominio, String codTipoVersamento, String jsonEsito, byte[] template, String headerRisposta) throws GovPayException {
+
+	public static byte[] trasformazioneOutputCSV(Logger log, String codDominio, String codTipoVersamento, String jsonEsito, byte[] template,
+			String headerRisposta, Dominio dominio, Applicazione applicazione, Versamento versamento) throws GovPayException {
 		log.debug("Trasformazione esito caricamento pendenza in formato JSON -> CSV tramite template freemarker ...");
-		String name = "TrasformazionePendenzaCSVtoJSON";
+		String name = "TrasformazionePendenzaJSONtoCSV";
 		try {
-			
-			if(baos == null)
-				baos = new ByteArrayOutputStream();
-			
+
+			 ByteArrayOutputStream	baos = new ByteArrayOutputStream();
+
 			Map<String, Object> dynamicMap = new HashMap<String, Object>();
-			TrasformazioniUtils.fillDynamicMapRispostaTracciatoCSV(log, dynamicMap, ContextThreadLocal.get(), headerRisposta, jsonEsito, codDominio, codTipoVersamento);
+			TrasformazioniUtils.fillDynamicMapRispostaTracciatoCSV(log, dynamicMap, ContextThreadLocal.get(), headerRisposta, jsonEsito, codDominio, codTipoVersamento, dominio, applicazione, versamento);
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			log.debug("Trasformazione esito caricamento pendenza JSON -> CSV tramite template freemarker completata con successo.");
-			return baos.toString();
+
+			// TODO togliere
+			log.debug(baos.toString());
+
+			return baos.toByteArray();
 		} catch (TrasformazioneException e) {
 			log.error("Trasformazione esito caricamento pendenza JSON -> CSV tramite template freemarker completata con errore: " + e.getMessage(), e);
 			throw new GovPayException(e.getMessage(), EsitoOperazione.TRASFORMAZIONE, e, e.getMessage());

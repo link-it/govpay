@@ -53,14 +53,18 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				IContext context = ContextThreadLocal.get();
 				GpContext appContext = (GpContext) context.getApplicationContext();
 				EventoContext eventoCtx = appContext.getEventoCtx();
-				String httpMethodS = eventoCtx.getMethod();
 
 				Exchange exchange = message.getExchange();
 
 				Message inMessage = exchange.getInMessage();
+				final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
+				String url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
+				String httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
+				String principal = eventoCtx.getPrincipal()!= null ? eventoCtx.getPrincipal() : eventRequest.getPrincipal();
+				
 				HttpMethodEnum httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
-
-				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+eventoCtx.getUrl()+"], Esito ["+eventoCtx.getEsito()+"]");
+				
+				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], Esito ["+eventoCtx.getEsito()+"]");
 
 				GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);
 
@@ -80,13 +84,14 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 						Date dataIngresso = eventoCtx.getDataRichiesta();
 						Date dataUscita = new Date();
 						// lettura informazioni dalla richiesta
-						final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
+						
 						DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
 						
-						dettaglioRichiesta.setPrincipal(eventoCtx.getPrincipal());
+					
+						dettaglioRichiesta.setPrincipal(principal);
 						dettaglioRichiesta.setUtente(eventoCtx.getUtente());
-						dettaglioRichiesta.setUrl(eventoCtx.getUrl());
-						dettaglioRichiesta.setMethod(eventoCtx.getMethod());
+						dettaglioRichiesta.setUrl(url);
+						dettaglioRichiesta.setMethod(httpMethodS);
 						dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
 						dettaglioRichiesta.setHeadersFromMap(eventRequest.getHeaders());
 						

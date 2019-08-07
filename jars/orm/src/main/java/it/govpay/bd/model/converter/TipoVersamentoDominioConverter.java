@@ -66,6 +66,9 @@ public class TipoVersamentoDominioConverter {
 		dto.setPromemoriaRicevutaMessaggioCustom(vo.getPromemoriaRicevutaMessaggio());
 		dto.setPromemoriaRicevutaOggettoCustom(vo.getPromemoriaRicevutaOggetto());
 		dto.setVisualizzazioneDefinizioneCustom(vo.getVisualizzazioneDefinizione());
+		dto.setTracciatoCsvHeaderRispostaCustom(vo.getTracCsvHeaderRisposta());
+		dto.setTracciatoCsvFreemarkerRichiestaCustom(vo.getTracCsvTemplateRichiesta());
+		dto.setTracciatoCsvFreemarkerRispostaCustom(vo.getTracCsvTemplateRisposta());
 		
 		dto.setCodTipoVersamento(vo.getTipoVersamento().getCodTipoVersamento());
 		dto.setDescrizione(vo.getTipoVersamento().getDescrizione());
@@ -89,6 +92,9 @@ public class TipoVersamentoDominioConverter {
 		dto.setPromemoriaRicevutaMessaggioDefault(vo.getTipoVersamento().getPromemoriaRicevutaMessaggio());
 		dto.setPromemoriaRicevutaOggettoDefault(vo.getTipoVersamento().getPromemoriaRicevutaOggetto());
 		dto.setVisualizzazioneDefinizioneDefault(vo.getTipoVersamento().getVisualizzazioneDefinizione());
+		dto.setTracciatoCsvHeaderRispostaDefault(vo.getTipoVersamento().getTracCsvHeaderRisposta());
+		dto.setTracciatoCsvFreemarkerRichiestaDefault(vo.getTipoVersamento().getTracCsvTemplateRichiesta());
+		dto.setTracciatoCsvFreemarkerRispostaDefault(vo.getTipoVersamento().getTracCsvTemplateRisposta());
 		
 		return dto;
 	}
@@ -121,6 +127,9 @@ public class TipoVersamentoDominioConverter {
 		tipoVersamento.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioDefault());
 		tipoVersamento.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoDefault());
 		tipoVersamento.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneDefault());
+		tipoVersamento.setTracCsvHeaderRisposta(dto.getTracciatoCsvHeaderRispostaDefault());
+		tipoVersamento.setTracCsvTemplateRichiesta(dto.getTracciatoCsvFreemarkerRichiestaDefault());
+		tipoVersamento.setTracCsvTemplateRisposta(dto.getTracciatoCsvFreemarkerRispostaDefault());
 		
 		vo.setCodificaIuv(dto.getCodificaIuvCustom());
 		if(dto.getTipoCustom() != null)
@@ -143,6 +152,9 @@ public class TipoVersamentoDominioConverter {
 		vo.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioCustom());
 		vo.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoCustom());
 		vo.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneCustom());
+		vo.setTracCsvHeaderRisposta(dto.getTracciatoCsvHeaderRispostaCustom());
+		vo.setTracCsvTemplateRichiesta(dto.getTracciatoCsvFreemarkerRichiestaCustom());
+		vo.setTracCsvTemplateRisposta(dto.getTracciatoCsvFreemarkerRispostaCustom());
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

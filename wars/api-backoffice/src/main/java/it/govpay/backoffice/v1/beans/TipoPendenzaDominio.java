@@ -25,6 +25,7 @@ import it.govpay.core.beans.JSONSerializable;
 "promemoriaAvviso",
 "promemoriaRicevuta",
 "visualizzazione",
+"tracciatoCsv",
 "valori",
 })
 public class TipoPendenzaDominio extends JSONSerializable {
@@ -67,6 +68,9 @@ public class TipoPendenzaDominio extends JSONSerializable {
   
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
+  
+  @JsonProperty("tracciatoCsv")
+  private TracciatoCsv tracciatoCsv = null;
   
   @JsonProperty("valori")
   private TipoPendenzaDominioPost valori = null;
@@ -274,6 +278,21 @@ public class TipoPendenzaDominio extends JSONSerializable {
 
   /**
    **/
+  public TipoPendenzaDominio tracciatoCsv(TracciatoCsv tracciatoCsv) {
+    this.tracciatoCsv = tracciatoCsv;
+    return this;
+  }
+
+  @JsonProperty("tracciatoCsv")
+  public TracciatoCsv getTracciatoCsv() {
+    return tracciatoCsv;
+  }
+  public void setTracciatoCsv(TracciatoCsv tracciatoCsv) {
+    this.tracciatoCsv = tracciatoCsv;
+  }
+
+  /**
+   **/
   public TipoPendenzaDominio valori(TipoPendenzaDominioPost valori) {
     this.valori = valori;
     return this;
@@ -309,12 +328,13 @@ public class TipoPendenzaDominio extends JSONSerializable {
         Objects.equals(promemoriaAvviso, tipoPendenzaDominio.promemoriaAvviso) &&
         Objects.equals(promemoriaRicevuta, tipoPendenzaDominio.promemoriaRicevuta) &&
         Objects.equals(visualizzazione, tipoPendenzaDominio.visualizzazione) &&
+        Objects.equals(tracciatoCsv, tipoPendenzaDominio.tracciatoCsv) &&
         Objects.equals(valori, tipoPendenzaDominio.valori);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, valori);
+    return Objects.hash(idTipoPendenza, descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv, valori);
   }
 
   public static TipoPendenzaDominio parse(String json) throws ServiceException, ValidationException{
@@ -344,6 +364,7 @@ public class TipoPendenzaDominio extends JSONSerializable {
     sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
+    sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
     sb.append("    valori: ").append(toIndentedString(valori)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -60,7 +60,9 @@ public class PendenzaPostValidator  implements IValidable{
 			validaDataScadenza(this.pendenzaVerificata.getDataScadenza());
 			validaAnnoRiferimento(this.pendenzaVerificata.getAnnoRiferimento());
 			validaCartellaPagamento(this.pendenzaVerificata.getCartellaPagamento());
-
+			validaDirezione(this.pendenzaVerificata.getDirezione());
+			validaDivisione(this.pendenzaVerificata.getDivisione()); 
+			
 			if(this.pendenzaVerificata.getVoci() == null || this.pendenzaVerificata.getVoci().isEmpty())
 				throw new ValidationException("Il campo voci non deve essere vuoto.");
 
@@ -128,6 +130,14 @@ public class PendenzaPostValidator  implements IValidable{
 
 	public void validaIdPendenza(String idPendenza) throws ValidationException {
 		this.validatoreId.validaIdPendenza("idPendenza", idPendenza);
+	}
+	
+	public void validaDirezione(String direzione) throws ValidationException {
+		vf.getValidator("direzione", direzione).minLength(1).maxLength(35);
+	}
+	
+	public void validaDivisione(String divisione) throws ValidationException {
+		vf.getValidator("divisione", divisione).minLength(1).maxLength(35);
 	}
 	
 	

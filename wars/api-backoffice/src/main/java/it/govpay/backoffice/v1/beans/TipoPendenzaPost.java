@@ -27,6 +27,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "promemoriaAvviso",
 "promemoriaRicevuta",
 "visualizzazione",
+"tracciatoCsv",
 })
 public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
@@ -67,6 +68,9 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
+  
+  @JsonProperty("tracciatoCsv")
+  private TracciatoCsv tracciatoCsv = null;
   
   /**
    **/
@@ -267,6 +271,21 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     this.visualizzazione = visualizzazione;
   }
 
+  /**
+   **/
+  public TipoPendenzaPost tracciatoCsv(TracciatoCsv tracciatoCsv) {
+    this.tracciatoCsv = tracciatoCsv;
+    return this;
+  }
+
+  @JsonProperty("tracciatoCsv")
+  public TracciatoCsv getTracciatoCsv() {
+    return tracciatoCsv;
+  }
+  public void setTracciatoCsv(TracciatoCsv tracciatoCsv) {
+    this.tracciatoCsv = tracciatoCsv;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -287,12 +306,13 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
         Objects.equals(inoltro, tipoPendenzaPost.inoltro) &&
         Objects.equals(promemoriaAvviso, tipoPendenzaPost.promemoriaAvviso) &&
         Objects.equals(promemoriaRicevuta, tipoPendenzaPost.promemoriaRicevuta) &&
-        Objects.equals(visualizzazione, tipoPendenzaPost.visualizzazione);
+        Objects.equals(visualizzazione, tipoPendenzaPost.visualizzazione) &&
+        Objects.equals(tracciatoCsv, tipoPendenzaPost.tracciatoCsv);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv);
   }
 
   public static TipoPendenzaPost parse(String json) throws ServiceException, ValidationException  {
@@ -321,6 +341,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
     sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
+    sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -350,6 +371,8 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
 		this.promemoriaAvviso.validate("promemoriaAvviso");
 	if(this.promemoriaRicevuta != null)
 		this.promemoriaRicevuta.validate("promemoriaRicevuta");
+	
+	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
 	
 	ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 	

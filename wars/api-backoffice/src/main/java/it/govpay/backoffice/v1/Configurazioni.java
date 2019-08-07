@@ -2,6 +2,7 @@ package it.govpay.backoffice.v1;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -29,23 +30,32 @@ public class Configurazioni extends BaseRsServiceV1{
 
 
 
-	@GET
-	@Path("/giornale")
+    @GET
+    @Path("/")
+    
+    @Produces({ "application/json" })
+    public Response getConfigurazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
+        this.controller.setContext(this.getContext());
+        return this.controller.configurazioniGET(this.getUser(), uriInfo, httpHeaders);
+    }
 
-	@Produces({ "application/json" })
-	public Response getConfigurazioniGiornale(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
-		this.controller.setContext(this.getContext());
-		return this.controller.configurazioniGiornaleGET(this.getUser(), uriInfo, httpHeaders);
-	}
+    @PATCH
+    @Path("/")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    public Response aggiornaConfigurazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
+        this.controller.setContext(this.getContext());
+        return this.controller.configurazioniPATCH(this.getUser(), uriInfo, httpHeaders, is);
+    }
 
-	@POST
-	@Path("/giornale")
-	@Consumes({ "application/json" })
-	@Produces({ "application/json" })
-	public Response addConfigurazioniGiornale(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
-		this.controller.setContext(this.getContext());
-		return this.controller.configurazioniGiornalePOST(this.getUser(), uriInfo, httpHeaders, is);
-	}
+    @POST
+    @Path("/")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    public Response addConfigurazioniGiornale(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
+        this.controller.setContext(this.getContext());
+        return this.controller.configurazioniPOST(this.getUser(), uriInfo, httpHeaders, is);
+    }
 
 }
 

@@ -14,6 +14,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTipologia;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
+import it.govpay.backoffice.v1.beans.TracciatoCsv;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDTO;
 import it.govpay.core.utils.rawutils.ConverterUtils;
@@ -105,6 +106,14 @@ public class TipiPendenzaConverter {
 		if(entrataPost.getVisualizzazione() != null)
 			tipoVersamento.setVisualizzazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getVisualizzazione(),null));
 		
+		if(entrataPost.getTracciatoCsv() != null && entrataPost.getTracciatoCsv().getResponseHeader() != null
+				&& entrataPost.getTracciatoCsv().getFreemarkerRequest() != null
+				&& entrataPost.getTracciatoCsv().getFreemarkerResponse() != null) {
+			tipoVersamento.setTracciatoCsvHeaderRispostaDefault(entrataPost.getTracciatoCsv().getResponseHeader());
+			tipoVersamento.setTracciatoCsvFreemarkerRichiestaDefault(ConverterUtils.toJSON(entrataPost.getTracciatoCsv().getFreemarkerRequest(),null));
+			tipoVersamento.setTracciatoCsvFreemarkerRispostaDefault(ConverterUtils.toJSON(entrataPost.getTracciatoCsv().getFreemarkerResponse(),null));
+		}
+		
 		return entrataDTO;		
 	}
 	
@@ -168,6 +177,15 @@ public class TipiPendenzaConverter {
 		
 		if(tipoVersamento.getVisualizzazioneDefinizioneDefault() != null)
 			rsModel.setVisualizzazione(new RawObject(tipoVersamento.getVisualizzazioneDefinizioneDefault()));
+		
+		if(tipoVersamento.getTracciatoCsvHeaderRispostaDefault() != null && tipoVersamento.getTracciatoCsvFreemarkerRichiestaDefault() != null
+				&& tipoVersamento.getTracciatoCsvFreemarkerRispostaDefault() != null) {
+			TracciatoCsv tracciatoCsv = new TracciatoCsv();
+			tracciatoCsv.setResponseHeader(tipoVersamento.getTracciatoCsvHeaderRispostaDefault());
+			tracciatoCsv.setFreemarkerRequest(new RawObject(tipoVersamento.getTracciatoCsvFreemarkerRichiestaDefault()));
+			tracciatoCsv.setFreemarkerResponse(new RawObject(tipoVersamento.getTracciatoCsvFreemarkerRispostaDefault()));
+			rsModel.setTracciatoCsv(tracciatoCsv);
+		}
 		
 		return rsModel;
 	}

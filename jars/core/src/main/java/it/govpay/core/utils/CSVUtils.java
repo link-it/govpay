@@ -18,6 +18,15 @@ import org.apache.commons.csv.CSVRecord;
 
 public class CSVUtils {
 	
+	private static CSVUtils instance;
+	
+	public static CSVUtils getInstance () {
+		if(CSVUtils.instance == null)
+			CSVUtils.instance = new CSVUtils();
+		
+		return CSVUtils.instance;
+	}
+	
 	public static long countLines(byte[] tracciato) throws IOException {
 		InputStream is = new BufferedInputStream(new ByteArrayInputStream(tracciato));
 		try {

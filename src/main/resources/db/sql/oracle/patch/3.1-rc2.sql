@@ -371,4 +371,12 @@ UPDATE tracciati SET formato = 'JSON';
 ALTER TABLE tracciati MODIFY (formato NOT NULL);
 
 
+-- 06/08/2019 aggiunte colonne per la trasformazione del tracciato csv alla tabella tipo versamento
+ALTER TABLE tipi_versamento ADD COLUMN trac_csv_header_risposta CLOB;
+ALTER TABLE tipi_versamento ADD COLUMN trac_csv_template_richiesta CLOB;
+ALTER TABLE tipi_versamento ADD COLUMN trac_csv_template_risposta CLOB;
+
+ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_header_risposta CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_template_richiesta CLOB;
+ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_template_risposta CLOB;
 

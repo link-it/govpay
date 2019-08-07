@@ -23,6 +23,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaDominioPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaForm;
 import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
+import it.govpay.backoffice.v1.beans.TracciatoCsv;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
@@ -428,6 +429,15 @@ public class DominiConverter {
 		if(tipoVersamentoDominio.getValidazioneDefinizioneDefault() != null)
 			rsModel.setValidazione(new RawObject(tipoVersamentoDominio.getValidazioneDefinizioneDefault()));
 		
+		if(tipoVersamentoDominio.getTracciatoCsvHeaderRispostaDefault() != null && tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiestaDefault() != null
+				&& tipoVersamentoDominio.getTracciatoCsvFreemarkerRispostaDefault() != null) {
+			TracciatoCsv tracciatoCsv = new TracciatoCsv();
+			tracciatoCsv.setResponseHeader(tipoVersamentoDominio.getTracciatoCsvHeaderRispostaDefault());
+			tracciatoCsv.setFreemarkerRequest(new RawObject(tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiestaDefault()));
+			tracciatoCsv.setFreemarkerResponse(new RawObject(tipoVersamentoDominio.getTracciatoCsvFreemarkerRispostaDefault()));
+			rsModel.setTracciatoCsv(tracciatoCsv);
+		}
+		
 		rsModel.setInoltro(tipoVersamentoDominio.getCodApplicazioneDefault());
 		
 		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneDefault() != null)
@@ -479,6 +489,15 @@ public class DominiConverter {
 		
 		if(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom() != null)
 			valori.setVisualizzazione(new RawObject(tipoVersamentoDominio.getVisualizzazioneDefinizioneCustom()));
+		
+		if(tipoVersamentoDominio.getTracciatoCsvHeaderRispostaCustom() != null && tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiestaCustom() != null
+				&& tipoVersamentoDominio.getTracciatoCsvFreemarkerRispostaCustom() != null) {
+			TracciatoCsv tracciatoCsv = new TracciatoCsv();
+			tracciatoCsv.setResponseHeader(tipoVersamentoDominio.getTracciatoCsvHeaderRispostaCustom());
+			tracciatoCsv.setFreemarkerRequest(new RawObject(tipoVersamentoDominio.getTracciatoCsvFreemarkerRichiestaCustom()));
+			tracciatoCsv.setFreemarkerResponse(new RawObject(tipoVersamentoDominio.getTracciatoCsvFreemarkerRispostaCustom()));
+			valori.setTracciatoCsv(tracciatoCsv);
+		}
 		
 		rsModel.setValori(valori);
 		
@@ -542,6 +561,14 @@ public class DominiConverter {
 		
 		if(tipoPendenzaRequest.getVisualizzazione() != null)
 			tipoVersamentoDominio.setVisualizzazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getVisualizzazione(),null));
+		
+		if(tipoPendenzaRequest.getTracciatoCsv() != null && tipoPendenzaRequest.getTracciatoCsv().getResponseHeader() != null
+				&& tipoPendenzaRequest.getTracciatoCsv().getFreemarkerRequest() != null
+				&& tipoPendenzaRequest.getTracciatoCsv().getFreemarkerResponse() != null) {
+			tipoVersamentoDominio.setTracciatoCsvHeaderRispostaCustom(tipoPendenzaRequest.getTracciatoCsv().getResponseHeader());
+			tipoVersamentoDominio.setTracciatoCsvFreemarkerRichiestaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTracciatoCsv().getFreemarkerRequest(),null));
+			tipoVersamentoDominio.setTracciatoCsvFreemarkerRispostaCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getTracciatoCsv().getFreemarkerResponse(),null));
+		}
 		
 		tipoPendenzaDTO.setTipoVersamentoDominio(tipoVersamentoDominio);
 		tipoPendenzaDTO.setIdDominio(idDominio);

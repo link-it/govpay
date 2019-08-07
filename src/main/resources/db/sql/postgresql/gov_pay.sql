@@ -365,6 +365,9 @@ CREATE TABLE tipi_versamento
 	promemoria_ricevuta_oggetto TEXT,
 	promemoria_ricevuta_messaggio TEXT,
 	visualizzazione_definizione TEXT,
+	trac_csv_header_risposta TEXT,
+	trac_csv_template_richiesta TEXT,
+	trac_csv_template_risposta TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_versamento') NOT NULL,
 	-- unique constraints
@@ -399,6 +402,9 @@ CREATE TABLE tipi_vers_domini
 	promemoria_ricevuta_oggetto TEXT,
 	promemoria_ricevuta_messaggio TEXT,
 	visualizzazione_definizione TEXT,
+	trac_csv_header_risposta TEXT,
+	trac_csv_template_richiesta TEXT,
+	trac_csv_template_risposta TEXT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_vers_domini') NOT NULL,
 	id_tipo_versamento BIGINT NOT NULL,
