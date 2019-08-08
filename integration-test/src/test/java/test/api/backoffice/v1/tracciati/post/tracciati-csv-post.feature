@@ -519,9 +519,22 @@ Then status 201
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idTracciato
 And headers basicAutenticationHeader
-And retry until response.stato == 'SCARTATO'
+And retry until response.stato == 'ESEGUITO'
 When method get
-Then match response.descrizioneStato contains 'TRASFORMAZIONE: La trasformazione della pendenza si e\' conclusa con un errore:' 
+Then match response.descrizioneStato contains '' 
 Then match response.numeroOperazioniTotali == 1
-Then match response.numeroOperazioniEseguite == 0
-Then match response.numeroOperazioniFallite == 1
+Then match response.numeroOperazioniEseguite == 1
+Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+Then match response contains '#("Pendenza [IdA2A:" + idA2A + ", Id:" + idPendenza + "] inserita con esito \'ESEGUITO_OK\': scrittura dell\'esito sul file csv conclusa con con errore.")' 
+
+
+
+
+
+
