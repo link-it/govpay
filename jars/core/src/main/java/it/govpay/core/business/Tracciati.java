@@ -583,7 +583,8 @@ public class Tracciati extends BasicBD {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
 
 		baos.write(headerRisposta.getBytes());
-		baos.write("\n".getBytes());
+		if(!headerRisposta.endsWith("\n"))
+			baos.write("\n".getBytes());
 
 		if(trasformazioneRisposta.startsWith("\""))
 			trasformazioneRisposta = trasformazioneRisposta.substring(1);
@@ -619,7 +620,10 @@ public class Tracciati extends BasicBD {
 								new String(operazione.getDatiRisposta()), template, headerRisposta, dominio, applicazione, versamento, operazione.getStato().toString(), operazione.getDettaglioEsito()));
 						baos.write("\n".getBytes());
 					} catch (GovPayException e) {
-						throw new ServiceException(e);
+						baos.write(("Pendenza [IdA2A:"+risposta.getIdA2A()+", Id:"+risposta.getIdPendenza()+"] inserita con esito '"
+								+ (operazione.getStato()) +"': scrittura dell'esito sul file csv conclusa con con errore.").getBytes());
+						baos.write("\n".getBytes());
+//						throw new ServiceException(e);
 					}
 					// esitiInserimenti.add(EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta())));
 					break;
