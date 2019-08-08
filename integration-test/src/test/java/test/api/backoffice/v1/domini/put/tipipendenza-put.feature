@@ -18,7 +18,8 @@ Background:
 	"inoltro": null,
 	"promemoriaAvviso": null,
 	"promemoriaRicevuta": null,
-  "visualizzazione": null
+  "visualizzazione": null,
+  "tracciatoCsv": null
 }
 """
 
@@ -35,7 +36,8 @@ And request
   form: null,
   trasformazione: null,
   validazione: null,
-  visualizzazione: null;
+  visualizzazione: null,
+  tracciatoCsv: null
 }
 """  
 When method put
@@ -84,4 +86,4 @@ Examples:
 | promemoriaRicevuta | { "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": true } |
 | promemoriaRicevuta | { "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": false } |
 | visualizzazione | "eyAidHlwZSI6ICJvYmplY3QiIH0=" |
-| visualizzazione | null |
+| tracciatoCsv | {"responseHeader": "idA2A,idPendenza,idDominio", "freemarkerRequest": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "freemarkerResponse": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |

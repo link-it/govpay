@@ -15,7 +15,6 @@ import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.io.CachedOutputStreamCallback;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -26,10 +25,8 @@ import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
-import it.govpay.core.dao.configurazione.exception.ConfigurazioneNonTrovataException;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoContext;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 
 public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.logging.LoggingOutInterceptor  {
@@ -46,6 +43,10 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 
 	@Override
 	public void handleMessage(Message message) throws Fault {
+		String url = null;
+		String httpMethodS = null;
+		String principal = null;
+		Esito esito = null;
 		try {
 			if(this.giornaleEventiConfig.isAbilitaGiornaleEventi()) {
 				boolean logEvento = false;
@@ -58,25 +59,26 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 
 				Message inMessage = exchange.getInMessage();
 				final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
-				String url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
-				String httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
-				String principal = eventoCtx.getPrincipal()!= null ? eventoCtx.getPrincipal() : eventRequest.getPrincipal();
+				url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
+				httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
+				principal = eventoCtx.getPrincipal()!= null ? eventoCtx.getPrincipal() : eventRequest.getPrincipal();
 				
 				HttpMethodEnum httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
+				esito = eventoCtx.getEsito() != null ? eventoCtx.getEsito() : Esito.KO;
 				
-				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], Esito ["+eventoCtx.getEsito()+"]");
+				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], Esito ["+esito+"]");
 
 				GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);
 
 				if(configurazioneInterfaccia != null) {
 					if(GiornaleEventiUtilities.isRequestLettura(httpMethod)) {
-						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), eventoCtx.getEsito());
-						dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getLetture(), eventoCtx.getEsito());
+						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), esito);
+						dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getLetture(), esito);
 					}
 
 					if(GiornaleEventiUtilities.isRequestScrittura(httpMethod)) {
-						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getScritture(), eventoCtx.getEsito());
-						dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getScritture(), eventoCtx.getEsito());
+						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getScritture(), esito);
+						dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getScritture(), esito);
 					}
 
 					eventoCtx.setRegistraEvento(logEvento);
@@ -127,13 +129,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 					this.log.warn("La configurazione per l'API ["+this.giornaleEventiConfig.getApiName()+"] non e' corretta, salvataggio evento non eseguito."); 
 				}
 			}
-		} catch (ConfigurazioneNonTrovataException e) {
-			this.log.error(e.getMessage(),e);
-		} catch (NotAuthorizedException e) {
-			this.log.error(e.getMessage(),e);
-		} catch (NotAuthenticatedException e) {
-			this.log.error(e.getMessage(),e);
-		} catch (ServiceException e) {
+		} catch (Throwable e) {
 			this.log.error(e.getMessage(),e);
 		} finally {
 

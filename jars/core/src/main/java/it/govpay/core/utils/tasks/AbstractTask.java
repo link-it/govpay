@@ -33,10 +33,10 @@ public abstract class AbstractTask {
 
 	public void exec() {
 		try {
-			this.log.debug("Execuzione task ["+this.name+"] ...");
+			this.log.trace("Execuzione task ["+this.name+"] ...");
 			IContext ctx = this.initBatchContext();
 			execTask(ctx);
-			this.log.debug("Execuzione task ["+this.name+"] completata con successo");
+			this.log.trace("Execuzione task ["+this.name+"] completata con successo");
 		} catch(Throwable e) {
 			this.log.error("Execuzione task ["+this.name+"] completata con errore: " + e.getMessage(), e);
 		} finally {

@@ -121,7 +121,7 @@ public class Operazioni{
 		return eseguiGenerazioneAvvisi;
 	}
 
-	private static boolean eseguiElaborazioneTracciati;
+	private static boolean eseguiElaborazioneTracciati = true;
 
 	public static synchronized void setEseguiElaborazioneTracciati() {
 		eseguiElaborazioneTracciati = true;
