@@ -16,6 +16,7 @@ import it.govpay.core.beans.JSONSerializable;
 "dominio",
 "dataOraCaricamento",
 "stato",
+"descrizioneStato",
 "numeroOperazioniTotali",
 "numeroOperazioniEseguite",
 "numeroOperazioniFallite",
@@ -38,6 +39,9 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
   
   @JsonProperty("stato")
   private StatoTracciatoPendenza stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
   
   @JsonProperty("numeroOperazioniTotali")
   private BigDecimal numeroOperazioniTotali = null;
@@ -133,6 +137,22 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
   }
 
   /**
+   * Descrizione dello stato del tracciato
+   **/
+  public TracciatoPendenzeIndex descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
+  /**
    * Numero totale di operazioni previste
    **/
   public TracciatoPendenzeIndex numeroOperazioniTotali(BigDecimal numeroOperazioniTotali) {
@@ -221,21 +241,22 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
       return false;
     }
     TracciatoPendenzeIndex tracciatoPendenzeIndex = (TracciatoPendenzeIndex) o;
-    return Objects.equals(this.id, tracciatoPendenzeIndex.id) &&
-        Objects.equals(this.nomeFile, tracciatoPendenzeIndex.nomeFile) &&
-        Objects.equals(this.dominio, tracciatoPendenzeIndex.dominio) &&
-        Objects.equals(this.dataOraCaricamento, tracciatoPendenzeIndex.dataOraCaricamento) &&
-        Objects.equals(this.stato, tracciatoPendenzeIndex.stato) &&
-        Objects.equals(this.numeroOperazioniTotali, tracciatoPendenzeIndex.numeroOperazioniTotali) &&
-        Objects.equals(this.numeroOperazioniEseguite, tracciatoPendenzeIndex.numeroOperazioniEseguite) &&
-        Objects.equals(this.numeroOperazioniFallite, tracciatoPendenzeIndex.numeroOperazioniFallite) &&
-        Objects.equals(this.operatoreMittente, tracciatoPendenzeIndex.operatoreMittente) &&
-        Objects.equals(this.dataOraUltimoAggiornamento, tracciatoPendenzeIndex.dataOraUltimoAggiornamento);
+    return Objects.equals(id, tracciatoPendenzeIndex.id) &&
+        Objects.equals(nomeFile, tracciatoPendenzeIndex.nomeFile) &&
+        Objects.equals(dominio, tracciatoPendenzeIndex.dominio) &&
+        Objects.equals(dataOraCaricamento, tracciatoPendenzeIndex.dataOraCaricamento) &&
+        Objects.equals(stato, tracciatoPendenzeIndex.stato) &&
+        Objects.equals(descrizioneStato, tracciatoPendenzeIndex.descrizioneStato) &&
+        Objects.equals(numeroOperazioniTotali, tracciatoPendenzeIndex.numeroOperazioniTotali) &&
+        Objects.equals(numeroOperazioniEseguite, tracciatoPendenzeIndex.numeroOperazioniEseguite) &&
+        Objects.equals(numeroOperazioniFallite, tracciatoPendenzeIndex.numeroOperazioniFallite) &&
+        Objects.equals(operatoreMittente, tracciatoPendenzeIndex.operatoreMittente) &&
+        Objects.equals(dataOraUltimoAggiornamento, tracciatoPendenzeIndex.dataOraUltimoAggiornamento);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.id, this.nomeFile, this.dominio, this.dataOraCaricamento, this.stato, this.numeroOperazioniTotali, this.numeroOperazioniEseguite, this.numeroOperazioniFallite, this.operatoreMittente, this.dataOraUltimoAggiornamento);
+    return Objects.hash(id, nomeFile, dominio, dataOraCaricamento, stato, descrizioneStato, numeroOperazioniTotali, numeroOperazioniEseguite, numeroOperazioniFallite, operatoreMittente, dataOraUltimoAggiornamento);
   }
 
   public static TracciatoPendenzeIndex parse(String json) throws ServiceException, ValidationException { 
@@ -252,16 +273,17 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class TracciatoPendenzeIndex {\n");
     
-    sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
-    sb.append("    nomeFile: ").append(this.toIndentedString(this.nomeFile)).append("\n");
-    sb.append("    dominio: ").append(this.toIndentedString(this.dominio)).append("\n");
-    sb.append("    dataOraCaricamento: ").append(this.toIndentedString(this.dataOraCaricamento)).append("\n");
-    sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
-    sb.append("    numeroOperazioniTotali: ").append(this.toIndentedString(this.numeroOperazioniTotali)).append("\n");
-    sb.append("    numeroOperazioniEseguite: ").append(this.toIndentedString(this.numeroOperazioniEseguite)).append("\n");
-    sb.append("    numeroOperazioniFallite: ").append(this.toIndentedString(this.numeroOperazioniFallite)).append("\n");
-    sb.append("    operatoreMittente: ").append(this.toIndentedString(this.operatoreMittente)).append("\n");
-    sb.append("    dataOraUltimoAggiornamento: ").append(this.toIndentedString(this.dataOraUltimoAggiornamento)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    nomeFile: ").append(toIndentedString(nomeFile)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
+    sb.append("    dataOraCaricamento: ").append(toIndentedString(dataOraCaricamento)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
+    sb.append("    numeroOperazioniTotali: ").append(toIndentedString(numeroOperazioniTotali)).append("\n");
+    sb.append("    numeroOperazioniEseguite: ").append(toIndentedString(numeroOperazioniEseguite)).append("\n");
+    sb.append("    numeroOperazioniFallite: ").append(toIndentedString(numeroOperazioniFallite)).append("\n");
+    sb.append("    operatoreMittente: ").append(toIndentedString(operatoreMittente)).append("\n");
+    sb.append("    dataOraUltimoAggiornamento: ").append(toIndentedString(dataOraUltimoAggiornamento)).append("\n");
     sb.append("}");
     return sb.toString();
   }

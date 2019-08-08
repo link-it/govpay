@@ -50,6 +50,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 
@@ -169,12 +170,15 @@ public class OperazioneFactory {
 		caricamentoResponse.setTipo(TipoOperazioneType.ADD);
 		
 		try {
+			caricamentoResponse.setJsonRichiesta(new String(request.getDati()));
 			String jsonPendenza = Tracciati.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTemplateTrasformazioneRichiesta());
 
 			caricamentoResponse.setJsonRichiesta(jsonPendenza);
 			PendenzaPost pendenzaPost = JSONSerializable.parse(jsonPendenza, PendenzaPost.class);
 			caricamentoResponse.setIdA2A(pendenzaPost.getIdA2A()); 
 			caricamentoResponse.setIdPendenza(pendenzaPost.getIdPendenza());
+			
+			new PendenzaPostValidator(pendenzaPost).validate();
 			
 			it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 			

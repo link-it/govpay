@@ -304,24 +304,37 @@ public class Tracciati extends BasicBD {
 		String codTipoVersamento = tracciato.getCodTipoVersamento();
 		FORMATO_TRACCIATO formato = tracciato.getFormato();
 
+		byte[] rawRichiesta = tracciato.getRawRichiesta();
+		
 		if(beanDati.getStepElaborazione().equals(StatoTracciatoType.NUOVO.getValue())) {
 			log.debug("Cambio stato del tracciato da NUOVO a IN_CARICAMENTO");
 			beanDati.setStepElaborazione(StatoTracciatoType.IN_CARICAMENTO.getValue());
 			beanDati.setLineaElaborazioneAdd(1); // skip intestazione file csv
 			beanDati.setLineaElaborazioneDel(0);
-			beanDati.setNumAddTotali(CSVUtils.countLines(tracciato.getRawRichiesta()) -1);
+			long numLines = rawRichiesta != null ? CSVUtils.countLines(rawRichiesta) : 0;
+			log.debug("Numero linee totali compresa intestazione ["+numLines+"]");
+			beanDati.setNumAddTotali(numLines > 0 ? (numLines -1) : 0);
 			beanDati.setNumDelTotali(0);
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			tracciatiBD.update(tracciato);
 			this.commit();
 		}
+		
+		if(rawRichiesta == null) {
+			throw new ValidationException("Il file CSV ricevuto e' vuoto.");
+		}
+		
+		if(beanDati.getNumAddTotali() == 0) {
+			throw new ValidationException("Il file CSV ricevuto non contiene nessun record valido.");
+		}
+		
 
 		OperazioniBD operazioniBD = new OperazioniBD(this);
 		OperazioneFactory factory = new OperazioneFactory();
 		// eseguo operazioni add
 		long numLinea = beanDati.getLineaElaborazioneAdd();
 		log.debug("Elaboro le operazioni di caricamento del tracciato saltando le prime " + numLinea + " linee");
-		List<byte[]> lst = CSVUtils.splitCSV(tracciato.getRawRichiesta(), numLinea);
+		List<byte[]> lst = CSVUtils.splitCSV(rawRichiesta, numLinea);
 		log.debug("Lette " + lst.size() + " linee");
 
 		TipoVersamentoDominio tipoVersamentoDominio = null;
@@ -458,8 +471,10 @@ public class Tracciati extends BasicBD {
 		if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
 			beanDati.setNumAddOk(beanDati.getNumAddOk()+1);
 		} else {
-			if(!caricamentoResponse.getEsito().equals(CostantiCaricamento.EMPTY.toString()))
+			if(!caricamentoResponse.getEsito().equals(CostantiCaricamento.EMPTY.toString())) {
 				beanDati.setNumAddKo(beanDati.getNumAddKo()+1);
+				beanDati.setDescrizioneStepElaborazione(caricamentoResponse.getDescrizioneEsito());
+			}
 		}
 	}
 
@@ -468,8 +483,10 @@ public class Tracciati extends BasicBD {
 		if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
 			beanDati.setNumDelOk(beanDati.getNumDelOk()+1);
 		} else {
-			if(!annullamentoResponse.getEsito().equals(CostantiCaricamento.EMPTY))
+			if(!annullamentoResponse.getEsito().equals(CostantiCaricamento.EMPTY)) {
 				beanDati.setNumDelKo(beanDati.getNumDelKo()+1);
+				beanDati.setDescrizioneStepElaborazione(annullamentoResponse.getDescrizioneEsito());
+			}
 		}
 	}
 
@@ -486,6 +503,9 @@ public class Tracciati extends BasicBD {
 			tracciato.setStato(STATO_ELABORAZIONE.SCARTATO);
 		else 
 			tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
+		
+		String descrizioneStato = beanDati.getDescrizioneStepElaborazione() != null ? beanDati.getDescrizioneStepElaborazione() : "";
+		tracciato.setDescrizioneStato(descrizioneStato.length() > 256 ? descrizioneStato.substring(0, 255): descrizioneStato);
 	}
 
 	private void setApplicazione(AbstractOperazioneResponse caricamentoResponse, Operazione operazione) {
@@ -595,7 +615,8 @@ public class Tracciati extends BasicBD {
 
 					// trasformare il json in csv
 					try {
-						baos.write(trasformazioneOutputCSV(log, dominio.getCodDominio(), codTipoVersamento, new String(operazione.getDatiRisposta()), template, headerRisposta, dominio, applicazione, versamento));
+						baos.write(trasformazioneOutputCSV(log, dominio.getCodDominio(), codTipoVersamento, 
+								new String(operazione.getDatiRisposta()), template, headerRisposta, dominio, applicazione, versamento, operazione.getStato().toString(), operazione.getDettaglioEsito()));
 						baos.write("\n".getBytes());
 					} catch (GovPayException e) {
 						throw new ServiceException(e);
@@ -703,7 +724,7 @@ public class Tracciati extends BasicBD {
 	}
 
 	public static byte[] trasformazioneOutputCSV(Logger log, String codDominio, String codTipoVersamento, String jsonEsito, byte[] template,
-			String headerRisposta, Dominio dominio, Applicazione applicazione, Versamento versamento) throws GovPayException {
+			String headerRisposta, Dominio dominio, Applicazione applicazione, Versamento versamento, String esitoOperazione, String descrizioneEsitoOperazione) throws GovPayException {
 		log.debug("Trasformazione esito caricamento pendenza in formato JSON -> CSV tramite template freemarker ...");
 		String name = "TrasformazionePendenzaJSONtoCSV";
 		try {
@@ -711,7 +732,8 @@ public class Tracciati extends BasicBD {
 			 ByteArrayOutputStream	baos = new ByteArrayOutputStream();
 
 			Map<String, Object> dynamicMap = new HashMap<String, Object>();
-			TrasformazioniUtils.fillDynamicMapRispostaTracciatoCSV(log, dynamicMap, ContextThreadLocal.get(), headerRisposta, jsonEsito, codDominio, codTipoVersamento, dominio, applicazione, versamento);
+			TrasformazioniUtils.fillDynamicMapRispostaTracciatoCSV(log, dynamicMap, ContextThreadLocal.get(), 
+					headerRisposta, jsonEsito, codDominio, codTipoVersamento, dominio, applicazione, versamento, esitoOperazione, descrizioneEsitoOperazione);
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			log.debug("Trasformazione esito caricamento pendenza JSON -> CSV tramite template freemarker completata con successo.");

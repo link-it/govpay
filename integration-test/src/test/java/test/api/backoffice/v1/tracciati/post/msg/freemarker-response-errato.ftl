@@ -1,6 +1,6 @@
 <#assign csvUtils = class["it.govpay.core.utils.CSVUtils"].getInstance() />
 <#if esitoOperazione == "ESEGUITO_OK">
-<#assign idA2A = applicazione.getCodApplicazione() />
+<#assign idA2A = applicazione.getCodApplicazione1() />
 <#assign idPendenza = versamento.getCodVersamentoEnte() />
 <#assign idDominio = dominio.getCodDominio() />
 <#assign tipoPendenza = idTipoVersamento />

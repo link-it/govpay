@@ -251,7 +251,7 @@ public class TrasformazioniUtils {
 	}
 	
 	public static void fillDynamicMapRispostaTracciatoCSV(Logger log, Map<String, Object> dynamicMap, IContext context, String headerRisposta, String json,
-			String codDominio, String codTipoVersamento, Dominio dominio, Applicazione applicazione, Versamento versamento) {
+			String codDominio, String codTipoVersamento, Dominio dominio, Applicazione applicazione, Versamento versamento, String esitoOperazione, String descrizioneEsitoOperazione) {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
@@ -302,6 +302,14 @@ public class TrasformazioniUtils {
 			PatternExtractor pe = new PatternExtractor(json, log);
 			dynamicMap.put(Costanti.MAP_ELEMENT_JSON_PATH, pe);
 			dynamicMap.put(Costanti.MAP_ELEMENT_JSON_PATH.toLowerCase(), pe);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_CSV_ESITO_OPERAZIONE)==false && esitoOperazione !=null) {
+			dynamicMap.put(Costanti.MAP_CSV_ESITO_OPERAZIONE, esitoOperazione);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_CSV_DESCRIZIONE_ESITO_OPERAZIONE)==false && descrizioneEsitoOperazione !=null) {
+			dynamicMap.put(Costanti.MAP_CSV_DESCRIZIONE_ESITO_OPERAZIONE, descrizioneEsitoOperazione);
 		}
 	}
 }
