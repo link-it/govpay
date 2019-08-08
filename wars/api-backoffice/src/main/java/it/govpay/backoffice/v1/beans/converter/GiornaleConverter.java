@@ -3,7 +3,6 @@ package it.govpay.backoffice.v1.beans.converter;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
-import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.GdeEvento;
 import it.govpay.backoffice.v1.beans.GdeEvento.DumpEnum;
@@ -11,15 +10,11 @@ import it.govpay.backoffice.v1.beans.GdeEvento.LogEnum;
 import it.govpay.backoffice.v1.beans.GdeInterfacce;
 import it.govpay.backoffice.v1.beans.GdeInterfaccia;
 import it.govpay.backoffice.v1.beans.Giornale;
-import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
-import it.govpay.core.exceptions.NotAuthorizedException;
 
 public class GiornaleConverter {
 
 	
-	public static PutConfigurazioneDTO getPutConfigurazioneDTO(Giornale giornalePost, Authentication user) throws ServiceException,NotAuthorizedException, ValidationException {
-		PutConfigurazioneDTO putConfigurazioneDTO = new PutConfigurazioneDTO(user);
-	
+	public static it.govpay.bd.configurazione.model.Giornale getGiornaleDTO(Giornale giornalePost) throws ServiceException, ValidationException {
 		it.govpay.bd.configurazione.model.Giornale giornale = new it.govpay.bd.configurazione.model.Giornale();
 		
 		GdeInterfacce interfacce = giornalePost.getInterfacce();
@@ -31,10 +26,10 @@ public class GiornaleConverter {
 		giornale.setApiRagioneria(getGdeInterfaccia(interfacce.getApiRagioneria()));
 		giornale.setApiPendenze(getGdeInterfaccia(interfacce.getApiPendenze()));
 		
-		putConfigurazioneDTO.setGiornale(giornale);
-		
-		return putConfigurazioneDTO;
+		return giornale;
 	}
+	
+	
 	
 	private static it.govpay.bd.configurazione.model.GdeInterfaccia getGdeInterfaccia(GdeInterfaccia gdeInterfaccia) throws ValidationException {
 		

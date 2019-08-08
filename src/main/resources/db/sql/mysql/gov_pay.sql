@@ -364,6 +364,9 @@ CREATE TABLE tipi_versamento
 	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
 	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
 	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
+	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
+	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
+	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	-- unique constraints
@@ -398,6 +401,9 @@ CREATE TABLE tipi_vers_domini
 	promemoria_ricevuta_oggetto LONGTEXT COMMENT 'Template della mail del promemoria ricevuta',
 	promemoria_ricevuta_messaggio LONGTEXT COMMENT 'Messaggio della mail del promemoria ricevuta',
 	visualizzazione_definizione LONGTEXT COMMENT 'Definisce la visualizzazione custom della tipologia',
+	trac_csv_header_risposta LONGTEXT COMMENT 'Header del file Csv di risposta del tracciato',
+	trac_csv_template_richiesta LONGTEXT COMMENT 'Template di conversione della pendenza da CSV a JSON',
+	trac_csv_template_risposta LONGTEXT COMMENT 'Template di conversione della pendenza da JSON a CSV',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza afferente',

@@ -5,25 +5,28 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
-* def freemarker_request = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
-* def freemarker_response = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
-* def response_csv_header = 
+* def patchValue = 
+"""
+{
+	responseHeader: "idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore,nazionePagatore,emailPagatore,cellularePagatore",
+	freemarkerRequest: null,
+	freemarkerResponse: null
+}
+"""
 
+* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
 Given url backofficeBaseurl
-And path 'configurazione', 
+And path '/configurazioni' 
 And headers basicAutenticationHeader
 And request 
 """
 [
 	{
-		op: "replace",
-		path: "/tracciato_csv",
-		value: {
-			responseHeader: "idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,emailPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore"
-			freemarkerRequest: freemarker_request,
-			freemarkerResponse: freemarker_response
-		}
+		op: "REPLACE",
+		path: "/tracciatoCsv",
+		value: #(patchValue)
 	}
 ]
 """
@@ -43,8 +46,8 @@ Scenario: Pagamento pendenza precaricata anonimo
 * def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
 
 Given url backofficeBaseurl
-And path 'pendenze', 'tracciati'
-And header Content-type = text/csv
+And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'Content-Type' : 'text/csv' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post

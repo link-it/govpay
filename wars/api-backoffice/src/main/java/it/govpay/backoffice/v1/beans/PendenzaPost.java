@@ -15,29 +15,29 @@ import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-	"idDominio",
-	"idUnitaOperativa",
-	"idTipoPendenza",
-	"nome",
-	"causale",
-	"soggettoPagatore",
-	"importo",
-	"numeroAvviso",
-	"dataCaricamento",
-	"dataValidita",
-	"dataScadenza",
-	"annoRiferimento",
-	"cartellaPagamento",
-	"datiAllegati",
-	"tassonomia",
-	"tassonomiaAvviso",
-	"direzione",
-	"divisione",
-	"voci",
-	"idA2A",
-	"idPendenza",
-	"idDebitore",
-	"dati",
+"idDominio",
+"idUnitaOperativa",
+"idTipoPendenza",
+"nome",
+"causale",
+"soggettoPagatore",
+"importo",
+"numeroAvviso",
+"dataCaricamento",
+"dataValidita",
+"dataScadenza",
+"annoRiferimento",
+"cartellaPagamento",
+"datiAllegati",
+"tassonomia",
+"tassonomiaAvviso",
+"direzione",
+"divisione",
+"voci",
+"idA2A",
+"idPendenza",
+"idDebitore",
+"dati",
 })
 public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implements IValidable {
   
@@ -523,7 +523,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, voci, idA2A, idPendenza, this.idDebitore, this.dati);
+    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, voci, idA2A, idPendenza, idDebitore, dati);
   }
 
   public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {

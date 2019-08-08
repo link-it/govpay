@@ -43,7 +43,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	}
 	
 	public String getGiornaleJson() throws IOException {
-		return this._getJson(this.giornale);
+		return this._getJson(this.getGiornale());
 	}
 
 	public TracciatoCsv getTracciatoCsv() {
@@ -61,7 +61,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	}
 	
 	public String getTracciatoCsvJson() throws IOException {
-		return this._getJson(this.tracciatoCsv);
+		return this._getJson(this.getTracciatoCsv());
 	}
 	
 	private <T> T _getFromJson(String jsonString, Class<T> tClass) throws IOException {

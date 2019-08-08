@@ -91,6 +91,8 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Operazione.StatoOperazioneType;
+import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
@@ -129,10 +131,10 @@ public class PendenzeController extends BaseController {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			LeggiPendenzaDTOResponse ricevutaDTOResponse = pendenzeDAO.leggiPendenzaConInformazioniIncasso(leggiPendenzaDTO);
-			
- 			Dominio dominio = ricevutaDTOResponse.getDominio();
+
+			Dominio dominio = ricevutaDTOResponse.getDominio();
 			TipoVersamento tipoVersamento = ricevutaDTOResponse.getTipoVersamento();
-			
+
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), tipoVersamento.getCodTipoVersamento());
@@ -158,7 +160,7 @@ public class PendenzeController extends BaseController {
 
 			// Parametri - > DTO Input
 			ListaPendenzeConInformazioniIncassoDTO listaPendenzeDTO = new ListaPendenzeConInformazioniIncassoDTO(user);
-			
+
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
 			listaPendenzeDTO.setPagina(pagina);
 			listaPendenzeDTO.setStato(stato);
@@ -172,28 +174,28 @@ public class PendenzeController extends BaseController {
 
 			if(idPagamento != null)
 				listaPendenzeDTO.setIdPagamento(idPagamento);
-			
+
 			if(idPendenza != null)
 				listaPendenzeDTO.setIdPendenza(idPendenza);
 
 			if(ordinamento != null)
 				listaPendenzeDTO.setOrderBy(ordinamento);
-			
+
 			if(dataDa!=null) {
 				Date dataDaDate = DateUtils.parseDate(dataDa, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				listaPendenzeDTO.setDataDa(dataDaDate);
 			}
-			
+
 			if(dataA!=null) {
 				Date dataADate = DateUtils.parseDate(dataA, SimpleDateFormatUtils.datePatternsRest.toArray(new String[0]));
 				listaPendenzeDTO.setDataA(dataADate);
 			}
-			
+
 			if(idTipoPendenza != null)
 				listaPendenzeDTO.setIdTipoVersamento(idTipoPendenza);
 			listaPendenzeDTO.setDirezione(direzione);
 			listaPendenzeDTO.setDivisione(divisione);
-			
+
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -206,7 +208,7 @@ public class PendenzeController extends BaseController {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 			}
 			listaPendenzeDTO.setIdTipiVersamento(idTipiVersamento);
-			
+
 			// INIT DAO
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
@@ -245,7 +247,7 @@ public class PendenzeController extends BaseController {
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(idA2A);
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
-			
+
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
@@ -266,10 +268,10 @@ public class PendenzeController extends BaseController {
 					PatchOp op = new PatchOp();
 					String opText = (String) map.get("op");
 					OpEnum opFromValue = OpEnum.fromValue(opText);
-					
+
 					if(StringUtils.isNotEmpty(opText) && opFromValue == null)
 						throw new ValidationException("Il campo op non e' valido.");
-					
+
 					op.setOp(opFromValue);
 					op.setPath((String) map.get("path"));
 					op.setValue(map.get("value"));
@@ -305,8 +307,8 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-    public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-    	String methodName = "pendenzeIdA2AIdPendenzaPUT";  
+	public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		String methodName = "pendenzeIdA2AIdPendenzaPUT";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -321,13 +323,13 @@ public class PendenzeController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdApplicazione("idA2A", idA2A);
 			validatoreId.validaIdPendenza("idPendenza", idPendenza);
-			
+
 			String jsonRequest = baos.toString();
 			PendenzaPut pendenzaPost= JSONSerializable.parse(jsonRequest, PendenzaPut.class);
 			pendenzaPost.validate();
 
 			Versamento versamento = PendenzeConverter.getVersamentoFromPendenza(pendenzaPost, idA2A, idPendenza);
-			
+
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, versamento.getCodDominio(), versamento.getCodTipoVersamento())) {
 				throw AuthorizationManager.toNotAuthorizedException(user, versamento.getCodDominio(), versamento.getCodTipoVersamento());
@@ -360,7 +362,7 @@ public class PendenzeController extends BaseController {
 		} finally {
 			this.log(this.context);
 		}
-    }
+	}
 
 	public Response pendenzePOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
 		String methodName = "pendenzePOST";  
@@ -375,14 +377,14 @@ public class PendenzeController extends BaseController {
 
 			String jsonRequest = baos.toString();
 			PendenzaPost pendenzaPost= JSONSerializable.parse(jsonRequest, PendenzaPost.class);
-			
+
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(pendenzaPost.getIdPendenza());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(pendenzaPost.getIdA2A());
-			
+
 			pendenzaPost.validate();
 
 			Versamento versamento = PendenzeConverter.getVersamentoFromPendenza(pendenzaPost);
-			
+
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, versamento.getCodDominio(), versamento.getCodTipoVersamento())) {
 				throw AuthorizationManager.toNotAuthorizedException(user, versamento.getCodDominio(), versamento.getCodTipoVersamento());
@@ -402,7 +404,7 @@ public class PendenzeController extends BaseController {
 			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
-			
+
 			PendenzaCreata pc = new PendenzaCreata();
 			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
@@ -415,36 +417,36 @@ public class PendenzeController extends BaseController {
 		} finally {
 			this.log(this.context);
 		}
-    }
-	
+	}
 
-	
-    public Response pendenzeIdDominioIdTipoPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-    	String methodName = "pendenzeIdDominioIdTipoPendenzaPOST";  
+
+
+	public Response pendenzeIdDominioIdTipoPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		String methodName = "pendenzeIdDominioIdTipoPendenzaPOST";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-    	
+
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
-			
+
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
-			
+
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
 				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idTipoPendenza);
 			}
-			
+
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);	
 			String jsonRequest = baos.toString();
-			
+
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
-			
+
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
 			putVersamentoDTO.setStampaAvviso(stampaAvviso);
 			putVersamentoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
@@ -459,9 +461,9 @@ public class PendenzeController extends BaseController {
 			putVersamentoDTO.setHeaders(this.getHeaders(getRequest()));
 			putVersamentoDTO.setPathParameters(uriInfo.getPathParameters());
 			putVersamentoDTO.setQueryParameters(uriInfo.getQueryParameters());
-			
+
 			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdateCustom(putVersamentoDTO);
-			
+
 			PendenzaCreata pc = new PendenzaCreata();
 			pc.setIdDominio(createOrUpdate.getDominio().getCodDominio());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
@@ -471,13 +473,13 @@ public class PendenzeController extends BaseController {
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
-			
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			this.log(this.context);
 		}
-    }
+	}
 
 
 	public Response pendenzeTracciatiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
@@ -528,7 +530,7 @@ public class PendenzeController extends BaseController {
 				// salvo il json ricevuto
 				IOUtils.copy(is, baos);
 			}
-			
+
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
@@ -550,13 +552,13 @@ public class PendenzeController extends BaseController {
 			}
 			postTracciatoDTO.setContenuto(baos.toByteArray());
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.JSON);
-			
+
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();
 			postTracciatoDTO.setOperatore(operatore);
 
 			PostTracciatoDTOResponse postTracciatoDTOResponse = tracciatiDAO.create(postTracciatoDTO);
-			
+
 			TracciatoPendenzeIndex rsModel = TracciatiConverter.toTracciatoPendenzeRsModelIndex(postTracciatoDTOResponse.getTracciato());
 
 			Status responseStatus = Status.CREATED;
@@ -569,12 +571,12 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-    public Response pendenzeTracciatiIdDominioIdTipoPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-    	String methodName = "pendenzeTracciatiIdDominioIdTipoPendenzaPOST";  
+	public Response pendenzeTracciatiIdDominioIdTipoPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		String methodName = "pendenzeTracciatiIdDominioIdTipoPendenzaPOST";  
 		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-    	
+
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 
 			String contentTypeBody = null;
@@ -617,14 +619,14 @@ public class PendenzeController extends BaseController {
 				// salvo il json ricevuto
 				IOUtils.copy(is, baos);
 			}
-			
+
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.SCRITTURA));
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
-			
+
 			// controllo che il dominio e tipo versamento siano autorizzati
 			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, idDominio, idTipoPendenza)) {
 				throw AuthorizationManager.toNotAuthorizedException(user, idDominio, idTipoPendenza);
@@ -645,13 +647,13 @@ public class PendenzeController extends BaseController {
 			postTracciatoDTO.setContenuto(baos.toByteArray());
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.CSV);
 			postTracciatoDTO.setIdTipoPendenza(idTipoPendenza);
-			
+
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();
 			postTracciatoDTO.setOperatore(operatore);
 
 			PostTracciatoDTOResponse postTracciatoDTOResponse = tracciatiDAO.create(postTracciatoDTO);
-			
+
 			TracciatoPendenzeIndex rsModel = TracciatiConverter.toTracciatoPendenzeRsModelIndex(postTracciatoDTOResponse.getTracciato());
 
 			Status responseStatus = Status.CREATED;
@@ -662,9 +664,9 @@ public class PendenzeController extends BaseController {
 		} finally {
 			this.log(this.context);
 		}
-    }
-    
-    
+	}
+
+
 
 	public Response pendenzeTracciatiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
 		String methodName = "pendenzeTracciatiGET";
@@ -686,7 +688,7 @@ public class PendenzeController extends BaseController {
 			tipoTracciato.add(TIPO_TRACCIATO.PENDENZA);
 			listaTracciatiDTO.setTipoTracciato(tipoTracciato);
 			listaTracciatiDTO.setIdDominio(idDominio);
-			
+
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
 			if(domini == null) {
@@ -737,7 +739,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
-			
+
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -746,7 +748,7 @@ public class PendenzeController extends BaseController {
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
-			
+
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
@@ -755,13 +757,27 @@ public class PendenzeController extends BaseController {
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
 				throw new NonTrovataException("Tracciato di Esito non presente: elaborazione ancora in corso");
 
-			TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
 			String resFileName = tracciato.getFileNameEsito();
-			if(!resFileName.endsWith(".json"))
-				resFileName = resFileName.concat(".json");
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rsModel.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
+			switch (tracciato.getFormato()) {
+			case CSV:
+				if(!resFileName.endsWith(".csv"))
+					resFileName = resFileName.concat(".csv");
+
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				return this.handleResponseOk(Response.status(Status.OK).type("text/csv").entity(tracciato.getRawEsito()).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
+			case JSON:
+				TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
+
+				if(!resFileName.endsWith(".json"))
+					resFileName = resFileName.concat(".json");
+
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rsModel.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+resFileName+"\""),transactionId).build();
+
+			case XML:
+			default:
+				throw new ValidationException("Formato non disponibile");
+			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -783,7 +799,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
-			
+
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
@@ -791,7 +807,7 @@ public class PendenzeController extends BaseController {
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
-			
+
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
@@ -825,7 +841,7 @@ public class PendenzeController extends BaseController {
 			listaOperazioniTracciatoDTO.setLimit(risultatiPerPagina);
 			listaOperazioniTracciatoDTO.setPagina(pagina);
 			listaOperazioniTracciatoDTO.setIdTracciato((long) id);
-			
+
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
@@ -860,8 +876,8 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-    public Response pendenzeTracciatiIdRichiestaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
-    	String methodName = "pendenzeTracciatiIdRichiestaGET";  
+	public Response pendenzeTracciatiIdRichiestaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+		String methodName = "pendenzeTracciatiIdRichiestaGET";  
 		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -872,7 +888,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
-			
+
 			// Autorizzazione sui domini
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -881,25 +897,39 @@ public class PendenzeController extends BaseController {
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
-			
+
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
 			}
 
-			TracciatoPendenzePost response = TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta()));
 			String reqFileName = tracciato.getFileNameRichiesta();
-			if(!reqFileName.endsWith(".json"))
-				reqFileName = reqFileName.concat(".json");
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(response.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
+			switch (tracciato.getFormato()) {
+			case CSV:
+				if(!reqFileName.endsWith(".csv"))
+					reqFileName = reqFileName.concat(".csv");
+
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				return this.handleResponseOk(Response.status(Status.OK).type("text/csv").entity(tracciato.getRawRichiesta()).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
+			case JSON:
+				TracciatoPendenzePost response = TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta()));
+
+				if(!reqFileName.endsWith(".json"))
+					reqFileName = reqFileName.concat(".json");
+
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(response.toJSON(null,this.serializationConfig)).header("content-disposition", "attachment; filename=\""+reqFileName+"\""),transactionId).build();
+
+			case XML:
+			default:
+				throw new ValidationException("Formato non disponibile");
+			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			this.log(this.context);
 		}
-    }
+	}
 
 
 	public Response pendenzeTracciatiIdStampeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
@@ -914,7 +944,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiTracciatoDTO leggiTracciatoDTO = new LeggiTracciatoDTO(user);
 			leggiTracciatoDTO.setId((long) id);
-			
+
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
@@ -922,28 +952,37 @@ public class PendenzeController extends BaseController {
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
-			
+
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: elaborazione ancora in corso");
-			
+
 			// check dominio
 			if(!AuthorizationManager.isDominioAuthorized(leggiTracciatoDTO.getUser(), tracciato.getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiTracciatoDTO.getUser(), tracciato.getCodDominio(),null);
 			}
 
-			TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
-			DettaglioTracciatoPendenzeEsito esito = rsModel.getEsito();
-			List<EsitoOperazionePendenza> inserimenti = esito.getInserimenti();
+			String zipFileName = (tracciato.getFileNameRichiesta().contains(".") ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
 
 			ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
 			ZipOutputStream zos = new ZipOutputStream(baos1);
+			switch (tracciato.getFormato()) {
+			case CSV:
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.popolaZipTracciatoCSV(user, tracciato, zos);
+				break;
+			case JSON:
+				TracciatoPendenzeEsito rsModel = TracciatiConverter.toTracciatoPendenzeEsitoRsModel(tracciato);
+				DettaglioTracciatoPendenzeEsito esito = rsModel.getEsito();
+				List<EsitoOperazionePendenza> inserimenti = esito.getInserimenti();
+				this.popolaZip(user, inserimenti, zos);
 
-			this.popolaZip(user, inserimenti, zos);
+			case XML:
+			default:
+				throw new ValidationException("Formato non disponibile");
+			}
 
 			zos.flush();
 			zos.close();
-
-			String zipFileName = (tracciato.getFileNameRichiesta().contains(".") ? tracciato.getFileNameRichiesta().substring(0, tracciato.getFileNameRichiesta().lastIndexOf(".")) : tracciato.getFileNameRichiesta()) + ".zip";
 			byte[] b = baos1.toByteArray();
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(b).header("content-disposition", "attachment; filename=\""+zipFileName+"\""),transactionId).build();
@@ -993,6 +1032,76 @@ public class PendenzeController extends BaseController {
 			}
 		} 
 
+		if(addError){
+			ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
+			zos.putNextEntry(tracciatoOutputEntry);
+			zos.write("Attenzione: non sono presenti inserimenti andati a buon fine nel tracciato selezionato.".getBytes());
+			zos.flush();
+			zos.closeEntry();
+		}
+	}
+
+	private void popolaZipTracciatoCSV(Authentication user, Tracciato tracciato, ZipOutputStream zos)
+			throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException,
+			IOException, ValidationException {
+		boolean addError = true;
+		TracciatiDAO tracciatiDAO = new TracciatiDAO();
+		PendenzeDAO pendenzeDAO = new PendenzeDAO();
+
+		ListaOperazioniTracciatoDTO listaOperazioniTracciatoDTO = new ListaOperazioniTracciatoDTO(user);
+
+		int pagina = 1;
+		listaOperazioniTracciatoDTO.setLimit(50);
+		listaOperazioniTracciatoDTO.setPagina(pagina);
+		listaOperazioniTracciatoDTO.setIdTracciato(tracciato.getId());
+		listaOperazioniTracciatoDTO.setStato(StatoOperazioneType.ESEGUITO_OK);
+		listaOperazioniTracciatoDTO.setTipo(TipoOperazioneType.ADD);
+
+		ListaOperazioniTracciatoDTOResponse listaTracciatiDTOResponse = tracciatiDAO.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO);
+
+		if(listaTracciatiDTOResponse.getTotalResults() > 0) {
+			do {
+				for (Operazione operazione : listaTracciatiDTOResponse.getResults()) {
+					
+					EsitoOperazionePendenza esitoOperazionePendenza = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
+					
+					if(esitoOperazionePendenza.getStato().equals(StatoOperazionePendenza.ESEGUITO) && esitoOperazionePendenza.getEsito().equals("ADD_OK")) { 
+						addError = false; // ho trovato almeno un avviso da stampare
+	
+						LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
+	
+						String idDominio = null;
+						String numeroAvviso = null;
+						try {
+							Avviso avviso = (Avviso) esitoOperazionePendenza.getDati();
+							idDominio = avviso.getIdDominio();
+							numeroAvviso = avviso.getNumeroAvviso();
+						} catch (Exception e) {
+							java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?, ?>) esitoOperazionePendenza.getDati();
+							idDominio =(String)map.get("idDominio");
+							numeroAvviso =(String)map.get("numeroAvviso");
+						}
+	
+						leggiPendenzaDTO.setIdDominio(idDominio);
+						leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+						LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
+	
+						String pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
+						ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
+						zos.putNextEntry(tracciatoOutputEntry);
+						zos.write(leggiPendenzaDTOResponse.getAvvisoPdf());
+						zos.flush();
+						zos.closeEntry();
+					}
+				}
+	
+				pagina ++;
+				listaOperazioniTracciatoDTO.setPagina(pagina);
+				listaTracciatiDTOResponse = tracciatiDAO.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO);
+				
+			}while(!listaTracciatiDTOResponse.getResults().isEmpty());
+		}
+		
 		if(addError){
 			ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
 			zos.putNextEntry(tracciatoOutputEntry);

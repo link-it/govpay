@@ -64,6 +64,9 @@ public class TipoVersamentoConverter {
 		dto.setPromemoriaRicevutaMessaggioDefault(vo.getPromemoriaRicevutaMessaggio());
 		dto.setPromemoriaRicevutaOggettoDefault(vo.getPromemoriaRicevutaOggetto());
 		dto.setVisualizzazioneDefinizioneDefault(vo.getVisualizzazioneDefinizione());
+		dto.setTracciatoCsvHeaderRispostaDefault(vo.getTracCsvHeaderRisposta());
+		dto.setTracciatoCsvFreemarkerRichiestaDefault(vo.getTracCsvTemplateRichiesta());
+		dto.setTracciatoCsvFreemarkerRispostaDefault(vo.getTracCsvTemplateRisposta());
 		
 		return dto;
 	}
@@ -93,6 +96,10 @@ public class TipoVersamentoConverter {
 		vo.setPromemoriaRicevutaMessaggio(dto.getPromemoriaRicevutaMessaggioDefault());
 		vo.setPromemoriaRicevutaOggetto(dto.getPromemoriaRicevutaOggettoDefault());
 		vo.setVisualizzazioneDefinizione(dto.getVisualizzazioneDefinizioneDefault());
+		vo.setTracCsvHeaderRisposta(dto.getTracciatoCsvHeaderRispostaDefault());
+		vo.setTracCsvTemplateRichiesta(dto.getTracciatoCsvFreemarkerRichiestaDefault());
+		vo.setTracCsvTemplateRisposta(dto.getTracciatoCsvFreemarkerRispostaDefault());
+		
 		return vo;
 	}
 

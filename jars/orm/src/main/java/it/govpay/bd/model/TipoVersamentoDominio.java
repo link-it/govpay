@@ -181,4 +181,25 @@ public class TipoVersamentoDominio extends it.govpay.model.TipoVersamentoDominio
 		else 
 			return this.getVisualizzazioneDefinizioneDefault();
 	}
+	
+	public String getTracciatoCsvHeaderRisposta() {
+		if(this.getTracciatoCsvHeaderRispostaCustom() != null)
+			return this.getTracciatoCsvHeaderRispostaCustom();
+		else 
+			return this.getTracciatoCsvHeaderRispostaDefault();
+	}
+	
+	public String getTracciatoCsvFreemarkerRichiesta() {
+		if(this.getTracciatoCsvFreemarkerRichiestaCustom() != null)
+			return this.getTracciatoCsvFreemarkerRichiestaCustom();
+		else 
+			return this.getTracciatoCsvFreemarkerRichiestaDefault();
+	}
+	
+	public String getTracciatoCsvFreemarkerRisposta() {
+		if(this.getTracciatoCsvFreemarkerRispostaCustom() != null)
+			return this.getTracciatoCsvFreemarkerRispostaCustom();
+		else 
+			return this.getTracciatoCsvFreemarkerRispostaDefault();
+	}
 }

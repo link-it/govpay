@@ -24,6 +24,7 @@ public class Costanti {
     
     public final static String MAP_VERSAMENTO = "versamento";
     public final static String MAP_DOMINIO = "dominio";
+    public final static String MAP_APPLICAZIONE = "applicazione";
     public final static String MAP_RPT = "rpt";
     public final static String MAP_ID_TIPO_VERSAMENTO = "idTipoVersamento";
     public final static String MAP_ID_DOMINIO = "idDominio";
@@ -32,4 +33,6 @@ public class Costanti {
     public final static String MAP_CONTENT_TYPE_MESSAGGIO_PROMEMORIA_DEFAULT_VALUE = "text/html";
     
     public final static String MAP_LINEA_CSV_RICHIESTA = "lineaCsvRichiesta";
+    
+    public final static String MAP_CSV_HEADER_RISPOSTA = "headerRisposta";
 }

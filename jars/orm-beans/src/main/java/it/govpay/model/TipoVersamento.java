@@ -52,6 +52,9 @@ public class TipoVersamento extends BasicModel {
 	private String promemoriaRicevutaOggettoDefault;
 	private String promemoriaRicevutaMessaggioDefault;
 	private String visualizzazioneDefinizioneDefault;
+	private String tracciatoCsvHeaderRispostaDefault;
+	private String tracciatoCsvFreemarkerRichiestaDefault;
+	private String tracciatoCsvFreemarkerRispostaDefault;
 
 	public String getCodificaIuvDefault() {
 		return codificaIuvDefault;
@@ -185,6 +188,24 @@ public class TipoVersamento extends BasicModel {
 	}
 	public void setVisualizzazioneDefinizioneDefault(String visualizzazioneDefinizioneDefault) {
 		this.visualizzazioneDefinizioneDefault = visualizzazioneDefinizioneDefault;
+	}
+	public String getTracciatoCsvHeaderRispostaDefault() {
+		return tracciatoCsvHeaderRispostaDefault;
+	}
+	public void setTracciatoCsvHeaderRispostaDefault(String tracciatoCsvHeaderRispostaDefault) {
+		this.tracciatoCsvHeaderRispostaDefault = tracciatoCsvHeaderRispostaDefault;
+	}
+	public String getTracciatoCsvFreemarkerRichiestaDefault() {
+		return tracciatoCsvFreemarkerRichiestaDefault;
+	}
+	public void setTracciatoCsvFreemarkerRichiestaDefault(String tracciatoCsvFreemarkerRichiestaDefault) {
+		this.tracciatoCsvFreemarkerRichiestaDefault = tracciatoCsvFreemarkerRichiestaDefault;
+	}
+	public String getTracciatoCsvFreemarkerRispostaDefault() {
+		return tracciatoCsvFreemarkerRispostaDefault;
+	}
+	public void setTracciatoCsvFreemarkerRispostaDefault(String tracciatoCsvFreemarkerRispostaDefault) {
+		this.tracciatoCsvFreemarkerRispostaDefault = tracciatoCsvFreemarkerRispostaDefault;
 	}
 
 }

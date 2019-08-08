@@ -193,7 +193,7 @@ public class OperazioneFactory {
 
 			boolean create = false;
 			try {
-				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, request.getVersamento().getCodApplicazione()).getId(), request.getVersamento().getCodVersamentoEnte());
+				versamentiBD.getVersamento(AnagraficaManager.getApplicazione(versamentiBD, pendenzaPost.getIdA2A()).getId(), pendenzaPost.getIdPendenza());
 			}catch(NotFoundException e) {
 				create = true;
 			}

@@ -34,9 +34,9 @@ Scenario: configurazione anagrafica base
 
 #### configurazione del giornale degli eventi
 Given url backofficeBaseurl
-And path 'configurazioni', 'giornale'
+And path 'configurazioni'
 And headers gpAdminBasicAutenticationHeader
-And request read('classpath:configurazione/v1/msg/configurazione_giornale.json')
+And request read('classpath:configurazione/v1/msg/configurazione_generale.json')
 When method POST
 Then assert responseStatus == 200 || responseStatus == 201
 

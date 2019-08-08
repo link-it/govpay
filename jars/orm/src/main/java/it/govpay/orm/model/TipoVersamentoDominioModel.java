@@ -62,6 +62,9 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.PROMEMORIA_RICEVUTA_OGGETTO = new Field("promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new Field("promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.VISUALIZZAZIONE_DEFINIZIONE = new Field("visualizzazioneDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRAC_CSV_HEADER_RISPOSTA = new Field("tracCsvHeaderRisposta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRAC_CSV_TEMPLATE_RICHIESTA = new Field("tracCsvTemplateRichiesta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRAC_CSV_TEMPLATE_RISPOSTA = new Field("tracCsvTemplateRisposta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 	
 	}
 	
@@ -90,6 +93,9 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 		this.PROMEMORIA_RICEVUTA_OGGETTO = new ComplexField(father,"promemoriaRicevutaOggetto",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.PROMEMORIA_RICEVUTA_MESSAGGIO = new ComplexField(father,"promemoriaRicevutaMessaggio",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 		this.VISUALIZZAZIONE_DEFINIZIONE = new ComplexField(father,"visualizzazioneDefinizione",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRAC_CSV_HEADER_RISPOSTA = new ComplexField(father,"tracCsvHeaderRisposta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRAC_CSV_TEMPLATE_RICHIESTA = new ComplexField(father,"tracCsvTemplateRichiesta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
+		this.TRAC_CSV_TEMPLATE_RISPOSTA = new ComplexField(father,"tracCsvTemplateRisposta",java.lang.String.class,"TipoVersamentoDominio",TipoVersamentoDominio.class);
 	
 	}
 	
@@ -136,6 +142,12 @@ public class TipoVersamentoDominioModel extends AbstractModel<TipoVersamentoDomi
 	public IField PROMEMORIA_RICEVUTA_MESSAGGIO = null;
 	 
 	public IField VISUALIZZAZIONE_DEFINIZIONE = null;
+	 
+	public IField TRAC_CSV_HEADER_RISPOSTA = null;
+	 
+	public IField TRAC_CSV_TEMPLATE_RICHIESTA = null;
+	 
+	public IField TRAC_CSV_TEMPLATE_RISPOSTA = null;
 	 
 
 	@Override

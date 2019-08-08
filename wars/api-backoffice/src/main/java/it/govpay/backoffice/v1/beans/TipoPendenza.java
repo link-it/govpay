@@ -23,6 +23,7 @@ import it.govpay.core.beans.JSONSerializable;
 "promemoriaAvviso",
 "promemoriaRicevuta",
 "visualizzazione",
+"tracciatoCsv",
 "idTipoPendenza",
 })
 public class TipoPendenza extends JSONSerializable {
@@ -62,6 +63,9 @@ public class TipoPendenza extends JSONSerializable {
   
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
+  
+  @JsonProperty("tracciatoCsv")
+  private TracciatoCsv tracciatoCsv = null;
   
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
@@ -254,6 +258,21 @@ public class TipoPendenza extends JSONSerializable {
 
   /**
    **/
+  public TipoPendenza tracciatoCsv(TracciatoCsv tracciatoCsv) {
+    this.tracciatoCsv = tracciatoCsv;
+    return this;
+  }
+
+  @JsonProperty("tracciatoCsv")
+  public TracciatoCsv getTracciatoCsv() {
+    return tracciatoCsv;
+  }
+  public void setTracciatoCsv(TracciatoCsv tracciatoCsv) {
+    this.tracciatoCsv = tracciatoCsv;
+  }
+
+  /**
+   **/
   public TipoPendenza idTipoPendenza(String idTipoPendenza) {
     this.idTipoPendenza = idTipoPendenza;
     return this;
@@ -288,12 +307,13 @@ public class TipoPendenza extends JSONSerializable {
         Objects.equals(promemoriaAvviso, tipoPendenza.promemoriaAvviso) &&
         Objects.equals(promemoriaRicevuta, tipoPendenza.promemoriaRicevuta) &&
         Objects.equals(visualizzazione, tipoPendenza.visualizzazione) &&
+        Objects.equals(tracciatoCsv, tipoPendenza.tracciatoCsv) &&
         Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, idTipoPendenza);
+    return Objects.hash(descrizione, tipo, codificaIUV, pagaTerzi, abilitato, form, validazione, trasformazione, inoltro, promemoriaAvviso, promemoriaRicevuta, visualizzazione, tracciatoCsv, idTipoPendenza);
   }
 
   public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
@@ -322,6 +342,7 @@ public class TipoPendenza extends JSONSerializable {
     sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");
+    sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("}");
     return sb.toString();

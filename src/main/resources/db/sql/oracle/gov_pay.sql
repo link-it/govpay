@@ -544,6 +544,9 @@ CREATE TABLE tipi_versamento
 	promemoria_ricevuta_oggetto CLOB,
 	promemoria_ricevuta_messaggio CLOB,
 	visualizzazione_definizione CLOB,
+	trac_csv_header_risposta CLOB,
+	trac_csv_template_richiesta CLOB,
+	trac_csv_template_risposta CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -594,6 +597,9 @@ CREATE TABLE tipi_vers_domini
 	promemoria_ricevuta_oggetto CLOB,
 	promemoria_ricevuta_messaggio CLOB,
 	visualizzazione_definizione CLOB,
+	trac_csv_header_risposta CLOB,
+	trac_csv_template_richiesta CLOB,
+	trac_csv_template_risposta CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_tipo_versamento NUMBER NOT NULL,

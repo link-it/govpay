@@ -265,6 +265,8 @@ public class TracciatiDAO extends BaseDAO{
 		filter.setIdTracciato(listaOperazioniTracciatoDTO.getIdTracciato());
 		filter.setOffset(listaOperazioniTracciatoDTO.getOffset());
 		filter.setLimit(listaOperazioniTracciatoDTO.getLimit());
+		filter.setStato(listaOperazioniTracciatoDTO.getStato());
+		filter.setTipo(listaOperazioniTracciatoDTO.getTipo());
 
 		long count = operazioniBD.count(filter);
 

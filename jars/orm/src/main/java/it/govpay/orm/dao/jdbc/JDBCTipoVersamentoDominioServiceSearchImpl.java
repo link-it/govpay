@@ -191,6 +191,9 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(TipoVersamentoDominio.model().PROMEMORIA_RICEVUTA_OGGETTO);
 			fields.add(TipoVersamentoDominio.model().COD_APPLICAZIONE);
 			fields.add(TipoVersamentoDominio.model().VISUALIZZAZIONE_DEFINIZIONE);
+			fields.add(TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA);
+			fields.add(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA);
+			fields.add(TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA);
 
 			AliasField tipoTributoId = new AliasField(new CustomField("tipoVersamento.id", Long.class, "id", this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)),
 					this.getTipoVersamentoDominioFieldConverter().toTable(TipoVersamentoDominio.model().TIPO_VERSAMENTO)+"_id");
@@ -233,6 +236,9 @@ public class JDBCTipoVersamentoDominioServiceSearchImpl implements IJDBCServiceS
 			fields.add(codApplicazioneAlias);
 			AliasField visualizzazioneDefinizioneAlias = this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.VISUALIZZAZIONE_DEFINIZIONE);
 			fields.add(visualizzazioneDefinizioneAlias);
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA));
+			fields.add(this.getAliasField(TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA));
 			
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
 			fields.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);

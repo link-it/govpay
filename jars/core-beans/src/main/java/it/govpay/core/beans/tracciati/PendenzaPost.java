@@ -28,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "datiAllegati",
 "tassonomia",
 "tassonomiaAvviso",
+"direzione",
+"divisione",
 "voci",
 "idA2A",
 "idPendenza",
@@ -81,6 +83,12 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
+  
+  @JsonProperty("direzione")
+  private String direzione = null;
+  
+  @JsonProperty("divisione")
+  private String divisione = null;
   
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
@@ -358,6 +366,38 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   * Identificativo della direzione interna all'ente creditore
+   **/
+  public PendenzaPost direzione(String direzione) {
+    this.direzione = direzione;
+    return this;
+  }
+
+  @JsonProperty("direzione")
+  public String getDirezione() {
+    return direzione;
+  }
+  public void setDirezione(String direzione) {
+    this.direzione = direzione;
+  }
+
+  /**
+   * Identificativo della divisione interna all'ente creditore
+   **/
+  public PendenzaPost divisione(String divisione) {
+    this.divisione = divisione;
+    return this;
+  }
+
+  @JsonProperty("divisione")
+  public String getDivisione() {
+    return divisione;
+  }
+  public void setDivisione(String divisione) {
+    this.divisione = divisione;
+  }
+
+  /**
    **/
   public PendenzaPost voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -429,6 +469,8 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(datiAllegati, pendenzaPost.datiAllegati) &&
         Objects.equals(tassonomia, pendenzaPost.tassonomia) &&
         Objects.equals(tassonomiaAvviso, pendenzaPost.tassonomiaAvviso) &&
+        Objects.equals(direzione, pendenzaPost.direzione) &&
+        Objects.equals(divisione, pendenzaPost.divisione) &&
         Objects.equals(voci, pendenzaPost.voci) &&
         Objects.equals(idA2A, pendenzaPost.idA2A) &&
         Objects.equals(idPendenza, pendenzaPost.idPendenza);
@@ -436,7 +478,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, voci, idA2A, idPendenza);
+    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, voci, idA2A, idPendenza);
   }
 
   public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -469,6 +511,8 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    tassonomia: ").append(toIndentedString(tassonomia)).append("\n");
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
+    sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
+    sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");

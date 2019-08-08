@@ -214,6 +214,27 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "visualizzazione_definizione";
 			}
 		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_header_risposta";
+			}else{
+				return "trac_csv_header_risposta";
+			}
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_template_richiesta";
+			}else{
+				return "trac_csv_template_richiesta";
+			}
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trac_csv_template_risposta";
+			}else{
+				return "trac_csv_template_risposta";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -288,6 +309,15 @@ public class TipoVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 		if(field.equals(TipoVersamento.model().VISUALIZZAZIONE_DEFINIZIONE)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_HEADER_RISPOSTA)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_TEMPLATE_RICHIESTA)){
+			return this.toTable(TipoVersamento.model(), returnAlias);
+		}
+		if(field.equals(TipoVersamento.model().TRAC_CSV_TEMPLATE_RISPOSTA)){
 			return this.toTable(TipoVersamento.model(), returnAlias);
 		}
 
