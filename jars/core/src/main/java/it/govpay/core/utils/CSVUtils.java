@@ -18,13 +18,21 @@ import org.apache.commons.csv.CSVRecord;
 
 public class CSVUtils {
 	
-	private static CSVUtils instance;
+	private CSVFormat csvFormat = CSVFormat.RFC4180;
 	
-	public static CSVUtils getInstance () {
-		if(CSVUtils.instance == null)
-			CSVUtils.instance = new CSVUtils();
-		
-		return CSVUtils.instance;
+	public CSVUtils(CSVFormat csvFormat) {
+		this.csvFormat = csvFormat;
+	}
+	
+	public static CSVUtils getInstance() {
+		return new CSVUtils(CSVFormat.RFC4180);
+	}
+	
+	public static CSVUtils getInstance(CSVFormat csvFormat) {
+		if(csvFormat != null)
+			return new CSVUtils(csvFormat);
+		else
+			return new CSVUtils(CSVFormat.RFC4180);
 	}
 	
 	public static long countLines(byte[] tracciato) throws IOException {
@@ -67,16 +75,17 @@ public class CSVUtils {
 		return lst;
 	}
 	
-	public static CSVRecord getCSVRecord(String csvEntry) {
+	
+	public CSVRecord getCSVRecord(String csvEntry) {
 		try {
-			CSVParser p = CSVParser.parse(csvEntry, CSVFormat.RFC4180);
+			CSVParser p = CSVParser.parse(csvEntry, csvFormat);
 			return p.getRecords().get(0);
 		} catch (IOException ioe) {
 			return null;
 		}
 	}
 	
-	public static boolean isEmpty(CSVRecord record, int position) {
+	public boolean isEmpty(CSVRecord record, int position) {
 		try {
 			return record.get(position).isEmpty(); 
 		} catch (Throwable t) {
@@ -84,16 +93,24 @@ public class CSVUtils {
 		}
 	}
 	
-	public static String toJsonValue(CSVRecord record, int position) {
-		if(isEmpty(record, position)) 
+	public String toJsonValue(CSVRecord record, int ... positions) {
+		String collage = "";
+		
+		for(int position : positions) {
+			if(!isEmpty(record, position)) {
+				collage += record.get(position);
+			}
+		}
+		
+		if(collage.trim().isEmpty())
 			return "null";
 		else
-			return "\"" + record.get(position) +  "\"";
+			return "\"" + collage.trim() +  "\"";
 	}
 	
-	public static String toCsv(String ...strings) throws IOException {
+	public String toCsv(String ...strings) throws IOException {
 		StringWriter writer = new StringWriter();
-		CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
+		CSVPrinter printer = new CSVPrinter(writer, csvFormat);
 		printer.printRecord(Arrays.asList(strings));
 		printer.flush();
 		printer.close();
