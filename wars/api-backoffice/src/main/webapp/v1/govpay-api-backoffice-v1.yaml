@@ -7013,6 +7013,12 @@ components:
           description: Data di caricamento del tracciato
         stato:
           $ref: '#/components/schemas/statoTracciatoPendenza'
+        descrizioneStato:
+          type: string
+          description:
+            Descrizione dello stato del tracciato
+          example:
+            Errore di validazione
         numeroOperazioniTotali:
           type: number
           description: Numero totale di operazioni previste

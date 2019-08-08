@@ -616,7 +616,7 @@ public class PendenzeController extends BaseController {
 			}
 
 			if(fileInputStream == null) {
-				// salvo il json ricevuto
+				// salvo il file ricevuto
 				IOUtils.copy(is, baos);
 			}
 
@@ -642,9 +642,9 @@ public class PendenzeController extends BaseController {
 			postTracciatoDTO.setAvvisaturaDigitale(avvisaturaDigitale);
 			if(modalitaAvvisaturaDigitale != null) {
 				ModoAvvisatura modoAvvisatura = modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.ASINCRONA) ? ModoAvvisatura.ASICNRONA : ModoAvvisatura.SINCRONA;
-				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura );
+				postTracciatoDTO.setAvvisaturaModalita(modoAvvisatura);
 			}
-			postTracciatoDTO.setContenuto(baos.toByteArray());
+			postTracciatoDTO.setContenuto(baos.size() > 0 ? baos.toByteArray() : null);
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.CSV);
 			postTracciatoDTO.setIdTipoPendenza(idTipoPendenza);
 

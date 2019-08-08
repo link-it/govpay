@@ -35,4 +35,8 @@ public class Costanti {
     public final static String MAP_LINEA_CSV_RICHIESTA = "lineaCsvRichiesta";
     
     public final static String MAP_CSV_HEADER_RISPOSTA = "headerRisposta";
+    
+    public final static String MAP_CSV_ESITO_OPERAZIONE = "esitoOperazione";
+    public final static String MAP_CSV_DESCRIZIONE_ESITO_OPERAZIONE = "descrizioneEsitoOperazione";
+    
 }

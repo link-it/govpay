@@ -125,10 +125,17 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
     return o.toString().replace("\n", "\n    ");
   }
 
-@Override
-public void validate() throws ValidationException {
-	
-}
+  @Override
+  public void validate() throws ValidationException {
+	  int v = 0;
+	  v = this.responseHeader != null ? v+1 : v;
+	  v = this.freemarkerRequest != null ? v+1 : v;
+	  v = this.freemarkerResponse != null ? v+1 : v;
+		
+	  if(v != 3) {
+		  throw new ValidationException("I campi 'responseHeader', 'freemarkerRequest' e 'freemarkerResponse' devono essere tutti valorizzati per definire il field 'tracciatoCsv'.");
+	  }
+  }
 }
 
 
