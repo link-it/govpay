@@ -15,13 +15,9 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.slf4j.Logger;
 
 public class CSVUtils {
 
-	private static CSVUtils instance;
-	private static Logger log = LoggerWrapperFactory.getLogger(CSVUtils.class);
 	private CSVFormat csvFormat = CSVFormat.RFC4180;
 
 	public CSVUtils(CSVFormat csvFormat) {
@@ -29,7 +25,7 @@ public class CSVUtils {
 	}
 
 	public static CSVUtils getInstance() {
-		return new CSVUtils(CSVFormat.RFC4180);
+		return new CSVUtils(CSVFormat.DEFAULT);
 	}
 
 	public static CSVUtils getInstance(CSVFormat csvFormat) {
@@ -114,18 +110,12 @@ public class CSVUtils {
 
 	public String toCsv(String ...strings) throws IOException {
 		StringWriter writer = new StringWriter();
-		log.debug("I1 CSV [" + strings + "]");
-		log.debug("I2 CSV [" + Arrays.asList(strings) + "]");
-		
 		CSVPrinter printer = new CSVPrinter(writer, csvFormat);
 		printer.printRecord(Arrays.asList(strings));
 		printer.flush();
 		printer.close();
 		
 		String string = writer.toString();
-		log.debug("Riga CSV [" + string + "]");
-		
-		
 		return string;
 	}
 
