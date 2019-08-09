@@ -38,7 +38,7 @@ public class Eventi extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getEvento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
         this.controller.setContext(this.getContext());
-        return this.controller.eventiIdGET(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getEvento(this.getUser(), uriInfo, httpHeaders,  id);
     }
 
     @GET
@@ -50,7 +50,7 @@ public class Eventi extends BaseRsServiceV1{
     		@QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("idPagamento") String idPagamento, @QueryParam("esito") String esito, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA,
 		@QueryParam("categoriaEvento") String categoriaEvento, @QueryParam("tipoEvento") String tipoEvento, @QueryParam("sottotipoEvento") String sottotipoEvento, @QueryParam("componente") String componente, @QueryParam("ruolo") String ruolo, @QueryParam("messaggi") Boolean messaggi){
         this.controller.setContext(this.getContext());
-        return this.controller.eventiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv, idA2A, idPendenza, idPagamento, esito, dataDa, dataA, categoriaEvento, tipoEvento, sottotipoEvento, componente, ruolo, messaggi);
+        return this.controller.findEventi(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, iuv, idA2A, idPendenza, idPagamento, esito, dataDa, dataA, categoriaEvento, tipoEvento, sottotipoEvento, componente, ruolo, messaggi);
     }
 
 }

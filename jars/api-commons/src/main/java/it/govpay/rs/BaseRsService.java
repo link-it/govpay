@@ -146,8 +146,6 @@ public abstract class BaseRsService {
 					break;
 				}
 			}
-			
-			
 			String baseUri = request.getRequestURI(); // uriInfo.getBaseUri().toString();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
@@ -155,6 +153,20 @@ public abstract class BaseRsService {
 //			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
 			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
 			ctx.getEventoCtx().setUrl(servicePathwithParameters);
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("Ricevuta una richiesta:");
+			sb.append("\n");
+			sb.append("API: [").append(ctx.getEventoCtx().getComponente()).append("]").append(" HTTPMethod: [").append(this.request.getMethod()).append("], Risorsa: [").append(context.getRestPath()).append("]");
+			sb.append("\n");
+			sb.append("URL: [").append(servicePathwithParameters).append("]");
+			sb.append("\n");
+			sb.append("Principal: [").append(AutorizzazioneUtils.getPrincipal(context.getAuthentication())).append("], Utente: [").append(ctx.getEventoCtx().getUtente()).append("]");
+			sb.append("\n");
+			sb.append("Query Params: [").append(this.uriInfo.getQueryParameters()).append("]");
+			sb.append("\n");
+			sb.append("Path Params: [").append(this.uriInfo.getPathParameters()).append("]");
+			this.log.debug(sb.toString());
 		}
 		return context;
 	}

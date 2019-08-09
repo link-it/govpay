@@ -9,7 +9,12 @@
  	"causale": ${csvUtils.toJsonValue(csvRecord, 5)},
  	"annoRiferimento": ${csvUtils.toJsonValue(csvRecord, 6)},
  	"cartellaPagamento": ${csvUtils.toJsonValue(csvRecord, 7)},
- 	<#if !csvUtils.isEmpty(csvRecord, 8)>"datiAllegati": ${csvRecord.get(8)},</#if>
+ 	"datiAllegati" : {
+ 		"testAccenti": "òàáâãäåæçèéêëìíîï",
+ 		"testCaratteri" : "!#$%&'()*+,-./",
+ 		<#if !csvUtils.isEmpty(csvRecord, 8)>"datiAllegatiCSV": ${csvRecord.get(8)}</#if>
+ 	},
+ 	
  	"direzione": ${csvUtils.toJsonValue(csvRecord, 9)},
  	"divisione": ${csvUtils.toJsonValue(csvRecord, 10)},
  	"importo": ${csvUtils.toJsonValue(csvRecord, 11)},

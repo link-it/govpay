@@ -15,10 +15,13 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 public class CSVUtils {
 
 	private static CSVUtils instance;
+	private static Logger log = LoggerWrapperFactory.getLogger(CSVUtils.class);
 
 	public static CSVUtils getInstance () {
 		if(CSVUtils.instance == null)
@@ -113,9 +116,16 @@ public class CSVUtils {
 	public static String toCsv(String ...strings) throws IOException {
 		StringWriter writer = new StringWriter();
 		CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
+		log.debug("I1 CSV [" + strings + "]");
+		log.debug("I2 CSV [" + Arrays.asList(strings) + "]");
 		printer.printRecord(Arrays.asList(strings));
 		printer.flush();
 		printer.close();
-		return writer.toString();
+		
+		String string = writer.toString();
+		log.debug("Riga CSV [" + string + "]");
+		
+		
+		return string;
 	}
 }

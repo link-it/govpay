@@ -35,8 +35,8 @@ public class EnumerazioniController extends BaseController {
 
 
 
-    public Response enumerazioniComponentiEventoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
-    	String methodName = "enumerazioniComponentiEventoGET";  
+    public Response findEnumerazioniComponentiEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    	String methodName = "findEnumerazioniComponentiEvento";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -68,8 +68,8 @@ public class EnumerazioniController extends BaseController {
 
 
 
-    public Response enumerazioniLabelTipiEventoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
-    	String methodName = "enumerazioniLabelTipiEventoGET";  
+    public Response findEnumerazioniLabelTipiEvento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    	String methodName = "findEnumerazioniLabelTipiEvento";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -89,8 +89,8 @@ public class EnumerazioniController extends BaseController {
 
 
 
-    public Response enumerazioniServiziACLGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
-		String methodName = "enumerazioniServiziACLGET";  
+    public Response findEnumerazioniServiziACL(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+		String methodName = "findEnumerazioniServiziACL";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -111,8 +111,8 @@ public class EnumerazioniController extends BaseController {
 
 
 
-    public Response enumerazioniVersioneConnettoreGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
-		String methodName = "enumerazioniVersioneConnettoreGET";  
+    public Response findEnumerazioniVersioneConnettore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+		String methodName = "findEnumerazioniVersioneConnettore";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{

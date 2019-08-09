@@ -112,8 +112,8 @@ public class PendenzeController extends BaseController {
 		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 	}
 
-	public Response pendenzeIdA2AIdPendenzaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean addInfoIncasso) {
-		String methodName = "getByIda2aIdPendenza";  
+	public Response getPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, boolean addInfoIncasso) {
+		String methodName = "getPendenza";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
 		try{
@@ -150,8 +150,8 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, String idTipoPendenza, String direzione, String divisione) {
-		String methodName = "pendenzeGET";
+	public Response findPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, String idTipoPendenza, String direzione, String divisione) {
+		String methodName = "findPendenze";
 		String transactionId = this.context.getTransactionId();
 		try{
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -238,8 +238,8 @@ public class PendenzeController extends BaseController {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Response pendenzeIdA2AIdPendenzaPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, boolean addInfoIncasso) {
-		String methodName = "pendenzeIdA2AIdPendenzaPATCH";  
+	public Response updatePendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, boolean addInfoIncasso) {
+		String methodName = "updatePendenza";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -307,8 +307,8 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeIdA2AIdPendenzaPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		String methodName = "pendenzeIdA2AIdPendenzaPUT";  
+	public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		String methodName = "addPendenza";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -364,8 +364,8 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzePOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		String methodName = "pendenzePOST";  
+	public Response addPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		String methodName = "addPendenza";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -421,8 +421,8 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeIdDominioIdTipoPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		String methodName = "pendenzeIdDominioIdTipoPendenzaPOST";  
+	public Response addPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is, Boolean stampaAvviso, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		String methodName = "addPendenzaPOST";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
@@ -482,8 +482,8 @@ public class PendenzeController extends BaseController {
 	}
 
 
-	public Response pendenzeTracciatiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
-		String methodName = "pendenzeTracciatiPOST";  
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+		String methodName = "addTracciatoPendenze";  
 		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -571,8 +571,8 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeTracciatiIdDominioIdTipoPendenzaPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		String methodName = "pendenzeTracciatiIdDominioIdTipoPendenzaPOST";  
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		String methodName = "addTracciatoPendenze";  
 		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -668,8 +668,8 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeTracciatiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
-		String methodName = "pendenzeTracciatiGET";
+	public Response findTracciatiPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
+		String methodName = "findTracciatiPendenze";
 		String transactionId = this.context.getTransactionId();
 		try{
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -727,8 +727,8 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeTracciatiIdEsitoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
-		String methodName = "pendenzeTracciatiIdEsitoGET";  
+	public Response getEsitoTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+		String methodName = "getEsitoTracciatoPendenze";  
 		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -787,8 +787,8 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeTracciatiIdGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
-		String methodName = "pendenzeTracciatiIdGET";  
+	public Response getTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+		String methodName = "getTracciatoPendenze";  
 		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -825,9 +825,9 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response pendenzeTracciatiIdOperazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
+	public Response findOperazioniTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
 		String transactionId = this.context.getTransactionId();
-		String methodName = "pendenzeTracciatiGET";
+		String methodName = "findOperazioniTracciatoPendenze";
 		try{
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 
@@ -876,8 +876,8 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response pendenzeTracciatiIdRichiestaGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
-		String methodName = "pendenzeTracciatiIdRichiestaGET";  
+	public Response getRichiestaTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+		String methodName = "getRichiestaTracciatoPendenze";  
 		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -932,8 +932,8 @@ public class PendenzeController extends BaseController {
 	}
 
 
-	public Response pendenzeTracciatiIdStampeGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
-		String methodName = "pendenzeTracciatiIdStampeGET";  
+	public Response getStampeTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id) {
+		String methodName = "getStampeTracciatoPendenze";  
 		String transactionId = this.context.getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 

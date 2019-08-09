@@ -52,8 +52,8 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariIdIntermediarioGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario) {
-    	String methodName = "intermediariIdIntermediarioGET";  
+    public Response getIntermediario(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario) {
+    	String methodName = "getIntermediario";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -105,8 +105,8 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniIdStazionePUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione, java.io.InputStream is) {
-    	String methodName = "intermediariIdIntermediarioStazioniIdStazionePUT";  
+    public Response addStazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione, java.io.InputStream is) {
+    	String methodName = "addStazione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -145,8 +145,8 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
-    	String methodName = "intermediariGET";  
+    public Response findIntermediari(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    	String methodName = "findIntermediari";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -192,8 +192,8 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariIdIntermediarioPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, java.io.InputStream is) {
-    	String methodName = "intermediariIdIntermediarioPUT";  
+    public Response addIntermediario(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, java.io.InputStream is) {
+    	String methodName = "addIntermediario";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -228,8 +228,8 @@ public class IntermediariController extends BaseController {
 		}
     }
 
-    public Response intermediariIdIntermediarioStazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
-    	String methodName = "intermediariIdIntermediarioStazioniGET";  
+    public Response findStazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    	String methodName = "findStazioni";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -279,8 +279,8 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response intermediariIdIntermediarioStazioniIdStazioneGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione) {
-    	String methodName = "intermediariIdIntermediarioStazioniIdStazioneGET";  
+    public Response getStazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, String idStazione) {
+    	String methodName = "getStazione";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{

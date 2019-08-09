@@ -36,7 +36,7 @@ public class Configurazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response getConfigurazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.controller.setContext(this.getContext());
-        return this.controller.configurazioniGET(this.getUser(), uriInfo, httpHeaders);
+        return this.controller.getConfigurazioni(this.getUser(), uriInfo, httpHeaders);
     }
 
     @PATCH
@@ -45,16 +45,16 @@ public class Configurazioni extends BaseRsServiceV1{
     @Produces({ "application/json" })
     public Response aggiornaConfigurazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
         this.controller.setContext(this.getContext());
-        return this.controller.configurazioniPATCH(this.getUser(), uriInfo, httpHeaders, is);
+        return this.controller.aggiornaConfigurazioni(this.getUser(), uriInfo, httpHeaders, is);
     }
 
     @POST
     @Path("/")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response addConfigurazioniGiornale(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
+    public Response addConfigurazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is){
         this.controller.setContext(this.getContext());
-        return this.controller.configurazioniPOST(this.getUser(), uriInfo, httpHeaders, is);
+        return this.controller.addConfigurazioni(this.getUser(), uriInfo, httpHeaders, is);
     }
 
 }

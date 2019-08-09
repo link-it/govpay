@@ -40,8 +40,8 @@ public class ReportisticheController extends BaseController {
     	 super(nomeServizio,log);
      }
 
-    public Response reportisticheEntratePrevisteGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String dataDa, String dataA) {
-    	String methodName = "reportisticheEntratePrevisteGET";
+    public Response getReportEntratePreviste(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String dataDa, String dataA) {
+    	String methodName = "getReportEntratePreviste";
 		String transactionId = this.context.getTransactionId();
 		String accept = MediaType.APPLICATION_JSON;
 		if(httpHeaders.getRequestHeaders().containsKey("Accept")) {

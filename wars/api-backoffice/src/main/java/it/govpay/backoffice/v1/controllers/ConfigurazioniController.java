@@ -40,8 +40,8 @@ public class ConfigurazioniController extends BaseController {
 
 
 
-    public Response configurazioniGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
-    	String methodName = "configurazioniGET";  
+    public Response getConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
+    	String methodName = "getConfigurazioni";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -67,8 +67,8 @@ public class ConfigurazioniController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response configurazioniPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
-    	String methodName = "configurazioniPATCH";  
+	public Response aggiornaConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+    	String methodName = "aggiornaConfigurazioni";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -124,8 +124,8 @@ public class ConfigurazioniController extends BaseController {
 
 
 
-    public Response configurazioniPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
-    	String methodName = "configurazioniPOST";  
+    public Response addConfigurazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+    	String methodName = "addConfigurazioni";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){

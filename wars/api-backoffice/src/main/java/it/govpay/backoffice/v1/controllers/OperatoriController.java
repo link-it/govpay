@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -48,8 +49,8 @@ public class OperatoriController extends BaseController {
 		super(nomeServizio,log);
      }
 
-    public Response operatoriPrincipalPUT(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal, java.io.InputStream is) {
-    	String methodName = "operatoriPrincipalPUT";  
+    public Response addOperatore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal, java.io.InputStream is) {
+    	String methodName = "addOperatore";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -96,37 +97,38 @@ public class OperatoriController extends BaseController {
 
 
 
-    public Response operatoriPrincipalDELETE(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
-    	String methodName = "aclIdDELETE";  
+    public Response deleteOperatore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
+    	String methodName = "deleteOperatore";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
-			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.SCRITTURA));
-
-			if(principal != null)
-				principal =  URLDecoder.decode(principal, StandardCharsets.UTF_8.toString());
-			
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdOperatore("principal", principal);
-			
-			// Parametri - > DTO Input
-
-			DeleteOperatoreDTO deleteOperatoreDTO = new DeleteOperatoreDTO(user);
-
-			deleteOperatoreDTO.setPrincipal(principal);
-
-			// INIT DAO
-
-			UtentiDAO operatoriDAO = new UtentiDAO(false);
-
-			// CHIAMATA AL DAO
-
-			operatoriDAO.deleteOperatore(deleteOperatoreDTO);
-
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.OK),transactionId).build();
-
+			throw new NotImplementedException("Not implemented");
+//			// autorizzazione sulla API
+//			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.SCRITTURA));
+//
+//			if(principal != null)
+//				principal =  URLDecoder.decode(principal, StandardCharsets.UTF_8.toString());
+//			
+//			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+//			validatoreId.validaIdOperatore("principal", principal);
+//			
+//			// Parametri - > DTO Input
+//
+//			DeleteOperatoreDTO deleteOperatoreDTO = new DeleteOperatoreDTO(user);
+//
+//			deleteOperatoreDTO.setPrincipal(principal);
+//
+//			// INIT DAO
+//
+//			UtentiDAO operatoriDAO = new UtentiDAO(false);
+//
+//			// CHIAMATA AL DAO
+//
+//			operatoriDAO.deleteOperatore(deleteOperatoreDTO);
+//
+//			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+//			return this.handleResponseOk(Response.status(Status.OK),transactionId).build();
+//
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
@@ -136,8 +138,8 @@ public class OperatoriController extends BaseController {
 
 
 
-    public Response operatoriPrincipalGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
-    	String methodName = "intermediariIdIntermediarioGET";  
+    public Response getOperatore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String principal) {
+    	String methodName = "getOperatore";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
@@ -179,8 +181,8 @@ public class OperatoriController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response operatoriPrincipalPATCH(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
-    	String methodName = "operatoriPrincipalPATCH";  
+	public Response updateOperatore(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String principal) {
+    	String methodName = "updateOperatore";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
@@ -236,8 +238,8 @@ public class OperatoriController extends BaseController {
 
 
 
-    public Response operatoriGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
-    	String methodName = "operatoriGET";  
+    public Response findOperatori(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    	String methodName = "findOperatori";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
