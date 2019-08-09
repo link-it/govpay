@@ -17,24 +17,24 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
 public class CSVUtils {
-	
+
 	private CSVFormat csvFormat = CSVFormat.RFC4180;
-	
+
 	public CSVUtils(CSVFormat csvFormat) {
 		this.csvFormat = csvFormat;
 	}
-	
+
 	public static CSVUtils getInstance() {
 		return new CSVUtils(CSVFormat.RFC4180);
 	}
-	
+
 	public static CSVUtils getInstance(CSVFormat csvFormat) {
 		if(csvFormat != null)
 			return new CSVUtils(csvFormat);
 		else
 			return new CSVUtils(CSVFormat.RFC4180);
 	}
-	
+
 	public static long countLines(byte[] tracciato) throws IOException {
 		InputStream is = new BufferedInputStream(new ByteArrayInputStream(tracciato));
 		try {
@@ -55,7 +55,7 @@ public class CSVUtils {
 			is.close();
 		}
 	}
-	
+
 	public static List<byte[]> splitCSV(byte[] tracciato, long skip) throws IOException {
 
 		ByteArrayInputStream in = new ByteArrayInputStream(tracciato);
@@ -63,7 +63,7 @@ public class CSVUtils {
 		BufferedReader br = new BufferedReader(isr);
 
 		List<byte[]> lst = new ArrayList<byte[]>(); 
-		
+
 		while(br.ready()) {
 			if(skip > 0) {
 				br.readLine();
@@ -74,8 +74,8 @@ public class CSVUtils {
 		}
 		return lst;
 	}
-	
-	
+
+
 	public CSVRecord getCSVRecord(String csvEntry) {
 		try {
 			CSVParser p = CSVParser.parse(csvEntry, csvFormat);
@@ -84,7 +84,7 @@ public class CSVUtils {
 			return null;
 		}
 	}
-	
+
 	public boolean isEmpty(CSVRecord record, int position) {
 		try {
 			return record.get(position).isEmpty(); 
@@ -92,22 +92,22 @@ public class CSVUtils {
 			return true;
 		}
 	}
-	
+
 	public String toJsonValue(CSVRecord record, int ... positions) {
 		String collage = "";
-		
+
 		for(int position : positions) {
 			if(!isEmpty(record, position)) {
-				collage += record.get(position);
+				collage += record.get(position) + " ";
 			}
 		}
-		
+
 		if(collage.trim().isEmpty())
 			return "null";
 		else
 			return "\"" + collage.trim() +  "\"";
 	}
-	
+
 	public String toCsv(String ...strings) throws IOException {
 		StringWriter writer = new StringWriter();
 		CSVPrinter printer = new CSVPrinter(writer, csvFormat);
@@ -116,4 +116,19 @@ public class CSVUtils {
 		printer.close();
 		return writer.toString();
 	}
+
+	public static long countLines2(byte[] tracciato) throws IOException {
+		try (ByteArrayInputStream in = new ByteArrayInputStream(tracciato); 
+				InputStreamReader isr = new InputStreamReader(in); 
+				BufferedReader br = new BufferedReader(isr);
+				){
+			int lines = 0;
+			while (br.readLine() != null) {
+				lines++;
+			}
+			return lines;
+		} finally {
+		}
+	}
+
 }

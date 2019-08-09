@@ -22,13 +22,20 @@ Background:
   	definizione: null
   },
   validazione: null,
-  visualizzazione: null;
+  visualizzazione: null,
+  tracciatoCsv: {
+  	responseHeader: "idA2A,idPendenza,idDominio",
+  	freemarkerRequest: null,
+	  freemarkerResponse: null
+  }
 }
 """          
 * set tipoPendenza.form.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-form.json.payload'))
 * set tipoPendenza.trasformazione.definizione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-freemarker.ftl'))
 * set tipoPendenza.validazione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-validazione-form.json'))
 * set tipoPendenza.visualizzazione = encodeBase64InputStream(read('msg/tipoPendenza-dovuta-visualizzazione.json.payload'))
+* set tipoPendenza.tracciatoCsv.freemarkerRequest = encodeBase64InputStream(read('msg/tracciato-csv-freemarker-request.ftl'))
+* set tipoPendenza.tracciatoCsv.freemarkerResponse = encodeBase64InputStream(read('msg/tracciato-csv-freemarker-response.ftl'))
 
 Scenario: Aggiunta di un tipoPendenza
 
@@ -80,3 +87,4 @@ Examples:
 | promemoriaRicevuta | { "tipo": "freemarker", "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": false } |
 | promemoriaRicevuta | null |
 | visualizzazione | null |
+| tracciatoCsv | null |

@@ -12,7 +12,6 @@ import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -22,8 +21,6 @@ import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.PutEventoDTO;
-import it.govpay.core.exceptions.NotAuthenticatedException;
-import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
@@ -41,6 +38,8 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 
 	@Override
 	public void handleMessage(Message message) throws Fault {
+		String url = null;
+		String httpMethodS = null;
 		try {
 			if(this.giornaleEventiConfig.isAbilitaGiornaleEventi()) {
 				IContext context = ContextThreadLocal.get();
@@ -50,8 +49,8 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 				Exchange exchange = message.getExchange();
 				Message inMessage = exchange.getInMessage();
 				final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
-				String url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
-				String httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
+				url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
+				httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
 				Date dataUscita = new Date();
 
 				Integer responseCode = 200;
@@ -94,11 +93,7 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 					this.eventiDAO.inserisciEvento(putEventoDTO);
 				}
 			}
-		} catch (NotAuthorizedException e) {
-			this.log.error(e.getMessage(),e);
-		} catch (NotAuthenticatedException e) {
-			this.log.error(e.getMessage(),e);
-		} catch (ServiceException e) {
+		} catch (Throwable e) {
 			this.log.error(e.getMessage(),e);
 		} finally {
 

@@ -533,8 +533,43 @@ When method get
 Then status 200
 Then match response contains '#("Pendenza [IdA2A:" + idA2A + ", Id:" + idPendenza + "] inserita con esito \'ESEGUITO_OK\': scrittura dell\'esito sul file csv conclusa con con errore.")' 
 
+Scenario: Caricamento di un tracciato in formato CSV con header Content-Type errato 
 
+* set patchValue.freemarkerRequest = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.freemarkerResponse = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
 
+Given url backofficeBaseurl
+And path '/configurazioni' 
+And headers basicAutenticationHeader
+And request 
+"""
+[
+	{
+		op: "REPLACE",
+		path: "/tracciatoCsv",
+		value: #(patchValue)
+	}
+]
+"""
+When method patch
+Then status 200
 
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
+* def idPendenza = getCurrentTimeMillis()
+* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze.csv')
+* def tracciato = replace(tracciato,"{idA2A}", idA2A);
+* def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
+* def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
+* def tracciato = replace(tracciato,"{importo}", importo);
+* def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 415
 

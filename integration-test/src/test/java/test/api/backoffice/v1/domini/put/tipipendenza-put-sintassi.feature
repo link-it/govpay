@@ -50,3 +50,6 @@ Examples:
 | promemoriaRicevuta | { "oggetto": null, "messaggio": "Hai pagato", "allegaPdf": true } |
 | promemoriaRicevuta | { "oggetto": "Promemoria pagamento eseguito", "messaggio": null, "allegaPdf": true } |
 | promemoriaRicevuta | { "oggetto": "Promemoria pagamento eseguito", "messaggio": "Hai pagato", "allegaPdf": "aaaaa" }  |
+| tracciatoCsv | {"responseHeader": "idA2A,idPendenza,idDominio", "freemarkerRequest": null, "freemarkerResponse": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
+| tracciatoCsv | {"responseHeader": "idA2A,idPendenza,idDominio", "freemarkerRequest": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "freemarkerResponse": null } |
+| tracciatoCsv | {"responseHeader": null, "freemarkerRequest": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "freemarkerResponse": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } |
