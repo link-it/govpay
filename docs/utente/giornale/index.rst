@@ -48,7 +48,7 @@ Selezionando uno degli elementi dell'elenco si accede al dettaglio dell'evento, 
 Dettaglio Evento
 ----------------
 
-.. figure:: ../_images/GE02GiornaleEventiDettaglioDiUnEvento.png
+.. figure:: ../_images/GE03GiornaleEventiDettaglioDiUnEvento.png
    :align: center
    :name: GiornaleEventiDettaglioDiUnEveento
 
@@ -58,4 +58,4 @@ Dettaglio Evento
 Il dettaglio di un evento assiema i seguenti gruppi di informazioni relativi all'evento considerato:
 
 * Le informazioni *interne*, ovvero tutti i puntatori tecnologici e di processo connessi all'evento
-* I dati relativi a PagoPa connessi all'evento
+* Gli eventuali dati relativi a PagoPa connessi all'evento (presenti solo per alcune tipologie di eventi)

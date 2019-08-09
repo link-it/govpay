@@ -22,12 +22,21 @@ public class CSVUtils {
 
 	private static CSVUtils instance;
 	private static Logger log = LoggerWrapperFactory.getLogger(CSVUtils.class);
+	private CSVFormat csvFormat = CSVFormat.RFC4180;
 
-	public static CSVUtils getInstance () {
-		if(CSVUtils.instance == null)
-			CSVUtils.instance = new CSVUtils();
+	public CSVUtils(CSVFormat csvFormat) {
+		this.csvFormat = csvFormat;
+	}
 
-		return CSVUtils.instance;
+	public static CSVUtils getInstance() {
+		return new CSVUtils(CSVFormat.RFC4180);
+	}
+
+	public static CSVUtils getInstance(CSVFormat csvFormat) {
+		if(csvFormat != null)
+			return new CSVUtils(csvFormat);
+		else
+			return new CSVUtils(CSVFormat.RFC4180);
 	}
 
 	public static long countLines(byte[] tracciato) throws IOException {
@@ -51,54 +60,36 @@ public class CSVUtils {
 		}
 	}
 
-	public static long countLines2(byte[] tracciato) throws IOException {
-		try (ByteArrayInputStream in = new ByteArrayInputStream(tracciato); 
-				InputStreamReader isr = new InputStreamReader(in); 
-				BufferedReader br = new BufferedReader(isr);
-				){
-			int lines = 0;
-			while (br.readLine() != null) {
-			    lines++;
-			}
-			return lines;
-		} finally {
-		}
-	}
-
 	public static List<byte[]> splitCSV(byte[] tracciato, long skip) throws IOException {
 
-		//		ByteArrayInputStream in = new ByteArrayInputStream(tracciato);
-		//		InputStreamReader isr = new InputStreamReader(in);
-		//		BufferedReader br = new BufferedReader(isr);
+		ByteArrayInputStream in = new ByteArrayInputStream(tracciato);
+		InputStreamReader isr = new InputStreamReader(in);
+		BufferedReader br = new BufferedReader(isr);
 
 		List<byte[]> lst = new ArrayList<byte[]>(); 
-		try (ByteArrayInputStream in = new ByteArrayInputStream(tracciato); 
-				InputStreamReader isr = new InputStreamReader(in); 
-				BufferedReader br = new BufferedReader(isr);
-				){
-			while(br.ready()) {
-				if(skip > 0) {
-					br.readLine();
-					skip--;
-				} else {
-					lst.add(br.readLine().getBytes());
-				}
+
+		while(br.ready()) {
+			if(skip > 0) {
+				br.readLine();
+				skip--;
+			} else {
+				lst.add(br.readLine().getBytes());
 			}
-			return lst;
-		} finally {
 		}
+		return lst;
 	}
 
-	public static CSVRecord getCSVRecord(String csvEntry) {
+
+	public CSVRecord getCSVRecord(String csvEntry) {
 		try {
-			CSVParser p = CSVParser.parse(csvEntry, CSVFormat.RFC4180);
+			CSVParser p = CSVParser.parse(csvEntry, csvFormat);
 			return p.getRecords().get(0);
 		} catch (IOException ioe) {
 			return null;
 		}
 	}
 
-	public static boolean isEmpty(CSVRecord record, int position) {
+	public boolean isEmpty(CSVRecord record, int position) {
 		try {
 			return record.get(position).isEmpty(); 
 		} catch (Throwable t) {
@@ -106,18 +97,27 @@ public class CSVUtils {
 		}
 	}
 
-	public static String toJsonValue(CSVRecord record, int position) {
-		if(isEmpty(record, position)) 
+	public String toJsonValue(CSVRecord record, int ... positions) {
+		String collage = "";
+
+		for(int position : positions) {
+			if(!isEmpty(record, position)) {
+				collage += record.get(position) + " ";
+			}
+		}
+
+		if(collage.trim().isEmpty())
 			return "null";
 		else
-			return "\"" + record.get(position) +  "\"";
+			return "\"" + collage.trim() +  "\"";
 	}
 
-	public static String toCsv(String ...strings) throws IOException {
+	public String toCsv(String ...strings) throws IOException {
 		StringWriter writer = new StringWriter();
-		CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
 		log.debug("I1 CSV [" + strings + "]");
 		log.debug("I2 CSV [" + Arrays.asList(strings) + "]");
+		
+		CSVPrinter printer = new CSVPrinter(writer, csvFormat);
 		printer.printRecord(Arrays.asList(strings));
 		printer.flush();
 		printer.close();
@@ -128,4 +128,19 @@ public class CSVUtils {
 		
 		return string;
 	}
+
+	public static long countLines2(byte[] tracciato) throws IOException {
+		try (ByteArrayInputStream in = new ByteArrayInputStream(tracciato); 
+				InputStreamReader isr = new InputStreamReader(in); 
+				BufferedReader br = new BufferedReader(isr);
+				){
+			int lines = 0;
+			while (br.readLine() != null) {
+				lines++;
+			}
+			return lines;
+		} finally {
+		}
+	}
+
 }
