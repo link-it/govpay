@@ -624,7 +624,7 @@ public class Operazioni{
 				if(bd.isAutoCommit())
 					bd.rollback();
 				aggiornaSondaKO(BATCH_ESITO_AVVISATURA_DIGITALE, e, bd,ctx);
-			} catch (ServiceException e1) {
+			} catch (Throwable e1) {
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Esito Avvisatura Digitale#" + e.getMessage();
@@ -921,8 +921,8 @@ public class Operazioni{
 			try {
 				if(!bd.isAutoCommit()) bd.rollback();
 				aggiornaSondaKO(BATCH_AVVISATURA_DIGITALE, e, bd,ctx);
-			} catch (ServiceException e1) {
-				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Avvisatura digitale#" + e.getMessage();
 		} finally {
@@ -1090,8 +1090,8 @@ public class Operazioni{
 			try {
 				if(!bd.isAutoCommit()) bd.rollback();
 				aggiornaSondaKO(BATCH_TRACCIATI, e, bd, ctx);
-			} catch (ServiceException e1) {
-				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			log.error("Non è stato possibile eseguire l'elaborazione dei tracciati", e);
 			return "Non è stato possibile eseguire l'elaborazione dei tracciati: " + e;
@@ -1135,8 +1135,8 @@ public class Operazioni{
 			try {
 				if(!bd.isAutoCommit()) bd.rollback();
 				aggiornaSondaKO(BATCH_SPEDIZIONE_PROMEMORIA, e, bd,ctx); 
-			} catch (ServiceException e1) {
-				log.error("Aggiornamento sonda fallito: " + e.getMessage(),e);
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la spedizione dei promemoria: " + e;
 		} finally {

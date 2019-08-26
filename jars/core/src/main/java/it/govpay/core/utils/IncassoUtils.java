@@ -8,6 +8,7 @@ public class IncassoUtils {
 	private static Pattern patternSingoloRFS = Pattern.compile("^.*RFS[ \\/]([^ \\/]+)[ \\/]?.*$");
 	private static Pattern patternSingoloRFB = Pattern.compile("^.*RFB[ \\/]([^ \\/]+)[ \\/]?.*$");
 	private static Pattern patternCumulativo = Pattern.compile("^.*PUR[ \\/]LGPE-RIVERSAMENTO[ \\/]URI[ \\/]([^ \\/]+)[ \\/]?.*$");
+	private static Pattern patternCausale = Pattern.compile("^.*TXT[ \\/]([ \\/]?.*)$");
 
 
 	public static String getRiferimentoIncassoSingolo(String causale) {
@@ -37,4 +38,13 @@ public class IncassoUtils {
 		else return getRiferimentoIncassoSingolo(causale);
 	}
 
+	public static String getCausaleDaDescrizioneIncasso(String descrizione) {
+		if(descrizione != null) {
+			Matcher matcher = patternCausale.matcher(descrizione);
+			if (matcher.find())
+				return matcher.group(1);
+		}
+
+		return "";
+	}
 }

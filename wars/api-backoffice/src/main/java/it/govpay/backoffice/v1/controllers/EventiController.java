@@ -58,7 +58,7 @@ public class EventiController extends BaseController {
 
 		this.serializationConfig = new SerializationConfig();
 		this.serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
-		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+		this.serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormat());
 	}
 
 	public Response findEventi(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String iuv, String idA2A, String idPendenza,
