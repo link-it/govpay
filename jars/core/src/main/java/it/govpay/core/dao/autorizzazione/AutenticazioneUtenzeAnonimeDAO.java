@@ -14,15 +14,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.dao.commons.BaseDAO;
 
-public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication>, AuthenticationDetailsSource<HttpServletRequest, Authentication> {	
+public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implements UserDetailsService, AuthenticationUserDetailsService<Authentication>, AuthenticationDetailsSource<HttpServletRequest, Authentication> {	
 
-	private boolean checkSubject = false;
-	private boolean checkPassword = false;
-	
-	
 	public AutenticazioneUtenzeAnonimeDAO() {
 		super();
 	}
@@ -49,11 +45,12 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetai
 		BasicBD bd = null;
 
 		try {
-			this.log.debug("Caricamento informazioni dell'utenza ["+username+"] in corso...");
 			String transactionId = UUID.randomUUID().toString();
+			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] in corso...");
 			bd = BasicBD.newInstance(transactionId, this.useCacheData);
-			UserDetails userDetailFromUtenzaAnonima = AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.checkPassword, this.checkSubject, authFromPreauth, bd);
-			this.log.debug("Caricamento informazioni dell'utenza ["+username+"] completato.");
+			GovpayLdapUserDetails userDetailFromUtenzaAnonima = AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, bd);
+			userDetailFromUtenzaAnonima.setIdTransazioneAutenticazione(transactionId);
+			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] completato.");
 			return userDetailFromUtenzaAnonima;
 		} catch(Exception e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza", e);
@@ -61,22 +58,6 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseDAO implements UserDetai
 			if(bd != null)
 				bd.closeConnection();
 		}
-	}
-
-	public boolean isCheckSubject() {
-		return this.checkSubject;
-	}
-
-	public void setCheckSubject(boolean checkSubject) {
-		this.checkSubject = checkSubject;
-	}
-	
-	public boolean isCheckPassword() {
-		return checkPassword;
-	}
-
-	public void setCheckPassword(boolean checkPassword) {
-		this.checkPassword = checkPassword;
 	}
 	
 	@Override

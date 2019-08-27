@@ -20,6 +20,8 @@
         </b:bean>
         
         <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
+        	<b:property name="apiName" value="API_PAGOPA" />
+        	<b:property name="authType" value="BASIC" />
         </b:bean>
         
         <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
@@ -56,6 +58,8 @@
        
         <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
         	<b:property name="checkSubject" value="true"/>
+        	<b:property name="apiName" value="API_PAGOPA" />
+        	<b:property name="authType" value="SSL" />
         </b:bean>
         
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint">

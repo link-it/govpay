@@ -130,7 +130,7 @@ public class AutorizzazioneUtils {
 		return details;
 	}
 
-	public static UserDetails getUserDetailFromUtenzaCittadino(String username, boolean checkPassword, boolean checkSubject, 
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaCittadino(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.CITTADINO;
@@ -172,12 +172,12 @@ public class AutorizzazioneUtils {
 		return userDetails;
 	}
 
-	public static UserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException , ServiceException {
 		return getUserDetailFromUtenzaAnonima(username, checkPassword, checkSubject, authFromPreauth, null);
 	}
 
-	public static UserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;

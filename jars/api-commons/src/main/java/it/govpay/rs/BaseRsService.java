@@ -167,7 +167,9 @@ public abstract class BaseRsService {
 			if(authenticationDetails != null) {
 				Utenza utenza = authenticationDetails.getUtenza();
 				sb.append("Profilo: \n");
-				sb.append("\t[\n").append("TipoUtenza[").append(authenticationDetails.getTipoUtenza()).append("], Abilitato: [").append(utenza.isAbilitato()).append("]");
+				sb.append("\t[\n\t").append("TipoUtenza: [").append(authenticationDetails.getTipoUtenza()).append("], Abilitato: [").append(utenza.isAbilitato()).append("]");
+				sb.append("\n");
+				sb.append("\t").append("Id Transazione Autenticazione: [").append(authenticationDetails.getIdTransazioneAutenticazione()).append("]");
 				sb.append("\n");
 				sb.append("\t").append("ACL:").append("\n").append("\t\t[\n");
 				

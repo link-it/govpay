@@ -263,7 +263,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 							} catch (UnsupportedEncodingException e) {}						
 						}
 						if(pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() > 1) {
-							sbNomeVersamenti.append(" ed altre "+pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size()+" pendenze.");
+							int numeroAltre = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size() -1;
+							if(numeroAltre == 1)
+								sbNomeVersamenti.append(" ed un'altra pendenza.");
+							else 
+								sbNomeVersamenti.append(" ed altre "+ numeroAltre +" pendenze.");
 						}
 
 						// 	2. Codice dominio della prima pendenza
