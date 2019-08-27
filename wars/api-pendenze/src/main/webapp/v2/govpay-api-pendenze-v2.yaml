@@ -691,69 +691,6 @@ components:
           example: Ufficio due
           minLength: 1
           maxLength: 70          
-        indirizzo:
-          type: string
-          example: Piazza della Vittoria
-          minLength: 1
-          maxLength: 70
-        civico:
-          type: string
-          example: 10/A
-          minLength: 1
-          maxLength: 16
-        cap:
-          type: string
-          example: 00000
-          minLength: 1
-          maxLength: 16
-        localita:
-          type: string
-          example: Roma
-          minLength: 1
-          maxLength: 35
-        provincia:
-          type: string
-          example: Roma
-          minLength: 1
-          maxLength: 35
-        nazione:
-          type: string
-          example: IT
-          pattern: "[A-Z]{2,2}"
-        email:
-          type: string
-          description: Posta elettronica ordinaria
-          example:  peo@creditore.it  
-          pattern: "[A-Za-z0-9_]+([\\-\\+\\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*\\.[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*"          
-        pec:
-          type: string
-          description: Posta elettronica certificata
-          example:  peo@creditore.it  
-          pattern: "[A-Za-z0-9_]+([\\-\\+\\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*\\.[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*" 
-        tel:
-          type: string
-          description: Numero di telefono dell'help desk di primo livello
-          example: 021234567890  
-        fax:
-          type: string
-          description: Numero di fax dell'help desk di primo livello
-          example: 021234567890           
-        web:
-          type: string
-          description: Url del sito web
-          example: http://www.comune.it/
-        gln:
-          type: string
-          description: Global location number del beneficiario
-          example: 0011223344556
-        cbill:
-          type: string
-          description: codice cbill del beneficiario
-          example: 12345
-        logo:
-          type: string
-          description: URL del logo
-          example: http://.../domini/01234567890/logo
     Entrata:
       description: Definisce i dettagli di una entrata.
       type: object

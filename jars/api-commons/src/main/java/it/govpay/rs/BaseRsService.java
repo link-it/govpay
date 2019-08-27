@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaOperatore;
@@ -163,6 +164,35 @@ public abstract class BaseRsService {
 			sb.append("\n");
 			sb.append("Principal: [").append(AutorizzazioneUtils.getPrincipal(context.getAuthentication())).append("], Utente: [").append(ctx.getEventoCtx().getUtente()).append("]");
 			sb.append("\n");
+			if(authenticationDetails != null) {
+				Utenza utenza = authenticationDetails.getUtenza();
+				sb.append("Profilo: \n");
+				sb.append("\t[\n").append("TipoUtenza[").append(authenticationDetails.getTipoUtenza()).append("], Abilitato: [").append(utenza.isAbilitato()).append("]");
+				sb.append("\n");
+				sb.append("\t").append("ACL:").append("\n").append("\t\t[\n");
+				
+				List<Acl> aclsProfilo = utenza.getAclsProfilo();
+				
+				for (Acl acl : aclsProfilo) {
+					sb.append("\t").append("\t");
+					sb.append("Ruolo[").append(acl.getRuolo()).append("], IdUtenza: [").append(acl.getIdUtenza())
+						.append("], Servizio: [").append(acl.getServizio()).append("], Diritti: [").append(acl.getListaDirittiString()).append("]");
+					sb.append("\n");
+				}
+				sb.append("\t\t]\n");
+				sb.append("\t");
+				if(utenza.isAutorizzazioneDominiStar())
+					sb.append("Domini: [Tutti]");
+				else 
+					sb.append("Domini: [").append(utenza.getIdDominio()).append("]");
+				sb.append("\n").append("\t");
+				if(utenza.isAutorizzazioneTipiVersamentoStar())
+					sb.append("TipiPendenza: [Tutti]");
+				else 
+					sb.append("TipiPendenza: [").append(utenza.getIdTipoVersamento()).append("]");
+				sb.append("\n");
+				sb.append("\t]\n");
+			}
 			sb.append("Query Params: [").append(this.uriInfo.getQueryParameters()).append("]");
 			sb.append("\n");
 			sb.append("Path Params: [").append(this.uriInfo.getPathParameters()).append("]");

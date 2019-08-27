@@ -60,7 +60,7 @@ public class AutorizzazioneUtils {
 		return null;
 	}
 
-	public static UserDetails getUserDetailFromUtenzaRegistrata(String username, boolean checkPassword, boolean checkSubject, 
+	public static GovpayLdapUserDetails getUserDetailFromUtenzaRegistrata(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, List<String>> headerValues, BasicBD bd) throws UsernameNotFoundException , ServiceException {
 
 		Utenza utenza = null;

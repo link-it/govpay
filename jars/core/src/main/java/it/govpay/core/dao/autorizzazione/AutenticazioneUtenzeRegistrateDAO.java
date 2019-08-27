@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.beans.GovpayWebAuthenticationDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -73,7 +74,9 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseDAO implements UserDe
 				throw new NotFoundException("Utenza "+username+" non trovata.");
 			
 			this.log.debug("Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
-			return AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.checkPassword, this.checkSubject, authFromPreauth, headerValues, bd);
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.checkPassword, this.checkSubject, authFromPreauth, headerValues, bd);
+			this.log.debug("Utenza ["+username+"] trovata, lettura del dettaglio completata.");
+			return userDetails;
 		}  catch(NotFoundException e){
 			throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);
 		} catch(Exception e){
