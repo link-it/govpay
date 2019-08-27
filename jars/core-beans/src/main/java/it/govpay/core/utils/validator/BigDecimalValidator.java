@@ -3,6 +3,9 @@ package it.govpay.core.utils.validator;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.Format;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import org.openspcoop2.utils.json.ValidationException;
 
@@ -16,7 +19,7 @@ public class BigDecimalValidator {
 	protected BigDecimalValidator(String fieldName, BigDecimal fieldValue) { 
 		this.fieldName = fieldName;
 		this.fieldValue = fieldValue;
-		this.df = new DecimalFormat("#0.##");
+		this.df = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 	}
 	
 	public BigDecimalValidator checkDecimalDigits() throws ValidationException {

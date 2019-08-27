@@ -4,8 +4,7 @@
 			"idDominio": '#(idDominio)',
 			"idTipoPendenza": '#(idTipoPendenza)',
 			"dati" :  {
-				"numero" : 10,
-				"importo" : 20
+				"numero" : 10
 			}
 		}
 	]

@@ -1,4 +1,4 @@
-Feature: Pagamento avviso precaricato
+Feature: Acquisizione del profilo utente
 
 Background:
 
@@ -19,17 +19,16 @@ And match response ==
 """
 {
    "nome":"IDA2A01",
-   "domini":[
-      {
-         "idDominio":"12345678901",
-         "ragioneSociale":"Ente Creditore Test"
-      },
-      {
-         "idDominio":"12345678902",
-         "ragioneSociale":"Ente Creditore Test"
-      }
-   ],
+   "domini": "#[]",
    "acl":"#[]",
    "tipiPendenza":"#[]"
+}
+"""
+And match response.domini[*].idDominio contains ['12345678901','12345678902']
+And match each response.domini ==
+"""
+{
+         "idDominio":"#string",
+         "ragioneSociale":"#string"
 }
 """

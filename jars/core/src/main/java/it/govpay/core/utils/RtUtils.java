@@ -306,7 +306,6 @@ public class RtUtils extends NdpValidationUtils {
 			ctx.getApplicationLogger().log("rt.acquisizione");
 		}
 		
-		// Rileggo per avere la lettura dello stato rpt in transazione
 		rpt.setCodMsgRicevuta(ctRt.getIdentificativoMessaggioRicevuta());
 		rpt.setDataMsgRicevuta(ctRt.getDataOraMessaggioRicevuta());
 		rpt.setEsitoPagamento(Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()));
@@ -420,25 +419,8 @@ public class RtUtils extends NdpValidationUtils {
 				ctx.getApplicationLogger().log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 				pagamentiBD.updatePagamento(pagamento);
 		}
-//		Evento eventoNota = null;
-//		DettaglioRichiesta dettaglioRichiesta = null;
 		switch (rpt.getEsitoPagamento()) {
 		case PAGAMENTO_ESEGUITO:
-//			eventoNota = new Evento();
-//			eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
-//			eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
-//			eventoNota.setIdVersamento(versamento.getId());
-//			eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-//			eventoNota.setIdRpt(rpt.getId());
-//			eventoNota.setEsitoEvento(EsitoEvento.OK);
-//			dettaglioRichiesta = new DettaglioRichiesta();
-//			dettaglioRichiesta.setPrincipal(null);
-//			dettaglioRichiesta.setUtente(null);
-//			dettaglioRichiesta.setDataOraRichiesta(new Date());
-//			dettaglioRichiesta.setPayload("Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote);
-//			eventoNota.setDettaglioRichiesta(dettaglioRichiesta);
-//			eventoNota.setTipoEvento("Acquisizione Ricevuta Pagamento Eseguito");
-			
 			switch (versamento.getStatoVersamento()) {
 				case ANNULLATO:
 				case NON_ESEGUITO:
@@ -465,20 +447,6 @@ public class RtUtils extends NdpValidationUtils {
 			
 		case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 		case DECORRENZA_TERMINI_PARZIALE:
-//			eventoNota = new Evento();
-//			eventoNota.setCategoriaEvento(CategoriaEvento.UTENTE);
-//			eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
-//			eventoNota.setIdVersamento(versamento.getId());
-//			eventoNota.setIdPagamentoPortale(rpt.getIdPagamentoPortale());
-//			eventoNota.setIdRpt(rpt.getId());
-//			eventoNota.setEsitoEvento(EsitoEvento.OK);
-//			dettaglioRichiesta = new DettaglioRichiesta();
-//			dettaglioRichiesta.setPrincipal(null);
-//			dettaglioRichiesta.setUtente(null);
-//			dettaglioRichiesta.setDataOraRichiesta(new Date());
-//			dettaglioRichiesta.setPayload("Acquisita ricevuta di pagamento [IUV: " + iuv + " CCP:" + ccp + "] emessa da " + rpt.getDenominazioneAttestante() + " con pagamenti " + pagamentiNote);
-//			eventoNota.setTipoEvento("Acquisizione Ricevuta Pagamento parzialmente eseguito");
-			
 			switch (versamento.getStatoVersamento()) {
 				case ANNULLATO:
 				case NON_ESEGUITO:

@@ -53,61 +53,37 @@ And match response ==
 """
 {
    "nome":"IDA2A01",
-   "domini":[
-      {
-         "idDominio":"12345678901",
-         "ragioneSociale":"Ente Creditore Test",
-         "indirizzo":"Piazzale Paolino Paperino",
-         "civico":"1",
-         "cap":"00000",
-         "localita":"Roma",
-         "provincia":"RO",
-         "nazione":"IT",
-         "email":"info@entecreditore.it",
-         "pec":"protocollo.generale@pec.entecreditore.it",
-         "tel":"00 1234 5678",
-         "fax":"00 1234 5678",
-         "web":"http://www.entecreditore.it",
-         "gln":"8088888000000",
-         "logo":"/domini/12345678901/logo",
-         "iuvPrefix":"%(a)", 
-         "stazione":"11111111113_01", 
-         "auxDigit":"0", 
-         "segregationCode":"00", 
-         "abilitato":true, 
-         "unitaOperative":"/domini/12345678901/unitaOperative", 
-         "contiAccredito":"/domini/12345678901/contiAccredito", 
-         "entrate":"/domini/12345678901/entrate"
-      },
-      {
-         "idDominio":"12345678902",
-         "ragioneSociale":"Ente Creditore Test",
-         "indirizzo":"Piazzale Paolino Paperino",
-         "civico":"1",
-         "cap":"00000",
-         "localita":"Roma",
-         "provincia":"RO",
-         "nazione":"IT",
-         "email":"info@entecreditore.it",
-         "pec":"protocollo.generale@pec.entecreditore.it",
-         "tel":"00 1234 5678",
-         "fax":"00 1234 5678",
-         "web":"http://www.entecreditore.it",
-         "gln":"8088888000000",
-         "logo":"/domini/12345678902/logo",
-         "iuvPrefix":"%(a)", 
-         "stazione":"11111111113_01", 
-         "auxDigit":"0", 
-         "segregationCode":"00", 
-         "abilitato":true, 
-         "unitaOperative":"/domini/12345678902/unitaOperative", 
-         "contiAccredito":"/domini/12345678902/contiAccredito", 
-         "entrate":"/domini/12345678902/entrate"
-      }
-   ],
-   "entrate":[
-
-   ],
+   "domini": "#[]",
+   "entrate":[],
    "acl":[]
+}
+"""
+And match response.domini[*].idDominio contains ['12345678901','12345678902']
+And match each response.domini ==
+"""
+{
+   "idDominio":"#string",
+   "ragioneSociale":"#string",
+   "indirizzo":"##string",
+   "civico":"##string",
+   "cap":"##string",
+   "localita":"##string",
+   "provincia":"##string",
+   "nazione":"##string",
+   "email":"##string",
+   "pec":"##string",
+   "tel":"##string",
+   "fax":"##string",
+   "web":"##string",
+   "gln":"##string",
+   "logo":"##string",
+   "iuvPrefix":"##string", 
+   "stazione":"##string", 
+   "auxDigit":"##string", 
+   "segregationCode":"##string", 
+   "abilitato":"#boolean", 
+   "unitaOperative":"##string", 
+   "contiAccredito":"##string", 
+   "entrate":"##string"
 }
 """
