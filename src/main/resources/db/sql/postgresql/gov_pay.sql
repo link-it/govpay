@@ -1296,7 +1296,7 @@ CREATE VIEW v_riscossioni AS
 
 
 CREATE VIEW v_eventi_vers AS (
-	SELECT eventi.componente, 
+	SELECT DISTINCT eventi.componente, 
 	       eventi.ruolo,
                eventi.categoria_evento, 
                eventi.tipo_evento, 

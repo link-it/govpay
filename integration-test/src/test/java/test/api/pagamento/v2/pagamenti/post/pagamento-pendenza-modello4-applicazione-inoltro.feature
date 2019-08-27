@@ -72,8 +72,8 @@ Scenario: Pagamento spontaneo modello 4 autenticato basic
 * set pendenza.numeroAvviso = numeroAvviso
 * set pendenza.stato = 'NON_ESEGUITA'
 * set pendenza.causale = "#(Pagamento n. "+ pagamentoPost.pendenze[0].dati.numero +" buoni pasto)"
-* set pendenza.importo = pagamentoPost.pendenze[0].dati.importo
-* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.importo
+* set pendenza.importo = pagamentoPost.pendenze[0].dati.numero * 2.00
+* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.numero * 2.00
 * set pendenza.soggettoPagatore = pagamentoPost.pendenze[0].dati.soggettoPagatore
 
 Given url ente_api_url
@@ -162,15 +162,14 @@ Scenario Outline: Pagamento spontaneo modello 4 inoltrato all'applicazione con <
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * call read('classpath:utils/pa-prepara-avviso.feature')
 * def ccp = getCurrentTimeMillis()
-* def importo = 100.99
 
 * set pendenza.idA2A = idA2A
 * set pendenza.idPendenza = idPendenza
 * set pendenza.numeroAvviso = numeroAvviso
 * set pendenza.stato = 'NON_ESEGUITA'
 * set pendenza.causale = "#(Pagamento n. "+ pagamentoPost.pendenze[0].dati.numero +" buoni pasto)"
-* set pendenza.importo = pagamentoPost.pendenze[0].dati.importo
-* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.importo
+* set pendenza.importo = pagamentoPost.pendenze[0].dati.numero * 2.00
+* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.numero * 2.00
 * set pendenza.soggettoPagatore = 
 """
 {
@@ -326,8 +325,8 @@ Scenario: Pagamento spontaneo modello 4 inoltrato all'applicazione con risposta 
 * set pendenza.numeroAvviso = numeroAvviso
 * set pendenza.stato = 'NON_ESEGUITA'
 * set pendenza.causale = "#(Pagamento n. "+ pagamentoPost.pendenze[0].dati.numero +" buoni pasto)"
-* set pendenza.importo = pagamentoPost.pendenze[0].dati.importo
-* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.importo
+* set pendenza.importo = pagamentoPost.pendenze[0].dati.numero * 2.00
+* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.numero * 2.00
 * set pendenza.soggettoPagatore = 
 """
 {
@@ -570,8 +569,8 @@ Scenario: Pagamento spontaneo modello 4 inoltrato all'applicazione risposta pend
 * set pendenzaPut.stato = 'SCADUTA'
 * set pendenzaPut.descrizioneStato = 'Test scadenza'
 * set pendenza.causale = "#(Pagamento n. "+ pagamentoPost.pendenze[0].dati.numero +" buoni pasto)"
-* set pendenza.importo = pagamentoPost.pendenze[0].dati.importo
-* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.importo
+* set pendenza.importo = pagamentoPost.pendenze[0].dati.numero * 2.00
+* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.numero * 2.00
 * set pendenza.soggettoPagatore = 
 """
 {
@@ -672,8 +671,8 @@ Scenario: Pagamento spontaneo modello 4 inoltrato all'applicazione risposta pend
 * set pendenzaPut.stato = 'ANNULLATA'
 * set pendenzaPut.descrizioneStato = 'Test annullamento'
 * set pendenza.causale = "#(Pagamento n. "+ pagamentoPost.pendenze[0].dati.numero +" buoni pasto)"
-* set pendenza.importo = pagamentoPost.pendenze[0].dati.importo
-* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.importo
+* set pendenza.importo = pagamentoPost.pendenze[0].dati.numero * 2.00
+* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.numero * 2.00
 * set pendenza.soggettoPagatore = 
 """
 {
@@ -855,8 +854,8 @@ Scenario Outline: Pagamento spontaneo modello 4 inoltrato all'applicazione <fiel
 * set pendenza.numeroAvviso = numeroAvviso
 * set pendenza.stato = 'NON_ESEGUITA'
 * set pendenza.causale = "#(Pagamento n. "+ pagamentoPost.pendenze[0].dati.numero +" buoni pasto)"
-* set pendenza.importo = pagamentoPost.pendenze[0].dati.importo
-* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.importo
+* set pendenza.importo = pagamentoPost.pendenze[0].dati.numero * 2.00
+* set pendenza.voci[0].importo = pagamentoPost.pendenze[0].dati.numero * 2.00
 * set pendenza.soggettoPagatore = 
 """
 {
