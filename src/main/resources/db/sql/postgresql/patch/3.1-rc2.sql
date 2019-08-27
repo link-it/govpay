@@ -327,35 +327,6 @@ CREATE VIEW v_riscossioni AS
      ON tributi.id_tipo_tributo = tipi_tributo.id;
 
 
--- 24/07/2019 Vista Eventi per Versamenti
-CREATE VIEW v_eventi_vers AS (
-	SELECT eventi.componente, 
-	       eventi.ruolo,
-               eventi.categoria_evento, 
-               eventi.tipo_evento, 
-               eventi.sottotipo_evento, 
-               eventi.data, 
-               eventi.intervallo, 
-               eventi.esito, 
-               eventi.sottotipo_esito, 
-               eventi.dettaglio_esito, 
-               eventi.parametri_richiesta, 
-               eventi.parametri_risposta, 
-               eventi.dati_pago_pa, 
-               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente, 
-               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione, 
-               eventi.iuv, 
-               eventi.cod_dominio, 
-               eventi.ccp, 
-               eventi.id_sessione, 
-               eventi.id 
-               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione 
-               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale 
-               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento 
-               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
-         );
-
-
 -- 26/07/2019 Aggiunti campi per definire la visualizzazione di un tipo pendenza
 ALTER TABLE tipi_versamento ADD COLUMN visualizzazione_definizione TEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN visualizzazione_definizione TEXT;
@@ -384,8 +355,31 @@ ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_header_risposta TEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_template_richiesta TEXT;
 ALTER TABLE tipi_vers_domini ADD COLUMN trac_csv_template_risposta TEXT;
 
-
-
-
-
+-- 27/08/2019 Vista Eventi per Versamenti
+CREATE OR REPLACE VIEW v_eventi_vers AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               coalesce(eventi.cod_versamento_ente, versamenti.cod_versamento_ente) as cod_versamento_ente,
+               coalesce (eventi.cod_applicazione, applicazioni.cod_applicazione) as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.id
+               FROM eventi LEFT JOIN pagamenti_portale ON eventi.id_sessione = pagamenti_portale.id_sessione
+               LEFT JOIN pag_port_versamenti ON pagamenti_portale.id = pag_port_versamenti.id_pagamento_portale
+               LEFT JOIN versamenti ON versamenti.id = pag_port_versamenti.id_versamento
+               LEFT JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+         );
 
