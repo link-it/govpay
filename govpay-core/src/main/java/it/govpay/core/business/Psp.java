@@ -20,11 +20,13 @@
 package it.govpay.core.business;
 
 import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang.StringUtils;
@@ -144,36 +146,59 @@ public class Psp extends BasicBD {
 
 					// Converto ogni informativa un PSP
 					for(InformativaPSP informativaPsp : informativePsp.getInformativaPSPs()) {
-						it.govpay.bd.model.Psp psp = new it.govpay.bd.model.Psp();
-
-						CtInformativaMaster informativaMaster = informativaPsp.getInformativaMaster();
-
-						boolean isAttivo = informativaMaster.getDataInizioValidita().before(new Date());
-
-						psp.setAbilitato(isAttivo);
-						psp.setCodFlusso(informativaPsp.getIdentificativoFlusso());
-						psp.setCodPsp(informativaPsp.getIdentificativoPSP());
-						psp.setRagioneSociale(informativaPsp.getRagioneSociale());
-						psp.setStornoGestito(informativaMaster.getStornoPagamento() == 1);
-						psp.setBolloGestito(informativaMaster.getMarcaBolloDigitale() == 1);
-						psp.setUrlInfo(informativaMaster.getUrlInformazioniPSP());
-
-						for(CtInformativaDetail informativaPspDetail : informativaPsp.getListaInformativaDetail().getInformativaDetails()) {
-							Canale canale = new Canale();
-							//canale.setCondizioni(informativaPspDetail.getCondizioniEconomicheMassime());
-							canale.setCodCanale(informativaPspDetail.getIdentificativoCanale());
-							//canale.setDescrizione(informativaPspDetail.getDescrizioneServizio());
-							//canale.setDisponibilita(informativaPspDetail.getDisponibilitaServizio());
-							canale.setModelloPagamento(Canale.ModelloPagamento.toEnum(informativaPspDetail.getModelloPagamento()));
-							canale.setPsp(psp);
-							canale.setTipoVersamento(Canale.TipoVersamento.toEnum(informativaPspDetail.getTipoVersamento().name()));
-							//canale.setUrlInfo(informativaPspDetail.getUrlInformazioniCanale());
-							canale.setCodIntermediario(informativaPspDetail.getIdentificativoIntermediario());
-							psp.getCanalis().add(canale);
+						try {
+							it.govpay.bd.model.Psp psp = new it.govpay.bd.model.Psp();
+	
+							CtInformativaMaster informativaMaster = informativaPsp.getInformativaMaster();
+	
+							boolean isAttivo = informativaMaster.getDataInizioValidita().before(new Date());
+	
+							psp.setAbilitato(isAttivo);
+							psp.setCodFlusso(informativaPsp.getIdentificativoFlusso());
+							psp.setCodPsp(informativaPsp.getIdentificativoPSP());
+							psp.setRagioneSociale(informativaPsp.getRagioneSociale());
+							psp.setStornoGestito(informativaMaster.getStornoPagamento() == 1);
+							psp.setBolloGestito(informativaMaster.getMarcaBolloDigitale() == 1);
+							psp.setUrlInfo(informativaMaster.getUrlInformazioniPSP());
+	
+							for(CtInformativaDetail informativaPspDetail : informativaPsp.getListaInformativaDetail().getInformativaDetails()) {
+								Canale canale = new Canale();
+								//canale.setCondizioni(informativaPspDetail.getCondizioniEconomicheMassime());
+								canale.setCodCanale(informativaPspDetail.getIdentificativoCanale());
+								//canale.setDescrizione(informativaPspDetail.getDescrizioneServizio());
+								//canale.setDisponibilita(informativaPspDetail.getDisponibilitaServizio());
+								canale.setModelloPagamento(Canale.ModelloPagamento.toEnum(informativaPspDetail.getModelloPagamento()));
+								canale.setPsp(psp);
+								try {
+									canale.setTipoVersamento(Canale.TipoVersamento.toEnum(informativaPspDetail.getTipoVersamento().name()));
+								} catch (Throwable e) {
+									log.error("TipoVersamento ["+informativaPspDetail.getTipoVersamento()+"] non supportata. Imposto SCONOSCIUTA");
+									canale.setTipoVersamento(Canale.TipoVersamento.SCONOSCIUTA);
+								}
+								//canale.setUrlInfo(informativaPspDetail.getUrlInformazioniCanale());
+								canale.setCodIntermediario(informativaPspDetail.getIdentificativoIntermediario());
+								psp.getCanalis().add(canale);
+							}
+	
+							catalogoPsp.add(psp);
+							log.debug("Acquisita informativa [codPsp: " + psp.getCodPsp() + "]");
+						} catch (Throwable t) {
+							//Create Marshaller
+				            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+				 
+				            //Required formatting??
+				            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+				 
+				            //Print XML String to Console
+				            StringWriter sw = new StringWriter();
+				             
+				            //Write XML to StringWriter
+				            jaxbMarshaller.marshal(informativaPsp, sw);
+				             
+				            //Verify XML Content
+				            String xmlContent = sw.toString();
+							log.error("Impossibile acquisire l'informativa del psp " + informativaPsp.getRagioneSociale() + ":\n" + xmlContent, t);
 						}
-
-						catalogoPsp.add(psp);
-						log.debug("Acquisita informativa [codPsp: " + psp.getCodPsp() + "]");
 					}
 
 					// Completata acquisizione del Catalogo dal Nodo dei Pagamenti.

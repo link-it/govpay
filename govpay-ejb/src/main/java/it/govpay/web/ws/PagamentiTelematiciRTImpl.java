@@ -25,6 +25,7 @@ import it.gov.digitpa.schemas._2011.ws.nodo.EsitoPaaInviaRT;
 import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRT;
 import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRTRisposta;
 import it.gov.digitpa.schemas._2011.ws.nodo.TipoInviaEsitoStornoRisposta;
+import it.gov.digitpa.schemas._2011.ws.nodo.TipoInviaRichiestaRevocaRisposta;
 import it.gov.digitpa.schemas._2011.ws.nodo.FaultBean;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT;
 import it.govpay.bd.BasicBD;
@@ -333,6 +334,20 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		}
 		return response;
 	}
+	
+	@Override
+	public TipoInviaRichiestaRevocaRisposta paaInviaRichiestaRevoca(String identificativoDominio,
+			String identificativoUnivocoVersamento, String codiceContestoPagamento, byte[] rr) {
+		TipoInviaRichiestaRevocaRisposta risposta = new TipoInviaRichiestaRevocaRisposta();
+		risposta.setEsito("KO");
+		FaultBean fault = new FaultBean();
+		fault.setId(identificativoDominio);
+		fault.setFaultCode(FaultPa.PAA_SYSTEM_ERROR.name());
+		fault.setDescription("Servizio di revoca non supportato");
+		fault.setFaultString(FaultPa.PAA_SYSTEM_ERROR.getFaultString());
+		risposta.setFault(fault);
+		return risposta;
+	}
 
 	private <T> T buildRisposta(NdpException e, T r) {
 		if(r instanceof PaaInviaRTRisposta) {
@@ -371,7 +386,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 		return r;
 	}
-
+	
 	private String getPrincipal() throws GovPayException {
 		if(wsCtxt.getUserPrincipal() == null) {
 			return null;
@@ -379,4 +394,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 		return wsCtxt.getUserPrincipal().getName();
 	}
+
+
 }
