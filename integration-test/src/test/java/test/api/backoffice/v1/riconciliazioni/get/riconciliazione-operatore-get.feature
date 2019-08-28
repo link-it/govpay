@@ -29,26 +29,10 @@ And match response == read('msg/<risposta>')
 
 Examples:
 | operatore | idDominio | idRiconciliazione | httpStatus | risposta |
-| operatore_disabilitato.json | idDominio | idRiconciliazioneSin_DOM1_A2A | 403 | errore_auth.json |
-| operatore_disabilitato.json | idDominio | idRiconciliazioneSin_DOM1_A2A2 | 403 | errore_auth.json |
-| operatore_disabilitato.json | idDominio | idRiconciliazioneCum_DOM1_A2A | 403 | errore_auth.json |
-| operatore_disabilitato.json | idDominio | idRiconciliazioneCum_DOM1_A2A2 | 403 | errore_auth.json |
-| operatore_disabilitato.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A | 403 | errore_auth.json |
-| operatore_disabilitato.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A2 | 403 | errore_auth.json |
-| operatore_disabilitato.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A | 403 | errore_auth.json |
-| operatore_disabilitato.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A2 | 403 | errore_auth.json |
 | operatore_domini1.json | idDominio | idRiconciliazioneSin_DOM1_A2A | 200 | riconciliazione-singola-response.json |
 | operatore_domini1.json | idDominio | idRiconciliazioneSin_DOM1_A2A2 | 200 | riconciliazione-singola-response.json |
 | operatore_domini1.json | idDominio | idRiconciliazioneCum_DOM1_A2A | 200 | riconciliazione-cumulativa-response.json |
 | operatore_domini1.json | idDominio | idRiconciliazioneCum_DOM1_A2A2 | 200 | riconciliazione-cumulativa-response.json |
-| operatore_domini1.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A | 403 | errore_auth.json |
-| operatore_domini1.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A2 | 403 | errore_auth.json |
-| operatore_domini1.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A | 403 | errore_auth.json |
-| operatore_domini1.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A2 | 403 | errore_auth.json |
-| operatore_domini2.json | idDominio | idRiconciliazioneSin_DOM1_A2A | 403 | errore_auth.json |
-| operatore_domini2.json | idDominio | idRiconciliazioneSin_DOM1_A2A2 | 403 | errore_auth.json |
-| operatore_domini2.json | idDominio | idRiconciliazioneCum_DOM1_A2A | 403 | errore_auth.json |
-| operatore_domini2.json | idDominio | idRiconciliazioneCum_DOM1_A2A2 | 403 | errore_auth.json |
 | operatore_domini2.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A | 200 | riconciliazione-singola-response.json |
 | operatore_domini2.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A2 | 200 | riconciliazione-singola-response.json |
 | operatore_domini2.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A | 200 | riconciliazione-cumulativa-response.json |
@@ -69,11 +53,4 @@ Examples:
 | operatore_star.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A2 | 200 | riconciliazione-singola-response.json |
 | operatore_star.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A | 200 | riconciliazione-cumulativa-response.json |
 | operatore_star.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A2 | 200 | riconciliazione-cumulativa-response.json |
-| operatore_none.json | idDominio | idRiconciliazioneSin_DOM1_A2A | 403 | errore_auth.json |
-| operatore_none.json | idDominio | idRiconciliazioneSin_DOM1_A2A2 | 403 | errore_auth.json |
-| operatore_none.json | idDominio | idRiconciliazioneCum_DOM1_A2A | 403 | errore_auth.json |
-| operatore_none.json | idDominio | idRiconciliazioneCum_DOM1_A2A2 | 403 | errore_auth.json |
-| operatore_nonAuth.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A | 403 | errore_auth.json |
-| operatore_nonAuth.json | idDominio_2 | idRiconciliazioneSin_DOM2_A2A2 | 403 | errore_auth.json |
-| operatore_nonAuth.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A | 403 | errore_auth.json |
-| operatore_nonAuth.json | idDominio_2 | idRiconciliazioneCum_DOM2_A2A2 | 403 | errore_auth.json |
+
