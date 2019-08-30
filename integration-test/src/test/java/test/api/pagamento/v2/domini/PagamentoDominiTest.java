@@ -1,4 +1,4 @@
-package test.api.ragioneria;
+package test.api.pagamento.v2.domini;
 
 import java.io.File;
 
@@ -11,13 +11,13 @@ import com.intuit.karate.junit4.Karate;
 import com.intuit.karate.netty.FeatureServer;
 
 @RunWith(Karate.class)
-public class RagioneriaTest {
+public class PagamentoDominiTest {
 	
 	private static FeatureServer mockservice;
 	
     @BeforeClass
     public static void beforeClass() {
-        File file = FileUtils.getFileRelativeTo(RagioneriaTest.class, "../../../utils/mock-ente.feature");
+        File file = FileUtils.getFileRelativeTo(PagamentoDominiTest.class, "../../../../../utils/mock-ente.feature");
         mockservice = FeatureServer.start(file, 8888, false, null);
     }
     

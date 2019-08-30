@@ -1,4 +1,4 @@
-package test.api.pendenza;
+package test.api.ragioneria.v2.riconciliazioni;
 
 import java.io.File;
 
@@ -11,13 +11,13 @@ import com.intuit.karate.junit4.Karate;
 import com.intuit.karate.netty.FeatureServer;
 
 @RunWith(Karate.class)
-public class PendenzaTest {
+public class RagioneriaRiconciliazioniTest {
 	
 	private static FeatureServer mockservice;
 	
     @BeforeClass
     public static void beforeClass() {
-        File file = FileUtils.getFileRelativeTo(PendenzaTest.class, "../../../utils/mock-ente.feature");
+        File file = FileUtils.getFileRelativeTo(RagioneriaRiconciliazioniTest.class, "../../../../../utils/mock-ente.feature");
         mockservice = FeatureServer.start(file, 8888, false, null);
     }
     
