@@ -245,11 +245,16 @@ echo "Startup wildfly"
 sh /etc/govpay/check-govpay-services.sh'''
       }
     }
-    stage('integration-test') {
+    stage('test') {
       steps {
         sh '''cd ./integration-test 
 /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test'''
       }
     }
   }
+    post {
+        always {
+            junit 'integration-test/target/surefire-reports/*.xml'
+        }
+    }
 }
