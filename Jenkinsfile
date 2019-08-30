@@ -14,6 +14,7 @@ pipeline {
     --non-recursive \\
     exec:exec)
 
+export JAVA_HOME=/opt/jdk1.8.0_191/
 echo "Post compilazione govpay v.$GOVPAY_VERSION"
 
 echo "Shutdown wildfly" 
