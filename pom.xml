@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.1.0-RC2-SNAPSHOT</version>
+	<version>3.1.0-RC2</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -80,7 +80,7 @@
 		<soap.version>2.3.1</soap.version>
 		
 		<!-- xmlsec -->
-		<xmlsec.version>2.1.2</xmlsec.version>
+		<xmlsec.version>2.1.4</xmlsec.version>
 		
 		<!-- freemarker -->
 		<freemarker.version>2.3.23</freemarker.version>

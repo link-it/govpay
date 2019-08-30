@@ -2,16 +2,16 @@
 <!-- Questo WSDL rappresenta l'interfaccia esposta dalla PAA per la verifica 
 	dei pagamenti in attesa. -->
 <wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
-	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead"
-	xmlns:ppt="http://ws.pagamenti.telematici.gov/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-	xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/RichiestaAvvisi"
-	xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" name="PPT"
-	targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/RichiestaAvvisi">
+				  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead"
+				  xmlns:ppt="http://ws.pagamenti.telematici.gov/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+				  xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/RichiestaAvvisi"
+				  xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" name="PPT"
+				  targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/RichiestaAvvisi">
 	<wsdl:types>
 		<!-- schema header -->
 		<xsd:schema version="2.1.3"
-			targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
+					targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
 			
 			<xsd:annotation>
 				<xsd:appinfo xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
@@ -28,13 +28,13 @@
 				</xsd:restriction>
 			</xsd:simpleType>
 			<xsd:element name="intestazionePPT"
-				xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+						 xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="identificativoIntermediarioPA"
-							type="ppthead:stText35" />
+									 type="ppthead:stText35" />
 						<xsd:element name="identificativoStazioneIntermediarioPA"
-							type="ppthead:stText35" />
+									 type="ppthead:stText35" />
 						<xsd:element name="identificativoDominio" type="ppthead:stText35" />
 					</xsd:sequence>
 				</xsd:complexType>
@@ -42,7 +42,6 @@
 		</xsd:schema>
 		<!-- schema body -->
 		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/">
-		
 			<xsd:annotation>
 				<xsd:appinfo xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
 					<jaxb:schemaBindings>
@@ -50,7 +49,7 @@
 					</jaxb:schemaBindings>
 				</xsd:appinfo>
 			</xsd:annotation>
-			
+
 			<!-- simple types -->
 			<xsd:simpleType name="stIdentificativoServizio">
 				<xsd:restriction base="xsd:string">
@@ -64,7 +63,7 @@
 					<xsd:maxLength value="18" />
 				</xsd:restriction>
 			</xsd:simpleType>
-			
+
 			<xsd:simpleType name="stText25">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
@@ -106,7 +105,7 @@
 					<xsd:element name="faultString" type="xsd:string" />
 					<xsd:element name="id" type="xsd:string" />
 					<xsd:element name="description" type="xsd:string"
-						minOccurs="0" />
+								 minOccurs="0" />
 					<xsd:element name="serial" type="xsd:int" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
@@ -114,7 +113,7 @@
 			<xsd:complexType name="ctRisposta">
 				<xsd:sequence>
 					<xsd:element name="fault" type="ppt:ctFaultBean"
-						minOccurs="0" />
+								 minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -180,8 +179,8 @@
 		</xsd:schema>
 		
 		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!-- Import manuale PagInf_RPT_RT_6_2_0.xsd-1.0.xsd -->
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+		<!-- Import manuale PagInf_RPT_RT_6_2_0.xsd-1.0.xsd -->
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 		<xsd:schema
 				xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/"
 				xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -288,6 +287,7 @@
 					<xsd:enumeration value="PO"/> <!--- Pagamento attivato presso PSP -->
 					<xsd:enumeration value="OBEP"/> <!--- On-line Banking E-Payment -->
 					<xsd:enumeration value="OTH"/> <!-- Altre forme di versamento -->
+					<xsd:enumeration value="JIF"/>  <!-- Bancomat Pay  -->											 
 					<xsd:maxLength value="4"/>
 				</xsd:restriction>
 			</xsd:simpleType>
@@ -306,7 +306,7 @@
 		
 			<xsd:simpleType name="stFirmaRicevuta">
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="0"/><!-- Firma non richiesta -->			
+					<xsd:enumeration value="0"/><!-- Firma non richiesta -->
 					<xsd:length value="1"/>
 				</xsd:restriction>
 			</xsd:simpleType>
@@ -367,6 +367,13 @@
 				<xsd:restriction base="xsd:base64Binary">
 				</xsd:restriction>
 			</xsd:simpleType>
+			
+			
+			<!-- Tabella T2 Sigla delle province italiane, Agenzia delle Entrate  Eliminato--> 
+			<xsd:simpleType name="stSiglaProvinceAde">
+				<xsd:restriction base="xsd:string">
+				</xsd:restriction>
+			</xsd:simpleType>
 		
 			<!-- **** END: tipi semplici  ****-->
 		
@@ -400,7 +407,7 @@
 							<xsd:documentation>Contiene l’impronta informatica (digest), rappresentata in "base 64 binary", del documento informatico o della segnatura di protocollo cui è associata la marca da bollo digitale</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="provinciaResidenza" type="pay_i:stNazioneProvincia" minOccurs="1">
+					<xsd:element name="provinciaResidenza" type="pay_i:stSiglaProvinceAde" minOccurs="1">
 						<xsd:annotation>
 							<xsd:documentation>Sigla automobilistica della provincia di residenza del soggetto pagatore.</xsd:documentation>
 						</xsd:annotation>
@@ -1067,14 +1074,14 @@
 	<wsdl:portType name="GenerazioneAvvisi">
 		<wsdl:operation name="paaChiediNumeroAvviso">
 			<wsdl:input message="tns:paaChiediNumeroAvviso"
-				wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaChiediNumeroAvvisoRichiesta" />
+						wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaChiediNumeroAvvisoRichiesta" />
 			<wsdl:output message="tns:paaChiediNumeroAvvisoRisposta"
-				wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaChiediNumeroAvvisoRisposta" />
+						 wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaChiediNumeroAvvisoRisposta" />
 		</wsdl:operation>
 	</wsdl:portType>
 	<wsdl:binding name="GenerazioneAvvisibinding" type="tns:GenerazioneAvvisi">
 		<soap:binding style="document"
-			transport="http://schemas.xmlsoap.org/soap/http" />
+					  transport="http://schemas.xmlsoap.org/soap/http" />
 		<wsdl:operation name="paaChiediNumeroAvviso">
 			<soap:operation soapAction="paaChiediNumeroAvviso" />
 			<wsdl:input>

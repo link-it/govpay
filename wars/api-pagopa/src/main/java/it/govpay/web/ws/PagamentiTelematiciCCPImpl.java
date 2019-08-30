@@ -109,8 +109,6 @@ targetNamespace = "http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelema
 portName = "PPTPort",
 wsdlLocation="/wsdl/PaPerNodoPagamentoPsp.wsdl")
 
-//@HandlerChain(file="../../../../handler-chains/handler-chain-ndp.xml")
-
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 

@@ -452,7 +452,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		fault.setDescription("Non implementato");
 		
 		risposta.setFault(fault);
-		
+		risposta.setEsito("KO");
 		appContext.getEventoCtx().setSottotipoEsito(FaultPa.PAA_SYSTEM_ERROR.name());
 		appContext.getEventoCtx().setDescrizioneEsito("Non implementato");
 		appContext.getEventoCtx().setEsito(Esito.FAIL);

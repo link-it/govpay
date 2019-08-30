@@ -25,13 +25,13 @@ Then assert responseStatus == 200 || responseStatus == 201
 	}
 """
 
-Scenario: Verifica pagamento sconosciuto
+Scenario: Verifica pagamento
 
 * def numeroAvviso = '000000000000000000'
 * call read('classpath:utils/psp-verifica-rpt.feature')
 * match response.faultBean == faultBean
 
-Scenario: Attiva pagamento sconosciuto
+Scenario: Attiva pagamento
 
 * def numeroAvviso = '000000000000000000'
 * def iuv = '000000000000000'

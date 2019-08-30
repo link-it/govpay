@@ -13,7 +13,7 @@
 					<xsd:maxLength value="35"/>
 				</xsd:restriction>
 			</xsd:simpleType>
-			
+
 			<xsd:element name="intestazionePPT">
 				<xsd:complexType>
 					<xsd:sequence>
@@ -58,14 +58,14 @@
 			</xsd:simpleType>
 
 			<xsd:simpleType name="stImporto">
-					 <xsd:restriction base="xsd:decimal">
-				<xsd:minInclusive value="0.00"/>
-				<xsd:maxInclusive value="999999.99"/>
-				<xsd:fractionDigits value="2"/>
-				<xsd:totalDigits value="10"/>
-					</xsd:restriction>
+				<xsd:restriction base="xsd:decimal">
+					<xsd:minInclusive value="0.00"/>
+					<xsd:maxInclusive value="999999.99"/>
+					<xsd:fractionDigits value="2"/>
+					<xsd:totalDigits value="10"/>
+				</xsd:restriction>
 			</xsd:simpleType>
-			
+
 			<xsd:complexType name="ctSpezzoniCausaleVersamento">
 				<xsd:sequence minOccurs="1" maxOccurs="6">
 					<xsd:choice>
@@ -76,12 +76,12 @@
 			</xsd:complexType>
 
 			<xsd:complexType name="ctSpezzoneStrutturatoCausaleVersamento">
-					<xsd:sequence>
-							<xsd:element type="ppt:stText25" name="causaleSpezzone" minOccurs="1"/>
-							<xsd:element type="ppt:stImporto" name="importoSpezzone" minOccurs="1"/>
-					</xsd:sequence>
+				<xsd:sequence>
+					<xsd:element type="ppt:stText25" name="causaleSpezzone" minOccurs="1"/>
+					<xsd:element type="ppt:stImporto" name="importoSpezzone" minOccurs="1"/>
+				</xsd:sequence>
 			</xsd:complexType>
-                        
+
 			<!-- Wrapper Elements -->
 			<xsd:element name="paaVerificaRPT" type="ppt:paaVerificaRPT"/>
 			<xsd:element name="paaVerificaRPTRisposta" type="ppt:paaVerificaRPTRisposta"/>
@@ -92,7 +92,7 @@
 				<xsd:sequence>
 					<xsd:element name="importoSingoloVersamento" type="pay_i:stImporto" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="ibanAccredito" type="pay_i:stIBANIdentifier" minOccurs="0">
+					<xsd:element name="ibanAccredito" type="pay_i:stIBANIdentifier" minOccurs="1">
 					</xsd:element>
 					<xsd:element name="bicAccredito" type="pay_i:stBICIdentifier" minOccurs="0">
 					</xsd:element>
@@ -101,8 +101,8 @@
 					<xsd:element name="credenzialiPagatore" type="pay_i:stText35" minOccurs="0">
 					</xsd:element>
 					<xsd:choice minOccurs="1">
-							<xsd:element name="causaleVersamento" type="ppt:stText140" />
-							<xsd:element name="spezzoniCausaleVersamento" type="ppt:ctSpezzoniCausaleVersamento" />
+						<xsd:element name="causaleVersamento" type="ppt:stText140" />
+						<xsd:element name="spezzoniCausaleVersamento" type="ppt:ctSpezzoniCausaleVersamento" />
 					</xsd:choice>
 					<!-- xsd:element name="datiSpecificiRiscossione" type="pay_i:stDatiSpecificiRiscossione" minOccurs="1">
 					</xsd:element -->
@@ -118,7 +118,7 @@
 					<xsd:element name="bicAppoggio" type="pay_i:stBICIdentifier" minOccurs="0">
 					</xsd:element>
 					<xsd:element name="soggettoVersante" type="pay_i:ctSoggettoVersante" minOccurs="0"/>
-							<!-- TODO: Da valutare -->
+					<!-- TODO: Da valutare -->
 					<xsd:element name="ibanAddebito" type="pay_i:stIBANIdentifier" minOccurs="0">
 					</xsd:element>
 					<xsd:element name="bicAddebito" type="pay_i:stBICIdentifier" minOccurs="0">
@@ -184,16 +184,17 @@
 					<xsd:element name="id" type="xsd:string" />
 					<xsd:element name="description" type="xsd:string" minOccurs="0" />
 					<xsd:element name="serial" type="xsd:int" minOccurs="0" />
-					<xsd:element name="originalFaultCode" type="xsd:string"  minOccurs="0"  />
-					<xsd:element name="originalFaultString" type="xsd:string"  minOccurs="0"  />
-					<xsd:element name="originalDescription" type="xsd:string" minOccurs="0" />
+					<!--  Commentati campi aggiuntivi fault. Non necessari e da verificare che il Nodo li accetti -->
+					<!--	<xsd:element name="originalFaultCode" type="xsd:string"  minOccurs="0"  /> -->
+					<!--	<xsd:element name="originalFaultString" type="xsd:string"  minOccurs="0"  /> -->
+					<!--	<xsd:element name="originalDescription" type="xsd:string" minOccurs="0" /> -->
 				</xsd:sequence>
 			</xsd:complexType>
 		</xsd:schema>
 		
 		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!-- Import manuale PagInf_RPT_RT_6_2_0.xsd-1.0.xsd -->
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+		<!-- Import manuale PagInf_RPT_RT_6_2_0.xsd-1.0.xsd -->
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 		<xsd:schema
 				xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/"
 				xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -300,6 +301,7 @@
 					<xsd:enumeration value="PO"/> <!--- Pagamento attivato presso PSP -->
 					<xsd:enumeration value="OBEP"/> <!--- On-line Banking E-Payment -->
 					<xsd:enumeration value="OTH"/> <!-- Altre forme di versamento -->
+					<xsd:enumeration value="JIF"/>  <!-- Bancomat Pay  -->											 
 					<xsd:maxLength value="4"/>
 				</xsd:restriction>
 			</xsd:simpleType>
@@ -318,7 +320,7 @@
 		
 			<xsd:simpleType name="stFirmaRicevuta">
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="0"/><!-- Firma non richiesta -->			
+					<xsd:enumeration value="0"/><!-- Firma non richiesta -->
 					<xsd:length value="1"/>
 				</xsd:restriction>
 			</xsd:simpleType>
@@ -379,6 +381,13 @@
 				<xsd:restriction base="xsd:base64Binary">
 				</xsd:restriction>
 			</xsd:simpleType>
+			
+			
+			<!-- Tabella T2 Sigla delle province italiane, Agenzia delle Entrate  Eliminato--> 
+			<xsd:simpleType name="stSiglaProvinceAde">
+				<xsd:restriction base="xsd:string">
+				</xsd:restriction>
+			</xsd:simpleType>
 		
 			<!-- **** END: tipi semplici  ****-->
 		
@@ -412,7 +421,7 @@
 							<xsd:documentation>Contiene l’impronta informatica (digest), rappresentata in "base 64 binary", del documento informatico o della segnatura di protocollo cui è associata la marca da bollo digitale</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="provinciaResidenza" type="pay_i:stNazioneProvincia" minOccurs="1">
+					<xsd:element name="provinciaResidenza" type="pay_i:stSiglaProvinceAde" minOccurs="1">
 						<xsd:annotation>
 							<xsd:documentation>Sigla automobilistica della provincia di residenza del soggetto pagatore.</xsd:documentation>
 						</xsd:annotation>
@@ -1066,8 +1075,6 @@
 			</xsd:element>
 			<!-- **** END: elementi  ****-->
 		</xsd:schema>
-
-		
 	</wsdl:types>
 	<wsdl:message name="paaVerificaRPT">
 		<wsdl:part name="bodyrichiesta" element="ppt:paaVerificaRPT"/>
