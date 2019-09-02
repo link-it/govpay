@@ -10,8 +10,10 @@ pipeline {
       steps {
 	sh './src/main/resources/scripts/jenkins.build.sh'
       }
-      success{
-        archiveArtifacts 'src/main/resources/setup/target/*.tgz'
+      post {
+        success {
+          archiveArtifacts 'src/main/resources/setup/target/*.tgz'
+        }
       }
     }
     stage('install') {
