@@ -10,7 +10,7 @@ pushd src/main/resources/setup/
 dirname=$(ls -d target/*/)
 cd $dirname
 
-sed -i -r -e \'s/<installer (.*)/<installer ui="text-auto" loadDefaults="true" \\1/\'  installer/setup/antinstall-config.xml
+sed -i -r -e 's/<installer (.*)/<installer ui="text-auto" loadDefaults="true" \1/'  installer/setup/antinstall-config.xml
 
 echo "
 antinstaller_dbusername=govpay
