@@ -25,10 +25,12 @@ pipeline {
     stage('test') {
       steps {
         sh '''cd ./integration-test; /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn clean test'''
+        sh 'tar -czvf ./integration-test/target/surefire-reports.tar.gz ./integration-test/target/surefire-reports/'
       }
       post {
         always {
             junit 'integration-test/target/surefire-reports/*.xml'
+            archiveArtifacts './integration-test/target/surefire-reports.tar.gz'
         }
       }
     }
