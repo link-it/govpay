@@ -30,7 +30,7 @@ pipeline {
       post {
         always {
             junit 'integration-test/target/surefire-reports/*.xml'
-            archiveArtifacts './integration-test/target/surefire-reports.tar.gz'
+            archiveArtifacts 'integration-test/target/surefire-reports.tar.gz'
         }
       }
     }
