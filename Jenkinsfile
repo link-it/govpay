@@ -8,7 +8,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh './src/main/resources/scripts/jenkins.build.sh'
+	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
         success {
@@ -19,7 +19,7 @@ pipeline {
     stage('install') {
       steps {
         sh 'sudo systemctl start wildfly@govpay'
-	sh './src/main/resources/scripts/jenkins-checkgp.sh'
+	sh 'sh ./src/main/resources/scripts/jenkins-checkgp.sh'
       }
     }
     stage('test') {
