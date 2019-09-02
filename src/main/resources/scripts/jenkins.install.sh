@@ -4,6 +4,9 @@ export JAVA_HOME=/opt/jdk1.8.0_191/
 ## ESECUZIONE INSTALLER
 #####
 
+echo "Esecuzione dell'installer..."
+
+pushd src/main/resources/setup/
 dirname=$(ls -d target/*/)
 cd $dirname
 
@@ -41,6 +44,7 @@ sh install.sh text-auto
 ## SETUP DB
 #####
 
+echo "Creazione del database..."
 sudo -u postgres dropdb --if-exists govpay
 sudo -u postgres createdb govpay -O govpay
 psql govpay govpay < dist/sql/gov_pay.sql
@@ -48,6 +52,8 @@ psql govpay govpay < dist/sql/gov_pay.sql
 #####
 ## SETUP API SECURITY SETTINGS
 #####
+
+echo "Abilitazione delle modalita di autenticazione header e basic..."
 
 GOVPAY_WORK_DIR="govpay_ear_tmp"
 GOVPAY_SRC_DIR="dist/archivi/"
@@ -116,7 +122,7 @@ mv $GOVPAY_TMP_DIR/$GOVPAY_EAR_NAME .
 rm -rf $GOVPAY_TMP_DIR
 popd
 
-echo "Deploy govpay";
+echo "Deploy govpay in wildfly...";
 sudo cp $GOVPAY_WORK_DIR/$GOVPAY_EAR_NAME /opt/wildfly-11.0.0.Final/standalone_govpay/deployments/
 
 rm -rf $GOVPAY_WORK_DIR
