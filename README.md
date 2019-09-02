@@ -1,5 +1,4 @@
-[![Build Status](https://jenkins.link.it/govpay/buildStatus/icon?job=GovPay&style=plastic)](https://jenkins.link.it/govpay/job/GovPay/)
-
+[![Build Status](https://jenkins.link.it/govpay/job/govpay/job/3.1.x/badge/icon?job=GovPay&style=plastic)](https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity?branch=3.1.x)
 # GovPay - Porta di accesso al sistema pagoPA
 Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Partner tecnologici alle componenti centrali del progetto pagoPA.
 
