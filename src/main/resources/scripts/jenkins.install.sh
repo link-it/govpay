@@ -1,4 +1,10 @@
 export JAVA_HOME=/opt/jdk1.8.0_191/
+GOVPAY_VERSION=$(mvn -q \\
+    -Dexec.executable=echo \\
+    -Dexec.args=\'${project.version}\' \\
+    --non-recursive \\
+    exec:exec)
+
 
 #####
 ## ESECUZIONE INSTALLER
@@ -45,7 +51,6 @@ sh install.sh text-auto
 #####
 
 echo "Creazione del database..."
-sudo -u postgres dropdb --if-exists govpay
 sudo -u postgres createdb govpay -O govpay
 psql govpay govpay < dist/sql/gov_pay.sql
 
