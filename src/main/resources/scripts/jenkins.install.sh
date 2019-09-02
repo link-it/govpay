@@ -1,9 +1,5 @@
 export JAVA_HOME=/opt/jdk1.8.0_191/
-GOVPAY_VERSION=$(mvn -q \\
-    -Dexec.executable=echo \\
-    -Dexec.args=\'${project.version}\' \\
-    --non-recursive \\
-    exec:exec)
+GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
 
 #####
