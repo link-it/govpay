@@ -487,6 +487,7 @@
 					<xsd:enumeration value="RT_ACCETTATA_PA"></xsd:enumeration>
 					<xsd:enumeration value="RT_RIFIUTATA_PA"></xsd:enumeration>
 					<xsd:enumeration value="RT_ESITO_SCONOSCIUTO_PA"></xsd:enumeration>
+					<xsd:enumeration value="RPT_PARCHEGGIATA_NODO"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
 			
