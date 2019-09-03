@@ -4,7 +4,7 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* configure retry = { count: 10, interval: 1000 }
+* configure retry = { count: 20, interval: 5000 }
 
 Scenario: Pagamento pendenza precaricata anonimo
 
