@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -172,7 +173,7 @@ public class StartupUtils {
 		} catch (Exception e) {
 			throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita.", e);
 		}
-		
+		log.info("Charset.defaultCharset(): " + Charset.defaultCharset() );
 		return ctx;
 	}
 	
