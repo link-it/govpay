@@ -29,6 +29,10 @@ pipeline {
             junit 'integration-test/target/surefire-reports/*.xml'
             sh 'tar -czvf ./integration-test/target/surefire-reports.tar.gz ./integration-test/target/surefire-reports/'
             archiveArtifacts 'integration-test/target/surefire-reports.tar.gz'
+            sh 'tar -czvf /var/log/govpay/govpay-logs.tar.gz /var/log/govpay/'
+            archiveArtifacts '/var/log/govpay/govpay-logs.tar.gz'
+            sh 'tar -czvf /opt/wildfly-11.0.0.Final/standalone_govpay/log/wildfly-logs.tar.gz /opt/wildfly-11.0.0.Final/standalone_govpay/log/*'
+            archiveArtifacts '/opt/wildfly-11.0.0.Final/standalone_govpay/log/wildfly-logs.tar.gz'
         }
       }
     }
