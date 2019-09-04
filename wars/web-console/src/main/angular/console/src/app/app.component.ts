@@ -15,6 +15,7 @@ import { IModalDialog } from './classes/interfaces/IModalDialog';
 import { ModalBehavior } from './classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { HttpHeaders } from '@angular/common/http';
+import { Voce } from './services/voce.service';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -201,6 +202,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
         break;
       case UtilService.URL_GIORNALE_EVENTI:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_GIORNALE_EVENTI });
+        break;
+      case UtilService.URL_GIORNALE_EVENTI+UtilService.URL_DETTAGLIO:
+        a.push({ label: Voce.VISTA_COMPLETA, type: UtilService.VISTA_COMPLETA_EVENTO_JSON });
         break;
       case UtilService.URL_RISCOSSIONI:
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_RISCOSSIONI });
@@ -434,6 +438,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog {
           break;
         case UtilService.ESCLUDI_NOTIFICA:
           (_componentRef)?_componentRef.instance.esclusioneNotifiche():null;
+          break;
+        case UtilService.VISTA_COMPLETA_EVENTO_JSON:
+          (_componentRef)?_componentRef.instance.vistaCompletaEvento():null;
           break;
         case UtilService.PENDENZA:
           if(_componentRef) {
