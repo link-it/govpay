@@ -7,4 +7,6 @@ export interface IExport {
   jsonToCsv?(name: string, jsonData: any);
 
   esclusioneNotifiche?();
+
+  vistaCompletaEvento?();
 }

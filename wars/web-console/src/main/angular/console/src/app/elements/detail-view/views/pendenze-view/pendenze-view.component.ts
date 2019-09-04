@@ -15,7 +15,7 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { CronoCode } from '../../../../classes/view/crono-code';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
-import { TwoCols } from '../../../../classes/view/two-cols';
+import { TwoColsCollapse } from '../../../../classes/view/two-cols-collapse';
 
 declare let JSZip: any;
 declare let FileSaver: any;
@@ -199,16 +199,50 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     this.gps.getDataService(_url, _query).subscribe(function (_response) {
         let _body = _response.body;
         this.eventi = _body['risultati'].map(function(item) {
-          const _stdTC: TwoCols = new TwoCols();
+          const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
           const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
           const _riferimento = this.us.mapRiferimentoGiornale(item);
-          _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
-          _stdTC.sottotitolo = new Dato({ label: _riferimento });
-          _stdTC.stato = item.esito;
-          _stdTC.data = _dataOraEventi;
+          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+          _stdTCC.sottotitolo = new Dato({ label: _riferimento });
+          _stdTCC.stato = item.esito;
+          _stdTCC.data = _dataOraEventi;
+          if(item.dettaglioEsito) {
+            _stdTCC.motivo = item.dettaglioEsito;
+          }
+          _stdTCC.url = UtilService.RootByTOA() + _url + '/' + item.id;
+          _stdTCC.elenco = [];
+          if(item.durataEvento) {
+            _stdTCC.elenco.push({ label: Voce.DURATA, value: this.us.formatMs(item.durataEvento) });
+          }
+          if(item.datiPagoPA) {
+            if(item.datiPagoPA.idPsp) {
+              _stdTCC.elenco.push({ label: Voce.ID_PSP, value: item.datiPagoPA.idPsp });
+            }
+            if(item.datiPagoPA.idCanale) {
+              _stdTCC.elenco.push({ label: Voce.ID_CANALE, value: item.datiPagoPA.idCanale });
+            }
+            if(item.datiPagoPA.idIntermediarioPsp) {
+              _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO_PSP, value: item.datiPagoPA.idIntermediarioPsp });
+            }
+            if(item.datiPagoPA.tipoVersamento) {
+              _stdTCC.elenco.push({ label: Voce.TIPO_VERSAMENTO, value: item.datiPagoPA.tipoVersamento });
+            }
+            if(item.datiPagoPA.modelloPagamento) {
+              _stdTCC.elenco.push({ label: Voce.MODELLO_PAGAMENTO, value: item.datiPagoPA.modelloPagamento });
+            }
+            if(item.datiPagoPA.idDominio) {
+              _stdTCC.elenco.push({ label: Voce.ID_DOMINIO, value: item.datiPagoPA.idDominio });
+            }
+            if(item.datiPagoPA.idIntermediario) {
+              _stdTCC.elenco.push({ label: Voce.ID_INTERMEDIARIO, value: item.datiPagoPA.idIntermediario });
+            }
+            if(item.datiPagoPA.idStazione) {
+              _stdTCC.elenco.push({ label: Voce.ID_STAZIONE, value: item.datiPagoPA.idStazione });
+            }
+          }
           let p = new Parameters();
-          p.model = _stdTC;
-          p.type = UtilService.TWO_COLS;
+          p.model = _stdTCC;
+          p.type = UtilService.TWO_COLS_COLLAPSE;
           return p;
         }, this);
         this.gps.updateSpinner(false);
@@ -342,12 +376,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     let folders: string[] = [];
     let names: string[] = [];
     try {
-      //TODO: Root Pdf pendenza, servizio non attivo
-      // * urls.push(UtilService.URL_PENDENZE+'/'+this.json.idA2A+'/'+this.json.idPendenza);
-      // names.push('Dati_pendenza.pdf');
-      // contents.push('application/pdf');
-      // types.push('blob'); *
-
       //Pdf Avviso di pagamento
       if(this.json.numeroAvviso) {
         if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
@@ -361,6 +389,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       this.tentativi.forEach((el) => {
         // /rpp/{idDominio}/{iuv}/{ccp}/rpt
         // /rpp/{idDominio}/{iuv}/{ccp}/rt
+        // /eventi/?{idDominio}&{iuv}&{ccp}
         let item = el.jsonP;
         _folder = encodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
         if (folders.indexOf(_folder) == -1) {
@@ -370,6 +399,10 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
         names.push('Rpt.xml'+_folder);
         contents.push('application/xml');
         types.push('text');
+        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idDominio='+encodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+encodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+encodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento));
+        contents.push('application/json');
+        names.push('Eventi.csv'+_folder);
+        types.push('json');
         if(item.rt) {
           urls.push('/rpp/'+encodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+encodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+encodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt');
           contents.push('application/xml');
@@ -379,21 +412,15 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
           contents.push('application/pdf');
           names.push('Rt.pdf'+_folder);
           types.push('blob');
-          urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idA2A='+encodeURIComponent(this.json.idA2A)+'&idPendenza='+encodeURIComponent(this.json.idPendenza));
-          contents.push('application/json');
-          names.push('Eventi.csv'+_folder);
-          types.push('json');
         }
       }, this);
-      if (this.tentativi.length == 0 && this.eventi.length != 0) {
-        if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
-          folders.push(UtilService.ROOT_ZIP_FOLDER);
-        }
-        urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idA2A='+encodeURIComponent(this.json.idA2A)+'&idPendenza='+encodeURIComponent(this.json.idPendenza));
-        contents.push('application/json');
-        names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
-        types.push('json');
+      if (folders.indexOf(UtilService.ROOT_ZIP_FOLDER) == -1) {
+        folders.push(UtilService.ROOT_ZIP_FOLDER);
       }
+      urls.push(UtilService.URL_GIORNALE_EVENTI+'?limit=500&idA2A='+encodeURIComponent(this.json.idA2A)+'&idPendenza='+encodeURIComponent(this.json.idPendenza));
+      contents.push('application/json');
+      names.push('Eventi.csv' + UtilService.ROOT_ZIP_FOLDER);
+      types.push('json');
     } catch (error) {
       this.gps.updateSpinner(false);
       this.us.alert('Si è verificato un errore non previsto durante il recupero delle informazioni.', true);
@@ -417,8 +444,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
     let zipname = root + ext;
     let zip = new JSZip();
     let zroot = zip.folder(root);
-    //TODO: Abilitare appena il servizio Root pdf pendenza è attivo
-    // zroot.file(structure.names[0], data[0].body);
     structure.folders.forEach((folder) => {
       let zfolder;
       if(folder !== UtilService.ROOT_ZIP_FOLDER) {
@@ -431,6 +456,10 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
             //folder
             o = this._elaborate(structure.names[ref].split(folder)[0], file);
             zfolder.file(o['name'], o['zdata']);
+            if(o['name'].indexOf('csv') != -1) {
+              o = this.createJsonCopy(o['name'], file);
+              zfolder.file(o['name'], o['zdata']);
+            }
           }
         } else {
           if(structure.names[ref].indexOf(UtilService.ROOT_ZIP_FOLDER) != -1) {
@@ -464,9 +493,9 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       case 'Eventi.csv':
         let _jsonArray: any[] = jsonData.risultati;
         let _keys = [];
+        _keys = this._elaborateKeys(_jsonArray);
         _jsonArray.forEach((_json, index) => {
           if(index == 0) {
-            _keys = Object.keys(_json);
             let _mappedKeys = _keys.map((key) => {
               return '"'+key+'"';
             });
@@ -474,7 +503,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
           }
           let row: string[] = [];
           _keys.forEach((_key) => {
-             row.push('"'+(_json[_key] || 'n/a')+'"');
+            const _val = (_json[_key] && typeof _json[_key] === 'object')?JSON.stringify(_json[_key]):_json[_key];
+            row.push('"'+(_val || 'n/a')+'"');
           });
           _csv += row.join(', ')+'\r\n';
         });
@@ -497,5 +527,23 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit, Aft
       zdata = this.jsonToCsv(name, file.body);
     }
     return { zdata: zdata, name: name };
+  }
+
+  /**
+   * Elaborate keys
+   * @param {string} array
+   * @returns {string[]}
+   * @private
+   */
+  protected _elaborateKeys(array: any): string[] {
+    let _keys = [];
+    array.forEach((item) => {
+      Object.keys(item).forEach((key) => {
+        if(_keys.indexOf(key) == -1) {
+          _keys.push(key);
+        }
+      });
+    });
+    return _keys;
   }
 }

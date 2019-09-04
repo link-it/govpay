@@ -401,6 +401,7 @@ export class UtilService {
   public static STANDARD: string = '';
   public static STANDARD_COLLAPSE: string = 'standard_collapse';
   public static TWO_COLS: string = 'two_cols';
+  public static TWO_COLS_COLLAPSE: string = 'two_cols_collapse';
   public static RIEPILOGO: string = 'riepilogo';
   public static CRONO: string = 'crono';
   public static CRONO_CODE: string = 'crono_code';
@@ -467,6 +468,7 @@ export class UtilService {
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
   public static EXPORT_TRACCIATO: string = 'esporta_tracciato';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
+  public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
 
   /**
    * Dashboard link params
@@ -709,6 +711,15 @@ export class UtilService {
   //     'stato-normal': _status.n,
   //   };
   // }
+
+  /**
+   * Format milliseconds to HH[h] mm[m] ss[s].SSS
+   * @param duration
+   * @returns {string}
+   */
+  formatMs(duration: number) {
+    return moment.utc(duration).format("HH[h] mm[m] ss[s].SSS");
+  }
 
   /**
    * Var is valid
