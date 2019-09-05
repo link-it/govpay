@@ -61,6 +61,7 @@ export class Voce {
   public static ELABORAZIONE: string = 'Elaborazione';
   public static EMAIL: string = 'Email';
   public static ENTE_CREDITORE: string = 'Ente creditore';
+  public static ENTE_CREDITORE_SIGLA: string = 'EC';
   public static ENTI_CREDITORI: string = 'Enti creditori';
   public static EROGATORE: string = 'Erogatore';
   public static ESITO: string = 'Esito';
@@ -77,6 +78,7 @@ export class Voce {
   public static ID_A2A: string = 'Id A2A';
   public static ID_BOLLO: string = 'Id bollo';
   public static ID_CANALE: string = 'Id canale';
+  public static ID_CONTABILE: string = 'Identificativo contabile';
   public static ID_DOMINIO: string = 'Id dominio';
   public static ID_ENTRATA: string = 'Id entrata';
   public static ID_FLUSSO: string = 'Id rendicontazione';
@@ -95,10 +97,12 @@ export class Voce {
   public static IMPORTO: string = 'Importo';
   public static INCASSO: string = 'Incasso';
   public static INOLTRO: string = 'Inoltro';
+  public static INDICE: string = 'Indice';
   public static INDICE_PENDENZA: string = 'Indice pendenza';
   public static INDIRIZZO: string = 'Indirizzo';
   public static ISTITUTO: string = 'Istituto';
   public static IUR: string = 'Riscossione (IUR)';
+  public static IUR_SIGLA: string = 'IUR';
   public static IUV: string = 'IUV';
   public static IUV_CODEC: string = 'Codifica IUV';
   public static IUV_GENERATION: string = 'Generazione IUV interna';

@@ -136,7 +136,7 @@ export class UtilService {
   public static STATI_ESITO_RENDICONTAZIONI: any = {
     0: 'Pagamento eseguito',
     3: 'Pagamento revocato',
-    9: 'Pagamento eseguito in assenza di RPT'
+    9: 'Pagamento eseguito senza RPT'
   };
 
   //STATI TRACCIATO
