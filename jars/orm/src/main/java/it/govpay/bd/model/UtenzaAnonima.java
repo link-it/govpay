@@ -14,9 +14,9 @@ public class UtenzaAnonima extends Utenza {
 	public UtenzaAnonima() {
 		super();
 		this.setPrincipal(null); 
-		this.setIdDomini(new ArrayList<>());
+		this.setIdDominiUo(new ArrayList<>());
 		this.setIdTipiVersamento(new ArrayList<>());
-		this.setDomini(new ArrayList<>());
+		this.setDominiUo(new ArrayList<>());
 		this.setTipiVersamento(new ArrayList<>());
 		this.headers = new HashMap<>();
 		this.autorizzazioneDominiStar = true;

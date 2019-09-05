@@ -13,9 +13,13 @@ import org.openspcoop2.utils.certificate.PrincipalType;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Acl;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.dao.anagrafica.UtentiDAO;
+import it.govpay.core.dao.commons.Dominio;
+import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Acl.Diritti;
@@ -102,8 +106,11 @@ public class AuthorizationManager {
 			sb.append("Credenziali non fornite.");
 		return new NotAuthenticatedException(sb.toString());
 	}
-
 	public static NotAuthorizedException toNotAuthorizedException(Authentication authentication, String codDominio, String codTipoVersamento) {
+		return toNotAuthorizedException(authentication, codDominio, null, codTipoVersamento);
+	}
+
+	public static NotAuthorizedException toNotAuthorizedException(Authentication authentication, String codDominio, String codUO,  String codTipoVersamento) {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		StringBuilder sb = new StringBuilder();
 
@@ -118,6 +125,10 @@ public class AuthorizationManager {
 		if(StringUtils.isNotEmpty(codDominio)) {
 			sb.append(" per il Dominio ["+codDominio+"]");
 			dominioMsg = true;
+			
+			if(StringUtils.isNotEmpty(codUO)) {
+				sb.append(", per l'Unita' operativa ["+codUO+"]");
+			}
 		}
 
 		if(StringUtils.isNotEmpty(codTipoVersamento)) {
@@ -129,6 +140,14 @@ public class AuthorizationManager {
 
 		sb.append(".");
 
+		return new NotAuthorizedException(sb.toString());
+	}
+	
+	public static NotAuthorizedException toNotAuthorizedExceptionNessunaUOAutorizzata(Authentication authentication) {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(details.getMessaggioUtenzaNonAutorizzata()).append(" per nessuna Unita' operativa.");
 		return new NotAuthorizedException(sb.toString());
 	}
 
@@ -311,5 +330,84 @@ public class AuthorizationManager {
 			return utenza.getIdDomini();
 		}
 	}
+	
+	
+	/* Autorizzazioni per UO */
+	
+	public static boolean isTipoVersamentoUOAuthorized(Authentication authentication, String codDominio, String codUO, String codTipoVersamento) {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		return isTipoVersamentoUOAuthorized(details.getUtenza(), codDominio, codUO, codTipoVersamento);
+	}
 
+	public static boolean isTipoVersamentoUOAuthorized(Utenza utenza, String codDominio, String codUO, String codTipoVersamento) {
+		return isUOAuthorized(utenza, codDominio, codUO) && isTipoVersamentoAuthorized(utenza, codTipoVersamento);
+	}
+
+	public static boolean isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti, String codDominio, String codUO, String codTipoVersamento) {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		return isAuthorized(details.getUtenza(), tipoUtenza, servizi, listaDiritti,codDominio, codUO, codTipoVersamento);
+	}
+
+	public static boolean isAuthorized(Utenza utenza, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti, String codDominio, String codUO, String codTipoVersamento) {
+
+		boolean authorized = isAuthorized(utenza,tipoUtenza, servizi, listaDiritti); 
+
+		if(authorized) {
+			if(codDominio != null) {
+				authorized = authorized && isDominioAuthorized(utenza, codDominio);
+				
+				if(authorized && codUO != null) {
+					authorized = authorized && isUOAuthorized(utenza, codDominio, codUO);
+				}
+			}
+
+			if(authorized && codTipoVersamento != null) {
+				authorized = authorized && isTipoVersamentoAuthorized(utenza, codTipoVersamento);
+			}
+		}
+
+		return authorized;
+	}
+	
+	public static boolean isUOAuthorized(Authentication authentication, String codDominio, String codUO) {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		return isUOAuthorized(details.getUtenza(), codDominio, codUO);
+	}
+
+	public static boolean isUOAuthorized(Utenza utenza, String codDominio, String codUO) {
+		if(utenza.isAutorizzazioneDominiStar() || codDominio == null || codUO == null)
+			return true;
+		
+		List<it.govpay.bd.model.IdUnitaOperativa> dominiUOAutorizzati = utenza.getDominiUo(codDominio);
+
+		if(dominiUOAutorizzati == null || dominiUOAutorizzati.isEmpty()) 
+			return false;
+
+		Dominio dominio = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUOAutorizzati,codDominio);
+		
+		if(dominio.getUo() != null && !dominio.getUo().isEmpty()) {
+			for (Uo uo : dominio.getUo()) {
+				if(uo.getCodUo().equals(codUO))
+					return true;
+			}
+		}
+
+		return true;
+	}
+	
+	public static List<IdUnitaOperativa> getUoAutorizzate(Authentication authentication) {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		return getUoAutorizzate(details.getUtenza());
+	}
+
+	public static List<IdUnitaOperativa> getUoAutorizzate(Utenza utenza) {
+		if(utenza.isAutorizzazioneDominiStar()) {
+			return new ArrayList<>();
+		} else {
+			if(utenza.getDominiUo() == null || utenza.getDominiUo().isEmpty())
+				return null;
+			
+			return utenza.getDominiUo();
+		}
+	}
 }

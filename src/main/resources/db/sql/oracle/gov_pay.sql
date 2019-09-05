@@ -328,10 +328,12 @@ CREATE TABLE utenze_domini
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_utenza NUMBER NOT NULL,
-	id_dominio NUMBER NOT NULL,
+	id_dominio NUMBER,
+	id_uo NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_nzd_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id),
 	CONSTRAINT fk_nzd_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_nzd_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id),
 	CONSTRAINT pk_utenze_domini PRIMARY KEY (id)
 );
 

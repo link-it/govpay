@@ -21,6 +21,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
@@ -154,12 +155,19 @@ public class PendenzeController extends BaseController {
 				listaPendenzeDTO.setDataA(dataADate);
 			}
 
-			// Autorizzazione sui domini
-			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-			if(idDomini == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			// Autorizzazione sulle UO
+			List<IdUnitaOperativa> uoAutorizzate = AuthorizationManager.getUoAutorizzate(user);
+			if(uoAutorizzate == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 			}
-			listaPendenzeDTO.setIdDomini(idDomini);
+			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
+						
+//			// Autorizzazione sui domini
+//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+//			if(idDomini == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+//			}
+//			listaPendenzeDTO.setIdDomini(idDomini);
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 			if(idTipiVersamento == null) {
@@ -313,10 +321,15 @@ public class PendenzeController extends BaseController {
 
 			putVersamentoDTO.setAvvisaturaModalita(avvisaturaModalita);
 			
-			String codDominio = versamento.getCodDominio();
-			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(putVersamentoDTO.getUser(), codDominio)) {
-				throw AuthorizationManager.toNotAuthorizedException(putVersamentoDTO.getUser(), codDominio);
+//			String codDominio = versamento.getCodDominio();
+//			// controllo che il dominio sia autorizzato
+//			if(!AuthorizationManager.isDominioAuthorized(putVersamentoDTO.getUser(), codDominio)) {
+//				throw AuthorizationManager.toNotAuthorizedException(putVersamentoDTO.getUser(), codDominio);
+//			}
+			
+			// controllo che il dominio, uo e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa(), versamento.getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa(), versamento.getCodTipoVersamento());
 			}
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 

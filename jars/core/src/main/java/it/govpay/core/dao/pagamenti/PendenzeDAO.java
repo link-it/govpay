@@ -42,6 +42,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.IdUnitaOperativa;
 //import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
@@ -127,6 +128,22 @@ public class PendenzeDAO extends BaseDAO{
 
 			filter.setIdDomini(listaPendenzaDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());
+			
+			if(listaPendenzaDTO.getUnitaOperative() != null) {
+				List<Long> idDomini = new ArrayList<>();
+				List<Long> idUO = new ArrayList<>();
+				for (IdUnitaOperativa uo : listaPendenzaDTO.getUnitaOperative()) {
+					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
+						idDomini.add(uo.getIdDominio());
+					}
+					
+					if(uo.getIdUnita() != null) {
+						idUO.add(uo.getIdUnita());
+					}
+				}
+				filter.setIdDomini(idDomini);
+				filter.setIdUo(idUO);
+			}
 
 			filter.setOffset(listaPendenzaDTO.getOffset());
 			filter.setLimit(listaPendenzaDTO.getLimit());
@@ -206,6 +223,22 @@ public class PendenzeDAO extends BaseDAO{
 
 		filter.setIdDomini(listaPendenzaDTO.getIdDomini());
 		filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());
+		
+		if(listaPendenzaDTO.getUnitaOperative() != null) {
+			List<Long> idDomini = new ArrayList<>();
+			List<Long> idUO = new ArrayList<>();
+			for (IdUnitaOperativa uo : listaPendenzaDTO.getUnitaOperative()) {
+				if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
+					idDomini.add(uo.getIdDominio());
+				}
+				
+				if(uo.getIdUnita() != null) {
+					idUO.add(uo.getIdUnita());
+				}
+			}
+			filter.setIdDomini(idDomini);
+			filter.setIdUo(idUO);
+		}
 
 		filter.setOffset(listaPendenzaDTO.getOffset());
 		filter.setLimit(listaPendenzaDTO.getLimit());

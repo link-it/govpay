@@ -15,6 +15,8 @@ import it.govpay.backoffice.v1.beans.ContiAccreditoPost;
 import it.govpay.backoffice.v1.beans.Dominio;
 import it.govpay.backoffice.v1.beans.DominioIndex;
 import it.govpay.backoffice.v1.beans.DominioPost;
+import it.govpay.backoffice.v1.beans.DominioProfiloIndex;
+import it.govpay.backoffice.v1.beans.DominioProfiloPost;
 import it.govpay.backoffice.v1.beans.Entrata;
 import it.govpay.backoffice.v1.beans.EntrataPost;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
@@ -25,6 +27,7 @@ import it.govpay.backoffice.v1.beans.TipoPendenzaPromemoria;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
 import it.govpay.backoffice.v1.beans.UnitaOperativa;
+import it.govpay.backoffice.v1.beans.UnitaOperativaIndex;
 import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.beans.TipoPendenzaTrasformazione.TipoEnum;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -36,6 +39,7 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
+import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Anagrafica;
@@ -222,6 +226,96 @@ public class DominiConverter {
 		return rsModel;
 	}
 	
+	public static DominioProfiloIndex toRsModelProfiloIndex(it.govpay.core.dao.commons.Dominio dominio) throws ServiceException {
+		return toRsModelProfiloIndex(dominio, dominio.getUo());
+		
+	}
+	public static DominioProfiloIndex toRsModelProfiloIndex(it.govpay.core.dao.commons.Dominio dominio, List<it.govpay.core.dao.commons.Dominio.Uo> uoLst) throws ServiceException {
+		DominioProfiloIndex rsModel = new DominioProfiloIndex();
+//		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
+		rsModel.setIdDominio(dominio.getCodDominio()); 
+		rsModel.setRagioneSociale(dominio.getRagioneSociale());
+//		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
+//		rsModel.setCivico(dominio.getAnagrafica().getCivico());
+//		rsModel.setCap(dominio.getAnagrafica().getCap());
+//		rsModel.setLocalita(dominio.getAnagrafica().getLocalita());
+//		rsModel.setProvincia(dominio.getAnagrafica().getProvincia());
+//		rsModel.setNazione(dominio.getAnagrafica().getNazione());
+//		rsModel.setEmail(dominio.getAnagrafica().getEmail());
+//		rsModel.setPec(dominio.getAnagrafica().getPec()); 
+//		rsModel.setTel(dominio.getAnagrafica().getTelefono());
+//		rsModel.setFax(dominio.getAnagrafica().getFax());
+//		rsModel.setArea(dominio.getAnagrafica().getArea());
+//		rsModel.setGln(dominio.getGln());
+//		rsModel.setCbill(dominio.getCbill());
+//		rsModel.setAuxDigit("" + dominio.getAuxDigit());
+//		if(dominio.getSegregationCode() != null)
+//			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
+//		
+//		if(dominio.getLogo() != null) {
+//			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
+//		}
+//		rsModel.setIuvPrefix(dominio.getIuvPrefix());
+//		rsModel.setStazione(dominio.getStazione().getCodStazione());
+		if(uoLst != null && !uoLst.isEmpty()) {
+			List<UnitaOperativaIndex> unitaOperative = new ArrayList<>();
+			
+			for(it.govpay.core.dao.commons.Dominio.Uo uo: uoLst) {
+				unitaOperative.add(toUnitaOperativaRsModelIndex(uo));
+			}
+			rsModel.setUnitaOperative(unitaOperative);
+		}
+//		rsModel.setAbilitato(dominio.isAbilitato());
+//		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
+		
+		return rsModel;
+	}
+	
+	public static DominioProfiloIndex toRsModelProfiloIndex(it.govpay.bd.model.Dominio dominio) throws ServiceException {
+		return toRsModelProfiloIndex(dominio, dominio.getUnitaOperative());
+		
+	}
+	public static DominioProfiloIndex toRsModelProfiloIndex(it.govpay.bd.model.Dominio dominio, List<it.govpay.bd.model.UnitaOperativa> uoLst) throws ServiceException {
+		DominioProfiloIndex rsModel = new DominioProfiloIndex();
+//		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
+		rsModel.setIdDominio(dominio.getCodDominio()); 
+		rsModel.setRagioneSociale(dominio.getRagioneSociale());
+//		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
+//		rsModel.setCivico(dominio.getAnagrafica().getCivico());
+//		rsModel.setCap(dominio.getAnagrafica().getCap());
+//		rsModel.setLocalita(dominio.getAnagrafica().getLocalita());
+//		rsModel.setProvincia(dominio.getAnagrafica().getProvincia());
+//		rsModel.setNazione(dominio.getAnagrafica().getNazione());
+//		rsModel.setEmail(dominio.getAnagrafica().getEmail());
+//		rsModel.setPec(dominio.getAnagrafica().getPec()); 
+//		rsModel.setTel(dominio.getAnagrafica().getTelefono());
+//		rsModel.setFax(dominio.getAnagrafica().getFax());
+//		rsModel.setArea(dominio.getAnagrafica().getArea());
+//		rsModel.setGln(dominio.getGln());
+//		rsModel.setCbill(dominio.getCbill());
+//		rsModel.setAuxDigit("" + dominio.getAuxDigit());
+//		if(dominio.getSegregationCode() != null)
+//			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
+//		
+//		if(dominio.getLogo() != null) {
+//			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
+//		}
+//		rsModel.setIuvPrefix(dominio.getIuvPrefix());
+//		rsModel.setStazione(dominio.getStazione().getCodStazione());
+		if(uoLst != null) {
+			List<UnitaOperativaIndex> unitaOperative = new ArrayList<>();
+			
+			for(it.govpay.bd.model.UnitaOperativa uo: uoLst) {
+				unitaOperative.add(toUnitaOperativaRsModelIndex(uo));
+			}
+			rsModel.setUnitaOperative(unitaOperative);
+		}
+//		rsModel.setAbilitato(dominio.isAbilitato());
+//		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
+		
+		return rsModel;
+	}
+	
 	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio, List<it.govpay.bd.model.UnitaOperativa> uoLst, List<it.govpay.bd.model.Tributo> tributoLst, List<it.govpay.bd.model.IbanAccredito> ibanAccreditoLst,
 			List<TipoVersamentoDominio> tipoVersamentoDominioLst) throws ServiceException {
 		Dominio rsModel = new Dominio();
@@ -304,6 +398,24 @@ public class DominiConverter {
 		.iban(iban.getCodIban())
 		.mybank(iban.isAttivatoObep())
 		.postale(iban.isPostale());
+		
+		return rsModel;
+	}
+	
+	public static UnitaOperativaIndex toUnitaOperativaRsModelIndex(it.govpay.core.dao.commons.Dominio.Uo uo) throws IllegalArgumentException, ServiceException {
+		UnitaOperativaIndex rsModel = new UnitaOperativaIndex();
+		
+		rsModel.setIdUnita(uo.getCodUo());
+		rsModel.setRagioneSociale(uo.getRagioneSociale());
+		
+		return rsModel;
+	}
+	
+	public static UnitaOperativaIndex toUnitaOperativaRsModelIndex(it.govpay.bd.model.UnitaOperativa uo) throws IllegalArgumentException, ServiceException {
+		UnitaOperativaIndex rsModel = new UnitaOperativaIndex();
+		
+		rsModel.setIdUnita(uo.getCodUo());
+		rsModel.setRagioneSociale(uo.getAnagrafica().getRagioneSociale());
 		
 		return rsModel;
 	}
@@ -577,5 +689,30 @@ public class DominiConverter {
 		
 				
 		return tipoPendenzaDTO;		
+	}
+	public static it.govpay.core.dao.commons.Dominio getDominioCommons(DominioProfiloPost dominio) { 
+		it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
+		
+		dominioCommons.setCodDominio(dominio.getIdDominio());
+		if(dominio.getUnitaOperative() != null) {
+			List<Uo> uoList = new ArrayList<>();
+			
+			for (String uo : dominio.getUnitaOperative()) {
+				Uo uoCommons = new Uo();
+				uoCommons.setCodUo(uo);
+				uoList.add(uoCommons);
+			}
+			
+			dominioCommons.setUo(uoList );
+		}
+		
+		return dominioCommons;
+	}
+	
+	public static it.govpay.core.dao.commons.Dominio getDominioCommons(String codDominio) { 
+		it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
+		
+		dominioCommons.setCodDominio(codDominio);
+		return dominioCommons;
 	}
 }

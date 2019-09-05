@@ -4672,6 +4672,42 @@ components:
               type: string
               description: Tipologie di pendenza censite per il dominio beneficiario
               example: /domini/01234567890/tipiPendenza
+    dominioProfiloIndex:
+      type: object
+      required:
+        - idDominio
+        - ragioneSociale
+      properties:
+        idDominio:
+          type: string
+          description: Codice fiscale del beneficiario
+          example: 01234567890
+        ragioneSociale:
+          type: string
+          description: Ragione sociale del beneficiario
+          example: Ente Creditore
+        unitaOperative:
+          type: array
+          items:
+            $ref: '#/components/schemas/unitaOperativaIndex'
+    dominioProfiloPost:
+      type: object
+      required:
+        - idDominio
+      properties:
+        idDominio:
+          type: string
+          description: Codice fiscale del beneficiario
+          example: 01234567890
+        unitaOperative:
+          type: array
+          items:
+            type: string
+            description: Identificativi delle unita operative
+          example:
+            - EC
+            - 01234567891
+            - 01234567892
     dominio:
       type: object
       allOf:
@@ -4733,11 +4769,13 @@ components:
           type: array
           description: domini su cui e' abilitato ad operare
           items:
-            type: string
-            example:
-              - 01234567890
-              - 01234567891
-              - 01234567893
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/dominioProfiloPost'
+              - type: string
+                description: identificativo del dominio autorizzato
+                example:
+                  1234567890
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
@@ -4823,7 +4861,7 @@ components:
           type: array
           description: domini su cui e' abilitato ad operare
           items:
-            $ref: '#/components/schemas/dominioIndex'
+            $ref: '#/components/schemas/dominioProfiloIndex'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
@@ -4870,13 +4908,15 @@ components:
           example: Mario Rossi
         domini:
           type: array
-          description: domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutti i domini
+          description: domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per nessun dominio
           items:
-            type: string
-            example:
-              - 01234567890
-              - 01234567891
-              - 01234567893
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/dominioProfiloPost'
+              - type: string
+                description: identificativo del dominio autorizzato
+                example:
+                  1234567890
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutte le entrate
@@ -4942,7 +4982,7 @@ components:
           type: array
           description: domini su cui e' abilitato ad operare
           items:
-            $ref: '#/components/schemas/dominioIndex'
+            $ref: '#/components/schemas/dominioProfiloIndex'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare
@@ -5035,6 +5075,20 @@ components:
               description: Codice fiscale dell'unita
               example: 01234567890
         - $ref: '#/components/schemas/unitaOperativaPost'
+    unitaOperativaIndex:
+      type: object
+      required:
+       - idUnita
+       - ragioneSociale
+      properties:
+        idUnita:
+          type: string
+          description: Codice fiscale dell'unita
+          example: 01234567890
+        ragioneSociale:
+          type: string
+          description: Ragione sociale dell'unita
+          example: Ufficio due
     contiAccreditoPost:
       type: object
       properties:
@@ -6907,7 +6961,7 @@ components:
           type: array
           description: domini su cui e' abilitato ad operare
           items:
-            $ref: '#/components/schemas/dominioIndex'
+            $ref: '#/components/schemas/dominioProfiloIndex'
         tipiPendenza:
           type: array
           description: tipologie di pendenza su cui e' abilitato ad operare

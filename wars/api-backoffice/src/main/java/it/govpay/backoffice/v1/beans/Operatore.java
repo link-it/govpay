@@ -25,7 +25,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   private String ragioneSociale = null;
   
   @JsonProperty("domini")
-  private List<DominioIndex> domini = new ArrayList<DominioIndex>();
+  private List<DominioProfiloIndex> domini = new ArrayList<DominioProfiloIndex>();
   
   @JsonProperty("tipiPendenza")
   private List<TipoPendenza> tipiPendenza = new ArrayList<TipoPendenza>();
@@ -49,7 +49,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("principal")
   public String getPrincipal() {
-    return this.principal;
+    return principal;
   }
   public void setPrincipal(String principal) {
     this.principal = principal;
@@ -65,7 +65,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("ragioneSociale")
   public String getRagioneSociale() {
-    return this.ragioneSociale;
+    return ragioneSociale;
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
@@ -74,16 +74,16 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   /**
    * domini su cui e' abilitato ad operare
    **/
-  public Operatore domini(List<DominioIndex> domini) {
+  public Operatore domini(List<DominioProfiloIndex> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<DominioIndex> getDomini() {
-    return this.domini;
+  public List<DominioProfiloIndex> getDomini() {
+    return domini;
   }
-  public void setDomini(List<DominioIndex> domini) {
+  public void setDomini(List<DominioProfiloIndex> domini) {
     this.domini = domini;
   }
 
@@ -113,7 +113,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return this.acl;
+    return acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -145,7 +145,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return this.abilitato;
+    return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -156,7 +156,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Operatore operatore = (Operatore) o;

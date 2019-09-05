@@ -1,4 +1,4 @@
-VERSION=3.1.0-RC2-SNAPSHOT
+VERSION=3.1.0-RC3-SNAPSHOT
 
 # Non e' piu' possibile eseguire la compilazione da qua poiche' 
 # il plugin di maven per la generazione dei bean da xsd non risolve

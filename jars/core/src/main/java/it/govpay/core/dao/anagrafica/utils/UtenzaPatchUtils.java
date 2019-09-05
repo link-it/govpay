@@ -27,10 +27,13 @@ import it.govpay.bd.anagrafica.UtenzeBD;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
+import it.govpay.core.dao.commons.Dominio;
+import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.IdUnitaOperativa;
 import it.govpay.model.PatchOp;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
@@ -142,41 +145,108 @@ public class UtenzaPatchUtils {
 
 	private static void patchDominio(PatchOp op, Utenza utenza, BasicBD bd)
 			throws ValidationException, ServiceException, NotFoundException {
-		if(!(op.getValue() instanceof String)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
-		String dominio = (String) op.getValue();
+		
+		if(!(op.getValue() instanceof String || op.getValue() instanceof Dominio)) throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+		
+		// la patch puo' essere un oggetto complesso o un iddominio
+		if(op.getValue() instanceof String) {
+			String dominio = (String) op.getValue();
 
-		if(dominio.equals(DOMINI_STAR)) {
-			switch(op.getOp()) {
-			case ADD: utenza.setAutorizzazioneDominiStar(true);
-			break;
-			case DELETE: utenza.setAutorizzazioneDominiStar(false);
-			break;
-			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+			if(dominio.equals(DOMINI_STAR)) {
+				switch(op.getOp()) {
+				case ADD: utenza.setAutorizzazioneDominiStar(true);
+				break;
+				case DELETE: utenza.setAutorizzazioneDominiStar(false);
+				break;
+				default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+				}
+				utenza.getIdDominiUo().clear();
+			} else {
+				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+				validatoreId.validaIdDominio("domini", dominio);
+				try {
+					AnagraficaManager.getDominio(bd, dominio).getId();
+				} catch (NotFoundException e) {
+					throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+				}
+				Long idDominio = AnagraficaManager.getDominio(bd, dominio).getId();
+				switch(op.getOp()) {
+				case ADD: 
+					IdUnitaOperativa idUnitaOperativa = new IdUnitaOperativa();
+					idUnitaOperativa.setIdDominio(idDominio);
+					utenza.getIdDominiUo().add(idUnitaOperativa ); 
+				break;
+				case DELETE: utenza.removeIdDominiUo(idDominio);
+				break;
+				default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+				}
 			}
-			utenza.getIdDomini().clear();
-		} else {
-			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			validatoreId.validaIdDominio("domini", dominio);
-			try {
-				AnagraficaManager.getDominio(bd, dominio).getId();
-			} catch (NotFoundException e) {
-				throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+		} else if(op.getValue() instanceof Dominio) {
+			Dominio dominio = (Dominio) op.getValue();
+
+			if(dominio.getCodDominio().equals(DOMINI_STAR)) {
+				switch(op.getOp()) {
+				case ADD: utenza.setAutorizzazioneDominiStar(true);
+				break;
+				case DELETE: utenza.setAutorizzazioneDominiStar(false);
+				break;
+				default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+				}
+				utenza.getIdDominiUo().clear();
+			} else {
+				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+				validatoreId.validaIdDominio("domini", dominio.getCodDominio());
+				try {
+					AnagraficaManager.getDominio(bd, dominio.getCodDominio()).getId();
+				} catch (NotFoundException e) {
+					throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+				}
+				Long idDominio = AnagraficaManager.getDominio(bd, dominio.getCodDominio()).getId();
+				
+				if(dominio.getUo() != null && !dominio.getUo().isEmpty()) {
+					for (Uo uo : dominio.getUo()) {
+						validatoreId.validaIdUO("uo", uo.getCodUo());
+						try {
+							AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo());
+						} catch (NotFoundException e) {
+							throw new ValidationException(MessageFormat.format(VALUE_NON_VALIDO_PER_IL_PATH_XX, op.getPath()));
+						}
+						Long idUo = AnagraficaManager.getUnitaOperativa(bd, idDominio, uo.getCodUo()).getId();
+						switch(op.getOp()) {
+						case ADD: 
+							IdUnitaOperativa idUnitaOperativa = new IdUnitaOperativa();
+							idUnitaOperativa.setIdDominio(idDominio);
+							idUnitaOperativa.setIdUnita(idUo);
+							utenza.getIdDominiUo().add(idUnitaOperativa); 
+						break;
+						case DELETE: utenza.removeIdDominiUo(idDominio,idUo);
+						break;
+						default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+						}
+					}
+				} else {
+					switch(op.getOp()) {
+					case ADD: 
+						IdUnitaOperativa idUnitaOperativa = new IdUnitaOperativa();
+						idUnitaOperativa.setIdDominio(idDominio);
+						utenza.getIdDominiUo().add(idUnitaOperativa); 
+					break;
+					case DELETE: utenza.removeIdDominiUo(idDominio,null);
+					break;
+					default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
+					}
+				}
 			}
-			Long idDominio = AnagraficaManager.getDominio(bd, dominio).getId();
-			switch(op.getOp()) {
-			case ADD: utenza.getIdDomini().add(idDominio); 
-			break;
-			case DELETE: utenza.getIdDomini().remove(idDominio);
-			break;
-			default: throw new ValidationException(MessageFormat.format(OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp().name(), op.getPath()));
-			}
-		}
+		} 
+		
+		
+		
 		
 		UtenzeBD utenzaBD = new UtenzeBD(bd);
 		utenzaBD.updateUtenza(utenza);
 
-		utenza.setDomini(null);
-		utenza.getDomini(bd);
+		utenza.setDominiUo(null);
+		utenza.getDominiUo(bd);
 	}
 
 	public static void patchRuolo(PatchOp op, String idRuolo, List<Acl> lstAclAttualiRuolo, BasicBD bd)

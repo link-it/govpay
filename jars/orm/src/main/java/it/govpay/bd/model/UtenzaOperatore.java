@@ -19,7 +19,7 @@ public class UtenzaOperatore extends Utenza {
 		this.aclPrincipal = utenzaBase.aclPrincipal;
 		this.aclRuoliEsterni = utenzaBase.aclRuoliEsterni;
 		this.aclRuoliUtenza = utenzaBase.aclRuoliUtenza;
-		this.domini = utenzaBase.domini;
+		this.dominiUo = utenzaBase.dominiUo;
 		this.tipiVersamento = utenzaBase.tipiVersamento;
 		this.ruoli = utenzaBase.getRuoli();
 		// dati model
@@ -27,7 +27,7 @@ public class UtenzaOperatore extends Utenza {
 		this.principal = utenzaBase.getPrincipal();
 		this.principalOriginale = utenzaBase.getPrincipalOriginale();
 		this.abilitato = utenzaBase.isAbilitato();
-		this.idDomini = utenzaBase.getIdDomini();
+		this.idDominiUo = utenzaBase.getIdDominiUo();
 		this.idTipiVersamento = utenzaBase.getIdTipiVersamento();
 		this.checkSubject = utenzaBase.isCheckSubject();
 		this.autorizzazioneDominiStar = utenzaBase.isAutorizzazioneDominiStar();

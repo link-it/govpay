@@ -226,7 +226,7 @@ public class ApplicazioniBD extends BasicBD {
 				utenzaApplicazione.setAclPrincipal(listaAclPrincipal);
 				
 				// Domini
-				utenzaApplicazione.setIdDomini(applicazioneOld.getUtenza().getIdDomini());
+				utenzaApplicazione.setIdDominiUo(applicazioneOld.getUtenza().getIdDominiUo());
 				
 				// TipiVersamento
 				utenzaApplicazione.setIdTipiVersamento(applicazioneOld.getUtenza().getIdTipiVersamento());

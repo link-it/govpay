@@ -5,8 +5,8 @@ package it.govpay.core.dao.anagrafica.dto;
 
 import java.util.List;
 
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.TipoVersamento;
 
 /**

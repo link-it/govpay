@@ -25,7 +25,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
   private String ragioneSociale = null;
   
   @JsonProperty("domini")
-  private List<String> domini = null;
+  private List<Object> domini = null;
   
   @JsonProperty("tipiPendenza")
   private List<String> tipiPendenza = null;
@@ -49,25 +49,25 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 
   @JsonProperty("ragioneSociale")
   public String getRagioneSociale() {
-    return this.ragioneSociale;
+    return ragioneSociale;
   }
   public void setRagioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
   }
 
   /**
-   * domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per tutti i domini
+   * domini su cui e' abilitato ad operare. Se la lista e' vuota, l'abilitazione e' per nessun dominio
    **/
-  public OperatorePost domini(List<String> domini) {
+  public OperatorePost domini(List<Object> domini) {
     this.domini = domini;
     return this;
   }
 
   @JsonProperty("domini")
-  public List<String> getDomini() {
-    return this.domini;
+  public List<Object> getDomini() {
+    return domini;
   }
-  public void setDomini(List<String> domini) {
+  public void setDomini(List<Object> domini) {
     this.domini = domini;
   }
 
@@ -97,7 +97,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 
   @JsonProperty("acl")
   public List<AclPost> getAcl() {
-    return this.acl;
+    return acl;
   }
   public void setAcl(List<AclPost> acl) {
     this.acl = acl;
@@ -129,7 +129,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 
   @JsonProperty("abilitato")
   public Boolean isAbilitato() {
-    return this.abilitato;
+    return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
@@ -140,7 +140,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     OperatorePost operatorePost = (OperatorePost) o;
@@ -200,9 +200,18 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 		
 		if(this.domini != null && !this.domini.isEmpty()) {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-			for (String idDominio : this.domini) {
-				if(!idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
-					validatoreId.validaIdDominio("domini", idDominio);
+			for (Object object : this.domini) {
+				if(object instanceof String) {
+					String idDominio = (String) object;
+					if(!idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
+						validatoreId.validaIdDominio("idDominio", idDominio);
+				} else if(object instanceof DominioProfiloPost) {
+					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
+					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
+						dominioProfiloPost.validate();
+				} else {
+					throw new ValidationException("Tipo non valido per il campo domini");
+				}
 			}
 		}
 		

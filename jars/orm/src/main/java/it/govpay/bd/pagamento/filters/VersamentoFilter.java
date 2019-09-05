@@ -47,6 +47,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
 	private List<Long> idVersamento= null;
+	private List<Long> idUo;
 	private String codVersamento = null;
 	private List<String> codVersamentoEnte = null;
 	private List<Long> idApplicazione = null;
@@ -206,6 +207,15 @@ public class VersamentoFilter extends AbstractFilter {
 					newExpression.and();
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
 				newExpression.in(cf, this.idDomini);
+				addAnd = true;
+			}
+			
+			if(this.getIdUo() != null && !this.getIdUo().isEmpty()){
+				this.getIdUo().removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(Versamento.model()));
+				newExpression.in(cf, this.getIdUo());
 				addAnd = true;
 			}
 
@@ -579,6 +589,14 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setDirezione(String direzione) {
 		this.direzione = direzione;
+	}
+
+	public List<Long> getIdUo() {
+		return idUo;
+	}
+
+	public void setIdUo(List<Long> idUo) {
+		this.idUo = idUo;
 	}
 	
 }
