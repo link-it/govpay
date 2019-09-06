@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.beans.converter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -78,6 +79,24 @@ public class OperatoriConverter {
 					} else if(object instanceof DominioProfiloPost) {
 						DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 						if(dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
+							appAuthDominiAll = true;
+							domini.clear();
+							break;
+						}
+						domini.add(DominiConverter.getDominioCommons(dominioProfiloPost));
+					} else if(object instanceof java.util.LinkedHashMap) {
+						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
+						
+						DominioProfiloPost dominioProfiloPost = new DominioProfiloPost();
+						if(map.containsKey("idDominio"))
+							dominioProfiloPost.setIdDominio((String) map.get("idDominio"));
+						if(map.containsKey("unitaOperative")) {
+							@SuppressWarnings("unchecked")
+							List<String> unitaOperative = (List<String>) map.get("unitaOperative");
+							dominioProfiloPost.setUnitaOperative(unitaOperative);
+						}
+						
+						if(dominioProfiloPost.getIdDominio() != null && dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR)) {
 							appAuthDominiAll = true;
 							domini.clear();
 							break;

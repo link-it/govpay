@@ -328,8 +328,8 @@ public class PendenzeController extends BaseController {
 //			}
 			
 			// controllo che il dominio, uo e tipo versamento siano autorizzati
-			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa(), versamento.getCodTipoVersamento())) {
-				throw AuthorizationManager.toNotAuthorizedException(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa(), versamento.getCodTipoVersamento());
+			if(!AuthorizationManager.isUOAuthorized(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa(), null);
 			}
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 

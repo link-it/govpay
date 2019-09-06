@@ -205,14 +205,14 @@ public class PendenzeController extends BaseController {
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
 			}
 			listaPendenzeDTO.setUnitaOperative(uoAutorizzate);
-			
+
 			// Autorizzazione sui domini
-//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-//			if(idDomini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
-//			listaPendenzeDTO.setIdDomini(idDomini);
-			
+			//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
+			//			if(idDomini == null) {
+			//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			//			}
+			//			listaPendenzeDTO.setIdDomini(idDomini);
+
 			// autorizzazione sui tipi pendenza
 			List<Long> idTipiVersamento = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 			if(idTipiVersamento == null) {
@@ -396,9 +396,9 @@ public class PendenzeController extends BaseController {
 
 			Versamento versamento = PendenzeConverter.getVersamentoFromPendenza(pendenzaPost);
 
-			// controllo che il dominio e tipo versamento siano autorizzati
-			if(!AuthorizationManager.isTipoVersamentoDominioAuthorized(user, versamento.getCodDominio(), versamento.getCodTipoVersamento())) {
-				throw AuthorizationManager.toNotAuthorizedException(user, versamento.getCodDominio(), versamento.getCodTipoVersamento());
+			// controllo che il dominio, uo e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa(), versamento.getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, versamento.getCodDominio(), versamento.getCodUnitaOperativa(), versamento.getCodTipoVersamento());
 			}
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
@@ -1073,14 +1073,14 @@ public class PendenzeController extends BaseController {
 		if(listaTracciatiDTOResponse.getTotalResults() > 0) {
 			do {
 				for (Operazione operazione : listaTracciatiDTOResponse.getResults()) {
-					
+
 					EsitoOperazionePendenza esitoOperazionePendenza = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
-					
+
 					if(esitoOperazionePendenza.getStato().equals(StatoOperazionePendenza.ESEGUITO) && esitoOperazionePendenza.getEsito().equals("ADD_OK")) { 
 						addError = false; // ho trovato almeno un avviso da stampare
-	
+
 						LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
-	
+
 						String idDominio = null;
 						String numeroAvviso = null;
 						try {
@@ -1092,11 +1092,11 @@ public class PendenzeController extends BaseController {
 							idDominio =(String)map.get("idDominio");
 							numeroAvviso =(String)map.get("numeroAvviso");
 						}
-	
+
 						leggiPendenzaDTO.setIdDominio(idDominio);
 						leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
 						LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiAvvisoPagamento(leggiPendenzaDTO);
-	
+
 						String pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
 						ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
 						zos.putNextEntry(tracciatoOutputEntry);
@@ -1105,14 +1105,14 @@ public class PendenzeController extends BaseController {
 						zos.closeEntry();
 					}
 				}
-	
+
 				pagina ++;
 				listaOperazioniTracciatoDTO.setPagina(pagina);
 				listaTracciatiDTOResponse = tracciatiDAO.listaOperazioniTracciatoPendenza(listaOperazioniTracciatoDTO);
-				
+
 			}while(!listaTracciatiDTOResponse.getResults().isEmpty());
 		}
-		
+
 		if(addError){
 			ZipEntry tracciatoOutputEntry = new ZipEntry("errore.txt");
 			zos.putNextEntry(tracciatoOutputEntry);

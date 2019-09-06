@@ -375,21 +375,25 @@ public class AuthorizationManager {
 	}
 
 	public static boolean isUOAuthorized(Utenza utenza, String codDominio, String codUO) {
-		if(utenza.isAutorizzazioneDominiStar() || codDominio == null || codUO == null)
+		if(utenza.isAutorizzazioneDominiStar() || codDominio == null)
 			return true;
 		
 		List<it.govpay.bd.model.IdUnitaOperativa> dominiUOAutorizzati = utenza.getDominiUo(codDominio);
 
 		if(dominiUOAutorizzati == null || dominiUOAutorizzati.isEmpty()) 
 			return false;
-
+		
 		Dominio dominio = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUOAutorizzati,codDominio);
 		
 		if(dominio.getUo() != null && !dominio.getUo().isEmpty()) {
-			for (Uo uo : dominio.getUo()) {
-				if(uo.getCodUo().equals(codUO))
-					return true;
-			}
+			if(codUO != null) {
+				for (Uo uo : dominio.getUo()) {
+					if(uo.getCodUo() == null || uo.getCodUo().equals(codUO))
+						return true;
+				}
+			} else return true;
+			
+			return false;
 		}
 
 		return true;

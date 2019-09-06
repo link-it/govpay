@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -204,9 +205,27 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 				if(object instanceof String) {
 					String idDominio = (String) object;
 					if(!idDominio.equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
-						validatoreId.validaIdDominio("idDominio", idDominio);
+						validatoreId.validaIdDominio("domini", idDominio);
 				} else if(object instanceof DominioProfiloPost) {
 					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
+					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
+						dominioProfiloPost.validate();
+				}  else if(object instanceof java.util.LinkedHashMap) {
+					java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
+					
+					DominioProfiloPost dominioProfiloPost = new DominioProfiloPost();
+					if(map.containsKey("idDominio"))
+						dominioProfiloPost.setIdDominio((String) map.get("idDominio"));
+					if(map.containsKey("unitaOperative")) {
+						@SuppressWarnings("unchecked")
+						List<String> unitaOperative = (List<String>) map.get("unitaOperative");
+						dominioProfiloPost.setUnitaOperative(unitaOperative);
+					}
+					
+					if(dominioProfiloPost.getIdDominio() == null)
+						validatoreId.validaIdDominio("domini", dominioProfiloPost.getIdDominio());
+					
+//					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						dominioProfiloPost.validate();
 				} else {

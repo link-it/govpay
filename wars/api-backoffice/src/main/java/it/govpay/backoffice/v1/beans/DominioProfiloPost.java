@@ -111,7 +111,7 @@ public class DominioProfiloPost extends JSONSerializable  implements IValidable{
 		
 		if(this.unitaOperative != null && !this.unitaOperative.isEmpty()) {
 			for (String idUO : this.unitaOperative) {
-				validatoreId.validaIdDominio("unitaOperative", idUO);
+				validatoreId.validaIdUO("unitaOperative", idUO);
 			}
 		}
   }

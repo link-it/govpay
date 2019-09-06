@@ -261,7 +261,8 @@ public class DominiConverter {
 			List<UnitaOperativaIndex> unitaOperative = new ArrayList<>();
 			
 			for(it.govpay.core.dao.commons.Dominio.Uo uo: uoLst) {
-				unitaOperative.add(toUnitaOperativaRsModelIndex(uo));
+				if(uo.getCodUo() != null)
+					unitaOperative.add(toUnitaOperativaRsModelIndex(uo));
 			}
 			rsModel.setUnitaOperative(unitaOperative);
 		}
