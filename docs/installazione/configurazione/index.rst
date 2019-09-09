@@ -42,12 +42,12 @@ Sono mostrate informazioni quali:
 Selezionando il pulsante Next si procede con la configurazione del
 software.
 
-.. figure:: ../_figure_installazione/100002010000022600000192C7342CEDBB4934E5.png
-   :alt: Figura 1: Pagina introduttiva all'avvio dell'Installer
-   :width: 14.224cm
-   :height: 10.211cm
+.. figure:: ../_images/INS01_AvvioInstaller.png
+   :alt: Pagina introduttiva all'avvio dell'Installer
+   :align: center
+   :name: PaginaIntroduttivaInstaller
 
-   Figura 1: Pagina introduttiva all'avvio dell'Installer
+   Pagina introduttiva all'avvio dell'Installer
 
 Informazioni Preliminari
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,12 +55,12 @@ Informazioni Preliminari
 La schermata "Informazioni Preliminari" consente di inserire i dati sul
 contesto di installazione nell'ambiente di esercizio.
 
-.. figure:: ../_figure_installazione/100002010000022700000192CD0548360449197A.png
-   :alt: Figura 2: Informazioni Preliminari
-   :width: 14.224cm
-   :height: 10.363cm
+.. figure:: ../_images/INS02_InformazioniPreliminari.png
+   :alt: Pagina relativa alle informazioni preliminari
+   :align: center
+   :name: InstallazioneInformazioniPreliminari
 
-   Figura 2: Informazioni Preliminari
+   Informazioni preliminari
 
 Devono essere inserite le seguenti informazioni:
 
@@ -85,12 +85,14 @@ Informazioni Applicative
    raggiungibili i servizi di GovPay (ad esempio la console di
    monitoraggio).
 
-.. figure:: ../_figure_installazione/100002010000022700000192D4FF505CBCE8C644.png
-   :alt: Figura 3: Informazioni Applicative
-   :width: 14.143cm
-   :height: 9.959cm
 
-   Figura 3: Informazioni Applicative
+.. figure:: ../_images/INS03_InformazioniApplicative.png
+   :alt: Pagina relativa alle informazioni applicative
+   :align: center
+   :name: InstallazioneInformazioniApplicative
+
+   Informazioni applicative
+
 
 Il Database
 ~~~~~~~~~~~
@@ -98,12 +100,13 @@ Il Database
 Nella schermata "Il Database" si devono inserire i riferimenti per
 l'accesso al database di esercizio di GovPay.
 
-.. figure:: ../_figure_installazione/100002010000022600000192A2989B695B3A28EB.png
-   :alt: Figura 4: Informazioni Accesso Database
-   :width: 14.21cm
-   :height: 10.183cm
-
-   Figura 4: Informazioni Accesso Database
+.. figure:: ../_images/INS04_InformazioniAccessoDatabase.png
+   :alt: Pagina relativa alle informazioni di accesso al database
+   :align: center
+   :name: InstallazioneInformazioniAccessoDB
+   
+   Informazioni accesso al DB
+   
 
 -  **DB Platform:** selezionare la piattaforma RDBMS utilizzata
 -  **Hostname**: indirizzo per raggiungere il database
@@ -126,13 +129,14 @@ con la produzione dei files necessari per l’installazione di GovPay che
 verranno inseriti nella nuova directory **dist** creata al termine di
 questo processo.
 
-.. figure:: ../_figure_installazione/1000020100000227000001912C8859F6CB3B2892.png
-   :alt: Figura 5: Installazione Terminata
-   :width: 14.446cm
-   :height: 10.53cm
-
-   Figura 5: Installazione Terminata
-
+.. figure:: ../_images/INS05_InstallazioneTerminata.png
+   :alt: Pagina relativa alla fine dell'installazione
+   :align: center
+   :name: InstallazioneTerminata
+   
+   Installazione terminata
+   
+   
 I files presenti nella directory **dist** dovranno essere utilizzati
 nella fase successiva di dispiegamento di GovPay.
 
