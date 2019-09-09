@@ -64,19 +64,12 @@ contesto di installazione nell'ambiente di esercizio.
 
 Devono essere inserite le seguenti informazioni:
 
--  **Application Server:*\ * *\ *la scelta dell'application server è
-   vincolata su "WildFly 11.0"**
--  **Work*\ * Folder: *\ *inserire il path assoluto della
-   *\ *directory*\ *, presente nell'ambiente di
-   *\ *destinazione*\ *,*\ * *\ *che sarà *\ *utilizzata da GovPay
-   *\ *per accedere a*\ * dati accessori *\ *legati alle*\ *
-   funzionalità opzionali, ad esempio:**
-
+-  **Application Server:** la scelta dell'application server è vincolata su "WildFly 11.0"**
+-  **Work Folder:** inserire il path assoluto della *directory*, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per accedere a dati accessori legati alle funzionalità opzionali, ad esempio:
    -  **file di configurazione personalizzati**
    -  **loghi dei psp**
 
--  **Log Folder**: inserire il path assoluto della directory, presente
-   nell'ambiente di destinazione, che sarà utilizzata da GovPay per
+-  **Log Folder**: inserire il path assoluto della directory, presente nell'ambiente di destinazione, che sarà utilizzata da GovPay per
    inserire i diversi file di tracciamento prodotti.
 
 Informazioni Applicative
@@ -87,8 +80,7 @@ Informazioni Applicative
    monitoraggio. Tipicamente si fornisce il "principal" dell'utenza
    applicativa registrata sull'Application Server, ma è in alternativa
    possibile indicare altre tipologie di utenze, come ad esempio
-   identificate dal Certificato Client Digitale (maggiori dettagli in
-   merito vengono forniti più avanti).
+   identificate dal Certificato Client Digitale.
 -  *Nome Dominio:* inserire l'hostname tramite il quale saranno
    raggiungibili i servizi di GovPay (ad esempio la console di
    monitoraggio).
