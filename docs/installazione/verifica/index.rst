@@ -10,9 +10,7 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
    contesti dispiegati, suddivisi tra servizi di frontend (rivolti
    all'utente finale) e servizi di backend (rivolti all'utenza interna):
 
--
-
-   -  **Frontend:**
+2.1 **Frontend:**
 
       -  **/govpay/frontend/web/connector**
 
@@ -28,7 +26,7 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
          **api per la gestione del colloquio con la piattaforma centrale
          pagoPA**
 
-   -  **Backend:**
+2.2 **Backend:**
 
       -  **/govpay/backend/api/pendenze**
 
@@ -50,28 +48,28 @@ Per la fase di verifica dell'installazione, effettuare i seguenti passi:
          **web application che corrisponde al cruscotto di gestione e
          monitoraggio di GovPay**
 
-1. Verificare che i servizi esposti da GovPay verso pagoPA siano
+3. Verificare che i servizi esposti da GovPay verso pagoPA siano
    raggiungibili verificando sul browser le seguenti URL:
    
 -  http://<hostname>:<port>/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice?wsdl
 -  http://<hostname>:<port>/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice?wsdl
 
-1. Verificare che la **govpayConsole**, l’applicazione web per la
+4. Verificare che la **govpayConsole**, l’applicazione web per la
    gestione della configurazione e monitoraggio di GovPay, sia
    accessibile tramite browser all’indirizzo:
 
--  **http://<hostname>:<port>/govpay/backend/gui/backoffice**
+   -  **http://<hostname>:<port>/govpay/backend/gui/backoffice**
 
-In caso di corretto funzionamento verrà visualizzata la pagina di
-autenticazione per l'accesso alla console.
+   In caso di corretto funzionamento verrà visualizzata la pagina di
+   autenticazione per l'accesso alla console.
 
-1. Accedere alla govpayConsole usando l'utenza di jboss configurata in
+5. Accedere alla govpayConsole usando l'utenza di jboss configurata in
    fase di dispiegamento.
 
    L’utenza creata in precedenza ha accesso a tutte le funzionalità
    compresa la gestione degli utenti. Utilizzando questo accesso
    potranno quindi essere registrati dei nuovi utenti.
 
-2. Completata l’installazione di GovPay, per proseguire con l'utilizzo
+6. Completata l’installazione di GovPay, per proseguire con l'utilizzo
    del sistema si rimanda al “Manuale Utente”.
 
