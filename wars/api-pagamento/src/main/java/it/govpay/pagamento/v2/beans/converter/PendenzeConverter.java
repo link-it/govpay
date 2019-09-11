@@ -116,7 +116,7 @@ public class PendenzeConverter {
 		List<RppIndex> rpps = new ArrayList<>();
 		if(rpts != null && rpts.size() > 0) {
 			for (Rpt rpt : rpts) {
-				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(null), rpt.getVersamento(null).getApplicazione(null), user));
+				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamentoIncasso(null), rpt.getVersamentoIncasso(null).getApplicazione(null), user));
 			} 
 		}
 		rsModel.setRpp(rpps); 
