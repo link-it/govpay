@@ -57,8 +57,14 @@ case $key in
     shift # past argument
     ;;
     *)    # unknown option
-    POSITIONAL+=("$1") # save it in an array for later
-    shift # past argument
+    echo "Opzione non riconosciuta $1"
+    echo "usage:"
+    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,basic,ssl). Default: basic,ssl" 
+    echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,basic,ssl,public). Default: basic,ssl"
+    echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl). Default: basic,ssl"
+    echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl). Default: basic,ssl"
+    echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,ssl). Default: ssl"
+    exit 2;
     ;;
 esac
 done
@@ -84,7 +90,7 @@ RAGIONERIA_BASIC=true
 RAGIONERIA_SSL=true
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
 
-[[ $PAGOPA == *"ssl"* ]] && PAGOPA_SSL=false || PAGOPA_SSL=false
+[[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
 
 GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
