@@ -721,7 +721,7 @@
 						<xsd:element name="codSessionePortale" type="com:uuid" minOccurs="0" />
 						<xsd:element name="codPortale" type="com:cod35" />
 						<xsd:element name="versante" type="com:anagrafica" minOccurs="0" />
-						<xsd:choice>
+						<xsd:choice minOccurs="0">
 							<xsd:element name="canale" type="com:canale" />
 							<xsd:element name="sceltaWisp">
 								<xsd:complexType>
