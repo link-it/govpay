@@ -54,10 +54,10 @@ psql govpay govpay < dist/sql/gov_pay.sql
 ## SETUP API SECURITY SETTINGS
 #####
 
-echo "Abilitazione delle modalita di autenticazione header e basic..."
+echo "Abilitazione delle modalita di autenticazione..."
 
 sh ../../../scripts/abilitaAuth.sh -v ${GOVPAY_VERSION} -bo spid,header,ssl,basic -pag public,spid,header,ssl,basic -rag spid,header,ssl,basic -pen spid,header,ssl,basic -pp basic -src dist/archivi/
 
 echo "Deploy govpay in wildfly...";
-sudo cp govpay_ear_tmp/govpay.ear /opt/wildfly-11.0.0.Final/standalone_govpay/deployments/
+sudo cp dist/archivi/govpay.ear /opt/wildfly-11.0.0.Final/standalone_govpay/deployments/
 rm -rf govpay_ear_tmp 

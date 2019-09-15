@@ -16,7 +16,7 @@ PENDENZE=basic,ssl
 RAGIONERIA=basic,ssl
 PAGOPA=ssl
 GOVPAY_SRC_DIR="ear/target/"
-GOVPAY_VERSION=x
+GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -97,8 +97,6 @@ RAGIONERIA_SSL=true
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
-
-[[ $GOVPAY_VERSION == "x" ]] && GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
 GOVPAY_WORK_DIR="govpay_ear_tmp"
 GOVPAY_EAR_NAME="govpay.ear"
