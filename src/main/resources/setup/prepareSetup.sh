@@ -1,4 +1,5 @@
 VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+echo "Creazione installer GovPay v.${VERSION}"
 # Non e' piu' possibile eseguire la compilazione da qua poiche' 
 # il plugin di maven per la generazione dei bean da xsd non risolve
 # correttamente i path relativi.
