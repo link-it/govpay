@@ -29,7 +29,7 @@ antinstaller_hibernate_dialect=org.hibernate.dialect.PostgreSQLDialect
 protocollo=http
 antinstaller_log_folder=/var/log/govpay
 antinstaller_dbhost=127.0.0.1
-antinstaller_product_version=3.1
+antinstaller_product_version=${GOVPAY_VERSION}
 antinstaller_driver_jdbc=org.postgresql.Driver
 antinstaller_domain_name=localhost
 antinstaller_ragione_sociale=GovPay Administrator
@@ -56,7 +56,7 @@ psql govpay govpay < dist/sql/gov_pay.sql
 
 echo "Abilitazione delle modalita di autenticazione header e basic..."
 
-sh ../../../scripts/abilitaAuth.sh -bo spid,header -pag public,spid,header -rag spid,header -pen spid,header -src dist/archivi/
+sh ../../../scripts/abilitaAuth.sh -v ${GOVPAY_VERSION} -bo spid,header,ssl,basic -pag public,spid,header,ssl,basic -rag spid,header,ssl,basic -pen spid,header,ssl,basic -pp basic -src dist/archivi/
 
 echo "Deploy govpay in wildfly...";
 sudo cp govpay_ear_tmp/govpay.ear /opt/wildfly-11.0.0.Final/standalone_govpay/deployments/
