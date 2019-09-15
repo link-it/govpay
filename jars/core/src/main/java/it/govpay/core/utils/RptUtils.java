@@ -291,6 +291,8 @@ public class RptUtils {
 						richiesta.setIdentificativoUnivocoVersamento(rpt.getIuv());
 						richiesta.setCodiceContestoPagamento(rpt.getCcp());
 						chiediStatoRptClient = new NodoClient(intermediario, null, giornale, bd);
+						
+						bd.setupConnection(ctx.getTransactionId());
 						// salvataggio id Rpt/ versamento/ pagamento
 						chiediStatoRptClient.getEventoCtx().setCodDominio(rpt.getCodDominio());
 						chiediStatoRptClient.getEventoCtx().setIuv(rpt.getIuv());
@@ -326,7 +328,8 @@ public class RptUtils {
 						}
 						throw e;
 					} finally {
-						bd.setupConnection(ctx.getTransactionId());
+						if(bd.isClosed())
+							bd.setupConnection(ctx.getTransactionId());
 					}
 
 					if(risposta.getFault() != null) {

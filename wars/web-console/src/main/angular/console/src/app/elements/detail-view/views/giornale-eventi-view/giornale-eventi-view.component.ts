@@ -7,13 +7,14 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { UtilService } from '../../../../services/util.service';
 import { Voce } from '../../../../services/voce.service';
+import { IExport } from '../../../../classes/interfaces/IExport';
 
 @Component({
   selector: 'link-giornale-eventi-view',
   templateUrl: './giornale-eventi-view.component.html',
   styleUrls: ['./giornale-eventi-view.component.scss']
 })
-export class GiornaleEventiViewComponent implements IModalDialog, OnInit {
+export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExport {
 
   @Input() informazioni = [];
   @Input() informazioniPA = [];
@@ -60,7 +61,11 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit {
 
   refresh(mb: ModalBehavior) {}
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {}
+  exportData() {}
 
+  vistaCompletaEvento() {
+    window.open(UtilService.RootByTOA() + UtilService.URL_GIORNALE_EVENTI + '/' + this.json.id, '_blank');
+  }
 
   title(): string {
     return UtilService.defaultDisplay({ value: this.json?this.json.tipoEvento:null });

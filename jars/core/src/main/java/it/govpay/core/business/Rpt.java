@@ -425,8 +425,8 @@ public class Rpt extends BasicBD{
 						clientInviaCarrelloRPT.getEventoCtx().setCodDominio(rpt.getCodDominio());
 						clientInviaCarrelloRPT.getEventoCtx().setIuv(rpt.getIuv());
 						clientInviaCarrelloRPT.getEventoCtx().setCcp(rpt.getCcp());
-						clientInviaCarrelloRPT.getEventoCtx().setIdA2A(rpt.getVersamento(this).getApplicazione(this).getCodApplicazione());
-						clientInviaCarrelloRPT.getEventoCtx().setIdPendenza(rpt.getVersamento(this).getCodVersamentoEnte());
+						clientInviaCarrelloRPT.getEventoCtx().setIdA2A(rpt.getVersamentoIncasso(this).getApplicazione(this).getCodApplicazione());
+						clientInviaCarrelloRPT.getEventoCtx().setIdPendenza(rpt.getVersamentoIncasso(this).getCodVersamentoEnte());
 						try {
 							if(rpt.getPagamentoPortale(this) != null)
 								clientInviaCarrelloRPT.getEventoCtx().setIdPagamento(rpt.getPagamentoPortale(this).getIdSessione());

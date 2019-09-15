@@ -56,74 +56,8 @@ psql govpay govpay < dist/sql/gov_pay.sql
 
 echo "Abilitazione delle modalita di autenticazione header e basic..."
 
-GOVPAY_WORK_DIR="govpay_ear_tmp"
-GOVPAY_SRC_DIR="dist/archivi/"
-GOVPAY_EAR_NAME="govpay.ear"
-GOVPAY_TMP_DIR="GOVPAY_EAR"
-APP_CONTEXT_BASE_DIR="WEB-INF"
-APP_CONTEXT_SECURITY_XML=$APP_CONTEXT_BASE_DIR"/applicationContext-security.xml"
-rm -rf $GOVPAY_WORK_DIR
-mkdir $GOVPAY_WORK_DIR
-cp $GOVPAY_SRC_DIR$GOVPAY_EAR_NAME $GOVPAY_WORK_DIR 
-pushd $GOVPAY_WORK_DIR
-unzip -d $GOVPAY_TMP_DIR $GOVPAY_EAR_NAME
-pushd $GOVPAY_TMP_DIR
-
-# API-Backoffice
-API_BACKOFFICE_WAR="api-backoffice-"
-unzip $API_BACKOFFICE_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#SPID_START#SPID_START -->#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#SPID_END#<!-- SPID_END#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#HEADER_START#HEADER_START -->#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_SECURITY_XML
-zip -r $API_BACKOFFICE_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-rm -rf $APP_CONTEXT_BASE_DIR
-
-# API-Pendenze
-API_PENDENZE_WAR="api-pendenze-"
-unzip $API_PENDENZE_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#HEADER_START#HEADER_START -->#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_SECURITY_XML
-zip -r $API_PENDENZE_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-rm -rf $APP_CONTEXT_BASE_DIR
-
-# API-Ragioneria
-API_RAGIONERIA_WAR="api-ragioneria-"
-unzip $API_RAGIONERIA_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#HEADER_START#HEADER_START -->#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_SECURITY_XML
-zip -r $API_RAGIONERIA_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-rm -rf $APP_CONTEXT_BASE_DIR
-
-# API-Pagamento
-API_PAGAMENTO_WAR="api-pagamento-"
-unzip $API_PAGAMENTO_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#SPID_START#SPID_START -->#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#SPID_END#<!-- SPID_END#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#HEADER_START#HEADER_START -->#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#PUBLIC_START#PUBLIC_START -->#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#PUBLIC_END#<!-- PUBLIC_END#g" $APP_CONTEXT_SECURITY_XML
-zip -r $API_PAGAMENTO_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-rm -rf $APP_CONTEXT_BASE_DIR
-
-# API-PagoPA
-API_PAGOPA_WAR="api-pagopa-"
-unzip $API_PAGOPA_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#BASIC_START#BASIC_START -->#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#BASIC_END#<!-- BASIC_END#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_SECURITY_XML
-sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_SECURITY_XML
-zip -r $API_PAGOPA_WAR$GOVPAY_VERSION.war $APP_CONTEXT_SECURITY_XML
-rm -rf $APP_CONTEXT_BASE_DIR
-
-zip -r $GOVPAY_EAR_NAME *
-popd
-mv $GOVPAY_TMP_DIR/$GOVPAY_EAR_NAME .
-rm -rf $GOVPAY_TMP_DIR
-popd
+sh ../../../scripts/abilitaAuth.sh -bo spid,header -pag public,spid,header -rag spid,header -pen spid,header -src dist/archivi/
 
 echo "Deploy govpay in wildfly...";
-sudo cp $GOVPAY_WORK_DIR/$GOVPAY_EAR_NAME /opt/wildfly-11.0.0.Final/standalone_govpay/deployments/
-
-rm -rf $GOVPAY_WORK_DIR
+sudo cp govpay_ear_tmp/govpay.ear /opt/wildfly-11.0.0.Final/standalone_govpay/deployments/
+rm -rf govpay_ear_tmp 

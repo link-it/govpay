@@ -373,7 +373,7 @@ public class RppController extends BaseController {
 	}
 
 	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotFoundException, NotAuthorizedException {
-		VersamentoIncasso versamento = rpt.getVersamento(null);
+		VersamentoIncasso versamento = rpt.getVersamentoIncasso(null);
 		
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 		

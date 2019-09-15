@@ -8,6 +8,7 @@ import { CronoViewComponent } from '../elements/item-view/views/crono-view/crono
 import { CronoCodeViewComponent } from '../elements/item-view/views/crono-code-view/crono-code-view.component';
 import { KeyValueViewComponent } from '../elements/item-view/views/key-value-view/key-value-view.component';
 import { TwoColsViewComponent } from '../elements/item-view/views/two-cols-view/two-cols-view.component';
+import { TwoColsCollapseViewComponent } from '../elements/item-view/views/two-cols-collapse-view/two-cols-collapse-view.component';
 
 import { InputViewComponent } from '../elements/item-view/views/input-view/input-view.component';
 import { FilterableViewComponent } from '../elements/item-view/views/filterable-view/filterable-view.component';
@@ -98,6 +99,7 @@ export class EntryPointList {
     CronoCodeViewComponent,
     KeyValueViewComponent,
     TwoColsViewComponent,
+    TwoColsCollapseViewComponent,
     InputViewComponent,
     FilterableViewComponent,
     DatePickerViewComponent, TimePickerDialogComponent,
@@ -168,6 +170,9 @@ export class EntryPointList {
         break;
       case UtilService.TWO_COLS:
         _type = TwoColsViewComponent;
+        break;
+      case UtilService.TWO_COLS_COLLAPSE:
+        _type = TwoColsCollapseViewComponent;
         break;
       case UtilService.KEY_VALUE:
         _type = KeyValueViewComponent;
@@ -327,6 +332,9 @@ export class EntryPointList {
         break;
       case 'TwoColsViewComponent':
         _name = UtilService.TWO_COLS;
+        break;
+      case 'TwoColsCollapseViewComponent':
+        _name = UtilService.TWO_COLS_COLLAPSE;
         break;
       case 'KeyValueViewComponent':
         _name = UtilService.KEY_VALUE;
