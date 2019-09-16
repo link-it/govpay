@@ -459,11 +459,12 @@ public class PendenzeDAO extends BaseDAO{
 			List<Rpt> findAll = rptBD.findAll(newFilter2);
 
 			for (Rpt rpt : findAll) {
-				rpt.getVersamento(bd).getDominio(bd);
-				rpt.getVersamento(bd).getUo(bd);
-				rpt.getVersamento(bd).getApplicazione(bd);
-				rpt.getVersamento(bd).getTipoVersamento(versamentiBD);
-				rpt.getVersamento(bd).getTipoVersamentoDominio(versamentiBD);
+				rpt.getVersamentoIncasso(bd);
+				rpt.getVersamentoIncasso(bd).getDominio(bd);
+				rpt.getVersamentoIncasso(bd).getUo(bd);
+				rpt.getVersamentoIncasso(bd).getApplicazione(bd);
+				rpt.getVersamentoIncasso(bd).getTipoVersamento(versamentiBD);
+				rpt.getVersamentoIncasso(bd).getTipoVersamentoDominio(versamentiBD);
 			}
 
 			response.setRpts(findAll);

@@ -62,6 +62,9 @@ public class Rpt extends it.govpay.model.Rpt{
 	}
 	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
+		if(this.versamentoIncasso != null) {
+			return this.versamentoIncasso;
+		}
 		if(this.versamento == null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
