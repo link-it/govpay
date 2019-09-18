@@ -248,8 +248,9 @@ public class PendenzeDAO extends BaseDAO{
 		if(!listaPendenzaDTO.isOrderEnabled()) {
 			filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
 		}
-		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-			filter.setCfCittadino(userDetails.getIdentificativo()); 
+//		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+			if(listaPendenzaDTO.getCfCittadino() != null) {
+			filter.setCfCittadino(listaPendenzaDTO.getCfCittadino()); 
 			filter.setAbilitaFiltroCittadino(true);
 		}
 		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());

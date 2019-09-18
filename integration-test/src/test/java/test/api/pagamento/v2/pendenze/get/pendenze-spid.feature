@@ -62,6 +62,35 @@ And match response ==
 }
 """
 
+Scenario Outline: Acquisizione ricevuta non pagato dalla propria posizione
+
+Given url pagamentiBaseurl
+And path 'rpp'
+And param idA2A = <idA2A>
+And param idPendenza = <idPendenza>
+And param esito = 'ESEGUITO'
+And headers spidHeaders
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: <numero>,
+	numPagine: 1,
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '##null',
+	risultati: '#[]'
+}
+"""
+
+Examples:
+| idA2A | idPendenza | httpStatus | numero |
+| idA2A2 | idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 | 200 | 0 |
+| idA2A2 | idPendenza_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 | 200 | 0 |
+| idA2A | idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A | 200 | 0 |
+| idA2A | idPendenza_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A | 200 | 0 |
+
 Scenario Outline: Acquisizione ricevuta pagato dalla propria posizione
 
 Given url pagamentiBaseurl
@@ -72,7 +101,8 @@ And param esito = 'ESEGUITO'
 And headers spidHeaders
 When method get
 Then status 200
-And match response.risultati[0].idPagamento == '#notnull'
+And match response.risultati[0].rt == '#notnull'
+And match response.risultati[0].rt.datiPagamento.codiceEsitoPagamento == '0'
 And match response == 
 """
 {
@@ -89,11 +119,8 @@ Examples:
 | idA2A | idPendenza | httpStatus | numero |
 | idA2A2 | idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A2 | 200 | 1 |
 | idA2A2 | idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A2 | 200 | 1 |
-| idA2A2 | idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A2 | 200 | 0 |
 | idA2A2 | idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A2 | 200 | 1 |
-| idA2A2 | idPendenza_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A2 | 200 | 0 |
 | idA2A | idPendenza_Rossi_DOM1_SPONTANEO_ESEGUITO_idA2A | 200 | 1 |
 | idA2A | idPendenza_Rossi_DOM1_LIBERO_ESEGUITO_idA2A | 200 | 1 |
-| idA2A | idPendenza_Rossi_DOM1_LIBERO_NONESEGUITO_idA2A | 200 | 0 |
 | idA2A | idPendenza_Rossi_DOM1_SEGRETERIA_ESEGUITO_idA2A | 200 | 1 |
-| idA2A | idPendenza_Rossi_DOM1_SEGRETERIA_NONESEGUITO_idA2A | 200 | 0 |
+
