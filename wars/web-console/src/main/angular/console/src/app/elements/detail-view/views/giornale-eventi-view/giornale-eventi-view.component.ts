@@ -21,6 +21,9 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
 
   @Input() json: any;
 
+  protected _voce = Voce;
+  protected infoPACompletaUrl: string = '';
+
   constructor(protected us: UtilService) { }
 
   ngOnInit() {
@@ -30,6 +33,7 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
   protected dettaglioEvento() {
     let _dettaglio = [];
     let _dettaglioPA = [];
+    this.infoPACompletaUrl = '';
     let _date = this.json.dataEvento?moment(this.json.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
     _dettaglio.push(new Dato({ label: Voce.CATEGORIA_EVENTO, value: UtilService.TIPI_CATEGORIA_EVENTO[this.json.categoriaEvento] }));
     _dettaglio.push(new Dato({ label: Voce.MODULO, value: this.json.componente }));
@@ -55,6 +59,7 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
       _dettaglioPA.push(new Dato({label: Voce.ID_INTERMEDIARIO, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idIntermediario })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_STAZIONE, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idStazione })}));
     }
+    this.infoPACompletaUrl = UtilService.RootByTOA() + UtilService.URL_GIORNALE_EVENTI + '/' + this.json.id;
     this.informazioni = _dettaglio.slice(0);
     this.informazioniPA = _dettaglioPA.slice(0);
   }

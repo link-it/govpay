@@ -464,7 +464,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         tmpValue.push(item.ragioneSocialeDominio?item.ragioneSocialeDominio:item.idDominio);
         tmpValue.push(item.ragioneSocialePsp?item.ragioneSocialePsp:item.idPsp);
         _st = Dato.arraysToDato(
-          [ Voce.DATA, Voce.ENTE_CREDITORE, Voce.PSP ],
+          [ Voce.DATA, Voce.ENTE_CREDITORE_SIGLA, Voce.PSP ],
           tmpValue,
           ', '
         );
