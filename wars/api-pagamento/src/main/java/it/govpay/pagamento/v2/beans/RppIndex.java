@@ -6,7 +6,6 @@ import java.util.Objects;
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRawValue;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({

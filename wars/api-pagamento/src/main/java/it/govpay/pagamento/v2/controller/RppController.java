@@ -24,6 +24,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.viste.model.VersamentoIncasso;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -329,11 +330,13 @@ public class RppController extends BaseController {
 
 	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotFoundException, NotAuthorizedException {
 		PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(null);
+		VersamentoIncasso versamento = rpt.getVersamentoIncasso(null); 
 		
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-			if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo())) {
-				throw AuthorizationManager.toNotAuthorizedException(user);
+			if((pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo()))
+					&& !versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene al cittadino chiamante");
 			}
 		}
 		

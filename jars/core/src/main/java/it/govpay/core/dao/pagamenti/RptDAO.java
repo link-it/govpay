@@ -103,6 +103,17 @@ public class RptDAO extends BaseDAO{
 			RptBD rptBD = new RptBD(bd);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp());
 			rpt.getPagamentoPortale(bd).getApplicazione(bd);
+			VersamentoIncasso versamento = rpt.getVersamentoIncasso(bd);
+			response.setVersamento(versamento);
+			versamento.getTipoVersamentoDominio(bd);
+			versamento.getTipoVersamento(bd);
+			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+			for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+				singoloVersamento.getCodContabilita(bd);
+				singoloVersamento.getIbanAccredito(bd);
+				singoloVersamento.getTipoContabilita(bd);
+				singoloVersamento.getTributo(bd);
+			}
 			
 			if(rpt.getXmlRt() == null)
 				throw new RicevutaNonTrovataException(null);
