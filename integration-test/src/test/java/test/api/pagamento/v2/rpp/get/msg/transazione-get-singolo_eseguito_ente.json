@@ -179,6 +179,7 @@
 		"dominio": "#notnull",
 		"stato": "ESEGUITA",
 		"rpp": "#notnull",
-		"pagamenti": "#notnull"
+		"pagamenti": "#notnull",
+		"idTipoPendenza": "#string"
 	}
 }
